@@ -19,8 +19,7 @@ import org.apache.commons.text.StringTokenizer
  * @return An array of parsed arguments
  */
 fun parseMessage(message: Message): Array<String> {
-    val array = StringTokenizer(message.content).tokenArray
-    return array.sliceArray(1 until array.size)
+    return StringTokenizer(message.content).tokenArray
 }
 
 /**
