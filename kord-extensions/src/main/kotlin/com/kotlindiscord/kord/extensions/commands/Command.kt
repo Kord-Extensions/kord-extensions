@@ -66,7 +66,7 @@ class Command(val extension: Extension) {
      * There's no limit on the number of aliases a command may have, but in the event of an alias matching
      * the [name] of a registered command, the command with the [name] takes priority.
      */
-    val aliases: Array<String> = arrayOf()
+    var aliases: Array<String> = arrayOf()
 
     /**
      * @suppress
