@@ -71,7 +71,7 @@ class Command(val extension: Extension) {
     /**
      * @suppress
      */
-    val checkList: MutableList<suspend MessageCreateEvent.() -> Boolean> = mutableListOf()
+    val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present.
@@ -112,7 +112,7 @@ class Command(val extension: Extension) {
      *
      * @param checks Checks to apply to this command.
      */
-    fun check(vararg checks: suspend MessageCreateEvent.() -> Boolean) {
+    fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
         // TODO: Documented @samples
         checks.forEach { checkList.add(it) }
     }

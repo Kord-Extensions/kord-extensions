@@ -25,7 +25,7 @@ class EventHandler<T : Event>(val extension: Extension) {
     /**
      * @suppress
      */
-    val checkList: MutableList<suspend T.() -> Boolean> = mutableListOf()
+    val checkList: MutableList<suspend (T) -> Boolean> = mutableListOf()
 
     /**
      * An internal function used to ensure that all of an event handler's required arguments are present.
@@ -62,7 +62,7 @@ class EventHandler<T : Event>(val extension: Extension) {
      *
      * @param checks Checks to apply to this event handler.
      */
-    fun check(vararg checks: suspend T.() -> Boolean) {
+    fun check(vararg checks: suspend (T) -> Boolean) {
         // TODO: Documented @samples
         checks.forEach { checkList.add(it) }
     }
