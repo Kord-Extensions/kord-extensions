@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Java
+        uses: actions/setup-java@v1.0.0
+
+        with:
+          version: 1.11
+
+      - name: Set up Gradle properties
+        run: |
+          mkdir -p ~/.gradle
+          echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
+
+      - name: Gradle (Build)
+        run: sh gradlew kord-extensions:build docs:orchidBuild
+
+      - name: Gradle (Deploy docs)
+        run: sh gradlew docs:orchidDeploy
+
+      - name: Create Docs Zip
+        run: |
+          zip -r build/docs.zip docs/build/docs/orchid/*
+
+      - name: Rename artifact
+        run: |
+          mv kord-extensions/build/libs/kord-extensions-*.jar kord-extensions/build/libs/kord-extensions.jar
+
+      - name: Upload artifact (JAR)
+        uses: actions/upload-artifact@v1.0.0
+
+        with:
+          name: JAR
+          path: kord-extensions/build/libs/kord-extensions.jar
+
+      - name: Upload artifact (Docs)
+        uses: actions/upload-artifact@v1.0.0
+
+        with:
+          name: Docs Zip
+          path: build/docs.zip
