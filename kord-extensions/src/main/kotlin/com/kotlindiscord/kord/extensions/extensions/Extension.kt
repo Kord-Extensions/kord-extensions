@@ -44,7 +44,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    suspend fun command(body: suspend Command.() -> Unit) {
+    suspend fun command(body: suspend Command.() -> Unit): Command {
         // TODO: @samples
         val commandObj = Command(this)
 
@@ -58,6 +58,8 @@ abstract class Extension(val bot: ExtensibleBot) {
         } catch (e: InvalidCommandException) {
             logger.error(e) { "Failed to register command - $e" }
         }
+
+        return commandObj
     }
 
     /**
@@ -67,7 +69,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the event handler object.
      */
-    suspend inline fun <reified T : Event> event(noinline body: suspend EventHandler<T>.() -> Unit) {
+    suspend inline fun <reified T : Event> event(noinline body: suspend EventHandler<T>.() -> Unit): EventHandler<T> {
         // TODO: @samples
         val eventHandler = EventHandler<T>(this)
         val logger = KotlinLogging.logger {}
@@ -82,5 +84,7 @@ abstract class Extension(val bot: ExtensibleBot) {
         } catch (e: InvalidEventHandlerException) {
             logger.error(e) { "Failed to register event handler - $e" }
         }
+
+        return eventHandler
     }
 }
