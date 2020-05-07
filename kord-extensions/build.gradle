@@ -73,6 +73,11 @@ publishing {
     publications {
         maven(MavenPublication) {
             from(components.java)
+            artifacts {
+                kotlinSourcesJar
+            }
         }
     }
 }
+
+kotlinSourcesJar.shouldRunAfter build
