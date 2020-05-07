@@ -126,7 +126,7 @@ open class ExtensibleBot(
             commandName = commandName.toLowerCase()
 
             val command = commands.firstOrNull { it.name == commandName }
-                    ?: commands.firstOrNull { it.aliasList.contains(commandName) }
+                ?: commands.firstOrNull { it.aliases.contains(commandName) }
 
             command?.call(this, parts)
         }
@@ -172,7 +172,9 @@ open class ExtensibleBot(
     @Throws(CommandRegistrationException::class)
     fun addCommand(command: Command) {
         val existingCommand = commands.any { it.name == command.name }
-        val existingAlias: String? = commands.flatMap { it.aliasList }.firstOrNull { command.aliasList.contains(it) }
+        val existingAlias: String? = commands.flatMap {
+            it.aliases.toList()
+        }.firstOrNull { command.aliases.contains(it) }
 
         if (existingCommand) {
             throw CommandRegistrationException(

@@ -61,9 +61,12 @@ class Command(val extension: Extension) {
     var signature: String = ""  // TODO: Proper arg parsing
 
     /**
-     * @suppress
+     * Alternative names that can be used to invoke your command.
+     *
+     * There's no limit on the number of aliases a command may have, but in the event of an alias matching
+     * the [name] of a registered command, the command with the [name] takes priority.
      */
-    val aliasList: MutableList<String> = mutableListOf()
+    val aliases: Array<String> = arrayOf()
 
     /**
      * @suppress
@@ -96,19 +99,6 @@ class Command(val extension: Extension) {
     fun action(action: suspend Command.(MessageCreateEvent, Message, Array<String>) -> Unit) {
         // TODO: Documented @samples
         this.body = action
-    }
-
-    /**
-     * Define alternative names that can be used to invoke your command.
-     *
-     * There's no limit on the number of aliases a command may have, but in the event of an alias matching
-     * the [name] of a registered command, the command with the [name] takes priority.
-     *
-     * @param aliases Aliases to apply to this command.
-     */
-    fun alias(vararg aliases: String) {
-        // TODO: Documented @samples
-        aliases.forEach { aliasList.add(it) }
     }
 
     /**
