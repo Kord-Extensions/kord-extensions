@@ -53,16 +53,11 @@ open class ExtensibleBot(
      */
     val extensions: MutableMap<String, Extension> = mutableMapOf()
 
-    init {
-        runBlocking {
-            kord = Kord(token)
-        }
-    }
-
     /**
      * This function kicks off the process, by setting up the bot and having it login.
      */
     suspend fun start() {
+        kord = Kord(token)
         registerListeners()
         addDefaultExtensions()
 
@@ -73,6 +68,15 @@ open class ExtensibleBot(
     private suspend fun registerListeners() {
         kord.on<ReadyEvent> {
             logger.info { "Ready!" }
+
+            for (extension in extensions.values) {
+                @Suppress("TooGenericExceptionCaught")  // Anything could happen here
+                try {
+                    extension.setup()
+                } catch (e: Exception) {
+                    logger.error(e) { "Failed to set up '${extension.name}' extension." }
+                }
+            }
         }
 
         kord.on<MessageCreateEvent> {
@@ -157,8 +161,6 @@ open class ExtensibleBot(
         val ctor = extension.primaryConstructor ?: throw InvalidExtensionException(extension, "No primary constructor")
 
         val extensionObj = ctor.call(this)
-
-        extensionObj.setup()
 
         extensions[extensionObj.name] = extensionObj
     }
