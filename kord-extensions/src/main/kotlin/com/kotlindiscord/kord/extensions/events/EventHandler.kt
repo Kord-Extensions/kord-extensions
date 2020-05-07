@@ -8,9 +8,7 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 /**
- * Class representing an event handler.
- *
- * Event handlers react to a given Kord event. Remember to
+ * Class representing an event handler. Event handlers react to a given Kord event.
  *
  * You shouldn't need to use this class directly - instead, create an [Extension] and use the
  * [event function][Extension.event] to register your event handler, by overriding the [Extension.setup]

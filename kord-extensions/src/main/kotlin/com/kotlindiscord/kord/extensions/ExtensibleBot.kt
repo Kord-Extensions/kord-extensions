@@ -97,7 +97,7 @@ open class ExtensibleBot(
                         commandName = parts[0]
                         parts = parts.sliceArray(1 until parts.size)
                     }
-                    parts[0] == mention -> {
+                    invokeCommandOnMention && parts[0] == mention -> {
                         // Command with a mention; first part is exactly the mention
                         commandName = parts[1]
 
@@ -107,7 +107,7 @@ open class ExtensibleBot(
                             arrayOf()
                         }
                     }
-                    parts[0].startsWith(mention) -> {
+                    invokeCommandOnMention && parts[0].startsWith(mention) -> {
                         // Command with a mention; no space between mention and command
                         commandName = parts[0].slice(mention.length until parts[0].length)
                         parts = parts.sliceArray(1 until parts.size)
