@@ -8,6 +8,7 @@ import com.gitlab.kordlib.core.on
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -52,11 +53,16 @@ open class ExtensibleBot(
      */
     val extensions: MutableMap<String, Extension> = mutableMapOf()
 
+    init {
+        runBlocking {
+            kord = Kord(token)
+        }
+    }
+
     /**
      * This function kicks off the process, by setting up the bot and having it login.
      */
     suspend fun start() {
-        kord = Kord(token)
         registerListeners()
         addDefaultExtensions()
 
