@@ -52,7 +52,7 @@ fun topRoleEqual(role: Role): suspend (MessageCreateEvent) -> Boolean {
             val member = message.getAuthorAsMember() ?: return false
             val topRole = member.getTopRole() ?: return false
 
-            return role == topRole
+            return topRole == role
         }
     }
 
@@ -70,7 +70,7 @@ fun topRoleNotEqual(role: Role): suspend (MessageCreateEvent) -> Boolean {
             val member = message.getAuthorAsMember() ?: return false
             val topRole = member.getTopRole() ?: return false
 
-            return role != topRole
+            return topRole != role
         }
     }
 
@@ -88,7 +88,7 @@ fun topRoleHigher(role: Role): suspend (MessageCreateEvent) -> Boolean {
             val member = message.getAuthorAsMember() ?: return false
             val topRole = member.getTopRole() ?: return false
 
-            return role > topRole
+            return topRole > role
         }
     }
 
@@ -106,7 +106,7 @@ fun topRoleLower(role: Role): suspend (MessageCreateEvent) -> Boolean {
             val member = message.getAuthorAsMember() ?: return false
             val topRole = member.getTopRole() ?: return false
 
-            return role < topRole
+            return topRole < role
         }
     }
 
@@ -125,7 +125,7 @@ fun topRoleHigherOrEqual(role: Role): suspend (MessageCreateEvent) -> Boolean {
             val member = message.getAuthorAsMember() ?: return false
             val topRole = member.getTopRole() ?: return false
 
-            return role >= topRole
+            return topRole >= role
         }
     }
 
@@ -144,7 +144,7 @@ fun topRoleLowerOrEqual(role: Role): suspend (MessageCreateEvent) -> Boolean {
             val member = message.getAuthorAsMember() ?: return false
             val topRole = member.getTopRole() ?: return false
 
-            return role <= topRole
+            return topRole <= role
         }
     }
 
