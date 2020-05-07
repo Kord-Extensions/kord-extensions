@@ -143,7 +143,8 @@ open class ExtensibleBot(
 
     /** This function adds all of the default extensions when the bot is being set up. **/
     private suspend fun addDefaultExtensions() {
-        TODO()  // TODO: Help extension
+        // TODO: Help extension
+        logger.info { "If we had default extensions, we'd add them here." }
     }
 
     /**
