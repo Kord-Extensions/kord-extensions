@@ -5,6 +5,8 @@ buildscript {
 }
 
 plugins {
+    id 'maven-publish'
+
     id 'com.github.jakemarsden.git-hooks' version '0.0.1'
     id 'io.gitlab.arturbosch.detekt' version '1.8.0'
     id 'org.jetbrains.kotlin.jvm' version '1.3.72'
@@ -12,7 +14,7 @@ plugins {
 
 group 'com.kotlindiscord.kord.extensions'
 targetCompatibility = 1.8
-version '1.0-SNAPSHOT'
+version rootProject.version
 
 repositories {
     mavenCentral()
@@ -51,4 +53,26 @@ detekt {
 
 gitHooks {
     hooks = ['pre-commit': 'kord-extensions:detekt']
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "KotDis"
+            url = uri("https://maven.kotlindiscord.com/repository/maven-snapshots/")
+
+            credentials {
+                username = project.findProperty("kotdis.user") ?: System.getenv("KOTLIN_DISCORD_USER")
+                password = project.findProperty("kotdis.password") ?: System.getenv("KOTLIN_DISCORD_PASSWORD")
+            }
+
+            version = project.version
+        }
+    }
+
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
 }

@@ -29,6 +29,9 @@ jobs:
       - name: Gradle (Deploy docs)
         run: sh gradlew docs:orchidDeploy
 
+      - name: Gradle (Publish)
+        run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} kord-extensions:publish
+
       - name: Create Docs Zip
         run: |
           zip -r build/docs.zip docs/build/docs/orchid/*
