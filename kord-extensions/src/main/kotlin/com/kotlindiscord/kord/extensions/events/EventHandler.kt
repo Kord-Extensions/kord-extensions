@@ -67,6 +67,16 @@ class EventHandler<T : Event>(val extension: Extension) {
         checks.forEach { checkList.add(it) }
     }
 
+    /**
+     * Overloaded check function to allow for DSL syntax.
+     *
+     * @param check Check to apply to this event handler.
+     */
+    fun check(check: suspend (T) -> Boolean) {
+        // TODO: Documented @samples
+        checkList.add(check)
+    }
+
     // endregion
 
     /**
