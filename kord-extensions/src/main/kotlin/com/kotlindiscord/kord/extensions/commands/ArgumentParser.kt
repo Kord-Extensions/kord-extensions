@@ -28,7 +28,7 @@ class ArgumentParser(private val bot: ExtensibleBot) {
     /** Defined here so we don't have to create it every time we try to parse something. */
     private val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
 
-    private val mentionRegex = Regex("^<[@#][!&]?(\\d+)>$")
+    private val mentionRegex = Regex("^<(?:@[!&]?|#)(\\d+)>$")
 
     /**
      * Given a data class and an array of strings, return an instance of the data class that
