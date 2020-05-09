@@ -18,6 +18,11 @@ class CommandContext(
     val args: Array<String>
 ) {
     /**
+     * Message object representing the message that invoked the command.
+     */
+    val message by lazy { event.message }
+
+    /**
      * Attempt to parse the arguments in this CommandContext into a given data class.
      *
      * TODO: Exceptions, etc

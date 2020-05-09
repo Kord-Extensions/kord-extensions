@@ -69,6 +69,7 @@ class ArgumentParser(private val bot: ExtensibleBot) {
 
     private suspend fun stringToType(string: String, type: KType, event: MessageCreateEvent): Any? {
         // TODO: Nullable type checking/appropriate exceptions
+        // TODO: Parsing strings for IDs where appropriate
         return when {
             type.isSubtypeOf(Int::class.createType()) -> string.toInt()
             type.isSubtypeOf(Long::class.createType()) -> string.toLong()
