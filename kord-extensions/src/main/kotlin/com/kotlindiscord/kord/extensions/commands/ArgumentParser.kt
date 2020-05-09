@@ -1,8 +1,12 @@
 package com.kotlindiscord.kord.extensions.commands
 
 import com.gitlab.kordlib.common.entity.Snowflake
+import com.gitlab.kordlib.core.entity.Guild
+import com.gitlab.kordlib.core.entity.GuildEmoji
+import com.gitlab.kordlib.core.entity.Role
 import com.gitlab.kordlib.core.entity.User
 import com.gitlab.kordlib.core.entity.channel.Channel
+import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
@@ -35,7 +39,7 @@ class ArgumentParser(private val bot: ExtensibleBot) {
      * @param dataclass Data class to parse Strings into.
      * @param args Array of Strings to parse.
      */
-    suspend fun <T : Any> parse(dataclass: KClass<T>, args: Array<out String>): T? {
+    suspend fun <T : Any> parse(dataclass: KClass<T>, args: Array<out String>, event: MessageCreateEvent): T? {
         if (!dataclass.isData || dataclass.primaryConstructor == null) {
             TODO("Raise exception here")
         }
@@ -50,10 +54,11 @@ class ArgumentParser(private val bot: ExtensibleBot) {
             if (element.type.isSubtypeOf(listType)) {
                 dcArgs[element] = stringsToTypes(
                     args.sliceArray(i until args.size),
-                    element.type.arguments[0].type!!
+                    element.type.arguments[0].type!!,
+                    event
                 )
             } else {
-                dcArgs[element] = stringToType(args[i], element.type)
+                dcArgs[element] = stringToType(args[i], element.type, event)
             }
         }
 
@@ -62,7 +67,8 @@ class ArgumentParser(private val bot: ExtensibleBot) {
         return dataclass.primaryConstructor?.callBy(dcArgs)
     }
 
-    private suspend fun stringToType(string: String, type: KType): Any? {
+    private suspend fun stringToType(string: String, type: KType, event: MessageCreateEvent): Any? {
+        // TODO: Nullable type checking/appropriate exceptions
         return when {
             type.isSubtypeOf(Int::class.createType()) -> string.toInt()
             type.isSubtypeOf(Long::class.createType()) -> string.toLong()
@@ -71,6 +77,9 @@ class ArgumentParser(private val bot: ExtensibleBot) {
             type.isSubtypeOf(String::class.createType()) -> string
 
             type.isSubtypeOf(Channel::class.createType()) -> bot.kord.getChannel(Snowflake(string))
+            type.isSubtypeOf(GuildEmoji::class.createType()) -> event.message.getGuild()?.getEmoji(Snowflake(string))
+            type.isSubtypeOf(Guild::class.createType()) -> bot.kord.getGuild(Snowflake(string))
+            type.isSubtypeOf(Role::class.createType()) -> event.message.getGuild()?.getRole(Snowflake(string))
             type.isSubtypeOf(User::class.createType()) -> bot.kord.getUser(Snowflake(string))
 //            type.isSubtypeOf(Snowflake::class.createType()) -> Snowflake(string)
 
@@ -78,10 +87,10 @@ class ArgumentParser(private val bot: ExtensibleBot) {
         }
     }
 
-    private suspend fun stringsToTypes(strings: Array<out String>, type: KType): List<Any?> {
+    private suspend fun stringsToTypes(strings: Array<out String>, type: KType, event: MessageCreateEvent): List<Any?> {
         val values: MutableList<Any?> = mutableListOf()
 
-        strings.forEach { values.add(stringToType(it, type)) }
+        strings.forEach { values.add(stringToType(it, type, event)) }
 
         return values
     }

@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands
 
-import com.gitlab.kordlib.core.entity.Message
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -21,7 +20,7 @@ class Command(val extension: Extension) {
     /**
      * @suppress
      */
-    lateinit var body: suspend Command.(MessageCreateEvent, Message, Array<String>) -> Unit
+    lateinit var body: suspend CommandContext.() -> Unit
 
     /**
      * The name of this command, for invocation and help commands.
@@ -74,6 +73,11 @@ class Command(val extension: Extension) {
     val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
     /**
+     * @suppress
+     */
+    val parser = ArgumentParser(extension.bot)
+
+    /**
      * An internal function used to ensure that all of a command's required arguments are present.
      *
      * @throws InvalidCommandException Thrown when a required argument hasn't been set.
@@ -96,7 +100,7 @@ class Command(val extension: Extension) {
      *
      * @param action The body of your command, which will be executed when your command is invoked.
      */
-    fun action(action: suspend Command.(MessageCreateEvent, Message, Array<String>) -> Unit) {
+    fun action(action: suspend CommandContext.() -> Unit) {
         // TODO: Documented @samples
         this.body = action
     }
@@ -150,7 +154,7 @@ class Command(val extension: Extension) {
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
-            this.body(this, event, event.message, args)
+            this.body(CommandContext(this, event, args))
         } catch (e: Exception) {
             logger.error(e) { "Error during execution of $name command ($event)" }
         }

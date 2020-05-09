@@ -42,6 +42,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * Use this in your setup function to register a command that may be executed on Discord.
      *
+     * @param T
      * @param body Builder lambda used for setting up the command object.
      */
     suspend fun command(body: suspend Command.() -> Unit): Command {
