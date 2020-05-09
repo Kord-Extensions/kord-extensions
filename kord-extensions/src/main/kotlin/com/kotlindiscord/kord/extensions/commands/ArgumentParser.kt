@@ -46,16 +46,12 @@ class ArgumentParser(private val bot: ExtensibleBot) {
      * @param dataclass Data class to parse Strings into.
      * @param args Array of Strings to parse.
      *
-     * @throws ParseException Thrown if the arguments couldn't be parsed.
+     * @throws ParseException Thrown if the arguments couldn't be parsed for some reason.
      */
     @Throws(ParseException::class)
     suspend fun <T : Any> parse(dataclass: KClass<T>, args: Array<out String>, event: MessageCreateEvent): T {
         if (!dataclass.isData) {
             throw ParseException("Given class is not a data class.")
-        }
-
-        if (dataclass.primaryConstructor == null) {
-            throw ParseException("Given class has no primary constructor.")
         }
 
         val dcArgs = doParse(dataclass, args, event, dataclass.primaryConstructor!!.parameters)
@@ -122,7 +118,6 @@ class ArgumentParser(private val bot: ExtensibleBot) {
     }
 
     private suspend fun stringToType(string: String, type: KType, event: MessageCreateEvent): Any? {
-        // TODO: Nullable type checking/appropriate exceptions
         @Suppress("TooGenericExceptionCaught")  // As usual, anything can happen here.
         return when {
             type.isSubtypeOf(String::class.createType()) ||

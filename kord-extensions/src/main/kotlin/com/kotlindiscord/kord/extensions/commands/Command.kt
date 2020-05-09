@@ -150,7 +150,7 @@ class Command(val extension: Extension) {
      * parameters will produce \[argument ...] or <argument ...> respectively.
      *
      * @param T Data class to generate a signature string for.
-     * @throws ParseException Thrown if the class passed isn't a data class, or is missing a primary constructor.
+     * @throws ParseException Thrown if the class passed isn't a data class.
      */
     @Throws(ParseException::class)
     inline fun <reified T : Any> signature() {
@@ -158,10 +158,6 @@ class Command(val extension: Extension) {
 
         if (!dataClass.isData) {
             throw ParseException("Given class is not a data class.")
-        }
-
-        if (dataClass.primaryConstructor == null) {
-            throw ParseException("Given class has no primary constructor.")
         }
 
         val strings: MutableList<String> = mutableListOf()
