@@ -9,6 +9,9 @@ import com.gitlab.kordlib.core.entity.channel.Channel
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
+import mu.KotlinLogging
+import java.math.BigDecimal
+import java.math.BigInteger
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
@@ -16,6 +19,8 @@ import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Class in charge of converting string arguments for commands into fully-typed data classes.
@@ -35,7 +40,6 @@ class ArgumentParser(private val bot: ExtensibleBot) {
      * has been populated from the array of strings.
      *
      * This function needs a lot of work:
-     *     TODO: Raise exception if not data class
      *     TODO: Think about exception handling for conversions
      *     TODO: Think about null handling and default arguments
      *
@@ -47,57 +51,121 @@ class ArgumentParser(private val bot: ExtensibleBot) {
     @Throws(ParseException::class)
     suspend fun <T : Any> parse(dataclass: KClass<T>, args: Array<out String>, event: MessageCreateEvent): T {
         if (!dataclass.isData) {
-            throw ParseException("Failed to parse arguments: Given class is not a data class.")
+            throw ParseException("Given class is not a data class.")
         }
 
         if (dataclass.primaryConstructor == null) {
-            throw ParseException("Failed to parse arguments: Given class has no primary constructor.")
+            throw ParseException("Given class has no primary constructor.")
         }
 
-        val dcArgs: MutableMap<KParameter, Any?> = mutableMapOf()
-
-        dataclass.primaryConstructor!!.parameters.forEachIndexed { i, element ->
-            @Suppress("TooGenericExceptionCaught", "RethrowCaughtException")
-            try {
-                if (element.type.isSubtypeOf(listType)) {
-                    dcArgs[element] = stringsToTypes(
-                        args.sliceArray(i until args.size),
-                        element.type.arguments[0].type!!,
-                        event
-                    )
-                } else {
-                    dcArgs[element] = stringToType(args[i], element.type, event)
-                }
-            } catch (e: ParseException) {
-                throw e
-            } catch (e: Exception) { // Anything can happen here, really
-                e.printStackTrace()
-                throw ParseException("`${args[i]}` cannot be converted to ${element.type} ($e)")
-            }
-        }
+        val dcArgs = doParse(dataclass, args, event, dataclass.primaryConstructor!!.parameters)
 
         @Suppress("TooGenericExceptionCaught")
         return try {
             dataclass.primaryConstructor!!.callBy(dcArgs)
+        } catch (e: IllegalArgumentException) {
+            if (e.toString().contains("No argument provided for a required parameter")) {
+                throw ParseException("A required argument is missing.")
+            }
+
+            throw e
         } catch (e: Exception) {
-            throw ParseException("Failed to parse arguments: Data class cannot be constructed ($e)")
+            throw ParseException("Data class cannot be constructed ($e)")
+        }
+    }
+
+    @Throws(ParseException::class)
+    private suspend fun <T : Any> doParse(
+        dataclass: KClass<T>,
+        args: Array<out String>,
+        event: MessageCreateEvent,
+        elements: List<KParameter>,
+
+        argIndex: Int = 0,
+        elementIndex: Int = 0,
+        dcArgs: MutableMap<KParameter, Any?> = mutableMapOf()
+    ): Map<KParameter, Any?> {
+        if (argIndex >= args.size || elementIndex >= elements.size) {
+            return dcArgs
+        }
+
+        val argument = args[argIndex]
+        val element = elements[elementIndex]
+
+        @Suppress("TooGenericExceptionCaught", "RethrowCaughtException")
+        try {
+            if (element.type.isSubtypeOf(listType)) {
+                dcArgs[element] = stringsToTypes(
+                    args.sliceArray(argIndex until args.size),
+                    element.type.arguments[0].type!!,
+                    event
+                )
+
+                return dcArgs
+            } else {
+                dcArgs[element] = stringToType(argument, element.type, event)
+
+                // Element index should ordinarily match arg index
+                return doParse(dataclass, args, event, elements, argIndex + 1, argIndex + 1, dcArgs)
+            }
+        } catch (e: ParseException) {
+            throw e
+        } catch (e: Exception) { // Anything can happen here, really
+            if (!element.isOptional) {  // Optional params have default values and thus can be skipped
+                logger.warn(e) { "Failed to convert argument: $argument" }
+                throw ParseException("`$argument` cannot be converted to ${element.type} ($e)")
+            }
+
+            // We want to try this again with the next element
+            return doParse(dataclass, args, event, elements, argIndex, elementIndex + 1, dcArgs)
         }
     }
 
     private suspend fun stringToType(string: String, type: KType, event: MessageCreateEvent): Any? {
         // TODO: Nullable type checking/appropriate exceptions
+        @Suppress("TooGenericExceptionCaught")  // As usual, anything can happen here.
         return when {
-            type.isSubtypeOf(String::class.createType()) -> string
+            type.isSubtypeOf(String::class.createType()) ||
+                type.isSubtypeOf(String::class.createType(nullable = true)) -> string
 
-            type.isSubtypeOf(Int::class.createType()) -> string.toInt()
-            type.isSubtypeOf(Long::class.createType()) -> string.toLong()
-            type.isSubtypeOf(Float::class.createType()) -> string.toFloat()
+            type.isSubtypeOf(Regex::class.createType()) ||
+                type.isSubtypeOf(Regex::class.createType(nullable = true)) -> string.toRegex()
+
+            type.isSubtypeOf(Boolean::class.createType()) ||
+                type.isSubtypeOf(Boolean::class.createType(nullable = true)) -> string.toBoolean()
+
+            type.isSubtypeOf(Int::class.createType()) ||
+                type.isSubtypeOf(Int::class.createType(nullable = true)) -> string.toInt()
+
+            type.isSubtypeOf(Short::class.createType()) ||
+                type.isSubtypeOf(Short::class.createType(nullable = true)) -> string.toShort()
+
+            type.isSubtypeOf(Long::class.createType()) ||
+                type.isSubtypeOf(Long::class.createType(nullable = true)) -> string.toLong()
+
+            type.isSubtypeOf(Float::class.createType()) ||
+                type.isSubtypeOf(Float::class.createType(nullable = true)) -> string.toFloat()
+
+            type.isSubtypeOf(Double::class.createType()) ||
+                type.isSubtypeOf(Double::class.createType(nullable = true)) -> string.toDouble()
+
+            type.isSubtypeOf(BigDecimal::class.createType()) ||
+                type.isSubtypeOf(BigDecimal::class.createType(nullable = true)) -> string.toBigDecimal()
+
+            type.isSubtypeOf(BigInteger::class.createType()) ||
+                type.isSubtypeOf(BigInteger::class.createType(nullable = true)) -> string.toBigInteger()
 
             type.isSubtypeOf(Channel::class.createType()) -> {
                 val parsedString = parseMention(string)
 
                 bot.kord.getChannel(Snowflake(parseMention(parsedString)))
                     ?: throw ParseException("No such channel: `$parsedString`")
+            }
+
+            type.isSubtypeOf(Channel::class.createType(nullable = true)) -> {
+                val parsedString = parseMention(string)
+
+                bot.kord.getChannel(Snowflake(parseMention(parsedString)))
             }
 
             type.isSubtypeOf(GuildEmoji::class.createType()) -> {
@@ -107,11 +175,23 @@ class ArgumentParser(private val bot: ExtensibleBot) {
                     ?: throw ParseException("No such emoji: `$parsedString`")
             }
 
+            type.isSubtypeOf(GuildEmoji::class.createType(nullable = true)) -> {
+                val parsedString = parseMention(string)
+
+                event.message.getGuild()?.getEmoji(Snowflake(parsedString))
+            }
+
             type.isSubtypeOf(Guild::class.createType()) -> {
                 val parsedString = parseMention(string)
 
                 bot.kord.getGuild(Snowflake(parsedString))
                     ?: throw ParseException("No such guild: `$parsedString`")
+            }
+
+            type.isSubtypeOf(Guild::class.createType(nullable = true)) -> {
+                val parsedString = parseMention(string)
+
+                bot.kord.getGuild(Snowflake(parsedString))
             }
 
             type.isSubtypeOf(Role::class.createType()) -> {
@@ -121,13 +201,24 @@ class ArgumentParser(private val bot: ExtensibleBot) {
                     ?: throw ParseException("No such role: `$parsedString`")
             }
 
+            type.isSubtypeOf(Role::class.createType(nullable = true)) -> {
+                val parsedString = parseMention(string)
+
+                event.message.getGuild()?.getRole(Snowflake(parsedString))
+            }
+
             type.isSubtypeOf(User::class.createType()) -> {
                 val parsedString = parseMention(string)
 
                 bot.kord.getUser(Snowflake(parsedString))
                     ?: throw ParseException("No such user: `$parsedString`")
             }
-//            type.isSubtypeOf(Snowflake::class.createType()) -> Snowflake(string)
+
+            type.isSubtypeOf(User::class.createType(nullable = true)) -> {
+                val parsedString = parseMention(string)
+
+                bot.kord.getUser(Snowflake(parsedString))
+            }
 
             else -> throw NotImplementedError("String conversion not supported for type: $type")
         }

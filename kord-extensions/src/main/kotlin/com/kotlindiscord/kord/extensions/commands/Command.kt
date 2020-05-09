@@ -5,8 +5,17 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import mu.KotlinLogging
+import kotlin.reflect.KTypeProjection
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.primaryConstructor
 
 private val logger = KotlinLogging.logger {}
+
+/**
+ * @suppress
+ */
+val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
 
 /**
  * Class representing a single command.
@@ -133,6 +142,48 @@ class Command(val extension: Extension) {
     }
 
     // endregion
+
+    /**
+     * Attempt to generate a signature string from a given data class.
+     *
+     * This will produce \[argument] for optional parameters, and <argument> for required parameters. List
+     * parameters will produce \[argument ...] or <argument ...> respectively.
+     *
+     * @param T Data class to generate a signature string for.
+     * @throws ParseException Thrown if the class passed isn't a data class, or is missing a primary constructor.
+     */
+    @Throws(ParseException::class)
+    inline fun <reified T : Any> signature() {
+        val dataClass = T::class
+
+        if (!dataClass.isData) {
+            throw ParseException("Given class is not a data class.")
+        }
+
+        if (dataClass.primaryConstructor == null) {
+            throw ParseException("Given class has no primary constructor.")
+        }
+
+        val strings: MutableList<String> = mutableListOf()
+
+        dataClass.primaryConstructor!!.parameters.forEach {
+            val (start, end) = if (it.isOptional) {
+                Pair("[", "]")
+            } else {
+                Pair("<", ">")
+            }
+
+            strings.add(
+                if (it.type.isSubtypeOf(listType)) {
+                    "$start${it.name} ...$end"
+                } else {
+                    "$start${it.name}$end"
+                }
+            )
+        }
+
+        signature = strings.joinToString(" ")
+    }
 
     /**
      * Execute this command, given a [MessageCreateEvent].
