@@ -55,6 +55,10 @@ gitHooks {
     hooks = ['pre-commit': 'kord-extensions:detekt']
 }
 
+jar {
+    from sourceSets.main.kotlin
+}
+
 publishing {
     repositories {
         maven {
@@ -79,5 +83,3 @@ publishing {
         }
     }
 }
-
-kotlinSourcesJar.shouldRunAfter build

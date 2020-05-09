@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands
 
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
+import com.kotlindiscord.kord.extensions.ParseException
 
 /**
  * Light wrapper class representing the context for a command's action.
@@ -25,9 +26,9 @@ class CommandContext(
     /**
      * Attempt to parse the arguments in this CommandContext into a given data class.
      *
-     * TODO: Exceptions, etc
-     *
      * @param T Data class to parse arguments into.
+     * @throws ParseException Thrown when parsing fails. If you don't catch this, an error message will be sent.
      */
-    suspend inline fun <reified T : Any> parse(): T? = command.parser.parse(T::class, args, event)
+    @Throws(ParseException::class)
+    suspend inline fun <reified T : Any> parse(): T = command.parser.parse(T::class, args, event)
 }

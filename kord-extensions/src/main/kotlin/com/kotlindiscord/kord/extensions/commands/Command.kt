@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import mu.KotlinLogging
 
@@ -155,6 +156,8 @@ class Command(val extension: Extension) {
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
             this.body(CommandContext(this, event, args))
+        } catch (e: ParseException) {
+            event.message.channel.createMessage(e.toString())
         } catch (e: Exception) {
             logger.error(e) { "Error during execution of $name command ($event)" }
         }
