@@ -52,6 +52,8 @@ open class ExtensibleBot(
      */
     val extensions: MutableMap<String, Extension> = mutableMapOf()
 
+    private var initialized: Boolean = false
+
     /**
      * This function kicks off the process, by setting up the bot and having it login.
      */
@@ -66,16 +68,20 @@ open class ExtensibleBot(
     /** This function sets up all of the bot's default event listeners. **/
     private suspend fun registerListeners() {
         kord.on<ReadyEvent> {
-            logger.info { "Ready!" }
-
-            for (extension in extensions.values) {
-                @Suppress("TooGenericExceptionCaught")  // Anything could happen here
-                try {
-                    extension.setup()
-                } catch (e: Exception) {
-                    logger.error(e) { "Failed to set up '${extension.name}' extension." }
+            if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
+                for (extension in extensions.values) {
+                    @Suppress("TooGenericExceptionCaught")  // Anything could happen here
+                    try {
+                        extension.setup()
+                    } catch (e: Exception) {
+                        logger.error(e) { "Failed to set up '${extension.name}' extension." }
+                    }
                 }
+
+                initialized = true
             }
+
+            logger.info { "Ready!" }
         }
 
         kord.on<MessageCreateEvent> {
