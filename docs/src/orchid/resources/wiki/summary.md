@@ -7,9 +7,6 @@
     - [Event Handlers](components/event-handler.md)
     - [Checks](components/check.md)
 
-- [Setup](setup/basics.md)
-    - [Basics](setup/basics.md)
-
 - [Examples](examples/full-command.md)
     - [Full Command Example](examples/full-command.md)
     - [Full Event Handler Example](examples/full-event-handler.md)

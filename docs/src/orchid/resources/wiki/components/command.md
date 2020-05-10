@@ -55,13 +55,13 @@ options:
   
   The signature will be shown in help commands, and may also be automatically generated from a
   data class. See the below section on command arguments for more information on signature
-  generation..
+  generation.
 
 #### Checks
 
 You will likely want to write commands that are only invoked based on a set of conditions.
 In order to facilitate this in a manner that allows you to easily reuse these conditions,
-commands support a [Checks](check) system.
+commands support a [checks system](check).
 
 ```kotlin
 suspend fun defaultCheck(event: MessageCreateEvent): Boolean {
