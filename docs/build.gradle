@@ -8,7 +8,8 @@ dependencies {
     orchidRuntime "io.github.javaeden.orchid:OrchidKotlindoc:0.20.0"
     orchidRuntime "io.github.javaeden.orchid:OrchidPluginDocs:0.20.0"
     orchidRuntime "io.github.javaeden.orchid:OrchidSourceDoc:0.20.0"
-    orchidRuntime("io.github.javaeden.orchid:OrchidSyntaxHighlighter:0.20.0")
+    orchidRuntime("io.github.javaeden.orchid:OrchidSyntaxHighlighter:0.15.4")
+    orchidRuntime("io.github.javaeden.orchid:OrchidWiki:0.5.3")
 }
 
 repositories {

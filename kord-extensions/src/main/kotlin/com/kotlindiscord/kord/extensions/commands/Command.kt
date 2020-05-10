@@ -112,7 +112,6 @@ class Command(val extension: Extension) {
      * @param action The body of your command, which will be executed when your command is invoked.
      */
     fun action(action: suspend CommandContext.() -> Unit) {
-        // TODO: Documented @samples
         this.body = action
     }
 
@@ -128,7 +127,6 @@ class Command(val extension: Extension) {
      * @param checks Checks to apply to this command.
      */
     fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
-        // TODO: Documented @samples
         checks.forEach { checkList.add(it) }
     }
 
@@ -136,9 +134,9 @@ class Command(val extension: Extension) {
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this command.
+     * @sample com.kotlindiscord.kord.extensions.samples.CommandCheckSample.setup
      */
     fun check(check: suspend (MessageCreateEvent) -> Boolean) {
-        // TODO: Documented @samples
         checkList.add(check)
     }
 
