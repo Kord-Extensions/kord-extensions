@@ -39,9 +39,8 @@ class ArgumentParser(private val bot: ExtensibleBot) {
      * Given a data class and an array of strings, return an instance of the data class that
      * has been populated from the array of strings.
      *
-     * This function needs a lot of work:
-     *     TODO: Think about exception handling for conversions
-     *     TODO: Think about null handling and default arguments
+     * For more information on how exactly this functions, please take a look at the wiki.
+     * TODO: Wiki article
      *
      * @param dataclass Data class to parse Strings into.
      * @param args Array of Strings to parse.

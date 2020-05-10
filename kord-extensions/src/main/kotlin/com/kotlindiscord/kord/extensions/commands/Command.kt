@@ -64,10 +64,11 @@ class Command(val extension: Extension) {
     /**
      * The command signature, specifying how the command's arguments should be structured.
      *
-     * You may leave this blank if your command doesn't have any arguments. Otherwise, specify
-     * your arguments in the following manner: `"<required> '<required with multiple words>' \[optional]"`
+     * You may leave this as it is if your command doesn't take any arguments, you give the [signature] function
+     * a dataclass to generate a signature, or you can specify this in the [Extension.command] builder function
+     * if you'd like to provide something a bit more specific.
      */
-    var signature: String = ""  // TODO: Proper arg parsing
+    var signature: String = ""
 
     /**
      * Alternative names that can be used to invoke your command.
