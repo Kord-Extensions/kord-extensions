@@ -18,7 +18,7 @@ You can define your check as a simple function. For example:
 ```kotlin
 suspend fun isNotBot(event: MessageCreateEvent): Boolean {
     with(event) {  // Make sure the message wasn't created by a bot.
-        return message.author!!.isBot.not()
+        return message.author?.isBot == false
     }
 }
 ```

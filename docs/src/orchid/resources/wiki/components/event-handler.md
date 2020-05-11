@@ -40,7 +40,7 @@ suspend fun defaultCheck(event: MessageCreateEvent): Boolean {
     with(event) {
         return when {
             message.author?.id == bot.kord.getSelf().id -> false  // Check that we didn't send this message.
-            message.author!!.isBot == true              -> false  // Check that another bot didn't send this message.
+            message.author?.isBot == true               -> false  // Check that another bot didn't send this message.
             else                                        -> true
         }
     }
