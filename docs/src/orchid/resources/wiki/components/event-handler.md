@@ -3,7 +3,7 @@
 Event handlers function similarly to [commands](./command), but they react to Kord events instead of command
 invocations on Discord. For a full list of Kord events, you can 
 [check out the Kord GitLab](https://gitlab.com/kordlib/kord/-/tree/master/core/src/main/kotlin/com/gitlab/kordlib/core/event)
-\- but for the purposes of this pave, we'll just be looking at a `MessageCreateEvent` - an event that is fired when
+\- but for the purposes of this page, we'll just be looking at a `MessageCreateEvent` - an event that is fired when
 someone sends a message.
 
 #### Defining Event Handlers
