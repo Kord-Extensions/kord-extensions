@@ -70,6 +70,20 @@ event<MessageCreateEvent> {
 
 This allows us to create far more useful checks that can operate across a variety of options.
 
+#### Combinators
+
+If you don't want to simply require that all checks pass for a command or event handler, you can use
+a combinator check. We currently bundle one such check: `or`.
+
+```kotlin
+event<MessageCreateEvent> {
+    check(or(  // Check that the channel is either...
+        channelType(ChannelType.DM)  // A DM channel,
+        channelType(ChannelType.GuildNews)  // Or a news channel.
+    ))
+}
+```
+
 #### Bundled Checks
 
 For a full list of bundled checks, please take a look at 
