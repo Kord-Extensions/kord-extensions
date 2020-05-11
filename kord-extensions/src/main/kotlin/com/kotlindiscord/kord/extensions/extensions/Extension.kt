@@ -46,7 +46,6 @@ abstract class Extension(val bot: ExtensibleBot) {
      * @param body Builder lambda used for setting up the command object.
      */
     suspend fun command(body: suspend Command.() -> Unit): Command {
-        // TODO: @samples
         val commandObj = Command(this)
 
         body.invoke(commandObj)
@@ -71,7 +70,6 @@ abstract class Extension(val bot: ExtensibleBot) {
      * @param body Builder lambda used for setting up the event handler object.
      */
     suspend inline fun <reified T : Event> event(noinline body: suspend EventHandler<T>.() -> Unit): EventHandler<T> {
-        // TODO: @samples
         val eventHandler = EventHandler<T>(this)
         val logger = KotlinLogging.logger {}
 

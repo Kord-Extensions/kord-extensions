@@ -40,7 +40,6 @@ class ArgumentParser(private val bot: ExtensibleBot) {
      * has been populated from the array of strings.
      *
      * For more information on how exactly this functions, please take a look at the wiki.
-     * TODO: Wiki article
      *
      * @param dataclass Data class to parse Strings into.
      * @param args Array of Strings to parse.

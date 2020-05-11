@@ -134,7 +134,7 @@ command {
     action {
         val parsed = parse<SampleArgs>()  // Automatically parse the command arguments into the data class
 
-        with(parse<SampleArgs>()) {  // this: SampleArgs
+        with(parsed) {  // this: SampleArgs
             message.channel.createMessage(
                 "Arguments: optionalInt = $optionalInt | " +
                     "requiredUsers = ${requiredUsers.joinToString(", ") { it.username }}"

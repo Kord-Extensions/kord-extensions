@@ -47,7 +47,6 @@ class EventHandler<T : Event>(val extension: Extension) {
      * @param action The body of your event handler, which will be executed when it is invoked.
      */
     fun action(action: suspend EventHandler<T>.(T) -> Unit) {
-        // TODO: Documented @samples
         this.body = action
     }
 
@@ -62,22 +61,14 @@ class EventHandler<T : Event>(val extension: Extension) {
      *
      * @param checks Checks to apply to this event handler.
      */
-    fun check(vararg checks: suspend (T) -> Boolean) {
-        // TODO: Documented @samples
-        checks.forEach { checkList.add(it) }
-    }
+    fun check(vararg checks: suspend (T) -> Boolean) = checks.forEach { checkList.add(it) }
 
     /**
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this event handler.
      */
-    fun check(check: suspend (T) -> Boolean) {
-        // TODO: Documented @samples
-        checkList.add(check)
-    }
-
-    // endregion
+    fun check(check: suspend (T) -> Boolean) = checkList.add(check) // endregion
 
     /**
      * Execute this event handler, given an event.
