@@ -77,3 +77,14 @@ class CommandRegistrationException(val name: String?, val reason: String) : Exte
         return "Failed to register command $name: $reason"
     }
 }
+
+/**
+ * Thrown when we fail to parse arguments into a data class.
+ *
+ * @param reason Human-readable reason for the failure.
+ */
+class ParseException(var reason: String) : ExtensionsException() {
+    constructor(other: ParseException) : this(other.reason)
+
+    override fun toString(): String = reason
+}

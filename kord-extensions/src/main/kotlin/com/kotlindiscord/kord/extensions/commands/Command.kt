@@ -1,12 +1,21 @@
 package com.kotlindiscord.kord.extensions.commands
 
-import com.gitlab.kordlib.core.entity.Message
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import mu.KotlinLogging
+import kotlin.reflect.KTypeProjection
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.primaryConstructor
 
 private val logger = KotlinLogging.logger {}
+
+/**
+ * @suppress
+ */
+val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
 
 /**
  * Class representing a single command.
@@ -21,7 +30,7 @@ class Command(val extension: Extension) {
     /**
      * @suppress
      */
-    lateinit var body: suspend Command.(MessageCreateEvent, Message, Array<String>) -> Unit
+    lateinit var body: suspend CommandContext.() -> Unit
 
     /**
      * The name of this command, for invocation and help commands.
@@ -55,10 +64,11 @@ class Command(val extension: Extension) {
     /**
      * The command signature, specifying how the command's arguments should be structured.
      *
-     * You may leave this blank if your command doesn't have any arguments. Otherwise, specify
-     * your arguments in the following manner: `"<required> '<required with multiple words>' \[optional]"`
+     * You may leave this as it is if your command doesn't take any arguments, you give the [signature] function
+     * a dataclass to generate a signature, or you can specify this in the [Extension.command] builder function
+     * if you'd like to provide something a bit more specific.
      */
-    var signature: String = ""  // TODO: Proper arg parsing
+    var signature: String = ""
 
     /**
      * Alternative names that can be used to invoke your command.
@@ -72,6 +82,11 @@ class Command(val extension: Extension) {
      * @suppress
      */
     val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+
+    /**
+     * @suppress
+     */
+    val parser = ArgumentParser(extension.bot)
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present.
@@ -96,8 +111,7 @@ class Command(val extension: Extension) {
      *
      * @param action The body of your command, which will be executed when your command is invoked.
      */
-    fun action(action: suspend Command.(MessageCreateEvent, Message, Array<String>) -> Unit) {
-        // TODO: Documented @samples
+    fun action(action: suspend CommandContext.() -> Unit) {
         this.body = action
     }
 
@@ -113,7 +127,6 @@ class Command(val extension: Extension) {
      * @param checks Checks to apply to this command.
      */
     fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
-        // TODO: Documented @samples
         checks.forEach { checkList.add(it) }
     }
 
@@ -121,13 +134,51 @@ class Command(val extension: Extension) {
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this command.
+     * @sample com.kotlindiscord.kord.extensions.samples.CommandCheckSample.setup
      */
     fun check(check: suspend (MessageCreateEvent) -> Boolean) {
-        // TODO: Documented @samples
         checkList.add(check)
     }
 
     // endregion
+
+    /**
+     * Attempt to generate a signature string from a given data class.
+     *
+     * This will produce \[argument] for optional parameters, and <argument> for required parameters. List
+     * parameters will produce \[argument ...] or <argument ...> respectively.
+     *
+     * @param T Data class to generate a signature string for.
+     * @throws ParseException Thrown if the class passed isn't a data class.
+     */
+    @Throws(ParseException::class)
+    inline fun <reified T : Any> signature() {
+        val dataClass = T::class
+
+        if (!dataClass.isData) {
+            throw ParseException("Given class is not a data class.")
+        }
+
+        val strings: MutableList<String> = mutableListOf()
+
+        dataClass.primaryConstructor!!.parameters.forEach {
+            val (start, end) = if (it.isOptional) {
+                Pair("[", "]")
+            } else {
+                Pair("<", ">")
+            }
+
+            strings.add(
+                if (it.type.isSubtypeOf(listType)) {
+                    "$start${it.name} ...$end"
+                } else {
+                    "$start${it.name}$end"
+                }
+            )
+        }
+
+        signature = strings.joinToString(" ")
+    }
 
     /**
      * Execute this command, given a [MessageCreateEvent].
@@ -150,7 +201,9 @@ class Command(val extension: Extension) {
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
-            this.body(this, event, event.message, args)
+            this.body(CommandContext(this, event, args))
+        } catch (e: ParseException) {
+            event.message.channel.createMessage(e.toString())
         } catch (e: Exception) {
             logger.error(e) { "Error during execution of $name command ($event)" }
         }
