@@ -8,6 +8,7 @@ import com.gitlab.kordlib.core.on
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.HelpExtension
 import mu.KotlinLogging
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -149,8 +150,10 @@ open class ExtensibleBot(
 
     /** This function adds all of the default extensions when the bot is being set up. **/
     private suspend fun addDefaultExtensions() {
-        // TODO: Help extension
-        logger.info { "If we had default extensions, we'd add them here." }
+        if (addHelpExtension) {
+            logger.info { "Adding help extension." }
+            addExtension(HelpExtension::class)
+        }
     }
 
     /**
