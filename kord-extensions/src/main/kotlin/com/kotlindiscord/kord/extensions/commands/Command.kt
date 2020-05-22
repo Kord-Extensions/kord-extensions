@@ -180,7 +180,7 @@ class Command(val extension: Extension) {
         signature = strings.joinToString(" ")
     }
 
-    /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. */
+    /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
     suspend fun runChecks(event: MessageCreateEvent): Boolean {
         for (check in checkList) {
             if (!check.invoke(event)) {
