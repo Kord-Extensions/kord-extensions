@@ -59,7 +59,7 @@ class Command(val extension: Extension) {
      *
      * By default, this is `false` - so the command will be shown.
      */
-    var hidden: Boolean = false  // TODO: Help commands should also execute checks
+    var hidden: Boolean = false
 
     /**
      * The command signature, specifying how the command's arguments should be structured.
@@ -180,6 +180,16 @@ class Command(val extension: Extension) {
         signature = strings.joinToString(" ")
     }
 
+    /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
+    suspend fun runChecks(event: MessageCreateEvent): Boolean {
+        for (check in checkList) {
+            if (!check.invoke(event)) {
+                return false
+            }
+        }
+        return true
+    }
+
     /**
      * Execute this command, given a [MessageCreateEvent].
      *
@@ -193,10 +203,8 @@ class Command(val extension: Extension) {
      * @param event The message creation event.
      */
     suspend fun call(event: MessageCreateEvent, args: Array<String>) {
-        for (check in checkList) {
-            if (!check.invoke(event)) {
-                return
-            }
+        if (!runChecks(event)) {
+            return
         }
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
