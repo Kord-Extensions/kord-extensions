@@ -23,6 +23,7 @@ private val logger = KotlinLogging.logger {}
  *
  * @param addHelpExtension Whether to automatically install the bundled help command extension.
  * @param invokeCommandOnMention Whether to invoke commands that are prefixed with a mention, as well as the prefix.
+ * @param messageCacheSize How many previous messages to store - default to 10,000.
  * @param prefix The command prefix, for command invocations on Discord.
  * @param token The Discord bot's login token.
  */
@@ -31,7 +32,8 @@ open class ExtensibleBot(
     val prefix: String,
 
     val addHelpExtension: Boolean = true,
-    val invokeCommandOnMention: Boolean = true
+    val invokeCommandOnMention: Boolean = true,
+    val messageCacheSize: Int = 10_000
 ) {
     /**
      * @suppress
@@ -59,7 +61,12 @@ open class ExtensibleBot(
      * This function kicks off the process, by setting up the bot and having it login.
      */
     suspend fun start() {
-        kord = Kord(token)
+        kord = Kord(token) {
+            cache {
+                messages(lruCache(messageCacheSize))
+            }
+        }
+
         registerListeners()
         addDefaultExtensions()
 
