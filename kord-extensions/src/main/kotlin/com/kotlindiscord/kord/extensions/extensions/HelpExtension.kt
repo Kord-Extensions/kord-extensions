@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.gitlab.kordlib.core.behavior.channel.createEmbed
+import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.Paginator
 import com.kotlindiscord.kord.extensions.commands.Command
@@ -35,7 +36,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                         bot,
                         message.channel,
                         "Command Help",
-                        formatMainHelp(gatherCommands()),
+                        formatMainHelp(gatherCommands(event)),
                         owner = message.author,
                         timeout = 10_000L,
                         keepEmbed = true
@@ -59,7 +60,8 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     /**
      * Gather all available commands from the bot, and return them as an array of [KDCommand].
      */
-    fun gatherCommands() = bot.commands.filter { !it.hidden && it.enabled }
+    suspend fun gatherCommands(event: MessageCreateEvent) =
+        bot.commands.filter { !it.hidden && it.enabled && it.runChecks(event) }
 
     /**
      * Generate help message by formatting a [List] of [Command] objects.
