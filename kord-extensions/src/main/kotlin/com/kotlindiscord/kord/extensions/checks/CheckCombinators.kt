@@ -16,3 +16,22 @@ fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
 
     return ::inner
 }
+
+
+/**
+ * Special check that passes if all of the given checks pass.
+ *
+ * You can think of this as an `and` operation - pass it a bunch of checks, and
+ * this one will return `true` if they all pass.
+ *
+ * Don't use this unless you're already using combinators. The `check` functions
+ * can simply be passed multiple checks.
+ *
+ * @param checks Two or more checks to combine.
+ * @return Whether all of the checks passed.
+ */
+fun and(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
+    suspend fun inner(event: Event): Boolean = checks.all { it.invoke(event) }
+
+    return ::inner
+}
