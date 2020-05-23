@@ -105,7 +105,7 @@ I'm not your mom.
 #### Combinators
 
 If you don't want to simply require that all checks pass for a command or event handler, you can use
-a combinator check. We currently bundle one such check: `or`.
+a combinator check. We currently bundle two checks: `or` and `and`.
 
 ```kotlin
 event<MessageCreateEvent> {
