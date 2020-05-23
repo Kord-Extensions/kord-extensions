@@ -17,7 +17,6 @@ fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
     return ::inner
 }
 
-
 /**
  * Special check that passes if all of the given checks pass.
  *

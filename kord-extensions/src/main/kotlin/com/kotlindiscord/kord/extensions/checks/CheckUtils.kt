@@ -12,9 +12,19 @@ import com.gitlab.kordlib.core.event.message.*
 import com.gitlab.kordlib.core.event.role.RoleCreateEvent
 import com.gitlab.kordlib.core.event.role.RoleDeleteEvent
 import com.gitlab.kordlib.core.event.role.RoleUpdateEvent
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 
+/**
+ * Retrieves a channel that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the channel to retrieve.
+ * @return A [ChannelBehavior] representing the channel, or null if there isn't one.
+ */
 suspend fun channelFor(event: Event): ChannelBehavior? {
     return when (event) {
         is ChannelCreateEvent -> event.channel
@@ -36,6 +46,17 @@ suspend fun channelFor(event: Event): ChannelBehavior? {
     }
 }
 
+/**
+ * Retrieves a guild that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the channel to retrieve.
+ * @return A [GuildBehavior] representing the guild, or null if there isn't one.
+ */
 suspend fun guildFor(event: Event): GuildBehavior? {
     return when (event) {
         is CategoryCreateEvent -> event.channel.guild
@@ -77,6 +98,17 @@ suspend fun guildFor(event: Event): GuildBehavior? {
     }
 }
 
+/**
+ * Retrieves a member that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the channel to retrieve.
+ * @return A [MemberBehavior] representing the member, or null if there isn't one.
+ */
 suspend fun memberFor(event: Event): MemberBehavior? {
     return when (event) {
         is MemberJoinEvent -> event.member
@@ -92,6 +124,17 @@ suspend fun memberFor(event: Event): MemberBehavior? {
     }
 }
 
+/**
+ * Retrieves a message that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the channel to retrieve.
+ * @return A [MessageBehavior] representing the message, or null if there isn't one.
+ */
 suspend fun messageFor(event: Event): MessageBehavior? {
     return when (event) {
         is MessageCreateEvent -> event.message
@@ -106,6 +149,17 @@ suspend fun messageFor(event: Event): MessageBehavior? {
     }
 }
 
+/**
+ * Retrieves a role that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the channel to retrieve.
+ * @return A [RoleBehavior] representing the role, or null if there isn't one.
+ */
 fun roleFor(event: Event): RoleBehavior? {
     return when (event) {
         is RoleCreateEvent -> event.role
@@ -116,6 +170,17 @@ fun roleFor(event: Event): RoleBehavior? {
     }
 }
 
+/**
+ * Retrieves a user that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the channel to retrieve.
+ * @return A [UserBehavior] representing the user, or null if there isn't one.
+ */
 suspend fun userFor(event: Event): UserBehavior? {
     return when (event) {
         is BanAddEvent -> event.user

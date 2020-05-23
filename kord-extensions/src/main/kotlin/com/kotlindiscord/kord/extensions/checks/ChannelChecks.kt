@@ -5,11 +5,8 @@ package com.kotlindiscord.kord.extensions.checks
 import com.gitlab.kordlib.core.behavior.channel.CategoryBehavior
 import com.gitlab.kordlib.core.behavior.channel.ChannelBehavior
 import com.gitlab.kordlib.core.event.Event
-import com.gitlab.kordlib.core.event.message.MessageCreateEvent
-import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
-import kotlin.math.log
 
 /**
  * Check asserting that an [Event] fired within a given channel.
@@ -24,7 +21,7 @@ fun inChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)
-        
+
         if (eventChannel == null) {
             logger.debug { "Channel for event $event is null. This type of event may not be supported." }
             return false

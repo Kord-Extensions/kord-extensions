@@ -70,6 +70,38 @@ event<MessageCreateEvent> {
 
 This allows us to create far more useful checks that can operate across a variety of options.
 
+#### Generic checks
+
+In some cases, you'll want to write checks that can deal with multiple types of event. In order to facilitate
+this, we provide a `CheckUtils` module containing a set of functions that can return Kord Behaviors for a given
+event. For example, a check written to support events that concern specific members might look like this:
+
+```kotlin
+fun hasRole(role: Role): suspend (Event) -> Boolean {
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event) ?: return false
+
+        return member.asMember().roles.toList().contains(role)
+    }
+
+    return ::inner
+}
+```
+
+We provide the following functions:
+
+* `channelFor(event: Event) -> ChannelBehavior?` 
+* `guildFor(event: Event): GuildBehavior?`
+* `memberFor(event: Event): MemberBehavior?`
+* `messageFor(event: Event): MessageBehavior?`
+* `roleFor(event: Event): RoleBehavior?`
+* `userFor(event: Event): UserBehavior?`
+
+These functions will return `null` for an unsupported event type. All the checks bundled with this framework
+support generic events - if a check receives an unsupported type, that check will simply fail. These failures
+will be logged at debug level, so enable SLF4J debug logging if you're not sure - or just use a debugger,
+I'm not your mom.
+
 #### Combinators
 
 If you don't want to simply require that all checks pass for a command or event handler, you can use

@@ -4,8 +4,6 @@ package com.kotlindiscord.kord.extensions.checks
 
 import com.gitlab.kordlib.common.entity.ChannelType
 import com.gitlab.kordlib.core.event.Event
-import com.gitlab.kordlib.core.event.message.MessageCreateEvent
-import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
 import mu.KotlinLogging
 
 /**
