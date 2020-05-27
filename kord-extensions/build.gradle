@@ -1,6 +1,9 @@
 buildscript {
     repositories {
-        jcenter()
+        maven {
+            name = 'KotDis'
+            url = 'https://maven.kotlindiscord.com/repository/maven-public/'
+        }
     }
 }
 
@@ -17,12 +20,9 @@ targetCompatibility = 1.8
 version rootProject.version
 
 repositories {
-    mavenCentral()
-    jcenter()
-
     maven {
-        name = 'Kord'
-        url = 'https://dl.bintray.com/kordlib/Kord'
+        name = 'KotDis'
+        url = 'https://maven.kotlindiscord.com/repository/maven-public/'
     }
 }
 
