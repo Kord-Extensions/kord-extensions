@@ -3,167 +3,218 @@
 package com.kotlindiscord.kord.extensions.checks
 
 import com.gitlab.kordlib.core.entity.Role
-import com.gitlab.kordlib.core.event.message.MessageCreateEvent
+import com.gitlab.kordlib.core.event.Event
 import com.kotlindiscord.kord.extensions.getTopRole
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 
 /**
- * Check asserting that the user a [MessageCreateEvent] fired for has a given role.
+ * Check asserting that the user an [Event] fired for has a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
  *
  * @param role The role to compare to.
  */
-fun hasRole(role: Role): suspend (MessageCreateEvent) -> Boolean {
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        with(event) {
-            val member = message.getAuthorAsMember() ?: return false
+fun hasRole(role: Role): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger {}
 
-            return member.roles.toList().contains(role)
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event)
+
+        if (member == null) {
+            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            return false
         }
+
+        return member.asMember().roles.toList().contains(role)
     }
 
     return ::inner
 }
 
 /**
- * Check asserting that the user a [MessageCreateEvent] fired for **does not have** a given role.
+ * Check asserting that the user an [Event] fired for **does not have** a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
  *
  * @param role The role to compare to.
  */
-fun notHasRole(role: Role): suspend (MessageCreateEvent) -> Boolean {
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        val logger = KotlinLogging.logger("notHasRole")
+fun notHasRole(role: Role): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger {}
 
-        with(event) {
-            val member = message.getAuthorAsMember() ?: return false
-            val result = member.roles.toList().contains(role).not()
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event)
 
-            logger.debug {
-                if (result) {
-                    "Check passed: User does not have ${role.name} role."
-                } else {
-                    "Check failed: User has ${role.name} role."
-                }
-            }
-
-            return result
+        if (member == null) {
+            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            return false
         }
+
+        return member.asMember().roles.toList().contains(role).not()
     }
 
     return ::inner
 }
 
 /**
- * Check asserting that the top role for the user a [MessageCreateEvent] fired for is equal to a given role.
+ * Check asserting that the top role for the user an [Event] fired for is equal to a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
  *
  * @param role The role to compare to.
  */
-fun topRoleEqual(role: Role): suspend (MessageCreateEvent) -> Boolean {
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        with(event) {
-            val member = message.getAuthorAsMember() ?: return false
-            val topRole = member.getTopRole() ?: return false
+fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger {}
 
-            return topRole == role
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event)
+
+        if (member == null) {
+            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            return false
         }
+
+        val topRole = member.asMember().getTopRole() ?: return false
+        return topRole == role
     }
 
     return ::inner
 }
 
 /**
- * Check asserting that the top role for the user a [MessageCreateEvent] fired for is **not** equal to a given role.
+ * Check asserting that the top role for the user an [Event] fired for is **not** equal to a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
  *
  * @param role The role to compare to.
  */
-fun topRoleNotEqual(role: Role): suspend (MessageCreateEvent) -> Boolean {
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        with(event) {
-            val member = message.getAuthorAsMember() ?: return false
-            val topRole = member.getTopRole() ?: return false
+fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger {}
 
-            return topRole != role
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event)
+
+        if (member == null) {
+            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            return false
         }
+
+        val topRole = member.asMember().getTopRole() ?: return false
+        return topRole != role
     }
 
     return ::inner
 }
 
 /**
- * Check asserting that the top role for the user a [MessageCreateEvent] fired for is higher than a given role.
+ * Check asserting that the top role for the user an [Event] fired for is higher than a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
  *
  * @param role The role to compare to.
  */
-fun topRoleHigher(role: Role): suspend (MessageCreateEvent) -> Boolean {
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        with(event) {
-            val member = message.getAuthorAsMember() ?: return false
-            val topRole = member.getTopRole() ?: return false
+fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger {}
 
-            return topRole > role
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event)
+
+        if (member == null) {
+            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            return false
         }
+
+        val topRole = member.asMember().getTopRole() ?: return false
+        return topRole > role
     }
 
     return ::inner
 }
 
 /**
- * Check asserting that the top role for the user a [MessageCreateEvent] fired for is lower than a given role.
+ * Check asserting that the top role for the user an [Event] fired for is lower than a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
  *
  * Returns `true` if the user doesn't have any roles.
  *
  * @param role The role to compare to.
  */
-fun topRoleLower(role: Role): suspend (MessageCreateEvent) -> Boolean {
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        val logger = KotlinLogging.logger("notHasRole")
+fun topRoleLower(role: Role): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger {}
 
-        with(event) {
-            val member = message.getAuthorAsMember() ?: return false
-            val topRole = member.getTopRole() ?: return true
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event)
 
-            return topRole < role
+        if (member == null) {
+            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            return false
         }
+
+        val topRole = member.asMember().getTopRole() ?: return false
+        return topRole < role
     }
 
     return ::inner
 }
 
 /**
- * Check asserting that the top role for the user a [MessageCreateEvent] fired for is higher than or equal to a given
+ * Check asserting that the top role for the user an [Event] fired for is higher than or equal to a given
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
  * role.
  *
  * @param role The role to compare to.
  */
-fun topRoleHigherOrEqual(role: Role): suspend (MessageCreateEvent) -> Boolean {
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        with(event) {
-            val member = message.getAuthorAsMember() ?: return false
-            val topRole = member.getTopRole() ?: return false
+fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger {}
 
-            return topRole >= role
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event)
+
+        if (member == null) {
+            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            return false
         }
+
+        val topRole = member.asMember().getTopRole() ?: return false
+        return topRole >= role
     }
 
     return ::inner
 }
 
 /**
- * Check asserting that the top role for the user a [MessageCreateEvent] fired for is lower than or equal to a given
+ * Check asserting that the top role for the user an [Event] fired for is lower than or equal to a given
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
  * role.
  *
  * Returns `true` if the user doesn't have any roles.
  *
  * @param role The role to compare to.
  */
-fun topRoleLowerOrEqual(role: Role): suspend (MessageCreateEvent) -> Boolean {
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        with(event) {
-            val member = message.getAuthorAsMember() ?: return false
-            val topRole = member.getTopRole() ?: return true
+fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger {}
 
-            return topRole <= role
+    suspend fun inner(event: Event): Boolean {
+        val member = memberFor(event)
+
+        if (member == null) {
+            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            return false
         }
+
+        val topRole = member.asMember().getTopRole() ?: return false
+        return topRole <= role
     }
 
     return ::inner
