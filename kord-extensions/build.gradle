@@ -29,7 +29,7 @@ repositories {
 dependencies {
     detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.8.0"
 
-    compileOnly 'com.gitlab.kordlib.kord:kord-core:0.4.14'
+    api 'com.gitlab.kordlib.kord:kord-core:0.4.19'
 
     implementation 'io.github.microutils:kotlin-logging:1.7.9'
     implementation 'org.apache.commons:commons-text:1.8'
