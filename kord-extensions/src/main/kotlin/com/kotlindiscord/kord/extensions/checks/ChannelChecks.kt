@@ -79,7 +79,13 @@ fun inCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
 
         val channels = category.channels.toList().map { it.id }
 
-        return channels.contains(eventChannel.id)
+        return if (channels.contains(eventChannel.id)) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: Channel $eventChannel not in category $category" }
+            false
+        }
     }
 
     return ::inner
@@ -106,7 +112,13 @@ fun notInCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
 
         val channels = category.channels.toList().map { it.id }
 
-        return channels.contains(eventChannel.id).not()
+        return if (channels.contains(eventChannel.id)) {
+            logger.debug { "Failing check: Channel $eventChannel in category $category" }
+            false
+        } else {
+            logger.debug { "Passing check" }
+            true
+        }
     }
 
     return ::inner
@@ -131,7 +143,13 @@ fun channelHigher(channel: ChannelBehavior): suspend (Event) -> Boolean {
             return false
         }
 
-        return eventChannel > channel
+        return if (eventChannel > channel) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: Channel $eventChannel is lower than or equal to $channel" }
+            false
+        }
     }
 
     return ::inner
@@ -156,7 +174,13 @@ fun channelLower(channel: ChannelBehavior): suspend (Event) -> Boolean {
             return false
         }
 
-        return eventChannel < channel
+        return if (eventChannel < channel) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: Channel $eventChannel is higher than or equal to $channel" }
+            false
+        }
     }
 
     return ::inner
@@ -181,7 +205,13 @@ fun channelHigherOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
             return false
         }
 
-        return eventChannel >= channel
+        return if (eventChannel >= channel) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: Channel $eventChannel is lower than $channel" }
+            false
+        }
     }
 
     return ::inner
@@ -206,7 +236,13 @@ fun channelLowerOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
             return false
         }
 
-        return eventChannel <= channel
+        return if (eventChannel <= channel) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: Channel $eventChannel is higher than $channel" }
+            false
+        }
     }
 
     return ::inner

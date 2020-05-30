@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.checks
 
 import com.gitlab.kordlib.core.event.Event
+import mu.KotlinLogging
 
 /**
  * Special check that passes if any of the given checks pass.
@@ -12,7 +13,17 @@ import com.gitlab.kordlib.core.event.Event
  * @return Whether any of the checks passed.
  */
 fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
-    suspend fun inner(event: Event): Boolean = checks.any { it.invoke(event) }
+    val logger = KotlinLogging.logger {}
+
+    suspend fun inner(event: Event): Boolean {
+        return if (checks.any { it.invoke(event) }) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: None of the given checks passed" }
+            false
+        }
+    }
 
     return ::inner
 }
@@ -30,7 +41,17 @@ fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
  * @return Whether all of the checks passed.
  */
 fun and(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
-    suspend fun inner(event: Event): Boolean = checks.all { it.invoke(event) }
+    val logger = KotlinLogging.logger {}
+
+    suspend fun inner(event: Event): Boolean {
+        return if (checks.all { it.invoke(event) }) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: At least one of the given checks failed" }
+            false
+        }
+    }
 
     return ::inner
 }

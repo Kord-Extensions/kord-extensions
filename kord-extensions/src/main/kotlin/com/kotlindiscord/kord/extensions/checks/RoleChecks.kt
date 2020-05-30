@@ -27,7 +27,13 @@ fun hasRole(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        return member.asMember().roles.toList().contains(role)
+        return if (member.asMember().roles.toList().contains(role)) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: Member $member does not have role $role" }
+            false
+        }
     }
 
     return ::inner
@@ -52,7 +58,13 @@ fun notHasRole(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        return member.asMember().roles.toList().contains(role).not()
+        return if (member.asMember().roles.toList().contains(role)) {
+            logger.debug { "Failing check: Member $member has role $role" }
+            false
+        } else {
+            logger.debug { "Passing check" }
+            true
+        }
     }
 
     return ::inner
@@ -77,8 +89,24 @@ fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        val topRole = member.asMember().getTopRole() ?: return false
-        return topRole == role
+        val topRole = member.asMember().getTopRole()
+
+        return when {
+            topRole == null -> {
+                logger.debug { "Failing check: Member $member has no top role" }
+                false
+            }
+
+            topRole != role -> {
+                logger.debug { "Failing check: Member $member does not have top role $role" }
+                false
+            }
+
+            else -> {
+                logger.debug { "Passing check" }
+                true
+            }
+        }
     }
 
     return ::inner
@@ -103,8 +131,22 @@ fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        val topRole = member.asMember().getTopRole() ?: return false
-        return topRole != role
+        val topRole = member.asMember().getTopRole()
+
+        return when (topRole) {
+            null -> {
+                logger.debug { "Passing check: Member $member has no top role" }
+                true
+            }
+            role -> {
+                logger.debug { "Failing check: Member $member has top role $role" }
+                false
+            }
+            else -> {
+                logger.debug { "Passing check" }
+                true
+            }
+        }
     }
 
     return ::inner
@@ -129,8 +171,24 @@ fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        val topRole = member.asMember().getTopRole() ?: return false
-        return topRole > role
+        val topRole = member.asMember().getTopRole()
+
+        return when {
+            topRole == null -> {
+                logger.debug { "Failing check: Member $member has no top role" }
+                false
+            }
+
+            topRole > role -> {
+                logger.debug { "Passing check" }
+                true
+            }
+
+            else -> {
+                logger.debug { "Failing check: Member $member has a top role less than or equal to $role" }
+                false
+            }
+        }
     }
 
     return ::inner
@@ -157,8 +215,24 @@ fun topRoleLower(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        val topRole = member.asMember().getTopRole() ?: return false
-        return topRole < role
+        val topRole = member.asMember().getTopRole()
+
+        return when {
+            topRole == null -> {
+                logger.debug { "Failing check: Member $member has no top role" }
+                false
+            }
+
+            topRole < role -> {
+                logger.debug { "Passing check" }
+                true
+            }
+
+            else -> {
+                logger.debug { "Failing check: Member $member has a top role greater than or equal to $role" }
+                false
+            }
+        }
     }
 
     return ::inner
@@ -184,8 +258,24 @@ fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        val topRole = member.asMember().getTopRole() ?: return false
-        return topRole >= role
+        val topRole = member.asMember().getTopRole()
+
+        return when {
+            topRole == null -> {
+                logger.debug { "Failing check: Member $member has no top role" }
+                false
+            }
+
+            topRole >= role -> {
+                logger.debug { "Passing check" }
+                true
+            }
+
+            else -> {
+                logger.debug { "Failing check: Member $member has a top role less than $role" }
+                false
+            }
+        }
     }
 
     return ::inner
@@ -213,8 +303,24 @@ fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        val topRole = member.asMember().getTopRole() ?: return false
-        return topRole <= role
+        val topRole = member.asMember().getTopRole()
+
+        return when {
+            topRole == null -> {
+                logger.debug { "Failing check: Member $member has no top role" }
+                false
+            }
+
+            topRole <= role -> {
+                logger.debug { "Passing check" }
+                true
+            }
+
+            else -> {
+                logger.debug { "Failing check: Member $member has a top role greater than $role" }
+                false
+            }
+        }
     }
 
     return ::inner

@@ -25,7 +25,15 @@ fun channelType(vararg channelTypes: ChannelType): suspend (Event) -> Boolean {
             return false
         }
 
-        return channelTypes.contains(eventChannel.asChannel().type)
+        val type = eventChannel.asChannel().type
+
+        return if (channelTypes.contains(type)) {
+            logger.debug { "Passing check" }
+            true
+        } else {
+            logger.debug { "Failing check: Type $type is not within $channelTypes" }
+            false
+        }
     }
 
     return ::inner
@@ -50,7 +58,15 @@ fun notChannelType(vararg channelTypes: ChannelType): suspend (Event) -> Boolean
             return false
         }
 
-        return channelTypes.contains(eventChannel.asChannel().type).not()
+        val type = eventChannel.asChannel().type
+
+        return if (channelTypes.contains(type)) {
+            logger.debug { "Failing check: Type $type is within $channelTypes" }
+            false
+        } else {
+            logger.debug { "Passing check" }
+            true
+        }
     }
 
     return ::inner
