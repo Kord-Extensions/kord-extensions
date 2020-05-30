@@ -2,10 +2,7 @@ package com.kotlindiscord.kord.extensions.checks
 
 import com.gitlab.kordlib.core.behavior.*
 import com.gitlab.kordlib.core.behavior.channel.ChannelBehavior
-import com.gitlab.kordlib.core.event.Event
-import com.gitlab.kordlib.core.event.UserUpdateEvent
-import com.gitlab.kordlib.core.event.VoiceServerUpdateEvent
-import com.gitlab.kordlib.core.event.WebhookUpdateEvent
+import com.gitlab.kordlib.core.event.*
 import com.gitlab.kordlib.core.event.channel.*
 import com.gitlab.kordlib.core.event.guild.*
 import com.gitlab.kordlib.core.event.message.*
@@ -34,7 +31,7 @@ suspend fun channelFor(event: Event): ChannelBehavior? {
         is InviteCreateEvent -> event.channel
         is InviteDeleteEvent -> event.channel
         is MessageCreateEvent -> event.message.channel
-        is MessageUpdateEvent -> event.getMessage().channel  // TODO: Remove message get when Kord updates
+        is MessageUpdateEvent -> event.channel
         is ReactionAddEvent -> event.channel
         is ReactionRemoveAllEvent -> event.channel
         is ReactionRemoveEmojiEvent -> event.channel
@@ -139,7 +136,7 @@ suspend fun messageFor(event: Event): MessageBehavior? {
     return when (event) {
         is MessageCreateEvent -> event.message
         is MessageDeleteEvent -> event.message
-        is MessageUpdateEvent -> event.getMessage()  // TODO: Remove message get when Kord updates
+        is MessageUpdateEvent -> event.getMessage()
         is ReactionAddEvent -> event.message
         is ReactionRemoveAllEvent -> event.message
         is ReactionRemoveEmojiEvent -> event.message
@@ -196,14 +193,12 @@ suspend fun userFor(event: Event): UserBehavior? {
         is MemberUpdateEvent -> event.member
         is MessageCreateEvent -> event.message.author
         is MessageDeleteEvent -> event.message?.author
-        is MessageUpdateEvent -> event.getMessage().author  // TODO: Remove message get when Kord updates
+        is MessageUpdateEvent -> event.getMessage().author
+        is PresenceUpdateEvent -> event.member
         is ReactionAddEvent -> event.user
         is ReactionRemoveEvent -> event.user
         is TypingStartEvent -> event.user
         is UserUpdateEvent -> event.user
-
-        // TODO: This event doesn't yet have a User/UserBehavior for the change
-        // is PresenceUpdateEvent -> event.user.
 
         else -> null
     }
