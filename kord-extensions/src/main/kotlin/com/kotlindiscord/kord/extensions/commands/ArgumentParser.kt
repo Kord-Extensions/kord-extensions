@@ -107,8 +107,9 @@ class ArgumentParser(private val bot: ExtensibleBot) {
             } else {
                 dcArgs[element] = stringToType(argument, element.type, event)
 
-                // Element index should ordinarily match arg index
-                return doParse(dataclass, args, event, elements, argIndex + 1, argIndex + 1, dcArgs)
+                // Element index should ordinarily match arg index, but when an optional parameter is skipped,
+                // they aren't synced anymore
+                return doParse(dataclass, args, event, elements, argIndex + 1, elementIndex + 1, dcArgs)
             }
         } catch (e: ParseException) {
             throw e
