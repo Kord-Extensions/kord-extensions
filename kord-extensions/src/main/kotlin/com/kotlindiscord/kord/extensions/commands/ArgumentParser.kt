@@ -85,6 +85,7 @@ class ArgumentParser(private val bot: ExtensibleBot) {
 
         val argument = args[argIndex]
         val element = elements[elementIndex]
+            logger.debug { "Type0: ${element.type}" }
 
         @Suppress("TooGenericExceptionCaught", "RethrowCaughtException")
         try {
@@ -93,7 +94,13 @@ class ArgumentParser(private val bot: ExtensibleBot) {
                 val (paramName, paramArg) = argument.split(':')
                 val paramProperty = dataclass.primaryConstructor!!.parameters.single { it.name == paramName }
 
-                dcArgs[paramProperty] = stringToType(paramArg, paramProperty.type, event)
+                if (paramProperty.type.isSubtypeOf(listType)) {
+                    val value = stringToType(paramArg, paramProperty.type.arguments[0].type!!, event)
+                    (dcArgs.getOrPut(paramProperty, { mutableListOf<Any?>() }) as MutableList<Any?>).add(value)
+                } else {
+                    val value = stringToType(paramArg, paramProperty.type, event)
+                    dcArgs[paramProperty] = value
+                }
 
                 return doParse(dataclass, args, event, elements, argIndex + 1, elementIndex, dcArgs)
             } else if (element.type.isSubtypeOf(listType)) {
