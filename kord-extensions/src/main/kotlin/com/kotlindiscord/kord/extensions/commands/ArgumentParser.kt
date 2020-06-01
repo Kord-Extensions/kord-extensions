@@ -32,6 +32,7 @@ private val logger = KotlinLogging.logger {}
 class ArgumentParser(private val bot: ExtensibleBot) {
     /** Defined here so we don't have to create it every time we try to parse something. */
     private val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
+    private val nullableListType = List::class.createType(arguments = listOf(KTypeProjection.STAR), nullable = true)
 
     private val mentionRegex = Regex("^<(?:@[!&]?|#)(\\d+)>$")
 
@@ -94,7 +95,10 @@ class ArgumentParser(private val bot: ExtensibleBot) {
                 val (paramName, paramArg) = argument.split(':')
                 val paramProperty = dataclass.primaryConstructor!!.parameters.single { it.name == paramName }
 
-                if (paramProperty.type.isSubtypeOf(listType)) {
+                if (
+                    paramProperty.type.isSubtypeOf(listType) ||
+                    paramProperty.type.isSubtypeOf(nullableListType)
+                ) {
                     val value = stringToType(paramArg, paramProperty.type.arguments[0].type!!, event)
                     (dcArgs.getOrPut(paramProperty, { mutableListOf<Any?>() }) as MutableList<Any?>).add(value)
                 } else {
@@ -103,7 +107,10 @@ class ArgumentParser(private val bot: ExtensibleBot) {
                 }
 
                 return doParse(dataclass, args, event, elements, argIndex + 1, elementIndex, dcArgs)
-            } else if (element.type.isSubtypeOf(listType)) {
+            } else if (
+                element.type.isSubtypeOf(listType) ||
+                element.type.isSubtypeOf(nullableListType)
+            ) {
                 dcArgs[element] = stringsToTypes(
                     args.sliceArray(argIndex until args.size),
                     element.type.arguments[0].type!!,
