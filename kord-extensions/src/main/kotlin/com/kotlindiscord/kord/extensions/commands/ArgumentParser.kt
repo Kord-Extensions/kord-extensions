@@ -1,10 +1,9 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.gitlab.kordlib.cache.api.query
 import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.GuildEmoji
-import com.gitlab.kordlib.core.entity.Role
-import com.gitlab.kordlib.core.entity.User
+import com.gitlab.kordlib.core.cache.data.MessageData
+import com.gitlab.kordlib.core.entity.*
 import com.gitlab.kordlib.core.entity.channel.Channel
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -86,7 +85,6 @@ class ArgumentParser(private val bot: ExtensibleBot) {
 
         val argument = args[argIndex]
         val element = elements[elementIndex]
-            logger.debug { "Type0: ${element.type}" }
 
         @Suppress("TooGenericExceptionCaught", "RethrowCaughtException")
         try {
@@ -234,6 +232,34 @@ class ArgumentParser(private val bot: ExtensibleBot) {
                 val parsedString = parseMention(string)
 
                 bot.kord.getUser(Snowflake(parsedString))
+            }
+
+            type.isSubtypeOf(Message::class.createType()) -> {
+                val parsedString = parseMention(string)
+
+                val messageCol = bot.kord.cache.query<MessageData>
+                    { MessageData::id eq parsedString.toLong() }.toCollection()
+
+                if (!messageCol.isNullOrEmpty()) {
+                    val data = messageCol.first() // Doesn't define get, we have to use a workaround
+                    Message(data, bot.kord)
+                } else {
+                    throw ParseException("No such message: `$parsedString`")
+                }
+            }
+
+            type.isSubtypeOf(Message::class.createType(nullable = true)) -> {
+                val parsedString = parseMention(string)
+
+                val messageCol = bot.kord.cache.query<MessageData>
+                    { MessageData::id eq parsedString.toLong() }.toCollection()
+
+                if (!messageCol.isNullOrEmpty()) {
+                    val data = messageCol.first() // Doesn't define get, we have to use a workaround
+                    Message(data, bot.kord)
+                } else {
+                    null
+                }
             }
 
             else -> throw NotImplementedError("String conversion not supported for type: $type")
