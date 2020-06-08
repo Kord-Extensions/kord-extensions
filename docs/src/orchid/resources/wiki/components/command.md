@@ -158,7 +158,16 @@ In order to facilitate this manner of parsing, the parser follows these rules:
 * Once all the parameters have been converted, the data class is constructed using them. This is then returned
   from the `parse` function.
 
-The following types are supported by the parser:
+We also support an alternative syntax for specifying command parameters. If a parameter contains a colon,
+it's split into a key-value pair:
+
+* The dataclass is searched for a parameter matching the key on the left side of the colon.
+* If the dataclass contains a matching parameter, we convert the value on the right as normal and store it.
+    * If the parameter is a list type, the value will be stored within the list. This means that multiple
+      arguments can be specified this way, and they'll all be inserted into the same list.
+    * If not, it'll be stored directly within the parameter. 
+
+The parser supports the following types:
 
 * Basic types: `String`, `Regex`, `Boolean`, `Int`, `Short`, `Long`, `Float`, `Double`, `BigDecimal`, `BigInteger`.
 * Kord types: `Channel`, `Guild`, `GuildEmoji`, `Role`, `User`.

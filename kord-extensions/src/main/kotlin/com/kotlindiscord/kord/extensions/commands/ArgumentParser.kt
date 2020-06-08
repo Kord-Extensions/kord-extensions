@@ -1,10 +1,9 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.gitlab.kordlib.cache.api.query
 import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.GuildEmoji
-import com.gitlab.kordlib.core.entity.Role
-import com.gitlab.kordlib.core.entity.User
+import com.gitlab.kordlib.core.cache.data.MessageData
+import com.gitlab.kordlib.core.entity.*
 import com.gitlab.kordlib.core.entity.channel.Channel
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -32,6 +31,7 @@ private val logger = KotlinLogging.logger {}
 class ArgumentParser(private val bot: ExtensibleBot) {
     /** Defined here so we don't have to create it every time we try to parse something. */
     private val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
+    private val nullableListType = List::class.createType(arguments = listOf(KTypeProjection.STAR), nullable = true)
 
     private val mentionRegex = Regex("^<(?:@[!&]?|#)(\\d+)>$")
 
@@ -88,7 +88,23 @@ class ArgumentParser(private val bot: ExtensibleBot) {
 
         @Suppress("TooGenericExceptionCaught", "RethrowCaughtException")
         try {
-            if (element.type.isSubtypeOf(listType)) {
+            if (argument.contains(':')) {
+                // If the argument has a `:`, we assign the value on the right to the parameter on the left.
+                val (paramName, paramArg) = argument.split(':')
+                val paramProperty = dataclass.primaryConstructor!!.parameters.single { it.name == paramName }
+
+                if (paramProperty.type.isSubtypeOf(listType) || paramProperty.type.isSubtypeOf(nullableListType)) {
+                    val value = stringToType(paramArg, paramProperty.type.arguments[0].type!!, event)
+
+                    (dcArgs.getOrPut(paramProperty, { mutableListOf<Any?>() }) as MutableList<Any?>).add(value)
+                } else {
+                    val value = stringToType(paramArg, paramProperty.type, event)
+
+                    dcArgs[paramProperty] = value
+                }
+
+                return doParse(dataclass, args, event, elements, argIndex + 1, elementIndex, dcArgs)
+            } else if (element.type.isSubtypeOf(listType) || element.type.isSubtypeOf(nullableListType)) {
                 dcArgs[element] = stringsToTypes(
                     args.sliceArray(argIndex until args.size),
                     element.type.arguments[0].type!!,
@@ -99,8 +115,9 @@ class ArgumentParser(private val bot: ExtensibleBot) {
             } else {
                 dcArgs[element] = stringToType(argument, element.type, event)
 
-                // Element index should ordinarily match arg index
-                return doParse(dataclass, args, event, elements, argIndex + 1, argIndex + 1, dcArgs)
+                // Element index should ordinarily match arg index, but when an optional parameter is skipped,
+                // they aren't synced anymore
+                return doParse(dataclass, args, event, elements, argIndex + 1, elementIndex + 1, dcArgs)
             }
         } catch (e: ParseException) {
             throw e
@@ -211,6 +228,34 @@ class ArgumentParser(private val bot: ExtensibleBot) {
                 val parsedString = parseMention(string)
 
                 bot.kord.getUser(Snowflake(parsedString))
+            }
+
+            type.isSubtypeOf(Message::class.createType()) -> {
+                val parsedString = parseMention(string)
+
+                val messageCol = bot.kord.cache.query<MessageData>
+                    { MessageData::id eq parsedString.toLong() }.toCollection()
+
+                if (!messageCol.isNullOrEmpty()) {
+                    val data = messageCol.first() // Doesn't define get, we have to use a workaround
+                    Message(data, bot.kord)
+                } else {
+                    throw ParseException("No such message: `$parsedString`")
+                }
+            }
+
+            type.isSubtypeOf(Message::class.createType(nullable = true)) -> {
+                val parsedString = parseMention(string)
+
+                val messageCol = bot.kord.cache.query<MessageData>
+                    { MessageData::id eq parsedString.toLong() }.toCollection()
+
+                if (!messageCol.isNullOrEmpty()) {
+                    val data = messageCol.first() // Doesn't define get, we have to use a workaround
+                    Message(data, bot.kord)
+                } else {
+                    null
+                }
             }
 
             else -> throw NotImplementedError("String conversion not supported for type: $type")
