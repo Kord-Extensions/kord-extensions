@@ -89,26 +89,22 @@ class ArgumentParser(private val bot: ExtensibleBot) {
         @Suppress("TooGenericExceptionCaught", "RethrowCaughtException")
         try {
             if (argument.contains(':')) {
-                // If the parameter have a `:`, we assign the value on the right to the parameter on the left.
+                // If the argument has a `:`, we assign the value on the right to the parameter on the left.
                 val (paramName, paramArg) = argument.split(':')
                 val paramProperty = dataclass.primaryConstructor!!.parameters.single { it.name == paramName }
 
-                if (
-                    paramProperty.type.isSubtypeOf(listType) ||
-                    paramProperty.type.isSubtypeOf(nullableListType)
-                ) {
+                if (paramProperty.type.isSubtypeOf(listType) || paramProperty.type.isSubtypeOf(nullableListType)) {
                     val value = stringToType(paramArg, paramProperty.type.arguments[0].type!!, event)
+
                     (dcArgs.getOrPut(paramProperty, { mutableListOf<Any?>() }) as MutableList<Any?>).add(value)
                 } else {
                     val value = stringToType(paramArg, paramProperty.type, event)
+
                     dcArgs[paramProperty] = value
                 }
 
                 return doParse(dataclass, args, event, elements, argIndex + 1, elementIndex, dcArgs)
-            } else if (
-                element.type.isSubtypeOf(listType) ||
-                element.type.isSubtypeOf(nullableListType)
-            ) {
+            } else if (element.type.isSubtypeOf(listType) || element.type.isSubtypeOf(nullableListType)) {
                 dcArgs[element] = stringsToTypes(
                     args.sliceArray(argIndex until args.size),
                     element.type.arguments[0].type!!,
