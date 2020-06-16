@@ -1,7 +1,7 @@
 Kord Extensions
 ===============
 
-Kord Extensions is an addon for the excellent [Kord library](https://gitlab.com/kordlib/kord). It intends to provide
+Kord Extensions is an addon for the excellent [Kord library](https://github.com/kordlib/kord). It intends to provide
 a framework for larger bot projects, with easy-to-use commands and event handling, wrapped up into individual
 Extension objects.
 
