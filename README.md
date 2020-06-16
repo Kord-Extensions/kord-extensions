@@ -11,7 +11,7 @@ DSL for quickly prototyping or implementing a small application. Instead,
 for our fairly object-oriented design, especially where it comes to its extensions (which are known as cogs in 
 Discord.py). Despite this, we still strive to provide an idiomatic API that makes full use of Kotlin's niceties.
 
-**Note:** Kord is [already working on their own command framework](https://gitlab.com/kordlib/kord/-/issues/36). This
+**Note:** Kord is [already working on their own command framework](https://github.com/kordlib/kord/issues/8). This
 is an independent library, created at a time when we couldn't wait for an official command framework. Once Kord
 has released their framework, we'll evaluate the possibility of supporting it directly in ours (if necessary).
 
