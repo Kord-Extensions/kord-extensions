@@ -219,8 +219,8 @@ fun topRoleLower(role: Role): suspend (Event) -> Boolean {
 
         return when {
             topRole == null -> {
-                logger.debug { "Failing check: Member $member has no top role" }
-                false
+                logger.debug { "Passing check: Member $member has no top role" }
+                true
             }
 
             topRole < role -> {
@@ -307,8 +307,8 @@ fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
 
         return when {
             topRole == null -> {
-                logger.debug { "Failing check: Member $member has no top role" }
-                false
+                logger.debug { "Passing check: Member $member has no top role" }
+                true
             }
 
             topRole <= role -> {
