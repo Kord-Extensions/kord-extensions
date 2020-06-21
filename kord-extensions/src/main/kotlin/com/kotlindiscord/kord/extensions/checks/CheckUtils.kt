@@ -70,9 +70,9 @@ suspend fun guildFor(event: Event): GuildBehavior? {
         is MemberJoinEvent -> event.guild
         is MemberLeaveEvent -> event.guild
         is MemberUpdateEvent -> event.guild
-        is MessageCreateEvent -> event.message.getGuild()
+        is MessageCreateEvent -> event.message.getGuildOrNull()
         is MessageDeleteEvent -> event.guild
-        is MessageUpdateEvent -> event.getMessage().getGuild()
+        is MessageUpdateEvent -> event.getMessage().getGuildOrNull()
         is NewsChannelCreateEvent -> event.channel.guild
         is NewsChannelDeleteEvent -> event.channel.guild
         is NewsChannelUpdateEvent -> event.channel.guild
@@ -115,7 +115,7 @@ suspend fun memberFor(event: Event): MemberBehavior? {
         is MessageUpdateEvent -> event.getMessage().getAuthorAsMember()
         is ReactionAddEvent -> event.getUserAsMember()
         is ReactionRemoveEvent -> event.getUserAsMember()
-        is TypingStartEvent -> if (event.guildId != null) event.getGuild()!!.getMember(event.userId) else null
+        is TypingStartEvent -> if (event.guildId != null) event.getGuild()!!.getMemberOrNull(event.userId) else null
 
         else -> null
     }
