@@ -181,14 +181,14 @@ class ArgumentParser(private val bot: ExtensibleBot) {
             type.isSubtypeOf(GuildEmoji::class.createType()) -> {
                 val parsedString = parseMention(string)
 
-                event.message.getGuild()?.getEmoji(Snowflake(parsedString))
+                event.message.getGuildOrNull()?.getEmojiOrNull(Snowflake(parsedString))
                     ?: throw ParseException("No such emoji: `$parsedString`")
             }
 
             type.isSubtypeOf(GuildEmoji::class.createType(nullable = true)) -> {
                 val parsedString = parseMention(string)
 
-                event.message.getGuild()?.getEmoji(Snowflake(parsedString))
+                event.message.getGuildOrNull()?.getEmojiOrNull(Snowflake(parsedString))
             }
 
             type.isSubtypeOf(Guild::class.createType()) -> {
@@ -207,14 +207,14 @@ class ArgumentParser(private val bot: ExtensibleBot) {
             type.isSubtypeOf(Role::class.createType()) -> {
                 val parsedString = parseMention(string)
 
-                event.message.getGuild()?.getRole(Snowflake(parsedString))
+                event.message.getGuildOrNull()?.getRoleOrNull(Snowflake(parsedString))
                     ?: throw ParseException("No such role: `$parsedString`")
             }
 
             type.isSubtypeOf(Role::class.createType(nullable = true)) -> {
                 val parsedString = parseMention(string)
 
-                event.message.getGuild()?.getRole(Snowflake(parsedString))
+                event.message.getGuildOrNull()?.getRoleOrNull(Snowflake(parsedString))
             }
 
             type.isSubtypeOf(User::class.createType()) -> {
