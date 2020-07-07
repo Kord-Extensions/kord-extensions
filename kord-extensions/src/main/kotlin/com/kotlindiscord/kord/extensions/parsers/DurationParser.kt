@@ -9,12 +9,34 @@ import java.time.temporal.ChronoUnit
  */
 val unitMap = mapOf(
     "s" to ChronoUnit.SECONDS,
+    "sec" to ChronoUnit.SECONDS,
+    "second" to ChronoUnit.SECONDS,
+    "seconds" to ChronoUnit.SECONDS,
+
     "m" to ChronoUnit.MINUTES,
+    "min" to ChronoUnit.MINUTES,
+    "minute" to ChronoUnit.MINUTES,
+    "minutes" to ChronoUnit.MINUTES,
+
     "h" to ChronoUnit.HOURS,
+    "hour" to ChronoUnit.HOURS,
+    "hours" to ChronoUnit.HOURS,
+
     "d" to ChronoUnit.DAYS,
+    "day" to ChronoUnit.DAYS,
+    "days" to ChronoUnit.DAYS,
+
     "w" to ChronoUnit.WEEKS,
+    "week" to ChronoUnit.WEEKS,
+    "weeks" to ChronoUnit.WEEKS,
+
     "M" to ChronoUnit.MONTHS,
-    "y" to ChronoUnit.YEARS
+    "month" to ChronoUnit.MONTHS,
+    "months" to ChronoUnit.MONTHS,
+
+    "y" to ChronoUnit.YEARS,
+    "year" to ChronoUnit.YEARS,
+    "years" to ChronoUnit.YEARS
 )
 
 /**
@@ -37,7 +59,7 @@ fun parseDuration(s: String): Duration {
         val unit = r2.first
         buffer = r2.second
 
-        val chronoUnit = unitMap[unit]
+        val chronoUnit = unitMap[unit.toLowerCase()]
         duration = duration.plus(num.toLong(), chronoUnit)
     }
 
