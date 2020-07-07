@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.parsers
 
+import com.kotlindiscord.kord.extensions.splitOn
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
@@ -24,21 +25,20 @@ val unitMap = mapOf(
  */
 @Suppress("MagicNumber")
 fun parseDuration(s: String): Duration {
-    var buf = 0L
-    var unit: ChronoUnit? = null
-    val duration = Duration.ofSeconds(0)
+    var buffer = s
+    var duration = Duration.ofSeconds(0)
 
-    for (c in s) {
-        if (c.isDigit()) {
-            buf = buf * 10 + c.toLong()
-        } else {
-            if (unit != null) {
-                duration.plus(buf, unit)
-            }
+    while (buffer.isNotEmpty()) {
+        val r1 = buffer.splitOn { it.isLetter() } // Thanks Kotlin : https://youtrack.jetbrains.com/issue/KT-11362
+        val num = r1.first
+        buffer = r1.second
 
-            buf = 0L
-            unit = unitMap[c.toString()]
-        }
+        val r2 = buffer.splitOn { it.isDigit() }
+        val unit = r2.first
+        buffer = r2.second
+
+        val chronoUnit = unitMap[unit]
+        duration = duration.plus(num.toLong(), chronoUnit)
     }
 
     return duration
