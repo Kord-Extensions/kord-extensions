@@ -13,7 +13,7 @@ val unitMap = mapOf(
     "second" to ChronoUnit.SECONDS,
     "seconds" to ChronoUnit.SECONDS,
 
-    "m" to ChronoUnit.MINUTES,
+    "mi" to ChronoUnit.MINUTES,
     "min" to ChronoUnit.MINUTES,
     "minute" to ChronoUnit.MINUTES,
     "minutes" to ChronoUnit.MINUTES,
@@ -30,7 +30,7 @@ val unitMap = mapOf(
     "week" to ChronoUnit.WEEKS,
     "weeks" to ChronoUnit.WEEKS,
 
-    "M" to ChronoUnit.MONTHS,
+    "mo" to ChronoUnit.MONTHS,
     "month" to ChronoUnit.MONTHS,
     "months" to ChronoUnit.MONTHS,
 
