@@ -53,3 +53,17 @@ suspend inline fun <reified T : Event> Kord.waitFor(
         }
     }
 }
+
+/**
+ * Return a [Pair] made of the start of the string up to the first character matching the predicate excluded,
+ * and the rest of the string.
+ *
+ * @param predicate Predicate used to determine the split.
+ */
+fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
+    val i = this.indexOfFirst(predicate)
+    if (i == -1) {
+        return Pair(this, "")
+    }
+    return Pair(this.slice(IntRange(0, i - 1)), this.slice(IntRange(i, this.length - 1)))
+}
