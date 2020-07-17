@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.checks.utils
 
 import kotlinx.coroutines.*
 import mu.KotlinLogging
+import kotlin.coroutines.EmptyCoroutineContext
 
 private val logger = KotlinLogging.logger {  }
 
@@ -11,6 +12,7 @@ private val logger = KotlinLogging.logger {  }
 class Scheduler {
     private val jobMap: MutableMap<Int, Job> = mutableMapOf()
 
+    private val scope = CoroutineScope(EmptyCoroutineContext)
     private val finishTask = CancellationException()
 
     /**
@@ -31,7 +33,7 @@ class Scheduler {
             return false
         }
 
-        val job = GlobalScope.launch {
+        val job = scope.launch {
             delay(delay)
             callback(data)
         }
