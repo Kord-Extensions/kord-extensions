@@ -2,18 +2,35 @@ package com.kotlindiscord.kord.extensions.checks.utils
 
 import kotlinx.coroutines.*
 import mu.KotlinLogging
-import kotlin.coroutines.EmptyCoroutineContext
+import java.util.*
 
-private val logger = KotlinLogging.logger {  }
+private val logger = KotlinLogging.logger { }
 
 /**
  * Class in charge of providing scheduling functions.
  */
-class Scheduler {
-    private val jobMap: MutableMap<Int, Job> = mutableMapOf()
+open class Scheduler {
+    private val jobMap: MutableMap<UUID, Job> = mutableMapOf()
 
-    private val scope = CoroutineScope(EmptyCoroutineContext)
+    private val scope = GlobalScope
     private val finishTask = CancellationException()
+
+    /**
+     * Schedule a new task, with a randomly generated ID.
+     *
+     * @param delay How long in milliseconds to wait before executing the callback.
+     * @param data Arbitrary data to be passed to the callback.
+     * @param callback Function to be executed.
+     *
+     * @return Return true on success, false otherwise.
+     */
+    fun <T> schedule(delay: Long, data: T?, callback: (T?) -> Unit): UUID {
+        val uuid = UUID.randomUUID()
+
+        schedule(uuid, delay, data, callback)
+
+        return uuid
+    }
 
     /**
      * Schedule a new task.
@@ -25,12 +42,11 @@ class Scheduler {
      *
      * @return Return true on success, false otherwise.
      */
-    fun <T> schedule(id: Int, delay: Long, data: T?, callback: (T?) -> Unit): Boolean {
+    fun <T> schedule(id: UUID, delay: Long, data: T?, callback: (T?) -> Unit) {
         logger.debug { "Scheduling task $id" }
 
         if (id in jobMap) {
-            logger.warn { "Cannot schedule task, ID already in use." }
-            return false
+            throw IllegalArgumentException("Duplicate ID: $id")
         }
 
         val job = scope.launch {
@@ -45,7 +61,6 @@ class Scheduler {
         }
 
         jobMap[id] = job
-        return true
     }
 
     /**
@@ -53,8 +68,9 @@ class Scheduler {
      *
      * @param id ID of the targeted task.
      */
-    fun finishJob(id: Int) {
+    fun finishJob(id: UUID) {
         logger.debug { "Finishing task $id" }
+
         jobMap[id]?.cancel(finishTask)
     }
 
@@ -63,8 +79,9 @@ class Scheduler {
      *
      * @param id ID of the targeted task.
      */
-    fun cancelJob(id: Int) {
+    fun cancelJob(id: UUID) {
         logger.debug { "Canceling task $id" }
+
         jobMap[id]?.cancel()
     }
 
@@ -73,6 +90,7 @@ class Scheduler {
      */
     fun finishAll() {
         logger.debug { "Finishing all tasks." }
+
         for (id in jobMap.keys) {
             finishJob(id)
         }
@@ -83,6 +101,7 @@ class Scheduler {
      */
     fun cancelAll() {
         logger.debug { "Canceling all tasks." }
+
         for (id in jobMap.keys) {
             cancelJob(id)
         }
