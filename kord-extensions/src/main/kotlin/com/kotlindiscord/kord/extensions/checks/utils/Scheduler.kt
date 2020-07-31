@@ -20,11 +20,11 @@ open class Scheduler {
      *
      * @param delay How long in milliseconds to wait before executing the callback.
      * @param data Arbitrary data to be passed to the callback.
-     * @param callback Function to be executed.
+     * @param callback Suspending function to be executed.
      *
      * @return Return true on success, false otherwise.
      */
-    fun <T> schedule(delay: Long, data: T?, callback: (T?) -> Unit): UUID {
+    fun <T> schedule(delay: Long, data: T?, callback: suspend (T?) -> Unit): UUID {
         val uuid = UUID.randomUUID()
 
         schedule(uuid, delay, data, callback)
@@ -38,11 +38,11 @@ open class Scheduler {
      * @param id The ID of the task.
      * @param delay How long in milliseconds to wait before executing the callback.
      * @param data Arbitrary data to be passed to the callback.
-     * @param callback Function to be executed.
+     * @param callback Suspending function to be executed.
      *
      * @return Return true on success, false otherwise.
      */
-    fun <T> schedule(id: UUID, delay: Long, data: T?, callback: (T?) -> Unit) {
+    fun <T> schedule(id: UUID, delay: Long, data: T?, callback: suspend (T?) -> Unit) {
         logger.debug { "Scheduling task $id" }
 
         if (id in jobMap) {
@@ -56,8 +56,12 @@ open class Scheduler {
 
         job.invokeOnCompletion {
             if (it == finishTask) {
-                callback(data)
+                scope.launch {
+                    callback(data)
+                }
             }
+
+            jobMap.remove(id)
         }
 
         jobMap[id] = job
@@ -106,4 +110,11 @@ open class Scheduler {
             cancelJob(id)
         }
     }
+
+    /**
+     * Get a scheduled job by ID.
+     *
+     * @param id ID of the targeted task.
+     */
+    fun getJob(id: UUID): Job? = jobMap[id]
 }
