@@ -4,6 +4,7 @@ import com.gitlab.kordlib.core.event.Event
 import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import mu.KotlinLogging
+import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
 
@@ -15,8 +16,9 @@ private val logger = KotlinLogging.logger {}
  * function.
  *
  * @param extension The [Extension] that registered this event handler.
+ * @param type A [KClass] representing the event type this handler is subscribed to. This is for internal use.
  */
-class EventHandler<T : Event>(val extension: Extension) {
+class EventHandler<T : Event>(val extension: Extension, val type: KClass<*>) {
     /**
      * @suppress
      */

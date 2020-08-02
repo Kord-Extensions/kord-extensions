@@ -87,6 +87,23 @@ open class ExtensibleBot(
                 }
 
                 initialized = true
+
+                // Since the setup method is called after the first ReadyEvent, all ReadyEvent handlers need to be
+                // manually called here in order to make sure they fire as expected. However, since the setup method
+                // has now been run, they'll be properly subscribed next time.
+                for (handler in eventHandlers) {
+                    if (handler.type == ReadyEvent::class) {
+                        @Suppress("TooGenericExceptionCaught")  // Anything could happen here
+                        try {
+                            (handler as EventHandler<ReadyEvent>)  // We know it wants a ReadyEvent already
+                                .call(this)
+                        } catch (e: Exception) {
+                            logger.error(e) {
+                                "ReadyEvent handler in '${handler.extension.name}' extension threw an exception."
+                            }
+                        }
+                    }
+                }
             }
 
             logger.info { "Ready!" }

@@ -34,6 +34,8 @@ abstract class Extension(val bot: ExtensibleBot) {
      * of a suspended function, which is required in order to make use of some other APIs. As a
      * result, we recommend you make use of this in all your extensions, instead of init {}
      * blocks.
+     *
+     * This function is only ever called once.
      */
     abstract suspend fun setup()
 
@@ -70,7 +72,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      * @param body Builder lambda used for setting up the event handler object.
      */
     suspend inline fun <reified T : Event> event(noinline body: suspend EventHandler<T>.() -> Unit): EventHandler<T> {
-        val eventHandler = EventHandler<T>(this)
+        val eventHandler = EventHandler<T>(this, T::class)
         val logger = KotlinLogging.logger {}
 
         body.invoke(eventHandler)
