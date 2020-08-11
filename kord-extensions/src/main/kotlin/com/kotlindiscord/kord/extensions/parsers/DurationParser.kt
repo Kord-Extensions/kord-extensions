@@ -1,8 +1,10 @@
 package com.kotlindiscord.kord.extensions.parsers
 
+import com.kotlindiscord.kord.extensions.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.splitOn
 import java.time.Duration
 import java.time.temporal.ChronoUnit
+import kotlin.NoSuchElementException
 
 /**
  * Mapping character to its actual unit.
@@ -58,8 +60,12 @@ fun parseDuration(s: String): Duration {
         val r2 = buffer.splitOn { it.isDigit() }
         val unit = r2.first
         buffer = r2.second
-
-        val chronoUnit = unitMap.getValue(unit.toLowerCase())
+        
+        try {
+            val chronoUnit = unitMap.getValue(unit.toLowerCase())
+        } catch (e: NoSuchElementException) {
+            throw InvalidTimeUnitException(unit.toLowerCase())
+        }
         duration = duration.plus(num.toLong(), chronoUnit)
     }
 
