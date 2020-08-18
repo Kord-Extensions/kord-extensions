@@ -1,10 +1,12 @@
 package com.kotlindiscord.kord.extensions
 
+import com.gitlab.kordlib.common.entity.Status
 import com.gitlab.kordlib.core.Kord
 import com.gitlab.kordlib.core.event.Event
 import com.gitlab.kordlib.core.event.gateway.ReadyEvent
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.gitlab.kordlib.core.on
+import com.gitlab.kordlib.gateway.builder.PresenceBuilder
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -60,7 +62,7 @@ open class ExtensibleBot(
     /**
      * This function kicks off the process, by setting up the bot and having it login.
      */
-    suspend fun start() {
+    suspend fun start(presenceBuilder: PresenceBuilder.() -> Unit = { status = Status.Online }) {
         kord = Kord(token) {
             cache {
                 messages(lruCache(messageCacheSize))
@@ -70,7 +72,7 @@ open class ExtensibleBot(
         registerListeners()
         addDefaultExtensions()
 
-        kord.login()
+        kord.login(presenceBuilder)
     }
 
     /** This function sets up all of the bot's default event listeners. **/
