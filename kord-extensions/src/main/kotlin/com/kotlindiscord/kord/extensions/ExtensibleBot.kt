@@ -80,12 +80,12 @@ open class ExtensibleBot(
     private suspend fun registerListeners() {
         kord.on<ReadyEvent> {
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
-                for (extension in extensions.values) {
+                for (extension in extensions.keys) {
                     @Suppress("TooGenericExceptionCaught")  // Anything could happen here
                     try {
-                        extension.doSetup()
+                        loadExtension(extension)
                     } catch (e: Exception) {
-                        logger.error(e) { "Failed to set up '${extension.name}' extension." }
+                        logger.error(e) { "Failed to set up '$extension' extension." }
                     }
                 }
 
