@@ -30,7 +30,7 @@ class EventHandler<T : Any>(val extension: Extension, val type: KClass<*>) {
     val checkList: MutableList<suspend (T) -> Boolean> = mutableListOf()
 
     /**
-     * @suppress
+     * @suppress This is the job returned by `Kord#on`, which we cancel to stop listening.
      */
     var job: Job? = null
 
