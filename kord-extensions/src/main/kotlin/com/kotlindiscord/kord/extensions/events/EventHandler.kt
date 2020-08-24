@@ -1,8 +1,8 @@
 package com.kotlindiscord.kord.extensions.events
 
-import com.gitlab.kordlib.core.event.Event
 import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import kotlinx.coroutines.Job
 import mu.KotlinLogging
 import kotlin.reflect.KClass
 
@@ -18,7 +18,7 @@ private val logger = KotlinLogging.logger {}
  * @param extension The [Extension] that registered this event handler.
  * @param type A [KClass] representing the event type this handler is subscribed to. This is for internal use.
  */
-class EventHandler<T : Event>(val extension: Extension, val type: KClass<*>) {
+class EventHandler<T : Any>(val extension: Extension, val type: KClass<*>) {
     /**
      * @suppress
      */
@@ -28,6 +28,11 @@ class EventHandler<T : Event>(val extension: Extension, val type: KClass<*>) {
      * @suppress
      */
     val checkList: MutableList<suspend (T) -> Boolean> = mutableListOf()
+
+    /**
+     * @suppress This is the job returned by `Kord#on`, which we cancel to stop listening.
+     */
+    var job: Job? = null
 
     /**
      * An internal function used to ensure that all of an event handler's required arguments are present.

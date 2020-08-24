@@ -9,13 +9,17 @@ import com.gitlab.kordlib.core.on
 import com.gitlab.kordlib.gateway.builder.PresenceBuilder
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
+import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import mu.KotlinLogging
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
-
-private val logger = KotlinLogging.logger {}
 
 /**
  * An extensible bot, wrapping a Kord instance.
@@ -50,14 +54,21 @@ open class ExtensibleBot(
     /**
      * A list of all registered event handlers.
      */
-    val eventHandlers: MutableList<EventHandler<out Event>> = mutableListOf()
+    val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
 
     /**
      * A map of the names of all loaded [Extension]s to their instances.
      */
     val extensions: MutableMap<String, Extension> = mutableMapOf()
 
+    private val eventPublisher = BroadcastChannel<Any>(Channel.CONFLATED)
     private var initialized: Boolean = false
+
+    /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
+    val events get() = eventPublisher.asFlow()
+
+    /** @suppress **/
+    val logger = KotlinLogging.logger {}
 
     /**
      * This function kicks off the process, by setting up the bot and having it login.
@@ -72,19 +83,20 @@ open class ExtensibleBot(
         registerListeners()
         addDefaultExtensions()
 
+        kord.on<Event> { eventPublisher.send(this) }
         kord.login(presenceBuilder)
     }
 
     /** This function sets up all of the bot's default event listeners. **/
     private suspend fun registerListeners() {
-        kord.on<ReadyEvent> {
+        on<ReadyEvent> {
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
-                for (extension in extensions.values) {
+                for (extension in extensions.keys) {
                     @Suppress("TooGenericExceptionCaught")  // Anything could happen here
                     try {
-                        extension.setup()
+                        loadExtension(extension)
                     } catch (e: Exception) {
-                        logger.error(e) { "Failed to set up '${extension.name}' extension." }
+                        logger.error(e) { "Failed to set up '$extension' extension." }
                     }
                 }
 
@@ -111,7 +123,7 @@ open class ExtensibleBot(
             logger.info { "Ready!" }
         }
 
-        kord.on<MessageCreateEvent> {
+        on<MessageCreateEvent> {
             var commandName: String? = null
             var parts = parseMessage(this.message)
 
@@ -175,11 +187,40 @@ open class ExtensibleBot(
     }
 
     /** This function adds all of the default extensions when the bot is being set up. **/
-    private suspend fun addDefaultExtensions() {
+    private fun addDefaultExtensions() {
         if (addHelpExtension) {
             logger.info { "Adding help extension." }
             addExtension(HelpExtension::class)
         }
+    }
+
+    /**
+     * Subscribe to an event. You shouldn't need to use this directly, but it's here just in case.
+     *
+     * You can subscribe to any type, realistically - but this is intended to be used only with Kord
+     * [Event] subclasses, and our own [ExtensionEvent]s.
+     *
+     * @param T Type of event to subscribe to.
+     * @param scope Coroutine scope to run the body of your callback under.
+     * @param consumer The callback to run when the event is fired.
+     */
+    inline fun <reified T : Any> on(scope: CoroutineScope = this.kord, noinline consumer: suspend T.() -> Unit) =
+        events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
+            runCatching { consumer(it) }.onFailure { logger.catching(it) }
+        }.catch { logger.catching(it) }.launchIn(scope)
+
+    /**
+     * @suppress
+     */
+    suspend fun send(event: Event) {
+        eventPublisher.send(event)
+    }
+
+    /**
+     * @suppress
+     */
+    suspend fun send(event: ExtensionEvent) {
+        eventPublisher.send(event)
     }
 
     /**
@@ -192,12 +233,51 @@ open class ExtensibleBot(
      * @throws InvalidExtensionException Thrown if the extension has no primary constructor.
      */
     @Throws(InvalidExtensionException::class)
-    suspend fun addExtension(extension: KClass<out Extension>) {
+    fun addExtension(extension: KClass<out Extension>) {
         val ctor = extension.primaryConstructor ?: throw InvalidExtensionException(extension, "No primary constructor")
 
         val extensionObj = ctor.call(this)
 
         extensions[extensionObj.name] = extensionObj
+    }
+
+    /**
+     * Reload an installed [Extension] from this bot, by name.
+     *
+     * This function **does not** remove the extension object - it simply
+     * removes its event handlers and commands. Unloaded extensions can
+     * be loaded again by calling [ExtensibleBot.loadExtension].
+     *
+     * This function simply returns if the extension isn't found.
+     *
+     * @param extension The name of the [Extension] to unload.
+     */
+    @Throws(InvalidExtensionException::class)
+    suspend fun loadExtension(extension: String) {
+        val extensionObj = extensions[extension] ?: return
+
+        if (!extensionObj.loaded) {
+            extensionObj.doSetup()
+        }
+    }
+
+    /**
+     * Unload an installed [Extension] from this bot, by name.
+     *
+     * This function **does not** remove the extension object - it simply
+     * removes its event handlers and commands. Unloaded extensions can
+     * be loaded again by calling [ExtensibleBot.loadExtension].
+     *
+     * This function simply returns if the extension isn't found.
+     *
+     * @param extension The name of the [Extension] to unload.
+     */
+    suspend fun unloadExtension(extension: String) {
+        val extensionObj = extensions[extension] ?: return
+
+        if (extensionObj.loaded) {
+            extensionObj.unload()
+        }
     }
 
     /**
@@ -244,6 +324,16 @@ open class ExtensibleBot(
     }
 
     /**
+     * Directly remove a registered [Command] from this bot.
+     *
+     * This function is used when extensions are unloaded, in order to clear out their commands.
+     * No exception is thrown if the command wasn't registered.
+     *
+     * @param command The command to be removed.
+     */
+    fun removeCommand(command: Command) = commands.remove(command)
+
+    /**
      * Directly register an [EventHandler] to this bot.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
@@ -255,15 +345,27 @@ open class ExtensibleBot(
      * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
      */
     @Throws(EventHandlerRegistrationException::class)
-    inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>) {
+    inline fun <reified T : Any> addEventHandler(handler: EventHandler<T>): Job {
         if (eventHandlers.contains(handler)) {
             throw EventHandlerRegistrationException(
                 "Event handler already registered in '${handler.extension.name}' extension."
             )
         }
 
-        kord.on<T> { handler.call(this) }
+        val job = on<T> { handler.call(this) }
 
         eventHandlers.add(handler)
+
+        return job
     }
+
+    /**
+     * Directly remove a registered [EventHandler] from this bot.
+     *
+     * This function is used when extensions are unloaded, in order to clear out their event handlers.
+     * No exception is thrown if the event handler wasn't registered.
+     *
+     * @param handler The event handler to be removed.
+     */
+    fun removeEventHandler(handler: EventHandler<out Any>) = eventHandlers.remove(handler)
 }

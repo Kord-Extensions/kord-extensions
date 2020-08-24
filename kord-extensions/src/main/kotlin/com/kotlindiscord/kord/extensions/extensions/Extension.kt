@@ -1,9 +1,10 @@
 package com.kotlindiscord.kord.extensions.extensions
 
-import com.gitlab.kordlib.core.event.Event
 import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
+import com.kotlindiscord.kord.extensions.events.ExtensionLoadedEvent
+import com.kotlindiscord.kord.extensions.events.ExtensionUnloadedEvent
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -40,11 +41,43 @@ abstract class Extension(val bot: ExtensibleBot) {
     abstract suspend fun setup()
 
     /**
+     * @suppress This is an internal API function used as part of extension lifecycle management.
+     */
+    suspend fun doSetup() {
+        this.setup()
+        loaded = true
+
+        bot.send(ExtensionLoadedEvent(bot, this))
+    }
+
+    /**
+     * Whether this extension is currently loaded.
+     *
+     * This is set during loading/unloading of the extension and is used to ensure
+     * things aren't being called when they shouldn't be.
+     */
+    var loaded = false
+
+    /**
+     * List of registered event handlers.
+     *
+     * When an extension is unloaded, all the event handlers are cancelled and
+     * removed from the bot.
+     */
+    val eventHandlers = mutableListOf<EventHandler<out Any>>()
+
+    /**
+     * List of registered commands.
+     *
+     * When an extension is unloaded, all the commands are removed from the bot.
+     */
+    val commands = mutableListOf<Command>()
+
+    /**
      * DSL function for easily registering a command.
      *
      * Use this in your setup function to register a command that may be executed on Discord.
      *
-     * @param T
      * @param body Builder lambda used for setting up the command object.
      */
     suspend fun command(body: suspend Command.() -> Unit): Command {
@@ -55,6 +88,7 @@ abstract class Extension(val bot: ExtensibleBot) {
         try {
             commandObj.validate()
             bot.addCommand(commandObj)
+            commands.add(commandObj)
         } catch (e: CommandRegistrationException) {
             logger.error(e) { "Failed to register command - $e" }
         } catch (e: InvalidCommandException) {
@@ -65,13 +99,36 @@ abstract class Extension(val bot: ExtensibleBot) {
     }
 
     /**
+     * Unload all event handlers and commands for this extension.
+     *
+     * This function is called as part of unloading extensions, which may be
+     * done programmatically.
+     */
+    suspend fun unload() {
+        for (handler in eventHandlers) {
+            handler.job?.cancel()
+            bot.removeEventHandler(handler)
+        }
+
+        for (command in commands) {
+            bot.removeCommand(command)
+        }
+
+        eventHandlers.clear()
+        commands.clear()
+
+        loaded = false
+        bot.send(ExtensionUnloadedEvent(bot, this))
+    }
+
+    /**
      * DSL function for easily registering an event handler.
      *
      * Use this in your setup function to register an event handler that reacts to a given event.
      *
      * @param body Builder lambda used for setting up the event handler object.
      */
-    suspend inline fun <reified T : Event> event(noinline body: suspend EventHandler<T>.() -> Unit): EventHandler<T> {
+    suspend inline fun <reified T : Any> event(noinline body: suspend EventHandler<T>.() -> Unit): EventHandler<T> {
         val eventHandler = EventHandler<T>(this, T::class)
         val logger = KotlinLogging.logger {}
 
@@ -79,7 +136,9 @@ abstract class Extension(val bot: ExtensibleBot) {
 
         try {
             eventHandler.validate()
-            bot.addEventHandler(eventHandler)
+            eventHandler.job = bot.addEventHandler(eventHandler)
+
+            eventHandlers.add(eventHandler)
         } catch (e: EventHandlerRegistrationException) {
             logger.error(e) { "Failed to register event handler - $e" }
         } catch (e: InvalidEventHandlerException) {
