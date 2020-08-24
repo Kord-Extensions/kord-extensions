@@ -11,6 +11,7 @@ import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
+import kotlinx.coroutines.Job
 import mu.KotlinLogging
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -82,7 +83,7 @@ open class ExtensibleBot(
                 for (extension in extensions.values) {
                     @Suppress("TooGenericExceptionCaught")  // Anything could happen here
                     try {
-                        extension.setup()
+                        extension.doSetup()
                     } catch (e: Exception) {
                         logger.error(e) { "Failed to set up '${extension.name}' extension." }
                     }
@@ -201,6 +202,42 @@ open class ExtensibleBot(
     }
 
     /**
+     * Reload an installed [Extension] from this bot, by name.
+     *
+     * This function **does not** remove the extension object - it simply
+     * removes its event handlers and commands. Unloaded extensions can
+     * be loaded again by calling [ExtensibleBot.loadExtension].
+     *
+     * @param extension The name of the [Extension] to unload.
+     */
+    @Throws(InvalidExtensionException::class)
+    suspend fun loadExtension(extension: String) {
+        val extensionObj = extensions[extension] ?: return
+
+        if (!extensionObj.loaded) {
+            extensionObj.doSetup()
+        }
+    }
+
+    /**
+     * Unload an installed [Extension] from this bot, by name.
+     *
+     * This function **does not** remove the extension object - it simply
+     * removes its event handlers and commands. Unloaded extensions can
+     * be loaded again by calling [ExtensibleBot.loadExtension].
+     *
+     * @param extension The name of the [Extension] to unload.
+     */
+    @Throws(InvalidExtensionException::class)
+    suspend fun unloadExtension(extension: String) {
+        val extensionObj = extensions[extension] ?: return
+
+        if (extensionObj.loaded) {
+            extensionObj.unload()
+        }
+    }
+
+    /**
      * Directly register a [Command] to this bot.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
@@ -244,6 +281,16 @@ open class ExtensibleBot(
     }
 
     /**
+     * Directly remove a registered [Command] from this bot.
+     *
+     * This function is used when extensions are unloaded, in order to clear out their commands.
+     * No exception is thrown if the command wasn't registered.
+     *
+     * @param command The command to be removed.
+     */
+    fun removeCommand(command: Command) = commands.remove(command)
+
+    /**
      * Directly register an [EventHandler] to this bot.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
@@ -255,15 +302,27 @@ open class ExtensibleBot(
      * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
      */
     @Throws(EventHandlerRegistrationException::class)
-    inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>) {
+    inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>): Job {
         if (eventHandlers.contains(handler)) {
             throw EventHandlerRegistrationException(
                 "Event handler already registered in '${handler.extension.name}' extension."
             )
         }
 
-        kord.on<T> { handler.call(this) }
+        val job = kord.on<T> { handler.call(this) }
 
         eventHandlers.add(handler)
+
+        return job
     }
+
+    /**
+     * Directly remove a registered [EventHandler] from this bot.
+     *
+     * This function is used when extensions are unloaded, in order to clear out their event handlers.
+     * No exception is thrown if the event handler wasn't registered.
+     *
+     * @param handler The event handler to be removed.
+     */
+    fun removeEventHandler(handler: EventHandler<out Event>) = eventHandlers.remove(handler)
 }
