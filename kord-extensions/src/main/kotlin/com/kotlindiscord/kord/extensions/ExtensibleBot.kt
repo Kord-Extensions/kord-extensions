@@ -248,6 +248,8 @@ open class ExtensibleBot(
      * removes its event handlers and commands. Unloaded extensions can
      * be loaded again by calling [ExtensibleBot.loadExtension].
      *
+     * This function simply returns if the extension isn't found.
+     *
      * @param extension The name of the [Extension] to unload.
      */
     @Throws(InvalidExtensionException::class)
