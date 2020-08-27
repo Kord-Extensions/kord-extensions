@@ -1,11 +1,11 @@
 package com.kotlindiscord.kord.extensions.parsers
 
-import com.kotlindiscord.kord.extensions.ExtensionsException;
+import com.kotlindiscord.kord.extensions.ExtensionsException
 
 /**
  * A base exception class for parsers.
  */
-open class BaseParserException() : ExtensionsException()
+open class BaseParserException : ExtensionsException()
 
 /**
  * Throws when invalid time unit given to duration parser.
