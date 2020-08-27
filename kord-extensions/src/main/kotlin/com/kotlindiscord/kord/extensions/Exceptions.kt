@@ -88,12 +88,3 @@ class ParseException(var reason: String) : ExtensionsException() {
 
     override fun toString(): String = reason
 }
-
-/**
- * Throws when invalid time unit given to duration parser.
- *
- * @param unit Invalid unit.
- */
-class InvalidTimeUnitException(var unit: String) : ExtensionsException() {
-    override fun toString(): String = "Invalid time unit provided: $unit"
-}

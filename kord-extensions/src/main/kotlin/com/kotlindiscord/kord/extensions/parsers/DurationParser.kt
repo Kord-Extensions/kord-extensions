@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.parsers
 
-import com.kotlindiscord.kord.extensions.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.splitOn
 import java.time.Duration
 import java.time.temporal.ChronoUnit
