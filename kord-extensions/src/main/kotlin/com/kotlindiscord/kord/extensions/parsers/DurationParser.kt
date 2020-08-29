@@ -59,7 +59,7 @@ fun parseDuration(s: String): Duration {
         val unit = r2.first
         buffer = r2.second
 
-        val chronoUnit = unitMap[unit.toLowerCase()]
+        val chronoUnit = unitMap[unit.toLowerCase()] ?: throw InvalidTimeUnitException(unit.toLowerCase())
         duration = duration.plus(num.toLong(), chronoUnit)
     }
 
