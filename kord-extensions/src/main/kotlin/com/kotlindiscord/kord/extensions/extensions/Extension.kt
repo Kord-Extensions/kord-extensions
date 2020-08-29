@@ -36,7 +36,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      * result, we recommend you make use of this in all your extensions, instead of init {}
      * blocks.
      *
-     * This function is only ever called once.
+     * This function is called on first extension load, and whenever it's reloaded after that.
      */
     abstract suspend fun setup()
 
@@ -99,12 +99,25 @@ abstract class Extension(val bot: ExtensibleBot) {
     }
 
     /**
+     * If you need to, override this function and use it to clean up yuor extension when
+     * it's unloaded.
+     *
+     * You do not need to override this to clean up commands and event handlers, that's
+     * handled for you.
+     */
+    suspend fun unload() {
+        logger.debug { "Unload function not overridden." }
+    }
+
+    /**
      * Unload all event handlers and commands for this extension.
      *
      * This function is called as part of unloading extensions, which may be
      * done programmatically.
      */
-    suspend fun unload() {
+    suspend fun doUnload() {
+        this.unload()
+
         for (handler in eventHandlers) {
             handler.job?.cancel()
             bot.removeEventHandler(handler)

@@ -276,7 +276,7 @@ open class ExtensibleBot(
         val extensionObj = extensions[extension] ?: return
 
         if (extensionObj.loaded) {
-            extensionObj.unload()
+            extensionObj.doUnload()
         }
     }
 
