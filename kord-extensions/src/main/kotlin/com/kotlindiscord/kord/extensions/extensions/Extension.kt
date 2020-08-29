@@ -105,7 +105,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      * You do not need to override this to clean up commands and event handlers, that's
      * handled for you.
      */
-    suspend fun unload() {
+    open suspend fun unload() {
         logger.debug { "Unload function not overridden." }
     }
 
@@ -114,6 +114,8 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * This function is called as part of unloading extensions, which may be
      * done programmatically.
+     *
+     * @suppress Internal function
      */
     suspend fun doUnload() {
         this.unload()
