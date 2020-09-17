@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches-ignore:
-      - 'master'
+      - 'root'
 
   pull_request:
 
