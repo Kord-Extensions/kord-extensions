@@ -174,3 +174,42 @@ The parser supports the following types:
 
 **Note:** `GuildEmoji` and `Role` objects will be retrieved from the within the current guild. It is not possible
 to specify which guild to use at this time, but we may add support for that later.
+
+#### Command Groups
+
+You may also define command groups. Command groups are essentially commands that have their own subcommands.
+
+```kotlin
+override suspend fun setup() {
+    group { // this: GroupedCommand
+        name = "tag"
+
+        command { // this: Command
+            name = "get"
+
+            action { // this: CommandContext
+                message.channel.createMessage("Get tag!")
+            }
+        }
+
+        command { // this: Command
+            name = "put"
+
+            action { // this: CommandContext
+                message.channel.createMessage("Put tag!")
+            }
+        }
+    }
+}
+```
+
+Upon execution, a grouped command will attempt to find a subcommand matching the first argument passed to
+it, executing it if a matching subcommand exists. If there's no matching subcommand, the grouped command
+will execute its own body instead.
+
+The body of a grouped command will send an error to the user by default. You can override this behaviour by using
+the `action` function, as you would for any command.
+
+Aside from the above, grouped commands behave exactly like any other command. You can use checks, define a signature
+for the action, and so on. Grouped commands provide the same `command` and `group` function that extensions do,
+which means that command groups can contain their own command groups!

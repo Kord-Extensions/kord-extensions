@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionLoadedEvent
 import com.kotlindiscord.kord.extensions.events.ExtensionUnloadedEvent
@@ -82,6 +83,34 @@ abstract class Extension(val bot: ExtensibleBot) {
      */
     suspend fun command(body: suspend Command.() -> Unit): Command {
         val commandObj = Command(this)
+
+        body.invoke(commandObj)
+
+        try {
+            commandObj.validate()
+            bot.addCommand(commandObj)
+            commands.add(commandObj)
+        } catch (e: CommandRegistrationException) {
+            logger.error(e) { "Failed to register command - $e" }
+        } catch (e: InvalidCommandException) {
+            logger.error(e) { "Failed to register command - $e" }
+        }
+
+        return commandObj
+    }
+
+    /**
+     * DSL function for easily registering a grouped command.
+     *
+     * Use this in your setup function to register a group of commands.
+     *
+     * The body of the grouped command will be executed if there is no
+     * matching subcommand.
+     *
+     * @param body Builder lambda used for setting up the command object.
+     */
+    suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
+        val commandObj = GroupCommand(this)
 
         body.invoke(commandObj)
 

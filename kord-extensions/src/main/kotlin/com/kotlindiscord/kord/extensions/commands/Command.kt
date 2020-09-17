@@ -26,11 +26,11 @@ val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
  *
  * @param extension The [Extension] that registered this command.
  */
-class Command(val extension: Extension) {
+open class Command(val extension: Extension) {
     /**
      * @suppress
      */
-    lateinit var body: suspend CommandContext.() -> Unit
+    open lateinit var body: suspend CommandContext.() -> Unit
 
     /**
      * The name of this command, for invocation and help commands.
@@ -134,7 +134,6 @@ class Command(val extension: Extension) {
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this command.
-     * @sample com.kotlindiscord.kord.extensions.samples.CommandCheckSample.setup
      */
     fun check(check: suspend (MessageCreateEvent) -> Boolean) {
         checkList.add(check)
@@ -202,8 +201,8 @@ class Command(val extension: Extension) {
      *
      * @param event The message creation event.
      */
-    suspend fun call(event: MessageCreateEvent, args: Array<String>) {
-        if (!runChecks(event)) {
+    open suspend fun call(event: MessageCreateEvent, args: Array<String>, skipChecks: Boolean = false) {
+        if (skipChecks || !runChecks(event)) {
             return
         }
 
