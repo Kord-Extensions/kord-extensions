@@ -16,9 +16,9 @@ private val logger = KotlinLogging.logger {}
  *
  * @param extension The extension that registered this grouped command.
  */
-class GroupCommand(extension: Extension) : Command(extension) {
+open class GroupCommand(extension: Extension) : Command(extension) {
     /** @suppress **/
-    val commands = mutableListOf<Command>()
+    open val commands = mutableListOf<Command>()
 
     /** @suppress **/
     override var body: suspend CommandContext.() -> Unit = {
@@ -40,7 +40,7 @@ class GroupCommand(extension: Extension) : Command(extension) {
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    suspend fun command(body: suspend Command.() -> Unit): Command {
+    open suspend fun command(body: suspend Command.() -> Unit): Command {
         val commandObj = Command(extension)
 
         body.invoke(commandObj)
@@ -67,7 +67,7 @@ class GroupCommand(extension: Extension) : Command(extension) {
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
+    open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
         val commandObj = GroupCommand(extension)
 
         body.invoke(commandObj)
@@ -85,7 +85,7 @@ class GroupCommand(extension: Extension) : Command(extension) {
     }
 
     /** @suppress **/
-    fun getCommand(commandName: String?) =
+    open fun getCommand(commandName: String?) =
         commands.firstOrNull { it.name == commandName } ?: commands.firstOrNull { it.aliases.contains(commandName) }
 
     /**

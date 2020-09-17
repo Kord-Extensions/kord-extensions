@@ -13,15 +13,15 @@ import com.kotlindiscord.kord.extensions.ParseException
  * @param event Event that triggered this command.
  * @param args Array of string arguments for this command.
  */
-class CommandContext(
-    val command: Command,
-    val event: MessageCreateEvent,
-    val args: Array<String>
+open class CommandContext(
+    open val command: Command,
+    open val event: MessageCreateEvent,
+    open val args: Array<String>
 ) {
     /**
      * Message object representing the message that invoked the command.
      */
-    val message by lazy { event.message }
+    open val message by lazy { event.message }
 
     /**
      * Attempt to parse the arguments in this CommandContext into a given data class.
