@@ -83,9 +83,19 @@ abstract class Extension(val bot: ExtensibleBot) {
      */
     open suspend fun command(body: suspend Command.() -> Unit): Command {
         val commandObj = Command(this)
-
         body.invoke(commandObj)
 
+        return command(commandObj)
+    }
+
+    /**
+     * Function for registering a custom command object.
+     *
+     * You can use this if you have a custom command subclass you need to register.
+     *
+     * @param commandObj Command object to register.
+     */
+    open suspend fun command(commandObj: Command): Command {
         try {
             commandObj.validate()
             bot.addCommand(commandObj)
@@ -111,20 +121,9 @@ abstract class Extension(val bot: ExtensibleBot) {
      */
     open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
         val commandObj = GroupCommand(this)
-
         body.invoke(commandObj)
 
-        try {
-            commandObj.validate()
-            bot.addCommand(commandObj)
-            commands.add(commandObj)
-        } catch (e: CommandRegistrationException) {
-            logger.error(e) { "Failed to register command - $e" }
-        } catch (e: InvalidCommandException) {
-            logger.error(e) { "Failed to register command - $e" }
-        }
-
-        return commandObj
+        return command(commandObj) as GroupCommand
     }
 
     /**

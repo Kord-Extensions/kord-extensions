@@ -61,7 +61,10 @@ open class ExtensibleBot(
      */
     open val extensions: MutableMap<String, Extension> = mutableMapOf()
 
+    /** @suppress **/
     open val eventPublisher = BroadcastChannel<Any>(Channel.CONFLATED)
+
+    /** @suppress **/
     open var initialized: Boolean = false
 
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/

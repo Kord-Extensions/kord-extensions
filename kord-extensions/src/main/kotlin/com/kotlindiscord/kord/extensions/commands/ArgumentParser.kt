@@ -31,8 +31,11 @@ private val logger = KotlinLogging.logger {}
 open class ArgumentParser(private val bot: ExtensibleBot) {
     /** Defined here so we don't have to create it every time we try to parse something. */
     open val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
+
+    /** @suppress **/
     open val nullableListType = List::class.createType(arguments = listOf(KTypeProjection.STAR), nullable = true)
 
+    /** @suppress **/
     open val mentionRegex = Regex("^<(?:@[!&]?|#)(\\d+)>$")
 
     /**
@@ -68,6 +71,7 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
         }
     }
 
+    /** @suppress **/
     @Throws(ParseException::class)
     open suspend fun <T : Any> doParse(
         dataclass: KClass<T>,
@@ -132,6 +136,7 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
         }
     }
 
+    /** @suppress **/
     open suspend fun stringToType(string: String, type: KType, event: MessageCreateEvent): Any? {
         @Suppress("TooGenericExceptionCaught")  // As usual, anything can happen here.
         return when {
@@ -262,6 +267,7 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
         }
     }
 
+    /** @suppress **/
     open suspend fun stringsToTypes(strings: Array<out String>, type: KType, event: MessageCreateEvent): List<Any?> {
         val values: MutableList<Any?> = mutableListOf()
 
@@ -270,6 +276,7 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
         return values
     }
 
+    /** @suppress **/
     open fun parseMention(string: String): String {
         if (string.toLongOrNull() != null) {
             return string

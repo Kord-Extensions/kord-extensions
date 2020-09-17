@@ -42,9 +42,19 @@ open class GroupCommand(extension: Extension) : Command(extension) {
      */
     open suspend fun command(body: suspend Command.() -> Unit): Command {
         val commandObj = Command(extension)
-
         body.invoke(commandObj)
 
+        return command(commandObj)
+    }
+
+    /**
+     * Function for registering a custom command object.
+     *
+     * You can use this if you have a custom command subclass you need to register.
+     *
+     * @param commandObj Command object to register.
+     */
+    open suspend fun command(commandObj: Command): Command {
         try {
             commandObj.validate()
             commands.add(commandObj)
@@ -69,19 +79,9 @@ open class GroupCommand(extension: Extension) : Command(extension) {
      */
     open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
         val commandObj = GroupCommand(extension)
-
         body.invoke(commandObj)
 
-        try {
-            commandObj.validate()
-            commands.add(commandObj)
-        } catch (e: CommandRegistrationException) {
-            logger.error(e) { "Failed to register command - $e" }
-        } catch (e: InvalidCommandException) {
-            logger.error(e) { "Failed to register command - $e" }
-        }
-
-        return commandObj
+        return command(commandObj) as GroupCommand
     }
 
     /** @suppress **/
