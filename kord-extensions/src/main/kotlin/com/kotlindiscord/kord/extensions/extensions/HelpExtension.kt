@@ -74,7 +74,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                     var desc = "**${bot.prefix}$name $signature**\n${description.takeWhile { it != '\n' }}"
 
                     if (command is GroupCommand) {
-                        desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`$it.name`" }
+                        desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
                     }
 
                     desc
@@ -110,7 +110,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
             "*${command.description}*"
 
         if (command is GroupCommand) {
-            desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`$it.name`" }
+            desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
         }
 
         return desc

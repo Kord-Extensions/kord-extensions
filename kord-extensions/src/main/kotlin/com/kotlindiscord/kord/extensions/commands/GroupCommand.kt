@@ -20,12 +20,30 @@ open class GroupCommand(extension: Extension) : Command(extension) {
     /** @suppress **/
     open val commands = mutableListOf<Command>()
 
+    override lateinit var name: String
+
+    /**
+     * An internal function used to ensure that all of a command group's required arguments are present.
+     *
+     * @throws InvalidCommandException Thrown when a required argument hasn't been set.
+     */
+    @Throws(InvalidCommandException::class)
+    override fun validate() {
+        if (!::name.isInitialized) {
+            throw InvalidCommandException(null, "No command name given.")
+        }
+
+        if (commands.isEmpty()) {
+            throw InvalidCommandException(name, "No subcommands registered.")
+        }
+    }
+
     /** @suppress **/
     override var body: suspend CommandContext.() -> Unit = {
         val mention = message.author!!.mention
 
         val error = if (args.size > 0) {
-            "$mention Unknown subcommand: ${args.first()}"
+            "$mention Unknown subcommand: `${args.first()}`"
         } else {
             "$mention Subcommands: " + commands.joinToString(", ") { "`${it.name}`" }
         }

@@ -202,7 +202,7 @@ open class Command(val extension: Extension) {
      * @param event The message creation event.
      */
     open suspend fun call(event: MessageCreateEvent, args: Array<String>, skipChecks: Boolean = false) {
-        if (skipChecks || !runChecks(event)) {
+        if (!skipChecks && !runChecks(event)) {
             return
         }
 
