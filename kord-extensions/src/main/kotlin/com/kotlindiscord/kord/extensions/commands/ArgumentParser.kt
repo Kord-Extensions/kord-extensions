@@ -8,7 +8,10 @@ import com.gitlab.kordlib.core.entity.channel.Channel
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
+import com.kotlindiscord.kord.extensions.parsers.parseDuration
 import mu.KotlinLogging
+import net.time4j.Duration
+import net.time4j.IsoUnit
 import java.math.BigDecimal
 import java.math.BigInteger
 import kotlin.reflect.KClass
@@ -20,6 +23,8 @@ import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 
 private val logger = KotlinLogging.logger {}
+
+private val DURATION_TYPE = Duration::class.createType(listOf(KTypeProjection.invariant(IsoUnit::class.createType())))
 
 /**
  * Class in charge of converting string arguments for commands into fully-typed data classes.
@@ -170,6 +175,8 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
             type.isSubtypeOf(BigInteger::class.createType()) ||
                 type.isSubtypeOf(BigInteger::class.createType(nullable = true)) -> string.toBigInteger()
 
+            type.isSubtypeOf(DURATION_TYPE) -> parseDuration(string)
+
             type.isSubtypeOf(Channel::class.createType()) -> {
                 val parsedString = parseMention(string)
 
@@ -239,7 +246,7 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
                 val parsedString = parseMention(string)
 
                 val messageCol = bot.kord.cache.query<MessageData>
-                    { MessageData::id eq parsedString.toLong() }.toCollection()
+                { MessageData::id eq parsedString.toLong() }.toCollection()
 
                 if (!messageCol.isNullOrEmpty()) {
                     val data = messageCol.first() // Doesn't define get, we have to use a workaround
@@ -253,7 +260,7 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
                 val parsedString = parseMention(string)
 
                 val messageCol = bot.kord.cache.query<MessageData>
-                    { MessageData::id eq parsedString.toLong() }.toCollection()
+                { MessageData::id eq parsedString.toLong() }.toCollection()
 
                 if (!messageCol.isNullOrEmpty()) {
                     val data = messageCol.first() // Doesn't define get, we have to use a workaround

@@ -32,14 +32,14 @@ dependencies {
 
     api 'com.gitlab.kordlib.kord:kord-core:0.5.11'
 
+    api "net.time4j:time4j-base:5.7"
+    api "net.time4j:time4j-tzdata:5.0-2020a"
+
     implementation 'io.github.microutils:kotlin-logging:1.7.9'
     implementation 'org.apache.commons:commons-text:1.8'
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
-    implementation "net.time4j:time4j-base:5.7"
-    implementation "net.time4j:time4j-tzdata:5.0-2020a"
 
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
     testImplementation "org.slf4j:slf4j-simple:1.7.30"  // Otherwise there'll be no logging
