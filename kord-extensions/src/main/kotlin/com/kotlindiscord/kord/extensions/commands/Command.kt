@@ -26,23 +26,23 @@ val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
  *
  * @param extension The [Extension] that registered this command.
  */
-class Command(val extension: Extension) {
+open class Command(val extension: Extension) {
     /**
      * @suppress
      */
-    lateinit var body: suspend CommandContext.() -> Unit
+    open lateinit var body: suspend CommandContext.() -> Unit
 
     /**
      * The name of this command, for invocation and help commands.
      */
-    lateinit var name: String
+    open lateinit var name: String
 
     /**
      * A description of what this function and how it's intended to be used.
      *
      * This is intended to be made use of by help commands.
      */
-    var description: String = "No description provided."
+    open var description: String = "No description provided."
 
     /**
      * Whether this command is enabled and can be invoked.
@@ -52,14 +52,14 @@ class Command(val extension: Extension) {
      * This can be changed at runtime, if commands need to be enabled and disabled dynamically without being
      * reconstructed.
      */
-    var enabled: Boolean = true
+    open var enabled: Boolean = true
 
     /**
      * Whether to hide this command from help command listings.
      *
      * By default, this is `false` - so the command will be shown.
      */
-    var hidden: Boolean = false
+    open var hidden: Boolean = false
 
     /**
      * The command signature, specifying how the command's arguments should be structured.
@@ -68,7 +68,7 @@ class Command(val extension: Extension) {
      * a dataclass to generate a signature, or you can specify this in the [Extension.command] builder function
      * if you'd like to provide something a bit more specific.
      */
-    var signature: String = ""
+    open var signature: String = ""
 
     /**
      * Alternative names that can be used to invoke your command.
@@ -76,17 +76,17 @@ class Command(val extension: Extension) {
      * There's no limit on the number of aliases a command may have, but in the event of an alias matching
      * the [name] of a registered command, the command with the [name] takes priority.
      */
-    var aliases: Array<String> = arrayOf()
+    open var aliases: Array<String> = arrayOf()
 
     /**
      * @suppress
      */
-    val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+    open val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
     /**
      * @suppress
      */
-    val parser = ArgumentParser(extension.bot)
+    open val parser = ArgumentParser(extension.bot)
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present.
@@ -94,7 +94,7 @@ class Command(val extension: Extension) {
      * @throws InvalidCommandException Thrown when a required argument hasn't been set.
      */
     @Throws(InvalidCommandException::class)
-    fun validate() {
+    open fun validate() {
         if (!::name.isInitialized) {
             throw InvalidCommandException(null, "No command name given.")
         }
@@ -111,7 +111,7 @@ class Command(val extension: Extension) {
      *
      * @param action The body of your command, which will be executed when your command is invoked.
      */
-    fun action(action: suspend CommandContext.() -> Unit) {
+    open fun action(action: suspend CommandContext.() -> Unit) {
         this.body = action
     }
 
@@ -126,7 +126,7 @@ class Command(val extension: Extension) {
      *
      * @param checks Checks to apply to this command.
      */
-    fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+    open fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -134,9 +134,8 @@ class Command(val extension: Extension) {
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this command.
-     * @sample com.kotlindiscord.kord.extensions.samples.CommandCheckSample.setup
      */
-    fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+    open fun check(check: suspend (MessageCreateEvent) -> Boolean) {
         checkList.add(check)
     }
 
@@ -181,7 +180,7 @@ class Command(val extension: Extension) {
     }
 
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
-    suspend fun runChecks(event: MessageCreateEvent): Boolean {
+    open suspend fun runChecks(event: MessageCreateEvent): Boolean {
         for (check in checkList) {
             if (!check.invoke(event)) {
                 return false
@@ -202,8 +201,8 @@ class Command(val extension: Extension) {
      *
      * @param event The message creation event.
      */
-    suspend fun call(event: MessageCreateEvent, args: Array<String>) {
-        if (!runChecks(event)) {
+    open suspend fun call(event: MessageCreateEvent, args: Array<String>, skipChecks: Boolean = false) {
+        if (!skipChecks && !runChecks(event)) {
             return
         }
 

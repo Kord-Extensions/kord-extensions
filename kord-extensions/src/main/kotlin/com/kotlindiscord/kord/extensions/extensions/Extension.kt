@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionLoadedEvent
 import com.kotlindiscord.kord.extensions.events.ExtensionUnloadedEvent
@@ -43,7 +44,7 @@ abstract class Extension(val bot: ExtensibleBot) {
     /**
      * @suppress This is an internal API function used as part of extension lifecycle management.
      */
-    suspend fun doSetup() {
+    open suspend fun doSetup() {
         this.setup()
         loaded = true
 
@@ -56,7 +57,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      * This is set during loading/unloading of the extension and is used to ensure
      * things aren't being called when they shouldn't be.
      */
-    var loaded = false
+    open var loaded = false
 
     /**
      * List of registered event handlers.
@@ -64,14 +65,14 @@ abstract class Extension(val bot: ExtensibleBot) {
      * When an extension is unloaded, all the event handlers are cancelled and
      * removed from the bot.
      */
-    val eventHandlers = mutableListOf<EventHandler<out Any>>()
+    open val eventHandlers = mutableListOf<EventHandler<out Any>>()
 
     /**
      * List of registered commands.
      *
      * When an extension is unloaded, all the commands are removed from the bot.
      */
-    val commands = mutableListOf<Command>()
+    open val commands = mutableListOf<Command>()
 
     /**
      * DSL function for easily registering a command.
@@ -80,11 +81,21 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    suspend fun command(body: suspend Command.() -> Unit): Command {
+    open suspend fun command(body: suspend Command.() -> Unit): Command {
         val commandObj = Command(this)
-
         body.invoke(commandObj)
 
+        return command(commandObj)
+    }
+
+    /**
+     * Function for registering a custom command object.
+     *
+     * You can use this if you have a custom command subclass you need to register.
+     *
+     * @param commandObj Command object to register.
+     */
+    open suspend fun command(commandObj: Command): Command {
         try {
             commandObj.validate()
             bot.addCommand(commandObj)
@@ -96,6 +107,23 @@ abstract class Extension(val bot: ExtensibleBot) {
         }
 
         return commandObj
+    }
+
+    /**
+     * DSL function for easily registering a grouped command.
+     *
+     * Use this in your setup function to register a group of commands.
+     *
+     * The body of the grouped command will be executed if there is no
+     * matching subcommand.
+     *
+     * @param body Builder lambda used for setting up the command object.
+     */
+    open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
+        val commandObj = GroupCommand(this)
+        body.invoke(commandObj)
+
+        return command(commandObj) as GroupCommand
     }
 
     /**
@@ -117,7 +145,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @suppress Internal function
      */
-    suspend fun doUnload() {
+    open suspend fun doUnload() {
         this.unload()
 
         for (handler in eventHandlers) {

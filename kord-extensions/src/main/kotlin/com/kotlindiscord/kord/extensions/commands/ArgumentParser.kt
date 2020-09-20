@@ -28,12 +28,15 @@ private val logger = KotlinLogging.logger {}
  *
  * @param bot Instance of [ExtensibleBot] we're working with.
  */
-class ArgumentParser(private val bot: ExtensibleBot) {
+open class ArgumentParser(private val bot: ExtensibleBot) {
     /** Defined here so we don't have to create it every time we try to parse something. */
-    private val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
-    private val nullableListType = List::class.createType(arguments = listOf(KTypeProjection.STAR), nullable = true)
+    open val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
 
-    private val mentionRegex = Regex("^<(?:@[!&]?|#)(\\d+)>$")
+    /** @suppress **/
+    open val nullableListType = List::class.createType(arguments = listOf(KTypeProjection.STAR), nullable = true)
+
+    /** @suppress **/
+    open val mentionRegex = Regex("^<(?:@[!&]?|#)(\\d+)>$")
 
     /**
      * Given a data class and an array of strings, return an instance of the data class that
@@ -47,7 +50,7 @@ class ArgumentParser(private val bot: ExtensibleBot) {
      * @throws ParseException Thrown if the arguments couldn't be parsed for some reason.
      */
     @Throws(ParseException::class)
-    suspend fun <T : Any> parse(dataclass: KClass<T>, args: Array<out String>, event: MessageCreateEvent): T {
+    open suspend fun <T : Any> parse(dataclass: KClass<T>, args: Array<out String>, event: MessageCreateEvent): T {
         if (!dataclass.isData) {
             throw ParseException("Given class is not a data class.")
         }
@@ -68,8 +71,9 @@ class ArgumentParser(private val bot: ExtensibleBot) {
         }
     }
 
+    /** @suppress **/
     @Throws(ParseException::class)
-    private suspend fun <T : Any> doParse(
+    open suspend fun <T : Any> doParse(
         dataclass: KClass<T>,
         args: Array<out String>,
         event: MessageCreateEvent,
@@ -132,7 +136,8 @@ class ArgumentParser(private val bot: ExtensibleBot) {
         }
     }
 
-    private suspend fun stringToType(string: String, type: KType, event: MessageCreateEvent): Any? {
+    /** @suppress **/
+    open suspend fun stringToType(string: String, type: KType, event: MessageCreateEvent): Any? {
         @Suppress("TooGenericExceptionCaught")  // As usual, anything can happen here.
         return when {
             type.isSubtypeOf(String::class.createType()) ||
@@ -262,7 +267,8 @@ class ArgumentParser(private val bot: ExtensibleBot) {
         }
     }
 
-    private suspend fun stringsToTypes(strings: Array<out String>, type: KType, event: MessageCreateEvent): List<Any?> {
+    /** @suppress **/
+    open suspend fun stringsToTypes(strings: Array<out String>, type: KType, event: MessageCreateEvent): List<Any?> {
         val values: MutableList<Any?> = mutableListOf()
 
         strings.forEach { values.add(stringToType(it, type, event)) }
@@ -270,7 +276,8 @@ class ArgumentParser(private val bot: ExtensibleBot) {
         return values
     }
 
-    private fun parseMention(string: String): String {
+    /** @suppress **/
+    open fun parseMention(string: String): String {
         if (string.toLongOrNull() != null) {
             return string
         }

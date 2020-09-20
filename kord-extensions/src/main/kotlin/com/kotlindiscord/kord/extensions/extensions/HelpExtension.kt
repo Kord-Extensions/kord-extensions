@@ -5,6 +5,7 @@ import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.Paginator
 import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -25,9 +26,9 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
         command {
             name = "help"
             aliases = arrayOf("h")
-            description = "Get help.\n" +
-                    "\n" +
-                    "Let's just pretend we have a lot of things to say here"
+            description = "Get command help.\n" +
+                "\n" +
+                "Specify the name of a command to get help for that specific command."
             signature = "[command]"
 
             action {
@@ -43,7 +44,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                     ).send()
                 } else {
                     message.channel.createEmbed {
-                        val command = getCommand(args[0])
+                        val command = getCommand(args)
 
                         title = "Command Help"
                         description = if (command == null) {
@@ -58,7 +59,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     }
 
     /**
-     * Gather all available commands from the bot, and return them as an array of [KDCommand].
+     * Gather all available commands from the bot, and return them as an array of [Command].
      */
     suspend fun gatherCommands(event: MessageCreateEvent) =
         bot.commands.filter { !it.hidden && it.enabled && it.runChecks(event) }
@@ -70,16 +71,34 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
         return commands.sortedBy { it.name }.chunked(HELP_PER_PAGE).map { list ->
             list.joinToString(separator = "\n\n") { command ->
                 with(command) {
-                    "**${bot.prefix}$name $signature**\n${description.takeWhile { it != '\n' }}"
+                    var desc = "**${bot.prefix}$name $signature**\n${description.takeWhile { it != '\n' }}"
+
+                    if (command is GroupCommand) {
+                        desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
+                    }
+
+                    desc
                 }
             }
         }
     }
 
     /**
-     * Return the [Command] of the associated name, or null if it cannot be found.
+     * Return the [Command] specified in the arguments, or null if it can't be found.
      */
-    fun getCommand(command: String) = bot.commands.firstOrNull { it.name == command || it.aliases.contains(command) }
+    fun getCommand(args: Array<String>): Command? {
+        val firstArg = args.first()
+
+        var command: Command? = bot.commands.firstOrNull { it.name == firstArg || it.aliases.contains(firstArg) }
+
+        args.drop(1).forEach {
+            if (command != null && command is GroupCommand) {
+                command = (command as GroupCommand).getCommand(it)
+            }
+        }
+
+        return command
+    }
 
     /**
      * Format the given command's description into a short help string.
@@ -87,7 +106,13 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
      * @param command The command to format the description of.
      */
     fun formatLongHelp(command: Command): String {
-        return "**${bot.prefix}${command.name} ${command.signature}**\n\n" +
-                "*${command.description}*"
+        var desc = "**${bot.prefix}${command.name} ${command.signature}**\n\n" +
+            "*${command.description}*"
+
+        if (command is GroupCommand) {
+            desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
+        }
+
+        return desc
     }
 }

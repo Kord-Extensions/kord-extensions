@@ -35,7 +35,7 @@ private val logger = KotlinLogging.logger {}
  * @param timeout Milliseconds before automatically deleting the embed. Set to a negative value to disable it.
  * @param keepEmbed Keep the embed and only remove the reaction when the paginator is destroyed.
  */
-class Paginator(
+open class Paginator(
     val bot: ExtensibleBot,
     val channel: MessageChannelBehavior,
     val name: String,
@@ -45,15 +45,15 @@ class Paginator(
     val keepEmbed: Boolean = false
 ) {
     /** Message containing the embed. **/
-    var message: Message? = null
+    open var message: Message? = null
     /** Current page of the paginator. **/
-    var currentPage: Int = 0
+    open var currentPage: Int = 0
     /** Whether the paginator still processes reaction events. **/
-    var doesProcessEvents: Boolean = true
+    open var doesProcessEvents: Boolean = true
 
     /** Send the embed to the channel given in the constructor. **/
     @KordPreview
-    suspend fun send() {
+    open suspend fun send() {
         val myFooter = EmbedBuilder.Footer()
         myFooter.text = "Page 1/${pages.size}"
 
@@ -87,7 +87,7 @@ class Paginator(
      *
      * @param event [ReactionAddEvent] to process.
      */
-    suspend fun processEvent(event: ReactionAddEvent) {
+    open suspend fun processEvent(event: ReactionAddEvent) {
         logger.debug { "Paginator received emoji ${event.emoji.name}" }
         event.message.deleteReaction(event.userId, event.emoji)
 
@@ -105,7 +105,7 @@ class Paginator(
      *
      * @param page Page number to display.
      */
-    suspend fun goToPage(page: Int) {
+    open suspend fun goToPage(page: Int) {
         if (page == currentPage) {
             return
         }
@@ -130,7 +130,7 @@ class Paginator(
      * This will make it stops receive [ReactionAddEvent] and will delete the embed if `keepEmbed` is set to true,
      * or will delete all the reactions if it is set to false.
      */
-    suspend fun destroy() {
+    open suspend fun destroy() {
         if (!keepEmbed) {
             message?.delete()
         } else {
