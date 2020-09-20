@@ -1,42 +1,44 @@
 package com.kotlindiscord.kord.extensions.parsers
 
 import com.kotlindiscord.kord.extensions.splitOn
-import java.time.Duration
-import java.time.temporal.ChronoUnit
+import net.time4j.CalendarUnit
+import net.time4j.ClockUnit
+import net.time4j.Duration
+import net.time4j.IsoUnit
 
 /**
  * Mapping character to its actual unit.
  */
-val unitMap = mapOf(
-    "s" to ChronoUnit.SECONDS,
-    "sec" to ChronoUnit.SECONDS,
-    "second" to ChronoUnit.SECONDS,
-    "seconds" to ChronoUnit.SECONDS,
+val unitMap: Map<String, IsoUnit> = mapOf(
+    "s" to ClockUnit.SECONDS,
+    "sec" to ClockUnit.SECONDS,
+    "second" to ClockUnit.SECONDS,
+    "seconds" to ClockUnit.SECONDS,
 
-    "mi" to ChronoUnit.MINUTES,
-    "min" to ChronoUnit.MINUTES,
-    "minute" to ChronoUnit.MINUTES,
-    "minutes" to ChronoUnit.MINUTES,
+    "mi" to ClockUnit.MINUTES,
+    "min" to ClockUnit.MINUTES,
+    "minute" to ClockUnit.MINUTES,
+    "minutes" to ClockUnit.MINUTES,
 
-    "h" to ChronoUnit.HOURS,
-    "hour" to ChronoUnit.HOURS,
-    "hours" to ChronoUnit.HOURS,
+    "h" to ClockUnit.HOURS,
+    "hour" to ClockUnit.HOURS,
+    "hours" to ClockUnit.HOURS,
 
-    "d" to ChronoUnit.DAYS,
-    "day" to ChronoUnit.DAYS,
-    "days" to ChronoUnit.DAYS,
+    "d" to CalendarUnit.DAYS,
+    "day" to CalendarUnit.DAYS,
+    "days" to CalendarUnit.DAYS,
 
-    "w" to ChronoUnit.WEEKS,
-    "week" to ChronoUnit.WEEKS,
-    "weeks" to ChronoUnit.WEEKS,
+    "w" to CalendarUnit.WEEKS,
+    "week" to CalendarUnit.WEEKS,
+    "weeks" to CalendarUnit.WEEKS,
 
-    "mo" to ChronoUnit.MONTHS,
-    "month" to ChronoUnit.MONTHS,
-    "months" to ChronoUnit.MONTHS,
+    "mo" to CalendarUnit.MONTHS,
+    "month" to CalendarUnit.MONTHS,
+    "months" to CalendarUnit.MONTHS,
 
-    "y" to ChronoUnit.YEARS,
-    "year" to ChronoUnit.YEARS,
-    "years" to ChronoUnit.YEARS
+    "y" to CalendarUnit.YEARS,
+    "year" to CalendarUnit.YEARS,
+    "years" to CalendarUnit.YEARS
 )
 
 /**
@@ -46,9 +48,9 @@ val unitMap = mapOf(
  * @param s the string to parse.
  */
 @Suppress("MagicNumber")
-fun parseDuration(s: String): Duration {
+fun parseDuration(s: String): Duration<IsoUnit> {
     var buffer = s
-    var duration = Duration.ofSeconds(0)
+    var duration = Duration.ofZero<IsoUnit>()
 
     while (buffer.isNotEmpty()) {
         val r1 = buffer.splitOn { it.isLetter() } // Thanks Kotlin : https://youtrack.jetbrains.com/issue/KT-11362
@@ -60,6 +62,7 @@ fun parseDuration(s: String): Duration {
         buffer = r2.second
 
         val chronoUnit = unitMap[unit.toLowerCase()] ?: throw InvalidTimeUnitException(unit.toLowerCase())
+
         duration = duration.plus(num.toLong(), chronoUnit)
     }
 
