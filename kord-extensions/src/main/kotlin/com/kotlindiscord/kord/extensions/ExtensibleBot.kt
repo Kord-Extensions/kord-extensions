@@ -18,6 +18,7 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import mu.KotlinLogging
+import net.time4j.tz.repo.TZDATA
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -72,6 +73,10 @@ open class ExtensibleBot(
 
     /** @suppress **/
     open val logger = KotlinLogging.logger {}
+
+    init {
+        TZDATA.init()  // Set up time4j, since we use it
+    }
 
     /**
      * This function kicks off the process, by setting up the bot and having it login.
