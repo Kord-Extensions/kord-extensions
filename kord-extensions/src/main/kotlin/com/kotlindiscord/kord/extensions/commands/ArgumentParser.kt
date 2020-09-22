@@ -25,6 +25,10 @@ import kotlin.reflect.full.primaryConstructor
 private val logger = KotlinLogging.logger {}
 
 private val DURATION_TYPE = Duration::class.createType(listOf(KTypeProjection.invariant(IsoUnit::class.createType())))
+private val DURATION_TYPE_NULLABLE = Duration::class.createType(
+    listOf(KTypeProjection.invariant(IsoUnit::class.createType())),
+    nullable = true
+)
 
 /**
  * Class in charge of converting string arguments for commands into fully-typed data classes.
@@ -176,6 +180,7 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
                 type.isSubtypeOf(BigInteger::class.createType(nullable = true)) -> string.toBigInteger()
 
             type.isSubtypeOf(DURATION_TYPE) -> parseDuration(string)
+            type.isSubtypeOf(DURATION_TYPE_NULLABLE) -> parseDuration(string)
 
             type.isSubtypeOf(Channel::class.createType()) -> {
                 val parsedString = parseMention(string)
