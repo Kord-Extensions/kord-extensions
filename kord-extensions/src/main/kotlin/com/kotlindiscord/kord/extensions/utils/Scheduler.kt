@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.checks.utils
+package com.kotlindiscord.kord.extensions.utils
 
 import kotlinx.coroutines.*
 import mu.KotlinLogging

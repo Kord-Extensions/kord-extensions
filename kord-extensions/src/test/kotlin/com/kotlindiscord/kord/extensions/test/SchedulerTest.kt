@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.test
 
-import com.kotlindiscord.kord.extensions.checks.utils.Scheduler
+import com.kotlindiscord.kord.extensions.utils.Scheduler
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
