@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches-ignore:
-      - 'root'
+      - "root"
+      - "kotlin-1.4"
 
   pull_request:
 

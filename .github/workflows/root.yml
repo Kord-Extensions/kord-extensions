@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches:
-      - root
+      - "root"
+      - "kotlin-1.4"
 
 jobs:
   build:
@@ -26,8 +27,8 @@ jobs:
       - name: Gradle (Build)
         run: sh gradlew kord-extensions:build docs:orchidBuild
 
-      - name: Gradle (Deploy docs)
-        run: sh gradlew docs:orchidDeploy
+#      - name: Gradle (Deploy docs)
+#        run: sh gradlew docs:orchidDeploy
 
       - name: Gradle (Publish)
         run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} kord-extensions:publish

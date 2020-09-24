@@ -46,8 +46,10 @@ open class Paginator(
 ) {
     /** Message containing the embed. **/
     open var message: Message? = null
+
     /** Current page of the paginator. **/
     open var currentPage: Int = 0
+
     /** Whether the paginator still processes reaction events. **/
     open var doesProcessEvents: Boolean = true
 
@@ -68,9 +70,9 @@ open class Paginator(
         while (true) {
             val event = bot.kord.waitFor<ReactionAddEvent>(timeout = timeout) {
                 message.id == this.messageId &&
-                this.userId != bot.kord.selfId &&
-                (owner?.id == this.userId || owner == null) &&
-                doesProcessEvents
+                    this.userId != bot.kord.selfId &&
+                    (owner?.id == this.userId || owner == null) &&
+                    doesProcessEvents
             } ?: break
 
             processEvent(event)
@@ -92,12 +94,12 @@ open class Paginator(
         event.message.deleteReaction(event.userId, event.emoji)
 
         when (event.emoji.name) {
-            FIRST_PAGE_EMOJI.name    -> goToPage(0)
-            LEFT_EMOJI.name          -> goToPage(currentPage - 1)
-            RIGHT_EMOJI.name         -> goToPage(currentPage + 1)
-            LAST_PAGE_EMOJI.name     -> goToPage(pages.size - 1)
-            DELETE_EMOJI.name        -> destroy()
-            else                     -> return
+            FIRST_PAGE_EMOJI.name -> goToPage(0)
+            LEFT_EMOJI.name -> goToPage(currentPage - 1)
+            RIGHT_EMOJI.name -> goToPage(currentPage + 1)
+            LAST_PAGE_EMOJI.name -> goToPage(pages.size - 1)
+            DELETE_EMOJI.name -> destroy()
+            else -> return
         }
     }
 
@@ -118,11 +120,13 @@ open class Paginator(
         val myFooter = EmbedBuilder.Footer()
         myFooter.text = "Page ${page + 1}/${pages.size}"
 
-        message?.edit { embed {
-            title = name
-            description = pages[page]
-            footer = myFooter
-        } }
+        message?.edit {
+            embed {
+                title = name
+                description = pages[page]
+                footer = myFooter
+            }
+        }
     }
 
     /** Destroy the paginator.
