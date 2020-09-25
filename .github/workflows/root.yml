@@ -37,16 +37,12 @@ jobs:
         run: |
           zip -r build/docs.zip docs/build/docs/orchid/*
 
-      - name: Rename artifact
-        run: |
-          mv kord-extensions/build/libs/kord-extensions-*.jar kord-extensions/build/libs/kord-extensions.jar
-
-      - name: Upload artifact (JAR)
-        uses: actions/upload-artifact@v1.0.0
+      - name: Upload artifact (JARs)
+        uses: actions/upload-artifact@v2
 
         with:
-          name: JAR
-          path: kord-extensions/build/libs/kord-extensions.jar
+          name: JARs
+          path: kord-extensions/build/libs/kord-extensions-*.jar
 
       - name: Upload artifact (Docs)
         uses: actions/upload-artifact@v1.0.0
