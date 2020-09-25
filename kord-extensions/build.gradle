@@ -62,7 +62,9 @@ gitHooks {
     hooks = ['pre-commit': 'kord-extensions:detekt']
 }
 
-jar {
+task sourceJar(type: Jar) {
+    classifier 'sources'
+
     from sourceSets.main.kotlin
 }
 
@@ -83,10 +85,9 @@ publishing {
 
     publications {
         maven(MavenPublication) {
-            from(components.java)
-            artifacts {
-                kotlinSourcesJar
-            }
+            from components.java
+
+            artifact tasks.sourceJar
         }
     }
 }
