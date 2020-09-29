@@ -9,6 +9,7 @@ import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.parsers.parseDuration
+import com.kotlindiscord.kord.extensions.parsers.parseDurationJ8
 import mu.KotlinLogging
 import net.time4j.Duration
 import net.time4j.IsoUnit
@@ -181,6 +182,9 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
 
             type.isSubtypeOf(DURATION_TYPE) -> parseDuration(string)
             type.isSubtypeOf(DURATION_TYPE_NULLABLE) -> parseDuration(string)
+
+            type.isSubtypeOf(java.time.Duration::class.createType()) ||
+                type.isSubtypeOf(java.time.Duration::class.createType(nullable = true)) -> parseDurationJ8(string)
 
             type.isSubtypeOf(Channel::class.createType()) -> {
                 val parsedString = parseMention(string)
