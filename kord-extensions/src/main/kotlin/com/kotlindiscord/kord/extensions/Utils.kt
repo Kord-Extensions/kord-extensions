@@ -23,7 +23,7 @@ import org.apache.commons.text.StringTokenizer
  * @param message The message to parse
  * @return An array of parsed arguments
  */
-fun parseMessage(message: Message): Array<String> = StringTokenizer(message.content).tokenArray
+fun parseMessage(message: Message): Array<String> = StringTokenizer(message.content, ' ').tokenArray
 
 /**
  * Convenience function to retrieve a user's top [Role].

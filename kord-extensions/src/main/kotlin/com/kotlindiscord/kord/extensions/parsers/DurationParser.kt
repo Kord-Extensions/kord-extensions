@@ -128,7 +128,11 @@ fun parseDurationJ8(s: String): java.time.Duration {
 
         val chronoUnit = unitMapJ8[unit.toLowerCase()] ?: throw InvalidTimeUnitException(unit.toLowerCase())
 
-        duration = duration.plus(num.toLong(), chronoUnit)
+        duration = if (chronoUnit.duration.seconds > ChronoUnit.SECONDS.duration.seconds) {
+            duration.plus(num.toLong() * chronoUnit.duration.seconds, ChronoUnit.SECONDS)
+        } else {
+            duration.plus(num.toLong(), chronoUnit)
+        }
     }
 
     return duration
