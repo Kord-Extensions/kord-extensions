@@ -98,7 +98,14 @@ open class ExtensibleBot(
         registerListeners()
         addDefaultExtensions()
 
-        kord.on<Event> { eventPublisher.send(this) }
+        kord.on<Event> {
+            val event = this
+
+            kord.launch {
+                eventPublisher.send(event)
+            }
+        }
+
         kord.login(presenceBuilder)
     }
 
@@ -225,7 +232,7 @@ open class ExtensibleBot(
      */
     inline fun <reified T : Any> on(scope: CoroutineScope = this.kord, noinline consumer: suspend T.() -> Unit) =
         events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
-            runCatching { consumer(it) }.onFailure { logger.catching(it) }
+            runCatching { kord.launch { consumer(it) } }.onFailure { logger.catching(it) }
         }.catch { logger.catching(it) }.launchIn(scope)
 
     /**
