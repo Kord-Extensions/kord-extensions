@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.Paginator
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
+import com.kotlindiscord.kord.extensions.commands.SubCommand
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -106,7 +107,14 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
      * @param command The command to format the description of.
      */
     fun formatLongHelp(command: Command): String {
-        var desc = "**${bot.prefix}${command.name} ${command.signature}**\n\n" +
+        val name = when (command) {
+            is SubCommand -> command.getFullName()
+            is GroupCommand -> command.getFullName()
+
+            else -> command.name
+        }
+
+        var desc = "**${bot.prefix}$name ${command.signature}**\n\n" +
             command.description
 
         if (command is GroupCommand) {

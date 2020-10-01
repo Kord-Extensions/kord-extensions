@@ -15,8 +15,9 @@ private val logger = KotlinLogging.logger {}
  * `group` function to register your command group, by overriding the `Extension` setup function.
  *
  * @param extension The extension that registered this grouped command.
+ * @param parent The [GroupCommand] this group exists under, if any.
  */
-open class GroupCommand(extension: Extension) : Command(extension) {
+open class GroupCommand(extension: Extension, open val parent: GroupCommand? = null) : Command(extension) {
     /** @suppress **/
     open val commands = mutableListOf<Command>()
 
@@ -59,7 +60,7 @@ open class GroupCommand(extension: Extension) : Command(extension) {
      * @param body Builder lambda used for setting up the command object.
      */
     open suspend fun command(body: suspend Command.() -> Unit): Command {
-        val commandObj = Command(extension)
+        val commandObj = SubCommand(extension, this)
         body.invoke(commandObj)
 
         return command(commandObj)
@@ -96,7 +97,7 @@ open class GroupCommand(extension: Extension) : Command(extension) {
      * @param body Builder lambda used for setting up the command object.
      */
     open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
-        val commandObj = GroupCommand(extension)
+        val commandObj = GroupCommand(extension, this)
         body.invoke(commandObj)
 
         return command(commandObj) as GroupCommand
@@ -134,5 +135,15 @@ open class GroupCommand(extension: Extension) : Command(extension) {
         } else {
             subCommand.call(event, remainingArgs)
         }
+    }
+
+    /**
+     * Get the name of this command, prefixed with the name of its parent (separated by spaces),
+     * or just the command's name if there is no parent.
+     */
+    open fun getFullName(): String {
+        parent ?: return this.name
+
+        return parent!!.getFullName() + " " + this.name
     }
 }
