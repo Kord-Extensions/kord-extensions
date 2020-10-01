@@ -12,13 +12,13 @@ import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import mu.KotlinLogging
 import net.time4j.tz.repo.TZDATA
+import java.util.concurrent.Executors
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -29,6 +29,7 @@ import kotlin.reflect.full.primaryConstructor
  * handlers. Either subclass ExtensibleBot or use it as-is if it suits your needs.
  *
  * @param addHelpExtension Whether to automatically install the bundled help command extension.
+ * @param commandThreads Number of threads to use for command execution. Defaults to twice the number of CPU threads.
  * @param invokeCommandOnMention Whether to invoke commands that are prefixed with a mention, as well as the prefix.
  * @param messageCacheSize How many previous messages to store - default to 10,000.
  * @param prefix The command prefix, for command invocations on Discord.
@@ -40,7 +41,8 @@ open class ExtensibleBot(
 
     open val addHelpExtension: Boolean = true,
     open val invokeCommandOnMention: Boolean = true,
-    open val messageCacheSize: Int = 10_000
+    open val messageCacheSize: Int = 10_000,
+    open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2
 ) {
     /**
      * @suppress
@@ -73,6 +75,11 @@ open class ExtensibleBot(
 
     /** @suppress **/
     open val logger = KotlinLogging.logger {}
+
+    /** @suppress **/
+    open val commandThreadPool = Executors
+        .newFixedThreadPool(commandThreads)
+        .asCoroutineDispatcher()
 
     init {
         TZDATA.init()  // Set up time4j, since we use it
@@ -190,7 +197,11 @@ open class ExtensibleBot(
             val command = commands.firstOrNull { it.name == commandName }
                 ?: commands.firstOrNull { it.aliases.contains(commandName) }
 
-            command?.call(this, parts)
+            val event = this
+
+            commandThreadPool.invoke {
+                command?.call(event, parts)
+            }
         }
     }
 
