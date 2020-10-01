@@ -107,7 +107,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
      */
     fun formatLongHelp(command: Command): String {
         var desc = "**${bot.prefix}${command.name} ${command.signature}**\n\n" +
-            "*${command.description}*"
+            command.description
 
         if (command is GroupCommand) {
             desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
