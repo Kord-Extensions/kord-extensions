@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.first
  * @param event The event concerning to the channel to retrieve.
  * @return A [ChannelBehavior] representing the channel, or null if there isn't one.
  */
-suspend fun channelFor(event: Event): ChannelBehavior? {
+fun channelFor(event: Event): ChannelBehavior? {
     return when (event) {
         is ChannelCreateEvent -> event.channel
         is ChannelDeleteEvent -> event.channel
@@ -31,6 +31,7 @@ suspend fun channelFor(event: Event): ChannelBehavior? {
         is InviteCreateEvent -> event.channel
         is InviteDeleteEvent -> event.channel
         is MessageCreateEvent -> event.message.channel
+        is MessageDeleteEvent -> event.message?.channel
         is MessageUpdateEvent -> event.channel
         is ReactionAddEvent -> event.channel
         is ReactionRemoveAllEvent -> event.channel
@@ -38,6 +39,39 @@ suspend fun channelFor(event: Event): ChannelBehavior? {
         is ReactionRemoveEvent -> event.channel
         is TypingStartEvent -> event.channel
         is WebhookUpdateEvent -> event.channel
+
+        else -> null
+    }
+}
+
+/**
+ * Retrieves a channel ID representing a channel that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the channel to retrieve.
+ * @return A [Long] representing the channel ID, or null if there isn't one.
+ */
+fun channelIdFor(event: Event): Long? {
+    return when (event) {
+        is ChannelCreateEvent -> event.channel.id.longValue
+        is ChannelDeleteEvent -> event.channel.id.longValue
+        is ChannelPinsUpdateEvent -> event.channel.id.longValue
+        is ChannelUpdateEvent -> event.channel.id.longValue
+        is InviteCreateEvent -> event.channel.id.longValue
+        is InviteDeleteEvent -> event.channel.id.longValue
+        is MessageCreateEvent -> event.message.channel.id.longValue
+        is MessageDeleteEvent -> event.channelId.longValue
+        is MessageUpdateEvent -> event.channel.id.longValue
+        is ReactionAddEvent -> event.channel.id.longValue
+        is ReactionRemoveAllEvent -> event.channel.id.longValue
+        is ReactionRemoveEmojiEvent -> event.channel.id.longValue
+        is ReactionRemoveEvent -> event.channel.id.longValue
+        is TypingStartEvent -> event.channel.id.longValue
+        is WebhookUpdateEvent -> event.channel.id.longValue
 
         else -> null
     }
