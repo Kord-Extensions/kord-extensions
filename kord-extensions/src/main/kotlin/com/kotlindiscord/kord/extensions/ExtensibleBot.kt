@@ -137,8 +137,12 @@ open class ExtensibleBot(
                     if (handler.type == ReadyEvent::class) {
                         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
                         try {
-                            (handler as EventHandler<ReadyEvent>)  // We know it wants a ReadyEvent already
-                                .call(this)
+                            val event = this
+
+                            kord.launch {
+                                (handler as EventHandler<ReadyEvent>)  // We know it wants a ReadyEvent already
+                                    .call(event)
+                            }
                         } catch (e: Exception) {
                             logger.error(e) {
                                 "ReadyEvent handler in '${handler.extension.name}' extension threw an exception."
