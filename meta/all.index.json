@@ -1,0 +1,835 @@
+{
+  "ownKey": "index",
+  "childrenPages": {
+    "kotlindoc": {
+      "ownKey": "kotlindoc",
+      "childrenPages": {"kord-extensions": {
+        "ownKey": "kord-extensions",
+        "childrenPages": {"kord-extensions": {
+          "ownKey": "kord-extensions",
+          "childrenPages": {"com": {
+            "ownKey": "com",
+            "childrenPages": {"kotlindiscord": {
+              "ownKey": "kotlindiscord",
+              "childrenPages": {"kord": {
+                "ownKey": "kord",
+                "childrenPages": {"extensions": {
+                  "ownKey": "extensions",
+                  "childrenPages": {
+                    "invalideventhandlerexception": {
+                      "ownKey": "invalideventhandlerexception",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/invalideventhandlerexception",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalideventhandlerexception"
+                        },
+                        "description": "",
+                        "title": "InvalidEventHandlerException",
+                        "content": "<p>CommentComponent(kind=text, text=Thrown when an , value=) CommentComponent(kind=typeName, text=EventHandler, value=com.kotlindiscord.kord.extensions.events.EventHandler) CommentComponent(kind=text, text= could not be validated., value=null)<\/p>\n"
+                      }]
+                    },
+                    "extensionsexception": {
+                      "ownKey": "extensionsexception",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/extensionsexception",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensionsexception"
+                        },
+                        "description": "",
+                        "title": "ExtensionsException",
+                        "content": "<p>CommentComponent(kind=text, text=A base class for all custom exceptions in our bot framework., value=null)<\/p>\n"
+                      }]
+                    },
+                    "eventhandlerregistrationexception": {
+                      "ownKey": "eventhandlerregistrationexception",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/eventhandlerregistrationexception",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/eventhandlerregistrationexception"
+                        },
+                        "description": "",
+                        "title": "EventHandlerRegistrationException",
+                        "content": "<p>CommentComponent(kind=text, text=Thrown when an attempt to register a , value=) CommentComponent(kind=typeName, text=EventHandler, value=com.kotlindiscord.kord.extensions.events.EventHandler) CommentComponent(kind=text, text= fails., value=null)<\/p>\n"
+                      }]
+                    },
+                    "extensiblebot": {
+                      "ownKey": "extensiblebot",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/extensiblebot",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot"
+                        },
+                        "description": "",
+                        "title": "ExtensibleBot",
+                        "content": "<p>CommentComponent(kind=text, text=An extensible bot, wrapping a Kord instance.<p>This is your jumping-off point. ExtensibleBot provides a system for managing extensions, commands and event\nhandlers. Either subclass ExtensibleBot or use it as-is if it suits your needs.<\/p>, value=null)<\/p>\n"
+                      }]
+                    },
+                    "parsers": {
+                      "ownKey": "parsers",
+                      "childrenPages": {
+                        "invalidtimeunitexception": {
+                          "ownKey": "invalidtimeunitexception",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/parsers/invalidtimeunitexception",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers/invalidtimeunitexception"
+                            },
+                            "description": "",
+                            "title": "InvalidTimeUnitException",
+                            "content": "<p>CommentComponent(kind=text, text=Throws when invalid time unit given to duration parser., value=null)<\/p>\n"
+                          }]
+                        },
+                        "baseparserexception": {
+                          "ownKey": "baseparserexception",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/parsers/baseparserexception",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers/baseparserexception"
+                            },
+                            "description": "",
+                            "title": "BaseParserException",
+                            "content": "<p>CommentComponent(kind=text, text=A base exception class for parsers., value=null)<\/p>\n"
+                          }]
+                        }
+                      },
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/parsers",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers"
+                        },
+                        "description": "",
+                        "title": "com.kotlindiscord.kord.extensions.parsers",
+                        "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                      }]
+                    },
+                    "extensions": {
+                      "ownKey": "extensions",
+                      "childrenPages": {
+                        "extension": {
+                          "ownKey": "extension",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/extensions/extension",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/extension"
+                            },
+                            "description": "",
+                            "title": "Extension",
+                            "content": "<p>CommentComponent(kind=text, text=Class representing a distinct set of functionality to be treated as a unit.<p>Override this and create your own extensions with their own event handlers and commands.\nThis will allow you to keep distinct blocks of functionality separate, keeping the codebase\nclean and configurable.<\/p>, value=null)<\/p>\n"
+                          }]
+                        },
+                        "helpextension": {
+                          "ownKey": "helpextension",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/extensions/helpextension",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/helpextension"
+                            },
+                            "description": "",
+                            "title": "HelpExtension",
+                            "content": "<p>CommentComponent(kind=text, text=Help command extension.<p>This extension provides a <code>!help<\/code> command listing the available commands,\nalong with a <code>!help <command><\/code> to get more info about a specific command.<\/p>, value=null)<\/p>\n"
+                          }]
+                        }
+                      },
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/extensions",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions"
+                        },
+                        "description": "",
+                        "title": "com.kotlindiscord.kord.extensions.extensions",
+                        "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                      }]
+                    },
+                    "checks": {
+                      "ownKey": "checks",
+                      "childrenPages": {"utils": {
+                        "ownKey": "utils",
+                        "childrenPages": {"scheduler": {
+                          "ownKey": "scheduler",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/checks/utils/scheduler",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/utils/scheduler"
+                            },
+                            "description": "",
+                            "title": "Scheduler",
+                            "content": "<p>CommentComponent(kind=text, text=Class in charge of providing scheduling functions., value=null)<\/p>\n"
+                          }]
+                        }},
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/checks/utils",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/utils"
+                          },
+                          "description": "",
+                          "title": "com.kotlindiscord.kord.extensions.checks.utils",
+                          "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                        }]
+                      }},
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/checks",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks"
+                        },
+                        "description": "",
+                        "title": "com.kotlindiscord.kord.extensions.checks",
+                        "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                      }]
+                    },
+                    "parseexception": {
+                      "ownKey": "parseexception",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/parseexception",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parseexception"
+                        },
+                        "description": "",
+                        "title": "ParseException",
+                        "content": "<p>CommentComponent(kind=text, text=Thrown when we fail to parse arguments into a data class., value=null)<\/p>\n"
+                      }]
+                    },
+                    "commandregistrationexception": {
+                      "ownKey": "commandregistrationexception",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/commandregistrationexception",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commandregistrationexception"
+                        },
+                        "description": "",
+                        "title": "CommandRegistrationException",
+                        "content": "<p>CommentComponent(kind=text, text=Thrown when an attempt to register a , value=) CommentComponent(kind=typeName, text=Command, value=com.kotlindiscord.kord.extensions.commands.Command) CommentComponent(kind=text, text= fails., value=null)<\/p>\n"
+                      }]
+                    },
+                    "invalidcommandexception": {
+                      "ownKey": "invalidcommandexception",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/invalidcommandexception",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalidcommandexception"
+                        },
+                        "description": "",
+                        "title": "InvalidCommandException",
+                        "content": "<p>CommentComponent(kind=text, text=Thrown when a , value=) CommentComponent(kind=typeName, text=Command, value=com.kotlindiscord.kord.extensions.commands.Command) CommentComponent(kind=text, text= could not be validated., value=null)<\/p>\n"
+                      }]
+                    },
+                    "invalidextensionexception": {
+                      "ownKey": "invalidextensionexception",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/invalidextensionexception",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalidextensionexception"
+                        },
+                        "description": "",
+                        "title": "InvalidExtensionException",
+                        "content": "<p>CommentComponent(kind=text, text=Thrown when an attempt to load an , value=) CommentComponent(kind=typeName, text=Extension, value=com.kotlindiscord.kord.extensions.extensions.Extension) CommentComponent(kind=text, text= fails., value=null)<\/p>\n"
+                      }]
+                    },
+                    "paginator": {
+                      "ownKey": "paginator",
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/paginator",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/paginator"
+                        },
+                        "description": "",
+                        "title": "Paginator",
+                        "content": "<p>CommentComponent(kind=text, text=Interactive embed with multiple pages using emoji reactions as user inputs.<p>NOTE : <code>.send()<\/code> needs to be called in order for the paginator to be displayed.<\/p>, value=null)<\/p>\n"
+                      }]
+                    },
+                    "events": {
+                      "ownKey": "events",
+                      "childrenPages": {
+                        "eventhandler": {
+                          "ownKey": "eventhandler",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/events/eventhandler",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/eventhandler"
+                            },
+                            "description": "",
+                            "title": "EventHandler",
+                            "content": "<p>CommentComponent(kind=text, text=Class representing an event handler. Event handlers react to a given Kord event.<p>You shouldn't need to use this class directly - instead, create an , value=) CommentComponent(kind=typeName, text=Extension, value=com.kotlindiscord.kord.extensions.extensions.Extension) CommentComponent(kind=text, text= and use the\n, value=) CommentComponent(kind=typeName, text=event function, value=com.kotlindiscord.kord.extensions.extensions.Extension.event) CommentComponent(kind=text, text= to register your event handler, by overriding the , value=) CommentComponent(kind=typeName, text=Extension.setup, value=com.kotlindiscord.kord.extensions.extensions.Extension.setup) CommentComponent(kind=text, text=\nfunction.<\/p>, value=null)<\/p>\n"
+                          }]
+                        },
+                        "extensionevent": {
+                          "ownKey": "extensionevent",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/events/extensionevent",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionevent"
+                            },
+                            "description": "",
+                            "title": "ExtensionEvent",
+                            "content": "<p>CommentComponent(kind=text, text=Base interface for events fired by Kord Extensions., value=null)<\/p>\n"
+                          }]
+                        },
+                        "extensionunloadedevent": {
+                          "ownKey": "extensionunloadedevent",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/events/extensionunloadedevent",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionunloadedevent"
+                            },
+                            "description": "",
+                            "title": "ExtensionUnloadedEvent",
+                            "content": "<p>CommentComponent(kind=text, text=Event fired when an extension is unloaded programmatically., value=null)<\/p>\n"
+                          }]
+                        },
+                        "extensionloadedevent": {
+                          "ownKey": "extensionloadedevent",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/events/extensionloadedevent",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionloadedevent"
+                            },
+                            "description": "",
+                            "title": "ExtensionLoadedEvent",
+                            "content": "<p>CommentComponent(kind=text, text=Event fired when an extension is loaded, either on first load or programmatically later., value=null)<\/p>\n"
+                          }]
+                        }
+                      },
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/events",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events"
+                        },
+                        "description": "",
+                        "title": "com.kotlindiscord.kord.extensions.events",
+                        "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                      }]
+                    },
+                    "commands": {
+                      "ownKey": "commands",
+                      "childrenPages": {
+                        "commandcontext": {
+                          "ownKey": "commandcontext",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/commands/commandcontext",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/commandcontext"
+                            },
+                            "description": "",
+                            "title": "CommandContext",
+                            "content": "<p>CommentComponent(kind=text, text=Light wrapper class representing the context for a command's action.<p>This is what <code>this<\/code> refers to in a command action body. You shouldn't have to\ninstantiate this yourself.<\/p>, value=null)<\/p>\n"
+                          }]
+                        },
+                        "argumentparser": {
+                          "ownKey": "argumentparser",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/commands/argumentparser",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/argumentparser"
+                            },
+                            "description": "",
+                            "title": "ArgumentParser",
+                            "content": "<p>CommentComponent(kind=text, text=Class in charge of converting string arguments for commands into fully-typed data classes.<p>You most likely don't need to touch this yourself - it's part of the commands framework.<\/p>, value=null)<\/p>\n"
+                          }]
+                        },
+                        "command": {
+                          "ownKey": "command",
+                          "ownPages": [{
+                            "reference": {
+                              "path": "kotlindoc/kord-extensions/kord-extensions",
+                              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                              "fileName": "com/kotlindiscord/kord/extensions/commands/command",
+                              "extension": "html",
+                              "usePrettyUrl": true,
+                              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/command"
+                            },
+                            "description": "",
+                            "title": "Command",
+                            "content": "<p>CommentComponent(kind=text, text=Class representing a single command.<p>You shouldn't need to use this class directly - instead, create an , value=) CommentComponent(kind=typeName, text=Extension, value=com.kotlindiscord.kord.extensions.extensions.Extension) CommentComponent(kind=text, text= and use the\n, value=) CommentComponent(kind=typeName, text=command function, value=com.kotlindiscord.kord.extensions.extensions.Extension.command) CommentComponent(kind=text, text= to register your command, by overriding the , value=) CommentComponent(kind=typeName, text=Extension.setup, value=com.kotlindiscord.kord.extensions.extensions.Extension.setup) CommentComponent(kind=text, text=\nfunction.<\/p>, value=null)<\/p>\n"
+                          }]
+                        }
+                      },
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/commands",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands"
+                        },
+                        "description": "",
+                        "title": "com.kotlindiscord.kord.extensions.commands",
+                        "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                      }]
+                    }
+                  },
+                  "ownPages": [{
+                    "reference": {
+                      "path": "kotlindoc/kord-extensions/kord-extensions",
+                      "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                      "fileName": "com/kotlindiscord/kord/extensions",
+                      "extension": "html",
+                      "usePrettyUrl": true,
+                      "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions"
+                    },
+                    "description": "",
+                    "title": "com.kotlindiscord.kord.extensions",
+                    "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                  }]
+                }}
+              }}
+            }}
+          }},
+          "ownPages": [{
+            "reference": {
+              "path": "kotlindoc/kord-extensions",
+              "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+              "fileName": "kord-extensions",
+              "extension": "html",
+              "usePrettyUrl": true,
+              "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions"
+            },
+            "description": "",
+            "title": "Kord Extensions",
+            "content": "<h1 id=\"kord-extensions\"><a href=\"#kord-extensions\" id=\"kord-extensions\" class=\"anchor\"><\/a>Kord Extensions<\/h1>\n<p>Kord Extensions is an addon for the excellent <a href=\"https://github.com/kordlib/kord\">Kord library<\/a>. It intends to provide\na framework for larger bot projects, with easy-to-use commands and event handling, wrapped up into individual\nExtension objects.<\/p>\n<p>The approach taken here is relatively different from a lot of Kotlin libraries, many of which prefer to provide a\nDSL for quickly prototyping or implementing a small application. Instead,\n<a href=\"https://github.com/Rapptz/discord.py\">Discord.py<\/a> (the Discord library for Python) is a primary source of inspiration\nfor our fairly object-oriented design, especially where it comes to its extensions (which are known as cogs in\nDiscord.py). Despite this, we still strive to provide an idiomatic API that makes full use of Kotlin's niceties.<\/p>\n<p><strong>Note:<\/strong> Kord is <a href=\"https://github.com/kordlib/kord/issues/8\">already working on their own command framework<\/a>. This\nis an independent library, created at a time when we couldn't wait for an official command framework. Once Kord\nhas released their framework, we'll evaluate the possibility of supporting it directly in ours (if necessary).<\/p>\n<h1 id=\"under-development\"><a href=\"#under-development\" id=\"under-development\" class=\"anchor\"><\/a>Under Development<\/h1>\n<p>This file is in an early state, and we're working on bringing over our framework from our bot project. Once we're\nhappy with what we've done, and we've written up some documentation, we'll update this file and make a proper\nrelease.<\/p>\n"
+          }]
+        }}
+      }}
+    },
+    "wiki": {
+      "ownKey": "wiki",
+      "childrenPages": {
+        "components": {
+          "ownKey": "components",
+          "childrenPages": {
+            "extension": {
+              "ownKey": "extension",
+              "ownPages": [{
+                "reference": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "extension",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/extension"
+                },
+                "next": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "command",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/command"
+                },
+                "previous": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "extensible-bot",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot"
+                },
+                "description": "",
+                "title": "Extensions",
+                "content": "<h3 id=\"extensions\"><a href=\"#extensions\" id=\"extensions\" class=\"anchor\"><\/a>Extensions<\/h3>\n<p>An <code>Extension<\/code> represents a single unit of functionality, encompassing\nrelated commands and event handlers, which can be easily defined using\nthe DSL provided.<\/p>\n<p>All extensions need to subclass the <code>Extension<\/code> class. They'll also\nneed to override two things:<\/p>\n<ul>\n<li>The <code>setup<\/code> suspended function. This function is where all\ncommands and event handlers should be registered.<\/li>\n<li>The <code>name<\/code> string. This is a unique identifier for the extension,\nand extension objects can be retrieved by name if needed.<\/li>\n<\/ul>\n<p>You may register commands and event handlers using the <code>command<\/code>\nand <code>event<\/code> DSL functions respectively.<\/p>\n<pre><code class=\"language-kotlin\">class TestExtension(bot: ExtensibleBot) : Extension(bot) {\n    override val name: String = &quot;test&quot;\n\n    override suspend fun setup() {\n        // Register your commands and event handlers here.\n    }\n}\n<\/code><\/pre>\n<p>The <code>setup<\/code> function will be called exactly once, when the first\n<code>ReadyEvent<\/code> is received after connecting to Discord. This ensures\nthat the <code>setup<\/code> function is able to retrieve objects from Discord.<\/p>\n"
+              }]
+            },
+            "extensible-bot": {
+              "ownKey": "extensible-bot",
+              "ownPages": [
+                {
+                  "reference": {
+                    "path": "wiki/components",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "extensible-bot",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot"
+                  },
+                  "next": {
+                    "path": "wiki/components",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "extensible-bot",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot"
+                  },
+                  "description": "",
+                  "title": "Components",
+                  "content": "<h3 id=\"extensible-bot\"><a href=\"#extensible-bot\" id=\"extensible-bot\" class=\"anchor\"><\/a>Extensible Bot<\/h3>\n<p>The <code>ExtensibleBot<\/code> class is the entry point for our framework. It's in charge of managing your\n<a href=\"./extension\">extensions<\/a>, and keeping track of <a href=\"./command\">commands<\/a>.<\/p>\n<p>To get started, you'll need to create an instance of <code>ExtensibleBot<\/code>. You can also subclass it if you need to add\nor change functionality. For example:<\/p>\n<pre><code class=\"language-kotlin\">package com.kotlindiscord.bot\n\nimport com.kotlindiscord.bot.config.config\nimport com.kotlindiscord.bot.extensions.TestExtension\nimport com.kotlindiscord.bot.extensions.VerificationExtension\nimport com.kotlindiscord.kord.extensions.ExtensibleBot\n\n/** \n * The current instance of the bot.\n *\n * It's often better to use named parameters if you need to be specific.\n * Both parameters take the same type, after all!\n */\nval bot = ExtensibleBot(prefix = config.prefix, token = config.token)\n\n/**\n * The main function. Every story has a beginning!\n *\n * @param args Array of command-line arguments. These are ignored.\n */\nsuspend fun main(args: Array&lt;String&gt;) {\n    bot.addExtension(TestExtension::class)\n    bot.addExtension(VerificationExtension::class)\n    bot.start()\n}\n<\/code><\/pre>\n<p>For more information on the public API for <code>ExtensibleBot<\/code>, feel free to take a look at the API docs.<\/p>\n"
+                },
+                {
+                  "reference": {
+                    "path": "wiki/components",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "extensible-bot",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot"
+                  },
+                  "next": {
+                    "path": "wiki/components",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "extension",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/extension"
+                  },
+                  "previous": {
+                    "path": "wiki/components",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "extensible-bot",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot"
+                  },
+                  "description": "",
+                  "title": "Extensible Bot",
+                  "content": "<h3 id=\"extensible-bot\"><a href=\"#extensible-bot\" id=\"extensible-bot\" class=\"anchor\"><\/a>Extensible Bot<\/h3>\n<p>The <code>ExtensibleBot<\/code> class is the entry point for our framework. It's in charge of managing your\n<a href=\"./extension\">extensions<\/a>, and keeping track of <a href=\"./command\">commands<\/a>.<\/p>\n<p>To get started, you'll need to create an instance of <code>ExtensibleBot<\/code>. You can also subclass it if you need to add\nor change functionality. For example:<\/p>\n<pre><code class=\"language-kotlin\">package com.kotlindiscord.bot\n\nimport com.kotlindiscord.bot.config.config\nimport com.kotlindiscord.bot.extensions.TestExtension\nimport com.kotlindiscord.bot.extensions.VerificationExtension\nimport com.kotlindiscord.kord.extensions.ExtensibleBot\n\n/** \n * The current instance of the bot.\n *\n * It's often better to use named parameters if you need to be specific.\n * Both parameters take the same type, after all!\n */\nval bot = ExtensibleBot(prefix = config.prefix, token = config.token)\n\n/**\n * The main function. Every story has a beginning!\n *\n * @param args Array of command-line arguments. These are ignored.\n */\nsuspend fun main(args: Array&lt;String&gt;) {\n    bot.addExtension(TestExtension::class)\n    bot.addExtension(VerificationExtension::class)\n    bot.start()\n}\n<\/code><\/pre>\n<p>For more information on the public API for <code>ExtensibleBot<\/code>, feel free to take a look at the API docs.<\/p>\n"
+                }
+              ]
+            },
+            "event-handler": {
+              "ownKey": "event-handler",
+              "ownPages": [{
+                "reference": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "event-handler",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/event-handler"
+                },
+                "next": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "check",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/check"
+                },
+                "previous": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "command",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/command"
+                },
+                "description": "",
+                "title": "Event Handlers",
+                "content": "<h3 id=\"event-handlers\"><a href=\"#event-handlers\" id=\"event-handlers\" class=\"anchor\"><\/a>Event Handlers<\/h3>\n<p>Event handlers function similarly to <a href=\"./command\">commands<\/a>, but they react to Kord events instead of command\ninvocations on Discord. For a full list of Kord events, you can\n<a href=\"https://gitlab.com/kordlib/kord/-/tree/master/core/src/main/kotlin/com/gitlab/kordlib/core/event\">check out the Kord GitLab<\/a>\n- but for the purposes of this page, we'll just be looking at a <code>MessageCreateEvent<\/code> - an event that is fired when\nsomeone sends a message.<\/p>\n<h4 id=\"defining-event-handlers\"><a href=\"#defining-event-handlers\" id=\"defining-event-handlers\" class=\"anchor\"><\/a>Defining Event Handlers<\/h4>\n<p>Define your event handlers in your extension's <code>setup<\/code> function. Here's a basic example:<\/p>\n<pre><code class=\"language-kotlin\">override suspend fun setup() {\n    event&lt;MessageCreateEvent&gt; {  // this: EventHandler\n        action {  // it: MessageCreateEvent\n            with(it) {\n                message.channel.createMessage(&quot;Thanks for your message, ${message.author!!.mention}&quot;)\n            }\n        }\n    }\n}\n<\/code><\/pre>\n<h4 id=\"options\"><a href=\"#options\" id=\"options\" class=\"anchor\"><\/a>Options<\/h4>\n<p>All event handlers require an <code>action<\/code>. The <code>action<\/code> is the body of the event handler - when Kord fires the\ncorresponding event, this will be executed.<\/p>\n<p>Additionally, just like commands, event handlers support checks.<\/p>\n<h4 id=\"checks\"><a href=\"#checks\" id=\"checks\" class=\"anchor\"><\/a>Checks<\/h4>\n<p>You will likely want to write event handlers that are only executed based on a set of conditions.\nIn order to facilitate this in a manner that allows you to easily reuse these conditions,\nevent handlers support a <a href=\"check\">checks system<\/a>.<\/p>\n<pre><code class=\"language-kotlin\">suspend fun defaultCheck(event: MessageCreateEvent): Boolean {\n    with(event) {\n        return when {\n            message.author?.id == bot.kord.getSelf().id -&gt; false  // Check that we didn't send this message.\n            message.author?.isBot == true               -&gt; false  // Check that another bot didn't send this message.\n            else                                        -&gt; true\n        }\n    }\n}\n\n// ...\n\nevent&lt;MessageCreateEvent&gt; {\n    check(::defaultCheck)\n\n    action {\n        with(it) {\n            message.channel.createMessage(&quot;Thanks for your message, ${message.author!!.mention}&quot;)\n        }\n    }\n}\n<\/code><\/pre>\n<p>You can have as many checks as you need - simply call <code>check<\/code> again for every check you wish to add. If\nyou have multiple check functions to add, you may also specify them all as arguments for a single <code>check<\/code> call.<\/p>\n<pre><code class=\"language-kotlin\">check(\n    ::defaultCheck,  // Default checks we do for every event\n    notChannelType(ChannelType.DM)  // Ensure the event isn't being fired for a DM\n)\n<\/code><\/pre>\n<p><strong>Note:<\/strong> Most of the <a href=\"check\">bundled checks<\/a> only support <code>MessageCreateEvent<\/code> events. If you need to\nsupport other events, feel free to write your own checks and submit them in a pull request!<\/p>\n"
+              }]
+            },
+            "check": {
+              "ownKey": "check",
+              "ownPages": [{
+                "reference": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "check",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/check"
+                },
+                "next": {
+                  "path": "wiki/examples",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "full-command",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command"
+                },
+                "previous": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "event-handler",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/event-handler"
+                },
+                "description": "",
+                "title": "Checks",
+                "content": "<h3 id=\"checks\"><a href=\"#checks\" id=\"checks\" class=\"anchor\"><\/a>Checks<\/h3>\n<p>The checks system provides a light filtering system for <a href=\"command\">commands<\/a> and <a href=\"event-handler\">event handlers<\/a>.\nWe've provided a set of general-purpose checks as part of the framework, to cover most general cases - but you're\nalways able to write your own as well.<\/p>\n<h4 id=\"writing-your-own-checks\"><a href=\"#writing-your-own-checks\" id=\"writing-your-own-checks\" class=\"anchor\"><\/a>Writing Your Own Checks<\/h4>\n<p>While we've already covered writing custom checks inline in your commands and event handlers, often it'll be\nmore useful to define these checks somewhere that they can be re-used.<\/p>\n<p>Every check is simply a suspended function that takes a Kord event object and returns a <code>Boolean<\/code>. If the function\nreturns <code>true<\/code> then the check has passed and processing can continue. If it returns <code>false<\/code> then the check has failed\nand processing stops at that point.<\/p>\n<p>You can define your check as a simple function. For example:<\/p>\n<pre><code class=\"language-kotlin\">suspend fun isNotBot(event: MessageCreateEvent): Boolean {\n    with(event) {  // Make sure the message wasn't created by a bot.\n        return message.author?.isBot == false\n    }\n}\n<\/code><\/pre>\n<pre><code class=\"language-kotlin\">suspend fun isNotDM(event: MessageCreateEvent): Boolean {\n    with(event) {  // Make sure the message wasn't sent as part of a DM.\n        return message.channel.asChannel().type != ChannelType.DM\n    }\n}\n<\/code><\/pre>\n<p>These checks can be passed directly to the <code>check<\/code> function in your command\n(if it operates on MessageCreateEvent objects) or event handler.<\/p>\n<pre><code class=\"language-kotlin\">command {\n    check(::isNotBot, ::isNotDM)\n}\n<\/code><\/pre>\n<p>This is already pretty useful, but we could make our checks more wide-reaching.<\/p>\n<h4 id=\"checks-with-parameters\"><a href=\"#checks-with-parameters\" id=\"checks-with-parameters\" class=\"anchor\"><\/a>Checks with parameters<\/h4>\n<p>In order to write a check which may need to match against another object, we can create a builder function. Let's\nlook at <code>notChannelType<\/code>, which is a check provided with this framework.<\/p>\n<pre><code class=\"language-kotlin\">fun notChannelType(channelType: ChannelType): suspend (MessageCreateEvent) -&gt; Boolean {\n    suspend fun inner(event: MessageCreateEvent): Boolean {\n        with(event) {\n            return message.channel.asChannel().type != channelType\n        }\n    }\n\n    return ::inner\n}\n<\/code><\/pre>\n<p>This function creates a closure around an inner function, and returns that inner function. We can make use of\nit like this:<\/p>\n<pre><code class=\"language-kotlin\">event&lt;MessageCreateEvent&gt; {\n    check(notChannelType(ChannelType.DM))\n}\n<\/code><\/pre>\n<p>This allows us to create far more useful checks that can operate across a variety of options.<\/p>\n<h4 id=\"generic-checks\"><a href=\"#generic-checks\" id=\"generic-checks\" class=\"anchor\"><\/a>Generic checks<\/h4>\n<p>In some cases, you'll want to write checks that can deal with multiple types of event. In order to facilitate\nthis, we provide a <code>CheckUtils<\/code> module containing a set of functions that can return Kord Behaviors for a given\nevent. For example, a check written to support events that concern specific members might look like this:<\/p>\n<pre><code class=\"language-kotlin\">fun hasRole(role: Role): suspend (Event) -&gt; Boolean {\n    suspend fun inner(event: Event): Boolean {\n        val member = memberFor(event) ?: return false\n\n        return member.asMember().roles.toList().contains(role)\n    }\n\n    return ::inner\n}\n<\/code><\/pre>\n<p>We provide the following functions:<\/p>\n<ul>\n<li><code>channelFor(event: Event) -&gt; ChannelBehavior?<\/code><\/li>\n<li><code>guildFor(event: Event): GuildBehavior?<\/code><\/li>\n<li><code>memberFor(event: Event): MemberBehavior?<\/code><\/li>\n<li><code>messageFor(event: Event): MessageBehavior?<\/code><\/li>\n<li><code>roleFor(event: Event): RoleBehavior?<\/code><\/li>\n<li><code>userFor(event: Event): UserBehavior?<\/code><\/li>\n<\/ul>\n<p>These functions will return <code>null<\/code> for an unsupported event type. All the checks bundled with this framework\nsupport generic events - if a check receives an unsupported type, that check will simply fail. These failures\nwill be logged at debug level, so enable SLF4J debug logging if you're not sure - or just use a debugger,\nI'm not your mom.<\/p>\n<h4 id=\"combinators\"><a href=\"#combinators\" id=\"combinators\" class=\"anchor\"><\/a>Combinators<\/h4>\n<p>If you don't want to simply require that all checks pass for a command or event handler, you can use\na combinator check. We currently bundle two checks: <code>or<\/code> and <code>and<\/code>.<\/p>\n<pre><code class=\"language-kotlin\">event&lt;MessageCreateEvent&gt; {\n    check(or(  // Check that the channel is either...\n        channelType(ChannelType.DM)  // A DM channel,\n        channelType(ChannelType.GuildNews)  // Or a news channel.\n    ))\n}\n<\/code><\/pre>\n<h4 id=\"bundled-checks\"><a href=\"#bundled-checks\" id=\"bundled-checks\" class=\"anchor\"><\/a>Bundled Checks<\/h4>\n<p>For a full list of bundled checks, please take a look at\n<a href=\"/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/\">the API documentation for the checks package<\/a>.<\/p>\n"
+              }]
+            },
+            "command": {
+              "ownKey": "command",
+              "ownPages": [{
+                "reference": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "command",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/command"
+                },
+                "next": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "event-handler",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/event-handler"
+                },
+                "previous": {
+                  "path": "wiki/components",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "extension",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/extension"
+                },
+                "description": "",
+                "title": "Commands",
+                "content": "<h3 id=\"commands\"><a href=\"#commands\" id=\"commands\" class=\"anchor\"><\/a>Commands<\/h3>\n<p>A command is an action invoked by a user on Discord. They're the primary method of interacting\nwith most bots, and require a lot of consideration. We've attempted to make things as easy\nand friendly to work with as possible.<\/p>\n<p>You can define commands using the DSL functions available in <a href=\"./extension\">extensions<\/a>.<\/p>\n<h4 id=\"defining-commands\"><a href=\"#defining-commands\" id=\"defining-commands\" class=\"anchor\"><\/a>Defining Commands<\/h4>\n<p>Define your commands in your extension's <code>setup<\/code> function. Here's a basic example:<\/p>\n<pre><code class=\"language-kotlin\">override suspend fun setup() {\n    command { // this: Command\n        name = &quot;ping&quot;\n\n        action { // this: CommandContext\n            message.channel.createMessage(&quot;Pong!&quot;)\n        }\n    }\n}\n<\/code><\/pre>\n<h4 id=\"basic-options\"><a href=\"#basic-options\" id=\"basic-options\" class=\"anchor\"><\/a>Basic Options<\/h4>\n<p>All commands require a <code>name<\/code> and an <code>action<\/code>, defined similarly to the above example.<\/p>\n<ul>\n<li>The <code>name<\/code> of your command should be unique across all installed extensions, and is\nthe name that is used to invoke the command on Discord.<\/li>\n<li>The <code>action<\/code> is the body of the command, which will be executed when a user invokes\nthe command.<\/li>\n<\/ul>\n<p>In addition to these required options, command support a further set of optional\noptions:<\/p>\n<ul>\n<li>\n<p><code>aliases: Array&lt;String&gt;<\/code> - This is a list of alternative names that can be used to\ninvoke the command. Note that if a command exists with a <code>name<\/code> that exists as an\nalias in another command, the command with the matching <code>name<\/code> takes priority.<\/p>\n<p>You can have as many aliases as you like.<\/p>\n<\/li>\n<li>\n<p><code>description: String = &quot;&quot;&quot;<\/code> - This is a description for your command, which will\nbe displayed by the <code>help<\/code> command. Try to make it descriptive, while also keeping\nit short!<\/p>\n<\/li>\n<li>\n<p><code>enabled: Boolean = true<\/code> - If you disable a command by setting this to <code>false<\/code>, it\ncannot be invoked and will not be shown in the <code>help<\/code> command. This can be modified\nat runtime, if required.<\/p>\n<\/li>\n<li>\n<p><code>hidden: Boolean = false<\/code> - If you want it to be possible to invoke your command,\nbut would still prefer it to be hidden from the <code>help<\/code> command, then you can set this\nto <code>true<\/code>.<\/p>\n<\/li>\n<li>\n<p><code>signature: String = &quot;&quot;<\/code> - The command's signature represents how the arguments to the\ncommand should be formatted. For the sake of consistency, all optional arguments should\nbe specified like this: <code>[name]<\/code>. Required arguments should use <code>&lt;name&gt;<\/code>. Lists can\nbe either required or optional, but should contain an ellipsis - <code>&lt;name ...&gt;<\/code>.<\/p>\n<p>The signature will be shown in help commands, and may also be automatically generated from a\ndata class. See the below section on command arguments for more information on signature\ngeneration.<\/p>\n<\/li>\n<\/ul>\n<h4 id=\"checks\"><a href=\"#checks\" id=\"checks\" class=\"anchor\"><\/a>Checks<\/h4>\n<p>You will likely want to write commands that are only invoked based on a set of conditions.\nIn order to facilitate this in a manner that allows you to easily reuse these conditions,\ncommands support a <a href=\"check\">checks system<\/a>.<\/p>\n<pre><code class=\"language-kotlin\">suspend fun defaultCheck(event: MessageCreateEvent): Boolean {\n    with(event) {\n        return when {\n            message.author?.id == bot.kord.getSelf().id -&gt; false  // Check that we didn't send this message.\n            message.author?.isBot == true               -&gt; false  // Check that another bot didn't send this message.\n            else                                        -&gt; true\n        }\n    }\n}\n\n// ...\n\ncommand {\n    name = &quot;ping&quot;\n\n    check(::defaultCheck)\n\n    action {\n        message.channel.createMessage(&quot;Pong!&quot;)\n    }\n}\n<\/code><\/pre>\n<p>If you don't need to make use of the check elsewhere, you can also specify them using a DSL syntax.<\/p>\n<pre><code class=\"language-kotlin\">command {\n    name = &quot;ping&quot;\n\n    check {\n        it.message.author?.id != bot.kord.getSelf().id &amp;&amp;  // Check that we didn't send this message.\n        it.message.author?.isBot == false  // Check that another bot didn't send this message.\n    }\n\n    action {\n        message.channel.createMessage(&quot;Pong!&quot;)\n    }\n}\n<\/code><\/pre>\n<p>You can have as many checks as you need - simply call <code>check<\/code> again for every check you wish to add. If\nyou have multiple check functions to add, you may also specify them all as arguments for a single <code>check<\/code> call.<\/p>\n<pre><code class=\"language-kotlin\">check(\n    ::defaultCheck,  // Default checks we do for every command\n    notChannelType(ChannelType.DM)  // Ensure the command isn't being invoked in a DM\n)\n<\/code><\/pre>\n<h4 id=\"command-arguments\"><a href=\"#command-arguments\" id=\"command-arguments\" class=\"anchor\"><\/a>Command Arguments<\/h4>\n<p>In order to make life as easy as possible, you have the option of creating a data class that represents the\narguments for your command, allowing for automatic generation of the command signature and parsing of command\narguments. For example:<\/p>\n<pre><code class=\"language-kotlin\">data class SampleArgs(\n    val optionalInt: Int = 1,  // An optional integer.\n    val requiredUsers: List&lt;User&gt;  // A list of User objects.\n)\n\ncommand {\n    name = &quot;sample&quot;\n\n    signature&lt;SampleArgs&gt;()  // Automatically generate the command signature.\n\n    action {\n        val parsed = parse&lt;SampleArgs&gt;()  // Automatically parse the command arguments into the data class\n\n        with(parsed) {  // this: SampleArgs\n            message.channel.createMessage(\n                &quot;Arguments: optionalInt = $optionalInt | &quot; +\n                    &quot;requiredUsers = ${requiredUsers.joinToString(&quot;, &quot;) { it.username }}&quot;\n            )\n        }\n    }\n}\n<\/code><\/pre>\n<p>In order to facilitate this manner of parsing, the parser follows these rules:<\/p>\n<ul>\n<li>First, split the message into arguments. Spaces separate arguments from each other, but users may surround\na set of arguments with double quotes in order to have them treated as a single argument, preserving the spaces.<\/li>\n<li>For each parameter in the data class' primary constructor (not the properties defined in the body, if any):\nTake an argument and try to convert it to the correct type.\n<ul>\n<li>If the parameter is a List, attempt to convert all remaining arguments for the command.<\/li>\n<li>If the argument could not be converted, but you gave the parameter a default value, skip it and try the next\nparameter with the same argument.<\/li>\n<li>If the argument could not be converted and does not have a default value, the user will be presented with an\nerror message.<\/li>\n<\/ul>\n<\/li>\n<li>Once all the parameters have been converted, the data class is constructed using them. This is then returned\nfrom the <code>parse<\/code> function.<\/li>\n<\/ul>\n<p>We also support an alternative syntax for specifying command parameters. If a parameter contains a colon,\nit's split into a key-value pair:<\/p>\n<ul>\n<li>The dataclass is searched for a parameter matching the key on the left side of the colon.<\/li>\n<li>If the dataclass contains a matching parameter, we convert the value on the right as normal and store it.\n<ul>\n<li>If the parameter is a list type, the value will be stored within the list. This means that multiple\narguments can be specified this way, and they'll all be inserted into the same list.<\/li>\n<li>If not, it'll be stored directly within the parameter.<\/li>\n<\/ul>\n<\/li>\n<\/ul>\n<p>The parser supports the following types:<\/p>\n<ul>\n<li>Basic types: <code>String<\/code>, <code>Regex<\/code>, <code>Boolean<\/code>, <code>Int<\/code>, <code>Short<\/code>, <code>Long<\/code>, <code>Float<\/code>, <code>Double<\/code>, <code>BigDecimal<\/code>, <code>BigInteger<\/code>.<\/li>\n<li>Kord types: <code>Channel<\/code>, <code>Guild<\/code>, <code>GuildEmoji<\/code>, <code>Role<\/code>, <code>User<\/code>.<\/li>\n<\/ul>\n<p><strong>Note:<\/strong> <code>GuildEmoji<\/code> and <code>Role<\/code> objects will be retrieved from the within the current guild. It is not possible\nto specify which guild to use at this time, but we may add support for that later.<\/p>\n"
+              }]
+            }
+          }
+        },
+        "examples": {
+          "ownKey": "examples",
+          "childrenPages": {
+            "full-event-handler": {
+              "ownKey": "full-event-handler",
+              "ownPages": [{
+                "reference": {
+                  "path": "wiki/examples",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "full-event-handler",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-event-handler"
+                },
+                "previous": {
+                  "path": "wiki/examples",
+                  "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                  "fileName": "full-command",
+                  "extension": "html",
+                  "usePrettyUrl": true,
+                  "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command"
+                },
+                "description": "",
+                "title": "Full Event Handler Example",
+                "content": "<h3 id=\"full-event-handler-example\"><a href=\"#full-event-handler-example\" id=\"full-event-handler-example\" class=\"anchor\"><\/a>Full Event Handler Example<\/h3>\n<p>The below is a sample extension implementing an event handler, which makes use of and explains\nall the options available to you.<\/p>\n<pre><code class=\"language-kotlin\">package com.kotlindiscord.kord.extensions.samples\n\nimport com.gitlab.kordlib.common.entity.ChannelType\nimport com.gitlab.kordlib.core.event.message.MessageCreateEvent\nimport com.kotlindiscord.kord.extensions.ExtensibleBot\nimport com.kotlindiscord.kord.extensions.checks.notChannelType\nimport com.kotlindiscord.kord.extensions.extensions.Extension\n\nclass EventHandlerSample(bot: ExtensibleBot) : Extension(bot) {\n    override val name: String = &quot;event-handler-sample&quot;\n\n    override suspend fun setup() {\n        val eventHandler = event&lt;MessageCreateEvent&gt; {  // Define an event handler, optionally storing it if needed.\n            // This one listens for new messages.\n            check(notChannelType(ChannelType.DM))  // Check that the message wasn't sent to us\n            // in a DM.\n            check {\n                // Check that the message wasn't sent by a bot.\n                it.message.author?.isBot == false\n            }\n\n            check {\n                it.message.author != null  // Ensure the message has an author (webhooks and some system messages don't)\n            }\n\n            action {  // The body of the event handler, executed assuming the checks all pass.\n                with(it) {  // The event object\n                    // We know the author isn't null because of our check earlier!\n                    message.channel.createMessage(&quot;Thanks for your message, ${message.author!!.mention}&quot;)\n                }\n            }\n        }\n    }\n}\n<\/code><\/pre>\n"
+              }]
+            },
+            "full-command": {
+              "ownKey": "full-command",
+              "ownPages": [
+                {
+                  "reference": {
+                    "path": "wiki/examples",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "full-command",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command"
+                  },
+                  "next": {
+                    "path": "wiki/examples",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "full-command",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command"
+                  },
+                  "previous": {
+                    "path": "wiki/components",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "check",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/components/check"
+                  },
+                  "description": "",
+                  "title": "Examples",
+                  "content": "<h3 id=\"full-command-example\"><a href=\"#full-command-example\" id=\"full-command-example\" class=\"anchor\"><\/a>Full Command Example<\/h3>\n<p>The below is a sample extension implementing a command, which makes use of and explains\nall the options available to you.<\/p>\n<pre><code class=\"language-kotlin\">package com.kotlindiscord.kord.extensions.samples\n\nimport com.gitlab.kordlib.common.entity.ChannelType\nimport com.gitlab.kordlib.core.entity.User\nimport com.kotlindiscord.kord.extensions.ExtensibleBot\nimport com.kotlindiscord.kord.extensions.checks.notChannelType\nimport com.kotlindiscord.kord.extensions.extensions.Extension\n\nclass CommandFullSample(bot: ExtensibleBot) : Extension(bot) {\n    override val name: String = &quot;command-action-sample&quot;\n\n    override suspend fun setup() {\n        /**\n         * A data class representing the arguments for the command we'll define below.\n         *\n         * You don't have to define this in the setup function, it's just placed here for this\n         * example.\n         *\n         * Arguments are attempted to be filled in the order they're defined in the data class'\n         * primary constructor. If an argument has a default value then it's considered optional,\n         * so it will be skipped if type conversion fails.\n         *\n         * Typed [List] arguments are filled using the rest of the command's arguments, so most\n         * of the time you'll only want to provide a list as the last argument for a command.\n         *\n         * For more information on how this works, please check out the examples in the wiki.\n         */\n        data class SampleArgs(\n            val optionalInt: Int = 1,  // An optional integer\n            val requiredUsers: List&lt;User&gt;  // A list of User objects, to be converted from IDs \n                                           // or mentions\n        )\n\n        val sampleCommand = command {  // You can optionally store the command object yourself \n                                       // if you need it elsewhere.\n            aliases = arrayOf(&quot;test&quot;, &quot;hello&quot;)  // Alternative names that can be used for \n                                                // command invocation.\n            description = &quot;A sample command. Outputs `Hello, world!'.&quot;  // Description for help \n                                                                        // command.\n            enabled = true  // Whether the command is enabled; this can be changed at runtime \n                            // as well.\n            hidden = false  // Whether to hide the command from help command listings.\n            name = &quot;sample&quot;  // The name of the command.\n\n            signature&lt;SampleArgs&gt;()  // Generate the signature from the given dataclass.\n            signature = &quot;[optionalInt] &lt;requiredUsers ...&gt;&quot;  // Manually set the command's \n                                                             // signature instead.\n\n            check(notChannelType(ChannelType.DM))  // Check that the message wasn't sent to us \n                                                   // in a DM.\n            check {\n                // Check that the message wasn't sent by a bot.\n                it.message.author?.isBot == false\n            }\n\n            action { // The body of the command, executed assuming the checks all pass.\n                with(parse&lt;SampleArgs&gt;()) {  // Automatically parse command arguments into the\n                                             // given data class.\n                    message.channel.createMessage(&quot;Hello, world!&quot;)\n\n                    // Since we're in a `with` block, we can directly use the parameters from \n                    // the data class.\n                    message.channel.createMessage(\n                        &quot;Arguments: optionalInt = $optionalInt | &quot; +\n                            &quot;requiredUsers = ${requiredUsers.joinToString(&quot;, &quot;) { it.username }}&quot;\n                    )\n                }\n            }\n        }\n    }\n}\n<\/code><\/pre>\n"
+                },
+                {
+                  "reference": {
+                    "path": "wiki/examples",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "full-command",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command"
+                  },
+                  "next": {
+                    "path": "wiki/examples",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "full-event-handler",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-event-handler"
+                  },
+                  "previous": {
+                    "path": "wiki/examples",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "full-command",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command"
+                  },
+                  "description": "",
+                  "title": "Full Command Example",
+                  "content": "<h3 id=\"full-command-example\"><a href=\"#full-command-example\" id=\"full-command-example\" class=\"anchor\"><\/a>Full Command Example<\/h3>\n<p>The below is a sample extension implementing a command, which makes use of and explains\nall the options available to you.<\/p>\n<pre><code class=\"language-kotlin\">package com.kotlindiscord.kord.extensions.samples\n\nimport com.gitlab.kordlib.common.entity.ChannelType\nimport com.gitlab.kordlib.core.entity.User\nimport com.kotlindiscord.kord.extensions.ExtensibleBot\nimport com.kotlindiscord.kord.extensions.checks.notChannelType\nimport com.kotlindiscord.kord.extensions.extensions.Extension\n\nclass CommandFullSample(bot: ExtensibleBot) : Extension(bot) {\n    override val name: String = &quot;command-action-sample&quot;\n\n    override suspend fun setup() {\n        /**\n         * A data class representing the arguments for the command we'll define below.\n         *\n         * You don't have to define this in the setup function, it's just placed here for this\n         * example.\n         *\n         * Arguments are attempted to be filled in the order they're defined in the data class'\n         * primary constructor. If an argument has a default value then it's considered optional,\n         * so it will be skipped if type conversion fails.\n         *\n         * Typed [List] arguments are filled using the rest of the command's arguments, so most\n         * of the time you'll only want to provide a list as the last argument for a command.\n         *\n         * For more information on how this works, please check out the examples in the wiki.\n         */\n        data class SampleArgs(\n            val optionalInt: Int = 1,  // An optional integer\n            val requiredUsers: List&lt;User&gt;  // A list of User objects, to be converted from IDs \n                                           // or mentions\n        )\n\n        val sampleCommand = command {  // You can optionally store the command object yourself \n                                       // if you need it elsewhere.\n            aliases = arrayOf(&quot;test&quot;, &quot;hello&quot;)  // Alternative names that can be used for \n                                                // command invocation.\n            description = &quot;A sample command. Outputs `Hello, world!'.&quot;  // Description for help \n                                                                        // command.\n            enabled = true  // Whether the command is enabled; this can be changed at runtime \n                            // as well.\n            hidden = false  // Whether to hide the command from help command listings.\n            name = &quot;sample&quot;  // The name of the command.\n\n            signature&lt;SampleArgs&gt;()  // Generate the signature from the given dataclass.\n            signature = &quot;[optionalInt] &lt;requiredUsers ...&gt;&quot;  // Manually set the command's \n                                                             // signature instead.\n\n            check(notChannelType(ChannelType.DM))  // Check that the message wasn't sent to us \n                                                   // in a DM.\n            check {\n                // Check that the message wasn't sent by a bot.\n                it.message.author?.isBot == false\n            }\n\n            action { // The body of the command, executed assuming the checks all pass.\n                with(parse&lt;SampleArgs&gt;()) {  // Automatically parse command arguments into the\n                                             // given data class.\n                    message.channel.createMessage(&quot;Hello, world!&quot;)\n\n                    // Since we're in a `with` block, we can directly use the parameters from \n                    // the data class.\n                    message.channel.createMessage(\n                        &quot;Arguments: optionalInt = $optionalInt | &quot; +\n                            &quot;requiredUsers = ${requiredUsers.joinToString(&quot;, &quot;) { it.username }}&quot;\n                    )\n                }\n            }\n        }\n    }\n}\n<\/code><\/pre>\n"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "ownPages": [
+        {
+          "reference": {
+            "path": "",
+            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+            "fileName": "wiki",
+            "extension": "html",
+            "usePrettyUrl": true,
+            "link": "https://kord-extensions.docs.kotlindiscord.com/wiki"
+          },
+          "description": "",
+          "title": "Wiki",
+          "content": "<html>\n <head><\/head>\n <body>\n  <h3 id=\"contents\"><a href=\"#contents\" id=\"contents\" class=\"anchor\"><\/a>Contents<\/h3> \n  <ul> \n   <li> <p><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot\">Components<\/a><\/p> \n    <ul> \n     <li><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot\">Extensible Bot<\/a><\/li> \n     <li><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/components/extension\">Extensions<\/a><\/li> \n     <li><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/components/command\">Commands<\/a><\/li> \n     <li><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/components/event-handler\">Event Handlers<\/a><\/li> \n     <li><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/components/check\">Checks<\/a><\/li> \n    <\/ul> <\/li> \n   <li> <p><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command\">Examples<\/a><\/p> \n    <ul> \n     <li><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command\">Full Command Example<\/a><\/li> \n     <li><a href=\"https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-event-handler\">Full Event Handler Example<\/a><\/li> \n    <\/ul> <\/li> \n  <\/ul> \n <\/body>\n<\/html>\n"
+        },
+        {
+          "reference": {
+            "path": "wiki",
+            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+            "fileName": "book",
+            "extension": "pdf",
+            "usePrettyUrl": false,
+            "link": "https://kord-extensions.docs.kotlindiscord.com/wiki/book.pdf"
+          },
+          "description": "",
+          "title": " Book",
+          "content": "%PDF-1.4\n%����\n1 0 obj\n<<\n/Type /Catalog\n/Version /1.7\n/Pages 2 0 R\n>>\nendobj\n3 0 obj\n<<\n/CreationDate (D:20201004162916+00'00')\n/Producer (openhtmltopdf.com)\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [4 0 R 5 0 R 6 0 R 7 0 R 8 0 R 9 0 R 10 0 R 11 0 R 12 0 R 13 0 R\n14 0 R 15 0 R 16 0 R 17 0 R 18 0 R 19 0 R]\n/Count 16\n>>\nendobj\n4 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 20 0 R\n/Resources 21 0 R\n/Annots [22 0 R 23 0 R 24 0 R 25 0 R 26 0 R 27 0 R 28 0 R 29 0 R 30 0 R 31 0 R]\n>>\nendobj\n5 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 32 0 R\n/Resources 33 0 R\n/Annots [34 0 R]\n>>\nendobj\n6 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 35 0 R\n/Resources 36 0 R\n/Annots [37 0 R]\n>>\nendobj\n7 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 38 0 R\n/Resources 39 0 R\n/Annots [40 0 R]\n>>\nendobj\n8 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 41 0 R\n/Resources 42 0 R\n/Annots [43 0 R 44 0 R 45 0 R]\n>>\nendobj\n9 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 46 0 R\n/Resources 47 0 R\n/Annots [48 0 R 49 0 R]\n>>\nendobj\n10 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 50 0 R\n/Resources 51 0 R\n>>\nendobj\n11 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 52 0 R\n/Resources 53 0 R\n/Annots [54 0 R 55 0 R 56 0 R 57 0 R 58 0 R]\n>>\nendobj\n12 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 59 0 R\n/Resources 60 0 R\n>>\nendobj\n13 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 61 0 R\n/Resources 62 0 R\n/Annots [63 0 R 64 0 R 65 0 R]\n>>\nendobj\n14 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 66 0 R\n/Resources 67 0 R\n/Annots [68 0 R 69 0 R 70 0 R]\n>>\nendobj\n15 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 71 0 R\n/Resources 72 0 R\n/Annots [73 0 R]\n>>\nendobj\n16 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 74 0 R\n/Resources 75 0 R\n>>\nendobj\n17 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 76 0 R\n/Resources 77 0 R\n/Annots [78 0 R]\n>>\nendobj\n18 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 79 0 R\n/Resources 80 0 R\n>>\nendobj\n19 0 obj\n<<\n/Type /Page\n/MediaBox [0.0 0.0 595.275 841.875]\n/Parent 2 0 R\n/Contents 81 0 R\n/Resources 82 0 R\n/Annots [83 0 R]\n>>\nendobj\n20 0 obj\n<<\n/Length 1122\n/Filter /FlateDecode\n>>\nstream\r\nx�}��n\u001c7\u0010E��\n.�\r�W��\u0003\u001bA�,\u0002\f�E��2��8=#?���粻YU�c�\u0004-x@V�K\u0016����;�*�M�?\u001aoߛ��O��߬�oM*�yr\r\u0013.�hr����f�R�r\u0003Ī�H�3��+���O���\u0007�!�\\�,����d�%\u0002\u0014��\"P͓-޵��Y\u0003�\r��\u0010rU�\u001aP�����XȌ\\��c��*@�\u0007�r��Q�xސ?b�X<c\u0013�̴b\u0010�j��9��R+�>��\u0013\u0010\u0001U\nv\u001a2\u0004�M\u001br\u0005�͓\u0004\u001322b!��\u001a\u0005�W�&d���S\u000et6J\u001a�\u001b�G�\u001b�{�5�0����\u001a�T\u0002\u000eN��\u0000\u0014)*\u0019��s�쉃\t\u0019\u0019��J.ǞI�*@��S\u000e��˼!ĺ��w�Z�ؕ����(\u0015R�Q��� Q�H\u001bgȖF,\u0006�O����wI*WI;�EL��\u001b;{�����\u0012����\\�f&���f3�6\u0019�\u0003\u000e&ddT>3�\u0007�H���\u001f�,}�\u0018i�2o�\u001f�n,�&\u0014|Q�St���(�)��\u001f��A����\u0010G\u00122�)�\t�E�:�!\u0007�^�#Fڴ�\u001b��H7�V�[w+�:\u000f�I\u001ax�=\u001f=7I\u0003�\u001fP�%�n*H5p��5K0!#�4��K(�dU(|�&��\u0003�\u0006��\r�#֍��aS�.��˜jsS+�̩V���\\�:n��$%\u0018\u0013�(�M-�LA�9��2��*0A��ռ�hĺ��w^��CwS�\u000b9B�UUN%\u0003E-b\u0010m{0�Ñ�lٔ�Ҝ�EY.\u0013\u0000�\"\u0017�-˼!|�tt��}u2߽\t64{z2ay�\u0004����6Q��.�����}~��?__\u001e�/�������ɬ����Kp}����:��N����L��\u00115��n�1��E�5~UZ�L_�\u000f�ń��?Z�͊����[V�G2�w.�\u0010��e���\t��.\u001f��ZU���:��A\u0018*N�,���{�[o\u00153�;��xz~E�2\u000f�`}�vM���6}��\u001f�痝.�yD�ЅQ^c\u000b�5$�o�w���X\u0016ݗ��\\_XJ��u�]\u0014���e�堄�;�>�g^w\u001c�5�E\u0011m���\f/\u000f׷{Iir9ĵ��TJ�q1�5��^\u000e���P�ܗ����\u0007�d�����^R����\u0012�[v��\u001e��f���Xt_Tl�#b٧w��X\u0012.\u0002M�\b�\u0015��0��\u0005�\u001a6�Z���P�ܻx�\u0007Wql��\u001e.\u001f���\u001e\u0011�ͱ�m F�sH\n͂\u0002_�e�a(\u000b��\u000e�ܗu1o��g�\u0015�ݔ��+�J\\\u000e/�&����\u0007���Y�\u0017�c�}��\u000bG�_$���(�g�\u0011�\u0003IX\u001d�\r\nendstream\nendobj\n21 0 obj\n<<\n/Font 84 0 R\n>>\nendobj\n22 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 85 0 R\n/Rect [42.0 733.3125 42.0 749.5125]\n/BS 86 0 R\n>>\nendobj\n23 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 87 0 R\n/Rect [72.0 706.4625 132.675 719.8875]\n/BS 88 0 R\n>>\nendobj\n24 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 89 0 R\n/Rect [102.0 679.6125 173.0625 693.0375]\n/BS 90 0 R\n>>\nendobj\n25 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 91 0 R\n/Rect [102.0 666.1875 154.6875 679.6125]\n/BS 92 0 R\n>>\nendobj\n26 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 93 0 R\n/Rect [102.0 652.7625 156.675 666.1875]\n/BS 94 0 R\n>>\nendobj\n27 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 95 0 R\n/Rect [102.0 639.3375 176.3625 652.7625]\n/BS 96 0 R\n>>\nendobj\n28 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 97 0 R\n/Rect [102.0 625.9125 137.3625 639.33746]\n/BS 98 0 R\n>>\nendobj\n29 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 99 0 R\n/Rect [72.0 599.0625 119.3625 612.4875]\n/BS 100 0 R\n>>\nendobj\n30 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 101 0 R\n/Rect [102.0 572.2125 220.05 585.6375]\n/BS 102 0 R\n>>\nendobj\n31 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 103 0 R\n/Rect [102.0 558.7875 239.7 572.21246]\n/BS 104 0 R\n>>\nendobj\n32 0 obj\n<<\n/Length 1135\n/Filter /FlateDecode\n>>\nstream\r\nx��W�n�6\u0010}�WL�6\tRF��A[t��\u0002[�@�\u001a-��\u000f�D�ZK���wc\u0014���Ȳ,y�X�\u0015�p.<s�O��\\/\n��#�gǅ�\u000ew�\u0017������B�݀�x�r� a\"\n\\��ʁ�\u000bɐ\u001f�\u0010�Ƨ����S�\u001b�4K���yx�A�0�\u001d�J9�\u0002�0b^(�\u0004f�s�6�V�mna��y�9��h����j|,\u000fG\u001e�\u0018�����ɿ\n���\u0015�ip�`�K6(��g��X�\n�i{\b��\u0017�ũ.\"\u0011\"޼՝�\u0014�����E\"p��\"��l\u001a(\u001a�h\u0002�1;�袶�k\u0003zk 7�R_�Y3�`���\u001aҕ4K\u0005:�J�rY�K���Q\u0004\u001e��ыC��(\u0019\u0007p|���}V\u0010`\u0016�]z��\\?I��?��^k� ,�B�|T�$\u001c蟗\u001e\rP��b7�>\f]�C���MǬ��Z�\b&�\b�\u0019�\u0007Yg�VjC\u0010Z#�5��b\"���D\u000b��\u0016�\n;�'�w��a��PP�\r�;Yy\"C���\u001ek����/�6�<\n5�\u0015�&{\u0005ja0(♆���Xi���zo�\u0012j�2�\u001aR��U�,2\u0015�ԩ�����\u0007�\u0007��\u0018�����)Y6\u001a��\u0016\u000bEN~{�W�/b�y��\u0013�g�\u0011\u0004�wB�&M�e����Xc!��:��CY\u0016v��=�E=�jS��+��]\u00111�\u000f!m��\u0012Mb��Z۲���I����$���\\��q\u0017d�����X��Xv��\u001b\u000e\u0012������-\u001f˒�Tc�\u000e�\tNb�i(����\u000fe��H%e�5�\"޵�\u0017������eΜ���m������\t\n^D���\u0003\rw@�%�\u001a��aTQ4/\b�\t&E�D�\u0007�&'h�L��$\u0006�N\u001e���a��U��n�(�q8e��4�Pܜ\u0016�BA�Q)%hJ�8\u000e\"t��E�WC�V�U��\u0006%`w\u001b�=<�xdY~s݁��08�\u0003�\u001e&hĜy�\u0001�ϲ$��{\u0018�`~�1*/�Q����|�\u0010�\u0011�^�\u001e�\u0013�\u00061K�\u0001�I����E}#�SI�\u0017\u000e����g�\u000bFc5�\\�\u0006$&\b��\u001a��\u0014�p\u0019\f&��\u0017\u0001\u0013qtd�m\"\u0001w�\u0006�\u001a#wD�n\u0018}�%��Oۊ�CF�7$PP,kmT6�>>my}���^\\K�~ 4[$+�\u0004\bX�����}�G���� N?�o��놽���o/�\u001fT�87�\u00165�\u0019����v�M!�\u0017��U��M�5.B�w@�Pv>ڙ?��d\u0000\t��}�k����\u0010��u�����׸\u0006W�+\u0000���7�EY����\u000f���bṌ�8\u001c���\\�\u00127k��G�MEB��\u001a�m���L��5҉�g�]H�\u001e�N�ߜO��?\u0006\u0012qm\r\nendstream\nendobj\n33 0 obj\n<<\n/Font 105 0 R\n>>\nendobj\n34 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 106 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 107 0 R\n>>\nendobj\n35 0 obj\n<<\n/Length 1125\n/Filter /FlateDecode\n>>\nstream\r\nx��W[o�6\u0014~ׯ8{�\u0013d�H݃mX\u000b�@\u000b\f�0c�0([�$�\"�&\u0018��wHɲ�ʱ�+x�s�w�s�g�%�\u0017\u0005��a��q�C]����\u001fp!s�\u0010b7 1^�� H\b�\u0002���r �BcȏQ�Z������өэ�l6λ�s��\u0002�a�;�J)�\f�0\"^��\u0004���x|ҢVź\u0014�N�\u001bX~r\u001e�N{\u0019���,!��_����H\u0003\u0017��t<^�:�7�Q��,8\u000f�c$q���\u0001Z}\u0006���\"\u001a!bN��r+�E\r�%$b�K�\u0014!-�RP(�hBԺy��,j\r�l@\u001e\u001a�\u001b^����\u0011�����\u001a�-o6\u0002d\u000e\u0015����7�l��\"�\u0000=�^\u001cz$D�8�ӫ���\u0000�\b��z���$�\u001c�������\u001c\n\u0019�Q�\u001a�@Zz2`�6����0tц.k5�������\t#�����\u001d�:��\u0010{\u0003�nx�3���H��3�\u0002=�E����\t�]��0NH�L�\r�;Yy&C�ZN������E�\u0006�G���B�d�@-\f\u0006����\u0011\u001a��\u0016ٝ�ޛ��Z�\f���\u0011\\\u000bD\u0016��w�T\\�������sO\u0004��\u0007H�\u0014/�\u0004uXwբ�ȍ���\u0015��#\u001e����$�/���N\f��&�2���B��\u0010�C�j�!/\u000b�L�=�E<�j_��+�\u0019�,\"�\u001eC�#\u00079��\u001c���eQg�Je���Y���\\��q\u0017dQ�e��M�T�y��~]7\u001c$\u001e�#?��[>�%Y\n�\u001f��\u0019Nb�iȺ���\u000f�\u0014y�r���8�h�z^t�3?\u0006�.sfڋ\u001f�25>�oog(x��\u0006~\u000b4܂\u0019-�ip6�*��\u000b��\f�,$�����\f\r\u001c�I\u001cu�� ��9>\u001d�Bkј�;(\u00015\u000e�\f��\f)\u0014���\\\u000bP{��\u0004͉\u0014�A�n{���vh]�/W(\u0001��\u0017��s\u0013\u000f/��;�\u0011\u0006�|���\f��\u0012/8����\u0006t�\u0011F<X-��ȋ'�wu՞�\u0010�\u001db֋�qu3�m\u0010��\u001d���\u001cߏH�7��9\u0015�}�؟\b<~\u0011�`(-��+�� �\u001fj�s�Å0�M\"�\u0005��щ�?�D\u0002�.\n�6\r64���Xr���P!�\u00151�+#\u0010Pljوl\u0006}|���Mj^zq-����\u000eHV\\\t\u00100��ja�}h���w� N?�n��놽���o/�\u001f�Xqn�-j�\u0018�Ǉ\u0007;��Ë�vպlz�)��E��\u0012�\u001e�·����,\u0003H`��c�]����e�p���\u0004���}�kpe_\u0001�e*X�E\no�`W�\u0017\u000b�%Ԍñ�;ȅ(q�\u0016��(�T8�R�k��X�d����\u0005>�v!\u001d{��\u0012�9���\u001fKr�\r\nendstream\nendobj\n36 0 obj\n<<\n/Font 108 0 R\n>>\nendobj\n37 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 109 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 110 0 R\n>>\nendobj\n38 0 obj\n<<\n/Length 1128\n/Filter /FlateDecode\n>>\nstream\r\nx��V�n�6\u0010��+\u0006{i\u0016\b\u0018��()@\u000f���P���\u001a(��\u0007Y�b\u00052�HrR���GY�%;���@8�̼y�y��2�\u000b\u0003zs\u0004����p�~w���\\�\u001cOR�\u0006,\u0086�\u0013\u00041\u0013a�\nk+G6O�@~\u0004#������󧣑���O���\u000b��=\u0016\u0005RHd�&���\u0011X\n\u0018����a�O.�|��s4�\u000ePH��К�\b\u00061\u000es�\f��fm\u0001s�\bn�8(\u0000��8�`J�\u0011&�o�݇�(-E�-���u��F\u0015󀅡�\u0006���\u000f�a��\u009a�U[���\u0006;Y����yĄ\u0017�rT8ǁ���q��4.��o�?ĺ(�X��s�\u000b'��*wx�\u0001�|A�\f��3�i�un\u001e�m�n�J7\u001fi��<���F4��+b\u0016u{��e9,y����[\u000e�\r\u001eۄ=0p肓3p�`�kb�\u000f��\u0015�Ź\u001f:^�<��}�tՁs�< �g~T�]�\u001a�ۆ\u0012j\n�T*�뢥*�|��\u0016X��h\u000f��tZmwIcv��LZ�\u0011L�Dg��\u0019�W\u0004�\u0002�(f�f4Bx��V=W��\u0005\u0013�#Y\u001b�,U���ۦH7�&�֊T�\u0014�2�\u0017\u001a\b�\u001d�v��˷�hWW�E�26�J\u0006���T���ِV\b�V���i\tF��W#\n��E7h����3Zm��'$Iʦ��WU�@K�[�\u0014����a\u0017�t����,�84*\u0013�\u0000\u0014\u001fOf5W\u0017\u0017h_3�\u00137\u0010��\u0006϶�L�Ec����6�V��|���åfS���\u001c�L��dx��Q�~7[�\bz�5.�z*�\u0016�f��8r\\\u0006�8ZH�\u0011�N��nԴ5��'�0��\t|�+����\u000bUS^�]��&�=r5,�Z?�\u0014S�\u000fA�\u0010\u0014LfKY�@��V��\u001e�Q���c} �DE�u�\u0001\u000bBμh����=m�\u0003\r�_m��H_M�I�qi:a��\u000by\u001d\u001e��u7�4\u00122�p3G�'<�V`h\u001a�/m�;\nY .1t\\̒\u001b�,�qʾ�1�����\u0003�Ik�=�q+�G�[���\u001a�x���{���R}��Ǐd-�\u000e��[�Mp(�\u001f�z����פ�Ꞿu#B?Ӈ\u0016@>�GE<\u0016\\F�uɜ!u��x�\f�\u001f��O}�����а�j�k��-`�\u000f�H�qd3}_�\u0004�����k\u000f���%�ㅺ\u0015\u001f5~�u��\u0002\u0012\u000e�I!��hR����+�*s5+ݍj^�M;3v��=\u001b�\u0001\u001aQ�U�\n�gI~�\u0007�MK\u001b\u001d��\u0006Q\u001e5n\u001a��fxg\u0006���\u0000�����d\u0010q�gr��_�&�꬗z��\u001e�\tv�v�\u000b\u0002��g��Ӑ�\u001b5�,\u001a>\u0006���B^W[\u001a��\u0014��ꮼH4��\u000f�\u0005�\u001f\u0001V`C\r\nendstream\nendobj\n39 0 obj\n<<\n/Font 111 0 R\n>>\nendobj\n40 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 112 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 113 0 R\n>>\nendobj\n41 0 obj\n<<\n/Length 2353\n/Filter /FlateDecode\n>>\nstream\r\nx��Yko�6\u0016�>����$��\u0011�w�.�4[l\u0017�j�X4� �p<���H\u001a;���}ϥD��\\k\u001c��n�sﹼ/2�7\u0001\u000f�4f�\u001b���\t�o\u001b\u0011�\u001f7���\u0002�ۄ\t˂�gXPo�8�2�\u00039�*G\u0016&\u0004\u0014e\u0010b��e�\u001f6?o\u001a��?��&\ty\u0000y\u0014�<K�4��Y��$Lb�\u0012\tA\u0012D\u0010�\u0010\u0011h\u0012�,\n�*#�n`I\"D�:�8�H�`Vb4b�,˹\b�<f\u0016J�=y��*g�vcM���\u0006kAq\u000b'�\r�0\u0013<\u0010\u001e�0�y�%�%\u001e�\u0019$\u001eq+r�[��4c͂Y��\u001df��8��\u0016)\u000b!rԍ�\u000ec���0\u0010\u000b^>]\u0011�,\u000f=�B�$\u0011.]! �\u001e�Y�ҝ�3\u0013�e\u0005F�CW�\u001c�=�\"!��o\u0014���\u001ac�AYP�\u0018�0�Ƭ�Hr!�\u001b�2\u0014\u0010�(�&X�C�\n\r\u001b\u000bf%F��,È�i��́�I\u0014\bW�\u00119��u�|����1\u00179~#�C�\\�gaB4\r�ȡ\u001d^K�\u0019V�0�B�ɂY��h��<�!\u00121a\u000eT�%�5wU\u001a���Yg�7X\u000b�>�X�\u0014��8�c�cD�t��\u0001Dn��\u0012���̈́f$+1�\u001c�q�\u0003�g�Ўc�����,ri�u�v�����F��~-Cdr��2�J)�ZfE.�Y8S2XV`�9����_��/�\\u��e<�06\u001b�\u0005�����\u0004�\u0011��o�ne�E��I�Ä��޼������o��o���l�e�y�R�h\u0006���?+�cGO��O����{�d�Ї��4T�< ��L�;%\u0013�鮱���Ю�l;�ceϊ�\u0015ۡl\u001bV6\u000f�ڱ�3+ةW\u001d��c�o�n���A�_u�\r\u0007Ŏ]Y\u0017ݙ�j8�;��wP\u001d�4w�\u001c\u000el͢$G��9�<�\u001f�m;�׌����S\t]\u0005�ځ�mӗ;h C9�Y�z��\u001d\u0006U\u001f\u0007X<��.��6�\u0007����?k�}W�fW�iͪMs�%�\u001e��~�\u0002�c���m��*\u0006�:��$���'���wj_6�x��s�O�ɏ?����F\u001f\u0000\f(ʪ�\u001a�s�������/b4D�K,Dяr\u0014w�l\u0010�v�,�<i����nFd�����Rg�k��2(�)X\u001b��y\u0012�\u001cQ����j�\u0014<�\t��O���lZ������HGD�riJ�9�@I�tޮع=u��q�Z0s}տ|�2\u000b�d�c�\u0001���U�\u0000R�ۢ/�\u0000.�c��y�!��\\Xt\u001e\u001a�}�^\r���N≞H��\u0007�u�A֟����:5Lc|z��\r��\u0002�D8���c�����[J���q�\u0005h�N��G�OSԊ}î�8ʫ\u000b@d�\u0005�&�@�z����\u0016e��p\u0001.F�9ԙ�S��/�\u0014�\u001e��Q\u0015�v�\u0018ԏ�������WW��\\�\u0002%=�O����1��\u0013\u000b�\u001c�%�蒠'(���s�0�C\u001e�S}q?��s�\u001f�\u00126�1�g�S?�\u0004��qpKȟ�j�NkN�}U�\f���E\b�E:/]\u001c�]��2-ar�k���zj\b;֗5\n~7�'�\u0007�-���5_9\u0017�Ih\f\u0001\u0017�R`� �tf\u000b�ư�O*u�1�����`�u\"�n��6��n�d��=U\u0018=\u0014;5��\u0013\u001c���rY��*�~�o��6�qN��BN�I?\u001c��\u0004+�1�'\u000bs\u0016.{�w����\u0000��x�ǎqf�V\u0018*�д��b,K/�%�U�K�����ݝɳ�5���Pn\u000f�c��[�,�=���xP�\u0019�F\u0012#�e���_\u00168\u0018�靁6Lƭ\u000eS!n��\\u����]�k�.�2\u0019\f����چ��xl�\u0001$��\u000e�;�V�qeQ�-k�l\u000f2\u001eGƐ�*�^�-�����OC�n�ח\u000bA�T�S�\u000f����\u001a�G�8��^\u001bXT\u0018�\u001b̺\u000fcl�cp�$I\t�\f�5��\\?qx�g�l\u0007�5P9�M}�\u0015�4���\u001c\"\u001e%B�W0bN0�x� ��8T4�>�9:W\\\u001f\u0006�~+�=\r����\u0004O�tu�S3#A]\f[�0���p�_}H6\u0014�3�\n�]9��j����\u0013��x�ʞ��b.\u0014���?=(4g6�#}��\"��W;\u0007\u0001˔�);�o�R��;6\u00064�QWW/�Fd��>�\u0017�\u000e.۷�W��֦]�\u001f���^u����hR���j\u0012P�\u0014�)z{ٜ\u000e7�y�G��5�Ai;q'+��e�J�lIKг�᫵\u001e�\bN�(=�jm�\u0006I�:��ƪ�w�C�V\n!�\r\u001b����#����\u0013 \u001c�������]��><�\u001a9��Sj*kwf�7��0�:��=�Sd;\u001d��x�\u0011!^������\u0010i�\f��\tc�s��d\u0001��\u001e8�\u0003E�\t�z��@!�L��nw�$�\u0003�N�Pֈ\u0016�SӕV�\u0002.��3�.��(�Qd��P�v�q\u0003d݁&B< \u001b!�E3�Q\"\u000e@ּ�8��O����\u001e�\u001c�\u000f��ճ\u000b#�>9�=vjOÈQ7�a���/8�(\u001c�\u0006>��m�y�<�O\u001a\u0004.\u000b�\u0010\u0001��\u001b���z����f��s���yFM�ߺ���C\"H��\u000bM_�a�8uʫ�\u0017\u000e*>���s\u0013}ճ\u0019\u001b����U�v�4\u001b�1�ݩ֒�^�\u0016\n�+�9\u0000��\u0002������~ߡ�\u0010bO��<\r��\u0017l����0�w�\b\u000b�fG\u0016�pvyT�1���NO\u0001/��<�/��\u0007��fL]\u0018�qneʂoB=e=��AOXS%R�\u001e��8ܭ�]A��\u000f�\u000b�$��\re�\u0019���_�ޗ�`88Ix6�\n���19\u0004\u0007:\u0014zVd���#N\u0017��2���5ۃ_��$�^\u0010�m�\b��d�����\u000f�\u000f�D\r\nendstream\nendobj\n42 0 obj\n<<\n/Font 114 0 R\n>>\nendobj\n43 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 115 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 116 0 R\n>>\nendobj\n44 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 117 0 R\n/Rect [42.0 622.0125 42.0 635.85004]\n/BS 118 0 R\n>>\nendobj\n45 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 119 0 R\n/Rect [42.0 453.5625 42.0 467.4]\n/BS 120 0 R\n>>\nendobj\n46 0 obj\n<<\n/Length 1618\n/Filter /FlateDecode\n>>\nstream\r\nx��XYo�6\u0010~ׯ��!�\u0001����@Z4N\u0002���\u00161P\u0004u\u001fh-wW�����fQ��#u��Ҧ�\u001cs8\u0007g���G�f�\u001b���8�b���rl�����lZXn@��\b\u001br��c�C��=-\u001b��@\u001f�E �k�\u001a���?�\u0002b�W��\u0002�٠G\u0011gn���ғ\u001c�\u0004�O\u0001�:�=PlP8�\fl\u0016y��ԑ\u0012\u000b�\u0004��#�\u001f��Gg\r�N\u001e�z��\u0002��`\u001bN�4i,�!$�H�vO�vw�=�\u0012\u0018��^^[��8�p�^Z��C!�\u0010:\u0006�G׹uz����U!�m%i�f\u0019݂�.w\u0005�\u0005�e����sQ,�9�7�bO\"S��'�u��:MD��i%\u000bY�Z.hY�9\t:��\u000f����5\t\"�a�cTY�ZP�\t�\u0018���j�v+�rGJ&uZ\u0016��V\u0017\u0012�j�ˢV�,+�K(�\u0016���iv\u000eV\u001dU��X\u0004�s�Fk\u0005Na\u001dc�\u0013A�a��0��0̧ˬY�,�^\u001c?�\u001c6�\u001b��h�\u000f43\f\u001es\u001c\u001c`4�\\��N}�\u001a��j\u0019��\u0018��嶹�,�����(j�K�Ui-����E\r�J8\u000e���Sy�k�\u0015\n��K�+��\\��X��7���ps���>�R�˺�[�$��\u001a�\u0002���a&\u0010UE��2zd�tE{����P)t��V��Pr���`��n6eU�®�6�FVj�A�0\u001ei�\u0000�\u00008\"�Fb\r�lB��4���\u000f�\u0006�G�n�{pDb�s��\u0010\r���g�\u0006�\u0000\u0010�A�&g\u001e\f��\u000fY\u0014�ɭ���e\u0013Z�~Y�v��8\u001e�K�(������&�\u00143m����\r�\u0019��H$�r[�B.�6�M�ߜ�O��\u000b��J����$�給ݜ]�˲̤(��I\u0014>,�{�s4bky�g�������YG8.�vg/�O%\u00015\u0005��r�\u001e��\u0018A\u0013O\u000e�Oޘ�\u0000�����\u000bz�n˚�!��J��d��9�9��z�#-\u0001ƒ��s2�jRh'i�.�\u001fj$.\u001cj�;��v~l�Дڣک�e�\u0015������n�(�ƕ��?)\u0019���\"g,W\u001a��\u001e�5�!\r��\u0005�G\u0013q_f0\"�\u001cd�\u0010.s�<��\u001b�i\u000e\u0003wY�\t���9�C\u0004�\b�Ơ���\b]/�[\\�\f*D.�\u0005�l�bu2� d�����&�/.&96�$�ɞd�h\u001a�9f�.\u000b�2y\u0018��Zף�%\u0006iZع9=��,VONf��9�'\u0019>�\u001a=4\b�g�\u001c��.���o\u000e�.M�\\�:�\n���ڙ�;I�n�t�v�x�$\b����%\u0001t��\u000e���˽ޙ�\u000b��b��ݯ��E->�\b*\u0017\rmdj�7\u0006��7\u000e��_\u0007��\u0003�\u000fBj�`�oǇq\u0018�5{\u0000��<��O�~_\u0004vm�\t܋���\u0001��\t�<�zr��X�蕜h���s�cR��C�_nr/da0ƍ9��3���AL~ ;�=N��m���'LMJ��{j�?Ѵ�&g�al�7hw�D�����\u001c�H;\u0007�H�\u0004Zj=\u0016���Z1F�.Uk\r\u000bb�@���#F�\u000eg�ߗ`\u000e<f�\u0013\u0007��}��\u001b�s�{��:(B�g�B�j5�ԏ�\u0013D�\u001e����\u001f&\u0013\u0000Dvd����c�>T�\u0007|�C\u001c���\u0001\f�\u001aZ���\u0017:#�\u001c�>w&rnNg�y\u0001��l��i5=7��t��!�\u001c\u0007J��3��g\u000f�1h\u0002g.����o���\u0005{u��Z�](=��BԖ�TiL����tS��\u0007_]�P\u0003ͼ��Đ��Y(��WJ�����\u001a<��^!͘��p\u0014\u0018��]?wAz,H�@ٷ��ڔ�,]\u001a��\f��7�R�m�\u0016n�Pڛ�y��\\cbS���)M-����\u0013G�\u001cSL\u000f�}\u0001��\u001cdW�\r�7Ӻ\u0016iұ{!D�k���h}3��ѫ��L�qL\u001f�i�\u001a}̛��\u0017A���H�,���;�w�#~�\u0001Er\u001c�\r\nendstream\nendobj\n47 0 obj\n<<\n/Font 121 0 R\n>>\nendobj\n48 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 122 0 R\n/Rect [42.0 711.4875 42.0 725.325]\n/BS 123 0 R\n>>\nendobj\n49 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 124 0 R\n/Rect [42.0 94.83746 42.0 108.674965]\n/BS 125 0 R\n>>\nendobj\n50 0 obj\n<<\n/Length 2728\n/Filter /FlateDecode\n>>\nstream\r\nx��Yێ\u001c�\u0011}�� \u0016\u0001$!\u001b�I�Up\fH�e(�\u0013���\u000f�<��pfZ�˨/Z-\u0014�{\u000e��K�\fԳYA��\u0019��\u0014��E��&��H\"r��䯛�|ذ�����H@�\u001b\u0011�4�h�\u0005�&�2ʓ(�\u0016�<L�JQ�\u0002���7����m������7��\u0001���4\u0014�'�b���,�\u0012\u0012s\u0000q\u0010\u0002\n\u0001eYD\u2026�Ы\fTl�I�X�x`�\u0002�2�\u0018�\u0010�XB�X���TỘ��g�@��sͮ3�\u001b]'\u0014\u000b\u0004agh�ILY\u0014��1\u000f��f<\f�c\u001e&BAY��p��܁��S�\u0010c�1\u000f���4\rc�J\u0001%>s\u0007y̽u�}����<��0�\"@���B)����&�\u0002P��,%�u�B�&��Z05��2�\u0018�\u00104X\u0014�H��'�*b�\u0014#g�B�ƹ����[]'\u0014��\u0005�!e\\x�EH�0C\u00199�B(\b{�ܰ��܂��U�\u0010c�c.\u0012ʘ�>y�R@�\u001fߤ�|�n�q��:��d\u001edh\u000bLg��\u0012�d�bσXA\u000b�\u0016�[�r��\u001cb,z�Y@y�d�\u0018 ��s\u000b��ݺ�}����E�)C@BW�\"\rh\u0016f~��$SP�\u0015���:w��`��!Ƣ�s�\n\u001a�E�C�\u0002Zt8\u0007yu�3�\u001b]'\u0014��\u0003Fc1e��\u0002*Ў3ǜg(\u0015le��p��܁��U�\u0010c�c\u001ep��}r�\u0003\u0001He�cn!��[g�7�N(.�s$\u001c�;��b�%��;�\u0014�︃|�\u00164��*����Xs$8�\u0015��\u00050�ڌ\u0017�\u0019�8�U�o��ۢ�y̨@��]�s\u0018BR����\u001b垭5\u0003x�m S�N�C�-WڨM\u001a��\t]i�:\u0001%�B�9\u000by��3�\u001b]'䖜�n#��k�\u001c=�'Bu0�^p@a�a!��\u0005-'��!Ƣ�\u001c\u001d7\u0011���8��\u0004\u0007T�4��ܭ3�\u001b]'\u0014\u0017\t��tR��%8Cg�p�z)�0!D\u0018\u0011�K9\u0007y)�@��N�E�E��\f}'�ǮS��4��Τ��4��\u0019FF�\t�%�X\r9���b�9ᢩ�\u0018cg�hj\u000e�[�r��\u001cb,z�c�a��X�>-���|�n�q��:�81s�y�\u0016�4�w7�\r�#<#!'\tr0է�M�y�͇�\u0014U���}^\u001f+������_��\u000f�\u001fo��\u0006�c\f��VC��)�H{\u001cʶɫw����?�τ]\u0013��%y��/I�\fr/;z�\u0015D6�#�o��\u001fǲ�����_���~�N}�~�D*\u0000��\u0011����,��\u0012cQD9v�kc�/.�@�'z�V\u0012E[�y�%_.\u0010�l�\u001eë�k�h]�z\u0017��U�8[Y\u0014\u0004ܪ��}�\u000fc'�s[��-�La\u0019��·�ȫ��e#�|�d8Hb\u001c�\n.\bV�{B��9����P�{\t�\u0018\u0015\u0014!Ў���c��r�8�\u000f\u0017���\u0016$�n?ֲ\u0019z�f���%�\u0005��((�~�·�r8�>���\u001f_�'áD�9\u001f/P.��Y���O-�>�KZ\u001c�\u0015-:���eB/�Ƙ\u0007���j�s����_�\b�\u001f�_�K��\u001f/���\u0019�������-\nT���@臶ln��CW6���W��J\u0007�\u001c��u)|�zA\rD\u0019�\u001a}\u0016>v����@\u0003\u001e\u0005˭�z�`���j�F�\u0012�\u0018�rf��R�\u0013�\u001f/�\u001d-\u0013s��C���e��]^�U9L�[��V\u0019өn��\u0013��)�S�#�����^A(�n�d�ꛦ\u0013�ƭ\t\u00150\u0007�m���5�0�5Ϲ:U�-6J�\u001f�B���0��su��ښȼ8�\u0016\n�kr7\u000edԩQ�\u000fd͟0S�3�[�c׵��s��]�\u0019RUJ��xWI�ql\u0007�z�\u000b�!��[EM\u0006]_��+5\bZ���^w\b�+�u�\u000e��>A�\u000eO��@Wu$�K��m7�G���\u0003܅�����\u001c��λ\u00074��\u001f��\u0018 u��i�m9v�QvC\t�[�+\u001b��uܵۇkR��yE��8��ʛ��\u0017��M�;b���\u0010�c\u0007���\u0093O�ITf�s\u0013�:��dx8�oǀ��B��L��t��L�\u0018��Q��5ɇA���7���A���F���6��;\u000f.�B\u0004�ː煥[�c�%*�w�ؖ�)�\u001fڑ������\u000e�c5�#m�(��ˣ\nҺ+,��j�\u001d�#\r��<x&t��tS��8{\u0001W܎cs\u0002]FUo��E^�ot\r�\u0010TjTA�/�\n�W\u001d\u0011Y0?��\u001aj�1M\f�&Q�=\u0017�2W`\u0018ImE��)�N�Ŷ���wR6�>.�L圭/�3�s]הܨv[�^ڬ֒���\u0000�<�$�*U��\u0015*��\u000e\u0010Ft��A\u0016J�nl�6�1�/�C�B\\�\bkǎ��R?�*��T\u0014�����ت�C\u0017�\u0006u>\u000f%\"�?4C�Y�[�E�{P�2c��;%H��K^\u0004x@٪�^��\u000bʄ\u001b���A+\u001b���4\u001dB�w��'���Rv�'\u001c�b�m���3�&@/�8��j���\u0018;��i��Iک�Vr7�\u0018�Ju\u001cM��z�M��H��T�U���\u000b�5l}�&��F��Dv�+��A�nM��\u0018�Ն�z\u0013g�#�>eq�H5��\u00162�b\u001a�$;���}L\u001d\tמ��UhSS��\u0007�Z>�[-�FU\\~A��!�OB�'5�Sy��9�@\u0002+�:YK��\u0003�}��Q�ڃ|x\u0006���/D~��\u001a�{�vn�\u0017�˙���:q\u0017���:,q�����}�\bj�\u0007�\n\u001b�\u001b7����;�<\u0001��\u0006�O\f�mh\u001b�/�Yre\u0007┆�~-�\u0015�LS\u001c�Q\"�,\u0015\u0005�)�4�D�m�c�+bB]wҧ�����z\u001fy�\u0018�d��b!��\u001fna���?Q,\n�\u0000�\u0014[=��P\u0003��}��k�\b̙��U���\u0015Q\u001ed��M�Vh/k��ogr\r��5�48�%�\u000f��\u0015Y��<�s?��q\u0012؛sy��j�U�p�\\����T�w\\v��r�\u0003\u001a.��5\u0005it6\u0019����`�ڻԃ�\u001d\u0003����e�+э4z$�ں�iTz�\u0014l\u0005O�R�d\u0015���ib��`��\u001eGf�N\u0019\u0015�N�ez�Z-��\\4\u001a�j�V2L�\u000b�\u0016��n?�k�0}&�����+���\u0002���\u0016���\u001cf\"��AFI��\u001d��!\u001b��)z$���ؑ���`�v���G��\u001d�pE�J�ɿ�xSI1�^�+�^m\u0005\u0006�A\rv�>xl��T�-+\u0001N�9�\u0017�,�B�p�\u0014?��3S\u0012C[rS\u0012&���B�\u000feq�\b�g\u0005\\_I>L#�P�r��c�VOT�vkoA��\u0002�V�?��s�\u0011�\u0007^��\r\nendstream\nendobj\n51 0 obj\n<<\n/Font 126 0 R\n>>\nendobj\n52 0 obj\n<<\n/Length 1562\n/Filter /FlateDecode\n>>\nstream\r\nx��Wmo�6\u0010��_q-\u0006$\u0001RV���`����\u0018�\u0019\u0018�y\u001f\u0014���Ȓ+Ru���}GR�%Y��\r��\u000e#�;\u001e�{���'�%�\u0017��u\u0018���ѡ.|p��\u001b\\H\u001d/���I�\u0007֎�Ǆ���v{yg�\u000b�#\u001e�&Z�W��+�\u000f��k����y9s����8̖\u000e5�\u00148�0\b�\u00170\u001e�l휿�,\n\u0005�\"�E%/`��y3s�at�ϳ�D������%�]\f�ز=�r�\u0007�QN\\�\u000f\u0003�\u0018�]��x�ƞ\u0001eC[D#@�i�v��².\u0016*+\u000b��:˓*�\u0003U½.Y\u0010�\u0010�\r=_�u�@��\u001dT\"Y(���JA�+%d�T\"I�\\¢\\�1\u00028��ѐ��w)�����XCܽ���{��pD��ݎ��ݽ\u0007\r��\u0013;ǻOl��qb��\u0011샘\u0011F�o�\u0015��E�ᖀ����\u0002�!� �T�9�T\u001a�\u000ep�pWְH����CJ\u0002W?�)<1yY�\u001d��C�=�4\u001f�t\u0010�\u0004�Gsz���\u0007{HQC�����?\nv�p/��J,n��������/��t�È��n\u000b�ߦ�6�\u0014RëV��Mr#.a+�\u0010��5�~- /�۬��DaF��\u001bIA<�9��\u001a�\u001bSeR�נ\u001f�i�U\"��J\fr�\u0001R�W�,�\r�\u000e�~\u0010Rb�����05|�����4Y�EY\b�\u0002�O[[d��\u0005�O8>,��m���7��p�?8��\u000eB�\"�jv�\b_�eVh�\u001f��\u0002JI׃��R5���\\V4�_�($\u0016��<���D�\u0003t.�uK\u0002�E%�4�׉�\u0016�7Yorqu*�AD�p�U\nUoN\u0018�C�( \u001c�i�Y~\u0016U����Zn0�:40����\u000b�:�\u001f�\u0017��\u0007�i�3�}ȴ��\u0015��SS4W6=Mv&�\u0012��K촱\u000e3u\u0005'�=��g݂����Z��35\u0011\u0002N�t\f��_[\"\u000bdQ!r�0!6���\u001f�p�V��j�՜��ﾶ�I�Ve��\u0011Y����\u001e�/&�幝���m�1E��,\tz�S\fݐ�Z��v\u0013lx\u001c4sR\u001b}\u001bk&\u001c��kh��/s�lI=��\u001f��P8J������1��T\u0007�8�8n\n�\u0005\u000e�A�ħ\u001a\u001b8���\f��\r\u001a}�\u0004f��;n\u001a1�\u0019}�7��CO��2��sK���icƊ\u0019�z��ޔ?�:\u001aq��\u001f\\fk�T\u000b�!aF\u0006�4\u001e�\u001a�o�1�>\u0018�,R��ͫ.�`�f�\u0004\u001c��X�J��[�z��7�H�L\u0007���ݥ��yv+ZՉ�j�`Yo6e��(\u000e9:\u0013��i\u001dț��_��ҽw�\u001e�Dc--\u0018ӃT?畉�\u0014\u0004\u001e�\bG�[�?Q1\u001a\u0014��Q�o����m�)1|�Q)\t\u0012�,�h\u000b��l�_l։\u001e,V�\u0017\u0016YI��\u0002�rH����D����I�a�,�<S�Km�3}�Z�ت\t%�˭4�\u0017�\u000b\u001c������6\u0010Rt�8��\u0013�R\u0014p\f��>ƓN#\u00127B�X���n���`\u0011w��Qp�1X��������\u001d��Lwa�E�+\bR�L�\\\u0019\u0006��\rTc\u0013w~q\u0005/�2\u0017��&�M\u0016��jۏ]a}Mr\u0011r�Q���T��*l?��#�/9l?�*�?~ Y\nϞa\u000fU�Vo�\b��ȗZ(�z�\u001c)�#��$1PY\u001an\u0005�YZ�)#�-W�����|J�Q�r\u0010�|Y*\u001d��j1� �bK�\u0012K��o�OAr�\u0004a7��O�K��0H\u001d�����\r0��3\u0018��&\\�\u0010q�Pи���`���^= ��L��\u0006��]����\u0013\\���\u001a�t,l�^]�*y���\f�4x�q�*�\t�4l�l�iz���n@�n������1�!�/�\u0017y$�\u001f�=��|ǉ��ߜO��\u001f�[\u001e�\r\nendstream\nendobj\n53 0 obj\n<<\n/Font 127 0 R\n>>\nendobj\n54 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 128 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 129 0 R\n>>\nendobj\n55 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 130 0 R\n/Rect [342.86252 689.55 471.60004 702.975]\n/BS 131 0 R\n>>\nendobj\n56 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 132 0 R\n/Rect [42.0 635.4375 42.0 649.275]\n/BS 133 0 R\n>>\nendobj\n57 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 134 0 R\n/Rect [42.0 466.9875 42.0 480.82498]\n/BS 135 0 R\n>>\nendobj\n58 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 136 0 R\n/Rect [42.0 372.59998 42.0 386.43747]\n/BS 137 0 R\n>>\nendobj\n59 0 obj\n<<\n/Length 653\n/Filter /FlateDecode\n>>\nstream\r\nx��T]o�0\u0014}���{Z+u.61�>��MʤI��iك\u001bLB\u00076�fQ���M�\u0012\u0012%%\n�/����B\"\u001aũ�\r���D�LX\u00043��\u000fD��8�,\u00124�\u000b5\u0011bJy*\"�j�\u0006�8�@�\f��uxz��&?�F\u001a�kW���~a�8�\u000b\u0082���C�1�x�yM�~�\u000e�R�Z�S -�Roa�V˿�\u001f��Y+��'�e�T�MV\u0015\\���<�OS�\u0013F'(�\u001d2�\\�RCaZP�T�c\t\f�Ү�\u0019�yN�kq\b�aJ=Ā�q��\u0011A�;��\u0007�d�'\\����C�uW����NT��+��;U7Af-� +k�6jY\u0016[pkU��\u0007fJ���V��\u0010��t�\u0015��#&�r��X֥\u0004\b&�49�{_\u0006Ąfؕ�wA��\u0002�w����\u0001���\u001dn,��\u0014�>,|��rUH���Ǹ\u0001����޲o����\f�\u0004�ڽ�+J���qy.m�Ej����Q����>�\u0016ׁ�QۮU��=\u0011�Vt�~P�-�~_Ї�e\r�4��\u001d\u0017�\u0007���J$�tP��Ʃ���K�\u001a��`f�\u0003S�\u0010��s�\u0014i�\u001b!\u0018��m��1��0�iJ�P�\u0011Dȝ\r���3pvƠ=\n.'\u0016㒈��kIh�N\u0010�&C�{k5�Fa�T#���=\u009a\u0014��\u0019^\u001f�����\u0010��\u001c�[��\u001d�SN�\t���V��}��S�G�|bH\u0013!\u0006Cj���.�7P(UA�*�\u0013�iK�|�[0\u001b���u���K��(ܻ\u0012�\u000e7U�^:e݇��\u001f�\u0005��\u0001�ޥ@\r\nendstream\nendobj\n60 0 obj\n<<\n/Font 138 0 R\n>>\nendobj\n61 0 obj\n<<\n/Length 1631\n/Filter /FlateDecode\n>>\nstream\r\nx��XYo�6\u0010~ׯ�>%\u0001\u0012��[\u0001�\u0005�\u0002z�E\u0001\u0003���\u0003#ӑ6��\u0015��Ƣ��C�d+�\u0002l\u000e$d8\u0007g��f���Ml7�ao9��e�\u0017��pg��\u000fذ��\u0000\"�'\u0011\u001e(,ߏ�\u0013�����=7Њ�\b7Qj�:�O��V�f�g�`�[Yo>Qp<Xm-jv)x\u000e�AH���bX\u0015����'��\nV_��+�9����\u0013�Ȝ+�˼[R�F�[v�Sk{�\u0014�������\u000e�m���1#�\u0000uNe��\u0001Ƙ\u001a�U�!1r \u000fR�\u0002v�x�6\\\u0002�<{H\u0015l�\\�*+\u001f�\u0013[Q��V��&\u001eF��\u0018�r���\u000f�cA\u0002���\u0013�|۠og�w�x�{��.��8�i\u0018����]�x�\u0005�w\u0007\u001a�w�\u001at���>8>�B\"�\u0002�ߧǍ\\\u0012\u0019\u0013Cw\u0007�?�\u001al\u000e�\u001a�O�.qvp|�,⥂\u0014��y5��\u0011�\u0013�\nb�8��\u001b8J�@lၗ�b�ͮ�vB�hc\u0012v�2'\u0014bp[���E�x\rJ@\"�x\u0005���\u0013��I��\r��\n\u000e���8�|�\u000er\u0006P�U\u0018�0�կ�b�9�&�U���T�ؗڝ=�s2Uց\u0017�UV��y�t�6S����dY�y�S\r͖k>������~��~.�q�\u0011\u0012��VI�����X^q�94\u0011�Bڷ\u0006�Z*Qt���<+9�h\u0002�a���\u0018\u001bט@���$PJ4}�;���s��_Lb-���uF6|��\"\u001a�(�\u0002Q����͔�\u001b��J-]�\u001b�ݐ9�~�\u0011\u0017�\u0011\u0018�\u001f�ڇF;d�?+v�\u0001�D�r�KM-ۺLT&��\"{4T�������/<Q&\u0016\u0015WuU�\u0001\u001dMz��!�u[\u001b�B��\u0006�#a\u0017b\u0012��>\bHl�j,�N���r6\u0000�Mb\u0004C���z��/�S��ΌUh�K�x\u0013��Բ���1(H�\t�Ҡ\nS��\u0012\u0011Vss�L-��-�8���3�gbF\u001dJ\\�lc\u0005���\\�C�\u000b�8r,�|6�~H|C�����l\u0019��Y|��v�\u001e�`m'�R��ٵIh�i\u000bH\f&�m�4�j�2\rK�o�c��'���_�wo�\u2036�I��yS!Z\u0017V��B�\u0013j�t�[��\u000b�\u0007�\u001e�E�zo}u\u000b-@�ۼ%/F��\u001e�\u000e\n���T��__�7�7o�\u000e�\u0011K��\u0001�Gc\u0014�L�\u0017\n\u0012c|\u0003�����I$��b��0[QoU4\b��\u0013V�TT?�L���[8\u0007´��`�er���\u0005B\u0001�9�c�%\u0002\u001e�́�L�>�}�\u00149\u0011�F�zu����A�g��nI�h��\u0013��4%ؒJ�\u0013&�7��/�WD\u001dv\u001c~x\u000b��\n����\u0002�v@�>\u000f\u000b��ƾ����MT�\u001bD\u0003�X\r�^��ZV�d\u0015v\u001c�S�%ϸ�T�\u0013�c%ғ�X�����uX_f���\u000e'-��N�s���XC�s#���{�>�-b�Q��W���\\5�6\u0016@�EvlƯ�н\u0004�.��\u001d\r���e}y{۱�5��cU]-Ј]�#�Y,8\u0011\u001d@g��l�_ݴ�C��C;+]�\u0019x�X\u0011u��B\u0017\\O������J�A�$�639�\"�\u0012���b�̛%6\u0019Gw�������\u0017LL�\u000fh�\u001e�\tp�W�WƳ\u0011rBb����Dtl�Џ��{�4KR��\u0001J���/��\u001d���R�M`\rU-̮M ��b\u0010�;G��Z�?�\u001d���\u000e�\u001bW\u0017\u0012r!\u001euc�T]�_&XEce��%4\u0002�[�/_\u00135���?��ʂz1�4\u0012�V0\u000e\u0003V��3�\u001a��/\fc\r��丸\u001d2�n4]kZO�<��͏�iE4<m\b�·v����hp�\n&z�\u00025~�\u001c�M�Ս,yU�<���t�Y�ɨ�\f��K��m�Mv\u0014jo���S2�!�\t�'�Y�����}4�ٷ���M���L#�\u0012u�\u0007�\u0006\u001e����C����\u0003�O�!\f��N籞�Z�������5�\u001e���~�������\u0003��a\u0014\r\nendstream\nendobj\n62 0 obj\n<<\n/Font 139 0 R\n>>\nendobj\n63 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 140 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 141 0 R\n>>\nendobj\n64 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 142 0 R\n/Rect [42.0 648.8625 42.0 662.7]\n/BS 143 0 R\n>>\nendobj\n65 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 144 0 R\n/Rect [42.0 251.28748 42.0 265.12497]\n/BS 145 0 R\n>>\nendobj\n66 0 obj\n<<\n/Length 1949\n/Filter /FlateDecode\n>>\nstream\r\nx��XY��6\u0012~ׯ��g��0/�P�&eO┝Lv��T\u001eV��� �\u001e\u001e2�Q\\���|\u0000\b\u0010�䡦V.O��Fwݍ>�y�PǏ\u00189,<�q�O\u000b�!w����8d��C\u0012;��`(\u0017�%ԋ��\u0019Za��P\b\nb\u0010qj�4��\u0016�/*�\u0011���\"��\u0003z�x4I�\u000f-���(t�KB\u000f��\t@r@� 4th\u001c��K��\u0005,\t]7�,\"�A�la#Ek�AC\u000b��\u0004�FQL�\u001c�V�I��2��i�\u0013�\u0019��10���0�B\u000by\u0014S�\u000f�g!�\"�� ��0$\u001b�!\u001aLF�H�\u001a-�1�:N\u0012Z�c�,��RiH6�o0��:�8E\u001e��\r�1\u000f\u0003��.�-�x��D;\u0000�d#7D��\b\u001b)Z��<�Ǣi��X�l��`��<�p-�\u0004�\u00143�h��dH.\r�p���\u0001i\u001amC�1\u001b�Ac��\u0014�����+6�6���$���!ٸG>m��u\u0002q��G�@��\u0016r?�\u000e.���~\u0004�g�^Slܚf\u0000\u0019I#E��`\u0007\u000ee���\u0005;pA\n&InH6�o���:�7���!��$�\u0002\u001a�Ӏ{>HѤ�\u0019�\r�\u0010\r&#l�h�\u0016r/�.�$��{pY2\r�!��G>m��u\u0002Q!w�x��%\tŻ��\u0095��\u0005\u001b�\u0012\u001c�&�ܗ�+�ī�\u001fw�m�-�mx���\u0005�\u001b��5������9Q1��\f�\u0010E��v<{\\]Uuw�K��\u0017�_�|ue=���V׫�\u000b�G\u0001R�C:\t�M\u000ex����\u0003�(H\u0006[�wyKҢ�\u000f-�[��$���&mHY7\u001cT��\u000be0\u0018viG��\"��7�/͚��\b�69ﾐz�w]^W-զ(��B�\u001bSWv�r�X��\b��c�FV\u00119ӕ%R�\fRϑ�\u0002�\u001fxś<\u001bP̹(LP%��臊�u�\u0001���\r�R����\u001cҪ\u0013�:49�p�5O��w;R�E��\u000bN:��\u0015Α�D\t��͚7B�&��\"�;gMC�b�q\b�:D�\u001c8�7�S�F4�\u0017��1�\u001dIA��=L��K�*�����NX��L\u0006s\u0004��o*�#�'��.}��%��9�~����\u0016p��Vx�./�\u0003���X�T��p���{���%|}\u0003CdDdt:���m���M��5���8��{��\u001b�G��\u0007\u000e0e��u���������2+�IE��P#*��{\u001b�Vž\u0006\u0003G�]��Z\u0017(\u0003\r�.��~���0�Z�Օ�8�k��\u001b��[D��\u0013�\u001a�[�k��'T�(7�JU�%\u0019�/_$�\ti�j\u0007���\u000b��I�9|A�\u0006E@��R��&-Z>��Ÿ�rz��\f2�\u0002��w���juM�\u000f[��?�m'\tCz�ʽ�TV\u0016a8������C\u0018s|9s�C��˥t�\u0005\u0012М��3[�q�h\u0000+����b��P�kQ�ŕ67y.5#\u000fC13\u0019���4FϤ�Háa�:��\u0005��T7����y�>#{I~\u0010o^\"\u0017�\b�J�㔳\u0004�\u001cy��Y\u0011-�\b�\u0015���Kd��5\u0019��<+X���HE�T�C�>��گ��L��XHCkf�-�:�!GC\u001c�������3\u0007k�T�j\u001e\u0015髡J�ӲkR�\u0016�E2\u000fm����\u0005Xd�\u0015�v��\t�\u001d)����ōu�����4i�\u000fu�h��v\u0018+����\u001b�{\u001a�q4��\u0018��t3�\u001fդ���\u001c��\u000b�a^�ٞ�cWTK�\u0015\u000e��\u001b>Dっ{m�P\u00075k��oI\u0001#�\u001b�2�W�\u0003��~z\u001f|�/�,�\u0004�\u0017\u0003\u000e�>L���/�1��O}�͛�uNOM�;xB\n���|xUJ��.����l�{�!���B=b�EY<�82_4\u001d��E\u001cS6o��!��\u000e��\u001cL\u000f{�g:�\u0007�1���W��\n�h6�s�7\\\u0005\u001bC�N�}��)��2E/\u0016Ӌ�x�S$w#\u0007M9n)O�\u001a��\u0018��=f\u0006�RI\t�B�7\r4�.u�Hw�\u0007�����\u001dlBh\u0007S%D���9�j�F6=Ig01&:ǰ�����'\u0006v|\u0010�η]���1�����yAd]Pk�\u0013���7o��yUb��&�(A-�j�e蜓�\u001a?�,��F�칅R*K���l7\u0017���웛2�F6���\u001d��K�y�g}�\u0012dn w�с��\u009e�\r?�LF'�ȸ�O=�*��P�=�\u001d¯<\u000e�\u0017�\u00167b2��\u0019�~u{���\u0006HC�s��*�\u0005� \u0005\u0006Y�������\r�ƃՔt�(\u0014riIg�5�\u0011eG�Nk��ԓ+�\u001b`�������@*,��-�f�=O5���0��g�-\u0015W��?��f}�K��ADVTkLا�#�\u0006���3��\rb��r\r\nendstream\nendobj\n67 0 obj\n<<\n/Font 146 0 R\n>>\nendobj\n68 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 147 0 R\n/Rect [42.0 718.125 42.0 731.9625]\n/BS 148 0 R\n>>\nendobj\n69 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 149 0 R\n/Rect [42.0 321.45 42.0 335.2875]\n/BS 150 0 R\n>>\nendobj\n70 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 151 0 R\n/Rect [42.0 173.21246 42.0 187.04996]\n/BS 152 0 R\n>>\nendobj\n71 0 obj\n<<\n/Length 1836\n/Filter /FlateDecode\n>>\nstream\r\nx��Xko�6\u0014��_��K�\"c���u\u001d��:�\u0018�e\u0018���h���H�*Rq�b�}�R��[تh\u00101��}�s��Ǒǽ0��j\u0014��G\u001e�0�=�v��=��l\u0014&l��|�\r�(�3\u001e��\u0017l�ʽ�0!A�\u0018�8u��ۿ\u001c�9�q\r�k\u0017��7�G�}\u0016D�f>��Ϣ��I��$�2vS��^}\u0012USJ���|\u0018��\u0019��p�v\u0006\u0019\u001f۝��k�y�c\u000f����f�r4?Qˏ�\u0017�Ǫ�\u0001�<�A���ʒ�PU%�\u0019\u001b�ܨi�\u0004�\u000f�%�\u001b\t|�[\t7Kɦ�T+Vh&��\"��dd�\u000bU���+Y��^��y�5[-�|�*q+5�dj�H\u0007��)EQC\u0014\u00143�}�6I\u0016��\u000f��\u001e�\u0018\\��w�(�\u0014�\u0018�֪�\u0007bB����1\t�l�1�\u0011��XHҗ�*S\u0016��йjgxÏ�}������\u0005Qĳd�)��Zc�/\n\u0003]�ಘrr��9�̬����kYެ\u001b�pE\u0018��{�r#�\u000f-[\u0007�A�c\u000b�#���W����se\u001cn�}\u001e\u0006���-�R淚��|��<���\u0006�η�����/�Ӕ'�!2y)�ހ�\u0000��͠��T����i�\u0007l��j�\u0003K�\u001d.L\u0012\u001e�Q�G��Qw�m��dw�d���c��i\t�߳�\u0001�ߊ���m��\u0017\u000e� ��(˲�kt�\u001b\t@ϻ�ii�fr�:\bj�dK�2�y������I\u0010\u001f\u001cd\u000f�36\u0013\u0006�c��ʦ�z�#\"\u0018�.:�'�檵+�7�J^��fr^�\u0003�9�H�{<\u0002\u001f�GZ�\u0012~�>|9>��/ձ��/\r[�;�h�Nf\t�-j���1yۆ�\u0015�R�\u000f�6\f���\u0019[�V\u000e&\u0016\u000el\u0015�S���(;�F�U��\u0015Q��\u0014\u0012�E8�Lb\u001e���6V\u0002�\bcd�\u0018�\u0006�La\\Q�x\u0019\u001c\u0002�J\u001b��%��\u001e��q�\u0010�\u000e��\u0011\u000f�3�iڢ\u0012�\u001a\tSk�v�Q-go��m�\n!����EW\u001a\u0002_Gq�u\u001f :\t��Ь/]��vP(\n����=���X��\u001f�\u001f��h\u001a�y�\f8�.\u0003:mU��<j�\u0010�>ς�\na��t˯{:\u0012=�ػ_\nm�\u0002:\u0004��\u001bl\u0002��:�=T^�ݡk2�Rڡ�D^�O�i�l�JR�@hWu�f+��!��V�\u0011�\tVB[�H�vd��ŗ\u0010�mk\u001c<\u001afc\u001e�Oc�p\u0012��\u000e8}0�5T�Pԑ�Ц\u0012�G0�-єY�X��\u0016�\u0002j\u0005:-[0�ꌵf��GV�m�bF\u001a\u000f��2�\u001c�&\u0011O\u000e�\u0006={\u0014��C`]O�\u001c��!���(�x��m@��Fi�\u000f\u0014;�\u001a��\u0011{Vo�\bӍ\\�4Ba�f38\t�pY+?v\u0005�LM�~�(ß��O�\u000b�$B��\u001aS�\u000f2�\u0014�&qټU\u0015{�ҁ�C��\u0003�N���6�2T\u0004�?\u000e\u0017�X̎#6yp�� CS}\u0014\u001brU�al\u0006��%��U�\n^.v\u0001\u0002$��\u0004߯ν\u0003\t�����A�q���\u000b�\u0005m@���Ւ��0Yj��bꀒ E�Z9���\u0000\u00165L\u0017m+ֿ�'W\u0017\u0006lwq�.��,�\u0005�%�6��m\rL��S�F\u001c$�u\u000f�\u0006�ӌ(�A�\u0004�AxR��ݰ�{Qߩ�r��\u0003bL\u000eg\u00013�:o\u000b\u001b`�@�m&�\r��_;�t(\f�D�&\u0012+g�\\�\u000b��˽�D��Y�N�\u0011�k\u0010��\u001c\u0017��\u001e�N�D��i`%4���V�K��?�J�����zv\u001fR!����q$G��T�\u001c���||Z��ۈ�B(\\l�0�6~x��l&)�s\u0001\u0018\u001dڨ诇\u0018�\\H�ݮ\u0010��;p�]�\f3�Y�\u0013�(�9ǪA�1��a��r\u000f@�E�.\u0016@n��'�����At㏲��0��ۭ�ʹ�\u0000�k[\u0017mYt�$��t\u0016m;�0��^U|Ϟ\u001c�-�9�{䭨��{�9��\u001c4�1��v_�@���\u0005\u001am)��B��Φ��&W�\u001f\f&W{/���Ƀ!J/l�d9�|\u0000\u0002��]h%4\rd4HR�v.>�1Q��o_�\t4i��|�b����l�����$�a\b;[�\u0006e\u001c\\3]Cߩ2\u000e\n�1d��4�S\u0018>��3K���\u000b�\\��\u001b��~�)f�����a��xr:���?��m\u0019\u0018d�f�#\u0006�F�-�Z;���6�M���~�l��\u001df<�O�^\u0015f9�j\u0004��c���.}/�\u0019E�Anam�n�u7��\u001bV��F��F\u001f��_�(�p\r\nendstream\nendobj\n72 0 obj\n<<\n/Font 153 0 R\n>>\nendobj\n73 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 154 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 155 0 R\n>>\nendobj\n74 0 obj\n<<\n/Length 448\n/Filter /FlateDecode\n>>\nstream\r\nx��TMo�0\u0010��W\f\u0011\u0012��fm'Nb$\u000e �\u0000�\u0007� \u000e\u0014�&�f�$N��Be�;�V�\u0003u�n�\u001c��7���+Ƒ���\r���qX2��}�\u000e\u001c�,͡�\nK��3�4�Bqy�uw�4�\u0012e%�\u0014uu���2G4��\u001b��b��\u00024��꜉+\\@&��\u0005\n*L@ճ\u0003x�3�A���\u000e�&\u0018�;3�x\bՒ���\u0011�\n�̴�I��q4��za��\u001d�ޚ`���Ӄ���\b6���ϒ��\b�<E����qҺ��ƾ�\u0016Z\u0007\u0006�6mX���n�\u0012����9[o�����h!,,\\\u0018oz\u001b�\u001f��\u000f}D!J�,'��\u00143e~ZK3��̱[�GZ\u001aA!5�9ɶ�&�\u001b߬{���\n���\u000e�t\u001f]������\u000f$�2�S��+N�̚���5�3�2NZ\u0010��=\u0004�C��$��5�# ��%�\u0001IJ�HD�n���x��4ƻ*�qc�s��ʇM��H@#ą|`fc��\u0014\u000b������\\����V�� %�_�n�f+��\u0002\u001e� �\r\nendstream\nendobj\n75 0 obj\n<<\n/Font 156 0 R\n>>\nendobj\n76 0 obj\n<<\n/Length 1833\n/Filter /FlateDecode\n>>\nstream\r\nx��Xk�۸\u0015��_�Η�\u0004��޲�l�<�\u0014\r\u0016�N�(�\u0000�e�VF\u0012\u0015�\u001a�X���\\J~{;L\u0018d0∗�uνW_=��Q���\u0017��{>��\u0005>��}��|6���M��O�B�%I��,���^u�\u0017�$(�`\u0013����ﯼ߼\u0006�пn齾�\u000fX\u0018���\u0017�݀�!�ҌGi\u0018���n��U�ި�\u0016͜��&궒O��\u0017�ݝ7\u001c�(:\u0015�|bO�Ǐ��1H|��G�ۗW��L� �~���\u0019�<�I�cjZ)!\u000b�S\t�L\n�\u0007V��J���Ԛ��\t��\b&�\u0019��R5���Z6�l��{1�u�֫�X�Z�K�z-�Z0�A~k+Q6\u0010\u0005�\fd?�M��<\f�d�G�\u0006���(+1�&F��������<;uLJ�l�jEq/������Te3/u��9��cg�����8�y��\u0014~Q��򗥁�VpU�8�H5�\\f6��J4���6�t�\"���#�;���/-;\u0007�a�\u0013\u000b�\u0013���3�_\u0011���8�\u0012\u0004<\n\u0013?��[��,�5o��>W�>\u000f�-\\�o;7O5�_�d\u0019O'cd�Jh�\u0005\u001d\u0001�W�Aӛ�2�ّӦO�nG5�\rl��pa��8��!b\fK=Ȯ+�=��5���ٯ�#P�̮FT�$\n��OCJ_9\\����<�ϯѽn%\u0000��\u001b����鍣� �\t�-�ɤ���S��a��09:Ȟ�Wl.\f�����m'��GD0�[��O�-TgwFo���\u0006\t��lF�s��$�y\f>\nN�x�$��\u0003�rr���U�檹6l%\u001e,��:�\u00158�l�����m\u001b�[V�k;��0\u0010j!�l%;9�X:�U<�x>���T\u001b9T\t\u0007W�Y�3H8\u0015�p2Mxr)��X\t\u0018#��uk`\u001b\\2�qeU�at\b�+m<7�xw������v�&�y\u0014_\bLە��6H�F��/��8�@�l�U\b\u0019�E\\/��\u0010�z��l�\u0000�I���fC�\u0012խ�Bqă\u001d\u001f\u001f(�\u0015Ĳ5�@���eے�\u000bf��t\u0019�i��\u0002�Q��0\nx\u001e�P\bC�g;~=Б�y�>�����\u0001�(�c\u0000{��&�j�38@��\u001f�%�k�\u001d�K���,�Fɦ�%5\t�v�T\u001b�\u0016\b\u001cr���\u0003q�`\u0015�e�$���1��\u0012�vm��G�|���y�\u001cN\u0002��\u0011��f��\n5�:�\u001b�Ԃ�\b��\u0015�2K\u0011k���Y@�@�e\u000b&S��֌p��Ⱥ�/]�Ȓ��<V���4��QѠu@�C=\u0004����A\\\u0012�8�N��E�n\u000b�\u000f\rJ+~��\u0005��&�ثf�G�n�ҥ\u0011�b4��Y\b��:��/\u0001ej��sF\u0019��~9\\8$\u0011r����}�\u0005���]\u00036��\u0016��ه�\u000e\u0014\u001d\u0001�> v��#\u000b�P�P\u0011\u0004�8\\\u0014`3?�����'�\u001cM�Il�UC��\u001d<~ޕ�߭rT�\n�\u000f\u0010 �\r%�au\u001e\u001cH��\u0016\u000e�LR\u001e���.h\u0003��%��D���J�5\u0015S\u0007��\u0019Z��ʁ%�\u0012X�0]t������\\\u0019���-�ZɪRW�l�TFv\r0��Om\u001bq�0�=H\u001bLNs� \u0007UR�\u0006�Y=ww���e�\n�1.\u000eH09\\\u0004�\\�+m��\u0003}��\u001c�L�~�Mۣ0��o�[\"�j��k~e�y{p�(\u0018>k\u001dԉ1b�\bb\u001c������\u0019�hɆ\u0006VB\u0003z\ti����H��\u0014|>�����T(0�,q\u001c���\r�4\u0007e�\t��\u0017��6���\u0011\n\u0017\u001b}�;�\u001f֪��%\u0005|!\u0000�c\u001b\u0015��\u0018�\u000b)��\u001d�Pt\u0007.�K�c\u0006��w�\u0011%�8�X5�;��?n7\\�\u0001������\u0012��;�b_�^�9�n��ld'�`����f�Z\u0002򍭋�,�h�bt����x���*~f/��\u0016㜿\u001c<�Q4����\u001cw`\u000e�$��λ�\u001fY�d�}�F[\n��з���m�����\u0007����\u0003�q�d��\u001b�-Y�%\u001f��5}\u0017Z\u000bM\u0003\u0019\r�����O\u0002LT���wy\u0002M�`o?���c����C��0��\u0018�.\u0016�Q\u0019\u0007��6�w����\u0013\fY�3͸J�G�\\�f����R�V��F*y\\~���\"6��0��<=�̱�\u000f&h[F\u0006����An�bˢ��\u000e(���l3|���9[7xG9����ץYMoZ�f�m���K�F�xPXX�wwĺ���\r+�p��?����?\b\u0016��\r\nendstream\nendobj\n77 0 obj\n<<\n/Font 157 0 R\n>>\nendobj\n78 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 158 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 159 0 R\n>>\nendobj\n79 0 obj\n<<\n/Length 448\n/Filter /FlateDecode\n>>\nstream\r\nx��TMo�0\u0010��W\f\u0011\u0012��fm'Nb$\u000e �\u0000�\u0007� \u000e\u0014�&�f�$N��Be�;�V�\u0003u�n�\u001c��7���+Ƒ���\r���qX2��}�\u000e\u001c�,͡�\nK��3�4�Bqy�uw�4�\u0012e%�\u0014uu���2G4��\u001b��b��\u00024��꜉+\\@&��\u0005\n*L@ճ\u0003x�3�A���\u000e�&\u0018�;3�x\bՒ���\u0011�\n�̴�I��q4��za��\u001d�ޚ`���Ӄ���\b6���ϒ��\b�<E����qҺ��ƾ�\u0016Z\u0007\u0006�6mX���n�\u0012����9[o�����h!,,\\\u0018oz\u001b�\u001f��\u000f}D!J�,'��\u00143e~ZK3��̱[�GZ\u001aA!5�9ɶ�&�\u001b߬{���\n���\u000e�t\u001f]������\u000f$�2�S��+N�̚���5�3�2NZ\u0010��=\u0004�C��$��5�# ��%�\u0001IJ�HD�n���x��4ƻ*�qc�s��ʇM��H@#ą|`fc��\u0014\u000b������\\����V�� %�_�n�f+��\u0002\u001e� �\r\nendstream\nendobj\n80 0 obj\n<<\n/Font 160 0 R\n>>\nendobj\n81 0 obj\n<<\n/Length 1090\n/Filter /FlateDecode\n>>\nstream\r\nx��Vmo�6\u0010��_q\t\u0006�\u0001ZF�ދe\u0003��\u0018\u0006��P\u0003�0�\u0003-�\u0011c�tE)�\u0011���H�nd{\u000b;\u001a��\u000by��������\u000f�\u0018�\u001e�?<\u001f\u001e���{ﯿ���\u0017&��1��@��qNh\u001a�� �^���(�2\u0014��������I4c>̓�q�]\n�F0[y��\u0006\u0010QH���\t�r����SWU0}ⲅߙ\\V���3�7\u0015��٣7�y�ETh�Ҝd�n=�V�m\u0010�\b�߶�å�:\u0001\u001aDħ�1ؐ��7:��Z]\u0014\u0002z�\u0007��`.\u0002�gVrX�JmAh`��\n��-�Z(\t��k4#�\u00030\tܚ,{��`[�������NsP+<�����\t�\u001a\u0011e�&�\u0002��ЀƽsjӢm���D�\u0016\b�U�S\u001d\u0019�\t!'�q�\u0012��l�݆\u0015k���P5Y��\u0012r)t��%����MMzǵ��(\"y�G��QMk�?�\u0016�ZŕX\u0010\u0014�J\u0012\u0013�vGn1b�W�݆;�\bC+|CÉ�\u0006����%��o\u001b�Znk��\u0016�$�-td��5����|T.V���4��\u001f�R��Xk\"U�c��}\u0012\u0004��v�vꞒo\u001b�Ӕ$ِ��bZ�m9t�g[W��B�\u001f`\u0014��\u0015\u001c$J�\u0013(zq��$$J��O\u0019�RO�iĒ�\u0013�@����mc:�\u0006.m��\u001f:�}_�\u000eV���(��S+��\u001b�]��$h�v���\u00119RX�Ŗ\u001ct�e@�W!C�v��i=�\n/\u0000��p�WB�3|�3\u0007��\u000et�l\bD\u000bb\u0005��%_:\u0010HL\u0003��x��,�:+�#\u0015ڭ�6i��jP�\u0016�\u0006�.�\u0003�DHt��\u0001[��ɸ��W\u001brw?��H\u001b,��4R+k-�\u000e\b`˴��Ŭ`P�3;\u0007B�\u001c�\u0000�sYH|\u0014��\u001d\u001c����Y\u001a��\u001ds)�(MH�\u001aNU\fh\u001c�^�\u00100��\u000b�$&�T�%��*��R5�\u0011��k��\u0006V��\u000e4\u0014�\u0011\t�s���p9\fHN���=��'�\u0006�t\u0010.n@���Dz*u��Q�K�M�\r��-_�J��}𵪑\u0017v�\u0016��\u001b`�0-�+\u0007�~NN��\u0010%|�?���b�!��.쐣�;3�\u0018��H�?�k�\u0012����p�9�?>v���?\u001c\n\n��a�;\u0017�h��DX�?�ꑨ�#/\u001c��0�H2��3M��Z�<g|\u0018�%l��.x��AMu�PL�5��ͅ\u0003�8$Q���\u0019��5U��E\nK�\u0003��'�3��{��\u0019\u0000��w��˸\u001c/.�\u001d;��v�RCa�\u0013$=W\n���\u001d�c���v\r\u0003\u0014�Ǚq��g$\u001eѦ�%��;$�p�O�+��\u0003��})\r\nendstream\nendobj\n82 0 obj\n<<\n/Font 161 0 R\n>>\nendobj\n83 0 obj\n<<\n/Type /Annot\n/Subtype /Link\n/A 162 0 R\n/Rect [42.0 729.825 42.0 746.025]\n/BS 163 0 R\n>>\nendobj\n84 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n>>\nendobj\n85 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [4 0 R /XYZ null 749 null]\n>>\nendobj\n86 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n87 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [6 0 R /XYZ null 789 null]\n>>\nendobj\n88 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n89 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [6 0 R /XYZ null 789 null]\n>>\nendobj\n90 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n91 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [7 0 R /XYZ null 789 null]\n>>\nendobj\n92 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n93 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [8 0 R /XYZ null 789 null]\n>>\nendobj\n94 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n95 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [11 0 R /XYZ null 789 null]\n>>\nendobj\n96 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n97 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [13 0 R /XYZ null 789 null]\n>>\nendobj\n98 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n99 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [17 0 R /XYZ null 789 null]\n>>\nendobj\n100 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n101 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [17 0 R /XYZ null 789 null]\n>>\nendobj\n102 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n103 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [19 0 R /XYZ null 789 null]\n>>\nendobj\n104 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n105 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n106 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [6 0 R /XYZ null 746 null]\n>>\nendobj\n107 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n108 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n109 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [6 0 R /XYZ null 746 null]\n>>\nendobj\n110 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n111 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n112 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [7 0 R /XYZ null 746 null]\n>>\nendobj\n113 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n114 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n115 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [8 0 R /XYZ null 746 null]\n>>\nendobj\n116 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n117 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [8 0 R /XYZ null 635 null]\n>>\nendobj\n118 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n119 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [8 0 R /XYZ null 467 null]\n>>\nendobj\n120 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n121 0 obj\n<<\n/F1 165 0 R\n/F2 164 0 R\n/F3 166 0 R\n>>\nendobj\n122 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [13 0 R /XYZ null 746 null]\n>>\nendobj\n123 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n124 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [9 0 R /XYZ null 108 null]\n>>\nendobj\n125 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n126 0 obj\n<<\n/F1 166 0 R\n/F2 165 0 R\n/F3 164 0 R\n>>\nendobj\n127 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n128 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [11 0 R /XYZ null 746 null]\n>>\nendobj\n129 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n130 0 obj\n<<\n/Type /Action\n/S /URI\n/URI (https://gitlab.com/kordlib/kord/-/tree/master/core/src/main/kotlin/com/gitlab/kordlib/core/event)\n>>\nendobj\n131 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n132 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [11 0 R /XYZ null 649 null]\n>>\nendobj\n133 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n134 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [11 0 R /XYZ null 480 null]\n>>\nendobj\n135 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n136 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [13 0 R /XYZ null 746 null]\n>>\nendobj\n137 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n138 0 obj\n<<\n/F1 165 0 R\n/F2 166 0 R\n/F3 164 0 R\n>>\nendobj\n139 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n140 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [13 0 R /XYZ null 746 null]\n>>\nendobj\n141 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n142 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [13 0 R /XYZ null 662 null]\n>>\nendobj\n143 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n144 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [13 0 R /XYZ null 265 null]\n>>\nendobj\n145 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n146 0 obj\n<<\n/F1 166 0 R\n/F2 165 0 R\n/F3 164 0 R\n>>\nendobj\n147 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [14 0 R /XYZ null 731 null]\n>>\nendobj\n148 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n149 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [14 0 R /XYZ null 335 null]\n>>\nendobj\n150 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n151 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [14 0 R /XYZ null 187 null]\n>>\nendobj\n152 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n153 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n154 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [17 0 R /XYZ null 746 null]\n>>\nendobj\n155 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n156 0 obj\n<<\n/F1 166 0 R\n>>\nendobj\n157 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n158 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [17 0 R /XYZ null 746 null]\n>>\nendobj\n159 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n160 0 obj\n<<\n/F1 166 0 R\n>>\nendobj\n161 0 obj\n<<\n/F1 164 0 R\n/F2 165 0 R\n/F3 166 0 R\n>>\nendobj\n162 0 obj\n<<\n/Type /Action\n/S /GoTo\n/D [19 0 R /XYZ null 746 null]\n>>\nendobj\n163 0 obj\n<<\n/W 0\n/S /S\n>>\nendobj\n164 0 obj\n<<\n/Type /Font\n/Subtype /Type1\n/BaseFont /Times-Bold\n/Encoding /WinAnsiEncoding\n>>\nendobj\n165 0 obj\n<<\n/Type /Font\n/Subtype /Type1\n/BaseFont /Times-Roman\n/Encoding /WinAnsiEncoding\n>>\nendobj\n166 0 obj\n<<\n/Type /Font\n/Subtype /Type1\n/BaseFont /Courier\n/Encoding /WinAnsiEncoding\n>>\nendobj\nxref\n0 167\n0000000000 65535 f\r\n0000000015 00000 n\r\n0000000169 00000 n\r\n0000000078 00000 n\r\n0000000327 00000 n\r\n0000000525 00000 n\r\n0000000660 00000 n\r\n0000000795 00000 n\r\n0000000930 00000 n\r\n0000001079 00000 n\r\n0000001221 00000 n\r\n0000001340 00000 n\r\n0000001504 00000 n\r\n0000001623 00000 n\r\n0000001773 00000 n\r\n0000001923 00000 n\r\n0000002059 00000 n\r\n0000002178 00000 n\r\n0000002314 00000 n\r\n0000002433 00000 n\r\n0000002569 00000 n\r\n0000003767 00000 n\r\n0000003802 00000 n\r\n0000003909 00000 n\r\n0000004019 00000 n\r\n0000004131 00000 n\r\n0000004243 00000 n\r\n0000004354 00000 n\r\n0000004466 00000 n\r\n0000004579 00000 n\r\n0000004691 00000 n\r\n0000004803 00000 n\r\n0000004915 00000 n\r\n0000006126 00000 n\r\n0000006162 00000 n\r\n0000006269 00000 n\r\n0000007470 00000 n\r\n0000007506 00000 n\r\n0000007613 00000 n\r\n0000008817 00000 n\r\n0000008853 00000 n\r\n0000008960 00000 n\r\n0000011389 00000 n\r\n0000011425 00000 n\r\n0000011532 00000 n\r\n0000011642 00000 n\r\n0000011748 00000 n\r\n0000013442 00000 n\r\n0000013478 00000 n\r\n0000013586 00000 n\r\n0000013697 00000 n\r\n0000016501 00000 n\r\n0000016537 00000 n\r\n0000018175 00000 n\r\n0000018211 00000 n\r\n0000018318 00000 n\r\n0000018434 00000 n\r\n0000018542 00000 n\r\n0000018652 00000 n\r\n0000018763 00000 n\r\n0000019491 00000 n\r\n0000019527 00000 n\r\n0000021234 00000 n\r\n0000021270 00000 n\r\n0000021377 00000 n\r\n0000021483 00000 n\r\n0000021594 00000 n\r\n0000023619 00000 n\r\n0000023655 00000 n\r\n0000023763 00000 n\r\n0000023870 00000 n\r\n0000023981 00000 n\r\n0000025893 00000 n\r\n0000025929 00000 n\r\n0000026036 00000 n\r\n0000026559 00000 n\r\n0000026595 00000 n\r\n0000028504 00000 n\r\n0000028540 00000 n\r\n0000028647 00000 n\r\n0000029170 00000 n\r\n0000029206 00000 n\r\n0000030372 00000 n\r\n0000030408 00000 n\r\n0000030515 00000 n\r\n0000030561 00000 n\r\n0000030636 00000 n\r\n0000030669 00000 n\r\n0000030744 00000 n\r\n0000030777 00000 n\r\n0000030852 00000 n\r\n0000030885 00000 n\r\n0000030960 00000 n\r\n0000030993 00000 n\r\n0000031068 00000 n\r\n0000031101 00000 n\r\n0000031177 00000 n\r\n0000031210 00000 n\r\n0000031286 00000 n\r\n0000031319 00000 n\r\n0000031395 00000 n\r\n0000031429 00000 n\r\n0000031506 00000 n\r\n0000031540 00000 n\r\n0000031617 00000 n\r\n0000031651 00000 n\r\n0000031710 00000 n\r\n0000031786 00000 n\r\n0000031820 00000 n\r\n0000031879 00000 n\r\n0000031955 00000 n\r\n0000031989 00000 n\r\n0000032048 00000 n\r\n0000032124 00000 n\r\n0000032158 00000 n\r\n0000032217 00000 n\r\n0000032293 00000 n\r\n0000032327 00000 n\r\n0000032403 00000 n\r\n0000032437 00000 n\r\n0000032513 00000 n\r\n0000032547 00000 n\r\n0000032606 00000 n\r\n0000032683 00000 n\r\n0000032717 00000 n\r\n0000032793 00000 n\r\n0000032827 00000 n\r\n0000032886 00000 n\r\n0000032945 00000 n\r\n0000033022 00000 n\r\n0000033056 00000 n\r\n0000033205 00000 n\r\n0000033239 00000 n\r\n0000033316 00000 n\r\n0000033350 00000 n\r\n0000033427 00000 n\r\n0000033461 00000 n\r\n0000033538 00000 n\r\n0000033572 00000 n\r\n0000033631 00000 n\r\n0000033690 00000 n\r\n0000033767 00000 n\r\n0000033801 00000 n\r\n0000033878 00000 n\r\n0000033912 00000 n\r\n0000033989 00000 n\r\n0000034023 00000 n\r\n0000034082 00000 n\r\n0000034159 00000 n\r\n0000034193 00000 n\r\n0000034270 00000 n\r\n0000034304 00000 n\r\n0000034381 00000 n\r\n0000034415 00000 n\r\n0000034474 00000 n\r\n0000034551 00000 n\r\n0000034585 00000 n\r\n0000034620 00000 n\r\n0000034679 00000 n\r\n0000034756 00000 n\r\n0000034790 00000 n\r\n0000034825 00000 n\r\n0000034884 00000 n\r\n0000034961 00000 n\r\n0000034995 00000 n\r\n0000035095 00000 n\r\n0000035196 00000 n\r\ntrailer\n<<\n/Root 1 0 R\n/Info 3 0 R\n/ID [<CB496AD2E11D02F83230BD9E7D670F29> <CB496AD2E11D02F83230BD9E7D670F29>]\n/Size 167\n>>\nstartxref\n35293\n%%EOF\n"
+        }
+      ]
+    }
+  },
+  "ownPages": [
+    {
+      "reference": {
+        "path": "",
+        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+        "fileName": "",
+        "extension": "html",
+        "usePrettyUrl": true,
+        "link": "https://kord-extensions.docs.kotlindiscord.com"
+      },
+      "description": "",
+      "title": "Home",
+      "content": ""
+    },
+    {
+      "reference": {
+        "path": "",
+        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+        "fileName": "404",
+        "extension": "html",
+        "usePrettyUrl": false,
+        "link": "https://kord-extensions.docs.kotlindiscord.com/404.html"
+      },
+      "description": "",
+      "title": "Not Found",
+      "content": ""
+    }
+  ]
+}

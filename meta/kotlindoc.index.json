@@ -1,0 +1,492 @@
+{
+  "ownKey": "kotlindoc",
+  "childrenPages": {"kotlindoc": {
+    "ownKey": "kotlindoc",
+    "childrenPages": {"kord-extensions": {
+      "ownKey": "kord-extensions",
+      "childrenPages": {"kord-extensions": {
+        "ownKey": "kord-extensions",
+        "childrenPages": {"com": {
+          "ownKey": "com",
+          "childrenPages": {"kotlindiscord": {
+            "ownKey": "kotlindiscord",
+            "childrenPages": {"kord": {
+              "ownKey": "kord",
+              "childrenPages": {"extensions": {
+                "ownKey": "extensions",
+                "childrenPages": {
+                  "invalideventhandlerexception": {
+                    "ownKey": "invalideventhandlerexception",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/invalideventhandlerexception",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalideventhandlerexception"
+                      },
+                      "description": "",
+                      "title": "InvalidEventHandlerException",
+                      "content": "<p>CommentComponent(kind=text, text=Thrown when an , value=) CommentComponent(kind=typeName, text=EventHandler, value=com.kotlindiscord.kord.extensions.events.EventHandler) CommentComponent(kind=text, text= could not be validated., value=null)<\/p>\n"
+                    }]
+                  },
+                  "extensionsexception": {
+                    "ownKey": "extensionsexception",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/extensionsexception",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensionsexception"
+                      },
+                      "description": "",
+                      "title": "ExtensionsException",
+                      "content": "<p>CommentComponent(kind=text, text=A base class for all custom exceptions in our bot framework., value=null)<\/p>\n"
+                    }]
+                  },
+                  "eventhandlerregistrationexception": {
+                    "ownKey": "eventhandlerregistrationexception",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/eventhandlerregistrationexception",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/eventhandlerregistrationexception"
+                      },
+                      "description": "",
+                      "title": "EventHandlerRegistrationException",
+                      "content": "<p>CommentComponent(kind=text, text=Thrown when an attempt to register a , value=) CommentComponent(kind=typeName, text=EventHandler, value=com.kotlindiscord.kord.extensions.events.EventHandler) CommentComponent(kind=text, text= fails., value=null)<\/p>\n"
+                    }]
+                  },
+                  "extensiblebot": {
+                    "ownKey": "extensiblebot",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/extensiblebot",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot"
+                      },
+                      "description": "",
+                      "title": "ExtensibleBot",
+                      "content": "<p>CommentComponent(kind=text, text=An extensible bot, wrapping a Kord instance.<p>This is your jumping-off point. ExtensibleBot provides a system for managing extensions, commands and event\nhandlers. Either subclass ExtensibleBot or use it as-is if it suits your needs.<\/p>, value=null)<\/p>\n"
+                    }]
+                  },
+                  "parsers": {
+                    "ownKey": "parsers",
+                    "childrenPages": {
+                      "invalidtimeunitexception": {
+                        "ownKey": "invalidtimeunitexception",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/parsers/invalidtimeunitexception",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers/invalidtimeunitexception"
+                          },
+                          "description": "",
+                          "title": "InvalidTimeUnitException",
+                          "content": "<p>CommentComponent(kind=text, text=Throws when invalid time unit given to duration parser., value=null)<\/p>\n"
+                        }]
+                      },
+                      "baseparserexception": {
+                        "ownKey": "baseparserexception",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/parsers/baseparserexception",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers/baseparserexception"
+                          },
+                          "description": "",
+                          "title": "BaseParserException",
+                          "content": "<p>CommentComponent(kind=text, text=A base exception class for parsers., value=null)<\/p>\n"
+                        }]
+                      }
+                    },
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/parsers",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers"
+                      },
+                      "description": "",
+                      "title": "com.kotlindiscord.kord.extensions.parsers",
+                      "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                    }]
+                  },
+                  "extensions": {
+                    "ownKey": "extensions",
+                    "childrenPages": {
+                      "extension": {
+                        "ownKey": "extension",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/extensions/extension",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/extension"
+                          },
+                          "description": "",
+                          "title": "Extension",
+                          "content": "<p>CommentComponent(kind=text, text=Class representing a distinct set of functionality to be treated as a unit.<p>Override this and create your own extensions with their own event handlers and commands.\nThis will allow you to keep distinct blocks of functionality separate, keeping the codebase\nclean and configurable.<\/p>, value=null)<\/p>\n"
+                        }]
+                      },
+                      "helpextension": {
+                        "ownKey": "helpextension",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/extensions/helpextension",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/helpextension"
+                          },
+                          "description": "",
+                          "title": "HelpExtension",
+                          "content": "<p>CommentComponent(kind=text, text=Help command extension.<p>This extension provides a <code>!help<\/code> command listing the available commands,\nalong with a <code>!help <command><\/code> to get more info about a specific command.<\/p>, value=null)<\/p>\n"
+                        }]
+                      }
+                    },
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/extensions",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions"
+                      },
+                      "description": "",
+                      "title": "com.kotlindiscord.kord.extensions.extensions",
+                      "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                    }]
+                  },
+                  "checks": {
+                    "ownKey": "checks",
+                    "childrenPages": {"utils": {
+                      "ownKey": "utils",
+                      "childrenPages": {"scheduler": {
+                        "ownKey": "scheduler",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/checks/utils/scheduler",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/utils/scheduler"
+                          },
+                          "description": "",
+                          "title": "Scheduler",
+                          "content": "<p>CommentComponent(kind=text, text=Class in charge of providing scheduling functions., value=null)<\/p>\n"
+                        }]
+                      }},
+                      "ownPages": [{
+                        "reference": {
+                          "path": "kotlindoc/kord-extensions/kord-extensions",
+                          "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                          "fileName": "com/kotlindiscord/kord/extensions/checks/utils",
+                          "extension": "html",
+                          "usePrettyUrl": true,
+                          "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/utils"
+                        },
+                        "description": "",
+                        "title": "com.kotlindiscord.kord.extensions.checks.utils",
+                        "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                      }]
+                    }},
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/checks",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks"
+                      },
+                      "description": "",
+                      "title": "com.kotlindiscord.kord.extensions.checks",
+                      "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                    }]
+                  },
+                  "parseexception": {
+                    "ownKey": "parseexception",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/parseexception",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parseexception"
+                      },
+                      "description": "",
+                      "title": "ParseException",
+                      "content": "<p>CommentComponent(kind=text, text=Thrown when we fail to parse arguments into a data class., value=null)<\/p>\n"
+                    }]
+                  },
+                  "commandregistrationexception": {
+                    "ownKey": "commandregistrationexception",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/commandregistrationexception",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commandregistrationexception"
+                      },
+                      "description": "",
+                      "title": "CommandRegistrationException",
+                      "content": "<p>CommentComponent(kind=text, text=Thrown when an attempt to register a , value=) CommentComponent(kind=typeName, text=Command, value=com.kotlindiscord.kord.extensions.commands.Command) CommentComponent(kind=text, text= fails., value=null)<\/p>\n"
+                    }]
+                  },
+                  "invalidcommandexception": {
+                    "ownKey": "invalidcommandexception",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/invalidcommandexception",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalidcommandexception"
+                      },
+                      "description": "",
+                      "title": "InvalidCommandException",
+                      "content": "<p>CommentComponent(kind=text, text=Thrown when a , value=) CommentComponent(kind=typeName, text=Command, value=com.kotlindiscord.kord.extensions.commands.Command) CommentComponent(kind=text, text= could not be validated., value=null)<\/p>\n"
+                    }]
+                  },
+                  "invalidextensionexception": {
+                    "ownKey": "invalidextensionexception",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/invalidextensionexception",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalidextensionexception"
+                      },
+                      "description": "",
+                      "title": "InvalidExtensionException",
+                      "content": "<p>CommentComponent(kind=text, text=Thrown when an attempt to load an , value=) CommentComponent(kind=typeName, text=Extension, value=com.kotlindiscord.kord.extensions.extensions.Extension) CommentComponent(kind=text, text= fails., value=null)<\/p>\n"
+                    }]
+                  },
+                  "paginator": {
+                    "ownKey": "paginator",
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/paginator",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/paginator"
+                      },
+                      "description": "",
+                      "title": "Paginator",
+                      "content": "<p>CommentComponent(kind=text, text=Interactive embed with multiple pages using emoji reactions as user inputs.<p>NOTE : <code>.send()<\/code> needs to be called in order for the paginator to be displayed.<\/p>, value=null)<\/p>\n"
+                    }]
+                  },
+                  "events": {
+                    "ownKey": "events",
+                    "childrenPages": {
+                      "eventhandler": {
+                        "ownKey": "eventhandler",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/events/eventhandler",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/eventhandler"
+                          },
+                          "description": "",
+                          "title": "EventHandler",
+                          "content": "<p>CommentComponent(kind=text, text=Class representing an event handler. Event handlers react to a given Kord event.<p>You shouldn't need to use this class directly - instead, create an , value=) CommentComponent(kind=typeName, text=Extension, value=com.kotlindiscord.kord.extensions.extensions.Extension) CommentComponent(kind=text, text= and use the\n, value=) CommentComponent(kind=typeName, text=event function, value=com.kotlindiscord.kord.extensions.extensions.Extension.event) CommentComponent(kind=text, text= to register your event handler, by overriding the , value=) CommentComponent(kind=typeName, text=Extension.setup, value=com.kotlindiscord.kord.extensions.extensions.Extension.setup) CommentComponent(kind=text, text=\nfunction.<\/p>, value=null)<\/p>\n"
+                        }]
+                      },
+                      "extensionevent": {
+                        "ownKey": "extensionevent",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/events/extensionevent",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionevent"
+                          },
+                          "description": "",
+                          "title": "ExtensionEvent",
+                          "content": "<p>CommentComponent(kind=text, text=Base interface for events fired by Kord Extensions., value=null)<\/p>\n"
+                        }]
+                      },
+                      "extensionunloadedevent": {
+                        "ownKey": "extensionunloadedevent",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/events/extensionunloadedevent",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionunloadedevent"
+                          },
+                          "description": "",
+                          "title": "ExtensionUnloadedEvent",
+                          "content": "<p>CommentComponent(kind=text, text=Event fired when an extension is unloaded programmatically., value=null)<\/p>\n"
+                        }]
+                      },
+                      "extensionloadedevent": {
+                        "ownKey": "extensionloadedevent",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/events/extensionloadedevent",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionloadedevent"
+                          },
+                          "description": "",
+                          "title": "ExtensionLoadedEvent",
+                          "content": "<p>CommentComponent(kind=text, text=Event fired when an extension is loaded, either on first load or programmatically later., value=null)<\/p>\n"
+                        }]
+                      }
+                    },
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/events",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events"
+                      },
+                      "description": "",
+                      "title": "com.kotlindiscord.kord.extensions.events",
+                      "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                    }]
+                  },
+                  "commands": {
+                    "ownKey": "commands",
+                    "childrenPages": {
+                      "commandcontext": {
+                        "ownKey": "commandcontext",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/commands/commandcontext",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/commandcontext"
+                          },
+                          "description": "",
+                          "title": "CommandContext",
+                          "content": "<p>CommentComponent(kind=text, text=Light wrapper class representing the context for a command's action.<p>This is what <code>this<\/code> refers to in a command action body. You shouldn't have to\ninstantiate this yourself.<\/p>, value=null)<\/p>\n"
+                        }]
+                      },
+                      "argumentparser": {
+                        "ownKey": "argumentparser",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/commands/argumentparser",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/argumentparser"
+                          },
+                          "description": "",
+                          "title": "ArgumentParser",
+                          "content": "<p>CommentComponent(kind=text, text=Class in charge of converting string arguments for commands into fully-typed data classes.<p>You most likely don't need to touch this yourself - it's part of the commands framework.<\/p>, value=null)<\/p>\n"
+                        }]
+                      },
+                      "command": {
+                        "ownKey": "command",
+                        "ownPages": [{
+                          "reference": {
+                            "path": "kotlindoc/kord-extensions/kord-extensions",
+                            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                            "fileName": "com/kotlindiscord/kord/extensions/commands/command",
+                            "extension": "html",
+                            "usePrettyUrl": true,
+                            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/command"
+                          },
+                          "description": "",
+                          "title": "Command",
+                          "content": "<p>CommentComponent(kind=text, text=Class representing a single command.<p>You shouldn't need to use this class directly - instead, create an , value=) CommentComponent(kind=typeName, text=Extension, value=com.kotlindiscord.kord.extensions.extensions.Extension) CommentComponent(kind=text, text= and use the\n, value=) CommentComponent(kind=typeName, text=command function, value=com.kotlindiscord.kord.extensions.extensions.Extension.command) CommentComponent(kind=text, text= to register your command, by overriding the , value=) CommentComponent(kind=typeName, text=Extension.setup, value=com.kotlindiscord.kord.extensions.extensions.Extension.setup) CommentComponent(kind=text, text=\nfunction.<\/p>, value=null)<\/p>\n"
+                        }]
+                      }
+                    },
+                    "ownPages": [{
+                      "reference": {
+                        "path": "kotlindoc/kord-extensions/kord-extensions",
+                        "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                        "fileName": "com/kotlindiscord/kord/extensions/commands",
+                        "extension": "html",
+                        "usePrettyUrl": true,
+                        "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands"
+                      },
+                      "description": "",
+                      "title": "com.kotlindiscord.kord.extensions.commands",
+                      "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                    }]
+                  }
+                },
+                "ownPages": [{
+                  "reference": {
+                    "path": "kotlindoc/kord-extensions/kord-extensions",
+                    "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+                    "fileName": "com/kotlindiscord/kord/extensions",
+                    "extension": "html",
+                    "usePrettyUrl": true,
+                    "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions"
+                  },
+                  "description": "",
+                  "title": "com.kotlindiscord.kord.extensions",
+                  "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+                }]
+              }}
+            }}
+          }}
+        }},
+        "ownPages": [{
+          "reference": {
+            "path": "kotlindoc/kord-extensions",
+            "baseUrl": "https://kord-extensions.docs.kotlindiscord.com",
+            "fileName": "kord-extensions",
+            "extension": "html",
+            "usePrettyUrl": true,
+            "link": "https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions"
+          },
+          "description": "",
+          "title": "Kord Extensions",
+          "content": "<h1 id=\"kord-extensions\"><a href=\"#kord-extensions\" id=\"kord-extensions\" class=\"anchor\"><\/a>Kord Extensions<\/h1>\n<p>Kord Extensions is an addon for the excellent <a href=\"https://github.com/kordlib/kord\">Kord library<\/a>. It intends to provide\na framework for larger bot projects, with easy-to-use commands and event handling, wrapped up into individual\nExtension objects.<\/p>\n<p>The approach taken here is relatively different from a lot of Kotlin libraries, many of which prefer to provide a\nDSL for quickly prototyping or implementing a small application. Instead,\n<a href=\"https://github.com/Rapptz/discord.py\">Discord.py<\/a> (the Discord library for Python) is a primary source of inspiration\nfor our fairly object-oriented design, especially where it comes to its extensions (which are known as cogs in\nDiscord.py). Despite this, we still strive to provide an idiomatic API that makes full use of Kotlin's niceties.<\/p>\n<p><strong>Note:<\/strong> Kord is <a href=\"https://github.com/kordlib/kord/issues/8\">already working on their own command framework<\/a>. This\nis an independent library, created at a time when we couldn't wait for an official command framework. Once Kord\nhas released their framework, we'll evaluate the possibility of supporting it directly in ours (if necessary).<\/p>\n<h1 id=\"under-development\"><a href=\"#under-development\" id=\"under-development\" class=\"anchor\"><\/a>Under Development<\/h1>\n<p>This file is in an early state, and we're working on bringing over our framework from our bot project. Once we're\nhappy with what we've done, and we've written up some documentation, we'll update this file and make a proper\nrelease.<\/p>\n"
+        }]
+      }}
+    }}
+  }}
+}

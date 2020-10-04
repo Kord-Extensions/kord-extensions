@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/book.pdf</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/components/extension</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/components/command</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/components/event-handler</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/components/check</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-event-handler</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    
+</urlset>

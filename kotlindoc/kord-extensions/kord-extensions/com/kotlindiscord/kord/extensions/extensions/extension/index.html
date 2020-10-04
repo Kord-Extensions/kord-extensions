@@ -1,0 +1,1146 @@
+<!DOCTYPE HTML>
+<!--
+    Editorial by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+
+
+
+
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<meta name="generator" content="Orchid 0.20.0-SNAPSHOT"/>
+<link rel="icon" href="https://kord-extensions.docs.kotlindiscord.com/favicon.ico">
+
+
+<meta name="robots" content="index, follow">
+
+
+
+<title>Extension</title>
+
+
+<meta name="description" content="Extensions and commands for Kord">
+
+
+
+
+
+<script>
+    window.site = {"orchidVersion":"0.20.0-SNAPSHOT","baseUrl":"https://kord-extensions.docs.kotlindiscord.com","environment":"debug","version":"1.1-SNAPSHOT"};
+</script>
+
+
+
+
+
+<!-- start:debug info -->
+
+<!-- THEME -->
+<!-- Type: Editorial -->
+<!-- Class: com.eden.orchid.editorial.EditorialTheme -->
+
+<!-- PAGE -->
+<!-- Type: classes -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocPage -->
+<!-- Layout: index -->
+<!-- Resolved Layout: templates/layouts/index.peb -->
+<!-- Page Template: kotlindocClass, sourceDocPage, classes, page -->
+<!-- Resolved Page Template: templates/pages/sourceDocPage.peb -->
+
+<!-- RESOURCE -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocResource -->
+<!-- Source Filename:  -->
+
+<!-- COMPLETE PAGE CONFIGURATION -->
+<script>
+    window.allData = {"reference":{"path":"kotlindoc/kord-extensions/kord-extensions","baseUrl":"https://kord-extensions.docs.kotlindiscord.com","fileName":"com/kotlindiscord/kord/extensions/extensions/extension","extension":"html","usePrettyUrl":true,"link":"https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/extension"},"description":"","title":"Extension"};
+</script>
+
+<!-- end:debug info -->
+
+
+
+
+    <!-- start:inject meta-components -->
+    
+        
+            
+        
+    
+    <!-- end:inject meta-components -->
+
+
+
+    <!-- start:inject meta-components -->
+    
+        
+            
+        
+    
+    <!-- end:inject meta-components -->
+
+
+
+
+
+<!-- start:inject styles -->
+<link rel="stylesheet" type="text/css" href="https://kord-extensions.docs.kotlindiscord.com/Editorial/e240140/assets/css/editorial_main.css"  />
+<link rel="stylesheet" type="text/css" href="https://kord-extensions.docs.kotlindiscord.com/Editorial/e240140/assets/css/editorial_orchidCustomizations.css"  />
+<link rel="stylesheet" type="text/css" href="https://kord-extensions.docs.kotlindiscord.com/Editorial/e240140/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://kord-extensions.docs.kotlindiscord.com/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://kord-extensions.docs.kotlindiscord.com/assets/css/orchidSourceDoc.css"  />
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/themes/prism.min.css"  />
+<!-- end:inject styles -->
+
+</head>
+<body class="is-loading">
+
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            
+                <header id="header">
+    <a href="https://kord-extensions.docs.kotlindiscord.com" class="logo">Kord Extensions</a>
+    <ul class="icons">
+    
+    
+        <li>
+            <a href="https://github.com/Kotlin-Discord/kord-extensions" class="icon fa-github">
+                <span class="label">github</span>
+            </a>
+        </li>
+    
+    
+    </ul>
+</header>
+            
+            
+            
+            
+                <section id="pageContent">
+                    <header class="major"><h2>Extension</h2></header>
+                    <article>
+                        
+    <!-- start:inject components -->
+    
+        
+            
+                
+                    
+                        <div class="sourcedoc-page orchid-sourcedoc content">
+  
+<div class="sourcedoc-section section-root section-level-1" id="Extension">
+
+
+  <h1 class="sourcedoc-section section-name">Extension</h1>
+  
+    <div class="sourcedoc-section section-element" id="8209a208173e31e33d3da654ee0df867d4fcd6bb">
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract class <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/extension">Extension</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Class representing a distinct set of functionality to be treated as a unit.<p>Override this and create your own extensions with their own event handlers and commands.
+This will allow you to keep distinct blocks of functionality separate, keeping the codebase
+clean and configurable.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="fields">
+
+
+  <p class="sourcedoc-section section-name"><strong>Fields</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="3ef6024b0c4d11a628c854f1a4a99c95fa3adf2f">
+        <td class="sourcedoc-section section-signature">
+          <code>abstract name: String</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>The name of this extension.<p>Ensure you override this in your extension. This should be a unique name that can later
+be used to refer to your specific extension after it's been registered.</p></p>
+
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d3974844f91921718a568c035a4ec1548c3d25ee">
+        <td class="sourcedoc-section section-signature">
+          <code>var loaded: Boolean</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>Whether this extension is currently loaded.<p>This is set during loading/unloading of the extension and is used to ensure
+things aren't being called when they shouldn't be.</p></p>
+
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="fc9d3537827a758c264554850b28c162c11682a2">
+        <td class="sourcedoc-section section-signature">
+          <code>val eventHandlers: /**
+     * List of registered event handlers.
+     *
+     * When an extension is unloaded, all the event handlers are cancelled and
+     * removed from the bot.
+     */</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>List of registered event handlers.<p>When an extension is unloaded, all the event handlers are cancelled and
+removed from the bot.</p></p>
+
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="708941f9f9d13d4a78f0e45e820d8ba486aed07e">
+        <td class="sourcedoc-section section-signature">
+          <code>val commands: /**
+     * List of registered commands.
+     *
+     * When an extension is unloaded, all the commands are removed from the bot.
+     */</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>List of registered commands.<p>When an extension is unloaded, all the commands are removed from the bot.</p></p>
+
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="66546ea0e5a4a0278ea109425a6596ff55e830af">
+        <td class="sourcedoc-section section-signature">
+          <code>val bot: <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot">ExtensibleBot</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>The <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot">ExtensibleBot</a> instance that this extension is installed to.</p>
+
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="constructors">
+
+
+  <h2 class="sourcedoc-section section-name">Constructors</h2>
+  
+    <div class="sourcedoc-section section-element" id="8cc5d1ce00790d3c545c8cbd84a8a037ea89d7da">
+      
+      <h3 class="sourcedoc-section element-name">&lt;init&gt;</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>constructor(bot: <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot">ExtensibleBot</a>)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Class representing a distinct set of functionality to be treated as a unit.<p>Override this and create your own extensions with their own event handlers and commands.
+This will allow you to keep distinct blocks of functionality separate, keeping the codebase
+clean and configurable.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="f7e844368a8e9b51db805d998148a1b593c1a306">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="96a3939815950b0ea972d5b91ef0b935d5edfbe3">
+        <td class="sourcedoc-section section-signature">
+          <code>bot: <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot">ExtensibleBot</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>The <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot">ExtensibleBot</a> instance that this extension is installed to.</p>
+
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="methods">
+
+
+  <h2 class="sourcedoc-section section-name">Methods</h2>
+  
+    <div class="sourcedoc-section section-element" id="d250847232aec1342763b0bcd71f6dfb68a4f675">
+      
+      <h3 class="sourcedoc-section element-name">setup</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract suspend fun setup()</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Override this in your subclass and use it to register your commands and event
+handlers.<p>This function simply allows you to register commands and event handlers in the context
+of a suspended function, which is required in order to make use of some other APIs. As a
+result, we recommend you make use of this in all your extensions, instead of init {}
+blocks.</p><p>This function is only ever called once.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="731d829ae073a677d71ad585f7ab8344c0aeccaf">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="c963e815f760831e5b79dc6287cf24728a185d48">
+      
+      <h3 class="sourcedoc-section element-name">command</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>suspend fun command(body: suspend <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/command">Command</a>.()-&gt;Unit): <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/command">Command</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>DSL function for easily registering a command.<p>Use this in your setup function to register a command that may be executed on Discord.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="fbbb1629d515dbe738a9b3d9e2b24d61e602f2e0">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="989d3b9de1cd27da42a14098157643f5618a5530">
+        <td class="sourcedoc-section section-signature">
+          <code>body: suspend <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/command">Command</a>.()-&gt;Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>Builder lambda used for setting up the command object.</p>
+
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="14faf8f2b7642c89bbbd081af585b7fcfc5563c4">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8901895fb1b1d4c4ea2fec368c25176bf73e2f7e">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/command">Command</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="fc5d191b889249f9d1289a646e96c9f2ffa35e22">
+      
+      <h3 class="sourcedoc-section element-name">unload</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>suspend fun unload()</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Unload all event handlers and commands for this extension.<p>This function is called as part of unloading extensions, which may be
+done programmatically.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="a7f358aabcaf2972f376e3c4e270883a64494b09">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="31ce0dc4258c8d545f2b4d6e644ad906d7645be8">
+      
+      <h3 class="sourcedoc-section element-name">event</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>suspend inline fun &lt;T : Any&gt; event(noinline body: suspend <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/eventhandler">EventHandler</a>&lt;T&gt;.()-&gt;Unit): <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/eventhandler">EventHandler</a>&lt;T&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>DSL function for easily registering an event handler.<p>Use this in your setup function to register an event handler that reacts to a given event.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="89ea0b4bd9766b89e85968c95b30770ee3bda97e">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="a9d4aefaffc93b4f079a0d47875022ade3fa40db">
+        <td class="sourcedoc-section section-signature">
+          <code>noinline body: suspend <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/eventhandler">EventHandler</a>&lt;T&gt;.()-&gt;Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>Builder lambda used for setting up the event handler object.</p>
+
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="cab79e85cd81bc0df96c027b3e8c3b5ab4c8e44d">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="574e7e027bdd005fb5d20bc97231fcc58f2a1220">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/eventhandler">EventHandler</a>&lt;T&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+</div>
+
+
+
+
+
+
+                    
+                
+            
+        
+    
+    <!-- end:inject components -->
+
+
+                    </article>
+                </section>
+            
+        </div>
+        <hr>
+
+        <!-- Page Footer -->
+        <div class="inner">
+    <footer id="footer">
+        <div class="clearfix">
+            
+            
+        </div>
+    </footer>
+</div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+    <div class="inner">
+
+        <!-- Search -->
+        <section id="search" class="alt">
+            <form data-orchid-search="">
+                <input type="text" name="query" id="query" placeholder="Search"/>
+            </form>
+            <div class="box" id="search-results" data-orchid-search-results style="display: none;">
+                <b>Search Results</b>
+                <ul></ul>
+            </div>
+            <div class="box" id="search-progress" data-orchid-search-progress style="display: none;">
+                <div class="loader">Loading...</div>
+            </div>
+        </section>
+
+        <!-- Menu -->
+        <nav id="siteNav" class="menu">
+            <header class="major">
+                <h2>Kord Extensions</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    
+    <li>
+        <a class="subheader">Wiki</a>
+    </li>
+    
+
+                
+                    
+    <li>
+        <span class="opener">Components</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/wiki/components/extensible-bot">Extensible Bot</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/wiki/components/extension">Extensions</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/wiki/components/command">Commands</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/wiki/components/event-handler">Event Handlers</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/wiki/components/check">Checks</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">Examples</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-command">Full Command Example</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/wiki/examples/full-event-handler">Full Event Handler Example</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    
+    <li>
+        <a class="subheader">API Docs</a>
+    </li>
+    
+
+                
+                    
+    <li>
+        <span class="opener">Classes</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/argumentparser">ArgumentParser</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers/baseparserexception">BaseParserException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/command">Command</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/commandcontext">CommandContext</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commandregistrationexception">CommandRegistrationException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/eventhandler">EventHandler</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/eventhandlerregistrationexception">EventHandlerRegistrationException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot">ExtensibleBot</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/extension">Extension</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionevent">ExtensionEvent</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionloadedevent">ExtensionLoadedEvent</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionunloadedevent">ExtensionUnloadedEvent</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensionsexception">ExtensionsException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/helpextension">HelpExtension</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalidcommandexception">InvalidCommandException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalideventhandlerexception">InvalidEventHandlerException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalidextensionexception">InvalidExtensionException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers/invalidtimeunitexception">InvalidTimeUnitException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/paginator">Paginator</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parseexception">ParseException</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/utils/scheduler">Scheduler</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">Packages</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions">com.kotlindiscord.kord.extensions</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks">com.kotlindiscord.kord.extensions.checks</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/utils">com.kotlindiscord.kord.extensions.checks.utils</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands">com.kotlindiscord.kord.extensions.commands</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events">com.kotlindiscord.kord.extensions.events</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions">com.kotlindiscord.kord.extensions.extensions</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers">com.kotlindiscord.kord.extensions.parsers</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+        <nav class="menu">
+            <header class="major">
+                <h2>Extension</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    <li>
+        <span class="opener">Fields</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#3ef6024b0c4d11a628c854f1a4a99c95fa3adf2f">abstract name: String</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#d3974844f91921718a568c035a4ec1548c3d25ee">var loaded: Boolean</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#fc9d3537827a758c264554850b28c162c11682a2">val eventHandlers: /**
+     * List of registered event handlers.
+     *
+     * When an extension is unloaded, all the event handlers are cancelled and
+     * removed from the bot.
+     */</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#708941f9f9d13d4a78f0e45e820d8ba486aed07e">val commands: /**
+     * List of registered commands.
+     *
+     * When an extension is unloaded, all the commands are removed from the bot.
+     */</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#66546ea0e5a4a0278ea109425a6596ff55e830af">val bot: ExtensibleBot</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">Constructors</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#8cc5d1ce00790d3c545c8cbd84a8a037ea89d7da">constructor(bot: ExtensibleBot)</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">Methods</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#d250847232aec1342763b0bcd71f6dfb68a4f675">abstract suspend fun setup()</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#c963e815f760831e5b79dc6287cf24728a185d48">suspend fun command(body: suspend Command.()-&gt;Unit): Command</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#fc5d191b889249f9d1289a646e96c9f2ffa35e22">suspend fun unload()</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#31ce0dc4258c8d545f2b4d6e644ad906d7645be8">suspend inline fun &lt;T : Any&gt; event(noinline body: suspend EventHandler&lt;T&gt;.()-&gt;Unit): EventHandler&lt;T&gt;</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+
+        <!-- Section -->
+        <section>
+            <p class="text-center">
+                Currently 1.1-SNAPSHOT. Created with <a href="https://orchid.run">Orchid </a> and <b>Orchid Editorial Theme</b>.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <p class="copyright text-center">&copy; Kotlin Discord. All rights reserved.<br>Design by <a href="https://html5up.net">HTML5 UP</a></p>
+        </footer>
+
+    </div>
+</div>
+
+</div>
+
+<!-- start:inject scripts -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/skel/3.0.1/skel.min.js"></script>
+<script  src="https://kord-extensions.docs.kotlindiscord.com/Editorial/e240140/assets/js/editorial_util.js"></script>
+<script  src="https://kord-extensions.docs.kotlindiscord.com/Editorial/e240140/assets/js/editorial_main.js"></script>
+<script  src="https://kord-extensions.docs.kotlindiscord.com/Editorial/e240140/assets/js/editorial_orchidCustomizations.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script  src="https://unpkg.com/lunr/lunr.js"></script>
+<script  src="https://kord-extensions.docs.kotlindiscord.com/assets/js/orchidSearch.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/prism.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-kotlin.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-toml.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-yaml.min.js"></script>
+<!-- end:inject scripts -->
+
+</body>
+</html>

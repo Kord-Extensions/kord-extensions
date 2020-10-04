@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/utils</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/checks/utils/scheduler</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers/baseparserexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parsers/invalidtimeunitexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/extension</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensions/helpextension</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionunloadedevent</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionevent</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/extensionloadedevent</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/events/eventhandler</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/argumentparser</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/command</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commands/commandcontext</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensionsexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/paginator</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/eventhandlerregistrationexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/extensiblebot</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/commandregistrationexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalidcommandexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalideventhandlerexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/invalidextensionexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    <url>
+        <loc>https://kord-extensions.docs.kotlindiscord.com/kotlindoc/kord-extensions/kord-extensions/com/kotlindiscord/kord/extensions/parseexception</loc>
+        <lastmod>2020-10-04</lastmod>
+        <priority>0.0</priority>
+        
+    </url>
+    
+</urlset>
