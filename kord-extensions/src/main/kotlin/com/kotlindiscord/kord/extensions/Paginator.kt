@@ -71,7 +71,7 @@ open class Paginator(
             val event = bot.kord.waitFor<ReactionAddEvent>(timeout = timeout) {
                 message.id == this.messageId &&
                     this.userId != bot.kord.selfId &&
-                    (owner?.id == this.userId || owner == null) &&
+                    (owner == null || owner.id == this.userId) &&
                     doesProcessEvents
             } ?: break
 

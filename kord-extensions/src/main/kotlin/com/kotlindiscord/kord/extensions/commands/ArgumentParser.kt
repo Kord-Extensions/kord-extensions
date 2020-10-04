@@ -105,20 +105,25 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
             if (argument.contains(':')) {
                 // If the argument has a `:`, we assign the value on the right to the parameter on the left.
                 val (paramName, paramArg) = argument.split(':')
-                val paramProperty = dataclass.primaryConstructor!!.parameters.single { it.name == paramName }
+                val paramProperty = try {
+                    dataclass.primaryConstructor!!.parameters.single { it.name == paramName }
+                } catch (e: IllegalArgumentException) { null }
 
-                if (paramProperty.type.isSubtypeOf(listType) || paramProperty.type.isSubtypeOf(nullableListType)) {
-                    val value = stringToType(paramArg, paramProperty.type.arguments[0].type!!, event)
+                if (paramProperty != null) {
+                    if (paramProperty.type.isSubtypeOf(listType) || paramProperty.type.isSubtypeOf(nullableListType)) {
+                        val value = stringToType(paramArg, paramProperty.type.arguments[0].type!!, event)
 
-                    (dcArgs.getOrPut(paramProperty, { mutableListOf<Any?>() }) as MutableList<Any?>).add(value)
-                } else {
-                    val value = stringToType(paramArg, paramProperty.type, event)
+                        (dcArgs.getOrPut(paramProperty, { mutableListOf<Any?>() }) as MutableList<Any?>).add(value)
+                    } else {
+                        val value = stringToType(paramArg, paramProperty.type, event)
 
-                    dcArgs[paramProperty] = value
+                        dcArgs[paramProperty] = value
+                    }
+
+                    return doParse(dataclass, args, event, elements, argIndex + 1, elementIndex, dcArgs)
                 }
-
-                return doParse(dataclass, args, event, elements, argIndex + 1, elementIndex, dcArgs)
-            } else if (element.type.isSubtypeOf(listType) || element.type.isSubtypeOf(nullableListType)) {
+            }
+            if (element.type.isSubtypeOf(listType) || element.type.isSubtypeOf(nullableListType)) {
                 dcArgs[element] = stringsToTypes(
                     args.sliceArray(argIndex until args.size),
                     element.type.arguments[0].type!!,
