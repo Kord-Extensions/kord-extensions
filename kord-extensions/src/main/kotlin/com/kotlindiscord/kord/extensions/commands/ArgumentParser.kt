@@ -31,6 +31,8 @@ private val DURATION_TYPE_NULLABLE = Duration::class.createType(
     nullable = true
 )
 
+private const val PAIR_CHAR = '='
+
 /**
  * Class in charge of converting string arguments for commands into fully-typed data classes.
  *
@@ -102,9 +104,9 @@ open class ArgumentParser(private val bot: ExtensibleBot) {
 
         @Suppress("TooGenericExceptionCaught", "RethrowCaughtException")
         try {
-            if (argument.contains(':')) {
+            if (argument.contains(PAIR_CHAR)) {
                 // If the argument has a `:`, we assign the value on the right to the parameter on the left.
-                val (paramName, paramArg) = argument.split(':')
+                val (paramName, paramArg) = argument.split(PAIR_CHAR)
                 val paramProperty = try {
                     dataclass.primaryConstructor!!.parameters.single { it.name == paramName }
                 } catch (e: IllegalArgumentException) { null }

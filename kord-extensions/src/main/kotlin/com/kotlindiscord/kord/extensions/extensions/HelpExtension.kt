@@ -74,14 +74,14 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
         return commands.sortedBy { it.name }.chunked(HELP_PER_PAGE).map { list ->
             list.joinToString(separator = "\n\n") { command ->
                 with(command) {
-                    var desc = "**${bot.prefix}$name $signature**\n${description.takeWhile { it != '\n' }}"
+                    var desc = "**${bot.prefix}$name $signature**\n${description.takeWhile { it != '\n' }}\n"
 
                     if (command.aliases.isNotEmpty()) {
-                        desc += "**Aliases: **" + command.aliases.joinToString(", ") { "`$it`" }
+                        desc += "\n**Aliases: **" + command.aliases.joinToString(", ") { "`$it`" }
                     }
 
                     if (command is GroupCommand) {
-                        desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
+                        desc += "\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
                     }
 
                     desc
