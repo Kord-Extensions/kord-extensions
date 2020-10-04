@@ -91,14 +91,16 @@ open class ExtensibleBot(
      */
     open suspend fun start(
         presenceBuilder: PresenceBuilder.() -> Unit = { status = Status.Online },
-        intents: Intents.IntentsBuilder.() -> Unit = {}
+        intents: (Intents.IntentsBuilder.() -> Unit)? = null
     ) {
         kord = Kord(token) {
             cache {
                 messages(lruCache(messageCacheSize))
             }
 
-            this.intents(intents)
+            if (intents != null) {
+                this.intents(intents)
+            }
         }
 
         registerListeners()
