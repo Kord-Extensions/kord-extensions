@@ -14,6 +14,8 @@ private val logger = KotlinLogging.logger {}
 /** Number of help per page, when it is invoked without any parameter. */
 const val HELP_PER_PAGE = 4
 
+private const val PAGE_TIMEOUT = 60_000L  // 60 seconds
+
 /**
  * Help command extension.
  *
@@ -40,7 +42,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                         "Command Help",
                         formatMainHelp(gatherCommands(event)),
                         owner = message.author,
-                        timeout = 10_000L,
+                        timeout = PAGE_TIMEOUT,
                         keepEmbed = true
                     ).send()
                 } else {
@@ -73,6 +75,10 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
             list.joinToString(separator = "\n\n") { command ->
                 with(command) {
                     var desc = "**${bot.prefix}$name $signature**\n${description.takeWhile { it != '\n' }}"
+
+                    if (command.aliases.isNotEmpty()) {
+                        desc += "**Aliases: **" + command.aliases.joinToString(", ") { "`$it`" }
+                    }
 
                     if (command is GroupCommand) {
                         desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
@@ -117,8 +123,12 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
         var desc = "**${bot.prefix}$name ${command.signature}**\n\n" +
             command.description
 
+        if (command.aliases.isNotEmpty()) {
+            desc += "**Aliases: **" + command.aliases.joinToString(", ") { "`$it`" }
+        }
+
         if (command is GroupCommand) {
-            desc += "\n\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
+            desc += "\n\n**Subcommands: ** " + command.commands.joinToString(", ") { "`${it.name}`" }
         }
 
         return desc
