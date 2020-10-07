@@ -108,7 +108,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     }
 
     /**
-     * Format the given command's description into a short help string.
+     * Format the given command's description into a long help string.
      *
      * @param command The command to format the description of.
      */
@@ -120,15 +120,14 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
             else -> command.name
         }
 
-        var desc = "**${bot.prefix}$name ${command.signature}**\n\n" +
-            command.description
+        var desc = "**${bot.prefix}$name ${command.signature}**\n\n${command.description}\n"
 
         if (command.aliases.isNotEmpty()) {
-            desc += "**Aliases: **" + command.aliases.joinToString(", ") { "`$it`" }
+            desc += "\n**Aliases: **" + command.aliases.joinToString(", ") { "`$it`" }
         }
 
         if (command is GroupCommand) {
-            desc += "\n\n**Subcommands: ** " + command.commands.joinToString(", ") { "`${it.name}`" }
+            desc += "\n**Subcommands: ** " + command.commands.joinToString(", ") { "`${it.name}`" }
         }
 
         return desc
