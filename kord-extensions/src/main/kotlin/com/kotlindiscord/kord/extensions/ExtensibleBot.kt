@@ -3,10 +3,13 @@ package com.kotlindiscord.kord.extensions
 import com.gitlab.kordlib.common.entity.Status
 import com.gitlab.kordlib.core.Kord
 import com.gitlab.kordlib.core.event.Event
+import com.gitlab.kordlib.core.event.gateway.DisconnectEvent
 import com.gitlab.kordlib.core.event.gateway.ReadyEvent
+import com.gitlab.kordlib.core.event.guild.GuildCreateEvent
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.gitlab.kordlib.core.on
 import com.gitlab.kordlib.gateway.Intents
+import com.gitlab.kordlib.gateway.RequestGuildMembers
 import com.gitlab.kordlib.gateway.builder.PresenceBuilder
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
@@ -35,6 +38,7 @@ import kotlin.reflect.full.primaryConstructor
  * @param messageCacheSize How many previous messages to store - default to 10,000.
  * @param prefix The command prefix, for command invocations on Discord.
  * @param token The Discord bot's login token.
+ * @param guildsToFill Guild IDs (as strings) to request all members for on connect. Set to null for all guilds.
  */
 open class ExtensibleBot(
     private val token: String,
@@ -43,7 +47,8 @@ open class ExtensibleBot(
     open val addHelpExtension: Boolean = true,
     open val invokeCommandOnMention: Boolean = true,
     open val messageCacheSize: Int = 10_000,
-    open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2
+    open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
+    open val guildsToFill: List<String>? = listOf()
 ) {
     /**
      * @suppress
@@ -119,6 +124,22 @@ open class ExtensibleBot(
 
     /** This function sets up all of the bot's default event listeners. **/
     open suspend fun registerListeners() {
+        on<GuildCreateEvent> {
+            if (guildsToFill == null || guild.id.value in guildsToFill!!) {
+                logger.info { "Requesting members for guild: ${guild.name}" }
+
+                gateway.send(
+                    RequestGuildMembers(
+                        guildId = listOf(guild.id.value)
+                    )
+                )
+            }
+        }
+
+        on<DisconnectEvent.DiscordCloseEvent> {
+            logger.warn { "Disconnected: $closeCode" }
+        }
+
         on<ReadyEvent> {
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
                 for (extension in extensions.keys) {
@@ -242,10 +263,14 @@ open class ExtensibleBot(
      * @param scope Coroutine scope to run the body of your callback under.
      * @param consumer The callback to run when the event is fired.
      */
-    inline fun <reified T : Any> on(scope: CoroutineScope = this.kord, noinline consumer: suspend T.() -> Unit) =
-        events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
-            runCatching { kord.launch { consumer(it) } }.onFailure { logger.catching(it) }
-        }.catch { logger.catching(it) }.launchIn(scope)
+    inline fun <reified T : Any> on(
+        launch: Boolean = true,
+        scope: CoroutineScope = this.kord,
+        noinline consumer: suspend T.() -> Unit
+    ) = events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
+        runCatching { if (launch) kord.launch { consumer(it) } else consumer(it) }
+            .onFailure { logger.catching(it) }
+    }.catch { logger.catching(it) }.launchIn(scope)
 
     /**
      * @suppress
