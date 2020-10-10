@@ -28,21 +28,23 @@ repositories {
 
 
 dependencies {
-    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1"
+    detektPlugins 'io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1'
 
     api 'com.gitlab.kordlib.kord:kord-core:0.6.6'
 
-    api "net.time4j:time4j-base:5.7"
-    api "net.time4j:time4j-tzdata:5.0-2020a"
+    api 'net.time4j:time4j-base:5.7'
+    api 'net.time4j:time4j-tzdata:5.0-2020a'
+
+    api 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC'
 
     implementation 'io.github.microutils:kotlin-logging:2.0.3'
     implementation 'org.apache.commons:commons-text:1.8'
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
-    testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
-    testImplementation "org.slf4j:slf4j-simple:1.7.30"  // Otherwise there'll be no logging
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.30'  // Otherwise there'll be no logging
 }
 
 compileKotlin {
