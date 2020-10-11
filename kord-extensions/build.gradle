@@ -30,7 +30,7 @@ repositories {
 dependencies {
     detektPlugins 'io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1'
 
-    api 'com.gitlab.kordlib.kord:kord-core:0.6.6'
+    api 'com.gitlab.kordlib.kord:kord-core:0.6.7'
 
     api 'net.time4j:time4j-base:5.7'
     api 'net.time4j:time4j-tzdata:5.0-2020a'
