@@ -39,6 +39,7 @@ import kotlin.reflect.full.primaryConstructor
  * @param prefix The command prefix, for command invocations on Discord.
  * @param token The Discord bot's login token.
  * @param guildsToFill Guild IDs (as strings) to request all members for on connect. Set to null for all guilds.
+ * @param fillPresences Whether to request presences from the members retrieved by [guildsToFill].
  */
 open class ExtensibleBot(
     private val token: String,
@@ -48,7 +49,8 @@ open class ExtensibleBot(
     open val invokeCommandOnMention: Boolean = true,
     open val messageCacheSize: Int = 10_000,
     open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
-    open val guildsToFill: List<String>? = listOf()
+    open val guildsToFill: List<String>? = listOf(),
+    open val fillPresences: Boolean? = null
 ) {
     /**
      * @suppress
@@ -130,7 +132,8 @@ open class ExtensibleBot(
 
                 gateway.send(
                     RequestGuildMembers(
-                        guildId = listOf(guild.id.value)
+                        guildId = listOf(guild.id.value),
+                        presences = fillPresences
                     )
                 )
             }
