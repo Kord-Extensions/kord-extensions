@@ -26,8 +26,6 @@ import java.util.concurrent.Executors
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-private const val READY_DELAY = 1000L  // 1 second
-
 /**
  * An extensible bot, wrapping a Kord instance.
  *
@@ -75,13 +73,13 @@ open class ExtensibleBot(
     open val extensions: MutableMap<String, Extension> = mutableMapOf()
 
     /** @suppress **/
-    open val eventPublisher = BroadcastChannel<Any>(Channel.CONFLATED)
+    open val eventPublisher = BroadcastChannel<Any>(1)
 
     /** @suppress **/
     open var initialized: Boolean = false
 
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
-    open val events get() = eventPublisher.asFlow()
+    open val events get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
 
     /** @suppress **/
     open val logger = KotlinLogging.logger {}
@@ -147,8 +145,6 @@ open class ExtensibleBot(
 
         on<ReadyEvent> {
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
-                delay(READY_DELAY)  // Delay for a moment to stop duplicate events
-
                 for (extension in extensions.keys) {
                     @Suppress("TooGenericExceptionCaught")  // Anything could happen here
                     try {
