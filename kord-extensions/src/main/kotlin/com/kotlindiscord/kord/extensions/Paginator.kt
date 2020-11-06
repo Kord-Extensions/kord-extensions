@@ -68,11 +68,17 @@ open class Paginator(
         EMOJIS.forEach { message!!.addReaction(it) }
 
         while (true) {
-            val event = bot.kord.waitFor<ReactionAddEvent>(timeout = timeout) {
+            val handler: suspend ReactionAddEvent.() -> Boolean = {
                 message.id == this.messageId &&
                     this.userId != bot.kord.selfId &&
                     (owner == null || owner.id == this.userId) &&
                     doesProcessEvents
+            }
+
+            val event = if (timeout > 0) {
+                bot.kord.waitFor<ReactionAddEvent>(condition = handler)
+            } else {
+                bot.kord.waitFor<ReactionAddEvent>(timeout = timeout, condition = handler)
             } ?: break
 
             processEvent(event)
