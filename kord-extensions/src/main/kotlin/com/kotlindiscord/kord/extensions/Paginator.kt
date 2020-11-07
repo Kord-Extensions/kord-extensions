@@ -76,9 +76,9 @@ open class Paginator(
             }
 
             val event = if (timeout > 0) {
-                bot.kord.waitFor<ReactionAddEvent>(condition = handler)
-            } else {
                 bot.kord.waitFor<ReactionAddEvent>(timeout = timeout, condition = handler)
+            } else {
+                bot.kord.waitFor<ReactionAddEvent>(condition = handler)
             } ?: break
 
             processEvent(event)
