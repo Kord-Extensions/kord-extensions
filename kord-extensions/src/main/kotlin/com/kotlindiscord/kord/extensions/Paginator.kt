@@ -86,14 +86,15 @@ open class Paginator(
 
                 processEvent(event)
             }
-        } else {
-            if (timeout > 0) {
-                delay(timeout)
-            }
-        }
 
-        if (timeout > 0) {
-            destroy(message)
+            if (timeout > 0) {
+                destroy(message)
+            }
+        } else {
+            if (timeout > 0 && !keepEmbed) {
+                delay(timeout)
+                destroy(message)
+            }
         }
     }
 
