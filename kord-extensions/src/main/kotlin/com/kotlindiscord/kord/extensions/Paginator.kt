@@ -1,10 +1,10 @@
 package com.kotlindiscord.kord.extensions
 
 import com.gitlab.kordlib.common.annotation.KordPreview
+import com.gitlab.kordlib.core.behavior.MessageBehavior
 import com.gitlab.kordlib.core.behavior.channel.MessageChannelBehavior
 import com.gitlab.kordlib.core.behavior.channel.createEmbed
 import com.gitlab.kordlib.core.behavior.edit
-import com.gitlab.kordlib.core.entity.Message
 import com.gitlab.kordlib.core.entity.ReactionEmoji
 import com.gitlab.kordlib.core.entity.User
 import com.gitlab.kordlib.core.event.message.ReactionAddEvent
@@ -44,9 +44,6 @@ open class Paginator(
     val timeout: Long = -1L,
     val keepEmbed: Boolean = false
 ) {
-    /** Message containing the embed. **/
-    open var message: Message? = null
-
     /** Current page of the paginator. **/
     open var currentPage: Int = 0
 
@@ -57,17 +54,22 @@ open class Paginator(
     @KordPreview
     open suspend fun send() {
         val myFooter = EmbedBuilder.Footer()
-        myFooter.text = "Page 1/${pages.size}"
 
-        message = channel.createEmbed {
+        myFooter.text = if (pages.size > 1) {
+            "Page 1/${pages.size}"
+        } else {
+            "No further pages."
+        }
+
+        val message = channel.createEmbed {
             title = name
             description = pages[0]
             footer = myFooter
         }
 
-        EMOJIS.forEach { message!!.addReaction(it) }
+        if (pages.size > 1) {
+            EMOJIS.forEach { message.addReaction(it) }
 
-        while (true) {
             val handler: suspend ReactionAddEvent.() -> Boolean = {
                 message.id == this.messageId &&
                     this.userId != bot.kord.selfId &&
@@ -75,18 +77,23 @@ open class Paginator(
                     doesProcessEvents
             }
 
-            val event = if (timeout > 0) {
-                bot.kord.waitFor<ReactionAddEvent>(timeout = timeout, condition = handler)
-            } else {
-                bot.kord.waitFor<ReactionAddEvent>(condition = handler)
-            } ?: break
+            while (true) {
+                val event = if (timeout > 0) {
+                    bot.kord.waitFor(timeout = timeout, condition = handler)
+                } else {
+                    bot.kord.waitFor(condition = handler)
+                } ?: break
 
-            processEvent(event)
+                processEvent(event)
+            }
+        } else {
+            if (timeout > 0) {
+                delay(timeout)
+            }
         }
 
         if (timeout > 0) {
-            delay(timeout)
-            destroy()
+            destroy(message)
         }
     }
 
@@ -100,11 +107,11 @@ open class Paginator(
         event.message.deleteReaction(event.userId, event.emoji)
 
         when (event.emoji.name) {
-            FIRST_PAGE_EMOJI.name -> goToPage(0)
-            LEFT_EMOJI.name -> goToPage(currentPage - 1)
-            RIGHT_EMOJI.name -> goToPage(currentPage + 1)
-            LAST_PAGE_EMOJI.name -> goToPage(pages.size - 1)
-            DELETE_EMOJI.name -> destroy()
+            FIRST_PAGE_EMOJI.name -> goToPage(event.message, 0)
+            LEFT_EMOJI.name -> goToPage(event.message, currentPage - 1)
+            RIGHT_EMOJI.name -> goToPage(event.message, currentPage + 1)
+            LAST_PAGE_EMOJI.name -> goToPage(event.message, pages.size - 1)
+            DELETE_EMOJI.name -> destroy(event.message)
             else -> return
         }
     }
@@ -113,7 +120,7 @@ open class Paginator(
      *
      * @param page Page number to display.
      */
-    open suspend fun goToPage(page: Int) {
+    open suspend fun goToPage(message: MessageBehavior, page: Int) {
         if (page == currentPage) {
             return
         }
@@ -126,7 +133,7 @@ open class Paginator(
         val myFooter = EmbedBuilder.Footer()
         myFooter.text = "Page ${page + 1}/${pages.size}"
 
-        message?.edit {
+        message.edit {
             embed {
                 title = name
                 description = pages[page]
@@ -140,11 +147,11 @@ open class Paginator(
      * This will make it stops receive [ReactionAddEvent] and will delete the embed if `keepEmbed` is set to true,
      * or will delete all the reactions if it is set to false.
      */
-    open suspend fun destroy() {
+    open suspend fun destroy(message: MessageBehavior) {
         if (!keepEmbed) {
-            message?.delete()
+            message.delete()
         } else {
-            message?.deleteAllReactions()
+            message.deleteAllReactions()
         }
         doesProcessEvents = false
     }
