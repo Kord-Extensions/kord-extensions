@@ -141,15 +141,30 @@ suspend fun guildFor(event: Event): GuildBehavior? {
  * @return A [MemberBehavior] representing the member, or null if there isn't one.
  */
 suspend fun memberFor(event: Event): MemberBehavior? {
-    return when (event) {
-        is MemberJoinEvent -> event.member
-        is MemberUpdateEvent -> event.member
-        is MessageCreateEvent -> event.message.getAuthorAsMember()
-        is MessageDeleteEvent -> event.message?.getAuthorAsMember()
-        is MessageUpdateEvent -> event.getMessage().getAuthorAsMember()
-        is ReactionAddEvent -> event.getUserAsMember()
-        is ReactionRemoveEvent -> event.getUserAsMember()
-        is TypingStartEvent -> if (event.guildId != null) event.getGuild()!!.getMemberOrNull(event.userId) else null
+    return when {
+        event is MemberJoinEvent -> event.member
+        event is MemberUpdateEvent -> event.member
+
+        event is MessageCreateEvent && event.message.getGuildOrNull() != null ->
+            event.message.getAuthorAsMember()
+
+        event is MessageDeleteEvent && event.message?.getGuildOrNull() != null ->
+            event.message?.getAuthorAsMember()
+
+        event is MessageUpdateEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
+            event.getMessage().getAuthorAsMember()
+
+        event is ReactionAddEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
+            event.getUserAsMember()
+
+        event is ReactionRemoveEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
+            event.getUserAsMember()
+
+        event is TypingStartEvent -> if (event.guildId != null) {
+            event.getGuild()!!.getMemberOrNull(event.userId)
+        } else {
+            null
+        }
 
         else -> null
     }

@@ -7,7 +7,10 @@ import com.gitlab.kordlib.core.behavior.channel.createEmbed
 import com.gitlab.kordlib.core.behavior.edit
 import com.gitlab.kordlib.core.entity.ReactionEmoji
 import com.gitlab.kordlib.core.entity.User
+import com.gitlab.kordlib.core.entity.channel.DmChannel
+import com.gitlab.kordlib.core.event.Event
 import com.gitlab.kordlib.core.event.message.ReactionAddEvent
+import com.gitlab.kordlib.core.event.message.ReactionRemoveEvent
 import com.gitlab.kordlib.rest.builder.message.EmbedBuilder
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
@@ -18,7 +21,7 @@ private val RIGHT_EMOJI = ReactionEmoji.Unicode("\u27A1")
 private val LAST_PAGE_EMOJI = ReactionEmoji.Unicode("\u23ED")
 private val DELETE_EMOJI = ReactionEmoji.Unicode("\u274C")
 
-private val EMOJIS = arrayOf(FIRST_PAGE_EMOJI, LEFT_EMOJI, RIGHT_EMOJI, LAST_PAGE_EMOJI, DELETE_EMOJI)
+private val EMOJIS = arrayOf(FIRST_PAGE_EMOJI, LEFT_EMOJI, RIGHT_EMOJI, LAST_PAGE_EMOJI)
 
 private val logger = KotlinLogging.logger {}
 
@@ -70,18 +73,45 @@ open class Paginator(
         if (pages.size > 1) {
             EMOJIS.forEach { message.addReaction(it) }
 
-            val handler: suspend ReactionAddEvent.() -> Boolean = {
-                message.id == this.messageId &&
+            if (message.getChannelOrNull() !is DmChannel) {
+                message.addReaction(DELETE_EMOJI)
+            }
+
+            val guildCondition: suspend Event.() -> Boolean = {
+                this is ReactionAddEvent &&
+                    message.id == this.messageId &&
                     this.userId != bot.kord.selfId &&
                     (owner == null || owner.id == this.userId) &&
                     doesProcessEvents
             }
 
+            val dmCondition: suspend Event.() -> Boolean = {
+                when (this) {
+                    is ReactionAddEvent -> message.id == this.messageId &&
+                        this.userId != bot.kord.selfId &&
+                        (owner == null || owner.id == this.userId) &&
+                        doesProcessEvents
+
+                    is ReactionRemoveEvent -> message.id == this.messageId &&
+                        this.userId != bot.kord.selfId &&
+                        (owner == null || owner.id == this.userId) &&
+                        doesProcessEvents
+
+                    else -> false
+                }
+            }
+
             while (true) {
-                val event = if (timeout > 0) {
-                    bot.kord.waitFor(timeout = timeout, condition = handler)
+                val condition = if (message.getChannelOrNull() is DmChannel) {
+                    dmCondition
                 } else {
-                    bot.kord.waitFor(condition = handler)
+                    guildCondition
+                }
+
+                val event = if (timeout > 0) {
+                    bot.kord.waitFor(timeout = timeout, condition = condition)
+                } else {
+                    bot.kord.waitFor(condition = condition)
                 } ?: break
 
                 processEvent(event)
@@ -103,16 +133,42 @@ open class Paginator(
      *
      * @param event [ReactionAddEvent] to process.
      */
-    open suspend fun processEvent(event: ReactionAddEvent) {
-        logger.debug { "Paginator received emoji ${event.emoji.name}" }
-        event.message.deleteReaction(event.userId, event.emoji)
+    open suspend fun processEvent(event: Event) {
+        val emoji = when (event) {
+            is ReactionAddEvent -> event.emoji
+            is ReactionRemoveEvent -> event.emoji
 
-        when (event.emoji.name) {
-            FIRST_PAGE_EMOJI.name -> goToPage(event.message, 0)
-            LEFT_EMOJI.name -> goToPage(event.message, currentPage - 1)
-            RIGHT_EMOJI.name -> goToPage(event.message, currentPage + 1)
-            LAST_PAGE_EMOJI.name -> goToPage(event.message, pages.size - 1)
-            DELETE_EMOJI.name -> destroy(event.message)
+            else -> error("Wrong event type!")
+        }
+
+        val message = when (event) {
+            is ReactionAddEvent -> event.message.asMessage()
+            is ReactionRemoveEvent -> event.message.asMessage()
+
+            else -> error("Wrong event type!")
+        }
+
+        val userId = when (event) {
+            is ReactionAddEvent -> event.userId
+            is ReactionRemoveEvent -> event.userId
+
+            else -> error("Wrong event type!")
+        }
+
+        logger.debug { "Paginator received emoji ${emoji.name}" }
+
+        val channel = message.getChannelOrNull()
+
+        if (channel !is DmChannel) {
+            message.deleteReaction(userId, emoji)
+        }
+
+        when (emoji.name) {
+            FIRST_PAGE_EMOJI.name -> goToPage(message, 0)
+            LEFT_EMOJI.name -> goToPage(message, currentPage - 1)
+            RIGHT_EMOJI.name -> goToPage(message, currentPage + 1)
+            LAST_PAGE_EMOJI.name -> goToPage(message, pages.size - 1)
+            DELETE_EMOJI.name -> if (channel !is DmChannel) destroy(message)
             else -> return
         }
     }
@@ -152,7 +208,11 @@ open class Paginator(
         if (!keepEmbed) {
             message.delete()
         } else {
-            message.deleteAllReactions()
+            if (message.asMessage().getChannelOrNull() !is DmChannel) {
+                message.deleteAllReactions()
+            } else {
+                EMOJIS.forEach { message.deleteOwnReaction(it) }
+            }
         }
         doesProcessEvents = false
     }
