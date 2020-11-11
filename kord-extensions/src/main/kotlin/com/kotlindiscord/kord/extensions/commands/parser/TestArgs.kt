@@ -5,5 +5,5 @@ import com.kotlindiscord.kord.extensions.commands.converters.StringListConverter
 
 class TestArgs : Arguments() {
     val first by arg("first", StringConverter())
-    val second by arg("second", StringListConverter())
+    val second by arg("second", StringListConverter(false))
 }

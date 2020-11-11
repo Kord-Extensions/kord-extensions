@@ -79,7 +79,7 @@ class CommandRegistrationException(val name: String?, val reason: String) : Exte
 }
 
 /**
- * Thrown when we fail to parse arguments into a data class.
+ * Thrown when we fail to parse arguments for a command.
  *
  * @param reason Human-readable reason for the failure.
  */
