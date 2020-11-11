@@ -1,8 +1,8 @@
-package com.kotlindiscord.kord.extensions.commands.converters
+package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.MultiConverter
+import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
 
 class StringListConverter(required: Boolean = true) : MultiConverter<String>(required) {
     override val typeString = "text"

@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.parser
 
-import kotlin.reflect.KProperty
+import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
+import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 
 open class Arguments {
     val args: MutableList<Argument<*>> = mutableListOf()
