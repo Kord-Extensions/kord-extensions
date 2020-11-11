@@ -2,8 +2,8 @@ package com.kotlindiscord.kord.extensions.test.bot
 
 import com.gitlab.kordlib.core.behavior.channel.createEmbed
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.commands.converters.impl.StringConverter
-import com.kotlindiscord.kord.extensions.commands.converters.impl.StringListConverter
+import com.kotlindiscord.kord.extensions.commands.converters.string
+import com.kotlindiscord.kord.extensions.commands.converters.stringList
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 
@@ -11,8 +11,8 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     override val name = "test"
 
     class TestArgs : Arguments() {
-        val first by arg("first", StringConverter())
-        val second by arg("second", StringListConverter(false))
+        val first by string("first")
+        val second by stringList("second", false)
     }
 
     override suspend fun setup() {
