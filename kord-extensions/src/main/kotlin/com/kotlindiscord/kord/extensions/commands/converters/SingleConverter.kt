@@ -5,7 +5,7 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import kotlin.reflect.KProperty
 
-abstract class SingleConverter<T: Any>(required: Boolean = true): Converter<T>(required) {
+abstract class SingleConverter<T : Any>(required: Boolean = true) : Converter<T>(required) {
     /** Parsed value, which won't be set until after parsing has occurred. **/
     lateinit var parsed: T
 

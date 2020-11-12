@@ -4,12 +4,15 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
 
-class StringListConverter(required: Boolean = true) : MultiConverter<String>(required) {
-    override val typeString = "text"
+class RegexListConverter(
+    required: Boolean = true,
+    private val options: Set<RegexOption> = setOf()
+) : MultiConverter<Regex>(required) {
+    override val typeString = "regexes"
     override val showTypeInSignature = false
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
-        this.parsed = args
+        this.parsed = args.map { it.toRegex(options) }
 
         return args.size
     }

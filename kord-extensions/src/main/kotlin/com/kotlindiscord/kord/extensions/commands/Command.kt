@@ -10,8 +10,6 @@ import com.kotlindiscord.kord.extensions.utils.respond
 import mu.KotlinLogging
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.primaryConstructor
 
 private val logger = KotlinLogging.logger {}
 

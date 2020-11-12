@@ -6,13 +6,13 @@ import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 open class Arguments {
     val args: MutableList<Argument<*>> = mutableListOf()
 
-    fun <T: Any> arg(displayName: String, converter: SingleConverter<T>): SingleConverter<T> {
+    fun <T : Any> arg(displayName: String, converter: SingleConverter<T>): SingleConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter
     }
 
-    fun <T: Any> arg(displayName: String, converter: MultiConverter<T>): MultiConverter<T> {
+    fun <T : Any> arg(displayName: String, converter: MultiConverter<T>): MultiConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter

@@ -125,7 +125,6 @@ fun Message.deleteWithDelay(millis: Long, retry: Boolean = true): Job {
     }
 }
 
-
 /**
  * Check that this message happened in either the given channel or a DM, or that the author is at least a given role.
  *
@@ -159,9 +158,9 @@ suspend fun Message.requireChannel(
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (
-        (allowDm && messageChannel is DmChannel)
-        || (role != null && topRole != null && topRole >= role)
-        || this.channelId == channel.id
+        (allowDm && messageChannel is DmChannel) ||
+        (role != null && topRole != null && topRole >= role) ||
+        this.channelId == channel.id
     ) return true
 
     val response = this.respond(
@@ -193,8 +192,8 @@ suspend fun Message.requireGuildChannel(role: Role?, topRoleGetter: (suspend (Us
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (
-        (role != null && topRole != null && topRole >= role)
-        || this.getChannelOrNull() !is DmChannel
+        (role != null && topRole != null && topRole >= role) ||
+        this.getChannelOrNull() !is DmChannel
     ) return true
 
     this.respond(

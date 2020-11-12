@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught")
+
 package com.kotlindiscord.kord.extensions.commands.parser
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -72,8 +74,13 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     if (argument.converter.required && !parsed) {
                         throw ParseException(
                             "Invalid value for argument `$argName` (which accepts " +
-                                if (argument.converter.typeString.startsWithVowel()) "an " else "a " +
-                                    "${argument.converter.typeString}): $singleValue"
+                                if (argument.converter.typeString.startsWithVowel()) {
+                                    "an "
+                                } else {
+                                    "a "
+                                } +
+
+                                "${argument.converter.typeString}): $singleValue"
                         )
                     }
 
@@ -84,16 +91,19 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     } else {
                         throw ParseException(
                             "Invalid value for argument `$argName` (which accepts " +
-                                if (argument.converter.typeString.startsWithVowel()) "an " else "a " +
-                                    "${argument.converter.typeString}): $singleValue"
+                                if (argument.converter.typeString.startsWithVowel()) {
+                                    "an "
+                                } else {
+                                    "a "
+                                } +
+
+                                "${argument.converter.typeString}): $singleValue"
                         )
                     }
+                } catch (e: ParseException) {
+                    throw ParseException(argument.converter.handleError(e, value.first(), context, bot))
                 } catch (t: Throwable) {
                     logger.debug { "Argument $argName threw: $t" }
-
-                    if (t !is ParseException) {
-                        throw ParseException(argument.converter.handleError(t, value.first(), context, bot))
-                    }
 
                     throw t
                 }
@@ -117,12 +127,10 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     }
 
                     argument.converter.parseSuccess = true
+                } catch (e: ParseException) {
+                    throw ParseException(argument.converter.handleError(e, value, context, bot))
                 } catch (t: Throwable) {
                     logger.debug { "Argument $argName threw: $t" }
-
-                    if (t !is ParseException) {
-                        throw ParseException(argument.converter.handleError(t, value, context, bot))
-                    }
 
                     throw t
                 }
@@ -131,6 +139,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
             }
         }
 
+        @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
         while (true) {
             currentArg = args.removeFirstOrNull()
             currentArg ?: break  // If it's null, we're out of arguments
@@ -148,69 +157,67 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
             val converter = currentArg.converter
 
             when (converter) {
-                is SingleConverter<*> -> {
-                    try {
-                        val parsed = converter.parse(currentValue, context, bot)
+                is SingleConverter<*> -> try {
+                    val parsed = converter.parse(currentValue, context, bot)
 
-                        if (converter.required && !parsed) {
-                            throw ParseException(
-                                "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                                    if (converter.typeString.startsWithVowel()) "an " else "a " +
-                                        "${converter.typeString}): $currentValue"
-                            )
-                        }
+                    if (converter.required && !parsed) {
+                        throw ParseException(
+                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
+                                if (converter.typeString.startsWithVowel()) {
+                                    "an "
+                                } else {
+                                    "a "
+                                } +
 
-                        if (parsed) {
-                            logger.debug { "Argument ${currentArg.displayName} successfully filled." }
-
-                            currentValue = null
-                            converter.parseSuccess = true
-                        }
-                    } catch (t: Throwable) {
-                        logger.debug { "Argument ${currentArg.displayName} threw: $t" }
-
-                        if (converter.required) {
-                            if (t !is ParseException) {
-                                throw ParseException(converter.handleError(t, currentValue, context, bot))
-                            }
-
-                            throw t
-                        }
-                    }
-                }
-                is MultiConverter<*> -> {
-                    try {
-                        val parsedCount = converter.parse(listOf(currentValue) + values.toList(), context, bot)
-
-                        if (converter.required && parsedCount <= 0) {
-                            throw ParseException("Invalid value for argument `${currentArg.displayName}` (which accepts " +
                                 "${converter.typeString}): $currentValue"
-                            )
-                        }
+                        )
+                    }
 
-                        if (parsedCount > 0) {
-                            logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                    if (parsed) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
-                            currentValue = null
-                            converter.parseSuccess = true
-                        }
+                        currentValue = null
+                        converter.parseSuccess = true
+                    }
+                } catch (e: ParseException) {
+                    if (converter.required) throw ParseException(converter.handleError(e, currentValue, context, bot))
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
-                    } catch (t: Throwable) {
-                        logger.debug { "Argument ${currentArg.displayName} threw: $t" }
-
-                        if (converter.required) {
-                            if (t !is ParseException) {
-                                throw ParseException(converter.handleError(t, values, context, bot))
-                            }
-
-                            throw t
-                        }
+                    if (converter.required) {
+                        throw t
                     }
                 }
-                else -> {
-                    throw ParseException("Unknown converter type provided: ${currentArg.converter}")
+
+                is MultiConverter<*> -> try {
+                    val parsedCount = converter.parse(listOf(currentValue) + values.toList(), context, bot)
+
+                    if (converter.required && parsedCount <= 0) {
+                        throw ParseException(
+                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
+                            "${converter.typeString}): $currentValue"
+                        )
+                    }
+
+                    if (parsedCount > 0) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+
+                        currentValue = null
+                        converter.parseSuccess = true
+                    }
+
+                    (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+                } catch (e: ParseException) {
+                    if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
+
+                else -> throw ParseException("Unknown converter type provided: ${currentArg.converter}")
             }
         }
 
