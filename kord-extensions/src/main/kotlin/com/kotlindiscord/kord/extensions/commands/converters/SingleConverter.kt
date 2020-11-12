@@ -19,4 +19,14 @@ abstract class SingleConverter<T: Any>(required: Boolean = true): Converter<T>(r
 
         return null
     }
+
+    /** Given a Throwable encountered during parsing, return a human-readable string to display on Discord. **/
+    open suspend fun handleError(
+        t: Throwable,
+        value: String,
+        context: CommandContext,
+        bot: ExtensibleBot
+    ): String {
+        throw t
+    }
 }

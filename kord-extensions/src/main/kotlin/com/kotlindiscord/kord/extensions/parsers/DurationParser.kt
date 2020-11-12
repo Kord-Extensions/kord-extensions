@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.parsers
 
-import com.kotlindiscord.kord.extensions.splitOn
+import com.kotlindiscord.kord.extensions.utils.splitOn
 import net.time4j.CalendarUnit
 import net.time4j.ClockUnit
 import net.time4j.Duration

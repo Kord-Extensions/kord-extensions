@@ -53,3 +53,4 @@ fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
 suspend fun <T> runSuspended(dispatcher: CoroutineDispatcher = Dispatchers.IO, body: suspend CoroutineScope.() -> T) =
     withContext(dispatcher, body)
 
+fun String.startsWithVowel() = "aeiou".any { startsWith(it) }

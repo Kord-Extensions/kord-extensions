@@ -13,4 +13,14 @@ abstract class MultiConverter<T: Any>(required: Boolean = true): Converter<List<
     operator fun getValue(thisRef: Arguments, property: KProperty<*>): List<T> {
         return parsed
     }
+
+    /** Given a Throwable encountered during parsing, return a human-readable string to display on Discord. **/
+    open suspend fun handleError(
+        t: Throwable,
+        values: List<String>,
+        context: CommandContext,
+        bot: ExtensibleBot
+    ): String {
+        throw t
+    }
 }

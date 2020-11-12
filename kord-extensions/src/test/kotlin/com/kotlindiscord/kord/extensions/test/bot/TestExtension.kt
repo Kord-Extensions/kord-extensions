@@ -2,8 +2,9 @@ package com.kotlindiscord.kord.extensions.test.bot
 
 import com.gitlab.kordlib.core.behavior.channel.createEmbed
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.commands.converters.decimalList
+import com.kotlindiscord.kord.extensions.commands.converters.numberList
 import com.kotlindiscord.kord.extensions.commands.converters.string
-import com.kotlindiscord.kord.extensions.commands.converters.stringList
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 
@@ -11,8 +12,8 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     override val name = "test"
 
     class TestArgs : Arguments() {
-        val first by string("first")
-        val second by stringList("second", false)
+        val string by string("string")
+        val numbers by decimalList("values", true)
     }
 
     override suspend fun setup() {
@@ -29,17 +30,17 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                         description = "Test description"
 
                         field {
-                            name = "First"
-                            value = first ?: "null"
+                            name = "String"
+                            value = string ?: "null"
                         }
 
                         field {
-                            name = "Second (${second.size})"
+                            name = "Values (${numbers.size})"
 
-                            value = if (second.isEmpty()) {
+                            value = if (numbers.isEmpty()) {
                                 "No elements."
                             } else {
-                                second.joinToString(", ") { "`$it`" }
+                                numbers.joinToString(", ") { "`$it`" }
                             }
                         }
                     }
