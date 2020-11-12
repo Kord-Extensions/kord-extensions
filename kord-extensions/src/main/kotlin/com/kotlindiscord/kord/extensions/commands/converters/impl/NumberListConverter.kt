@@ -10,7 +10,7 @@ class NumberListConverter(
     required: Boolean = true,
     private val radix: Int = DEFAULT_RADIX
 ) : MultiConverter<Long>(required) {
-    override val typeString = "numbers"
+    override val signatureTypeString = "numbers"
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
         val ints = mutableListOf<Long>()

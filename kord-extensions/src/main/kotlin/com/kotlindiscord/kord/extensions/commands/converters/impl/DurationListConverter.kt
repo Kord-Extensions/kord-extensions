@@ -3,22 +3,25 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
+import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
+import com.kotlindiscord.kord.extensions.parsers.parseDurationJ8
+import java.time.Duration
 
-class DecimalListConverter(required: Boolean = true) : MultiConverter<Double>(required) {
-    override val signatureTypeString = "decimals"
+class DurationListConverter(required: Boolean = true) : MultiConverter<Duration>(required) {
+    override val signatureTypeString = "durations"
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
-        val doubles = mutableListOf<Double>()
+        val durations = mutableListOf<Duration>()
 
         for (arg in args) {
             try {
-                doubles.add(arg.toDouble())
-            } catch (e: NumberFormatException) {
+                durations.add(parseDurationJ8(arg))
+            } catch (e: InvalidTimeUnitException) {
                 break
             }
         }
 
-        parsed = doubles.toList()
+        parsed = durations.toList()
 
         return parsed.size
     }

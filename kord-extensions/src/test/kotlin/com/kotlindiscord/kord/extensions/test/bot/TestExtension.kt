@@ -2,9 +2,7 @@ package com.kotlindiscord.kord.extensions.test.bot
 
 import com.gitlab.kordlib.core.behavior.channel.createEmbed
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.commands.converters.decimalList
-import com.kotlindiscord.kord.extensions.commands.converters.numberList
-import com.kotlindiscord.kord.extensions.commands.converters.string
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 
@@ -13,6 +11,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
     class TestArgs : Arguments() {
         val string by string("string")
+        val target by channel("target", requireSameGuild = true)
         val numbers by decimalList("values", true)
     }
 
@@ -32,6 +31,11 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                         field {
                             name = "String"
                             value = string ?: "null"
+                        }
+
+                        field {
+                            name = "Target"
+                            value = target.toString()
                         }
 
                         field {

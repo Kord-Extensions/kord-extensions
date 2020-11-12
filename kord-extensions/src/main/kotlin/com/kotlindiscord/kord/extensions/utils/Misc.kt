@@ -54,3 +54,15 @@ suspend fun <T> runSuspended(dispatcher: CoroutineDispatcher = Dispatchers.IO, b
     withContext(dispatcher, body)
 
 fun String.startsWithVowel() = "aeiou".any { startsWith(it) }
+
+fun String.parseBoolean() = when(firstOrNull()?.toLowerCase()) {
+    '0' -> false
+    'n' -> false
+    'f' -> false
+
+    '1' -> true
+    'y' -> true
+    't' -> true
+
+    else -> null
+}

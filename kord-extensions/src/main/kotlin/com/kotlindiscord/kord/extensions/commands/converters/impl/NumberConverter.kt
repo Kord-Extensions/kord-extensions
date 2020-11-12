@@ -11,7 +11,7 @@ class NumberConverter(
     required: Boolean = true,
     private val radix: Int = DEFAULT_RADIX
 ) : SingleConverter<Long>(required) {
-    override val typeString = "number"
+    override val signatureTypeString = "number"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         try {

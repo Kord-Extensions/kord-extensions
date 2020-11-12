@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.commands.parser
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.utils.startsWithVowel
@@ -73,14 +74,8 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
 
                     if (argument.converter.required && !parsed) {
                         throw ParseException(
-                            "Invalid value for argument `$argName` (which accepts " +
-                                if (argument.converter.typeString.startsWithVowel()) {
-                                    "an "
-                                } else {
-                                    "a "
-                                } +
-
-                                "${argument.converter.typeString}): $singleValue"
+                            "Invalid value for argument `$argName` " +
+                                "(which accepts ${argument.converter.getErrorString()}): $singleValue"
                         )
                     }
 
@@ -90,14 +85,8 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                         argument.converter.parseSuccess = true
                     } else {
                         throw ParseException(
-                            "Invalid value for argument `$argName` (which accepts " +
-                                if (argument.converter.typeString.startsWithVowel()) {
-                                    "an "
-                                } else {
-                                    "a "
-                                } +
-
-                                "${argument.converter.typeString}): $singleValue"
+                            "Invalid value for argument `$argName`" +
+                                " (which accepts ${argument.converter.getErrorString()}): $singleValue"
                         )
                     }
                 } catch (e: ParseException) {
@@ -114,7 +103,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     if (argument.converter.required && parsedCount <= 0) {
                         throw ParseException(
                             "Invalid value/s for argument `$argName` " +
-                                "(which accepts ${argument.converter.typeString}): " +
+                                "(which accepts ${argument.converter.getErrorString()}): " +
                                 value.joinToString(" ")
                         )
                     }
@@ -122,7 +111,34 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     if (argument.converter.required && parsedCount < value.size) {
                         throw ParseException(
                             "Argument `$argName` was provided with ${value.size} values, " +
-                                "but only $parsedCount were valid ${argument.converter.typeString}."
+                                "but only $parsedCount were valid ${argument.converter.signatureTypeString}."
+                        )
+                    }
+
+                    argument.converter.parseSuccess = true
+                } catch (e: ParseException) {
+                    throw ParseException(argument.converter.handleError(e, value, context, bot))
+                } catch (t: Throwable) {
+                    logger.debug { "Argument $argName threw: $t" }
+
+                    throw t
+                }
+
+                is CoalescingConverter<*> -> try {
+                    val parsedCount = argument.converter.parse(value.toList(), context, bot)
+
+                    if (argument.converter.required && parsedCount <= 0) {
+                        throw ParseException(
+                            "Invalid value/s for argument `$argName` " +
+                                "(which accepts ${argument.converter.getErrorString()}): " +
+                                value.joinToString(" ")
+                        )
+                    }
+
+                    if (argument.converter.required && parsedCount < value.size) {
+                        throw ParseException(
+                            "Argument `$argName` was provided with ${value.size} values, " +
+                                "but only $parsedCount were valid ${argument.converter.signatureTypeString}."
                         )
                     }
 
@@ -162,14 +178,8 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
 
                     if (converter.required && !parsed) {
                         throw ParseException(
-                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                                if (converter.typeString.startsWithVowel()) {
-                                    "an "
-                                } else {
-                                    "a "
-                                } +
-
-                                "${converter.typeString}): $currentValue"
+                            "Invalid value for argument `${currentArg.displayName}` " +
+                                "(which accepts ${converter.getErrorString()}): $currentValue"
                         )
                     }
 
@@ -195,7 +205,35 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     if (converter.required && parsedCount <= 0) {
                         throw ParseException(
                             "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                            "${converter.typeString}): $currentValue"
+                            "${converter.getErrorString()}): $currentValue"
+                        )
+                    }
+
+                    if (parsedCount > 0) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+
+                        currentValue = null
+                        converter.parseSuccess = true
+                    }
+
+                    (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+                } catch (e: ParseException) {
+                    if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
+                }
+
+                is CoalescingConverter<*> -> try {
+                    val parsedCount = converter.parse(listOf(currentValue) + values.toList(), context, bot)
+
+                    if (converter.required && parsedCount <= 0) {
+                        throw ParseException(
+                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
+                            "${converter.getErrorString()}): $currentValue"
                         )
                     }
 
@@ -253,7 +291,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
             signature += it.displayName
 
             if (it.converter.showTypeInSignature) {
-                signature += ": ${it.converter.typeString}"
+                signature += ": ${it.converter.signatureTypeString}"
             }
 
             if (it.converter is MultiConverter<*>) {
