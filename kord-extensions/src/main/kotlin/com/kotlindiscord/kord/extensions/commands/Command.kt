@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.utils.respond
 import mu.KotlinLogging
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
@@ -188,7 +189,7 @@ open class Command(val extension: Extension) {
         try {
             this.body(CommandContext(this, event, args))
         } catch (e: ParseException) {
-            event.message.channel.createMessage(e.toString())
+            event.message.respond(e.toString())
         } catch (e: Exception) {
             logger.error(e) { "Error during execution of $name command ($event)" }
         }
