@@ -6,7 +6,6 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.parsers.parseDurationJ8
-import com.kotlindiscord.kord.extensions.utils.parseBoolean
 import java.time.Duration
 
 class DurationConverter(required: Boolean = true) : SingleConverter<Duration>(required) {

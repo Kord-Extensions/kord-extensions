@@ -3,7 +3,6 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
 
 class RegexCoalescingConverter(
     required: Boolean = true,

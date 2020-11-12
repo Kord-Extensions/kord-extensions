@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.toList
 class ChannelConverter(
     required: Boolean = true,
     private val requireSameGuild: Boolean = true,
-    private var requiredGuild: Snowflake? = null
+    private var requiredGuild: (suspend () -> Snowflake)? = null
 ) : SingleConverter<Channel>(required) {
     override val signatureTypeString = "channel"
 
@@ -53,7 +53,7 @@ class ChannelConverter(
         }
 
         if (channel is GuildChannel && (requireSameGuild || requiredGuild != null)) {
-            val guildId = requiredGuild ?: context.event.guildId
+            val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId
 
             if (requireSameGuild && channel.guildId != guildId) {
                 return null  // Channel isn't in the right guild

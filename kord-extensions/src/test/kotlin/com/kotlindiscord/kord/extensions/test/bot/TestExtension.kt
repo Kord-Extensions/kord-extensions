@@ -11,7 +11,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
     class TestArgs : Arguments() {
         val string by string("string")
-        val target by channel("target", requireSameGuild = true)
+        val enum by enum<TestEnum>("enum", "test")
         val numbers by decimalList("values", true)
     }
 
@@ -34,8 +34,8 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                         }
 
                         field {
-                            name = "Target"
-                            value = target.toString()
+                            name = "Enum"
+                            value = enum.toString()
                         }
 
                         field {

@@ -4,16 +4,18 @@ import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.core.entity.channel.Channel
 import com.gitlab.kordlib.core.entity.channel.GuildChannel
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 class ChannelListConverter(
     required: Boolean = true,
     private val requireSameGuild: Boolean = true,
-    private var requiredGuild: Snowflake? = null
+    private var requiredGuild: (suspend () -> Snowflake)? = null
 ) : MultiConverter<Channel>(required) {
     override val signatureTypeString = "channel"
 
@@ -32,13 +34,15 @@ class ChannelListConverter(
     }
 
     private suspend fun findChannel(arg: String, context: CommandContext, bot: ExtensibleBot): Channel? {
-        val channel: Channel? = if (arg.startsWith("<#") && arg.endsWith(">")) { // Channel mention
+        val channel: Channel = if (arg.startsWith("<#") && arg.endsWith(">")) { // Channel mention
             val id = arg.substring(2, arg.length - 2)
 
             try {
                 bot.kord.getChannel(Snowflake(id.toLong()))
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '$id' is not a valid channel ID.")
+                logger.debug { "Value '$id' is not a valid channel ID." }
+
+                null
             }
         } else {
             val string = if (arg.startsWith("#")) arg.substring(1) else arg
@@ -57,12 +61,14 @@ class ChannelListConverter(
             }
 
             foundChannel
-        }
+        } ?: return null
 
         if (channel is GuildChannel && (requireSameGuild || requiredGuild != null)) {
-            val guildId = requiredGuild ?: context.event.guildId
+            val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId
 
             if (requireSameGuild && channel.guildId != guildId) {
+                logger.debug { "Channel is not in the required guild." }
+
                 return null  // Channel isn't in the right guild
             }
         }
