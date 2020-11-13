@@ -188,8 +188,12 @@ open class Command(val extension: Extension) {
             this.body(CommandContext(this, event, args))
         } catch (e: ParseException) {
             event.message.respond(e.toString())
-        } catch (e: Exception) {
-            logger.error(e) { "Error during execution of $name command ($event)" }
+        } catch (t: Throwable) {
+            logger.error(t) { "Error during execution of $name command ($event)" }
+
+            event.message.respond(
+                "An error occurred during command processing - please let a staff member know."
+            )
         }
     }
 }
