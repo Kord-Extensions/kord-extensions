@@ -10,8 +10,7 @@ import kotlin.reflect.jvm.jvmName
 class EnumConverter<E : Enum<E>>(
     required: Boolean = true,
     typeName: String,
-    private val getter: (String) -> E?,
-    enum: KClass<E>
+    private val getter: (String) -> E?
 ) : SingleConverter<E>(required) {
     override val signatureTypeString: String = typeName
 

@@ -56,10 +56,10 @@ fun Arguments.emojiList(displayName: String, required: Boolean = true) =
     arg(displayName, EmojiConverter(required).toMulti(signatureTypeString = "server emojis"))
 
 inline fun <reified T : Enum<T>> Arguments.enum(displayName: String, typeName: String, required: Boolean = true) =
-    arg(displayName, EnumConverter(required, typeName, ::getEnum, T::class))
+    arg(displayName, EnumConverter<T>(required, typeName, ::getEnum))
 
 inline fun <reified T : Enum<T>> Arguments.enumList(displayName: String, typeName: String, required: Boolean = true) =
-    arg(displayName, EnumConverter(required, typeName, ::getEnum, T::class).toMulti())
+    arg(displayName, EnumConverter<T>(required, typeName, ::getEnum).toMulti())
 
 fun Arguments.guild(displayName: String, required: Boolean = true) =
     arg(displayName, GuildConverter(required))
