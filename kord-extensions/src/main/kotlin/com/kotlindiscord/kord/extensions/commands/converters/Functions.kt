@@ -348,8 +348,8 @@ fun Arguments.booleanList(displayName: String, required: Boolean = true) =
  * @see ChannelConverter
  */
 fun Arguments.channelList(
-    required: Boolean = true,
     displayName: String,
+    required: Boolean = true,
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null
 ) = arg(
