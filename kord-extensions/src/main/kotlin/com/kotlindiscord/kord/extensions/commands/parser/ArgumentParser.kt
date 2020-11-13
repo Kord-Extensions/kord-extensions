@@ -5,10 +5,7 @@ package com.kotlindiscord.kord.extensions.commands.parser
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
-import com.kotlindiscord.kord.extensions.commands.converters.OptionalConverter
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import io.ktor.client.features.*
 import mu.KotlinLogging
 
@@ -41,7 +38,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
      * 2. Parse out the keyword arguments and store them in a map, leaving only the positional arguments in the list.
      * 3. Loop over the converters, handing them the values they require.
      *      * If a converter has keyword arguments, use those instead of taking a value from the list of arguments.
-     *      * For single converters, pass them a single argument and continue to the next.
+     *      * For single, defaulting or optional converters, pass them a single argument and continue to the next.
      *      * For coalescing or multi converters:
      *          * If it's a keyword argument, pass it all of the keyed values and continue.
      *          * If it's positional, pass it all remaining positional arguments and remove those that were converted.
@@ -158,7 +155,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     }
                 }
 
-                is OptionalConverter<*> -> try {
+                is DefaultingConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
                             throw ParseException(
@@ -172,11 +169,28 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                         converter.parse(currentValue, context, bot)
                     }
 
-                    if ((converter.required || hasKwargs) && !parsed) {
-                        throw ParseException(
-                            "Invalid value for argument `${currentArg.displayName}` " +
-                                "(which accepts ${converter.getErrorString()}): $currentValue"
-                        )
+                    if (parsed) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+
+                        converter.parseSuccess = true
+                        currentValue = null
+                    }
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+                }
+
+                is OptionalConverter<*> -> try {
+                    val parsed = if (hasKwargs) {
+                        if (kwValue!!.size != 1) {
+                            throw ParseException(
+                                "Argument `${currentArg.displayName}` requires exactly 1 argument, but " +
+                                    "${kwValue.size} were provided."
+                            )
+                        }
+
+                        converter.parse(kwValue.first(), context, bot)
+                    } else {
+                        converter.parse(currentValue, context, bot)
                     }
 
                     if (parsed) {

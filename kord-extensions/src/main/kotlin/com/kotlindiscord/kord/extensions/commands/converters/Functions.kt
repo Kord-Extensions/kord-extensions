@@ -248,6 +248,50 @@ fun Arguments.optionalUser(displayName: String) =
 
 // endregion
 
+// region: Defaulting converters
+
+/**
+ * Create a defaulting boolean argument converter, for single arguments.
+ *
+ * @see BooleanConverter
+ */
+fun Arguments.defaultingBoolean(displayName: String, defaultValue: Boolean) =
+    arg(displayName, BooleanConverter().toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting decimal converter, for single arguments.
+ *
+ * @see DecimalConverter
+ */
+fun Arguments.defaultingDecimal(displayName: String, defaultValue: Double) =
+    arg(displayName, DecimalConverter().toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting whole number converter, for single arguments.
+ *
+ * @see NumberConverter
+ */
+fun Arguments.defaultingNumber(displayName: String, defaultValue: Long, radix: Int = 10) =
+    arg(displayName, NumberConverter(radix).toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting regex converter, for single arguments.
+ *
+ * @see RegexConverter
+ */
+fun Arguments.defaultingRegex(displayName: String, defaultValue: Regex, options: Set<RegexOption> = setOf()) =
+    arg(displayName, RegexConverter(options).toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting string converter, for single arguments.
+ *
+ * @see StringConverter
+ */
+fun Arguments.defaultingString(displayName: String, defaultValue: String) =
+    arg(displayName, StringConverter().toDefaulting(defaultValue))
+
+// endregion
+
 // region: Coalescing converters
 
 /**
@@ -461,6 +505,26 @@ inline fun <reified T : Enum<T>> Arguments.enum(
  */
 inline fun <reified T : Enum<T>> Arguments.enum(displayName: String, typeName: String) =
     enum<T>(displayName, typeName, ::getEnum)
+
+/**
+ * Create a defaulting enum converter, for single arguments - using a custom getter.
+ *
+ * @see EnumConverter
+ */
+inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
+    displayName: String,
+    typeName: String,
+    defaultValue: T,
+    noinline getter: suspend (String) -> T?
+) = arg(displayName, EnumConverter(typeName, getter).toDefaulting(defaultValue))
+
+/**
+ * Create an enum converter, for single arguments - using the default getter, [getEnum].
+ *
+ * @see EnumConverter
+ */
+inline fun <reified T : Enum<T>> Arguments.defaultingEnum(displayName: String, typeName: String, defaultValue: T) =
+    defaultingEnum(displayName, typeName, defaultValue, ::getEnum)
 
 /**
  * Create an optional enum converter, for single arguments - using a custom getter.

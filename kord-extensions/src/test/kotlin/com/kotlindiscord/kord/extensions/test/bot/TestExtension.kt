@@ -12,7 +12,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     class TestArgs : Arguments() {
         val string by string("string")
         val enum by enum<TestEnum>("enum", "test")
-        val optionalEnum by optionalEnum<TestEnum>("optional-enum", "test")
+        val optionalEnum by defaultingEnum("optional-enum", "test", TestEnum.THREE)
         val bools by booleanList("bools", true)
     }
 

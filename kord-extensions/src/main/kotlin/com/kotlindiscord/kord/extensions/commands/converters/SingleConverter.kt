@@ -127,4 +127,37 @@ abstract class SingleConverter<T : Any> : Converter<T>(true) {
         showTypeInSignature,
         errorTypeString
     )
+
+    /**
+     * Wrap this single converter with a [SingleToDefaultingConverter], which is a special converter that will act like
+     * a [DefaultingConverter] using the same logic of this converter.
+     *
+     * Your converter should be designed with this pattern in mind. If that's not possible, please override this
+     * function and throw an exception in the body.
+     *
+     * For more information on the parameters, see [Converter].
+     *
+     * @param defaultValue The default value to use when an argument can't be converted.
+     *
+     * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
+     * provides.
+     *
+     * @param showTypeInSignature Optionally, override this converter's setting for showing the type string in a
+     * generated command signature.
+     *
+     * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
+     * provides.
+     */
+    open fun toDefaulting(
+        defaultValue: T,
+        signatureTypeString: String? = null,
+        showTypeInSignature: Boolean? = null,
+        errorTypeString: String? = null
+    ): DefaultingConverter<T> = SingleToDefaultingConverter(
+        this,
+        defaultValue,
+        signatureTypeString,
+        showTypeInSignature,
+        errorTypeString
+    )
 }
