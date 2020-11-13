@@ -9,7 +9,6 @@ class RegexConverter(
     private val options: Set<RegexOption> = setOf()
 ) : SingleConverter<Regex>(required) {
     override val signatureTypeString = "regex"
-    override val showTypeInSignature = false
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         this.parsed = arg.toRegex(options)

@@ -23,10 +23,22 @@ abstract class SingleConverter<T : Any>(required: Boolean = true) : Converter<T>
     /** Given a Throwable encountered during parsing, return a human-readable string to display on Discord. **/
     open suspend fun handleError(
         t: Throwable,
-        value: String,
+        value: String?,
         context: CommandContext,
         bot: ExtensibleBot
     ): String {
         throw t
     }
+
+    fun toMulti(
+        signatureTypeString: String? = null,
+        showTypeInSignature: Boolean? = null,
+        errorTypeString: String? = null
+    ): MultiConverter<T> = SingleToMultiConverter(
+        this.required,
+        this,
+        signatureTypeString,
+        showTypeInSignature,
+        errorTypeString
+    )
 }

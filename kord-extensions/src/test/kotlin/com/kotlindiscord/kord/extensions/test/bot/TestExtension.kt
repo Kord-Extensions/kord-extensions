@@ -12,7 +12,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     class TestArgs : Arguments() {
         val string by string("string")
         val enum by enum<TestEnum>("enum", "test")
-        val numbers by decimalList("values", true)
+        val bools by booleanList("bools", true)
     }
 
     override suspend fun setup() {
@@ -39,12 +39,12 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                         }
 
                         field {
-                            name = "Values (${numbers.size})"
+                            name = "Bools (${bools.size})"
 
-                            value = if (numbers.isEmpty()) {
+                            value = if (bools.isEmpty()) {
                                 "No elements."
                             } else {
-                                numbers.joinToString(", ") { "`$it`" }
+                                bools.joinToString(", ") { "`$it`" }
                             }
                         }
                     }
