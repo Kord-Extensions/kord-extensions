@@ -208,17 +208,17 @@ suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
  * As DMs do not provide access to members and roles, you'll need to provide a lambda that can be used to retrieve
  * the user's top role if you wish to make use of the role bypass.
  *
- * @param role Minimum role required to bypass the channel requirement
- * @param guild Guild to check for the user's top role
+ * @param role Minimum role required to bypass the channel requirement, omit to disallow a role bypass
+ * @param guild Guild to check for the user's top role, omit to disallow a role bypass
  *
  * @return true if the message was posted in an appropriate context, false otherwise
  */
-suspend fun Message.requireGuildChannel(role: Role, guild: Guild): Boolean {
-    val topRole = if (author != null) guild.getMember(this.author!!.id).getTopRole() else null
+suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild? = null): Boolean {
+    val topRole = if (author != null) guild?.getMember(this.author!!.id)?.getTopRole() else null
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (
-        (topRole != null && topRole >= role) ||
+        (role != null && topRole != null && topRole >= role) ||
         this.getChannelOrNull() !is DmChannel
     ) return true
 
