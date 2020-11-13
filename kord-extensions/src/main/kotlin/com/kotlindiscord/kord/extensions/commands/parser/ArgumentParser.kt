@@ -344,6 +344,10 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
 
             if (it.converter.showTypeInSignature) {
                 signature += ": ${it.converter.signatureTypeString}"
+
+                if (it.converter is DefaultingConverter<*>) {
+                    signature += "=${it.converter.parsed}"
+                }
             }
 
             if (it.converter is MultiConverter<*>) {
