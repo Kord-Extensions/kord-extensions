@@ -6,21 +6,34 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.user
+import com.kotlindiscord.kord.extensions.commands.converters.userList
 import com.kotlindiscord.kord.extensions.utils.users
 import kotlinx.coroutines.flow.firstOrNull
 
+/**
+ * Argument converter for discord [User] arguments.
+ *
+ * This converter supports specifying members by supplying:
+ * * A user or member mention
+ * * A user ID
+ * * The user's tag (`username#discriminator`)
+ *
+ * @see user
+ * @see userList
+ */
 class UserConverter(required: Boolean = true) : SingleConverter<User>(required) {
     override val signatureTypeString = "user"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val user = findUser(arg, context, bot)
+        val user = findUser(arg, bot)
             ?: throw ParseException("Unable to find user: $arg")
 
         parsed = user
         return true
     }
 
-    private suspend fun findUser(arg: String, context: CommandContext, bot: ExtensibleBot): User? =
+    private suspend fun findUser(arg: String, bot: ExtensibleBot): User? =
         if (arg.startsWith("<@") && arg.endsWith(">")) { // It's a mention
             val id = arg.substring(2, arg.length - 1).replace("!", "")
 
@@ -43,4 +56,3 @@ class UserConverter(required: Boolean = true) : SingleConverter<User>(required) 
             }
         }
 }
-

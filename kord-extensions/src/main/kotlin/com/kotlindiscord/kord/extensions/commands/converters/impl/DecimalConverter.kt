@@ -4,7 +4,15 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.decimal
+import com.kotlindiscord.kord.extensions.commands.converters.decimalList
 
+/**
+ * Argument converter for decimal arguments, converting them into [Double].
+ *
+ * @see decimal
+ * @see decimalList
+ */
 class DecimalConverter(required: Boolean = true) : SingleConverter<Double>(required) {
     override val signatureTypeString = "decimal"
 

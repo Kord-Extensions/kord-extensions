@@ -5,14 +5,27 @@ import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 
-class SingleToMultiConverter<T: Any>(
+/**
+ * A special [MultiConverter] that wraps a [SingleConverter], effectively turning it into a list-handling converter
+ * with the same logic.
+ *
+ * The behaviours specified in [MultiConverter] also apply to this converter, so it's worth reading about it.
+ *
+ * @param singleConverter The [SingleConverter] to wrap.
+ *
+ * @param newSignatureTypeString An optional signature type string to override the one set in [singleConverter].
+ * @param newShowTypeInSignature An optional boolean to override the [showTypeInSignature] setting set in
+ * [singleConverter].
+ * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
+ */
+class SingleToMultiConverter<T : Any>(
     required: Boolean = true,
     val singleConverter: SingleConverter<T>,
 
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null
-): MultiConverter<T>(required) {
+) : MultiConverter<T>(required) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
@@ -42,7 +55,10 @@ class SingleToMultiConverter<T: Any>(
         return parsed.size
     }
 
-    override suspend fun handleError(t: Throwable, values: List<String>, context: CommandContext, bot: ExtensibleBot): String {
-        return singleConverter.handleError(t, null, context, bot)
-    }
+    override suspend fun handleError(
+        t: Throwable,
+        values: List<String>,
+        context: CommandContext,
+        bot: ExtensibleBot
+    ): String = singleConverter.handleError(t, null, context, bot)
 }

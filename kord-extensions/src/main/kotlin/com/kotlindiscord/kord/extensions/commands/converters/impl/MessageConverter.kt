@@ -8,10 +8,26 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.message
+import com.kotlindiscord.kord.extensions.commands.converters.messageList
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * Argument converter for discord [Message] arguments.
+ *
+ * This converter supports specifying messages by supplying:
+ * * A Discord message jump link
+ * * A message ID (it will be assumed that the message is in the current channel).
+ *
+ * @param requireGuild Whether to require messages to be in a specified guild.
+ * @param requiredGuild Lambda returning a specific guild to require the member to be in. If omitted, defaults to the
+ * guild the command was invoked in.
+ *
+ * @see message
+ * @see messageList
+ */
 class MessageConverter(
     required: Boolean = true,
     private var requireGuild: Boolean = false,
@@ -31,12 +47,15 @@ class MessageConverter(
         val requiredGid = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId
 
         return if (arg.startsWith("https://")) { // It's a message URL
+            @Suppress("MagicNumber")
             val split = arg.substring(8).split("/").takeLast(3)
 
+            @Suppress("MagicNumber")
             if (split.size < 3) {
                 throw ParseException("Invalid message url provided: <$arg>")
             }
 
+            @Suppress("MagicNumber")
             val gid = try {
                 Snowflake(split[2])
             } catch (e: NumberFormatException) {
@@ -49,6 +68,7 @@ class MessageConverter(
                 throw ParseException("Unable to find message: $arg")
             }
 
+            @Suppress("MagicNumber")
             val cid = try {
                 Snowflake(split[3])
             } catch (e: NumberFormatException) {
@@ -69,6 +89,7 @@ class MessageConverter(
                 throw ParseException("Unable to find message: $arg")
             }
 
+            @Suppress("MagicNumber")
             val mid = try {
                 Snowflake(split[4])
             } catch (e: NumberFormatException) {
@@ -93,4 +114,3 @@ class MessageConverter(
         }
     }
 }
-

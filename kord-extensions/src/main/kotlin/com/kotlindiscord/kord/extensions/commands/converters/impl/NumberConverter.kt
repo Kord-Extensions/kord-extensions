@@ -4,9 +4,17 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.number
+import com.kotlindiscord.kord.extensions.commands.converters.numberList
 
 private const val DEFAULT_RADIX = 10
 
+/**
+ * Argument converter for whole number arguments, converting them into [Long].
+ *
+ * @see number
+ * @see numberList
+ */
 class NumberConverter(
     required: Boolean = true,
     private val radix: Int = DEFAULT_RADIX

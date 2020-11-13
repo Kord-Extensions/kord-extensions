@@ -7,9 +7,26 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.channel
+import com.kotlindiscord.kord.extensions.commands.converters.channelList
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 
+/**
+ * Argument converter for Discord [Channel] arguments.
+ *
+ * This converter supports specifying channels by supplying:
+ *
+ * * A channel mention
+ * * A channel ID, with or without a `#` prefix
+ * * A channel name, with or without a `#` prefix (the required guild will be searched for the first matching channel)
+ *
+ * @param requireSameGuild Whether to require that the channel passed is on the same guild as the message.
+ * @param requiredGuild Lambda returning a specific guild to require the channel to be in, if needed.
+ *
+ * @see channel
+ * @see channelList
+ */
 class ChannelConverter(
     required: Boolean = true,
     private val requireSameGuild: Boolean = true,

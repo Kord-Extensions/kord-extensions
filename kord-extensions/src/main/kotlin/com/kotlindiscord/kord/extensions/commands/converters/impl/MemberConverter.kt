@@ -7,9 +7,24 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.member
+import com.kotlindiscord.kord.extensions.commands.converters.memberList
 import com.kotlindiscord.kord.extensions.utils.users
 import kotlinx.coroutines.flow.firstOrNull
 
+/**
+ * Argument converter for discord [Member] arguments.
+ *
+ * Members represent Discord users that are part of a guild. This converter supports specifying members by supplying:
+ * * A user or member mention
+ * * A user ID
+ * * The user's tag (`username#discriminator`)
+ *
+ * @param requiredGuild Lambda returning a specific guild to require the member to be in, if needed.
+ *
+ * @see member
+ * @see memberList
+ */
 class MemberConverter(
     required: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null

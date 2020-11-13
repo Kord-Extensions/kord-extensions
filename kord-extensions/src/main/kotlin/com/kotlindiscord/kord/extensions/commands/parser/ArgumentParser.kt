@@ -8,14 +8,50 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.utils.startsWithVowel
 import io.ktor.client.features.*
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * Class in charge of handling argument parsing for commands.
+ *
+ * Argument parsing is a tricky beast. This class employs multiple strategies in order to try to keep argument parsing
+ * as intuitive as possible, without breaking expectations too much. It supports both positional and keyword arguments,
+ * plus optional and required arguments and comprehensive error handling.
+ *
+ * Please note: The order of arguments in your [Arguments] subclass matters. Converters are always run in the order
+ * they're defined, and positional arguments are also parsed following this order. This means that converters
+ * that take lambdas as constructor parameters are able to rely on the values provided by previously parsed arguments.
+ *
+ * We recommend reading over the source code if you'd like to get to grips with how this all works.
+ *
+ * @param splitChar The character to use for splitting keyword arguments
+ */
 open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar: Char = '=') {
-    suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
+    /**
+     * Given a builder returning an [Arguments] subclass and [CommandContext], parse the command's arguments into
+     * the [Arguments] subclass and return it.
+     *
+     * This is a fairly complex function. It works like this:
+     *
+     * 1. Enumerate all of the converters provided by the [Arguments] subclass, mapping them to their display names
+     *    for easier keyword argument parsing.
+     * 2. Parse out the keyword arguments and store them in a map, leaving only the positional arguments in the list.
+     * 3. Loop over the converters, handing them the values they require.
+     *      * If a converter has keyword arguments, use those instead of taking a value from the list of arguments.
+     *      * For single converters, pass them a single argument and continue to the next.
+     *      * For coalescing or multi converters:
+     *          * If it's a keyword argument, pass it all of the keyed values and continue.
+     *          * If it's positional, pass it all remaining positional arguments and remove those that were converted.
+     *
+     * @param builder Builder returning an [Arguments] subclass - usually the constructor.
+     * @param context Command context for this command invocation.
+     *
+     * @return Built [Arguments] object, with converters filled.
+     * @throws ParseException Thrown based on a lot of possible cases. This is intended for display on Discord.
+     */
+    open suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
         val argumentsObj = builder.invoke()
 
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
@@ -47,7 +83,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     keywordArgs[key] = keywordArgs[key] ?: mutableListOf()
                     keywordArgs[key]!!.add(value)
 
-                    return@filter false
+                    return@filter false  // This is a keyword argument, filter it from the rest
                 } else {
                     logger.debug { "Invalid argument: $key" }
                 }
@@ -56,116 +92,23 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
             return@filter true
         }.toMutableList()
 
-        for ((key, value) in keywordArgs.entries) {
-            val argument = argsMap[key] ?: error("Converter disappeared: $key")
-            val argName = argument.displayName
-
-            when (argument.converter) {
-                is SingleConverter<*> -> try {
-                    if (value.size != 1) {
-                        throw ParseException(
-                            "Argument $argName requires exactly 1 argument, but ${value.size} were provided."
-                        )
-                    }
-
-                    val singleValue = value.first()
-
-                    val parsed = argument.converter.parse(singleValue, context, bot)
-
-                    if (argument.converter.required && !parsed) {
-                        throw ParseException(
-                            "Invalid value for argument `$argName` " +
-                                "(which accepts ${argument.converter.getErrorString()}): $singleValue"
-                        )
-                    }
-
-                    if (parsed) {
-                        logger.debug { "Argument $argName successfully filled." }
-
-                        argument.converter.parseSuccess = true
-                    } else {
-                        throw ParseException(
-                            "Invalid value for argument `$argName`" +
-                                " (which accepts ${argument.converter.getErrorString()}): $singleValue"
-                        )
-                    }
-                } catch (e: ParseException) {
-                    throw ParseException(argument.converter.handleError(e, value.first(), context, bot))
-                } catch (t: Throwable) {
-                    logger.debug { "Argument $argName threw: $t" }
-
-                    throw t
-                }
-
-                is MultiConverter<*> -> try {
-                    val parsedCount = argument.converter.parse(value.toList(), context, bot)
-
-                    if (argument.converter.required && parsedCount <= 0) {
-                        throw ParseException(
-                            "Invalid value/s for argument `$argName` " +
-                                "(which accepts ${argument.converter.getErrorString()}): " +
-                                value.joinToString(" ")
-                        )
-                    }
-
-                    if (argument.converter.required && parsedCount < value.size) {
-                        throw ParseException(
-                            "Argument `$argName` was provided with ${value.size} values, " +
-                                "but only $parsedCount were valid ${argument.converter.signatureTypeString}."
-                        )
-                    }
-
-                    argument.converter.parseSuccess = true
-                } catch (e: ParseException) {
-                    throw ParseException(argument.converter.handleError(e, value, context, bot))
-                } catch (t: Throwable) {
-                    logger.debug { "Argument $argName threw: $t" }
-
-                    throw t
-                }
-
-                is CoalescingConverter<*> -> try {
-                    val parsedCount = argument.converter.parse(value.toList(), context, bot)
-
-                    if (argument.converter.required && parsedCount <= 0) {
-                        throw ParseException(
-                            "Invalid value/s for argument `$argName` " +
-                                "(which accepts ${argument.converter.getErrorString()}): " +
-                                value.joinToString(" ")
-                        )
-                    }
-
-                    if (argument.converter.required && parsedCount < value.size) {
-                        throw ParseException(
-                            "Argument `$argName` was provided with ${value.size} values, " +
-                                "but only $parsedCount were valid ${argument.converter.signatureTypeString}."
-                        )
-                    }
-
-                    argument.converter.parseSuccess = true
-                } catch (e: ParseException) {
-                    throw ParseException(argument.converter.handleError(e, value, context, bot))
-                } catch (t: Throwable) {
-                    logger.debug { "Argument $argName threw: $t" }
-
-                    throw t
-                }
-
-                else -> throw ParseException("Unknown converter type provided: ${argument.converter}")
-            }
-        }
-
         @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
         while (true) {
             currentArg = args.removeFirstOrNull()
             currentArg ?: break  // If it's null, we're out of arguments
 
+            val kwValue = keywordArgs[currentArg.displayName]
+            val hasKwargs = kwValue != null
+
             logger.debug { "Current argument: ${currentArg.displayName}" }
+            logger.debug { "Keyword arg ($hasKwargs): $kwValue" }
 
-            // If this is the case, the converter has been given a keyword arg and should be skipped
-            if (keywordArgs[currentArg.displayName] != null) continue
+            currentValue = if (!hasKwargs) {  // Keyword args get values elsewhere
+                currentValue ?: values.removeFirstOrNull()
+            } else {
+                currentValue ?: ""  // To avoid skipping
+            }
 
-            currentValue = currentValue ?: values.removeFirstOrNull()
             currentValue ?: break  // If it's null, we're out of values
 
             logger.debug { "Current value: $currentValue" }
@@ -174,9 +117,20 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
 
             when (converter) {
                 is SingleConverter<*> -> try {
-                    val parsed = converter.parse(currentValue, context, bot)
+                    val parsed = if (hasKwargs) {
+                        if (kwValue!!.size != 1) {
+                            throw ParseException(
+                                "Argument `${currentArg.displayName}` requires exactly 1 argument, but " +
+                                    "${kwValue.size} were provided."
+                            )
+                        }
 
-                    if (converter.required && !parsed) {
+                        converter.parse(kwValue.first(), context, bot)
+                    } else {
+                        converter.parse(currentValue, context, bot)
+                    }
+
+                    if ((converter.required || hasKwargs) && !parsed) {
                         throw ParseException(
                             "Invalid value for argument `${currentArg.displayName}` " +
                                 "(which accepts ${converter.getErrorString()}): $currentValue"
@@ -186,37 +140,57 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     if (parsed) {
                         logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
-                        currentValue = null
                         converter.parseSuccess = true
+                        currentValue = null
                     }
                 } catch (e: ParseException) {
-                    if (converter.required) throw ParseException(converter.handleError(e, currentValue, context, bot))
+                    if (converter.required || hasKwargs) {
+                        throw ParseException(
+                            converter.handleError(e, currentValue, context, bot)
+                        )
+                    }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (converter.required) {
+                    if (converter.required || hasKwargs) {
                         throw t
                     }
                 }
 
                 is MultiConverter<*> -> try {
-                    val parsedCount = converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                    val parsedCount = if (hasKwargs) {
+                        converter.parse(kwValue!!, context, bot)
+                    } else {
+                        converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                    }
 
-                    if (converter.required && parsedCount <= 0) {
+                    if ((converter.required || hasKwargs) && parsedCount <= 0) {
                         throw ParseException(
                             "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                            "${converter.getErrorString()}): $currentValue"
+                                "${converter.getErrorString()}): $currentValue"
                         )
                     }
 
-                    if (parsedCount > 0) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                    if (hasKwargs) {
+                        if (parsedCount < kwValue!!.size) {
+                            throw ParseException(
+                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} values, " +
+                                    "but only $parsedCount were valid ${converter.signatureTypeString}."
+                            )
+                        }
 
-                        currentValue = null
                         converter.parseSuccess = true
-                    }
+                        currentValue = null
+                    } else {
+                        if (parsedCount > 0) {
+                            logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
-                    (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+                            currentValue = null
+                            converter.parseSuccess = true
+                        }
+
+                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+                    }
                 } catch (e: ParseException) {
                     if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
                 } catch (t: Throwable) {
@@ -228,23 +202,39 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                 }
 
                 is CoalescingConverter<*> -> try {
-                    val parsedCount = converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                    val parsedCount = if (hasKwargs) {
+                        converter.parse(kwValue!!, context, bot)
+                    } else {
+                        converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                    }
 
-                    if (converter.required && parsedCount <= 0) {
+                    if ((converter.required || hasKwargs) && parsedCount <= 0) {
                         throw ParseException(
                             "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                            "${converter.getErrorString()}): $currentValue"
+                                "${converter.getErrorString()}): $currentValue"
                         )
                     }
 
-                    if (parsedCount > 0) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                    if (hasKwargs) {
+                        if (parsedCount < kwValue!!.size) {
+                            throw ParseException(
+                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} values, " +
+                                    "but only $parsedCount were valid ${converter.signatureTypeString}."
+                            )
+                        }
 
-                        currentValue = null
                         converter.parseSuccess = true
-                    }
+                        currentValue = null
+                    } else {
+                        if (parsedCount > 0) {
+                            logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
 
-                    (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+                            currentValue = null
+                            converter.parseSuccess = true
+                        }
+
+                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+                    }
                 } catch (e: ParseException) {
                     if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
                 } catch (t: Throwable) {
@@ -262,7 +252,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
         val allRequiredArgs = argsMap.count { it.value.converter.required }
         val filledRequiredArgs = argsMap.count { it.value.converter.parseSuccess && it.value.converter.required }
 
-        logger.debug { "Filled $filledRequiredArgs / $allRequiredArgs args." }
+        logger.debug { "Filled $filledRequiredArgs / $allRequiredArgs arguments." }
 
         if (filledRequiredArgs < allRequiredArgs) {
             throw ParseException(
@@ -275,7 +265,13 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
         return argumentsObj
     }
 
-    fun signature(builder: () -> Arguments): String {
+    /**
+     * Generate a command signature based on an [Arguments] subclass.
+     *
+     * @param builder Builder returning an [Arguments] subclass - usually the constructor.
+     * @return Command arguments signature for display.
+     */
+    open fun signature(builder: () -> Arguments): String {
         val argumentsObj = builder.invoke()
         val parts = mutableListOf<String>()
 

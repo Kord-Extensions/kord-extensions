@@ -6,8 +6,24 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.role
+import com.kotlindiscord.kord.extensions.commands.converters.roleList
 import kotlinx.coroutines.flow.firstOrNull
 
+/**
+ * Argument converter for discord [Role] arguments.
+ *
+ * This converter supports specifying roles by supplying:
+ * * A role mention
+ * * A role ID
+ * * A message name - the first matching role from the given guild will be used.
+ *
+ * @param requiredGuild Lambda returning a specific guild to require the role to be in. If omitted, defaults to the
+ * guild the command was invoked in.
+ *
+ * @see role
+ * @see roleList
+ */
 class RoleConverter(
     required: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null
@@ -26,6 +42,7 @@ class RoleConverter(
         val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId ?: return null
         val guild = bot.kord.getGuild(guildId) ?: return null
 
+        @Suppress("MagicNumber")
         return if (arg.startsWith("<@&") && arg.endsWith(">")) { // It's a mention
             val id = arg.substring(3, arg.length - 1)
 

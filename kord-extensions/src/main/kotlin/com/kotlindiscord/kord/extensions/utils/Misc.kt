@@ -53,9 +53,23 @@ fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
 suspend fun <T> runSuspended(dispatcher: CoroutineDispatcher = Dispatchers.IO, body: suspend CoroutineScope.() -> T) =
     withContext(dispatcher, body)
 
+/**
+ * Check whether a string starts with a vowel.
+ *
+ * @return `true` if the string starts with an English vowel, `false` otherwise.
+ */
 fun String.startsWithVowel() = "aeiou".any { startsWith(it) }
 
-fun String.parseBoolean() = when(firstOrNull()?.toLowerCase()) {
+/**
+ * Parse a string into a boolean, based on English characters.
+ *
+ * This function operates based on the first character of the string, following these rules:
+ *
+ * * `0`, `n`, `f` -> `false`
+ * * `1`, `y`, `t` -> `true`
+ * * Anything else -> null
+ */
+fun String.parseBoolean() = when (firstOrNull()?.toLowerCase()) {
     '0' -> false
     'n' -> false
     'f' -> false
