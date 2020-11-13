@@ -179,20 +179,46 @@ suspend fun Message.requireChannel(
  * If it didn't, a response message will be created instructing the user that the current command can't be used via a
  * private message.
  *
- * As DMs do not provide access to members and roles, you'll need to provide a lambda that can be used to retrieve
- * the user's top role if you wish to make use of the role bypass.
- *
  * @param role Minimum role required to bypass the channel requirement, or null to disallow any role bypass
- * @param topRoleGetter Lambda used to get the user's top role, or null if role bypass is not desired
  *
  * @return true if the message was posted in an appropriate context, false otherwise
  */
-suspend fun Message.requireGuildChannel(role: Role?, topRoleGetter: (suspend (User?) -> Role?)?): Boolean {
-    val topRole = topRoleGetter?.invoke(author)
+suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
+    val topRole = if (author != null && getGuildOrNull() != null) author!!.asMemberOrNull(getGuild().id) else null
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (
         (role != null && topRole != null && topRole >= role) ||
+        this.getChannelOrNull() !is DmChannel
+    ) return true
+
+    this.respond(
+        "This command is not available via private message."
+    )
+
+    return false
+}
+
+/**
+ * Check that this message happened in a guild channel.
+ *
+ * If it didn't, a response message will be created instructing the user that the current command can't be used via a
+ * private message.
+ *
+ * As DMs do not provide access to members and roles, you'll need to provide a lambda that can be used to retrieve
+ * the user's top role if you wish to make use of the role bypass.
+ *
+ * @param role Minimum role required to bypass the channel requirement
+ * @param guild Guild to check for the user's top role
+ *
+ * @return true if the message was posted in an appropriate context, false otherwise
+ */
+suspend fun Message.requireGuildChannel(role: Role, guild: Guild): Boolean {
+    val topRole = if (author != null) guild.getMember(this.author!!.id).getTopRole() else null
+
+    @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
+    if (
+        (topRole != null && topRole >= role) ||
         this.getChannelOrNull() !is DmChannel
     ) return true
 
