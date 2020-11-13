@@ -12,6 +12,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     class TestArgs : Arguments() {
         val string by string("string")
         val enum by enum<TestEnum>("enum", "test")
+        val optionalEnum by optionalEnum<TestEnum>("optional-enum", "test")
         val bools by booleanList("bools", true)
     }
 
@@ -30,12 +31,17 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
                         field {
                             name = "String"
-                            value = string ?: "null"
+                            value = string
                         }
 
                         field {
                             name = "Enum"
                             value = enum.toString()
+                        }
+
+                        field {
+                            name = "Optional Enum"
+                            value = optionalEnum.toString()
                         }
 
                         field {

@@ -28,10 +28,9 @@ import kotlinx.coroutines.flow.toList
  * @see channelList
  */
 class ChannelConverter(
-    required: Boolean = true,
     private val requireSameGuild: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null
-) : SingleConverter<Channel>(required) {
+) : SingleConverter<Channel>() {
     override val signatureTypeString = "channel"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

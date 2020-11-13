@@ -17,10 +17,9 @@ import com.kotlindiscord.kord.extensions.commands.converters.enumList
  * @see enumList
  */
 class EnumConverter<E : Enum<E>>(
-    required: Boolean = true,
     typeName: String,
     private val getter: suspend (String) -> E?
-) : SingleConverter<E>(required) {
+) : SingleConverter<E>() {
     override val signatureTypeString: String = typeName
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

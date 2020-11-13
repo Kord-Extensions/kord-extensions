@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands.parser
 
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
+import com.kotlindiscord.kord.extensions.commands.converters.OptionalConverter
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 
 /**
@@ -27,6 +28,23 @@ open class Arguments {
      * @return Argument converter to use as a delegate.
      */
     fun <T : Any> arg(displayName: String, converter: SingleConverter<T>): SingleConverter<T> {
+        args.add(Argument(displayName, converter))
+
+        return converter
+    }
+
+    /**
+     * Add an [OptionalConverter] argument to this set of arguments.
+     *
+     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+     * is intended to be used as a property delegate.
+     *
+     * @param displayName Display name used in help messages and as the key for keyword arguments.
+     * @param converter Converter instance to add.
+     *
+     * @return Argument converter to use as a delegate.
+     */
+    fun <T : Any?> arg(displayName: String, converter: OptionalConverter<T>): OptionalConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter

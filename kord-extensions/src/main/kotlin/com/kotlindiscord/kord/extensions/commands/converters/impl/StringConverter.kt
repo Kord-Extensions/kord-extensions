@@ -14,7 +14,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.stringList
  * @see string
  * @see stringList
  */
-class StringConverter(required: Boolean = true) : SingleConverter<String>(required) {
+class StringConverter : SingleConverter<String>() {
     override val signatureTypeString = "text"
     override val showTypeInSignature = false
 

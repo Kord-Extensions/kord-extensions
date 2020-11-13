@@ -7,6 +7,7 @@ import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.MultiConverter
+import com.kotlindiscord.kord.extensions.commands.converters.OptionalConverter
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import io.ktor.client.features.*
 import mu.KotlinLogging
@@ -62,9 +63,6 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
 
         logger.debug { "Args map: $argsMap" }
 
-        var currentArg: Argument<*>? = null
-        var currentValue: String? = null
-
         val values = context.args.filter { v ->
             if (v.contains(splitChar)) {
                 logger.debug { "Potential keyword argument: $v" }
@@ -92,6 +90,9 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
             return@filter true
         }.toMutableList()
 
+        var currentArg: Argument<*>? = null
+        var currentValue: String? = null
+
         @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
         while (true) {
             currentArg = args.removeFirstOrNull()
@@ -117,6 +118,47 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
 
             when (converter) {
                 is SingleConverter<*> -> try {
+                    val parsed = if (hasKwargs) {
+                        if (kwValue!!.size != 1) {
+                            throw ParseException(
+                                "Argument `${currentArg.displayName}` requires exactly 1 argument, but " +
+                                    "${kwValue.size} were provided."
+                            )
+                        }
+
+                        converter.parse(kwValue.first(), context, bot)
+                    } else {
+                        converter.parse(currentValue, context, bot)
+                    }
+
+                    if ((converter.required || hasKwargs) && !parsed) {
+                        throw ParseException(
+                            "Invalid value for argument `${currentArg.displayName}` " +
+                                "(which accepts ${converter.getErrorString()}): $currentValue"
+                        )
+                    }
+
+                    if (parsed) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+
+                        converter.parseSuccess = true
+                        currentValue = null
+                    }
+                } catch (e: ParseException) {
+                    if (converter.required || hasKwargs) {
+                        throw ParseException(
+                            converter.handleError(e, currentValue, context, bot)
+                        )
+                    }
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required || hasKwargs) {
+                        throw t
+                    }
+                }
+
+                is OptionalConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
                             throw ParseException(

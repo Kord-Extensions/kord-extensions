@@ -25,9 +25,8 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see roleList
  */
 class RoleConverter(
-    required: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null
-) : SingleConverter<Role>(required) {
+) : SingleConverter<Role>() {
     override val signatureTypeString = "role"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

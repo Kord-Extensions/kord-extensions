@@ -15,7 +15,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.booleanList
  * @see boolean
  * @see booleanList
  */
-class BooleanConverter(required: Boolean = true) : SingleConverter<Boolean>(required) {
+class BooleanConverter : SingleConverter<Boolean>() {
     override val signatureTypeString = "yes/no"
     override val errorTypeString = "`yes` or `no`"
 

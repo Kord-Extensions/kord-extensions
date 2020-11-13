@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see user
  * @see userList
  */
-class UserConverter(required: Boolean = true) : SingleConverter<User>(required) {
+class UserConverter : SingleConverter<User>() {
     override val signatureTypeString = "user"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

@@ -9,11 +9,15 @@ import kotlin.reflect.KProperty
 /**
  * Abstract base class for a single converter.
  *
- * Single converters take a single string argument, transforming it into a single resulting value.
+ * Single converters take a single string argument, transforming it into a single resulting value. Single converters
+ * are always required.
+ *
+ * You can convert a [SingleConverter] instance to an optional or multi converter using [toMulti] or [toOptional]
+ * respectively.
  *
  * You can create a single converter of your own by extending this class.
  */
-abstract class SingleConverter<T : Any>(required: Boolean = true) : Converter<T>(required) {
+abstract class SingleConverter<T : Any> : Converter<T>(true) {
     /**
      * The parsed value.
      *
@@ -40,14 +44,8 @@ abstract class SingleConverter<T : Any>(required: Boolean = true) : Converter<T>
      */
     abstract suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean
 
-    /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
-    open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? {
-        if (::parsed.isInitialized) {
-            return parsed
-        }
-
-        return null
-    }
+    /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
+    open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
@@ -77,6 +75,8 @@ abstract class SingleConverter<T : Any>(required: Boolean = true) : Converter<T>
      *
      * For more information on the parameters, see [Converter].
      *
+     * @param required Whether command parsing should fail if no arguments could be converted.
+     *
      * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
      * provides.
      *
@@ -87,11 +87,41 @@ abstract class SingleConverter<T : Any>(required: Boolean = true) : Converter<T>
      * provides.
      */
     open fun toMulti(
+        required: Boolean = true,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null
     ): MultiConverter<T> = SingleToMultiConverter(
-        this.required,
+        required,
+        this,
+        signatureTypeString,
+        showTypeInSignature,
+        errorTypeString
+    )
+
+    /**
+     * Wrap this single converter with a [SingleToOptionalConverter], which is a special converter that will act like
+     * an [OptionalConverter] using the same logic of this converter.
+     *
+     * Your converter should be designed with this pattern in mind. If that's not possible, please override this
+     * function and throw an exception in the body.
+     *
+     * For more information on the parameters, see [Converter].
+     *
+     * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
+     * provides.
+     *
+     * @param showTypeInSignature Optionally, override this converter's setting for showing the type string in a
+     * generated command signature.
+     *
+     * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
+     * provides.
+     */
+    open fun toOptional(
+        signatureTypeString: String? = null,
+        showTypeInSignature: Boolean? = null,
+        errorTypeString: String? = null
+    ): OptionalConverter<T?> = SingleToOptionalConverter(
         this,
         signatureTypeString,
         showTypeInSignature,

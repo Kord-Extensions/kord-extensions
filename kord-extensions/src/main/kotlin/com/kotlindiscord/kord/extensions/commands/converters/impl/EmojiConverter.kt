@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.mapNotNull
  * @see emoji
  * @see emojiList
  */
-class EmojiConverter(required: Boolean = true) : SingleConverter<GuildEmoji>(required) {
+class EmojiConverter : SingleConverter<GuildEmoji>() {
     override val signatureTypeString = "server emoji"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

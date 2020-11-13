@@ -20,7 +20,7 @@ import java.time.Duration
  * @see durationList
  * @see parseDurationJ8
  */
-class DurationConverter(required: Boolean = true) : SingleConverter<Duration>(required) {
+class DurationConverter : SingleConverter<Duration>() {
     override val signatureTypeString = "duration"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

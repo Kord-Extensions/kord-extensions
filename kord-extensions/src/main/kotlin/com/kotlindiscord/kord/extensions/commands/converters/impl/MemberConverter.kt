@@ -26,9 +26,8 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see memberList
  */
 class MemberConverter(
-    required: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null
-) : SingleConverter<Member>(required) {
+) : SingleConverter<Member>() {
     override val signatureTypeString = "member"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

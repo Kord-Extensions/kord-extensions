@@ -13,7 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.decimalList
  * @see decimal
  * @see decimalList
  */
-class DecimalConverter(required: Boolean = true) : SingleConverter<Double>(required) {
+class DecimalConverter : SingleConverter<Double>() {
     override val signatureTypeString = "decimal"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

@@ -16,9 +16,8 @@ private const val DEFAULT_RADIX = 10
  * @see numberList
  */
 class NumberConverter(
-    required: Boolean = true,
     private val radix: Int = DEFAULT_RADIX
-) : SingleConverter<Long>(required) {
+) : SingleConverter<Long>() {
     override val signatureTypeString = "number"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
