@@ -3,12 +3,13 @@ package com.kotlindiscord.kord.extensions.commands
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.ParseException
+import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.utils.respond
 import mu.KotlinLogging
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.primaryConstructor
 
 private val logger = KotlinLogging.logger {}
 
@@ -151,32 +152,8 @@ open class Command(val extension: Extension) {
      * @throws ParseException Thrown if the class passed isn't a data class.
      */
     @Throws(ParseException::class)
-    inline fun <reified T : Any> signature() {
-        val dataClass = T::class
-
-        if (!dataClass.isData) {
-            throw ParseException("Given class is not a data class.")
-        }
-
-        val strings: MutableList<String> = mutableListOf()
-
-        dataClass.primaryConstructor!!.parameters.forEach {
-            val (start, end) = if (it.isOptional) {
-                Pair("[", "]")
-            } else {
-                Pair("<", ">")
-            }
-
-            strings.add(
-                if (it.type.isSubtypeOf(listType)) {
-                    "$start${it.name} ...$end"
-                } else {
-                    "$start${it.name}$end"
-                }
-            )
-        }
-
-        signature = strings.joinToString(" ")
+    inline fun <reified T : Arguments> signature(noinline builder: () -> T) {
+        signature = parser.signature(builder)
     }
 
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
@@ -210,9 +187,13 @@ open class Command(val extension: Extension) {
         try {
             this.body(CommandContext(this, event, args))
         } catch (e: ParseException) {
-            event.message.channel.createMessage(e.toString())
-        } catch (e: Exception) {
-            logger.error(e) { "Error during execution of $name command ($event)" }
+            event.message.respond(e.toString())
+        } catch (t: Throwable) {
+            logger.error(t) { "Error during execution of $name command ($event)" }
+
+            event.message.respond(
+                "An error occurred during command processing - please let a staff member know."
+            )
         }
     }
 }

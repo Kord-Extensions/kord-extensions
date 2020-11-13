@@ -4,7 +4,7 @@ package com.kotlindiscord.kord.extensions.checks
 
 import com.gitlab.kordlib.core.entity.Role
 import com.gitlab.kordlib.core.event.Event
-import com.kotlindiscord.kord.extensions.getTopRole
+import com.kotlindiscord.kord.extensions.utils.getTopRole
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 

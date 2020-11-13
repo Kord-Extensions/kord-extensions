@@ -1,37 +1,10 @@
-package com.kotlindiscord.kord.extensions
+package com.kotlindiscord.kord.extensions.utils
 
 import com.gitlab.kordlib.core.Kord
-import com.gitlab.kordlib.core.entity.Member
-import com.gitlab.kordlib.core.entity.Message
-import com.gitlab.kordlib.core.entity.Role
 import com.gitlab.kordlib.core.event.Event
 import com.gitlab.kordlib.core.firstOrNull
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.withTimeoutOrNull
-import org.apache.commons.text.StringTokenizer
-
-/**
- * Takes a [Message] object and parses it using a [StringTokenizer].
- *
- * This tokenizes a string, splitting it into an array of strings using whitespace as a
- * delimiter, but supporting quoted tokens (strings between quotes are treated as individual
- * arguments).
- *
- * This is used to create an array of arguments for a command's input.
- *
- * @param message The message to parse
- * @return An array of parsed arguments
- */
-fun parseMessage(message: Message): Array<String> = StringTokenizer(message.content, ' ').tokenArray
-
-/**
- * Convenience function to retrieve a user's top [Role].
- *
- * @receiver The [Member] to get the top role for.
- * @return The user's top role, or `null` if they have no roles.
- */
-suspend fun Member.getTopRole(): Role? = this.roles.toList().max()
 
 /**
  * Return the first received event that match the condition.
@@ -66,4 +39,44 @@ fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
         return Pair(this, "")
     }
     return Pair(this.slice(IntRange(0, i - 1)), this.slice(IntRange(i, this.length - 1)))
+}
+
+/**
+ * Run a block of code within a coroutine scope, defined by a given dispatcher.
+ *
+ * This is intended for use with code that normally isn't designed to be run within a coroutine, such as
+ * database actions.
+ *
+ * @param dispatcher The dispatcher to use - defaults to [Dispatchers.IO].
+ * @param body The block of code to be run.
+ */
+suspend fun <T> runSuspended(dispatcher: CoroutineDispatcher = Dispatchers.IO, body: suspend CoroutineScope.() -> T) =
+    withContext(dispatcher, body)
+
+/**
+ * Check whether a string starts with a vowel.
+ *
+ * @return `true` if the string starts with an English vowel, `false` otherwise.
+ */
+fun String.startsWithVowel() = "aeiou".any { startsWith(it) }
+
+/**
+ * Parse a string into a boolean, based on English characters.
+ *
+ * This function operates based on the first character of the string, following these rules:
+ *
+ * * `0`, `n`, `f` -> `false`
+ * * `1`, `y`, `t` -> `true`
+ * * Anything else -> null
+ */
+fun String.parseBoolean() = when (firstOrNull()?.toLowerCase()) {
+    '0' -> false
+    'n' -> false
+    'f' -> false
+
+    '1' -> true
+    'y' -> true
+    't' -> true
+
+    else -> null
 }

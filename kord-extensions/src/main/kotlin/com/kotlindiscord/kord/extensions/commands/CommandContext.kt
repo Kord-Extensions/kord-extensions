@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ParseException
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 
 /**
  * Light wrapper class representing the context for a command's action.
@@ -30,5 +31,6 @@ open class CommandContext(
      * @throws ParseException Thrown when parsing fails. If you don't catch this, an error message will be sent.
      */
     @Throws(ParseException::class)
-    suspend inline fun <reified T : Any> parse(): T = command.parser.parse(T::class, args, event)
+    suspend inline fun <reified T : Arguments> parse(noinline builder: () -> T): T =
+        command.parser.parse(builder, this)
 }

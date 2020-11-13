@@ -12,6 +12,7 @@ import com.gitlab.kordlib.core.event.Event
 import com.gitlab.kordlib.core.event.message.ReactionAddEvent
 import com.gitlab.kordlib.core.event.message.ReactionRemoveEvent
 import com.gitlab.kordlib.rest.builder.message.EmbedBuilder
+import com.kotlindiscord.kord.extensions.utils.waitFor
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
 
