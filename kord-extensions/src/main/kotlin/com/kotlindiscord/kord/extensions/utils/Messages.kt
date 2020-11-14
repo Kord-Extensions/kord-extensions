@@ -63,7 +63,7 @@ suspend fun Message.respond(builder: MessageCreateBuilder.() -> Unit): Message {
             }
         }
 
-        content = "$mention$content"
+        content = "$mention${content ?: ""}"
     }
 }
 
