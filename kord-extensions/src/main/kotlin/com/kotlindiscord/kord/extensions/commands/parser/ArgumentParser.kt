@@ -107,7 +107,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                 currentValue ?: ""  // To avoid skipping
             }
 
-            currentValue ?: break  // If it's null, we're out of values
+            currentValue ?: continue  // If it's null, we're out of values
 
             logger.debug { "Current value: $currentValue" }
 
@@ -118,7 +118,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
                             throw ParseException(
-                                "Argument `${currentArg.displayName}` requires exactly 1 argument, but " +
+                                "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
                                     "${kwValue.size} were provided."
                             )
                         }
@@ -159,7 +159,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
                             throw ParseException(
-                                "Argument `${currentArg.displayName}` requires exactly 1 argument, but " +
+                                "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
                                     "${kwValue.size} were provided."
                             )
                         }
@@ -183,7 +183,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
                             throw ParseException(
-                                "Argument `${currentArg.displayName}` requires exactly 1 argument, but " +
+                                "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
                                     "${kwValue.size} were provided."
                             )
                         }
@@ -230,8 +230,13 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
                             throw ParseException(
-                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} values, " +
-                                    "but only $parsedCount were valid ${converter.signatureTypeString}."
+                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
+                                    "value${if (kwValue.size > 1) "d" else ""}, but " +
+                                    if (parsedCount >= 1) {
+                                        "only $parsedCount of them were valid ${converter.signatureTypeString}."
+                                    } else {
+                                        "none were valid ${converter.signatureTypeString}."
+                                    }
                             )
                         }
 
@@ -274,8 +279,13 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
                             throw ParseException(
-                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} values, " +
-                                    "but only $parsedCount were valid ${converter.signatureTypeString}."
+                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
+                                    "value${if (kwValue.size > 1) "d" else ""}, but " +
+                                    if (parsedCount >= 1) {
+                                        "only $parsedCount of them were valid ${converter.signatureTypeString}."
+                                    } else {
+                                        "none were valid ${converter.signatureTypeString}."
+                                    }
                             )
                         }
 
@@ -311,9 +321,16 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
         logger.debug { "Filled $filledRequiredArgs / $allRequiredArgs arguments." }
 
         if (filledRequiredArgs < allRequiredArgs) {
-            throw ParseException(
-                "This command has $allRequiredArgs required arguments, but only $filledRequiredArgs could be filled."
-            )
+            if (filledRequiredArgs < 1) {
+                throw ParseException(
+                    "This command has $allRequiredArgs required argument${if (allRequiredArgs > 1) "s" else ""}."
+                )
+            } else {
+                throw ParseException(
+                    "This command has $allRequiredArgs required argument${if (allRequiredArgs > 1) "s" else ""}, " +
+                        "but only $filledRequiredArgs could be filled."
+                )
+            }
         }
 
         logger.debug { "Leftover arguments: ${values.size}" }
