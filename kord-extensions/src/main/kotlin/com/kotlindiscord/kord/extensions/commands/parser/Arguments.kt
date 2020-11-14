@@ -97,4 +97,41 @@ open class Arguments {
 
         return converter
     }
+
+    /**
+     * Add a [DefaultingCoalescingConverter] argument to this set of arguments.
+     *
+     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+     * is intended to be used as a property delegate.
+     *
+     * @param displayName Display name used in help messages and as the key for keyword arguments.
+     * @param converter Converter instance to add.
+     *
+     * @return Argument converter to use as a delegate.
+     */
+    fun <T : Any> arg(
+        displayName: String,
+        converter: DefaultingCoalescingConverter<T>
+    ): DefaultingCoalescingConverter<T> {
+        args.add(Argument(displayName, converter))
+
+        return converter
+    }
+
+    /**
+     * Add an [OptionalCoalescingConverter] argument to this set of arguments.
+     *
+     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+     * is intended to be used as a property delegate.
+     *
+     * @param displayName Display name used in help messages and as the key for keyword arguments.
+     * @param converter Converter instance to add.
+     *
+     * @return Argument converter to use as a delegate.
+     */
+    fun <T : Any?> arg(displayName: String, converter: OptionalCoalescingConverter<T>): OptionalCoalescingConverter<T> {
+        args.add(Argument(displayName, converter))
+
+        return converter
+    }
 }

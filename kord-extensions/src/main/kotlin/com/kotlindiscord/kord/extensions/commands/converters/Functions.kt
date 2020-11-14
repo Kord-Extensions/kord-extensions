@@ -317,32 +317,104 @@ fun Arguments.defaultingT4jDuration(displayName: String, defaultValue: net.time4
  *
  * @see DurationCoalescingConverter
  */
-fun Arguments.coalescedDuration(displayName: String, required: Boolean = true) =
-    arg(displayName, DurationCoalescingConverter(required))
+fun Arguments.coalescedDuration(displayName: String) =
+    arg(displayName, DurationCoalescingConverter())
 
 /**
  * Create a coalescing regex converter.
  *
  * @see RegexCoalescingConverter
  */
-fun Arguments.coalescedRegex(displayName: String, required: Boolean = true, options: Set<RegexOption> = setOf()) =
-    arg(displayName, RegexCoalescingConverter(required, options))
+fun Arguments.coalescedRegex(displayName: String, options: Set<RegexOption> = setOf()) =
+    arg(displayName, RegexCoalescingConverter(options))
 
 /**
  * Create a coalescing string converter.
  *
  * @see RegexCoalescingConverter
  */
-fun Arguments.coalescedString(displayName: String, required: Boolean = true) =
-    arg(displayName, StringCoalescingConverter(required))
+fun Arguments.coalescedString(displayName: String) =
+    arg(displayName, StringCoalescingConverter())
 
 /**
  * Create a coalescing Time4J Duration converter.
  *
  * @see RegexCoalescingConverter
  */
-fun Arguments.coalescedT4jDuration(displayName: String, required: Boolean = true) =
-    arg(displayName, T4JDurationCoalescingConverter(required))
+fun Arguments.coalescedT4jDuration(displayName: String) =
+    arg(displayName, T4JDurationCoalescingConverter())
+
+// endregion
+
+// region: Optional coalescing converters
+
+/**
+ * Create an optional coalescing Java 8 Duration converter.
+ *
+ * @see DurationCoalescingConverter
+ */
+fun Arguments.optionalCoalescedDuration(displayName: String) =
+    arg(displayName, DurationCoalescingConverter().toOptional())
+
+/**
+ * Create an optional coalescing regex converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+fun Arguments.optionalCoalescedRegex(displayName: String, options: Set<RegexOption> = setOf()) =
+    arg(displayName, RegexCoalescingConverter(options).toOptional())
+
+/**
+ * Create an optional coalescing string converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+fun Arguments.optionalCoalescedString(displayName: String) =
+    arg(displayName, StringCoalescingConverter().toOptional())
+
+/**
+ * Create an optional coalescing Time4J Duration converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+fun Arguments.optionalCoalescedT4jDuration(displayName: String) =
+    arg(displayName, T4JDurationCoalescingConverter().toOptional())
+
+// endregion
+
+// region: Defaulting coalescing converters
+
+/**
+ * Create a defaulting coalescing Java 8 Duration converter.
+ *
+ * @see DurationCoalescingConverter
+ */
+fun Arguments.defaultingCoalescedDuration(displayName: String, defaultValue: Duration) =
+    arg(displayName, DurationCoalescingConverter().toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting coalescing regex converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+fun Arguments.defaultingCoalescedRegex(displayName: String, defaultValue: Regex, options: Set<RegexOption> = setOf()) =
+    arg(displayName, RegexCoalescingConverter(options).toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting coalescing string converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+fun Arguments.defaultingCoalescedString(displayName: String, defaultValue: String) =
+    arg(displayName, StringCoalescingConverter().toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting coalescing Time4J Duration converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+fun Arguments.defaultingCoalescedT4jDuration(displayName: String, defaultValue: net.time4j.Duration<IsoUnit>) =
+    arg(displayName, T4JDurationCoalescingConverter().toDefaulting(defaultValue))
 
 // endregion
 

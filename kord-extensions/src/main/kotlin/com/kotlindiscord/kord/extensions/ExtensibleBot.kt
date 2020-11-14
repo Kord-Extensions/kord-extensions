@@ -236,6 +236,18 @@ open class ExtensibleBot(
                 commandName = commandName.slice(prefix.length until commandName.length)
             }
 
+            if (commandName.contains("\n")) {
+                val split = commandName.split("\n", limit = 2)
+
+                commandName = split.first()
+
+                if (parts.isEmpty()) {
+                    parts = arrayOf("\n${split.last()}")
+                } else {
+                    parts = arrayOf("\n${split.last()}", *parts)
+                }
+            }
+
             commandName = commandName.toLowerCase()
 
             val command = commands.firstOrNull { it.name == commandName }

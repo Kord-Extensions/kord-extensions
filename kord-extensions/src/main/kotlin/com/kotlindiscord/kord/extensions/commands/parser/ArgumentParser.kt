@@ -311,6 +311,104 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
                     }
                 }
 
+                is OptionalCoalescingConverter<*> -> try {
+                    val parsedCount = if (hasKwargs) {
+                        converter.parse(kwValue!!, context, bot)
+                    } else {
+                        converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                    }
+
+                    if ((converter.required || hasKwargs) && parsedCount <= 0) {
+                        throw ParseException(
+                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
+                                "${converter.getErrorString()}): $currentValue"
+                        )
+                    }
+
+                    if (hasKwargs) {
+                        if (parsedCount < kwValue!!.size) {
+                            throw ParseException(
+                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
+                                    "value${if (kwValue.size > 1) "d" else ""}, but " +
+                                    if (parsedCount >= 1) {
+                                        "only $parsedCount of them were valid ${converter.signatureTypeString}."
+                                    } else {
+                                        "none were valid ${converter.signatureTypeString}."
+                                    }
+                            )
+                        }
+
+                        converter.parseSuccess = true
+                        currentValue = null
+                    } else {
+                        if (parsedCount > 0) {
+                            logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
+
+                            currentValue = null
+                            converter.parseSuccess = true
+                        }
+
+                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+                    }
+                } catch (e: ParseException) {
+                    if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
+                }
+
+                is DefaultingCoalescingConverter<*> -> try {
+                    val parsedCount = if (hasKwargs) {
+                        converter.parse(kwValue!!, context, bot)
+                    } else {
+                        converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                    }
+
+                    if ((converter.required || hasKwargs) && parsedCount <= 0) {
+                        throw ParseException(
+                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
+                                "${converter.getErrorString()}): $currentValue"
+                        )
+                    }
+
+                    if (hasKwargs) {
+                        if (parsedCount < kwValue!!.size) {
+                            throw ParseException(
+                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
+                                    "value${if (kwValue.size > 1) "d" else ""}, but " +
+                                    if (parsedCount >= 1) {
+                                        "only $parsedCount of them were valid ${converter.signatureTypeString}."
+                                    } else {
+                                        "none were valid ${converter.signatureTypeString}."
+                                    }
+                            )
+                        }
+
+                        converter.parseSuccess = true
+                        currentValue = null
+                    } else {
+                        if (parsedCount > 0) {
+                            logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
+
+                            currentValue = null
+                            converter.parseSuccess = true
+                        }
+
+                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+                    }
+                } catch (e: ParseException) {
+                    if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
+                }
+
                 else -> throw ParseException("Unknown converter type provided: ${currentArg.converter}")
             }
         }

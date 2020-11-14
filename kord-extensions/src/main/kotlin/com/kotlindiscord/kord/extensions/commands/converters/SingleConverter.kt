@@ -12,8 +12,8 @@ import kotlin.reflect.KProperty
  * Single converters take a single string argument, transforming it into a single resulting value. Single converters
  * are always required.
  *
- * You can convert a [SingleConverter] instance to an optional or multi converter using [toMulti] or [toOptional]
- * respectively.
+ * You can convert a [SingleConverter] instance to a defaulting, optional or multi converter
+ * using [toDefaulting]. [toMulti] or [toOptional] respectively.
  *
  * You can create a single converter of your own by extending this class.
  */

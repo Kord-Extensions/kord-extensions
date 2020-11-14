@@ -12,7 +12,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.coalescedString
  *
  * @see coalescedString
  */
-class StringCoalescingConverter(required: Boolean = true) : CoalescingConverter<String>(required) {
+class StringCoalescingConverter : CoalescingConverter<String>() {
     override val signatureTypeString = "text"
     override val showTypeInSignature = false
 

@@ -14,9 +14,12 @@ import kotlin.reflect.KProperty
  * its final result and tells the parser how many arguments it managed to consume. The parser will continue
  * processing the unused arguments, passing them to the remaining converters.
  *
+ * You can convert a [CoalescingConverter] instance to a defaulting or multi converter using [toDefaulting]
+ * or [toOptional] respectively.
+ *
  * You can create a coalescing converter of your own by extending this class.
  */
-abstract class CoalescingConverter<T : Any>(required: Boolean = true) : Converter<List<T>>(required) {
+abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true) {
     /**
      * The parsed value.
      *
@@ -44,14 +47,8 @@ abstract class CoalescingConverter<T : Any>(required: Boolean = true) : Converte
      */
     abstract suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int
 
-    /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
-    operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? {
-        if (::parsed.isInitialized) {
-            return parsed
-        }
-
-        return null
-    }
+    /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
+    open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
@@ -65,4 +62,66 @@ abstract class CoalescingConverter<T : Any>(required: Boolean = true) : Converte
         context: CommandContext,
         bot: ExtensibleBot
     ): String = throw t
+
+    /**
+     * Wrap this coalescing converter with a [CoalescingToOptionalConverter], which is a special converter that will
+     * act like an [OptionalCoalescingConverter] using the same logic of this converter.
+     *
+     * Your converter should be designed with this pattern in mind. If that's not possible, please override this
+     * function and throw an exception in the body.
+     *
+     * For more information on the parameters, see [Converter].
+     *
+     * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
+     * provides.
+     *
+     * @param showTypeInSignature Optionally, override this converter's setting for showing the type string in a
+     * generated command signature.
+     *
+     * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
+     * provides.
+     */
+    open fun toOptional(
+        signatureTypeString: String? = null,
+        showTypeInSignature: Boolean? = null,
+        errorTypeString: String? = null
+    ): OptionalCoalescingConverter<T?> = CoalescingToOptionalConverter(
+        this,
+        signatureTypeString,
+        showTypeInSignature,
+        errorTypeString
+    )
+
+    /**
+     * Wrap this coalescing converter with a [CoalescingToDefaultingConverter], which is a special converter that will
+     * act like an [DefaultingCoalescingConverter] using the same logic of this converter.
+     *
+     * Your converter should be designed with this pattern in mind. If that's not possible, please override this
+     * function and throw an exception in the body.
+     *
+     * For more information on the parameters, see [Converter].
+     *
+     * @param defaultValue The default value to use when an argument can't be converted.
+     *
+     * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
+     * provides.
+     *
+     * @param showTypeInSignature Optionally, override this converter's setting for showing the type string in a
+     * generated command signature.
+     *
+     * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
+     * provides.
+     */
+    open fun toDefaulting(
+        defaultValue: T,
+        signatureTypeString: String? = null,
+        showTypeInSignature: Boolean? = null,
+        errorTypeString: String? = null
+    ): DefaultingCoalescingConverter<T> = CoalescingToDefaultingConverter(
+        this,
+        defaultValue,
+        signatureTypeString,
+        showTypeInSignature,
+        errorTypeString
+    )
 }

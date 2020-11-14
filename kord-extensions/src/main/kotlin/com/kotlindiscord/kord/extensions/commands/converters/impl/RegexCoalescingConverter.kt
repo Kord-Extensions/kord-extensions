@@ -18,9 +18,8 @@ import com.kotlindiscord.kord.extensions.commands.converters.coalescedRegex
  * @see coalescedRegex
  */
 class RegexCoalescingConverter(
-    required: Boolean = true,
     private val options: Set<RegexOption> = setOf()
-) : CoalescingConverter<Regex>(required) {
+) : CoalescingConverter<Regex>() {
     override val signatureTypeString = "regexes"
     override val showTypeInSignature = false
 

@@ -18,7 +18,7 @@ import net.time4j.IsoUnit
  * @see coalescedT4jDuration
  * @see parseDuration
  */
-class T4JDurationCoalescingConverter(required: Boolean = true) : CoalescingConverter<Duration<IsoUnit>>(required) {
+class T4JDurationCoalescingConverter : CoalescingConverter<Duration<IsoUnit>>() {
     override val signatureTypeString = "duration"
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
