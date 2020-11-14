@@ -3,6 +3,8 @@ package com.kotlindiscord.kord.extensions.commands.converters
 import com.gitlab.kordlib.common.entity.Snowflake
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import net.time4j.IsoUnit
+import java.time.Duration
 
 // region: Required (single) converters
 
@@ -267,6 +269,14 @@ fun Arguments.defaultingDecimal(displayName: String, defaultValue: Double) =
     arg(displayName, DecimalConverter().toDefaulting(defaultValue))
 
 /**
+ * Create a defaulting Java 8 Duration converter, for single arguments.
+ *
+ * @see DurationConverter
+ */
+fun Arguments.defaultingDuration(displayName: String, defaultValue: Duration) =
+    arg(displayName, DurationConverter().toDefaulting(defaultValue))
+
+/**
  * Create a defaulting whole number converter, for single arguments.
  *
  * @see NumberConverter
@@ -289,6 +299,16 @@ fun Arguments.defaultingRegex(displayName: String, defaultValue: Regex, options:
  */
 fun Arguments.defaultingString(displayName: String, defaultValue: String) =
     arg(displayName, StringConverter().toDefaulting(defaultValue))
+
+
+/**
+ * Create a defaulting Time4J Duration converter, for single arguments.
+ *
+ * @see T4JDurationConverter
+ */
+fun Arguments.defaultingT4jDuration(displayName: String, defaultValue: net.time4j.Duration<IsoUnit>) =
+    arg(displayName, T4JDurationConverter().toDefaulting(defaultValue))
+
 
 // endregion
 
