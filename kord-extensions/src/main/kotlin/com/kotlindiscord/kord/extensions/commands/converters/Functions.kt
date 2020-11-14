@@ -300,7 +300,6 @@ fun Arguments.defaultingRegex(displayName: String, defaultValue: Regex, options:
 fun Arguments.defaultingString(displayName: String, defaultValue: String) =
     arg(displayName, StringConverter().toDefaulting(defaultValue))
 
-
 /**
  * Create a defaulting Time4J Duration converter, for single arguments.
  *
@@ -308,7 +307,6 @@ fun Arguments.defaultingString(displayName: String, defaultValue: String) =
  */
 fun Arguments.defaultingT4jDuration(displayName: String, defaultValue: net.time4j.Duration<IsoUnit>) =
     arg(displayName, T4JDurationConverter().toDefaulting(defaultValue))
-
 
 // endregion
 
