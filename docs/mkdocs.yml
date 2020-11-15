@@ -1,0 +1,19 @@
+site_name: Kord Extensions
+
+theme:
+  name: material
+  logo: assets/logo.png
+
+  palette:
+    scheme: preference
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      linenums: true
