@@ -11,6 +11,7 @@ import io.ktor.http.*
 import kotlinx.coroutines.*
 import mu.KotlinLogging
 import org.apache.commons.text.StringTokenizer
+import org.apache.commons.text.matcher.StringMatcherFactory
 
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 
@@ -29,11 +30,19 @@ val MessageData.authorIsBot: Boolean? get() = author.bot
  *
  * This is used to create an array of arguments for a command's input.
  *
- * @param delimiter Delimiter to split by, instead of using spaces
+ * @param delimiters An array of delimiters to split with, if not just a space
+ * @param quotes An array of quote characters, if you need something other than just `'` and `"`
  *
  * @return An array of parsed arguments
  */
-fun Message.parse(delimiter: String = " "): Array<String> = StringTokenizer(content, delimiter).tokenArray
+fun Message.parse(
+    delimiters: Array<Char> = arrayOf(' '),
+    quotes: Array<Char> = arrayOf('\'', '"')
+): Array<String> =
+    StringTokenizer(content)
+        .setDelimiterMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(delimiters.joinToString()))
+        .setQuoteMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(quotes.joinToString()))
+        .tokenArray
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
