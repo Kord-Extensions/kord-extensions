@@ -29,11 +29,11 @@ val MessageData.authorIsBot: Boolean? get() = author.bot
  *
  * This is used to create an array of arguments for a command's input.
  *
- * @param message The message to parse
+ * @param delimiter Delimiter to split by, instead of using spaces
  *
  * @return An array of parsed arguments
  */
-fun parseMessage(message: Message): Array<String> = StringTokenizer(message.content, ' ').tokenArray
+fun Message.parse(delimiter: String = " "): Array<String> = StringTokenizer(content, delimiter).tokenArray
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.

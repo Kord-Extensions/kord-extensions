@@ -16,7 +16,7 @@ import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
-import com.kotlindiscord.kord.extensions.utils.parseMessage
+import com.kotlindiscord.kord.extensions.utils.parse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
@@ -184,7 +184,7 @@ open class ExtensibleBot(
 
         on<MessageCreateEvent> {
             var commandName: String? = null
-            var parts = parseMessage(this.message)
+            var parts = message.parse()
 
             if (parts.isEmpty()) {
                 // Empty message.
