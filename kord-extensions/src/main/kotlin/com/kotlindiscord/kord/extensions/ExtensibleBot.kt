@@ -321,11 +321,11 @@ open class ExtensibleBot(
     }
 
     /**
-     * Reload an installed [Extension] from this bot, by name.
+     * Reload an unloaded [Extension] from this bot, by name.
      *
-     * This function **does not** remove the extension object - it simply
-     * removes its event handlers and commands. Unloaded extensions can
-     * be loaded again by calling [ExtensibleBot.loadExtension].
+     * This function **does not** create a new extension object - it simply
+     * calls its `setup()` function. Loaded extensions can
+     * be unload again by calling [unloadExtension].
      *
      * This function simply returns if the extension isn't found.
      *
@@ -345,7 +345,7 @@ open class ExtensibleBot(
      *
      * This function **does not** remove the extension object - it simply
      * removes its event handlers and commands. Unloaded extensions can
-     * be loaded again by calling [ExtensibleBot.loadExtension].
+     * be loaded again by calling [loadExtension].
      *
      * This function simply returns if the extension isn't found.
      *

@@ -1,125 +1,35 @@
-# Kord Extensions
+# Home
 
-Kord Extensions is a library that wraps [the fantastic Kord Discord library](https://github.com/kordlib/kord), providing a ton of extra functionality - such as an extensions framework, a comprehensive commands framework and a bunch of useful utilities.
+Kord Extensions is an addon for the excellent [Kord library](https://github.com/kordlib/kord). It intends to provide a
+framework for larger bot projects, with easy-to-use commands, rich argument parsing and event handling, wrapped up 
+into individual extension classes.
 
-## Build Script
+The approach taken here is relatively different from a lot of Kotlin libraries, many of which prefer to provide a DSL 
+for quickly prototyping or implementing a small application. Instead, 
+[Discord.py](https://github.com/Rapptz/discord.py) (the Discord library for Python) is a primary source of inspiration 
+for our fairly object-oriented design, especially where it comes to its extensions (which are known as cogs in  
+Discord.py). Despite this, we still strive to provide an idiomatic API that makes full use of Kotlin's niceties.
 
-We recommend making use of Gradle for your build scripts. Please note that Kord Extensions requires **Kotlin 1.4 or later**.
+??? summary "Why not kordx.commands?"
+    Kord has released their own command framework, [kordx.commands](https://github.com/kordlib/kordx.commands). It's 
+    a competent library, but it takes some very different approaches to solving the same problems Kord Extensions does. 
+    Most  notably, it requires the use of [kapt](https://kotlinlang.org/docs/reference/kapt.html) and makes use of an
+    annotation-based autowire system for getting things registered.
 
-### build.gradle
+    In contrast, Kord Extensions provides a less magical approach that is more closely tied to object-oriented
+    programming, and may be more suitable for embedding into other applications. At the end of the day, though, the
+    choice is yours - both approaches have pros and cons, and it's worth checking both out to see what you like
+    better!
 
-```groovy
-repositories {
-    maven {
-        name = "Kotlin Discord"
-        url = "https://maven.kotlindiscord.com/repository/maven-snapshots/"
-    }
-}
+## Usage
 
-dependencies {
-    implementation "com.kotlindiscord.kord.extensions:kord-extensions:$kx_version"
-}
-```
+To make use of Kord Extensions, update your build script `https://maven.kotlindiscord.com/repository/maven-snapshots/`
+as a repository and use `com.kotlindiscord.kord.extensions:kord-extneions:VERSION` as the Maven coordinate. For a list 
+of available versions, 
+[take a look at Nexus](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions).
 
-### build.gradle.kts
+We do not currently have a strict semantic versioning system in place. We'll explore this later if needed, but right 
+now we recommend pinning to the latest snapshot version number.
 
-```kotlin
-repositories {
-    maven {
-        name = "Kotlin Discord"
-        url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
-    }
-}
+For more specific directions for individual build systems, [take a look at the Getting Started guide](/getting-started).
 
-dependencies {
-    implementation("com.kotlindiscord.kord.extensions:kord-extensions:$kx_version")
-}
-```
-
-# Tutorial
-
-Kord Extensions is a relatively complex library, but the API it provides is fairly simple. In this example, we'll create an extension containing a command, and we'll create a bot with that extension installed on it.
-
-## Initial Files
-
-Create an extension by extending the `Extension` class.
-
-### TestExtension.kt
-
-```kotlin
-class TestExtension(bot: ExtensibleBot) : Extension(bot) {
-    override val name = "test"  // The registered name for our extension
-
-    class TestArgs : Arguments() {  // The arguments our command takes
-        // A single required string argument
-        val string by string("string")  
-
-        // Multiple boolean arguments, requiring at least one
-        val bools by booleanList("bools")  
-    }
-
-    // This will be called when the extension gets set up
-    override suspend fun setup() {
-        command {  // Define a command
-            // The name of the command
-            name = "test"
-
-            // A description for the help command to show
-            description = "Test command, please ignore"  
-
-            // Generate a command signature from the arguments class
-            signature(::TestArgs)  
-
-            action {  // This block will be executed when the command is run
-                with(parse(::TestArgs)) {  // Parse the command arguments
-                    message.channel.createEmbed {  // Kord: Create an embed
-                        title = "Test response"
-                        description = "Test description"
-
-                        field {
-                            name = "String"
-                            value = string  // Required string is never null
-                        }
-
-                        field {
-                            name = "Bools (${bools.size})"
-                            value = bools.joinToString(", ") { "`$it`" }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-Finally, create your `main` function, creating a bot, adding your extension to it and starting it up.
-
-```kotlin
-suspend fun main() {
-    // New instance of the bot provided by Kord Extensions
-    val bot = ExtensibleBot(
-        // Discord bot token for logging in
-        System.getenv("TOKEN"),
-
-        // Prefix required before all command names
-         "!"
-    )
-
-    // Add the extension class, the bot will instantiate it
-    bot.addExtension(TestExtension::class)
-  
-    // Start the bot, blocking the current coroutine
-    bot.start()  
-}
-```
-
-## Test it out
-
-Set the `TOKEN` environment variable to a Discord bot token, and run your application. Wait for it to connect, and send `!help test` in a DM or any channel the bot has access to.
-
-![](assets/test-command-help.png)
-
-Now, try running the command! For example, `!test String yes no false` will give you:
-
-![](assets/test-command-output.png)
