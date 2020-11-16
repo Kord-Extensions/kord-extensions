@@ -26,11 +26,7 @@ jobs:
           version: 1.11
 
       - name: Gradle (Build)
-        run: sh gradlew kord-extensions:build docs:orchidBuild
-
-      - name: Create Docs Zip
-        run: |
-          zip -r build/docs.zip docs/build/docs/orchid/*
+        run: sh gradlew kord-extensions:build
 
       - name: Upload artifact (JARs)
         uses: actions/upload-artifact@v2
@@ -38,10 +34,3 @@ jobs:
         with:
           name: JARs
           path: kord-extensions/build/libs/kord-extensions-*.jar
-
-      - name: Upload artifact (Docs)
-        uses: actions/upload-artifact@v1.0.0
-
-        with:
-          name: Docs Zip
-          path: build/docs.zip
