@@ -18,21 +18,21 @@ private val logger = KotlinLogging.logger {}
  * @param extension The [Extension] that registered this event handler.
  * @param type A [KClass] representing the event type this handler is subscribed to. This is for internal use.
  */
-class EventHandler<T : Any>(val extension: Extension, val type: KClass<*>) {
+public class EventHandler<T : Any>(public val extension: Extension, public val type: KClass<*>) {
     /**
      * @suppress
      */
-    lateinit var body: suspend EventHandler<T>.(T) -> Unit
+    public lateinit var body: suspend EventHandler<T>.(T) -> Unit
 
     /**
      * @suppress
      */
-    val checkList: MutableList<suspend (T) -> Boolean> = mutableListOf()
+    public val checkList: MutableList<suspend (T) -> Boolean> = mutableListOf()
 
     /**
      * @suppress This is the job returned by `Kord#on`, which we cancel to stop listening.
      */
-    var job: Job? = null
+    public var job: Job? = null
 
     /**
      * An internal function used to ensure that all of an event handler's required arguments are present.
@@ -40,7 +40,7 @@ class EventHandler<T : Any>(val extension: Extension, val type: KClass<*>) {
      * @throws InvalidEventHandlerException Thrown when a required argument hasn't been set.
      */
     @Throws(InvalidEventHandlerException::class)
-    fun validate() {
+    public fun validate() {
         if (!::body.isInitialized) {
             throw InvalidEventHandlerException("No event handler action given.")
         }
@@ -53,7 +53,7 @@ class EventHandler<T : Any>(val extension: Extension, val type: KClass<*>) {
      *
      * @param action The body of your event handler, which will be executed when it is invoked.
      */
-    fun action(action: suspend EventHandler<T>.(T) -> Unit) {
+    public fun action(action: suspend EventHandler<T>.(T) -> Unit) {
         this.body = action
     }
 
@@ -68,14 +68,14 @@ class EventHandler<T : Any>(val extension: Extension, val type: KClass<*>) {
      *
      * @param checks Checks to apply to this event handler.
      */
-    fun check(vararg checks: suspend (T) -> Boolean) = checks.forEach { checkList.add(it) }
+    public fun check(vararg checks: suspend (T) -> Boolean): Unit = checks.forEach { checkList.add(it) }
 
     /**
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this event handler.
      */
-    fun check(check: suspend (T) -> Boolean) = checkList.add(check) // endregion
+    public fun check(check: suspend (T) -> Boolean): Boolean = checkList.add(check) // endregion
 
     /**
      * Execute this event handler, given an event.
@@ -87,7 +87,7 @@ class EventHandler<T : Any>(val extension: Extension, val type: KClass<*>) {
      *
      * @param event The given event object.
      */
-    suspend fun call(event: T) {
+    public suspend fun call(event: T) {
         for (check in checkList) {
             if (!check.invoke(event)) {
                 return

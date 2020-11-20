@@ -12,9 +12,9 @@ import com.kotlindiscord.kord.extensions.commands.converters.coalescedString
  *
  * @see coalescedString
  */
-class StringCoalescingConverter : CoalescingConverter<String>() {
-    override val signatureTypeString = "text"
-    override val showTypeInSignature = false
+public class StringCoalescingConverter : CoalescingConverter<String>() {
+    override val signatureTypeString: String = "text"
+    override val showTypeInSignature: Boolean = false
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
         this.parsed = args.joinToString(" ")

@@ -16,7 +16,7 @@ import mu.KotlinLogging
  *
  * @param role The role to compare to.
  */
-fun hasRole(role: Role): suspend (Event) -> Boolean {
+public fun hasRole(role: Role): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -47,7 +47,7 @@ fun hasRole(role: Role): suspend (Event) -> Boolean {
  *
  * @param role The role to compare to.
  */
-fun notHasRole(role: Role): suspend (Event) -> Boolean {
+public fun notHasRole(role: Role): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -78,7 +78,7 @@ fun notHasRole(role: Role): suspend (Event) -> Boolean {
  *
  * @param role The role to compare to.
  */
-fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
+public fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -120,7 +120,7 @@ fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
  *
  * @param role The role to compare to.
  */
-fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
+public fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -158,7 +158,7 @@ fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
  *
  * @param role The role to compare to.
  */
-fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
+public fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -202,7 +202,7 @@ fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
  *
  * @param role The role to compare to.
  */
-fun topRoleLower(role: Role): suspend (Event) -> Boolean {
+public fun topRoleLower(role: Role): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -245,7 +245,7 @@ fun topRoleLower(role: Role): suspend (Event) -> Boolean {
  *
  * @param role The role to compare to.
  */
-fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
+public fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -290,7 +290,7 @@ fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
  *
  * @param role The role to compare to.
  */
-fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
+public fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {

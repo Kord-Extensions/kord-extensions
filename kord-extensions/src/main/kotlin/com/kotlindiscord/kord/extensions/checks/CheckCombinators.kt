@@ -12,7 +12,7 @@ import mu.KotlinLogging
  * @param checks Two or more checks to combine.
  * @return Whether any of the checks passed.
  */
-fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
+public fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -40,7 +40,7 @@ fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
  * @param checks Two or more checks to combine.
  * @return Whether all of the checks passed.
  */
-fun and(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
+public fun and(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {

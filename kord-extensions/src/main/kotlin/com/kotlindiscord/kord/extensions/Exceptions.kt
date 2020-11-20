@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 /**
  * A base class for all custom exceptions in our bot framework.
  */
-open class ExtensionsException : Exception()
+public open class ExtensionsException : Exception()
 
 /**
  * Thrown when an attempt to load an [Extension] fails.
@@ -16,7 +16,10 @@ open class ExtensionsException : Exception()
  * @param clazz The invalid [Extension] class.
  * @param reason Why this [Extension] is considered invalid.
  */
-class InvalidExtensionException(val clazz: KClass<out Extension>, val reason: String?) : ExtensionsException() {
+public class InvalidExtensionException(
+    public val clazz: KClass<out Extension>,
+    public val reason: String?
+) : ExtensionsException() {
     override fun toString(): String {
         val formattedReason = if (reason != null) {
             " ($reason)"
@@ -33,7 +36,7 @@ class InvalidExtensionException(val clazz: KClass<out Extension>, val reason: St
  *
  * @param reason Why this [EventHandler] is considered invalid.
  */
-class InvalidEventHandlerException(val reason: String) : ExtensionsException() {
+public class InvalidEventHandlerException(public val reason: String) : ExtensionsException() {
     override fun toString(): String = "Invalid event handler: $reason"
 }
 
@@ -42,7 +45,7 @@ class InvalidEventHandlerException(val reason: String) : ExtensionsException() {
  *
  * @param reason Why this [EventHandler] could not be registered.
  */
-class EventHandlerRegistrationException(val reason: String) : ExtensionsException() {
+public class EventHandlerRegistrationException(public val reason: String) : ExtensionsException() {
     override fun toString(): String = "Failed to register event handler: $reason"
 }
 
@@ -52,7 +55,7 @@ class EventHandlerRegistrationException(val reason: String) : ExtensionsExceptio
  * @param name The [Command] name
  * @param reason Why this [Command] is considered invalid.
  */
-class InvalidCommandException(val name: String?, val reason: String) : ExtensionsException() {
+public class InvalidCommandException(public val name: String?, public val reason: String) : ExtensionsException() {
     override fun toString(): String {
         if (name == null) {
             return "Invalid command: $reason"
@@ -68,7 +71,7 @@ class InvalidCommandException(val name: String?, val reason: String) : Extension
  * @param name The [Command] name
  * @param reason Why this [Command] could not be registered.
  */
-class CommandRegistrationException(val name: String?, val reason: String) : ExtensionsException() {
+public class CommandRegistrationException(public val name: String?, public val reason: String) : ExtensionsException() {
     override fun toString(): String {
         if (name == null) {
             return "Failed to register command: $reason"
@@ -83,8 +86,8 @@ class CommandRegistrationException(val name: String?, val reason: String) : Exte
  *
  * @param reason Human-readable reason for the failure.
  */
-class ParseException(var reason: String) : ExtensionsException() {
-    constructor(other: ParseException) : this(other.reason)
+public class ParseException(public var reason: String) : ExtensionsException() {
+    public constructor(other: ParseException) : this(other.reason)
 
     override fun toString(): String = reason
 }

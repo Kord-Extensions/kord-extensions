@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit
 /**
  * Mapping character to its actual unit.
  */
-val unitMap: Map<String, IsoUnit> = mapOf(
+public val unitMap: Map<String, IsoUnit> = mapOf(
     "s" to ClockUnit.SECONDS,
     "sec" to ClockUnit.SECONDS,
     "second" to ClockUnit.SECONDS,
@@ -45,7 +45,7 @@ val unitMap: Map<String, IsoUnit> = mapOf(
 /**
  * Mapping character to its actual unit.
  */
-val unitMapJ8: Map<String, ChronoUnit> = mapOf(
+public val unitMapJ8: Map<String, ChronoUnit> = mapOf(
     "s" to ChronoUnit.SECONDS,
     "sec" to ChronoUnit.SECONDS,
     "second" to ChronoUnit.SECONDS,
@@ -85,7 +85,7 @@ val unitMapJ8: Map<String, ChronoUnit> = mapOf(
  * @param s the string to parse.
  */
 @Suppress("MagicNumber")
-fun parseDuration(s: String): Duration<IsoUnit> {
+public fun parseDuration(s: String): Duration<IsoUnit> {
     var buffer = s
     var duration = Duration.ofZero<IsoUnit>()
 
@@ -113,7 +113,7 @@ fun parseDuration(s: String): Duration<IsoUnit> {
  * @param s the string to parse.
  */
 @Suppress("MagicNumber")
-fun parseDurationJ8(s: String): java.time.Duration {
+public fun parseDurationJ8(s: String): java.time.Duration {
     var buffer = s
     var duration = java.time.Duration.ZERO
 

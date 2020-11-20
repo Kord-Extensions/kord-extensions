@@ -13,8 +13,8 @@ import com.kotlindiscord.kord.extensions.commands.converters.decimalList
  * @see decimal
  * @see decimalList
  */
-class DecimalConverter : SingleConverter<Double>() {
-    override val signatureTypeString = "decimal"
+public class DecimalConverter : SingleConverter<Double>() {
+    override val signatureTypeString: String = "decimal"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         try {

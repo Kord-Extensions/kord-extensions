@@ -21,16 +21,16 @@ import java.util.*
  * @param roles The new object's role IDs, or null if there's no difference.
  * @param owner The new object's server owner status, or null if there's no difference.
  */
-class MemberDelta(
+public class MemberDelta(
     avatar: String?,
     username: String?,
     discriminator: String?,
     flags: UserFlags?,
 
-    val nickname: Optional<String>?,
-    val boosting: Optional<Instant>?,
-    val roles: Set<Snowflake>?,
-    val owner: Boolean?
+    public val nickname: Optional<String>?,
+    public val boosting: Optional<Instant>?,
+    public val roles: Set<Snowflake>?,
+    public val owner: Boolean?
 ) : UserDelta(avatar, username, discriminator, flags) {
     /**
      * A Set representing the values that have changes. Each value is represented by a human-readable string.
@@ -46,14 +46,14 @@ class MemberDelta(
         s
     }
 
-    companion object {
+    public companion object {
         /**
          * Given an old and new [Member] object, return a [MemberDelta] representing the changes between them.
          *
          * @param old The older [Member] object.
          * @param new The newer [Member] object.
          */
-        suspend fun from(old: Member?, new: Member): MemberDelta? {
+        public suspend fun from(old: Member?, new: Member): MemberDelta? {
             old ?: return null
 
             val user = UserDelta.from(old, new) ?: return null

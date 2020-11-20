@@ -6,5 +6,5 @@ import com.gitlab.kordlib.core.supplier.EntitySupplyStrategy
 import kotlinx.coroutines.flow.Flow
 
 /** Flow containing all [User] objects in the cache. **/
-val Kord.users: Flow<User>
+public val Kord.users: Flow<User>
     get() = with(EntitySupplyStrategy.cache).users

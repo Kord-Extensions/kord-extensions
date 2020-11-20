@@ -17,11 +17,11 @@ import com.kotlindiscord.kord.extensions.commands.converters.coalescedRegex
  *
  * @see coalescedRegex
  */
-class RegexCoalescingConverter(
+public class RegexCoalescingConverter(
     private val options: Set<RegexOption> = setOf()
 ) : CoalescingConverter<Regex>() {
-    override val signatureTypeString = "regexes"
-    override val showTypeInSignature = false
+    override val signatureTypeString: String = "regexes"
+    override val showTypeInSignature: Boolean = false
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
         this.parsed = args.joinToString(" ").toRegex(options)

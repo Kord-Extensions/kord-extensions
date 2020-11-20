@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.utils.respond
 import mu.KotlinLogging
+import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
 
@@ -16,7 +17,7 @@ private val logger = KotlinLogging.logger {}
 /**
  * @suppress
  */
-val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
+public val listType: KType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
 
 /**
  * Class representing a single command.
@@ -27,23 +28,23 @@ val listType = List::class.createType(arguments = listOf(KTypeProjection.STAR))
  *
  * @param extension The [Extension] that registered this command.
  */
-open class Command(val extension: Extension) {
+public open class Command(public val extension: Extension) {
     /**
      * @suppress
      */
-    open lateinit var body: suspend CommandContext.() -> Unit
+    public open lateinit var body: suspend CommandContext.() -> Unit
 
     /**
      * The name of this command, for invocation and help commands.
      */
-    open lateinit var name: String
+    public open lateinit var name: String
 
     /**
      * A description of what this function and how it's intended to be used.
      *
      * This is intended to be made use of by help commands.
      */
-    open var description: String = "No description provided."
+    public open var description: String = "No description provided."
 
     /**
      * Whether this command is enabled and can be invoked.
@@ -53,14 +54,14 @@ open class Command(val extension: Extension) {
      * This can be changed at runtime, if commands need to be enabled and disabled dynamically without being
      * reconstructed.
      */
-    open var enabled: Boolean = true
+    public open var enabled: Boolean = true
 
     /**
      * Whether to hide this command from help command listings.
      *
      * By default, this is `false` - so the command will be shown.
      */
-    open var hidden: Boolean = false
+    public open var hidden: Boolean = false
 
     /**
      * The command signature, specifying how the command's arguments should be structured.
@@ -69,7 +70,7 @@ open class Command(val extension: Extension) {
      * a dataclass to generate a signature, or you can specify this in the [Extension.command] builder function
      * if you'd like to provide something a bit more specific.
      */
-    open var signature: String = ""
+    public open var signature: String = ""
 
     /**
      * Alternative names that can be used to invoke your command.
@@ -77,17 +78,17 @@ open class Command(val extension: Extension) {
      * There's no limit on the number of aliases a command may have, but in the event of an alias matching
      * the [name] of a registered command, the command with the [name] takes priority.
      */
-    open var aliases: Array<String> = arrayOf()
+    public open var aliases: Array<String> = arrayOf()
 
     /**
      * @suppress
      */
-    open val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+    public open val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
     /**
      * @suppress
      */
-    open val parser = ArgumentParser(extension.bot)
+    public open val parser: ArgumentParser = ArgumentParser(extension.bot)
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present.
@@ -95,7 +96,7 @@ open class Command(val extension: Extension) {
      * @throws InvalidCommandException Thrown when a required argument hasn't been set.
      */
     @Throws(InvalidCommandException::class)
-    open fun validate() {
+    public open fun validate() {
         if (!::name.isInitialized) {
             throw InvalidCommandException(null, "No command name given.")
         }
@@ -112,7 +113,7 @@ open class Command(val extension: Extension) {
      *
      * @param action The body of your command, which will be executed when your command is invoked.
      */
-    open fun action(action: suspend CommandContext.() -> Unit) {
+    public open fun action(action: suspend CommandContext.() -> Unit) {
         this.body = action
     }
 
@@ -127,7 +128,7 @@ open class Command(val extension: Extension) {
      *
      * @param checks Checks to apply to this command.
      */
-    open fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+    public open fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -136,7 +137,7 @@ open class Command(val extension: Extension) {
      *
      * @param check Check to apply to this command.
      */
-    open fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+    public open fun check(check: suspend (MessageCreateEvent) -> Boolean) {
         checkList.add(check)
     }
 
@@ -152,12 +153,12 @@ open class Command(val extension: Extension) {
      * @throws ParseException Thrown if the class passed isn't a data class.
      */
     @Throws(ParseException::class)
-    inline fun <reified T : Arguments> signature(noinline builder: () -> T) {
+    public inline fun <reified T : Arguments> signature(noinline builder: () -> T) {
         signature = parser.signature(builder)
     }
 
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
-    open suspend fun runChecks(event: MessageCreateEvent): Boolean {
+    public open suspend fun runChecks(event: MessageCreateEvent): Boolean {
         for (check in checkList) {
             if (!check.invoke(event)) {
                 return false
@@ -178,7 +179,7 @@ open class Command(val extension: Extension) {
      *
      * @param event The message creation event.
      */
-    open suspend fun call(event: MessageCreateEvent, args: Array<String>, skipChecks: Boolean = false) {
+    public open suspend fun call(event: MessageCreateEvent, args: Array<String>, skipChecks: Boolean = false) {
         if (!skipChecks && !runChecks(event)) {
             return
         }

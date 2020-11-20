@@ -14,9 +14,9 @@ import com.kotlindiscord.kord.extensions.commands.converters.stringList
  * @see string
  * @see stringList
  */
-class StringConverter : SingleConverter<String>() {
-    override val signatureTypeString = "text"
-    override val showTypeInSignature = false
+public class StringConverter : SingleConverter<String>() {
+    override val signatureTypeString: String = "text"
+    override val showTypeInSignature: Boolean = false
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         this.parsed = arg

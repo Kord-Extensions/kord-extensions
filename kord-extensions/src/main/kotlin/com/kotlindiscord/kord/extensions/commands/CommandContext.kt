@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.gitlab.kordlib.core.entity.Message
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -14,15 +15,15 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
  * @param event Event that triggered this command.
  * @param args Array of string arguments for this command.
  */
-open class CommandContext(
-    open val command: Command,
-    open val event: MessageCreateEvent,
-    open val args: Array<String>
+public open class CommandContext(
+    public open val command: Command,
+    public open val event: MessageCreateEvent,
+    public open val args: Array<String>
 ) {
     /**
      * Message object representing the message that invoked the command.
      */
-    open val message by lazy { event.message }
+    public open val message: Message by lazy { event.message }
 
     /**
      * Attempt to parse the arguments in this CommandContext into a given data class.
@@ -31,6 +32,6 @@ open class CommandContext(
      * @throws ParseException Thrown when parsing fails. If you don't catch this, an error message will be sent.
      */
     @Throws(ParseException::class)
-    suspend inline fun <reified T : Arguments> parse(noinline builder: () -> T): T =
+    public suspend inline fun <reified T : Arguments> parse(noinline builder: () -> T): T =
         command.parser.parse(builder, this)
 }

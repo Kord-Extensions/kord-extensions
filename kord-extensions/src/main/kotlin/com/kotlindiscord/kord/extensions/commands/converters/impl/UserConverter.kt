@@ -22,8 +22,8 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see user
  * @see userList
  */
-class UserConverter : SingleConverter<User>() {
-    override val signatureTypeString = "user"
+public class UserConverter : SingleConverter<User>() {
+    override val signatureTypeString: String = "user"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val user = findUser(arg, bot)

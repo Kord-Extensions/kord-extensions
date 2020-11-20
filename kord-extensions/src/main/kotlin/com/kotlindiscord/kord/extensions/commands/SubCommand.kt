@@ -10,9 +10,9 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
  * @param extension The [Extension] that registered this command.
  * @param parent The [GroupCommand] this command exists under.
  */
-open class SubCommand(extension: Extension, open val parent: GroupCommand) : Command(extension) {
+public open class SubCommand(extension: Extension, public open val parent: GroupCommand) : Command(extension) {
     /**
      * Get the name of this command, prefixed with the name of its parent (separated by spaces).
      */
-    open fun getFullName(): String = parent.getFullName() + " " + this.name
+    public open fun getFullName(): String = parent.getFullName() + " " + this.name
 }

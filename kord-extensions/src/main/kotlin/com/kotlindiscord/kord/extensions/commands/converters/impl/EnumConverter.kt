@@ -16,7 +16,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.enumList
  * @see enum
  * @see enumList
  */
-class EnumConverter<E : Enum<E>>(
+public class EnumConverter<E : Enum<E>>(
     typeName: String,
     private val getter: suspend (String) -> E?
 ) : SingleConverter<E>() {

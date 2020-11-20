@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit
  *
  * @return The duration object folded into a single Long, representing total seconds.
  */
-fun Duration<IsoUnit>.toSeconds(): Long {
+public fun Duration<IsoUnit>.toSeconds(): Long {
     val amount = this.toTemporalAmount()
     var seconds = 0L
 
@@ -33,7 +33,7 @@ fun Duration<IsoUnit>.toSeconds(): Long {
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
 @Suppress("MagicNumber")  // These are all time units!
-fun java.time.Duration.toHuman(): String? {
+public fun java.time.Duration.toHuman(): String? {
     val parts = mutableListOf<String>()
 
     val seconds = this.seconds % 60

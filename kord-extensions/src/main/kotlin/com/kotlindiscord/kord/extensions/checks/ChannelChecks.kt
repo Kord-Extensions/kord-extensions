@@ -16,7 +16,7 @@ import mu.KotlinLogging
  *
  * @param channel The channel to compare to.
  */
-fun inChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
+public fun inChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -41,7 +41,7 @@ fun inChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
  *
  * @param channel The channel to compare to.
  */
-fun notInChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
+public fun notInChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -66,7 +66,7 @@ fun notInChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
  *
  * @param category The category to check against.
  */
-fun inCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
+public fun inCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -99,7 +99,7 @@ fun inCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
  *
  * @param category The category to check against.
  */
-fun notInCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
+public fun notInCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -132,7 +132,7 @@ fun notInCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
  *
  * @param channel The channel to compare to.
  */
-fun channelHigher(channel: ChannelBehavior): suspend (Event) -> Boolean {
+public fun channelHigher(channel: ChannelBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -163,7 +163,7 @@ fun channelHigher(channel: ChannelBehavior): suspend (Event) -> Boolean {
  *
  * @param channel The channel to compare to.
  */
-fun channelLower(channel: ChannelBehavior): suspend (Event) -> Boolean {
+public fun channelLower(channel: ChannelBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -194,7 +194,7 @@ fun channelLower(channel: ChannelBehavior): suspend (Event) -> Boolean {
  *
  * @param channel The channel to compare to.
  */
-fun channelHigherOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
+public fun channelHigherOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -225,7 +225,7 @@ fun channelHigherOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
  *
  * @param channel The channel to compare to.
  */
-fun channelLowerOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
+public fun channelLowerOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {

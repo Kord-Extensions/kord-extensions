@@ -19,14 +19,14 @@ private val logger = KotlinLogging.logger {}
  *
  * @param bot The [ExtensibleBot] instance that this extension is installed to.
  */
-abstract class Extension(val bot: ExtensibleBot) {
+public abstract class Extension(public val bot: ExtensibleBot) {
     /**
      * The name of this extension.
      *
      * Ensure you override this in your extension. This should be a unique name that can later
      * be used to refer to your specific extension after it's been registered.
      */
-    abstract val name: String
+    public abstract val name: String
 
     /**
      * Override this in your subclass and use it to register your commands and event
@@ -39,12 +39,12 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * This function is called on first extension load, and whenever it's reloaded after that.
      */
-    abstract suspend fun setup()
+    public abstract suspend fun setup()
 
     /**
      * @suppress This is an internal API function used as part of extension lifecycle management.
      */
-    open suspend fun doSetup() {
+    public open suspend fun doSetup() {
         this.setup()
         loaded = true
 
@@ -57,7 +57,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      * This is set during loading/unloading of the extension and is used to ensure
      * things aren't being called when they shouldn't be.
      */
-    open var loaded = false
+    public open var loaded: Boolean = false
 
     /**
      * List of registered event handlers.
@@ -65,14 +65,14 @@ abstract class Extension(val bot: ExtensibleBot) {
      * When an extension is unloaded, all the event handlers are cancelled and
      * removed from the bot.
      */
-    open val eventHandlers = mutableListOf<EventHandler<out Any>>()
+    public open val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
 
     /**
      * List of registered commands.
      *
      * When an extension is unloaded, all the commands are removed from the bot.
      */
-    open val commands = mutableListOf<Command>()
+    public open val commands: MutableList<Command> = mutableListOf()
 
     /**
      * DSL function for easily registering a command.
@@ -81,7 +81,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    open suspend fun command(body: suspend Command.() -> Unit): Command {
+    public open suspend fun command(body: suspend Command.() -> Unit): Command {
         val commandObj = Command(this)
         body.invoke(commandObj)
 
@@ -95,7 +95,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @param commandObj Command object to register.
      */
-    open suspend fun command(commandObj: Command): Command {
+    public open suspend fun command(commandObj: Command): Command {
         try {
             commandObj.validate()
             bot.addCommand(commandObj)
@@ -119,7 +119,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
+    public open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
         val commandObj = GroupCommand(this)
         body.invoke(commandObj)
 
@@ -133,7 +133,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      * You do not need to override this to clean up commands and event handlers, that's
      * handled for you.
      */
-    open suspend fun unload() {
+    public open suspend fun unload() {
         logger.debug { "Unload function not overridden." }
     }
 
@@ -145,7 +145,7 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @suppress Internal function
      */
-    open suspend fun doUnload() {
+    public open suspend fun doUnload() {
         this.unload()
 
         for (handler in eventHandlers) {
@@ -171,7 +171,9 @@ abstract class Extension(val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the event handler object.
      */
-    suspend inline fun <reified T : Any> event(noinline body: suspend EventHandler<T>.() -> Unit): EventHandler<T> {
+    public suspend inline fun <reified T : Any> event(
+        noinline body: suspend EventHandler<T>.() -> Unit
+    ): EventHandler<T> {
         val eventHandler = EventHandler<T>(this, T::class)
         val logger = KotlinLogging.logger {}
 

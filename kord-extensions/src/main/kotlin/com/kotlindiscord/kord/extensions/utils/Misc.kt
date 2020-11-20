@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.filterIsInstance
  * @param condition Function return true if the event object is valid and should be returned.
  */
 @Suppress("ExpressionBodySyntax")
-suspend inline fun <reified T : Event> Kord.waitFor(
+public suspend inline fun <reified T : Event> Kord.waitFor(
     timeout: Long? = null,
     noinline condition: (suspend T.() -> Boolean) = { true }
 ): T? {
@@ -33,7 +33,7 @@ suspend inline fun <reified T : Event> Kord.waitFor(
  *
  * @param predicate Predicate used to determine the split.
  */
-fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
+public fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
     val i = this.indexOfFirst(predicate)
     if (i == -1) {
         return Pair(this, "")
@@ -50,7 +50,10 @@ fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
  * @param dispatcher The dispatcher to use - defaults to [Dispatchers.IO].
  * @param body The block of code to be run.
  */
-suspend fun <T> runSuspended(dispatcher: CoroutineDispatcher = Dispatchers.IO, body: suspend CoroutineScope.() -> T) =
+public suspend fun <T> runSuspended(
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    body: suspend CoroutineScope.() -> T
+): T =
     withContext(dispatcher, body)
 
 /**
@@ -58,7 +61,7 @@ suspend fun <T> runSuspended(dispatcher: CoroutineDispatcher = Dispatchers.IO, b
  *
  * @return `true` if the string starts with an English vowel, `false` otherwise.
  */
-fun String.startsWithVowel() = "aeiou".any { startsWith(it) }
+public fun String.startsWithVowel(): Boolean = "aeiou".any { startsWith(it) }
 
 /**
  * Parse a string into a boolean, based on English characters.
@@ -69,7 +72,7 @@ fun String.startsWithVowel() = "aeiou".any { startsWith(it) }
  * * `1`, `y`, `t` -> `true`
  * * Anything else -> null
  */
-fun String.parseBoolean() = when (firstOrNull()?.toLowerCase()) {
+public fun String.parseBoolean(): Boolean? = when (firstOrNull()?.toLowerCase()) {
     '0' -> false
     'n' -> false
     'f' -> false

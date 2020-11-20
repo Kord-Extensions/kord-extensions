@@ -9,7 +9,7 @@ private val logger = KotlinLogging.logger { }
 /**
  * Class in charge of providing scheduling functions.
  */
-open class Scheduler {
+public open class Scheduler {
     private val jobMap: MutableMap<UUID, Job> = mutableMapOf()
 
     private val scope = GlobalScope
@@ -24,7 +24,7 @@ open class Scheduler {
      *
      * @return Return true on success, false otherwise.
      */
-    fun <T> schedule(delay: Long, data: T?, callback: suspend (T?) -> Unit): UUID {
+    public fun <T> schedule(delay: Long, data: T?, callback: suspend (T?) -> Unit): UUID {
         val uuid = UUID.randomUUID()
 
         schedule(uuid, delay, data, callback)
@@ -42,7 +42,7 @@ open class Scheduler {
      *
      * @return Return true on success, false otherwise.
      */
-    fun <T> schedule(id: UUID, delay: Long, data: T?, callback: suspend (T?) -> Unit) {
+    public fun <T> schedule(id: UUID, delay: Long, data: T?, callback: suspend (T?) -> Unit) {
         logger.debug { "Scheduling task $id" }
 
         if (id in jobMap) {
@@ -72,7 +72,7 @@ open class Scheduler {
      *
      * @param id ID of the targeted task.
      */
-    fun finishJob(id: UUID) {
+    public fun finishJob(id: UUID) {
         logger.debug { "Finishing task $id" }
 
         jobMap[id]?.cancel(finishTask)
@@ -83,7 +83,7 @@ open class Scheduler {
      *
      * @param id ID of the targeted task.
      */
-    fun cancelJob(id: UUID) {
+    public fun cancelJob(id: UUID) {
         logger.debug { "Canceling task $id" }
 
         jobMap[id]?.cancel()
@@ -92,7 +92,7 @@ open class Scheduler {
     /**
      * Immediately execute the callback of all the tasks belonging to this scheduler.
      */
-    fun finishAll() {
+    public fun finishAll() {
         logger.debug { "Finishing all tasks." }
 
         for (id in jobMap.keys) {
@@ -103,7 +103,7 @@ open class Scheduler {
     /**
      * Cancel all the tasks belonging to this scheduler.
      */
-    fun cancelAll() {
+    public fun cancelAll() {
         logger.debug { "Canceling all tasks." }
 
         for (id in jobMap.keys) {
@@ -116,5 +116,5 @@ open class Scheduler {
      *
      * @param id ID of the targeted task.
      */
-    fun getJob(id: UUID): Job? = jobMap[id]
+    public fun getJob(id: UUID): Job? = jobMap[id]
 }

@@ -17,8 +17,8 @@ import java.time.Duration
  * @see coalescedDuration
  * @see parseDurationJ8
  */
-class DurationCoalescingConverter : CoalescingConverter<Duration>() {
-    override val signatureTypeString = "duration"
+public class DurationCoalescingConverter : CoalescingConverter<Duration>() {
+    override val signatureTypeString: String = "duration"
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
         val durations = mutableListOf<String>()

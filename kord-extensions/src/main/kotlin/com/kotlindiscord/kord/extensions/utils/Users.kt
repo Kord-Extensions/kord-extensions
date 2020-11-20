@@ -16,7 +16,7 @@ import java.time.Instant
  * @param builder Builder lambda for populating the message fields.
  * @return The sent message, or `null` if the user has their DMs disabled.
  */
-suspend fun User.dm(builder: MessageCreateBuilder.() -> Unit): Message? {
+public suspend fun User.dm(builder: MessageCreateBuilder.() -> Unit): Message? {
     return try {
         this.getDmChannel().createMessage { builder() }
     } catch (e: RestRequestException) {
@@ -35,12 +35,12 @@ suspend fun User.dm(builder: MessageCreateBuilder.() -> Unit): Message? {
  * @param content Message content.
  * @return The sent message, or `null` if the user has their DMs disabled.
  */
-suspend fun User.dm(content: String) = this.dm { this.content = content }
+public suspend fun User.dm(content: String): Message? = this.dm { this.content = content }
 
 /**
  * The creation timestamp for this user.
  */
-val User.createdAt: Instant get() = this.id.timeStamp
+public val User.createdAt: Instant get() = this.id.timeStamp
 
 /**
  * Create a lambda that returns a user's top role, if they're a member of the guild corresponding to the given ID.
@@ -49,7 +49,7 @@ val User.createdAt: Instant get() = this.id.timeStamp
  *
  * @return Lambda returning the user's top role, or null if they're not on the guild or have no roles.
  */
-fun topRole(guildID: Snowflake): suspend (User) -> Role? {
+public fun topRole(guildID: Snowflake): suspend (User) -> Role? {
     suspend fun inner(user: User) = user.asMemberOrNull(guildID)?.getTopRole()
 
     return ::inner

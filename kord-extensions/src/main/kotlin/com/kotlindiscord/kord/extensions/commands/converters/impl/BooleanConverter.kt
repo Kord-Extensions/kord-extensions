@@ -15,9 +15,9 @@ import com.kotlindiscord.kord.extensions.commands.converters.booleanList
  * @see boolean
  * @see booleanList
  */
-class BooleanConverter : SingleConverter<Boolean>() {
-    override val signatureTypeString = "yes/no"
-    override val errorTypeString = "`yes` or `no`"
+public class BooleanConverter : SingleConverter<Boolean>() {
+    public override val signatureTypeString: String = "yes/no"
+    public override val errorTypeString: String = "`yes` or `no`"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val bool = arg.parseBoolean() ?: return false

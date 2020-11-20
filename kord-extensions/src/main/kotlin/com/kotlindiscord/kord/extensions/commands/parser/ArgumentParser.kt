@@ -26,7 +26,7 @@ private val logger = KotlinLogging.logger {}
  *
  * @param splitChar The character to use for splitting keyword arguments
  */
-open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar: Char = '=') {
+public open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar: Char = '=') {
     /**
      * Given a builder returning an [Arguments] subclass and [CommandContext], parse the command's arguments into
      * the [Arguments] subclass and return it.
@@ -49,7 +49,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
      * @return Built [Arguments] object, with converters filled.
      * @throws ParseException Thrown based on a lot of possible cases. This is intended for display on Discord.
      */
-    open suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
+    public open suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
         val argumentsObj = builder.invoke()
 
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
@@ -440,7 +440,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
      * @param builder Builder returning an [Arguments] subclass - usually the constructor.
      * @return Command arguments signature for display.
      */
-    open fun signature(builder: () -> Arguments): String {
+    public open fun signature(builder: () -> Arguments): String {
         val argumentsObj = builder.invoke()
         val parts = mutableListOf<String>()
 

@@ -8,4 +8,4 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
  *
  * @param extension The extension that's just been unloaded.
  */
-class ExtensionUnloadedEvent(override val bot: ExtensibleBot, val extension: Extension) : ExtensionEvent
+public class ExtensionUnloadedEvent(override val bot: ExtensibleBot, public val extension: Extension) : ExtensionEvent

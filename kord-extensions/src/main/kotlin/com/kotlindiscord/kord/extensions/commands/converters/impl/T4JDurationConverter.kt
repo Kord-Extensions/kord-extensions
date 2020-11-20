@@ -21,8 +21,8 @@ import net.time4j.IsoUnit
  * @see t4jDurationList
  * @see parseDuration
  */
-class T4JDurationConverter : SingleConverter<Duration<IsoUnit>>() {
-    override val signatureTypeString = "duration"
+public class T4JDurationConverter : SingleConverter<Duration<IsoUnit>>() {
+    override val signatureTypeString: String = "duration"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         try {

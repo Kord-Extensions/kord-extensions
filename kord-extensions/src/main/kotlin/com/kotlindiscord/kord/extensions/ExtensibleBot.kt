@@ -23,6 +23,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import mu.KLogger
 import mu.KotlinLogging
 import net.time4j.tz.repo.TZDATA
 import java.util.concurrent.Executors
@@ -44,51 +45,52 @@ import kotlin.reflect.full.primaryConstructor
  * @param guildsToFill Guild IDs (as strings) to request all members for on connect. Set to null for all guilds.
  * @param fillPresences Whether to request presences from the members retrieved by [guildsToFill].
  */
-open class ExtensibleBot(
+public open class ExtensibleBot(
     private val token: String,
-    open val prefix: String,
 
-    open val addHelpExtension: Boolean = true,
-    open val invokeCommandOnMention: Boolean = true,
-    open val messageCacheSize: Int = 10_000,
-    open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
-    open val guildsToFill: List<String>? = listOf(),
-    open val fillPresences: Boolean? = null
+    public open val prefix: String,
+
+    public open val addHelpExtension: Boolean = true,
+    public open val invokeCommandOnMention: Boolean = true,
+    public open val messageCacheSize: Int = 10_000,
+    public open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
+    public open val guildsToFill: List<String>? = listOf(),
+    public open val fillPresences: Boolean? = null
 ) {
     /**
      * @suppress
      */
-    open lateinit var kord: Kord  // Kord doesn't allow us to inherit the class, let's wrap it instead
+    public open lateinit var kord: Kord  // Kord doesn't allow us to inherit the class, let's wrap it instead
 
     /**
      * A list of all registered commands.
      */
-    open val commands: MutableList<Command> = mutableListOf()
+    public open val commands: MutableList<Command> = mutableListOf()
 
     /**
      * A list of all registered event handlers.
      */
-    open val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
+    public open val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
 
     /**
      * A map of the names of all loaded [Extension]s to their instances.
      */
-    open val extensions: MutableMap<String, Extension> = mutableMapOf()
+    public open val extensions: MutableMap<String, Extension> = mutableMapOf()
 
     /** @suppress **/
-    open val eventPublisher = BroadcastChannel<Any>(1)
+    public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel<Any>(1)
 
     /** @suppress **/
-    open var initialized: Boolean = false
+    public open var initialized: Boolean = false
 
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
-    open val events get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
+    public open val events: Flow<Any> get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
 
     /** @suppress **/
-    open val logger = KotlinLogging.logger {}
+    public open val logger: KLogger = KotlinLogging.logger {}
 
     /** @suppress **/
-    open val commandThreadPool by lazy {
+    public open val commandThreadPool: ExecutorCoroutineDispatcher by lazy {
         Executors
             .newFixedThreadPool(commandThreads)
             .asCoroutineDispatcher()
@@ -101,7 +103,7 @@ open class ExtensibleBot(
     /**
      * This function kicks off the process, by setting up the bot and having it login.
      */
-    open suspend fun start(
+    public open suspend fun start(
         presenceBuilder: PresenceBuilder.() -> Unit = { status = PresenceStatus.Online },
         intents: (Intents.IntentsBuilder.() -> Unit)? = null
     ) {
@@ -130,7 +132,7 @@ open class ExtensibleBot(
     }
 
     /** This function sets up all of the bot's default event listeners. **/
-    open suspend fun registerListeners() {
+    public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
             if (guildsToFill == null || guild.id.asString in guildsToFill!!) {
                 logger.info { "Requesting members for guild: ${guild.name}" }
@@ -267,7 +269,7 @@ open class ExtensibleBot(
     }
 
     /** This function adds all of the default extensions when the bot is being set up. **/
-    open fun addDefaultExtensions() {
+    public open fun addDefaultExtensions() {
         if (addHelpExtension) {
             logger.info { "Adding help extension." }
             addExtension(HelpExtension::class)
@@ -284,11 +286,11 @@ open class ExtensibleBot(
      * @param scope Coroutine scope to run the body of your callback under.
      * @param consumer The callback to run when the event is fired.
      */
-    inline fun <reified T : Any> on(
+    public inline fun <reified T : Any> on(
         launch: Boolean = true,
         scope: CoroutineScope = this.kord,
         noinline consumer: suspend T.() -> Unit
-    ) = events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
+    ): Job = events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
         runCatching { if (launch) kord.launch { consumer(it) } else consumer(it) }
             .onFailure { logger.catching(it) }
     }.catch { logger.catching(it) }.launchIn(scope)
@@ -296,14 +298,14 @@ open class ExtensibleBot(
     /**
      * @suppress
      */
-    open suspend fun send(event: Event) {
+    public open suspend fun send(event: Event) {
         eventPublisher.send(event)
     }
 
     /**
      * @suppress
      */
-    open suspend fun send(event: ExtensionEvent) {
+    public open suspend fun send(event: ExtensionEvent) {
         eventPublisher.send(event)
     }
 
@@ -317,7 +319,7 @@ open class ExtensibleBot(
      * @throws InvalidExtensionException Thrown if the extension has no primary constructor.
      */
     @Throws(InvalidExtensionException::class)
-    open fun addExtension(extension: KClass<out Extension>) {
+    public open fun addExtension(extension: KClass<out Extension>) {
         val ctor = extension.primaryConstructor ?: throw InvalidExtensionException(extension, "No primary constructor")
 
         val extensionObj = ctor.call(this)
@@ -337,7 +339,7 @@ open class ExtensibleBot(
      * @param extension The name of the [Extension] to unload.
      */
     @Throws(InvalidExtensionException::class)
-    open suspend fun loadExtension(extension: String) {
+    public open suspend fun loadExtension(extension: String) {
         val extensionObj = extensions[extension] ?: return
 
         if (!extensionObj.loaded) {
@@ -356,7 +358,7 @@ open class ExtensibleBot(
      *
      * @param extension The name of the [Extension] to unload.
      */
-    open suspend fun unloadExtension(extension: String) {
+    public open suspend fun unloadExtension(extension: String) {
         val extensionObj = extensions[extension] ?: return
 
         if (extensionObj.loaded) {
@@ -377,7 +379,7 @@ open class ExtensibleBot(
      * @throws CommandRegistrationException Thrown if the command could not be registered.
      */
     @Throws(CommandRegistrationException::class)
-    open fun addCommand(command: Command) {
+    public open fun addCommand(command: Command) {
         val existingCommand = commands.any { it.name == command.name }
         val existingAlias: String? = commands.flatMap {
             it.aliases.toList()
@@ -415,7 +417,7 @@ open class ExtensibleBot(
      *
      * @param command The command to be removed.
      */
-    open fun removeCommand(command: Command) = commands.remove(command)
+    public open fun removeCommand(command: Command): Boolean = commands.remove(command)
 
     /**
      * Directly register an [EventHandler] to this bot.
@@ -429,7 +431,7 @@ open class ExtensibleBot(
      * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
      */
     @Throws(EventHandlerRegistrationException::class)
-    inline fun <reified T : Any> addEventHandler(handler: EventHandler<T>): Job {
+    public inline fun <reified T : Any> addEventHandler(handler: EventHandler<T>): Job {
         if (eventHandlers.contains(handler)) {
             throw EventHandlerRegistrationException(
                 "Event handler already registered in '${handler.extension.name}' extension."
@@ -451,5 +453,5 @@ open class ExtensibleBot(
      *
      * @param handler The event handler to be removed.
      */
-    open fun removeEventHandler(handler: EventHandler<out Any>) = eventHandlers.remove(handler)
+    public open fun removeEventHandler(handler: EventHandler<out Any>): Boolean = eventHandlers.remove(handler)
 }

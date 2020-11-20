@@ -16,13 +16,13 @@ import kotlin.reflect.KProperty
  *
  * You can create a multi converter of your own by extending this class.
  */
-abstract class MultiConverter<T : Any>(required: Boolean = true) : Converter<List<T>>(required) {
+public abstract class MultiConverter<T : Any>(required: Boolean = true) : Converter<List<T>>(required) {
     /**
      * The parsed value.
      *
      * This should be set by the converter during the course of the [parse] function.
      */
-    var parsed: List<T> = listOf()
+    public var parsed: List<T> = listOf()
 
     /**
      * Process the given [args], converting them into a list of converted values.
@@ -42,10 +42,10 @@ abstract class MultiConverter<T : Any>(required: Boolean = true) : Converter<Lis
      *
      * @see Converter
      */
-    abstract suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int
+    public abstract suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int
 
     /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
-    operator fun getValue(thisRef: Arguments, property: KProperty<*>): List<T> = parsed
+    public operator fun getValue(thisRef: Arguments, property: KProperty<*>): List<T> = parsed
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
@@ -53,7 +53,7 @@ abstract class MultiConverter<T : Any>(required: Boolean = true) : Converter<Lis
      * For multi converters, this is only called when the converter is required. The default behaviour simply
      * re-throws the Throwable, so you only need to override this if you want to do something else.
      */
-    open suspend fun handleError(
+    public open suspend fun handleError(
         t: Throwable,
         values: List<String>,
         context: CommandContext,

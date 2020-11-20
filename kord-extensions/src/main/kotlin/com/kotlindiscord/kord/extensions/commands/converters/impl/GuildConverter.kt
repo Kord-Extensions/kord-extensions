@@ -20,8 +20,8 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see guild
  * @see guildList
  */
-class GuildConverter : SingleConverter<Guild>() {
-    override val signatureTypeString = "server"
+public class GuildConverter : SingleConverter<Guild>() {
+    override val signatureTypeString: String = "server"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val guild = findGuild(arg, bot)

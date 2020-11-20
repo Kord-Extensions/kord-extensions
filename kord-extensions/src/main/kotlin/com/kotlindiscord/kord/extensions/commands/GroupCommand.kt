@@ -18,9 +18,12 @@ private val logger = KotlinLogging.logger {}
  * @param parent The [GroupCommand] this group exists under, if any.
  */
 @Suppress("LateinitVarOverridesLateinitVar")  // This is intentional
-open class GroupCommand(extension: Extension, open val parent: GroupCommand? = null) : Command(extension) {
+public open class GroupCommand(
+    extension: Extension,
+    public open val parent: GroupCommand? = null
+) : Command(extension) {
     /** @suppress **/
-    open val commands = mutableListOf<Command>()
+    public open val commands: MutableList<Command> = mutableListOf<Command>()
 
     override lateinit var name: String
 
@@ -60,7 +63,7 @@ open class GroupCommand(extension: Extension, open val parent: GroupCommand? = n
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    open suspend fun command(body: suspend Command.() -> Unit): Command {
+    public open suspend fun command(body: suspend Command.() -> Unit): Command {
         val commandObj = SubCommand(extension, this)
         body.invoke(commandObj)
 
@@ -74,7 +77,7 @@ open class GroupCommand(extension: Extension, open val parent: GroupCommand? = n
      *
      * @param commandObj Command object to register.
      */
-    open suspend fun command(commandObj: Command): Command {
+    public open suspend fun command(commandObj: Command): Command {
         try {
             commandObj.validate()
             commands.add(commandObj)
@@ -97,7 +100,7 @@ open class GroupCommand(extension: Extension, open val parent: GroupCommand? = n
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
+    public open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
         val commandObj = GroupCommand(extension, this)
         body.invoke(commandObj)
 
@@ -105,7 +108,7 @@ open class GroupCommand(extension: Extension, open val parent: GroupCommand? = n
     }
 
     /** @suppress **/
-    open fun getCommand(commandName: String?) =
+    public open fun getCommand(commandName: String?): Command? =
         commands.firstOrNull { it.name == commandName } ?: commands.firstOrNull { it.aliases.contains(commandName) }
 
     /**
@@ -142,7 +145,7 @@ open class GroupCommand(extension: Extension, open val parent: GroupCommand? = n
      * Get the name of this command, prefixed with the name of its parent (separated by spaces),
      * or just the command's name if there is no parent.
      */
-    open fun getFullName(): String {
+    public open fun getFullName(): String {
         parent ?: return this.name
 
         return parent!!.getFullName() + " " + this.name

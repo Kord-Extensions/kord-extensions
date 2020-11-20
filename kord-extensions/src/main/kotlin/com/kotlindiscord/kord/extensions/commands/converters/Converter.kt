@@ -13,21 +13,21 @@ import com.kotlindiscord.kord.extensions.utils.startsWithVowel
  *
  * @param required Whether this converter must succeed for a command invocation to be valid.
  */
-abstract class Converter<T : Any?>(open val required: Boolean = true) {
+public abstract class Converter<T : Any?>(public open val required: Boolean = true) {
     /** This will be set to true by the argument parser if the conversion succeeded. **/
-    var parseSuccess: Boolean = false
+    public var parseSuccess: Boolean = false
 
     /** For commands with generated signatures, set whether the type string should be shown in the signature. **/
-    open val showTypeInSignature = true
+    public open val showTypeInSignature: Boolean = true
 
     /** A short string describing the type of data this converter handles. Should be very short. **/
-    abstract val signatureTypeString: String
+    public abstract val signatureTypeString: String
 
     /**
      * If the [signatureTypeString] isn't sufficient, you can optionally provide a longer type string to use for error
      * messages.
      */
-    open val errorTypeString: String? = null
+    public open val errorTypeString: String? = null
 
     /**
      * Return a formatted error string.
@@ -36,7 +36,7 @@ abstract class Converter<T : Any?>(open val required: Boolean = true) {
      * [SingleConverter], it will add "an" or "a" to it, depending on whether the given type string starts with a
      * vowel.
      */
-    open fun getErrorString(): String = when (this) {
+    public open fun getErrorString(): String = when (this) {
         is MultiConverter<*> -> errorTypeString ?: signatureTypeString
         is CoalescingConverter<*> -> errorTypeString ?: signatureTypeString
 

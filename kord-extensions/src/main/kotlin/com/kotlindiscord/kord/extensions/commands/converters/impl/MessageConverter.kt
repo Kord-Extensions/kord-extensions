@@ -28,11 +28,11 @@ private val logger = KotlinLogging.logger {}
  * @see message
  * @see messageList
  */
-class MessageConverter(
+public class MessageConverter(
     private var requireGuild: Boolean = false,
     private var requiredGuild: (suspend () -> Snowflake)? = null
 ) : SingleConverter<Message>() {
-    override val signatureTypeString = "message"
+    override val signatureTypeString: String = "message"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val message = findMessage(arg, context, bot)

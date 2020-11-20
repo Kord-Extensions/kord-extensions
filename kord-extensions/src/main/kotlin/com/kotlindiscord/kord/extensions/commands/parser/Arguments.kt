@@ -9,9 +9,9 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
  * recommend placing your subclasses within your Extension classes to avoid polluting your namespaces, but they can
  * be wherever you like - as long as they're public.
  */
-open class Arguments {
+public open class Arguments {
     /** List of [Argument] objects, which wrap converters. **/
-    val args: MutableList<Argument<*>> = mutableListOf()
+    public val args: MutableList<Argument<*>> = mutableListOf()
 
     /**
      * Add a [SingleConverter] argument to this set of arguments.
@@ -24,7 +24,7 @@ open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    fun <T : Any> arg(displayName: String, converter: SingleConverter<T>): SingleConverter<T> {
+    public fun <T : Any> arg(displayName: String, converter: SingleConverter<T>): SingleConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter
@@ -41,7 +41,7 @@ open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    fun <T : Any> arg(displayName: String, converter: DefaultingConverter<T>): DefaultingConverter<T> {
+    public fun <T : Any> arg(displayName: String, converter: DefaultingConverter<T>): DefaultingConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter
@@ -58,7 +58,7 @@ open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    fun <T : Any?> arg(displayName: String, converter: OptionalConverter<T>): OptionalConverter<T> {
+    public fun <T : Any?> arg(displayName: String, converter: OptionalConverter<T>): OptionalConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter
@@ -75,7 +75,7 @@ open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    fun <T : Any> arg(displayName: String, converter: MultiConverter<T>): MultiConverter<T> {
+    public fun <T : Any> arg(displayName: String, converter: MultiConverter<T>): MultiConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter
@@ -92,7 +92,7 @@ open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    fun <T : Any> arg(displayName: String, converter: CoalescingConverter<T>): CoalescingConverter<T> {
+    public fun <T : Any> arg(displayName: String, converter: CoalescingConverter<T>): CoalescingConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter
@@ -109,7 +109,7 @@ open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    fun <T : Any> arg(
+    public fun <T : Any> arg(
         displayName: String,
         converter: DefaultingCoalescingConverter<T>
     ): DefaultingCoalescingConverter<T> {
@@ -129,7 +129,10 @@ open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    fun <T : Any?> arg(displayName: String, converter: OptionalCoalescingConverter<T>): OptionalCoalescingConverter<T> {
+    public fun <T : Any?> arg(
+        displayName: String,
+        converter: OptionalCoalescingConverter<T>
+    ): OptionalCoalescingConverter<T> {
         args.add(Argument(displayName, converter))
 
         return converter

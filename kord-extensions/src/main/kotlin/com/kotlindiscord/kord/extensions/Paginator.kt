@@ -39,24 +39,24 @@ private val logger = KotlinLogging.logger {}
  * @param timeout Milliseconds before automatically deleting the embed. Set to a negative value to disable it.
  * @param keepEmbed Keep the embed and only remove the reaction when the paginator is destroyed.
  */
-open class Paginator(
-    val bot: ExtensibleBot,
-    val channel: MessageChannelBehavior,
-    val name: String,
-    val pages: List<String>,
-    val owner: User? = null,
-    val timeout: Long = -1L,
-    val keepEmbed: Boolean = false
+public open class Paginator(
+    public val bot: ExtensibleBot,
+    public val channel: MessageChannelBehavior,
+    public val name: String,
+    public val pages: List<String>,
+    public val owner: User? = null,
+    public val timeout: Long = -1L,
+    public val keepEmbed: Boolean = false
 ) {
     /** Current page of the paginator. **/
-    open var currentPage: Int = 0
+    public open var currentPage: Int = 0
 
     /** Whether the paginator still processes reaction events. **/
-    open var doesProcessEvents: Boolean = true
+    public open var doesProcessEvents: Boolean = true
 
     /** Send the embed to the channel given in the constructor. **/
     @KordPreview
-    open suspend fun send() {
+    public open suspend fun send() {
         val myFooter = EmbedBuilder.Footer()
 
         myFooter.text = if (pages.size > 1) {
@@ -134,7 +134,7 @@ open class Paginator(
      *
      * @param event [ReactionAddEvent] to process.
      */
-    open suspend fun processEvent(event: Event) {
+    public open suspend fun processEvent(event: Event) {
         val emoji = when (event) {
             is ReactionAddEvent -> event.emoji
             is ReactionRemoveEvent -> event.emoji
@@ -178,7 +178,7 @@ open class Paginator(
      *
      * @param page Page number to display.
      */
-    open suspend fun goToPage(message: MessageBehavior, page: Int) {
+    public open suspend fun goToPage(message: MessageBehavior, page: Int) {
         if (page == currentPage) {
             return
         }
@@ -205,7 +205,7 @@ open class Paginator(
      * This will make it stops receive [ReactionAddEvent] and will delete the embed if `keepEmbed` is set to true,
      * or will delete all the reactions if it is set to false.
      */
-    open suspend fun destroy(message: MessageBehavior) {
+    public open suspend fun destroy(message: MessageBehavior) {
         if (!keepEmbed) {
             message.delete()
         } else {

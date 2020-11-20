@@ -8,4 +8,4 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
  *
  * @param extension The extension that's just been loaded.
  */
-class ExtensionLoadedEvent(override val bot: ExtensibleBot, val extension: Extension) : ExtensionEvent
+public class ExtensionLoadedEvent(override val bot: ExtensibleBot, public val extension: Extension) : ExtensionEvent

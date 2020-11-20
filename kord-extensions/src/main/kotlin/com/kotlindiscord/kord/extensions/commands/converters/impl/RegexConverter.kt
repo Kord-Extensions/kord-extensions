@@ -20,10 +20,10 @@ import com.kotlindiscord.kord.extensions.commands.converters.regexList
  * @see regexList
  */
 
-class RegexConverter(
+public class RegexConverter(
     private val options: Set<RegexOption> = setOf()
 ) : SingleConverter<Regex>() {
-    override val signatureTypeString = "regex"
+    override val signatureTypeString: String = "regex"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         this.parsed = arg.toRegex(options)

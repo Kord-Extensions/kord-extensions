@@ -16,8 +16,8 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
  * [coalescingConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [coalescingConverter].
  */
-class CoalescingToDefaultingConverter<T : Any>(
-    val coalescingConverter: CoalescingConverter<T>,
+public class CoalescingToDefaultingConverter<T : Any>(
+    public val coalescingConverter: CoalescingConverter<T>,
     defaultValue: T,
 
     newSignatureTypeString: String? = null,

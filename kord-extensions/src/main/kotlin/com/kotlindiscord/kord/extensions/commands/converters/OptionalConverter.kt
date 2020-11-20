@@ -11,13 +11,13 @@ import kotlin.reflect.KProperty
  *
  * This works just like [SingleConverter], but the value can be nullable and it can never be required.
  */
-abstract class OptionalConverter<T : Any?> : Converter<T>(false) {
+public abstract class OptionalConverter<T : Any?> : Converter<T>(false) {
     /**
      * The parsed value.
      *
      * This should be set by the converter during the course of the [parse] function.
      */
-    var parsed: T? = null
+    public var parsed: T? = null
 
     /**
      * Process the given [arg], converting it into a new value.
@@ -36,10 +36,10 @@ abstract class OptionalConverter<T : Any?> : Converter<T>(false) {
      *
      * @see Converter
      */
-    abstract suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean
+    public abstract suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
-    open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
+    public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
@@ -48,7 +48,7 @@ abstract class OptionalConverter<T : Any?> : Converter<T>(false) {
      * displayed as an error message on Discord. If appropriate for your converter, you can use this function to
      * transform a thrown exception into a nicer, human-readable format.
      */
-    open suspend fun handleError(
+    public open suspend fun handleError(
         t: Throwable,
         value: String?,
         context: CommandContext,

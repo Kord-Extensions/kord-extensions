@@ -17,13 +17,13 @@ import kotlin.reflect.KProperty
  *
  * You can create a single converter of your own by extending this class.
  */
-abstract class SingleConverter<T : Any> : Converter<T>(true) {
+public abstract class SingleConverter<T : Any> : Converter<T>(true) {
     /**
      * The parsed value.
      *
      * This should be set by the converter during the course of the [parse] function.
      */
-    lateinit var parsed: T
+    public lateinit var parsed: T
 
     /**
      * Process the given [arg], converting it into a new value.
@@ -42,10 +42,10 @@ abstract class SingleConverter<T : Any> : Converter<T>(true) {
      *
      * @see Converter
      */
-    abstract suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean
+    public abstract suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
-    open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
+    public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
@@ -57,7 +57,7 @@ abstract class SingleConverter<T : Any> : Converter<T>(true) {
      * Please note: [value] will be set to `null` if this function is called when this converter has been wrapped
      * by a [SingleToMultiConverter] via the [toMulti] function.
      */
-    open suspend fun handleError(
+    public open suspend fun handleError(
         t: Throwable,
         value: String?,
         context: CommandContext,
@@ -86,7 +86,7 @@ abstract class SingleConverter<T : Any> : Converter<T>(true) {
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
      */
-    open fun toMulti(
+    public open fun toMulti(
         required: Boolean = true,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
@@ -117,7 +117,7 @@ abstract class SingleConverter<T : Any> : Converter<T>(true) {
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
      */
-    open fun toOptional(
+    public open fun toOptional(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null
@@ -148,7 +148,7 @@ abstract class SingleConverter<T : Any> : Converter<T>(true) {
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
      */
-    open fun toDefaulting(
+    public open fun toDefaulting(
         defaultValue: T,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,

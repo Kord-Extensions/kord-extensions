@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.toList
  *
  * @return true if the user has the given role, false otherwise
  */
-suspend fun Member.hasRole(role: Role): Boolean =
+public suspend fun Member.hasRole(role: Role): Boolean =
     this.roles.toList().contains(role)
 
 /**
@@ -20,4 +20,4 @@ suspend fun Member.hasRole(role: Role): Boolean =
  * @receiver The [Member] to get the top role for
  * @return The user's top role, or `null` if they have no roles
  */
-suspend fun Member.getTopRole(): Role? = this.roles.toList().maxOrNull()
+public suspend fun Member.getTopRole(): Role? = this.roles.toList().maxOrNull()

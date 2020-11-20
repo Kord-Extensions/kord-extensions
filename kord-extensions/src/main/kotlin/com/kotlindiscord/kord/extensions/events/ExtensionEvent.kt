@@ -5,7 +5,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 /**
  * Base interface for events fired by Kord Extensions.
  */
-interface ExtensionEvent {
+public interface ExtensionEvent {
     /** Current bot instance for this event. **/
-    val bot: ExtensibleBot
+    public val bot: ExtensibleBot
 }

@@ -13,16 +13,16 @@ import com.gitlab.kordlib.core.entity.User
  * @param discriminator The new object's discriminator, or null if there's no difference.
  * @param flags The new object's user flags, or null if there's no difference.
  */
-open class UserDelta(
-    val avatar: String?,
-    val username: String?,
-    val discriminator: String?,
-    val flags: UserFlags?
+public open class UserDelta(
+    public val avatar: String?,
+    public val username: String?,
+    public val discriminator: String?,
+    public val flags: UserFlags?
 ) {
     /**
      * A Set representing the values that have changes. Each value is represented by a human-readable string.
      */
-    open val changes: Set<String> by lazy {
+    public open val changes: Set<String> by lazy {
         val s = mutableSetOf<String>()
 
         if (avatar != null) s.add("avatar")
@@ -33,14 +33,14 @@ open class UserDelta(
         s
     }
 
-    companion object {
+    public companion object {
         /**
          * Given an old and new [User] object, return a [UserDelta] representing the changes between them.
          *
          * @param old The older [User] object.
          * @param new The newer [User] object.
          */
-        fun from(old: User?, new: User): UserDelta? {
+        public fun from(old: User?, new: User): UserDelta? {
             old ?: return null
 
             return UserDelta(

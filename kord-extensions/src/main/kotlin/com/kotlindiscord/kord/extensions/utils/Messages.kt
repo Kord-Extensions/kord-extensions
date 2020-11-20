@@ -17,10 +17,10 @@ import org.apache.commons.text.matcher.StringMatcherFactory
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 
 /** ID of the message author. **/
-val MessageData.authorId: Snowflake get() = author.id
+public val MessageData.authorId: Snowflake get() = author.id
 
 /** Is the message author a bot. **/
-val MessageData.authorIsBot: Boolean get() = author.bot.discordBoolean
+public val MessageData.authorIsBot: Boolean get() = author.bot.discordBoolean
 
 /**
  * Takes a [Message] object and parses it using a [StringTokenizer].
@@ -36,7 +36,7 @@ val MessageData.authorIsBot: Boolean get() = author.bot.discordBoolean
  *
  * @return An array of parsed arguments
  */
-fun Message.parse(
+public fun Message.parse(
     delimiters: CharArray = charArrayOf(' '),
     quotes: CharArray = charArrayOf('\'', '"')
 ): Array<String> =
@@ -50,14 +50,14 @@ fun Message.parse(
  *
  * @param content Message content.
  */
-suspend fun Message.respond(content: String): Message = respond { this.content = content }
+public suspend fun Message.respond(content: String): Message = respond { this.content = content }
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
  *
  * @param builder Builder lambda for populating the message fields.
  */
-suspend fun Message.respond(builder: MessageCreateBuilder.() -> Unit): Message {
+public suspend fun Message.respond(builder: MessageCreateBuilder.() -> Unit): Message {
     val mention = if (this.author != null && this.getChannelOrNull() !is DmChannel) {
         "${this.author!!.mention} "
     } else {
@@ -82,7 +82,7 @@ suspend fun Message.respond(builder: MessageCreateBuilder.() -> Unit): Message {
  *
  * @return A clickable URL to jump to this message.
  */
-suspend fun Message.getUrl(): String {
+public suspend fun Message.getUrl(): String {
     val guild = getGuildOrNull()?.id?.asString ?: "@me"
 
     return "https://discordapp.com/channels/$guild/${channelId.value}/${id.value}"
@@ -91,7 +91,7 @@ suspend fun Message.getUrl(): String {
 /**
  * Deletes a message, catching and ignoring a HTTP 404 (Not Found) exception.
  */
-suspend fun Message.deleteIgnoringNotFound() {
+public suspend fun Message.deleteIgnoringNotFound() {
     try {
         this.delete()
     } catch (e: RestRequestException) {
@@ -109,7 +109,7 @@ suspend fun Message.deleteIgnoringNotFound() {
  * @param millis The delay before deleting the message, in milliseconds.
  * @return Job spawned by the CoroutineScope.
  */
-fun Message.deleteWithDelay(millis: Long, retry: Boolean = true): Job {
+public fun Message.deleteWithDelay(millis: Long, retry: Boolean = true): Job {
     val logger = KotlinLogging.logger {}
 
     return this.kord.launch {
@@ -150,7 +150,7 @@ fun Message.deleteWithDelay(millis: Long, retry: Boolean = true): Job {
  *
  * @return true if the message was posted in an appropriate context, false otherwise
  */
-suspend fun Message.requireChannel(
+public suspend fun Message.requireChannel(
     channel: GuildMessageChannel,
     role: Role? = null,
     delay: Long = DELETE_DELAY,
@@ -193,7 +193,7 @@ suspend fun Message.requireChannel(
  *
  * @return true if the message was posted in an appropriate context, false otherwise
  */
-suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
+public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
     val topRole = if (author != null && getGuildOrNull() != null) author!!.asMemberOrNull(getGuild().id) else null
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
@@ -223,7 +223,7 @@ suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
  *
  * @return true if the message was posted in an appropriate context, false otherwise
  */
-suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild? = null): Boolean {
+public suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild? = null): Boolean {
     val topRole = if (author != null) guild?.getMember(this.author!!.id)?.getTopRole() else null
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable

@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.first
  * @param event The event concerning to the channel to retrieve.
  * @return A [ChannelBehavior] representing the channel, or null if there isn't one.
  */
-fun channelFor(event: Event): ChannelBehavior? {
+public fun channelFor(event: Event): ChannelBehavior? {
     return when (event) {
         is ChannelCreateEvent -> event.channel
         is ChannelDeleteEvent -> event.channel
@@ -57,7 +57,7 @@ fun channelFor(event: Event): ChannelBehavior? {
  * @param event The event concerning to the channel to retrieve.
  * @return A [Long] representing the channel ID, or null if there isn't one.
  */
-fun channelIdFor(event: Event): Long? {
+public fun channelIdFor(event: Event): Long? {
     return when (event) {
         is ChannelCreateEvent -> event.channel.id.value
         is ChannelDeleteEvent -> event.channel.id.value
@@ -90,7 +90,7 @@ fun channelIdFor(event: Event): Long? {
  * @param event The event concerning to the channel to retrieve.
  * @return A [GuildBehavior] representing the guild, or null if there isn't one.
  */
-suspend fun guildFor(event: Event): GuildBehavior? {
+public suspend fun guildFor(event: Event): GuildBehavior? {
     return when (event) {
         is CategoryCreateEvent -> event.channel.guild
         is CategoryDeleteEvent -> event.channel.guild
@@ -142,7 +142,7 @@ suspend fun guildFor(event: Event): GuildBehavior? {
  * @param event The event concerning to the channel to retrieve.
  * @return A [MemberBehavior] representing the member, or null if there isn't one.
  */
-suspend fun memberFor(event: Event): MemberBehavior? {
+public suspend fun memberFor(event: Event): MemberBehavior? {
     return when {
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member
@@ -183,7 +183,7 @@ suspend fun memberFor(event: Event): MemberBehavior? {
  * @param event The event concerning to the channel to retrieve.
  * @return A [MessageBehavior] representing the message, or null if there isn't one.
  */
-suspend fun messageFor(event: Event): MessageBehavior? {
+public suspend fun messageFor(event: Event): MessageBehavior? {
     return when (event) {
         is MessageCreateEvent -> event.message
         is MessageDeleteEvent -> event.message
@@ -208,7 +208,7 @@ suspend fun messageFor(event: Event): MessageBehavior? {
  * @param event The event concerning to the channel to retrieve.
  * @return A [RoleBehavior] representing the role, or null if there isn't one.
  */
-fun roleFor(event: Event): RoleBehavior? {
+public fun roleFor(event: Event): RoleBehavior? {
     return when (event) {
         is RoleCreateEvent -> event.role
         is RoleDeleteEvent -> event.role
@@ -229,7 +229,7 @@ fun roleFor(event: Event): RoleBehavior? {
  * @param event The event concerning to the channel to retrieve.
  * @return A [UserBehavior] representing the user, or null if there isn't one.
  */
-suspend fun userFor(event: Event): UserBehavior? {
+public suspend fun userFor(event: Event): UserBehavior? {
     return when (event) {
         is BanAddEvent -> event.user
         is BanRemoveEvent -> event.user

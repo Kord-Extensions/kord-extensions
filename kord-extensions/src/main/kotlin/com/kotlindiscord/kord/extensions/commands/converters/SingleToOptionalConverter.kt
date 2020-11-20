@@ -16,8 +16,8 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
-class SingleToOptionalConverter<T : Any>(
-    val singleConverter: SingleConverter<T>,
+public class SingleToOptionalConverter<T : Any>(
+    public val singleConverter: SingleConverter<T>,
 
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,

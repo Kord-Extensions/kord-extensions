@@ -19,7 +19,7 @@ import mu.KotlinLogging
  *
  * @return Webhook object for the newly created webhook, or the existing one if it's already there.
  */
-suspend fun ensureWebhook(
+public suspend fun ensureWebhook(
     channelObj: GuildMessageChannel,
     name: String,
     logoFormat: Image.Format = Image.Format.PNG,

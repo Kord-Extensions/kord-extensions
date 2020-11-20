@@ -15,7 +15,7 @@ import mu.KotlinLogging
  *
  * @param guild The guild to compare to.
  */
-fun inGuild(guild: Guild): suspend (Event) -> Boolean {
+public fun inGuild(guild: Guild): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {
@@ -46,7 +46,7 @@ fun inGuild(guild: Guild): suspend (Event) -> Boolean {
  *
  * @param guild The guild to compare to.
  */
-fun notInGuild(guild: Guild): suspend (Event) -> Boolean {
+public fun notInGuild(guild: Guild): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger {}
 
     suspend fun inner(event: Event): Boolean {

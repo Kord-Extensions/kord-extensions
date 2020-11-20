@@ -12,7 +12,7 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 /** Number of help per page, when it is invoked without any parameter. */
-const val HELP_PER_PAGE = 4
+public const val HELP_PER_PAGE: Int = 4
 
 private const val PAGE_TIMEOUT = 60_000L  // 60 seconds
 
@@ -22,7 +22,7 @@ private const val PAGE_TIMEOUT = 60_000L  // 60 seconds
  * This extension provides a `!help` command listing the available commands,
  * along with a `!help <command>` to get more info about a specific command.
  */
-class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
+public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     override val name: String = "help"
 
     override suspend fun setup() {
@@ -64,13 +64,13 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     /**
      * Gather all available commands from the bot, and return them as an array of [Command].
      */
-    suspend fun gatherCommands(event: MessageCreateEvent) =
+    public suspend fun gatherCommands(event: MessageCreateEvent): List<Command> =
         bot.commands.filter { !it.hidden && it.enabled && it.runChecks(event) }
 
     /**
      * Generate help message by formatting a [List] of [Command] objects.
      */
-    fun formatMainHelp(commands: List<Command>): List<String> {
+    public fun formatMainHelp(commands: List<Command>): List<String> {
         return commands.sortedBy { it.name }.chunked(HELP_PER_PAGE).map { list ->
             list.joinToString(separator = "\n\n") { command ->
                 with(command) {
@@ -93,7 +93,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     /**
      * Return the [Command] specified in the arguments, or null if it can't be found.
      */
-    fun getCommand(args: Array<String>): Command? {
+    public fun getCommand(args: Array<String>): Command? {
         val firstArg = args.first()
 
         var command: Command? = bot.commands.firstOrNull { it.name == firstArg || it.aliases.contains(firstArg) }
@@ -112,7 +112,7 @@ class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
      *
      * @param command The command to format the description of.
      */
-    fun formatLongHelp(command: Command): String {
+    public fun formatLongHelp(command: Command): String {
         val name = when (command) {
             is SubCommand -> command.getFullName()
             is GroupCommand -> command.getFullName()

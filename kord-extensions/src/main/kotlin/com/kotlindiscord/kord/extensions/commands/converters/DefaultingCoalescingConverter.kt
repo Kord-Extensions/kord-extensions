@@ -18,13 +18,13 @@ import kotlin.reflect.KProperty
  *
  * You can create an optional coalescing converter of your own by extending this class.
  */
-abstract class DefaultingCoalescingConverter<T : Any>(defaultValue: T) : Converter<List<T>>(false) {
+public abstract class DefaultingCoalescingConverter<T : Any>(defaultValue: T) : Converter<List<T>>(false) {
     /**
      * The parsed value.
      *
      * This should be set by the converter during the course of the [parse] function.
      */
-    var parsed: T = defaultValue
+    public var parsed: T = defaultValue
 
     /**
      * Process the given [args], converting them into a single value.
@@ -44,10 +44,10 @@ abstract class DefaultingCoalescingConverter<T : Any>(defaultValue: T) : Convert
      *
      * @see Converter
      */
-    abstract suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int
+    public abstract suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
-    open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
+    public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
@@ -55,7 +55,7 @@ abstract class DefaultingCoalescingConverter<T : Any>(defaultValue: T) : Convert
      * For coalescing converters, this is only called when the converter is required. The default behaviour simply
      * re-throws the Throwable, so you only need to override this if you want to do something else.
      */
-    open suspend fun handleError(
+    public open suspend fun handleError(
         t: Throwable,
         values: List<String>,
         context: CommandContext,
