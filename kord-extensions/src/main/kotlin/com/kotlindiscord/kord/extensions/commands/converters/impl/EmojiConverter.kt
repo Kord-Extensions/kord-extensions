@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.emoji
 import com.kotlindiscord.kord.extensions.commands.converters.emojiList
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
 

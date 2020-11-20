@@ -55,12 +55,12 @@ val javadocJar = task("javadocJar",Jar::class) {
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1")
 
-    api("com.gitlab.kordlib.kord:kord-core:0.6.9")
+    api("com.gitlab.kordlib.kord:kord-core:0.7.0-M1")
 
     api("net.time4j:time4j-base:5.7")
     api("net.time4j:time4j-tzdata:5.0-2020a")
 
-    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
 
     implementation("io.github.microutils:kotlin-logging:2.0.3")
     implementation("org.apache.commons:commons-text:1.8")

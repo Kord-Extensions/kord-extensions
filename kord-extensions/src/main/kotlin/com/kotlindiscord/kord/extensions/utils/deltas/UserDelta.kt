@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.utils.deltas
 
-import com.gitlab.kordlib.common.entity.Premium
 import com.gitlab.kordlib.common.entity.UserFlags
 import com.gitlab.kordlib.core.entity.User
 
@@ -19,8 +18,7 @@ open class UserDelta(
     val avatar: String?,
     val username: String?,
     val discriminator: String?,
-    val flags: UserFlags?,
-    val nitro: Premium?
+    val flags: UserFlags?
 ) {
     /**
      * A Set representing the values that have changes. Each value is represented by a human-readable string.
@@ -32,7 +30,6 @@ open class UserDelta(
         if (username != null) s.add("username")
         if (discriminator != null) s.add("discriminator")
         if (flags != null) s.add("flags")
-        if (nitro != null) s.add("nitro")
 
         s
     }
@@ -51,8 +48,7 @@ open class UserDelta(
                 if (old.avatar.url != new.avatar.url) new.avatar.url else null,
                 if (old.username != new.username) new.username else null,
                 if (old.discriminator != new.discriminator) new.discriminator else null,
-                if (old.flags != new.flags) new.flags else null,
-                if (old.premiumType != new.premiumType) new.premiumType else null
+                if (old.publicFlags != new.publicFlags) new.publicFlags else null
             )
         }
     }
