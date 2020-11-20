@@ -37,8 +37,8 @@ val MessageData.authorIsBot: Boolean get() = author.bot.discordBoolean
  * @return An array of parsed arguments
  */
 fun Message.parse(
-    delimiters: Array<Char> = arrayOf(' '),
-    quotes: Array<Char> = arrayOf('\'', '"')
+    delimiters: CharArray = charArrayOf(' '),
+    quotes: CharArray = charArrayOf('\'', '"')
 ): Array<String> =
     StringTokenizer(content)
         .setDelimiterMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(delimiters.joinToString()))
