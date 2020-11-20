@@ -11,9 +11,9 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
     class TestArgs : Arguments() {
         val string by string("string")
-        val enum by enum<TestEnum>("enum", "test")
-        val optionalEnum by defaultingEnum("optional-enum", "test", TestEnum.THREE)
-        val bools by booleanList("bools", true)
+//        val enum by enum<TestEnum>("enum", "test")
+//        val optionalEnum by defaultingEnum("optional-enum", "test", TestEnum.THREE)
+        val bools by booleanList("bools")
     }
 
     override suspend fun setup() {
@@ -34,15 +34,15 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                             value = string
                         }
 
-                        field {
-                            name = "Enum"
-                            value = enum.toString()
-                        }
-
-                        field {
-                            name = "Optional Enum"
-                            value = optionalEnum.toString()
-                        }
+//                        field {
+//                            name = "Enum"
+//                            value = enum.toString()
+//                        }
+//
+//                        field {
+//                            name = "Optional Enum"
+//                            value = optionalEnum.toString()
+//                        }
 
                         field {
                             name = "Bools (${bools.size})"

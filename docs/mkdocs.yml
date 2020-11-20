@@ -1,0 +1,38 @@
+site_name: Kord Extensions
+site_url: https://kord-extensions.docs.kotlindiscord.com
+
+nav:
+  - index.md
+  - getting-started.md
+  - Concepts:
+      - concepts/bot.md
+      - concepts/extensions.md
+      - concepts/events.md
+      - concepts/checks.md
+      - concepts/commands.md
+      - concepts/converters.md
+
+theme:
+  name: material
+  logo: assets/logo.png
+
+  palette:
+    scheme: preference
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - sane_lists
+  - toc
+
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed
+
+  - pymdownx.highlight:
+      linenums: true

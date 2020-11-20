@@ -9,6 +9,8 @@ import com.gitlab.kordlib.core.event.message.*
 import com.gitlab.kordlib.core.event.role.RoleCreateEvent
 import com.gitlab.kordlib.core.event.role.RoleDeleteEvent
 import com.gitlab.kordlib.core.event.role.RoleUpdateEvent
+import com.gitlab.kordlib.core.event.user.PresenceUpdateEvent
+import com.gitlab.kordlib.core.event.user.UserUpdateEvent
 import kotlinx.coroutines.flow.first
 
 /**
@@ -57,21 +59,21 @@ fun channelFor(event: Event): ChannelBehavior? {
  */
 fun channelIdFor(event: Event): Long? {
     return when (event) {
-        is ChannelCreateEvent -> event.channel.id.longValue
-        is ChannelDeleteEvent -> event.channel.id.longValue
-        is ChannelPinsUpdateEvent -> event.channel.id.longValue
-        is ChannelUpdateEvent -> event.channel.id.longValue
-        is InviteCreateEvent -> event.channel.id.longValue
-        is InviteDeleteEvent -> event.channel.id.longValue
-        is MessageCreateEvent -> event.message.channel.id.longValue
-        is MessageDeleteEvent -> event.channelId.longValue
-        is MessageUpdateEvent -> event.channel.id.longValue
-        is ReactionAddEvent -> event.channel.id.longValue
-        is ReactionRemoveAllEvent -> event.channel.id.longValue
-        is ReactionRemoveEmojiEvent -> event.channel.id.longValue
-        is ReactionRemoveEvent -> event.channel.id.longValue
-        is TypingStartEvent -> event.channel.id.longValue
-        is WebhookUpdateEvent -> event.channel.id.longValue
+        is ChannelCreateEvent -> event.channel.id.value
+        is ChannelDeleteEvent -> event.channel.id.value
+        is ChannelPinsUpdateEvent -> event.channel.id.value
+        is ChannelUpdateEvent -> event.channel.id.value
+        is InviteCreateEvent -> event.channel.id.value
+        is InviteDeleteEvent -> event.channel.id.value
+        is MessageCreateEvent -> event.message.channel.id.value
+        is MessageDeleteEvent -> event.channelId.value
+        is MessageUpdateEvent -> event.channel.id.value
+        is ReactionAddEvent -> event.channel.id.value
+        is ReactionRemoveAllEvent -> event.channel.id.value
+        is ReactionRemoveEmojiEvent -> event.channel.id.value
+        is ReactionRemoveEvent -> event.channel.id.value
+        is TypingStartEvent -> event.channel.id.value
+        is WebhookUpdateEvent -> event.channel.id.value
 
         else -> null
     }

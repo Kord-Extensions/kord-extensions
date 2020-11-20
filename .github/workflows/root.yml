@@ -13,6 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - name: Java task hasn't updated for the deprecation yet
+        run: |
+          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+
       - name: Set up Java
         uses: actions/setup-java@v1.0.0
 
@@ -25,17 +29,10 @@ jobs:
           echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
 
       - name: Gradle (Build)
-        run: sh gradlew kord-extensions:build docs:orchidBuild
-
-#      - name: Gradle (Deploy docs)
-#        run: sh gradlew docs:orchidDeploy
+        run: sh gradlew kord-extensions:build
 
       - name: Gradle (Publish)
         run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} kord-extensions:publish
-
-      - name: Create Docs Zip
-        run: |
-          zip -r build/docs.zip docs/build/docs/orchid/*
 
       - name: Upload artifact (JARs)
         uses: actions/upload-artifact@v2
@@ -43,10 +40,3 @@ jobs:
         with:
           name: JARs
           path: kord-extensions/build/libs/kord-extensions-*.jar
-
-      - name: Upload artifact (Docs)
-        uses: actions/upload-artifact@v1.0.0
-
-        with:
-          name: Docs Zip
-          path: build/docs.zip

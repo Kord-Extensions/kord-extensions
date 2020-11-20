@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.utils.deltas
 
-import com.gitlab.kordlib.common.entity.Premium
 import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.common.entity.UserFlags
 import com.gitlab.kordlib.core.entity.Member
@@ -28,13 +27,12 @@ class MemberDelta(
     username: String?,
     discriminator: String?,
     flags: UserFlags?,
-    nitro: Premium?,
 
     val nickname: Optional<String>?,
     val boosting: Optional<Instant>?,
     val roles: Set<Snowflake>?,
     val owner: Boolean?
-) : UserDelta(avatar, username, discriminator, flags, nitro) {
+) : UserDelta(avatar, username, discriminator, flags) {
     /**
      * A Set representing the values that have changes. Each value is represented by a human-readable string.
      */
@@ -66,7 +64,6 @@ class MemberDelta(
                 user.username,
                 user.discriminator,
                 user.flags,
-                user.nitro,
 
                 if (old.nickname != new.nickname) {
                     Optional.ofNullable(new.nickname)

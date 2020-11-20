@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.utils
 
+import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.core.behavior.channel.createMessage
 import com.gitlab.kordlib.core.cache.data.MessageData
 import com.gitlab.kordlib.core.entity.*
@@ -16,10 +17,10 @@ import org.apache.commons.text.matcher.StringMatcherFactory
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 
 /** ID of the message author. **/
-val MessageData.authorId: Long get() = author.id
+val MessageData.authorId: Snowflake get() = author.id
 
 /** Is the message author a bot. **/
-val MessageData.authorIsBot: Boolean? get() = author.bot
+val MessageData.authorIsBot: Boolean get() = author.bot.discordBoolean
 
 /**
  * Takes a [Message] object and parses it using a [StringTokenizer].
