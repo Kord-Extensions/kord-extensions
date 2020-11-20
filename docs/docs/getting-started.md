@@ -3,57 +3,57 @@
 We recommend making use of Gradle for your build scripts, with a `kx_version` entry in your `gradle.properties`. Please
 note that Kord Extensions requires **Kotlin 1.4 or later**.
 
-## build.gradle
+=== "build.gradle.kts"
 
-```groovy
-repositories {
-    maven {
-        name = "Kotlin Discord"
-        url = "https://maven.kotlindiscord.com/repository/maven-snapshots/"
+    ```kotlin
+    repositories {
+        maven {
+            name = "Kotlin Discord"
+            url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+        }
     }
-}
-
-dependencies {
-    implementation "com.kotlindiscord.kord.extensions:kord-extensions:$kx_version"
-}
-```
-
-## build.gradle.kts
-
-```kotlin
-repositories {
-    maven {
-        name = "Kotlin Discord"
-        url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
-    }
-}
-
-dependencies {
-    implementation("com.kotlindiscord.kord.extensions:kord-extensions:$kx_version")
-}
-```
-
-## pom.xml
-
-```xml
-<project>
-    <repositories>
-        <repository>
-            <id>kotlin-discord</id>
-            <name>Kotlin Discord</name>
-            <url>https://maven.kotlindiscord.com/repository/maven-public/</url>
-        </repository>
-    </repositories>
     
-    <dependencies>
-        <dependency>
-          <groupId>com.kotlindiscord.kord.extensions</groupId>
-          <artifactId>kord-extensions</artifactId>
-          <version>VERSION</version>
-        </dependency>
-    </dependencies>
-</project>
-```
+    dependencies {
+        implementation("com.kotlindiscord.kord.extensions:kord-extensions:$kx_version")
+    }
+    ```
+
+=== "build.gradle"
+
+    ```groovy
+    repositories {
+        maven {
+            name = "Kotlin Discord"
+            url = "https://maven.kotlindiscord.com/repository/maven-snapshots/"
+        }
+    }
+    
+    dependencies {
+        implementation "com.kotlindiscord.kord.extensions:kord-extensions:$kx_version"
+    }
+    ```
+
+=== "pom.xml"
+
+    ```xml
+    <project>
+        <repositories>
+            <repository>
+                <id>kotlin-discord</id>
+                <name>Kotlin Discord</name>
+                <url>https://maven.kotlindiscord.com/repository/maven-public/</url>
+            </repository>
+        </repositories>
+        
+        <dependencies>
+            <dependency>
+              <groupId>com.kotlindiscord.kord.extensions</groupId>
+              <artifactId>kord-extensions</artifactId>
+              <version>VERSION</version>
+            </dependency>
+        </dependencies>
+    </project>
+    ```
 
 # A Basic Extension
 
