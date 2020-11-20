@@ -12,7 +12,7 @@ class SchedulerTest {
 
     @Test
     fun `Tasks run exactly once`() {
-        var count = 0;
+        var count = 0
 
         val uuid = scheduler.schedule(0, "") {
             count += 1

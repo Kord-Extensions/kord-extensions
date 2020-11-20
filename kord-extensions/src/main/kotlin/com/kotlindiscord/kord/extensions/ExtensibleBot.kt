@@ -88,9 +88,11 @@ open class ExtensibleBot(
     open val logger = KotlinLogging.logger {}
 
     /** @suppress **/
-    open val commandThreadPool = Executors
-        .newFixedThreadPool(commandThreads)
-        .asCoroutineDispatcher()
+    open val commandThreadPool by lazy {
+        Executors
+            .newFixedThreadPool(commandThreads)
+            .asCoroutineDispatcher()
+    }
 
     init {
         TZDATA.init()  // Set up time4j, since we use it
@@ -130,7 +132,7 @@ open class ExtensibleBot(
     /** This function sets up all of the bot's default event listeners. **/
     open suspend fun registerListeners() {
         on<GuildCreateEvent> {
-            if (guildsToFill == null || guild.id.value in guildsToFill!!) {
+            if (guildsToFill == null || guild.id.asString in guildsToFill!!) {
                 logger.info { "Requesting members for guild: ${guild.name}" }
 
                 gateway.send(
@@ -244,10 +246,10 @@ open class ExtensibleBot(
 
                 commandName = split.first()
 
-                if (parts.isEmpty()) {
-                    parts = arrayOf("\n${split.last()}")
+                parts = if (parts.isEmpty()) {
+                    arrayOf("\n${split.last()}")
                 } else {
-                    parts = arrayOf("\n${split.last()}", *parts)
+                    arrayOf("\n${split.last()}", *parts)
                 }
             }
 

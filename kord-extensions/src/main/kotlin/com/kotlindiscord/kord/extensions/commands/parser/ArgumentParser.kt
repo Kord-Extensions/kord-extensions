@@ -87,7 +87,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
             return@filter true
         }.toMutableList()
 
-        var currentArg: Argument<*>? = null
+        var currentArg: Argument<*>?
         var currentValue: String? = null
 
         @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
@@ -111,9 +111,7 @@ open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar:
 
             logger.debug { "Current value: $currentValue" }
 
-            val converter = currentArg.converter
-
-            when (converter) {
+            when (val converter = currentArg.converter) {
                 is SingleConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {

@@ -47,9 +47,6 @@ abstract class OptionalConverter<T : Any?> : Converter<T>(false) {
      * This will always be called if an unhandled exception is thrown, unless it's a [ParseException] - those will be
      * displayed as an error message on Discord. If appropriate for your converter, you can use this function to
      * transform a thrown exception into a nicer, human-readable format.
-     *
-     * Please note: [value] will be set to `null` if this function is called when this converter has been wrapped
-     * by a [SingleToMultiConverter] via the [toMulti] function.
      */
     open suspend fun handleError(
         t: Throwable,

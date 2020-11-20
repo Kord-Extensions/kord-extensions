@@ -12,7 +12,6 @@ import com.gitlab.kordlib.core.entity.User
  * @param username The new object's username, or null if there's no difference.
  * @param discriminator The new object's discriminator, or null if there's no difference.
  * @param flags The new object's user flags, or null if there's no difference.
- * @param nitro The new object's nitro status, or null if there's no difference.
  */
 open class UserDelta(
     val avatar: String?,

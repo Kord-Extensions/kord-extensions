@@ -83,7 +83,7 @@ suspend fun Message.respond(builder: MessageCreateBuilder.() -> Unit): Message {
  * @return A clickable URL to jump to this message.
  */
 suspend fun Message.getUrl(): String {
-    val guild = getGuildOrNull()?.id?.value ?: "@me"
+    val guild = getGuildOrNull()?.id?.asString ?: "@me"
 
     return "https://discordapp.com/channels/$guild/${channelId.value}/${id.value}"
 }
@@ -95,7 +95,7 @@ suspend fun Message.deleteIgnoringNotFound() {
     try {
         this.delete()
     } catch (e: RestRequestException) {
-        if (e.code != HttpStatusCode.NotFound.value) {
+        if (e.status.code != HttpStatusCode.NotFound.value) {
             throw e
         }
     }

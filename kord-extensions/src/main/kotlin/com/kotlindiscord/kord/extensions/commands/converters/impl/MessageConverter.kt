@@ -36,13 +36,12 @@ class MessageConverter(
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val message = findMessage(arg, context, bot)
-            ?: throw ParseException("Unable to find message: $arg")
 
         parsed = message
         return true
     }
 
-    private suspend fun findMessage(arg: String, context: CommandContext, bot: ExtensibleBot): Message? {
+    private suspend fun findMessage(arg: String, context: CommandContext, bot: ExtensibleBot): Message {
         val requiredGid = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId
 
         return if (arg.startsWith("https://")) { // It's a message URL

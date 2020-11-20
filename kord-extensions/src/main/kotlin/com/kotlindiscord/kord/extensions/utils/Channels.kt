@@ -36,8 +36,7 @@ suspend fun ensureWebhook(
 
     logger.info { "Creating webhook for channel: #${channelObj.name} (Guild: ${guild.name}" }
 
-    return channelObj.createWebhook {
-        this.name = name
+    return channelObj.createWebhook(name) {
         if (logo != null) {
             this.avatar = Image.raw(logo.invoke(), logoFormat)
         }

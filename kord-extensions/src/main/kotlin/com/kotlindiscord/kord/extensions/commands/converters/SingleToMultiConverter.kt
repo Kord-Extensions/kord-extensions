@@ -42,7 +42,7 @@ class SingleToMultiConverter<T : Any>(
                     break
                 }
 
-                val value = singleConverter.getValue(dummyArgs, singleConverter::parsed) ?: break
+                val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
 
                 values.add(value)
             } catch (e: ParseException) {

@@ -20,7 +20,7 @@ suspend fun User.dm(builder: MessageCreateBuilder.() -> Unit): Message? {
     return try {
         this.getDmChannel().createMessage { builder() }
     } catch (e: RestRequestException) {
-        if (e.code == HttpStatusCode.Forbidden.value) {
+        if (e.status.code == HttpStatusCode.Forbidden.value) {
             // They have DMs disabled
             null
         } else {

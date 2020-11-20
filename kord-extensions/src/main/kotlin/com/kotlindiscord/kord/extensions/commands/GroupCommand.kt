@@ -17,6 +17,7 @@ private val logger = KotlinLogging.logger {}
  * @param extension The extension that registered this grouped command.
  * @param parent The [GroupCommand] this group exists under, if any.
  */
+@Suppress("LateinitVarOverridesLateinitVar")  // This is intentional
 open class GroupCommand(extension: Extension, open val parent: GroupCommand? = null) : Command(extension) {
     /** @suppress **/
     open val commands = mutableListOf<Command>()
@@ -43,7 +44,7 @@ open class GroupCommand(extension: Extension, open val parent: GroupCommand? = n
     override var body: suspend CommandContext.() -> Unit = {
         val mention = message.author!!.mention
 
-        val error = if (args.size > 0) {
+        val error = if (args.isNotEmpty()) {
             "$mention Unknown subcommand: `${args.first()}`"
         } else {
             "$mention Subcommands: " + commands.joinToString(", ") { "`${it.name}`" }

@@ -15,7 +15,6 @@ import java.util.*
  * @param username The new object's username, or null if there's no difference.
  * @param discriminator The new object's discriminator, or null if there's no difference.
  * @param flags The new object's user flags, or null if there's no difference.
- * @param nitro The new object's nitro status, or null if there's no difference.
  *
  * @param nickname The new object's nickname. This is an [Optional] that will be absent if there's no difference.
  * @param boosting The new object's boosting status. This is an [Optional] that will be absent if there's no difference.

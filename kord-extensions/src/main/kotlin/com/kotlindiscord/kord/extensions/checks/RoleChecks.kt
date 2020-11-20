@@ -131,9 +131,7 @@ fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
-        val topRole = member.asMember().getTopRole()
-
-        return when (topRole) {
+        return when (member.asMember().getTopRole()) {
             null -> {
                 logger.debug { "Passing check: Member $member has no top role" }
                 true
