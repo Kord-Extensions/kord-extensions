@@ -130,6 +130,9 @@ class CheckExtension(bot: ExtensibleBot) : Extension(bot) {
     private var job: Job? = null
 
     override suspend fun setup() {
+        // Iniital setup should always happen after the ReadyEvent. This
+        // is because the ReadyEvent handler has some special logic.
+        // You can read more about that on the events page.
         event<ReadyEvent> {
             action {
                 delay(SETUP_DELAY)
@@ -164,3 +167,30 @@ unload each other, and all extensions are expected to support this behaviour.
 
 If you can't support unloading in your extension for some reason, remember to override `unload()` and throw an 
 exception!
+
+## Class Members
+
+The `Extension` class exposes several useful members, and some internal ones. Because we can't possibly know exactly
+what you need from this system, we don't hide the functional parts - but the below table will mark the things you
+probably don't need with a :wrench:.
+
+### Properties
+
+Name   | Type     | Description
+:----- | :------: | :----------
+`name` | `String` | The name of the extension, which is how it'll be referred to throughout the bot.
+`loaded` | `Boolean` | :wrench:{: title="Intended for internal use." } Whether the extension is currently loaded - this is set automatically.
+`eventHandlers` | `MutableList <EventHandler>` | :wrench:{: title="Intended for internal use." } List of event handlers registered to this extension.
+`commands` | `MutableList <Command>` | :wrench:{: title="Intended for internal use." } List of commands registered to this extension.
+
+### Functions
+
+Name | Description
+:--- | :----------
+`setup` | Override this and add all of your setup logic for the extension.
+`unload` | Override this if you need to clean up when your extension is unloaded.
+`command` | Create a new command for this extension.
+`group` | Create a new grouped command for this extension (a command that can have subcommands).
+`event` | Create a new event handler for this extension.
+`doSetup` | :wrench:{: title="Intended for internal use." } Called by the bot when setting up the extension, firing events and handling extra setup tasks.
+`doUnload` | :wrench:{: title="Intended for internal use." } Called by the bot when unloading the extension, firing events, unregistering event handlers and commands and handling extra cleanup.

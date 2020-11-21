@@ -127,7 +127,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
     }
 
     /**
-     * If you need to, override this function and use it to clean up yuor extension when
+     * If you need to, override this function and use it to clean up your extension when
      * it's unloaded.
      *
      * You do not need to override this to clean up commands and event handlers, that's
