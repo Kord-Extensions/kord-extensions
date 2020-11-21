@@ -138,8 +138,12 @@ suspend fun main() {
 
 Set the `TOKEN` environment variable to a Discord bot token, and run your application. Wait for it to connect, and send `!help test` in a DM or any channel the bot has access to.
 
-![](/assets/test-command-help.png)
+<figure>
+    <img src="/assets/test-command-help.png" width="300" /> 
+</figure>
 
 Now, try running the command! For example, `!test String yes no false` will give you:
 
-![](/assets/test-command-output.png)
+<figure>
+    <img src="/assets/test-command-output.png" width="300" /> 
+</figure>

@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions
 
 import com.gitlab.kordlib.common.entity.PresenceStatus
+import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.common.entity.optional.OptionalBoolean
 import com.gitlab.kordlib.common.entity.optional.optional
 import com.gitlab.kordlib.core.Kord
@@ -42,7 +43,7 @@ import kotlin.reflect.full.primaryConstructor
  * @param messageCacheSize How many previous messages to store - default to 10,000.
  * @param prefix The command prefix, for command invocations on Discord.
  * @param token The Discord bot's login token.
- * @param guildsToFill Guild IDs (as strings) to request all members for on connect. Set to null for all guilds.
+ * @param guildsToFill Guild IDs to request all members for on connect. Set to null for all guilds, omit for none.
  * @param fillPresences Whether to request presences from the members retrieved by [guildsToFill].
  */
 public open class ExtensibleBot(
@@ -54,7 +55,7 @@ public open class ExtensibleBot(
     public open val invokeCommandOnMention: Boolean = true,
     public open val messageCacheSize: Int = 10_000,
     public open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
-    public open val guildsToFill: List<String>? = listOf(),
+    public open val guildsToFill: List<Snowflake>? = listOf(),
     public open val fillPresences: Boolean? = null
 ) {
     /**
@@ -134,7 +135,7 @@ public open class ExtensibleBot(
     /** This function sets up all of the bot's default event listeners. **/
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
-            if (guildsToFill == null || guild.id.asString in guildsToFill!!) {
+            if (guildsToFill == null || guildsToFill!!.contains(guild.id)) {
                 logger.info { "Requesting members for guild: ${guild.name}" }
 
                 gateway.send(

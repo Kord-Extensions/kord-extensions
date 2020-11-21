@@ -37,7 +37,7 @@ Name   |   Type   |   Default   | Description
 `invokeCommandOnMention` | `Boolean` | `true` | Whether commands may also be invoked by mentioning the bot
 `messageCacheSize` | `Int` | `10_000` | How many messages to keep in the messages cache by default
 `commandThreads` | `Int` | CPUs * 2 | How many threads to use for the command execution threadpool
-`guildsToFill` | `List <String>` | `[ ]` | A list of guilds to request all members for during the connection phase. This requires the `GuildMembers` intent, specified in the `start` function
+`guildsToFill` | `List <Snowflake>` | `[ ]` | A list of guilds to request all members for during the connection phase. This requires the `GuildMembers` intent, specified in the `start` function
 `fillPresences` | `Boolean?` | `null` | Whether to request presences for the above members (`true`/`false`, or `null` for the default). This requires the `GuildPresences` intent, specified in the `start` function
 
 ## Adding extensions
@@ -85,9 +85,9 @@ A few properties are available to you, for getting access to Kord or querying so
 Name | Type | Description
 :--- | :--: | :----------
 `kord` | `Kord` | Current connected Kord instance, if the bot has been started
-`commands` | `List<Command>` | All currently-registered command objects
-`eventHandlers` | `List<EventHandler>` | All currently-registered event handler objects
-`extensions` | `Map<String, Extension>` | All currently-loaded extension objects
+`commands` | `List <Command>` | All currently-registered command objects
+`eventHandlers` | `List <EventHandler>` | All currently-registered event handler objects
+`extensions` | `Map <String, Extension>` | All currently-loaded extension objects
 
 ## Functions
 

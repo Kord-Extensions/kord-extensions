@@ -27,6 +27,7 @@ plugins:
 
 markdown_extensions:
   - admonition
+  - attr_list
   - sane_lists
   - toc
 
