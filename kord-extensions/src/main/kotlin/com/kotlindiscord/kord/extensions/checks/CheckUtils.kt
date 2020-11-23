@@ -102,7 +102,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is IntegrationsUpdateEvent -> event.guild
         is InviteCreateEvent -> event.guild
         is InviteDeleteEvent -> event.guild
-        is MemberChunksEvent -> event.guild
+        is MembersChunkEvent -> event.guild
         is MemberJoinEvent -> event.guild
         is MemberLeaveEvent -> event.guild
         is MemberUpdateEvent -> event.guild

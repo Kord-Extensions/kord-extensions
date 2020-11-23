@@ -2,9 +2,8 @@ package com.kotlindiscord.kord.extensions
 
 import com.gitlab.kordlib.common.entity.PresenceStatus
 import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.common.entity.optional.OptionalBoolean
-import com.gitlab.kordlib.common.entity.optional.optional
 import com.gitlab.kordlib.core.Kord
+import com.gitlab.kordlib.core.behavior.requestMembers
 import com.gitlab.kordlib.core.event.Event
 import com.gitlab.kordlib.core.event.gateway.DisconnectEvent
 import com.gitlab.kordlib.core.event.gateway.ReadyEvent
@@ -12,7 +11,7 @@ import com.gitlab.kordlib.core.event.guild.GuildCreateEvent
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.gitlab.kordlib.core.on
 import com.gitlab.kordlib.gateway.Intents
-import com.gitlab.kordlib.gateway.RequestGuildMembers
+import com.gitlab.kordlib.gateway.PrivilegedIntent
 import com.gitlab.kordlib.gateway.builder.PresenceBuilder
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
@@ -27,6 +26,7 @@ import kotlinx.coroutines.flow.*
 import mu.KLogger
 import mu.KotlinLogging
 import net.time4j.tz.repo.TZDATA
+import java.util.*
 import java.util.concurrent.Executors
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -133,18 +133,16 @@ public open class ExtensibleBot(
     }
 
     /** This function sets up all of the bot's default event listeners. **/
+    @OptIn(PrivilegedIntent::class)
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
             if (guildsToFill == null || guildsToFill!!.contains(guild.id)) {
                 logger.info { "Requesting members for guild: ${guild.name}" }
 
-                gateway.send(
-                    RequestGuildMembers(
-                        guildId = guild.id,
-                        presences = if (fillPresences != null) fillPresences!!.optional() else OptionalBoolean.Missing,
-                        limit = 0
-                    )
-                )
+                guild.requestMembers {
+                    presences = fillPresences
+                    limit = 0
+                }
             }
         }
 

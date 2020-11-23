@@ -26,6 +26,8 @@ version = rootProject.version
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+
+    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
 }
 
 java {
@@ -59,7 +61,7 @@ val javadocJar = task("javadocJar",Jar::class) {
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1")
 
-    api("com.gitlab.kordlib.kord:kord-core:0.7.0-M1")
+    api("com.gitlab.kordlib.kord:kord-core:0.7.0-M2")
 
     api("net.time4j:time4j-base:5.7")
     api("net.time4j:time4j-tzdata:5.0-2020a")
