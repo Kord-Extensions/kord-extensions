@@ -139,10 +139,7 @@ public open class ExtensibleBot(
             if (guildsToFill == null || guildsToFill!!.contains(guild.id)) {
                 logger.info { "Requesting members for guild: ${guild.name}" }
 
-                guild.requestMembers {
-                    presences = fillPresences
-                    limit = 0
-                }
+                guild.requestMembers()
             }
         }
 
