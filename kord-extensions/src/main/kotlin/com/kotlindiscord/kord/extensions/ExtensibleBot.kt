@@ -141,8 +141,8 @@ public open class ExtensibleBot(
 
                 guild.requestMembers {
                     presences = fillPresences
-                    limit = 0
-                }
+                    requestAllMembers()
+                }.collect()
             }
         }
 
