@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.utils
 
 import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.core.behavior.channel.createMessage
+import com.gitlab.kordlib.core.behavior.reply
 import com.gitlab.kordlib.core.cache.data.MessageData
 import com.gitlab.kordlib.core.entity.*
 import com.gitlab.kordlib.core.entity.channel.DmChannel
@@ -48,32 +49,53 @@ public fun Message.parse(
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
  *
+ * @param useReply Whether to use Discord's replies feature to respond, instead of a mention. Defaults to `true`.
  * @param content Message content.
+ *
+ * @return The newly-created response message.
  */
-public suspend fun Message.respond(content: String): Message = respond { this.content = content }
+public suspend fun Message.respond(content: String, useReply: Boolean = true): Message =
+    respond(useReply) { this.content = content }
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
  *
+ * @param useReply Whether to use Discord's replies feature to respond, instead of a mention. Defaults to `true`.
  * @param builder Builder lambda for populating the message fields.
+ *
+ * @return The newly-created response message.
  */
-public suspend fun Message.respond(builder: MessageCreateBuilder.() -> Unit): Message {
-    val mention = if (this.author != null && this.getChannelOrNull() !is DmChannel) {
+public suspend fun Message.respond(useReply: Boolean = true, builder: MessageCreateBuilder.() -> Unit): Message {
+    val mention = if (this.author != null && this.getChannelOrNull() !is DmChannel && !useReply) {
         "${this.author!!.mention} "
     } else {
         ""
     }
 
-    return channel.createMessage {
+    val innerBuilder: MessageCreateBuilder.() -> Unit = {
         builder()
 
         allowedMentions {
-            if (author != null) {
+            if (author != null && !useReply) {
                 users.add(author!!.id)
+            }
+
+            if (useReply) {
+                repliedUser = true
             }
         }
 
-        content = "$mention${content ?: ""}"
+        val contentWithMention = "$mention${content ?: ""}"
+
+        if (contentWithMention.isNotEmpty()) {
+            content = contentWithMention
+        }
+    }
+
+    return if (useReply) {
+        reply(innerBuilder)
+    } else {
+        channel.createMessage(innerBuilder)
     }
 }
 
