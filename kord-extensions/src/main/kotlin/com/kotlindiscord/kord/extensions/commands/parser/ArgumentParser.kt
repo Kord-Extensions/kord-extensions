@@ -95,7 +95,7 @@ public open class ArgumentParser(private val bot: ExtensibleBot, private val spl
             currentArg = args.removeFirstOrNull()
             currentArg ?: break  // If it's null, we're out of arguments
 
-            val kwValue = keywordArgs[currentArg.displayName]
+            val kwValue = keywordArgs[currentArg.displayName.toLowerCase()]
             val hasKwargs = kwValue != null
 
             logger.debug { "Current argument: ${currentArg.displayName}" }
