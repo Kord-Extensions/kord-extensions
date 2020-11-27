@@ -65,7 +65,10 @@ public suspend fun Message.respond(content: String, useReply: Boolean = true): M
  *
  * @return The newly-created response message.
  */
-public suspend fun Message.respond(useReply: Boolean = true, builder: suspend MessageCreateBuilder.() -> Unit): Message {
+public suspend fun Message.respond(
+    useReply: Boolean = true,
+    builder: suspend MessageCreateBuilder.() -> Unit
+): Message {
     val mention = if (this.author != null && this.getChannelOrNull() !is DmChannel && !useReply) {
         "${this.author!!.mention} "
     } else {
