@@ -116,3 +116,4 @@ fabric.properties
 ### Custom ignores
 
 */build
+*.hprof

@@ -1,12 +1,18 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.gitlab.kordlib.core.entity.channel.DmChannel
+import com.gitlab.kordlib.core.entity.channel.GuildMessageChannel
 import com.gitlab.kordlib.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.sentry.tag
+import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.respond
+import io.sentry.Sentry
+import io.sentry.protocol.SentryId
 import mu.KotlinLogging
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
@@ -184,17 +190,103 @@ public open class Command(public val extension: Extension) {
             return
         }
 
+        val context = CommandContext(this, event, args)
+
+        val firstBreadcrumb = if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+            val channel = event.message.getChannelOrNull()
+            val guild = event.message.getGuildOrNull()
+
+            val data = mutableMapOf(
+                "arguments" to args,
+                "message" to event.message.content
+            )
+
+            if (channel != null) {
+                data["channel"] = when (channel) {
+                    is DmChannel -> "Private Message (${channel.id.asString})"
+                    is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+
+                    else -> channel.id.asString
+                }
+            }
+
+            if (guild != null) {
+                data["guild"] = "${guild.name} (${guild.id.asString})"
+            }
+
+            extension.bot.sentry.createBreadcrumb(
+                category = "command",
+                type = "user",
+                message = "Command \"$name\" called.",
+                data = data
+            )
+        } else {
+            null
+        }
+
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
-            this.body(CommandContext(this, event, args))
+            this.body(context)
         } catch (e: ParseException) {
             event.message.respond(e.toString())
         } catch (t: Throwable) {
-            logger.error(t) { "Error during execution of $name command ($event)" }
+            if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+                logger.debug { "Submitting error to sentry." }
 
-            event.message.respond(
-                "An error occurred during command processing - please let a staff member know."
-            )
+                lateinit var sentryId: SentryId
+                val channel = event.message.getChannelOrNull()
+
+                Sentry.withScope {
+                    val author = event.message.author
+
+                    if (author != null) {
+                        it.user(author)
+                    }
+
+                    if (channel is DmChannel) {
+                        it.tag("private", "true")
+                    }
+
+                    it.tag(
+                        "command",
+
+                        when (this) {
+                            is SubCommand -> this.getFullName()
+                            is GroupCommand -> this.getFullName()
+
+                            else -> name
+                        }
+                    )
+
+                    it.tag("extension", extension.name)
+                    it.tag("private", "false")
+
+                    it.addBreadcrumb(firstBreadcrumb!!)
+
+                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
+
+                    sentryId = Sentry.captureException(t, "Command execution failed.")
+
+                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                }
+
+                extension.bot.sentry.addEventId(sentryId)
+
+                logger.error(t) { "Error during execution of $name command ($event)" }
+
+                event.message.respond(
+                    "Unfortunately, **an error occurred** during command processing. If you'd like to submit " +
+                        "information on what you were doing when this error happened, please use the following " +
+                        "command: ```${extension.bot.prefix}feedback $sentryId <message>```"
+                )
+            } else {
+                logger.error(t) { "Error during execution of $name command ($event)" }
+
+                event.message.respond(
+                    "Unfortunately, **an error occurred** during command processing. " +
+                        "Please let a staff member know."
+                )
+            }
         }
     }
 }

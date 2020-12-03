@@ -68,8 +68,11 @@ dependencies {
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
 
+    api("io.sentry:sentry:3.2.0")  // Needs to be transitive or bots will start breaking
+
     implementation("io.github.microutils:kotlin-logging:2.0.3")
     implementation("org.apache.commons:commons-text:1.8")
+    implementation("commons-validator:commons-validator:1.7")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

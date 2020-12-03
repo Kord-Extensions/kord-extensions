@@ -18,6 +18,8 @@ import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
+import com.kotlindiscord.kord.extensions.extensions.SentryExtension
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.parse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -38,6 +40,7 @@ import kotlin.reflect.full.primaryConstructor
  * handlers. Either subclass ExtensibleBot or use it as-is if it suits your needs.
  *
  * @param addHelpExtension Whether to automatically install the bundled help command extension.
+ * @param addSentryExtension Whether to automatically install the bundled Sentry command extension.
  * @param commandThreads Number of threads to use for command execution. Defaults to twice the number of CPU threads.
  * @param invokeCommandOnMention Whether to invoke commands that are prefixed with a mention, as well as the prefix.
  * @param messageCacheSize How many previous messages to store - default to 10,000.
@@ -52,6 +55,7 @@ public open class ExtensibleBot(
     public open val prefix: String,
 
     public open val addHelpExtension: Boolean = true,
+    public open val addSentryExtension: Boolean = true,
     public open val invokeCommandOnMention: Boolean = true,
     public open val messageCacheSize: Int = 10_000,
     public open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
@@ -62,6 +66,11 @@ public open class ExtensibleBot(
      * @suppress
      */
     public open lateinit var kord: Kord  // Kord doesn't allow us to inherit the class, let's wrap it instead
+
+    /**
+     * Sentry adapter, for working with Sentry.
+     */
+    public open val sentry: SentryAdapter by lazy { SentryAdapter() }
 
     /**
      * A list of all registered commands.
@@ -270,8 +279,13 @@ public open class ExtensibleBot(
     /** This function adds all of the default extensions when the bot is being set up. **/
     public open fun addDefaultExtensions() {
         if (addHelpExtension) {
-            logger.info { "Adding help extension." }
+            logger.debug { "Adding help extension." }
             addExtension(HelpExtension::class)
+        }
+
+        if (addSentryExtension) {
+            logger.debug { "Adding sentry extension." }
+            addExtension(SentryExtension::class)
         }
     }
 

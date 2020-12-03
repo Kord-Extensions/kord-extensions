@@ -46,6 +46,14 @@ public fun Arguments.duration(displayName: String): SingleConverter<Duration> =
     arg(displayName, DurationConverter())
 
 /**
+ * Create an email converter, for single arguments.
+ *
+ * @see EmailConverter
+ */
+public fun Arguments.email(displayName: String): SingleConverter<String> =
+    arg(displayName, EmailConverter())
+
+/**
  * Create an emoji converter, for single arguments.
  *
  * @see EmojiConverter
@@ -168,6 +176,14 @@ public fun Arguments.optionalDuration(displayName: String): OptionalConverter<Du
     arg(displayName, DurationConverter().toOptional())
 
 /**
+ * Create an optional email converter, for single arguments.
+ *
+ * @see EmailConverter
+ */
+public fun Arguments.optionalEmail(displayName: String): OptionalConverter<String?> =
+    arg(displayName, EmailConverter().toOptional())
+
+/**
  * Create an optional emoji converter, for single arguments.
  *
  * @see EmojiConverter
@@ -286,6 +302,14 @@ public fun Arguments.defaultingDecimal(displayName: String, defaultValue: Double
  */
 public fun Arguments.defaultingDuration(displayName: String, defaultValue: Duration): DefaultingConverter<Duration> =
     arg(displayName, DurationConverter().toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting email converter, for single arguments.
+ *
+ * @see EmailConverter
+ */
+public fun Arguments.defaultingEmail(displayName: String, defaultValue: String): DefaultingConverter<String> =
+    arg(displayName, EmailConverter().toDefaulting(defaultValue))
 
 /**
  * Create a defaulting whole number converter, for single arguments.
@@ -511,6 +535,16 @@ public fun Arguments.decimalList(displayName: String, required: Boolean = true):
  */
 public fun Arguments.durationList(displayName: String, required: Boolean = true): MultiConverter<Duration> =
     arg(displayName, DurationConverter().toMulti(required, signatureTypeString = "durations"))
+
+/**
+ * Create an email converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see EmailConverter
+ */
+public fun Arguments.emailList(displayName: String, required: Boolean = true): MultiConverter<String> =
+    arg(displayName, EmailConverter().toMulti(required))
 
 /**
  * Create an emoji converter, for lists of arguments.
