@@ -1,8 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands
 
-import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
-import dev.kord.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
@@ -11,6 +8,9 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.respond
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.event.message.MessageCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KotlinLogging
@@ -243,6 +243,8 @@ public open class Command(public val extension: Extension) {
                         it.user(author)
                     }
 
+                    it.tag("private", "false")
+
                     if (channel is DmChannel) {
                         it.tag("private", "true")
                     }
@@ -259,7 +261,6 @@ public open class Command(public val extension: Extension) {
                     )
 
                     it.tag("extension", extension.name)
-                    it.tag("private", "false")
 
                     it.addBreadcrumb(firstBreadcrumb!!)
 

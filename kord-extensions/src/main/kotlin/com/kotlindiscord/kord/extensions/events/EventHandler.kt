@@ -1,9 +1,17 @@
 package com.kotlindiscord.kord.extensions.events
 
 import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
+import com.kotlindiscord.kord.extensions.checks.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.sentry.tag
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.event.Event
+import io.sentry.Sentry
 import kotlinx.coroutines.Job
 import mu.KotlinLogging
+import java.io.Serializable
 import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
@@ -22,7 +30,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
     /**
      * @suppress
      */
-    public lateinit var body: suspend EventHandler<T>.(T) -> Unit
+    public lateinit var body: suspend EventContext<T>.() -> Unit
 
     /**
      * @suppress
@@ -53,7 +61,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
      *
      * @param action The body of your event handler, which will be executed when it is invoked.
      */
-    public fun action(action: suspend EventHandler<T>.(T) -> Unit) {
+    public fun action(action: suspend EventContext<T>.() -> Unit) {
         this.body = action
     }
 
@@ -94,11 +102,105 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
             }
         }
 
+        val context = EventContext(this, event)
+        val eventName = event::class.simpleName
+
+        val firstBreadcrumb = if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+            if (event is Event) {
+                val data = mutableMapOf<String, Serializable>()
+
+                val channelId = channelIdFor(event)
+                val guildBehavior = guildFor(event)
+                val messageBehavior = messageFor(event)
+                val roleBehavior = roleFor(event)
+                val userBehavior = userFor(event)
+
+                if (channelId != null) {
+                    val channel = extension.bot.kord.getChannel(Snowflake(channelId))
+
+                    if (channel != null) {
+                        data["channel"] = when (channel) {
+                            is DmChannel -> "Private Message (${channel.id.asString})"
+                            is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+
+                            else -> channel.id.asString
+                        }
+                    } else {
+                        data["channel"] = channelId
+                    }
+                }
+
+                if (guildBehavior != null) {
+                    val guild = guildBehavior.asGuildOrNull()
+
+                    data["guild"] = if (guild != null) {
+                        "${guild.name} (${guild.id.asString})"
+                    } else {
+                        guildBehavior.id.asString
+                    }
+                }
+
+                if (messageBehavior != null) {
+                    data["message"] = messageBehavior.id.asString
+                }
+
+                if (roleBehavior != null) {
+                    val role = roleBehavior.guild.getRoleOrNull(roleBehavior.id)
+
+                    data["role"] = if (role != null) {
+                        "@${role.name} (${role.id.asString})"
+                    } else {
+                        roleBehavior.id.asString
+                    }
+                }
+
+                if (userBehavior != null) {
+                    val user = userBehavior.asUserOrNull()
+
+                    data["user"] = if (user != null) {
+                        "${user.tag} (${user.id.asString})"
+                    } else {
+                        userBehavior.id.asString
+                    }
+                }
+
+                extension.bot.sentry.createBreadcrumb(
+                    category = "event",
+                    type = "info",
+                    message = "Event \"$eventName\" fired.",
+                    data = data
+                )
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
-            this.body(this, event)
-        } catch (e: Exception) {
-            logger.error(e) { "Error during execution of event handler ($event)" }
+            this.body(context)
+        } catch (t: Throwable) {
+            if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+                logger.debug { "Submitting error to sentry." }
+
+                Sentry.withScope {
+                    it.tag("event", eventName ?: "Unknown")
+                    it.tag("extension", extension.name)
+
+                    it.addBreadcrumb(firstBreadcrumb!!)
+
+                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
+
+                    val sentryId = Sentry.captureException(t, "Event processing failed.")
+
+                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                }
+
+                logger.error(t) { "Error during execution of event handler ($eventName)" }
+            } else {
+                logger.error(t) { "Error during execution of event handler ($eventName)" }
+            }
         }
     }
 }
