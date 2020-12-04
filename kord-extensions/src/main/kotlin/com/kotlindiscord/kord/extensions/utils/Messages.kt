@@ -1,14 +1,14 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.behavior.channel.createMessage
-import com.gitlab.kordlib.core.behavior.reply
-import com.gitlab.kordlib.core.cache.data.MessageData
-import com.gitlab.kordlib.core.entity.*
-import com.gitlab.kordlib.core.entity.channel.DmChannel
-import com.gitlab.kordlib.core.entity.channel.GuildMessageChannel
-import com.gitlab.kordlib.rest.builder.message.MessageCreateBuilder
-import com.gitlab.kordlib.rest.request.RestRequestException
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.channel.createMessage
+import dev.kord.core.behavior.reply
+import dev.kord.core.cache.data.MessageData
+import dev.kord.core.entity.*
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.rest.builder.message.MessageCreateBuilder
+import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import mu.KotlinLogging

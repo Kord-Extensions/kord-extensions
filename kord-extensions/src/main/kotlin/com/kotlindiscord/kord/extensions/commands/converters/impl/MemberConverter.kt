@@ -1,8 +1,8 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.entity.Member
-import com.gitlab.kordlib.core.entity.User
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.Member
+import dev.kord.core.entity.User
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext

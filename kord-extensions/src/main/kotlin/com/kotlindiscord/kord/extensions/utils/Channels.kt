@@ -1,10 +1,10 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.gitlab.kordlib.core.behavior.channel.createWebhook
-import com.gitlab.kordlib.core.entity.Webhook
-import com.gitlab.kordlib.core.entity.channel.GuildMessageChannel
-import com.gitlab.kordlib.core.firstOrNull
-import com.gitlab.kordlib.rest.Image
+import dev.kord.core.behavior.channel.createWebhook
+import dev.kord.core.entity.Webhook
+import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.firstOrNull
+import dev.kord.rest.Image
 import mu.KotlinLogging
 
 /**

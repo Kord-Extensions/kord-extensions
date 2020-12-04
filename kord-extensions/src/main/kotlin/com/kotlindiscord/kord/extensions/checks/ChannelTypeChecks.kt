@@ -2,8 +2,8 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
-import com.gitlab.kordlib.common.entity.ChannelType
-import com.gitlab.kordlib.core.event.Event
+import dev.kord.common.entity.ChannelType
+import dev.kord.core.event.Event
 import mu.KotlinLogging
 
 /**

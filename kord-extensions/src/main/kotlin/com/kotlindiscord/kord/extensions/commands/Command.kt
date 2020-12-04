@@ -1,8 +1,8 @@
 package com.kotlindiscord.kord.extensions.commands
 
-import com.gitlab.kordlib.core.entity.channel.DmChannel
-import com.gitlab.kordlib.core.entity.channel.GuildMessageChannel
-import com.gitlab.kordlib.core.event.message.MessageCreateEvent
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser

@@ -1,8 +1,8 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.entity.*
-import com.gitlab.kordlib.core.entity.channel.Channel
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.*
+import dev.kord.core.entity.channel.Channel
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import net.time4j.IsoUnit

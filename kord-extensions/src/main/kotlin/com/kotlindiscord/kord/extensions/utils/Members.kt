@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.gitlab.kordlib.core.entity.Member
-import com.gitlab.kordlib.core.entity.Role
+import dev.kord.core.entity.Member
+import dev.kord.core.entity.Role
 import kotlinx.coroutines.flow.toList
 
 /**

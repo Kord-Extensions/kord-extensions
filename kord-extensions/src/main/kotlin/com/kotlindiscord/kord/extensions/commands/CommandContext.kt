@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands
 
-import com.gitlab.kordlib.core.entity.Message
-import com.gitlab.kordlib.core.event.message.MessageCreateEvent
+import dev.kord.core.entity.Message
+import dev.kord.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import io.sentry.Breadcrumb

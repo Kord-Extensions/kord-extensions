@@ -1,8 +1,8 @@
 package com.kotlindiscord.kord.extensions.utils.deltas
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.common.entity.UserFlags
-import com.gitlab.kordlib.core.entity.Member
+import dev.kord.common.entity.Snowflake
+import dev.kord.common.entity.UserFlags
+import dev.kord.core.entity.Member
 import java.time.Instant
 import java.util.*
 

@@ -6,8 +6,8 @@ all the options available to you.
 ```kotlin
 package com.kotlindiscord.kord.extensions.samples
 
-import com.gitlab.kordlib.common.entity.ChannelType
-import com.gitlab.kordlib.core.entity.User
+import dev.kord.common.entity.ChannelType
+import dev.kord.core.entity.User
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.notChannelType
 import com.kotlindiscord.kord.extensions.extensions.Extension

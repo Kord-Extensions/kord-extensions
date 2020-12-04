@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils.deltas
 
-import com.gitlab.kordlib.common.entity.UserFlags
-import com.gitlab.kordlib.core.entity.User
+import dev.kord.common.entity.UserFlags
+import dev.kord.core.entity.User
 
 /**
  * Represents the difference between two Kord [User] objects.

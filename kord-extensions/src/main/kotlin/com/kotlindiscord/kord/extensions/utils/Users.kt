@@ -1,12 +1,12 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.behavior.channel.createMessage
-import com.gitlab.kordlib.core.entity.Message
-import com.gitlab.kordlib.core.entity.Role
-import com.gitlab.kordlib.core.entity.User
-import com.gitlab.kordlib.rest.builder.message.MessageCreateBuilder
-import com.gitlab.kordlib.rest.request.RestRequestException
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.channel.createMessage
+import dev.kord.core.entity.Message
+import dev.kord.core.entity.Role
+import dev.kord.core.entity.User
+import dev.kord.rest.builder.message.MessageCreateBuilder
+import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import java.time.Instant
 

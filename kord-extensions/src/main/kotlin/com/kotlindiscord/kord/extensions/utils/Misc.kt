@@ -1,8 +1,8 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.gitlab.kordlib.core.Kord
-import com.gitlab.kordlib.core.event.Event
-import com.gitlab.kordlib.core.firstOrNull
+import dev.kord.core.Kord
+import dev.kord.core.event.Event
+import dev.kord.core.firstOrNull
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filterIsInstance
 

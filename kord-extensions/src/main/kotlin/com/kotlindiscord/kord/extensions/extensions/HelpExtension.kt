@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.extensions
 
-import com.gitlab.kordlib.core.behavior.channel.createEmbed
-import com.gitlab.kordlib.core.event.message.MessageCreateEvent
+import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.Paginator
 import com.kotlindiscord.kord.extensions.commands.Command

@@ -2,9 +2,9 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
-import com.gitlab.kordlib.core.behavior.channel.CategoryBehavior
-import com.gitlab.kordlib.core.behavior.channel.ChannelBehavior
-import com.gitlab.kordlib.core.event.Event
+import dev.kord.core.behavior.channel.CategoryBehavior
+import dev.kord.core.behavior.channel.ChannelBehavior
+import dev.kord.core.event.Event
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 

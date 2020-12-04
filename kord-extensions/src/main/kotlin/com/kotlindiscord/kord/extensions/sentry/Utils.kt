@@ -25,7 +25,7 @@ public fun Scope.user(tag: String, id: String) {
  *
  * @param userObj Kord user object to add to this scope.
  */
-public fun Scope.user(userObj: com.gitlab.kordlib.core.entity.User): Unit =
+public fun Scope.user(userObj: dev.kord.core.entity.User): Unit =
     user(userObj.tag, userObj.id.asString)
 
 /**

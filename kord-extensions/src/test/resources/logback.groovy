@@ -5,7 +5,7 @@ def environment = System.getenv().getOrDefault("ENVIRONMENT", "production")
 def defaultLevel = DEBUG
 
 if (environment == "spam") {
-    logger("com.gitlab.kordlib.gateway.DefaultGateway", TRACE)
+    logger("dev.kord.rest.DefaultGateway", TRACE)
 } else {
     // Silence warning about missing native PRNG
     logger("io.ktor.util.random", ERROR)
