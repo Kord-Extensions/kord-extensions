@@ -230,7 +230,7 @@ public open class Command(public val extension: Extension) {
         } catch (e: ParseException) {
             event.message.respond(e.toString())
         } catch (t: Throwable) {
-            if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+            if (extension.bot.sentry.enabled) {
                 logger.debug { "Submitting error to sentry." }
 
                 lateinit var sentryId: SentryId
@@ -275,11 +275,18 @@ public open class Command(public val extension: Extension) {
 
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
-                event.message.respond(
-                    "Unfortunately, **an error occurred** during command processing. If you'd like to submit " +
-                        "information on what you were doing when this error happened, please use the following " +
-                        "command: ```${extension.bot.prefix}feedback $sentryId <message>```"
-                )
+                if (extension.bot.extensions.containsKey("sentry")) {
+                    event.message.respond(
+                        "Unfortunately, **an error occurred** during command processing. If you'd like to submit " +
+                            "information on what you were doing when this error happened, please use the following " +
+                            "command: ```${extension.bot.prefix}feedback $sentryId <message>```"
+                    )
+                } else {
+                    event.message.respond(
+                        "Unfortunately, **an error occurred** during command processing. " +
+                            "Please let a staff member know."
+                    )
+                }
             } else {
                 logger.error(t) { "Error during execution of $name command ($event)" }
 

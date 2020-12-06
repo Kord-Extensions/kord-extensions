@@ -105,7 +105,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
         val context = EventContext(this, event)
         val eventName = event::class.simpleName
 
-        val firstBreadcrumb = if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+        val firstBreadcrumb = if (extension.bot.sentry.enabled) {
             if (event is Event) {
                 val data = mutableMapOf<String, Serializable>()
 
