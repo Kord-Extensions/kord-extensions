@@ -51,7 +51,7 @@ jobs:
           path: kord-extensions/build/libs/kord-extensions-*.jar
 
       - name: Copy Dokka docs
-        run: cp kord-extensions/build/dokka/html/* docs/build/mkdocs
+        run: cp -r kord-extensions/build/dokka/html/* docs/build/mkdocs
 
       - name: Gradle (Deploy docs)
         run: sh gradlew docs:publish
