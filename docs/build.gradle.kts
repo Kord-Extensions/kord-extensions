@@ -7,5 +7,5 @@ val serve = task("serve", Exec::class) {
 }
 
 val publish = task("publish", Exec::class) {
-    commandLine("mkdocs", "gh-deploy", "--dirty")
+    commandLine("mkdocs", "gh-deploy", "--dirty", "--force")
 }
