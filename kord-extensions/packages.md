@@ -38,6 +38,10 @@ Extension classes, including the base `Extension` class, and the bundled `HelpEx
 
 Package containing bundled parsers for you to use, including the duration parsers.
 
+# com.kotlindiscord.kord.extensions.sentry
+
+Package containing code related to the Sentry integration.
+
 # Package com.kotlindiscord.kord.extensions.utils
 
 Many useful utilities that you can use when writing bots.
