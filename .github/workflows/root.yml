@@ -53,5 +53,11 @@ jobs:
       - name: Copy Dokka docs
         run: cp -r kord-extensions/build/dokka/html/* docs/build/mkdocs
 
+      - name: Set up git credentials
+        uses: oleksiyrudenko/gha-git-credentials@v2-latest
+
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+
       - name: Gradle (Deploy docs)
         run: sh gradlew docs:publish
