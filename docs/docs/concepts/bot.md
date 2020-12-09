@@ -34,6 +34,7 @@ Name   |   Type   |   Default   | Description
 `token` | `String` | | The Discord bot token to login with
 `prefix` | `String` | | The prefix required before all command invocations
 `addHelpExtension` | `Boolean` | `true` | Whether to add the bundled help extension automatically
+`addSentryExtension` | `Boolean` | `true` | Whether to add the bundled [Sentry integration](/integrations/sentry) extension automatically
 `invokeCommandOnMention` | `Boolean` | `true` | Whether commands may also be invoked by mentioning the bot
 `messageCacheSize` | `Int` | `10_000` | How many messages to keep in the messages cache by default
 `commandThreads` | `Int` | CPUs * 2 | How many threads to use for the command execution threadpool
@@ -95,7 +96,8 @@ A number of functions are available to you as well.
 
 ??? info "Further functions"
     There are other non-private functions available, but they aren't necessarily something you'll need to touch. Most
-    of the properties are `open` to facilitate niche use-cases that require extending the ExtensibleBot class.
+    of the functions are `open` to facilitate niche use-cases that require extending the ExtensibleBot class, but a
+    handful are `inline` for the sake of avoiding function call overhead.
 
 Name | Description
 :--- | :----------

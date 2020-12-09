@@ -134,7 +134,7 @@ public open class ExtensibleBot(
             val event = this
 
             kord.launch {
-                eventPublisher.send(event)
+                send(event)
             }
         }
 
@@ -311,14 +311,14 @@ public open class ExtensibleBot(
     /**
      * @suppress
      */
-    public open suspend fun send(event: Event) {
+    public suspend inline fun send(event: Event) {
         eventPublisher.send(event)
     }
 
     /**
      * @suppress
      */
-    public open suspend fun send(event: ExtensionEvent) {
+    public suspend inline fun send(event: ExtensionEvent) {
         eventPublisher.send(event)
     }
 

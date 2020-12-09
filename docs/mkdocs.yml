@@ -11,6 +11,8 @@ nav:
       - concepts/checks.md
       - concepts/commands.md
       - concepts/converters.md
+  - Integrations:
+      - integrations/sentry.md
 
 theme:
   name: material
