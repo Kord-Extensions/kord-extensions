@@ -23,13 +23,22 @@ jobs:
         with:
           version: 1.11
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+        with:
+          python-version: 3.x
+
+      - name: Install Python packages
+        run: pip install -r docs/requirements.txt
+
       - name: Set up Gradle properties
         run: |
           mkdir -p ~/.gradle
           echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
 
       - name: Gradle (Build)
-        run: sh gradlew kord-extensions:build
+        run: sh gradlew kord-extensions:build kord-extensions:dokkaHtml docs:build
 
       - name: Gradle (Publish)
         run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} kord-extensions:publish
@@ -40,3 +49,9 @@ jobs:
         with:
           name: JARs
           path: kord-extensions/build/libs/kord-extensions-*.jar
+
+      - name: Copy Dokka docs
+        run: cp kord-extensions/build/dokka/html/* docs/build/mkdocs
+
+      - name: Gradle (Deploy docs)
+        run: sh gradlew docs:publish
