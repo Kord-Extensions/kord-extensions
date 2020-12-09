@@ -197,6 +197,61 @@ group {
 }
 ```
 
+## Command parsing
+
+While not everyone will need to understand precisely how commands are parsed under the hood, it's worth exploring
+some specifics - you'll need to understand how to specify arguments on Discord, and your users will likewise need
+an understanding of this.
+
+Kord Extensions supports two ways to supply arguments out of the box: Positional arguments, and keyword arguments.
+You can mix both approaches; arguments will always be parsed in the order they're defined in the `Arguments` subclass,
+but keyword arguments can appear anywhere in the command (aside from inside another argument). Positional arguments are
+always parsed in order.
+
+??? missing "Not Implemented: Flags"
+    Occasionally, a user will ask us why our parser doesn't support Unix-style flags - for example, `--argument` or
+    `-a value`. The primary reason for this is that the current argument parser is already fairly complex, and 
+    supporting flags within it would massively increase the maintenance burden it already carries.
+
+    Additionally, while developers and Linux users will be very familiar with flags, we don't feel that most users
+    will find them as simple to understand as our current keyword arguments. That said, you're always free to subclass
+    the `ArgumentParser` class and implement your own parsing - if you do anything interesting with this, please let
+    us know!
+
+Additionally, single arguments can contain spaces if you `"surround them in quotes"`. As an example, take the 
+following command:
+
+```markdown
+!post author=109040264529608704 "This is my title" **My Post**
+
+This is part of the body of my post, despite being a couple lines down.
+Arguments can happily contain newlines - although arguments can't be 
+*separated* using newlines, so be careful!
+```
+
+Assuming a command prefix of `!`:
+
+1. Our command is named `post`
+1. Next, a keyword argument referring to `author` is found, and a reference is stored
+1. `title` is parsed first, into the string `"This is my title"`
+1. Next, `author` is parsed - the bot will search for a user with the given ID, but a mention or `user#discrim` string can also be provided instead
+1. Finally, `body` is parsed - it's a coalescing string converter, so it consumes the rest of the arguments
+
+This is a fairly simple example, and you can write some fairly complicated command handling if you feel so inclined.
+
+??? tip "Consuming multiple arguments"
+    Multi and coalescing converters consume arguments until they come across something they can no longer consume - for
+    example, the `numberList` extension function returns a `MultiConverter` that consumes whole numbers until it no 
+    longer can. It will consume  numbers from its starting argument onwards, until it encounters something that isn't 
+    a number. At that point, it stops and tells the argument parser how many arguments have been consumed, and 
+    processing continues to the next converter.
+
+??? tip "Extensible converters"
+    Converters themselves are quite extensible, and you shouldn't be afraid to write custom converters for types that
+    are unique to your bot. Additionally, the order of the arguments defined in your `Arguments` subclass will be
+    matched by the parser, so it is technically possible to create a converter that, for example, takes a lambda that
+    relies on the value of a previously specified argument.
+
 ## Custom command types
 
 Kord Extensions provides three command types (`Command`, `GroupCommand` and `SubCommand`), which should be fairly
