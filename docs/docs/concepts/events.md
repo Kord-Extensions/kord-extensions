@@ -15,7 +15,7 @@ of code that will be run in response to an event, along with some associated met
 use the `event` function in your extension's `setup` function.
 
 ```kotlin
-event<EventClass> {
+event<EventClass> {  // this: EventHandler<EventClass>
     check { event -> true }  // Return `false` to prevent the action
     check(::returnTrue)  // You can also pass it a function
 
@@ -39,16 +39,16 @@ handler.
 
 `EventContext` objects expose the following properties, where `T` is the same type as the event being handled.
 
-Name | Type | Description
-:--- | :--: | :----------
-`eventHandler` | `EventHandler<T>` | Current event handler instance
-`event` | `T` | Current event being handled
-`breadcrumbs` | `MutableList<Breadcrumb>` | List of Sentry breadcrumbs, for the [Sentry intgration](/integrations/sentry)
+Name           | Type                       | Description
+:------------- | :------------------------: | :----------
+`breadcrumbs`  | `MutableList <Breadcrumb>` | List of Sentry breadcrumbs, for the [Sentry intgration](/integrations/sentry)
+`eventHandler` | `EventHandler <T>`         | Current event handler instance
+`event`        | `T`                        | Current event being handled
 
 Additionally, `EventContext` objects expose the following functions.
 
-Name | Description
-:--- | :----------
+Name         | Description
+:----------- | :----------
 `breadcrumb` | Convenience function to create and add a Sentry breadcrumb, for the [Sentry intgration](/integrations/sentry)
 
 ## Event Types

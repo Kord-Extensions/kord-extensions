@@ -23,14 +23,14 @@ for writing your own checks or extracting information from Kord events.
 
 Name                    | Argument   | Description
 :---------------------- | :--------: | :-------------------------------------------------------------------------------------
-`inChannel`             | `Channel`  | Asserts that an event fired within the given channel
-`notInChannel`          | `Channel`  | Asserts that an event **did not** fire within the given channel
-`inCategory`            | `Category` | Asserts that an event fired within the given channel category
-`notInCategory`         | `Category` | Asserts that an event **did not** fire within the given channel category
-`channelHigher`         | `Channel`  | Asserts that an event fired in a channel **higher than** the given channel
-`channelLower`          | `Channel`  | Asserts that an event fired in a channel **lower than** the given channel
 `channelHigherOrEqual`  | `Channel`  | Asserts that an event fired in a channel **higher than or equal to** the given channel
+`channelHigher`         | `Channel`  | Asserts that an event fired in a channel **higher than** the given channel
 `channelLowerOrEqual`   | `Channel`  | Asserts that an event fired in a channel **lower than or equal to** the given channel
+`channelLower`          | `Channel`  | Asserts that an event fired in a channel **lower than** the given channel
+`inCategory`            | `Category` | Asserts that an event fired within the given channel category
+`inChannel`             | `Channel`  | Asserts that an event fired within the given channel
+`notInCategory`         | `Category` | Asserts that an event **did not** fire within the given channel category
+`notInChannel`          | `Channel`  | Asserts that an event **did not** fire within the given channel
 
 ### Channel types
 
@@ -53,11 +53,11 @@ Name                    | Argument | Description
 `hasRole`               | `Role`   | Asserts that an event was fired by a user with the given role
 `notHasRole`            | `Role`   | Asserts that an event was fired by a user **without** the given role
 `topRoleEqual`          | `Role`   | Asserts that an event was fired by a user with a top role that matches the given role
-`topRoleNotEqual`       | `Role`   | Asserts that an event was fired by a user with a top role that **does not** match the given role
-`topRoleHigher`         | `Role`   | Asserts that an event was fired by a user with a top role **higher than** the given role
-`topRoleLower`          | `Role`   | Asserts that an event was fired by a user with a top role **lower than** the given role
 `topRoleHigherOrEqual`  | `Role`   | Asserts that an event was fired by a user with a top role **higher than or equal to** the given role
+`topRoleHigher`         | `Role`   | Asserts that an event was fired by a user with a top role **higher than** the given role
 `topRoleLowerOrEqual`   | `Role`   | Asserts that an event was fired by a user with a top role **lower than or equal to** the given role
+`topRoleLower`          | `Role`   | Asserts that an event was fired by a user with a top role **lower than** the given role
+`topRoleNotEqual`       | `Role`   | Asserts that an event was fired by a user with a top role that **does not** match the given role
 
 ### Combinators
 
