@@ -17,7 +17,7 @@ import mu.KotlinLogging
  * @param channel The channel to compare to.
  */
 public fun inChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)
@@ -42,7 +42,7 @@ public fun inChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
  * @param channel The channel to compare to.
  */
 public fun notInChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)
@@ -67,7 +67,7 @@ public fun notInChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
  * @param category The category to check against.
  */
 public fun inCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inCategory")
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)
@@ -100,7 +100,7 @@ public fun inCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
  * @param category The category to check against.
  */
 public fun notInCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInCategory")
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)
@@ -133,7 +133,7 @@ public fun notInCategory(category: CategoryBehavior): suspend (Event) -> Boolean
  * @param channel The channel to compare to.
  */
 public fun channelHigher(channel: ChannelBehavior): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelHigher")
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)
@@ -164,7 +164,7 @@ public fun channelHigher(channel: ChannelBehavior): suspend (Event) -> Boolean {
  * @param channel The channel to compare to.
  */
 public fun channelLower(channel: ChannelBehavior): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelLower")
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)
@@ -195,7 +195,7 @@ public fun channelLower(channel: ChannelBehavior): suspend (Event) -> Boolean {
  * @param channel The channel to compare to.
  */
 public fun channelHigherOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelHigherOrEqual")
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)
@@ -226,7 +226,7 @@ public fun channelHigherOrEqual(channel: ChannelBehavior): suspend (Event) -> Bo
  * @param channel The channel to compare to.
  */
 public fun channelLowerOrEqual(channel: ChannelBehavior): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelLowerOrEqual")
 
     suspend fun inner(event: Event): Boolean {
         val eventChannel = channelFor(event)

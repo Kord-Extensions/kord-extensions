@@ -13,7 +13,7 @@ import mu.KotlinLogging
  * @return Whether any of the checks passed.
  */
 public fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.or")
 
     suspend fun inner(event: Event): Boolean {
         return if (checks.any { it.invoke(event) }) {
@@ -41,7 +41,7 @@ public fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boo
  * @return Whether all of the checks passed.
  */
 public fun and(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.and")
 
     suspend fun inner(event: Event): Boolean {
         return if (checks.all { it.invoke(event) }) {

@@ -17,7 +17,7 @@ import mu.KotlinLogging
  * @param role The role to compare to.
  */
 public fun hasRole(role: Role): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasRole")
 
     suspend fun inner(event: Event): Boolean {
         val member = memberFor(event)
@@ -48,7 +48,7 @@ public fun hasRole(role: Role): suspend (Event) -> Boolean {
  * @param role The role to compare to.
  */
 public fun notHasRole(role: Role): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasRole")
 
     suspend fun inner(event: Event): Boolean {
         val member = memberFor(event)
@@ -79,7 +79,7 @@ public fun notHasRole(role: Role): suspend (Event) -> Boolean {
  * @param role The role to compare to.
  */
 public fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleEqual")
 
     suspend fun inner(event: Event): Boolean {
         val member = memberFor(event)
@@ -121,7 +121,7 @@ public fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
  * @param role The role to compare to.
  */
 public fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleNotEqual")
 
     suspend fun inner(event: Event): Boolean {
         val member = memberFor(event)
@@ -159,7 +159,7 @@ public fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
  * @param role The role to compare to.
  */
 public fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleHigher")
 
     suspend fun inner(event: Event): Boolean {
         val member = memberFor(event)
@@ -203,7 +203,7 @@ public fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
  * @param role The role to compare to.
  */
 public fun topRoleLower(role: Role): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleLower")
 
     suspend fun inner(event: Event): Boolean {
         val member = memberFor(event)
@@ -246,7 +246,7 @@ public fun topRoleLower(role: Role): suspend (Event) -> Boolean {
  * @param role The role to compare to.
  */
 public fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleHigherOrEqual")
 
     suspend fun inner(event: Event): Boolean {
         val member = memberFor(event)
@@ -291,7 +291,7 @@ public fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
  * @param role The role to compare to.
  */
 public fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
-    val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleLowerOrEqual")
 
     suspend fun inner(event: Event): Boolean {
         val member = memberFor(event)

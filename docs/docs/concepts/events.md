@@ -25,8 +25,11 @@ event<EventClass> {
 }
 ```
 
-Event handlers are a fairly simple concept. Note that the `action` lambda above is a receiver function, where `this`
-is bound to an `EventContext` object.
+Use the `check` function to define a set of predicates that must all return `true` in order for the event handler to 
+be run - you can read more about checks on [the Checks page](/concepts/checks). Once all the checks pass, the `action`
+lambda will be called.
+
+Note that the `action` lambda above is a receiver function, where `this`is bound to an `EventContext` object.
 
 ## Event Context
 
