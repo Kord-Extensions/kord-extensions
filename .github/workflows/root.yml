@@ -53,6 +53,10 @@ jobs:
       - name: Copy Dokka docs
         run: cp -r kord-extensions/build/dokka/html/* docs/build/mkdocs
 
+      - name: Add CNAM file
+        run: |
+          echo "kord-extensions.docs.kotlindiscord.com" >> docs/build/mkdocs/CNAME
+
       - name: Set up git credentials
         uses: oleksiyrudenko/gha-git-credentials@v2-latest
 
