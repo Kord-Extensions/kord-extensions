@@ -1,0 +1,890 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/concepts/bot/">
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.7">
+    
+    
+      
+        <title>The Bot Object - Kord Extensions</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.19753c6b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.196e0c26.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="" data-md-color-accent="">
+      
+        <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#the-bot-object" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://kord-extensions.docs.kotlindiscord.com" title="Kord Extensions" class="md-header-nav__button md-logo" aria-label="Kord Extensions">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Kord Extensions
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              The Bot Object
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://kord-extensions.docs.kotlindiscord.com" title="Kord Extensions" class="md-nav__button md-logo" aria-label="Kord Extensions">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Kord Extensions
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../getting-started/" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    <label class="md-nav__link" for="nav-3">
+      Concepts
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Concepts" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        Concepts
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        The Bot Object
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      The Bot Object
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-bot" class="md-nav__link">
+    Creating a Bot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-extensions" class="md-nav__link">
+    Adding extensions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#starting-up" class="md-nav__link">
+    Starting up
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../extensions/" class="md-nav__link">
+      Extensions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../events/" class="md-nav__link">
+      Events
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../checks/" class="md-nav__link">
+      Checks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../commands/" class="md-nav__link">
+      Commands
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../converters/" class="md-nav__link">
+      Converters
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+    <label class="md-nav__link" for="nav-4">
+      Utilities
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Utilities" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Utilities
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/channels/" class="md-nav__link">
+      Channels
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/deltas/" class="md-nav__link">
+      Deltas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/kord/" class="md-nav__link">
+      Kord
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/members/" class="md-nav__link">
+      Members
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/messages/" class="md-nav__link">
+      Messages
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/misc/" class="md-nav__link">
+      Misc
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/optionals/" class="md-nav__link">
+      Optionals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/scheduler/" class="md-nav__link">
+      Scheduler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/time/" class="md-nav__link">
+      Time
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/users/" class="md-nav__link">
+      Users
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
+    <label class="md-nav__link" for="nav-5">
+      Integrations
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Integrations" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        Integrations
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../integrations/sentry/" class="md-nav__link">
+      Sentry
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-bot" class="md-nav__link">
+    Creating a Bot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-extensions" class="md-nav__link">
+    Adding extensions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#starting-up" class="md-nav__link">
+    Starting up
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="the-bot-object">The Bot Object</h1>
+<p>The bot object is the core of your application. All bots that make use of Kord Extensions must make use of the
+ExtensibleBot class - usually by creating an instance of it and using it as a jumping-off point.</p>
+<details class="faq"><summary>Extending the ExtensibleBot class</summary><p>Generally speaking, it's best to use ExtensibleBot directly and approach us if there's some functionality missing 
+you need, but the option to extend it is always there if you have a very niche use-case.</p>
+<p>If you're not sure whether your use-case is appropriate for a wider public release, please open an issue - we're
+always happy to have a chat with you!</p>
+</details>
+<h2 id="creating-a-bot">Creating a Bot</h2>
+<p>The first thing you'll want to do is create an instance of ExtensibleBot. A basic setup looks something like this:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">val</span> <span class="py">token</span> <span class="p">=</span> <span class="s">&quot;...&quot;</span>  <span class="c1">// Get your bot token</span>
+<span class="k">val</span> <span class="py">prefix</span> <span class="p">=</span> <span class="s">&quot;!&quot;</span>  <span class="c1">// Prefix required before all command invocations</span>
+
+<span class="k">val</span> <span class="py">bot</span> <span class="p">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span>  <span class="c1">// Create the bot</span>
+</code></pre></div>
+</td></tr></table>
+<p>The ExtensibleBot constructor takes a number of arguments. We recommend supplying them using keyword arguments, just
+in case the order needs to be changed later on.</p>
+<details class="bug"><summary>Invoke command on mention</summary><p>Currently a bug exists that prevents the functionality referenced by <code>invokeCommandOnMention</code> from working. We'll
+look into this as soon as we can - but if you need this functionality for your bots, contact us and we'll
+prioritise it.</p>
+</details>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="center">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>token</code></td>
+<td align="center"><code>String</code></td>
+<td align="center"></td>
+<td align="left">The Discord bot token to login with</td>
+</tr>
+<tr>
+<td align="left"><code>prefix</code></td>
+<td align="center"><code>String</code></td>
+<td align="center"></td>
+<td align="left">The prefix required before all command invocations</td>
+</tr>
+<tr>
+<td align="left"><code>addHelpExtension</code></td>
+<td align="center"><code>Boolean</code></td>
+<td align="center"><code>true</code></td>
+<td align="left">Whether to add the bundled help extension automatically</td>
+</tr>
+<tr>
+<td align="left"><code>addSentryExtension</code></td>
+<td align="center"><code>Boolean</code></td>
+<td align="center"><code>true</code></td>
+<td align="left">Whether to add the bundled <a href="/integrations/sentry">Sentry integration</a> extension automatically</td>
+</tr>
+<tr>
+<td align="left"><code>invokeCommandOnMention</code></td>
+<td align="center"><code>Boolean</code></td>
+<td align="center"><code>true</code></td>
+<td align="left">Whether commands may also be invoked by mentioning the bot</td>
+</tr>
+<tr>
+<td align="left"><code>messageCacheSize</code></td>
+<td align="center"><code>Int</code></td>
+<td align="center"><code>10_000</code></td>
+<td align="left">How many messages to keep in the messages cache by default</td>
+</tr>
+<tr>
+<td align="left"><code>commandThreads</code></td>
+<td align="center"><code>Int</code></td>
+<td align="center">CPUs * 2</td>
+<td align="left">How many threads to use for the command execution threadpool</td>
+</tr>
+<tr>
+<td align="left"><code>guildsToFill</code></td>
+<td align="center"><code>List &lt;Snowflake&gt;</code></td>
+<td align="center"><code>[ ]</code></td>
+<td align="left">A list of guilds to request all members for during the connection phase. This requires the <code>GuildMembers</code> intent, specified in the <code>start</code> function</td>
+</tr>
+<tr>
+<td align="left"><code>fillPresences</code></td>
+<td align="center"><code>Boolean?</code></td>
+<td align="center"><code>null</code></td>
+<td align="left">Whether to request presences for the above members (<code>true</code>/<code>false</code>, or <code>null</code> for the default). This requires the <code>GuildPresences</code> intent, specified in the <code>start</code> function</td>
+</tr>
+</tbody>
+</table>
+<h2 id="adding-extensions">Adding extensions</h2>
+<p>When you've written some <a href="/concepts/extensions">Extensions</a>, you'll need to add them to the bot before they can be
+used. This can be done at any point, but we recommend doing it before you connect to Discord, as many extensions rely
+on Discord's <code>ReadyEvent</code> to set up.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">bot</span><span class="p">.</span><span class="n">addExtension</span><span class="p">(</span><span class="n">LogsExtension</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+<span class="n">bot</span><span class="p">.</span><span class="n">addExtension</span><span class="p">(</span><span class="n">TestExtension</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="starting-up">Starting up</h2>
+<p>When you're all set up, and you've registered all your extensions, you can call the <code>start</code> function to create a Kord
+instance and connect to Discord.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">bot</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+</code></pre></div>
+</td></tr></table>
+<p>This function takes a number of optional arguments which - just like before - you should supply using keyword arguments
+where possible.</p>
+<details class="missing"><summary>Not Implemented: Sharding</summary><p>Sharding is currently not supported. We haven't had a chance to look at it yet, as none of the developers are
+currently working on bots that require sharding.</p>
+<p>If you need sharding, please contact us and we can work out the details.</p>
+</details>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>presenceBuilder</code></td>
+<td align="center"><code>PresenceBuilder.()</code></td>
+<td align="left">Provide a lambda here to set the bot's initial presence, defaulting to online with no activity</td>
+</tr>
+<tr>
+<td align="left"><code>intents</code></td>
+<td align="center"><code>IntentsBuilder.()?</code></td>
+<td align="left">Provide a lambda here to provide a set of intents that your bot does and does not require</td>
+</tr>
+</tbody>
+</table>
+<h2 id="properties">Properties</h2>
+<p>A few properties are available to you, for getting access to Kord or querying some of the bot's state.</p>
+<details class="info"><summary>Further properties</summary><p>There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most
+of the properties are <code>open</code> to facilitate niche use-cases that require extending the ExtensibleBot class.</p>
+</details>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>kord</code></td>
+<td align="center"><code>Kord</code></td>
+<td align="left">Current connected Kord instance, if the bot has been started</td>
+</tr>
+<tr>
+<td align="left"><code>commands</code></td>
+<td align="center"><code>List &lt;Command&gt;</code></td>
+<td align="left">All currently-registered command objects</td>
+</tr>
+<tr>
+<td align="left"><code>eventHandlers</code></td>
+<td align="center"><code>List &lt;EventHandler&gt;</code></td>
+<td align="left">All currently-registered event handler objects</td>
+</tr>
+<tr>
+<td align="left"><code>extensions</code></td>
+<td align="center"><code>Map &lt;String, Extension&gt;</code></td>
+<td align="left">All currently-loaded extension objects</td>
+</tr>
+</tbody>
+</table>
+<h2 id="functions">Functions</h2>
+<p>A number of functions are available to you as well.</p>
+<details class="info"><summary>Further functions</summary><p>There are other non-private functions available, but they aren't necessarily something you'll need to touch. Most
+of the functions are <code>open</code> to facilitate niche use-cases that require extending the ExtensibleBot class, but a
+handful are <code>inline</code> for the sake of avoiding function call overhead.</p>
+</details>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>start</code></td>
+<td align="left">Connect to Discord, blocking the coroutine scope</td>
+</tr>
+<tr>
+<td align="left"><code>send</code></td>
+<td align="left">Send an event to all event handlers - either a Kord <code>Event</code> or an <code>ExtensionEvent</code> object</td>
+</tr>
+<tr>
+<td align="left"><code>addExtension</code></td>
+<td align="left">Instantiate and load an extension</td>
+</tr>
+<tr>
+<td align="left"><code>loadExtension</code></td>
+<td align="left">Set up a previously-unloaded extension</td>
+</tr>
+<tr>
+<td align="left"><code>unloadExtension</code></td>
+<td align="left">Tear down a previously-loaded extension</td>
+</tr>
+</tbody>
+</table>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../../getting-started/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Getting Started
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../extensions/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Extensions
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.0ac82a11.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f81dfb4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

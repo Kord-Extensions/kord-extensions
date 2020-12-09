@@ -1,8 +1,0 @@
-User-agent: *
-
-Disallow: /
-
-
-
-Sitemap: https://kord-extensions.docs.kotlindiscord.com/sitemap.xml
-

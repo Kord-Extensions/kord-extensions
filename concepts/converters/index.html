@@ -1,0 +1,813 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/concepts/converters/">
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.7">
+    
+    
+      
+        <title>Converters - Kord Extensions</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.19753c6b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.196e0c26.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="" data-md-color-accent="">
+      
+        <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#converters" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://kord-extensions.docs.kotlindiscord.com" title="Kord Extensions" class="md-header-nav__button md-logo" aria-label="Kord Extensions">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Kord Extensions
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Converters
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://kord-extensions.docs.kotlindiscord.com" title="Kord Extensions" class="md-nav__button md-logo" aria-label="Kord Extensions">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Kord Extensions
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../getting-started/" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    <label class="md-nav__link" for="nav-3">
+      Concepts
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Concepts" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        Concepts
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bot/" class="md-nav__link">
+      The Bot Object
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../extensions/" class="md-nav__link">
+      Extensions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../events/" class="md-nav__link">
+      Events
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../checks/" class="md-nav__link">
+      Checks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../commands/" class="md-nav__link">
+      Commands
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Converters
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Converters
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#converter-types" class="md-nav__link">
+    Converter types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bundled-converters" class="md-nav__link">
+    Bundled converters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-converters" class="md-nav__link">
+    Custom converters
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+    <label class="md-nav__link" for="nav-4">
+      Utilities
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Utilities" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Utilities
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/channels/" class="md-nav__link">
+      Channels
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/deltas/" class="md-nav__link">
+      Deltas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/kord/" class="md-nav__link">
+      Kord
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/members/" class="md-nav__link">
+      Members
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/messages/" class="md-nav__link">
+      Messages
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/misc/" class="md-nav__link">
+      Misc
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/optionals/" class="md-nav__link">
+      Optionals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/scheduler/" class="md-nav__link">
+      Scheduler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/time/" class="md-nav__link">
+      Time
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/users/" class="md-nav__link">
+      Users
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
+    <label class="md-nav__link" for="nav-5">
+      Integrations
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Integrations" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        Integrations
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../integrations/sentry/" class="md-nav__link">
+      Sentry
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#converter-types" class="md-nav__link">
+    Converter types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bundled-converters" class="md-nav__link">
+    Bundled converters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-converters" class="md-nav__link">
+    Custom converters
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="converters">Converters</h1>
+<p>Converters are small classes that exist to convert strings - or groups of strings - into other types. They make up
+the core of the argument parsing provided with Kord Extensions, allowing you to easily parse command arguments into
+complex types with no compiler plugins, generated Kotlin or reflection whatsoever.</p>
+<h2 id="converter-types">Converter types</h2>
+<p>In the interests of making sure you never get a type you're not expecting, Kord Extensions ships with a wide variety
+of converters. Converters are first classified by the way they behave, and then by the type they exist to convert
+to.</p>
+<p>The basic converter types are as follows:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>CoalescingConverter</code></td>
+<td align="left">A converter representing a required argument converted from a list of strings, combined into a single value</td>
+</tr>
+<tr>
+<td align="center"><code>DefaultingConverter</code></td>
+<td align="left">A converter representing a single argument with a default value, converted from up to one supplied string</td>
+</tr>
+<tr>
+<td align="center"><code>MultiConverter</code></td>
+<td align="left">A converter representing an argument converted from a list of strings, one value per string - which may be either required or optional</td>
+</tr>
+<tr>
+<td align="center"><code>OptionalConverter</code></td>
+<td align="left">A converter representing a single, optional/nullable argument converted from up to one supplied string</td>
+</tr>
+<tr>
+<td align="center"><code>SingleConverter</code></td>
+<td align="left">A converter representing a single, required argument converted from exactly one supplied string</td>
+</tr>
+</tbody>
+</table>
+<p>There are also some compound converters, which combine the behaviours found in other converters, such as: </p>
+<ul>
+<li><code>DefaultingCoalescingConverter</code></li>
+<li><code>OptionalCoalescingConverter</code></li>
+</ul>
+<p>We also provide some special implementations that wrap other converters, such as:</p>
+<ul>
+<li><code>CoalescingToDefaultingConverter</code> (obtained via <code>CoalescingConverter#toDefaulting()</code>)</li>
+<li><code>CoalescingToOptionalConverter</code> (obtained via <code>CoalescingConverter#toOptional()</code>)</li>
+<li><code>SingleToDefaultingConverter</code> (obtained via <code>SingleConverter#toDefaulting()</code>)</li>
+<li><code>SingleToMultiConverter</code> (obtained via <code>SingleConverter#toMulti()</code>)</li>
+<li><code>SingleToOptionalConverter</code> (obtained via <code>SingleConverter#toOptional()</code>)</li>
+</ul>
+<p>We recommend exploring the source code for these converters, as we're likely to continue adding them.</p>
+<h2 id="bundled-converters">Bundled converters</h2>
+<p>Converters are provided that support the following type conversions, out of the box:</p>
+<ul>
+<li><code>Boolean</code></li>
+<li><code>Channel</code></li>
+<li><code>Decimal</code> (Doubles only)</li>
+<li><code>Duration</code> (Java Time and Time4J) with special-casing for coalescing conversion</li>
+<li><code>Email</code></li>
+<li><code>Emoji</code> (Server emoji on Discord)</li>
+<li><code>Enum</code> (Any enums you like, including those you define yourself)</li>
+<li><code>Guild</code></li>
+<li><code>Member</code></li>
+<li><code>Message</code></li>
+<li><code>Number</code> (Longs only)</li>
+<li><code>Regex</code> (Kotlin wrapper type only) with special-casing for coalescing conversion</li>
+<li><code>Role</code></li>
+<li><code>String</code> with special-casing for coalescing conversion</li>
+<li><code>User</code></li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>Converters are intended to be used as part of your commands setup, via the <code>Arguments</code> object. <code>Arguments</code> is a special
+type that contains a list of each of the delegated properties in your class, in order - placed there by 
+specially-created extension functions that create converters for you. Here's an example, from 
+<a href="/concepts/commands">the Commands page</a>.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">PostArguments</span> <span class="p">:</span> <span class="n">Arguments</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Single required string argument</span>
+    <span class="k">val</span> <span class="py">title</span> <span class="k">by</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">)</span>
+
+    <span class="c1">// Single required Discord user argument</span>
+    <span class="k">val</span> <span class="py">author</span> <span class="k">by</span> <span class="n">user</span><span class="p">(</span><span class="s">&quot;author&quot;</span><span class="p">)</span>
+
+    <span class="c1">// Consumes the rest of the arguments into a single string</span>
+    <span class="k">val</span> <span class="py">body</span> <span class="k">by</span> <span class="n">coalescedString</span><span class="p">(</span><span class="s">&quot;body&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<p>In this example, we have three arguments:</p>
+<ul>
+<li><code>title</code> - a required String argument, with the friendly name of "title"</li>
+<li><code>author</code> - a required Discord User argument, with the friendly name of "author"</li>
+<li><code>body</code> - A required coalescing String argument, with the friendly name of "body"</li>
+</ul>
+<p>All arguments require a friendly name. This name will be used to refer to that argument in the command's signature,
+as well as error and other help messages. It's also the name that will be used for keyword arguments.</p>
+<p>On top of this, different converters (and types of converters) may take extra arguments. For example, all defaulting
+converters require you to pass a default value to their creation function, while optional converters do not take
+a default value and instead will return <code>null</code> by default.</p>
+<details class="tip"><summary>Finding converter functions</summary><p>As of this writing, there are over 700 lines covering <code>Arguments</code> object extension functions. While you can read
+the generated Dokka documentation for a full list, we recommend making use of your IDE's auto-completion 
+functionality for discovery - especially if you've written custom converters, or you're making use of third-party
+converters.</p>
+</details>
+<h2 id="custom-converters">Custom converters</h2>
+<p>If you'd like to convert arguments to a type that we don't currently support, or you'd like to add some extra
+validation to arguments, then custom converters are the way to go. Depending on what you're doing, you'll want
+to start by subclassing one of the following converter base classes:</p>
+<ul>
+<li><code>SingleConverter</code> for single converters, which can be wrapped into defaulting, multi and optional converters</li>
+<li><code>CoalescingConverter</code> for coalescing converters, which can be wrapped into defaulting and optional variants</li>
+</ul>
+<p>When creating your converter, one of the biggest things you can do to help yourself is to read over the Dokka
+generated documentation for the base classes, and look at the source for the bundled converters. Custom converters can
+be a little tricky to get your head around at first, so feel free to join the Kotlin Discord server if you need to ask
+questions.</p>
+<details class="question"><summary>How do I bail when something goes wrong?</summary><p>As you may expect, errors are handled using Kotlin's exceptions system. Exceptions can be thrown as normal, and
+they'll be caught by the argument parser and transformed into an error message. However, you may wish to provide
+a more useful error message to the user - for these cases, you should create and throw an instance of
+<code>ParseException</code> yourself. The message passed to <code>ParseException</code> will be returned to the user verbatim, so make
+it descriptive!</p>
+<p><strong>Remember that your end users are not necessarily developers!</strong> Most people will not understand a technical
+description or a default exception message - any <code>ParseException</code> instances you throw should contain
+a human-readable error message that <strong>tells the user what went wrong so that they can correct</strong> their command
+invocation and try again. If you need to provide developer-oriented feedback, use a logger!</p>
+<p>Because of this, only <code>ParseException</code> instances will be returned to the user verbatim. All other exception types
+will be logged, and a generic error message will be returned to the user.</p>
+</details>
+<p>Once you've created your converters, we recommend writing <code>Arguments</code> extension functions for them. As before, we
+heavily recommend reading the source for the extension functions that already exist - they're quite simple, but it 
+always pays to try to write the best APIs you can, especially if you expect someone else to make use of your code 
+someday!</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../commands/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Commands
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../../utils/channels/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Channels
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.0ac82a11.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f81dfb4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

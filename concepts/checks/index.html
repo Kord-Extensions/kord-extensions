@@ -1,0 +1,1071 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/concepts/checks/">
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.7">
+    
+    
+      
+        <title>Checks - Kord Extensions</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.19753c6b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.196e0c26.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="" data-md-color-accent="">
+      
+        <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#checks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://kord-extensions.docs.kotlindiscord.com" title="Kord Extensions" class="md-header-nav__button md-logo" aria-label="Kord Extensions">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Kord Extensions
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Checks
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://kord-extensions.docs.kotlindiscord.com" title="Kord Extensions" class="md-nav__button md-logo" aria-label="Kord Extensions">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Kord Extensions
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../getting-started/" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    <label class="md-nav__link" for="nav-3">
+      Concepts
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Concepts" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        Concepts
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bot/" class="md-nav__link">
+      The Bot Object
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../extensions/" class="md-nav__link">
+      Extensions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../events/" class="md-nav__link">
+      Events
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Checks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Checks
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#checks-suite" class="md-nav__link">
+    Checks suite
+  </a>
+  
+    <nav class="md-nav" aria-label="Checks suite">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#channels" class="md-nav__link">
+    Channels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#channel-types" class="md-nav__link">
+    Channel types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guilds" class="md-nav__link">
+    Guilds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles" class="md-nav__link">
+    Roles
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combinators" class="md-nav__link">
+    Combinators
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#utilities" class="md-nav__link">
+    Utilities
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-reusable-checks" class="md-nav__link">
+    Creating reusable checks
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../commands/" class="md-nav__link">
+      Commands
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../converters/" class="md-nav__link">
+      Converters
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+    <label class="md-nav__link" for="nav-4">
+      Utilities
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Utilities" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
+        Utilities
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/channels/" class="md-nav__link">
+      Channels
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/deltas/" class="md-nav__link">
+      Deltas
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/kord/" class="md-nav__link">
+      Kord
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/members/" class="md-nav__link">
+      Members
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/messages/" class="md-nav__link">
+      Messages
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/misc/" class="md-nav__link">
+      Misc
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/optionals/" class="md-nav__link">
+      Optionals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/scheduler/" class="md-nav__link">
+      Scheduler
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/time/" class="md-nav__link">
+      Time
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utils/users/" class="md-nav__link">
+      Users
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
+    <label class="md-nav__link" for="nav-5">
+      Integrations
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Integrations" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
+        Integrations
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../integrations/sentry/" class="md-nav__link">
+      Sentry
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#checks-suite" class="md-nav__link">
+    Checks suite
+  </a>
+  
+    <nav class="md-nav" aria-label="Checks suite">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#channels" class="md-nav__link">
+    Channels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#channel-types" class="md-nav__link">
+    Channel types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guilds" class="md-nav__link">
+    Guilds
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles" class="md-nav__link">
+    Roles
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combinators" class="md-nav__link">
+    Combinators
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#utilities" class="md-nav__link">
+    Utilities
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-reusable-checks" class="md-nav__link">
+    Creating reusable checks
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="checks">Checks</h1>
+<p>The checks system provides a way for you define and make use of predicates that decide whether an
+<a href="/concepts/events">event handler</a> or <a href="/concepts/commands">command</a> should execute. The concept is relatively
+simple - all checks receive an event, check whether execution should continue based on that event, and return a
+Boolean value that decides what happens next - <code>true</code> to continue, <code>false</code> to stop.</p>
+<p>Anything that makes use of checks will accept either a lambda, or a function reference. This allows you to create
+reusable check functions that can be imported and made use of throughout your bot.</p>
+<h2 id="checks-suite">Checks suite</h2>
+<p>Kord Extensions comes with a full suite of commonly-used checks. This suite includes checks that operate based on
+specific types, combinator checks that provide boolean operations on sets of other checks, and a set of utilities
+for writing your own checks or extracting information from Kord events.</p>
+<details class="important"><summary>Event not supported?</summary><p>If an event is not supported by a check that you feel should be, please raise an issue with us - we'll look into
+it as quickly as we can. Kord does not provide generic interfaces for figuring out which events concern different
+types of entity, so we have to manually maintain utilities that match specific events by their types.</p>
+</details>
+<h3 id="channels">Channels</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>channelHigherOrEqual</code></td>
+<td align="center"><code>Channel</code></td>
+<td align="left">Asserts that an event fired in a channel <strong>higher than or equal to</strong> the given channel</td>
+</tr>
+<tr>
+<td align="left"><code>channelHigher</code></td>
+<td align="center"><code>Channel</code></td>
+<td align="left">Asserts that an event fired in a channel <strong>higher than</strong> the given channel</td>
+</tr>
+<tr>
+<td align="left"><code>channelLowerOrEqual</code></td>
+<td align="center"><code>Channel</code></td>
+<td align="left">Asserts that an event fired in a channel <strong>lower than or equal to</strong> the given channel</td>
+</tr>
+<tr>
+<td align="left"><code>channelLower</code></td>
+<td align="center"><code>Channel</code></td>
+<td align="left">Asserts that an event fired in a channel <strong>lower than</strong> the given channel</td>
+</tr>
+<tr>
+<td align="left"><code>inCategory</code></td>
+<td align="center"><code>Category</code></td>
+<td align="left">Asserts that an event fired within the given channel category</td>
+</tr>
+<tr>
+<td align="left"><code>inChannel</code></td>
+<td align="center"><code>Channel</code></td>
+<td align="left">Asserts that an event fired within the given channel</td>
+</tr>
+<tr>
+<td align="left"><code>notInCategory</code></td>
+<td align="center"><code>Category</code></td>
+<td align="left">Asserts that an event <strong>did not</strong> fire within the given channel category</td>
+</tr>
+<tr>
+<td align="left"><code>notInChannel</code></td>
+<td align="center"><code>Channel</code></td>
+<td align="left">Asserts that an event <strong>did not</strong> fire within the given channel</td>
+</tr>
+</tbody>
+</table>
+<h3 id="channel-types">Channel types</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>channelType</code></td>
+<td align="center"><code>ChannelType</code></td>
+<td align="left">Asserts that an event fired within a channel matching the given type</td>
+</tr>
+<tr>
+<td align="left"><code>notChannelType</code></td>
+<td align="center"><code>ChannelType</code></td>
+<td align="left">Asserts that an event <strong>did not</strong> fire within a channel matching the given type</td>
+</tr>
+</tbody>
+</table>
+<h3 id="guilds">Guilds</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>inGuild</code></td>
+<td align="center"><code>Guild</code></td>
+<td align="left">Asserts that an event fired within the given guild</td>
+</tr>
+<tr>
+<td align="left"><code>notInGuild</code></td>
+<td align="center"><code>Guild</code></td>
+<td align="left">Asserts that an event <strong>did not</strong> fire within the given guild</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roles">Roles</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>hasRole</code></td>
+<td align="center"><code>Role</code></td>
+<td align="left">Asserts that an event was fired by a user with the given role</td>
+</tr>
+<tr>
+<td align="left"><code>notHasRole</code></td>
+<td align="center"><code>Role</code></td>
+<td align="left">Asserts that an event was fired by a user <strong>without</strong> the given role</td>
+</tr>
+<tr>
+<td align="left"><code>topRoleEqual</code></td>
+<td align="center"><code>Role</code></td>
+<td align="left">Asserts that an event was fired by a user with a top role that matches the given role</td>
+</tr>
+<tr>
+<td align="left"><code>topRoleHigherOrEqual</code></td>
+<td align="center"><code>Role</code></td>
+<td align="left">Asserts that an event was fired by a user with a top role <strong>higher than or equal to</strong> the given role</td>
+</tr>
+<tr>
+<td align="left"><code>topRoleHigher</code></td>
+<td align="center"><code>Role</code></td>
+<td align="left">Asserts that an event was fired by a user with a top role <strong>higher than</strong> the given role</td>
+</tr>
+<tr>
+<td align="left"><code>topRoleLowerOrEqual</code></td>
+<td align="center"><code>Role</code></td>
+<td align="left">Asserts that an event was fired by a user with a top role <strong>lower than or equal to</strong> the given role</td>
+</tr>
+<tr>
+<td align="left"><code>topRoleLower</code></td>
+<td align="center"><code>Role</code></td>
+<td align="left">Asserts that an event was fired by a user with a top role <strong>lower than</strong> the given role</td>
+</tr>
+<tr>
+<td align="left"><code>topRoleNotEqual</code></td>
+<td align="center"><code>Role</code></td>
+<td align="left">Asserts that an event was fired by a user with a top role that <strong>does not</strong> match the given role</td>
+</tr>
+</tbody>
+</table>
+<h3 id="combinators">Combinators</h3>
+<p>Combinator checks operate on a variable number of other checks, transforming their results as appropriate.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>and</code></td>
+<td align="center">Checks</td>
+<td align="left">Special check that passes if <strong>any</strong> of the given checks pass</td>
+</tr>
+<tr>
+<td align="left"><code>or</code></td>
+<td align="center">Checks</td>
+<td align="left">Special check that passes only if <strong>all</strong> of the given checks pass</td>
+</tr>
+</tbody>
+</table>
+<h3 id="utilities">Utilities</h3>
+<p>The following utilities are made use of in the other checks, but you can make use of them yourself if you need to try
+to extract a given type from any event.</p>
+<p>If an event is unsupported, then each of the below functions will return <code>null</code>. Please note that there are some events
+that these functions do support that may themselves return a nullable value when queried.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Return Type</th>
+<th align="left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>channelFor</code></td>
+<td align="center"><code>ChannelBehavior</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>channelIdFor</code></td>
+<td align="center"><code>Long</code></td>
+<td align="left">This function will return a <code>Long</code> taken from a <code>Snowflake</code>, rather than the <code>Snowflake</code> itself</td>
+</tr>
+<tr>
+<td align="left"><code>channelSnowflakeFor</code></td>
+<td align="center"><code>Snowflake</code></td>
+<td align="left">This function is just like the previous, but will not unwrap the <code>Snowflake</code></td>
+</tr>
+<tr>
+<td align="left"><code>guildFor</code></td>
+<td align="center"><code>GuildBehavior</code></td>
+<td align="left">This function will query the Kord cache or REST for <code>MessageCreateEvent</code> and <code>MessageUpdateEvent</code></td>
+</tr>
+<tr>
+<td align="left"><code>memberFor</code></td>
+<td align="center"><code>MemberBehavior</code></td>
+<td align="left">This function will query the Kord cache or REST for all supported events except for <code>MemberJoinEvent</code> and <code>MemberUpdateEvent</code></td>
+</tr>
+<tr>
+<td align="left"><code>messageFor</code></td>
+<td align="center"><code>MessageBehavior</code></td>
+<td align="left">This function will query the Kord cache or REST for <code>MessageUpdateEvent</code></td>
+</tr>
+<tr>
+<td align="left"><code>roleFor</code></td>
+<td align="center"><code>RoleBehavior</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>userFor</code></td>
+<td align="center"><code>UserBehavior</code></td>
+<td align="left">This function will query the Kord cache or REST for <code>MessageUpdateEvent</code>, and will only return the first user that isn't the bot for <code>DMChannelCreateEvent</code>, <code>DMChannelDeleteEvent</code> and <code>DMChannelUpdateEvent</code> (as we don't support selfbots)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="creating-reusable-checks">Creating reusable checks</h2>
+<p>All checks may be defined as functions, and all check functions will accept a function reference. As an example, it's
+common practise to define a "default" check that applies to most commands like the following:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">suspend</span> <span class="k">fun</span> <span class="nf">defaultCheck</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Event</span><span class="p">):</span> <span class="n">Boolean</span> <span class="p">{</span>
+    <span class="k">val</span> <span class="py">logger</span> <span class="p">=</span> <span class="n">KotlinLogging</span><span class="p">.</span><span class="n">logger</span><span class="p">(</span><span class="s">&quot;my.package.defaultCheck&quot;</span><span class="p">)</span>
+
+    <span class="k">val</span> <span class="py">message</span> <span class="p">=</span> <span class="n">messageFor</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">?.</span><span class="n">asMessage</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="k">when</span> <span class="p">{</span>
+        <span class="n">message</span> <span class="p">==</span> <span class="k">null</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">logger</span><span class="p">.</span><span class="n">debug</span> <span class="p">{</span> <span class="s">&quot;Failing check: Message for event $event is null. This type of event may not be supported.&quot;</span> <span class="p">}</span>
+            <span class="k">false</span>
+        <span class="p">}</span>
+
+        <span class="n">message</span><span class="p">.</span><span class="n">author</span> <span class="p">==</span> <span class="k">null</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">logger</span><span class="p">.</span><span class="n">debug</span> <span class="p">{</span> <span class="s">&quot;Failing check: Message sent by a webhook or system message&quot;</span> <span class="p">}</span>
+            <span class="k">false</span>
+        <span class="p">}</span>
+
+        <span class="n">message</span><span class="p">.</span><span class="n">author</span><span class="o">!!</span><span class="p">.</span><span class="n">id</span> <span class="p">==</span> <span class="n">bot</span><span class="p">.</span><span class="n">kord</span><span class="p">.</span><span class="n">getSelf</span><span class="p">().</span><span class="n">id</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">logger</span><span class="p">.</span><span class="n">debug</span> <span class="p">{</span> <span class="s">&quot;Failing check: We sent this message&quot;</span> <span class="p">}</span>
+            <span class="k">false</span>
+        <span class="p">}</span>
+
+        <span class="n">message</span><span class="p">.</span><span class="n">author</span><span class="o">!!</span><span class="p">.</span><span class="n">isBot</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">logger</span><span class="p">.</span><span class="n">debug</span> <span class="p">{</span> <span class="s">&quot;Failing check: This message was sent by another bot&quot;</span> <span class="p">}</span>
+            <span class="k">false</span>
+        <span class="p">}</span>
+
+        <span class="n">message</span><span class="p">.</span><span class="n">getChannelOrNull</span><span class="p">()</span> <span class="k">is</span> <span class="n">DmChannel</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">logger</span><span class="p">.</span><span class="n">debug</span> <span class="p">{</span> <span class="s">&quot;Passing check: This message was sent in a DM&quot;</span> <span class="p">}</span>
+            <span class="k">true</span>
+        <span class="p">}</span>
+
+        <span class="n">message</span><span class="p">.</span><span class="n">getGuildOrNull</span><span class="p">()</span><span class="o">?.</span><span class="n">id</span> <span class="p">!=</span> <span class="n">config</span><span class="p">.</span><span class="n">getGuild</span><span class="p">().</span><span class="n">id</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">logger</span><span class="p">.</span><span class="n">debug</span> <span class="p">{</span> <span class="s">&quot;Failing check: Not in the correct guild&quot;</span> <span class="p">}</span>
+            <span class="k">false</span>
+        <span class="p">}</span>
+
+        <span class="k">else</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">logger</span><span class="p">.</span><span class="n">debug</span> <span class="p">{</span> <span class="s">&quot;Passing check&quot;</span> <span class="p">}</span>
+            <span class="k">true</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<p>If you've written a check that you think would be useful for the majority users (and it can be written in a generic
+way) then feel free to open an issue or pull request, and we'll look at getting it added to the framework proper.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../events/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Events
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../commands/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Commands
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.0ac82a11.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f81dfb4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

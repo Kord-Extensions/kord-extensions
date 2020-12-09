@@ -1,0 +1,16 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+com.kotlindiscord.kord.extensions
+com.kotlindiscord.kord.extensions.checks
+com.kotlindiscord.kord.extensions.commands
+com.kotlindiscord.kord.extensions.commands.converters
+com.kotlindiscord.kord.extensions.commands.converters.impl
+com.kotlindiscord.kord.extensions.commands.parser
+com.kotlindiscord.kord.extensions.events
+com.kotlindiscord.kord.extensions.extensions
+com.kotlindiscord.kord.extensions.parsers
+com.kotlindiscord.kord.extensions.sentry
+com.kotlindiscord.kord.extensions.utils
+com.kotlindiscord.kord.extensions.utils.deltas
+
