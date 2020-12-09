@@ -28,6 +28,8 @@ nav:
   - Integrations:
     - integrations/sentry.md
 
+  - Dokka API Docs: "/-kord%20-extensions/"
+
 theme:
   name: material
   logo: assets/logo.png

@@ -23,9 +23,9 @@ Discord.py). Despite this, we still strive to provide an idiomatic API that make
 
 ## Usage
 
-To make use of Kord Extensions, update your build script `https://maven.kotlindiscord.com/repository/maven-snapshots/`
-as a repository and use `com.kotlindiscord.kord.extensions:kord-extneions:VERSION` as the Maven coordinate. For a list 
-of available versions, 
+To make use of Kord Extensions, update your build script to add
+`https://maven.kotlindiscord.com/repository/maven-snapshots/` as a Maven repository, and use 
+`com.kotlindiscord.kord.extensions:kord-extneions:VERSION` as the Maven coordinate. For a list of available versions, 
 [take a look at Nexus](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions).
 
 We do not currently have a strict semantic versioning system in place. We'll explore this later if needed, but right 
