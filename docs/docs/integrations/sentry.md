@@ -5,6 +5,13 @@ provides a first-party build-in integration for anyone that uses Sentry to keep 
 bots, with full support for breadcrumbs in your commands and event handlers so you can tell Sentry exactly what
 went wrong.
 
+??? tip "Discord webhooks?"
+   Sentry does not support Discord webhooks out of the box - however, Discord does support Slack-format webhooks. As
+   Slack requires current integrations to use OAuth, Sentry has hidden their legacy integration - but it can still be
+   used. To find it, head to the settings for your project and append `/plugins/slack/` to the URL - for example, 
+   `https://sentry.io/settings/my-org/projects/bot/plugins/slack/`. The webhook URL should also have `/slack` appended,
+   so it looks like this: `https://discordapp.com/api/webhooks/{ID}/{TOKEN}/slack`
+
 ## Setting up
 
 Kord Extensions ships with the Sentry library by default, but no logging integration - we recommend matching the 
