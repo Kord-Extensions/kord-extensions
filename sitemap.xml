@@ -1,79 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/getting-started/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/concepts/bot/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/concepts/extensions/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/concepts/events/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/concepts/checks/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/concepts/commands/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/concepts/converters/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/channels/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/deltas/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/kord/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/members/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/messages/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/misc/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/optionals/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/scheduler/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/time/</loc>
-     <lastmod>2020-12-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/users/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <loc>https://kord-extensions.docs.kotlindiscord.com/utils/</loc>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://kord-extensions.docs.kotlindiscord.com/integrations/sentry/</loc>
-     <lastmod>2020-12-09</lastmod>
+     <lastmod>2020-12-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
