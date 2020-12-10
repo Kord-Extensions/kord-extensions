@@ -468,17 +468,17 @@
                 
                 <h1 id="sentry">Sentry</h1>
 <p><a href="https://sentry.io/">Sentry</a> is a web-based tool used for keeping track of errors in your applications. Kord Extensions
-provides a first-party build-in integration for anyone that uses Sentry to keep track of errors in their production 
+provides a first-party build-in integration for anyone that uses Sentry to keep track of errors in their production
 bots, with full support for breadcrumbs in your commands and event handlers so you can tell Sentry exactly what
 went wrong.</p>
-<details class="tip"><summary>Discord webhooks?</summary></details>
-<p>Sentry does not support Discord webhooks out of the box - however, Discord does support Slack-format webhooks. As
-   Slack requires current integrations to use OAuth, Sentry has hidden their legacy integration - but it can still be
-   used. To find it, head to the settings for your project and append <code>/plugins/slack/</code> to the URL - for example, 
-   <code>https://sentry.io/settings/my-org/projects/bot/plugins/slack/</code>. The webhook URL should also have <code>/slack</code> appended,
-   so it looks like this: <code>https://discordapp.com/api/webhooks/{ID}/{TOKEN}/slack</code></p>
+<details class="tip"><summary>Discord webhooks?</summary><p>Sentry does not support Discord webhooks out of the box - however, Discord does support Slack-format webhooks. As
+Slack requires current integrations to use OAuth, Sentry has hidden their legacy integration - but it can still be
+used. To find it, head to the settings for your project and append <code>/plugins/slack/</code> to the URL - for example,
+<code>https://sentry.io/settings/my-org/projects/bot/plugins/slack/</code>. The webhook URL should also have <code>/slack</code> appended,
+so it looks like this: <code>https://discordapp.com/api/webhooks/{ID}/{TOKEN}/slack</code></p>
+</details>
 <h2 id="setting-up">Setting up</h2>
-<p>Kord Extensions ships with the Sentry library by default, but no logging integration - we recommend matching the 
+<p>Kord Extensions ships with the Sentry library by default, but no logging integration - we recommend matching the
 version of your logging integration with the Sentry library shipped with Kord, but of course you can treat it just
 like any other transitive dependency.</p>
 <p>The <code>ExtensibleBot</code> object contains a <code>sentry</code> property referring to a <code>SentryAdapter</code> instance - to enable the
@@ -507,7 +507,7 @@ the use of the lambda-based function since it directly maps to Sentry's own <cod
 <h2 id="adding-context-to-errors">Adding context to errors</h2>
 <p>Sentry's main method of collecting error context is to add breadcrumbs. Breadcrumbs essentially record the steps that
 were taken to reach your problem, including extra data that can provide additional context.</p>
-<p>Commands and event handlers both have built-in Sentry reporting, and include a mechanism for keeping track of 
+<p>Commands and event handlers both have built-in Sentry reporting, and include a mechanism for keeping track of
 breadcrumbs that you add as your command or event is processing. You can do this in one of two ways:</p>
 <ol>
 <li>Use the <code>breadcrumb</code> function on the <code>CommandContext</code> or <code>EventContext</code> object to add a breadcrumb</li>
@@ -521,28 +521,27 @@ all the breadcrumbs you created, add them to the scope, and submit the scope dir
 <p>There's nothing more that you need to do - you'll see the issue appear in Sentry with all of its breadcrumbs and
 associated context!</p>
 <figure>
-   <a href="/assets/sentry-breadcrumbs.png">
-      <img src="/assets/sentry-breadcrumbs.png" width="100%" alt="Sentry breadcrumbs" /> 
-   </a>
-   <a href="/assets/sentry-data.png">
-      <img src="/assets/sentry-data.png" width="100%" alt="Sentry data" /> 
-   </a>
+    <a href="/assets/sentry-breadcrumbs.png">
+        <img src="/assets/sentry-breadcrumbs.png" width="100%" alt="Sentry breadcrumbs" /> 
+    </a>
+    <a href="/assets/sentry-data.png">
+        <img src="/assets/sentry-data.png" width="100%" alt="Sentry data" /> 
+    </a>
 </figure>
 
-<p>For a list of supported breadcrumb types, please see 
+<p>For a list of supported breadcrumb types, please see
 <a href="https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/#breadcrumb-types">the Sentry documentation</a>.</p>
 <h2 id="collecting-user-feedback">Collecting user feedback</h2>
 <p>If an error occurs during command processing, and you have the Sentry extension enabled (which it is by default),
 the returned error message will contain a Sentry ID and information on how to submit a piece of user feedback. This
 includes a <code>feedback</code> command, which will be automatically registered by the Sentry extension.</p>
-<p>If you wish to disable this, pass <code>false</code> for the <code>addSentryExtension</code> constructor param for your <code>ExtensibleBot</code> 
+<p>If you wish to disable this, pass <code>false</code> for the <code>addSentryExtension</code> constructor param for your <code>ExtensibleBot</code>
 instance, and both the Sentry ID in the error and the <code>feedback</code> command will be disabled.</p>
 <p><a href="/assets/sentry-feedback.png">
- <br />
-<figure>
-      <img src="/assets/sentry-feedback.png" width="100%" alt="Sentry feedback" /> 
-   </figure></p>
-<p></a></p>
+    <figure>
+        <img src="/assets/sentry-feedback.png" width="100%" alt="Sentry feedback" /> 
+    </figure>
+</a></p>
 <h2 id="manual-usage">Manual usage</h2>
 <p>You can, of course, make use of Sentry <a href="https://docs.sentry.io/platforms/java/">as per its documentation</a>. However,
 bear in mind that both Kord and Kord Extensions are coroutine-based, and that means that a lot of the things you do
