@@ -27,7 +27,7 @@ val bot = ExtensibleBot("!", TOKEN)
 if (System.getenv().getOrDefault("SENTRY_DSN", null) != null) {
     bot.sentry.init {
         dsn = System.getenv("SENTRY_DSN")
-        environment = environment = System.getenv().getOrDefault("ENVIRONMENT", "production")
+        environment = System.getenv().getOrDefault("ENVIRONMENT", "production")
         release = "..."  // However you get your Sentry release info
     }
 }
