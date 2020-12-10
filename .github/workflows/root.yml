@@ -22,6 +22,40 @@ jobs:
         with:
           version: 1.14
 
+      - name: Set up Gradle properties
+        run: |
+          mkdir -p ~/.gradle
+          echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
+
+      - name: Gradle (Build)
+        run: sh gradlew kord-extensions:build
+
+      - name: Gradle (Publish)
+        run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} kord-extensions:publish
+
+      - name: Upload artifact (JARs)
+        uses: actions/upload-artifact@v2
+
+        with:
+          name: JARs
+          path: kord-extensions/build/libs/kord-extensions-*.jar
+
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Java task hasn't updated for the deprecation yet
+        run: |
+          echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+
+      - name: Set up Java
+        uses: actions/setup-java@v1.0.0
+
+        with:
+          version: 1.14
+
       - name: Set up Python
         uses: actions/setup-python@v2
 
@@ -39,20 +73,10 @@ jobs:
       - name: Gradle (Build)
         run: sh gradlew kord-extensions:build kord-extensions:dokkaHtml docs:build
 
-      - name: Gradle (Publish)
-        run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} kord-extensions:publish
-
-      - name: Upload artifact (JARs)
-        uses: actions/upload-artifact@v2
-
-        with:
-          name: JARs
-          path: kord-extensions/build/libs/kord-extensions-*.jar
-
       - name: Copy Dokka docs
         run: cp -r kord-extensions/build/dokka/html/* docs/build/mkdocs
 
-      - name: Add CNAM file
+      - name: Add CNAME file
         run: |
           echo "kord-extensions.docs.kotlindiscord.com" >> docs/build/mkdocs/CNAME
 
