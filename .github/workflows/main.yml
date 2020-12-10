@@ -4,7 +4,6 @@ on:
   push:
     branches-ignore:
       - "root"
-      - "kotlin-1.4"
 
   pull_request:
 
