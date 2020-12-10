@@ -13,17 +13,7 @@ nav:
     - concepts/commands.md
     - concepts/converters.md
 
-  - Utilities:
-    - utils/channels.md
-    - utils/deltas.md
-    - utils/kord.md
-    - utils/members.md
-    - utils/messages.md
-    - utils/misc.md
-    - utils/optionals.md
-    - utils/scheduler.md
-    - utils/time.md
-    - utils/users.md
+  - utils.md
 
   - Integrations:
     - integrations/sentry.md
