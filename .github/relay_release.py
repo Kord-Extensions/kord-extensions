@@ -15,7 +15,7 @@ release: Dict[str, Any] = json.load(r)
 
 release_url = release["html_url"]
 release_name = release["name"]
-release_body = release["body"]
+release_body = release["body"].replace("\n* ", "\n**»** ")
 release_time = release["published_at"]
 
 author_name = release["author"]["login"]
@@ -25,13 +25,14 @@ author_url = release["author"]["html_url"]
 while release_body[-1] in ["\n", " "]:
     release_body = release_body.strip("\n").strip()
 
-print(repr(release_body))
+if len(release_body) > 2000:
+    release_body = release_body[:1997] + "..."
 
 webhook = {
     "embeds": [
         {
             "color": 7506394,
-            "description": release_body.strip().rstrip("\n"),
+            "description": release_body.strip(),
             "timestamp": release_time.replace("Z", ".000Z"),
             "title": release_name,
             "url": release_url,
