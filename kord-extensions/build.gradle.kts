@@ -157,7 +157,12 @@ publishing {
     repositories {
         maven {
             name = "KotDis"
-            url = uri("https://maven.kotlindiscord.com/repository/maven-snapshots/")
+
+            url = if (project.version.toString().contains("SNAPSHOT")) {
+                uri("https://maven.kotlindiscord.com/repository/maven-snapshots/")
+            } else {
+                uri("https://maven.kotlindiscord.com/repository/maven-releases/")
+            }
 
             credentials {
                 username = project.findProperty("kotdis.user") as String? ?: System.getenv("KOTLIN_DISCORD_USER")
