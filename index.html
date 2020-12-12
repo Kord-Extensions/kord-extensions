@@ -423,6 +423,8 @@
                 
                 
                 <h1 id="home">Home</h1>
+<p><a href="https://kord-extensions.docs.kotlindiscord.com/"><img alt="Docs: You are here" src="https://img.shields.io/static/v1?label=Docs&amp;message=You%20are%20here&amp;color=7289DA&amp;style=for-the-badge&amp;logo=read-the-docs" /></a> <a href="https://discord.gg/gjXqqCS"><img alt="Discord: Click here" src="https://img.shields.io/static/v1?label=Discord&amp;message=Click%20here&amp;color=7289DA&amp;style=for-the-badge&amp;logo=discord" /></a> <a href="https://github.com/Kotlin-Discord/kord-extensions/actions?query=workflow%3ACI+branch%3Aroot"><img alt="Build Status" src="https://img.shields.io/github/workflow/status/Kotlin-Discord/kord-extensions/CI/root?logo=github&amp;style=for-the-badge" /></a> <br />
+<a href="https://maven.kotlindiscord.com/#browse/browse:maven-releases:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions"><img alt="Release" src="https://img.shields.io/nexus/r/com.kotlindiscord.kord.extensions/kord-extensions?nexusVersion=3&amp;logo=gradle&amp;color=blue&amp;label=Release&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a> <a href="https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions"><img alt="Snapshot" src="https://img.shields.io/nexus/s/com.kotlindiscord.kord.extensions/kord-extensions?logo=gradle&amp;color=orange&amp;label=Snapshot&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a></p>
 <p>Kord Extensions is an addon for the excellent <a href="https://github.com/kordlib/kord">Kord library</a>. It intends to provide a
 framework for larger bot projects, with easy-to-use commands, rich argument parsing and event handling, wrapped up 
 into individual extension classes.</p>
@@ -436,17 +438,16 @@ a competent library, but it takes some very different approaches to solving the 
 Most  notably, it requires the use of <a href="https://kotlinlang.org/docs/reference/kapt.html">kapt</a> and makes use of an
 annotation-based autowire system for getting things registered.</p>
 <p>In contrast, Kord Extensions provides a less magical approach that is more closely tied to object-oriented
-programming, and may be more suitable for embedding into other applications. At the end of the day, though, the
+programming, and may be more suitable for embedding into other applications. In addition, it provides many useful
+utilities and niceties that make working with Kord a breeze. At the end of the day, though, the
 choice is yours - both approaches have pros and cons, and it's worth checking both out to see what you like
 better!</p>
 </details>
 <h2 id="usage">Usage</h2>
 <p>To make use of Kord Extensions, update your build script to add
 <code>https://maven.kotlindiscord.com/repository/maven-snapshots/</code> as a Maven repository, and use 
-<code>com.kotlindiscord.kord.extensions:kord-extneions:VERSION</code> as the Maven coordinate. For a list of available versions, 
-<a href="https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions">take a look at Nexus</a>.</p>
-<p>We do not currently have a strict semantic versioning system in place. We'll explore this later if needed, but right 
-now we recommend pinning to the latest snapshot version number.</p>
+<code>com.kotlindiscord.kord.extensions:kord-extensions:VERSION</code> as the Maven coordinate. Click on the badges at the top
+of this page to find a full list of all snapshot and release versions.</p>
 <p>For more specific directions for individual build systems, <a href="/getting-started">take a look at the Getting Started guide</a>.</p>
                 
               
