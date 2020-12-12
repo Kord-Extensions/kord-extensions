@@ -271,7 +271,7 @@ public open class ExtensibleBot(
             val event = this
 
             commandThreadPool.invoke {
-                command?.call(event, parts)
+                command?.call(event, commandName, parts)
             }
         }
     }

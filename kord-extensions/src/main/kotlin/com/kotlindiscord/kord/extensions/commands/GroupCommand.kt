@@ -125,19 +125,24 @@ public open class GroupCommand(
      *
      * @param event The message creation event.
      */
-    override suspend fun call(event: MessageCreateEvent, args: Array<String>, skipChecks: Boolean) {
+    override suspend fun call(
+        event: MessageCreateEvent,
+        commandName: String,
+        args: Array<String>,
+        skipChecks: Boolean
+    ) {
         if (skipChecks || !runChecks(event)) {
             return
         }
 
-        val commandName = args.firstOrNull()?.toLowerCase()
+        val command = args.firstOrNull()?.toLowerCase()
         val remainingArgs = args.drop(1).toTypedArray()
-        val subCommand = getCommand(commandName)
+        val subCommand = getCommand(command)
 
         if (subCommand == null) {
-            super.call(event, args, true)
+            super.call(event, commandName, args, true)
         } else {
-            subCommand.call(event, remainingArgs)
+            subCommand.call(event, commandName, remainingArgs)
         }
     }
 

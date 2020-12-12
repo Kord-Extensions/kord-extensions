@@ -15,11 +15,13 @@ import io.sentry.SentryLevel
  *
  * @param command Respective command for this context object.
  * @param event Event that triggered this command.
+ * @param commandName Command name given by the user to invoke the command - lower-cased.
  * @param args Array of string arguments for this command.
  */
 public open class CommandContext(
     public open val command: Command,
     public open val event: MessageCreateEvent,
+    public open val commandName: String,
     public open val args: Array<String>
 ) {
     /**

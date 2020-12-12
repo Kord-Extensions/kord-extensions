@@ -184,13 +184,21 @@ public open class Command(public val extension: Extension) {
      * is printed.
      *
      * @param event The message creation event.
+     * @param commandName The name used to invoke this command.
+     * @param args Array of command arguments.
+     * @param skipChecks Whether to skip testing the command's checks.
      */
-    public open suspend fun call(event: MessageCreateEvent, args: Array<String>, skipChecks: Boolean = false) {
+    public open suspend fun call(
+        event: MessageCreateEvent,
+        commandName: String,
+        args: Array<String>,
+        skipChecks: Boolean = false
+    ) {
         if (!skipChecks && !runChecks(event)) {
             return
         }
 
-        val context = CommandContext(this, event, args)
+        val context = CommandContext(this, event, commandName, args)
 
         val firstBreadcrumb = if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
             val channel = event.message.getChannelOrNull()
