@@ -1,5 +1,8 @@
 # Home
 
+[![Docs: You are here](https://img.shields.io/static/v1?label=Docs&message=You%20are%20here&color=7289DA&style=for-the-badge&logo=read-the-docs)](https://kord-extensions.docs.kotlindiscord.com/) [![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/gjXqqCS) [![Build Status](https://img.shields.io/github/workflow/status/Kotlin-Discord/kord-extensions/CI/root?logo=github&style=for-the-badge)](https://github.com/Kotlin-Discord/kord-extensions/actions?query=workflow%3ACI+branch%3Aroot) <br />
+[![Snapshot](https://img.shields.io/nexus/s/com.kotlindiscord.kord.extensions/kord-extensions?color=orange&label=Snapshot&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions) [![Release](https://img.shields.io/nexus/r/com.kotlindiscord.kord.extensions/kord-extensions?nexusVersion=3&color=blue&label=Release&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-releases:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions)
+
 Kord Extensions is an addon for the excellent [Kord library](https://github.com/kordlib/kord). It intends to provide a
 framework for larger bot projects, with easy-to-use commands, rich argument parsing and event handling, wrapped up 
 into individual extension classes.
@@ -17,7 +20,8 @@ Discord.py). Despite this, we still strive to provide an idiomatic API that make
     annotation-based autowire system for getting things registered.
 
     In contrast, Kord Extensions provides a less magical approach that is more closely tied to object-oriented
-    programming, and may be more suitable for embedding into other applications. At the end of the day, though, the
+    programming, and may be more suitable for embedding into other applications. In addition, it provides many useful
+    utilities and niceties that make working with Kord a breeze. At the end of the day, though, the
     choice is yours - both approaches have pros and cons, and it's worth checking both out to see what you like
     better!
 
@@ -25,7 +29,7 @@ Discord.py). Despite this, we still strive to provide an idiomatic API that make
 
 To make use of Kord Extensions, update your build script to add
 `https://maven.kotlindiscord.com/repository/maven-snapshots/` as a Maven repository, and use 
-`com.kotlindiscord.kord.extensions:kord-extneions:VERSION` as the Maven coordinate. For a list of available versions, 
+`com.kotlindiscord.kord.extensions:kord-extensions:VERSION` as the Maven coordinate. For a list of available versions, 
 [take a look at Nexus](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions).
 
 We do not currently have a strict semantic versioning system in place. We'll explore this later if needed, but right 
