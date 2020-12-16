@@ -56,5 +56,11 @@ public open class CommandContext(
         type: String? = null,
 
         data: Map<String, Any> = mapOf()
-    ): Breadcrumb = command.extension.bot.sentry.createBreadcrumb(category, level, message, type, data)
+    ): Breadcrumb {
+        val crumb = command.extension.bot.sentry.createBreadcrumb(category, level, message, type, data)
+
+        breadcrumbs.add(crumb)
+
+        return crumb
+    }
 }

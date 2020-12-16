@@ -32,5 +32,11 @@ public open class EventContext<T : Any>(
         type: String? = null,
 
         data: Map<String, Any> = mapOf()
-    ): Breadcrumb = eventHandler.extension.bot.sentry.createBreadcrumb(category, level, message, type, data)
+    ): Breadcrumb {
+        val crumb = eventHandler.extension.bot.sentry.createBreadcrumb(category, level, message, type, data)
+
+        breadcrumbs.add(crumb)
+
+        return crumb
+    }
 }
