@@ -16,5 +16,8 @@ jobs:
           python-version: 3.x
 
       - name: Relay release
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
         run: |
           python .github/relay_release.py
