@@ -1,2 +1,2 @@
 group = "com.kotlindiscord"
-version = "1.4.0-RC3"
+version = "1.4.0-SNAPSHOT"
