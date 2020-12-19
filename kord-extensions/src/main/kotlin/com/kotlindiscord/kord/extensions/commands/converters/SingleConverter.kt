@@ -116,16 +116,21 @@ public abstract class SingleConverter<T : Any> : Converter<T>(true) {
      *
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
+     *
+     * @param outputError Optionally, provide `true` to fail parsing and return errors if the converter throws a
+     * [ParseException], instead of continuing.
      */
     public open fun toOptional(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
-        errorTypeString: String? = null
+        errorTypeString: String? = null,
+        outputError: Boolean = false
     ): OptionalConverter<T?> = SingleToOptionalConverter(
         this,
         signatureTypeString,
         showTypeInSignature,
-        errorTypeString
+        errorTypeString,
+        outputError
     )
 
     /**

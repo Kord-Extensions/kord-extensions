@@ -10,8 +10,12 @@ import kotlin.reflect.KProperty
  * Abstract base class for an optional single converter.
  *
  * This works just like [SingleConverter], but the value can be nullable and it can never be required.
+ *
+ * @property outputError Whether the argument parser should output parsing errors on invalid arguments.
  */
-public abstract class OptionalConverter<T : Any?> : Converter<T>(false) {
+public abstract class OptionalConverter<T : Any?>(
+    public val outputError: Boolean = false
+) : Converter<T>(false) {
     /**
      * The parsed value.
      *

@@ -1,10 +1,10 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.commands.converters.impl.*
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.*
 import dev.kord.core.entity.channel.Channel
-import com.kotlindiscord.kord.extensions.commands.converters.impl.*
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import net.time4j.IsoUnit
 import java.time.Duration
 
@@ -145,8 +145,8 @@ public fun Arguments.user(displayName: String): SingleConverter<User> =
  *
  * @see BooleanConverter
  */
-public fun Arguments.optionalBoolean(displayName: String): OptionalConverter<Boolean?> =
-    arg(displayName, BooleanConverter().toOptional())
+public fun Arguments.optionalBoolean(displayName: String, outputError: Boolean = false): OptionalConverter<Boolean?> =
+    arg(displayName, BooleanConverter().toOptional(outputError = outputError))
 
 /**
  * Create an optional channel argument converter, for single arguments.
@@ -156,48 +156,53 @@ public fun Arguments.optionalBoolean(displayName: String): OptionalConverter<Boo
 public fun Arguments.optionalChannel(
     displayName: String,
     requireSameGuild: Boolean = true,
-    requiredGuild: (suspend () -> Snowflake)? = null
-): OptionalConverter<Channel?> = arg(displayName, ChannelConverter(requireSameGuild, requiredGuild).toOptional())
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    outputError: Boolean = false
+): OptionalConverter<Channel?> = arg(
+    displayName,
+    ChannelConverter(requireSameGuild, requiredGuild)
+        .toOptional(outputError = outputError)
+)
 
 /**
  * Create an optional decimal converter, for single arguments.
  *
  * @see DecimalConverter
  */
-public fun Arguments.optionalDecimal(displayName: String): OptionalConverter<Double?> =
-    arg(displayName, DecimalConverter().toOptional())
+public fun Arguments.optionalDecimal(displayName: String, outputError: Boolean = false): OptionalConverter<Double?> =
+    arg(displayName, DecimalConverter().toOptional(outputError = outputError))
 
 /**
  * Create an optional Java 8 Duration converter, for single arguments.
  *
  * @see DurationConverter
  */
-public fun Arguments.optionalDuration(displayName: String): OptionalConverter<Duration?> =
-    arg(displayName, DurationConverter().toOptional())
+public fun Arguments.optionalDuration(displayName: String, outputError: Boolean = false): OptionalConverter<Duration?> =
+    arg(displayName, DurationConverter().toOptional(outputError = outputError))
 
 /**
  * Create an optional email converter, for single arguments.
  *
  * @see EmailConverter
  */
-public fun Arguments.optionalEmail(displayName: String): OptionalConverter<String?> =
-    arg(displayName, EmailConverter().toOptional())
+public fun Arguments.optionalEmail(displayName: String, outputError: Boolean = false): OptionalConverter<String?> =
+    arg(displayName, EmailConverter().toOptional(outputError = outputError))
 
 /**
  * Create an optional emoji converter, for single arguments.
  *
  * @see EmojiConverter
  */
-public fun Arguments.optionalEmoji(displayName: String): OptionalConverter<GuildEmoji?> =
-    arg(displayName, EmojiConverter().toOptional())
+public fun Arguments.optionalEmoji(displayName: String, outputError: Boolean = false): OptionalConverter<GuildEmoji?> =
+    arg(displayName, EmojiConverter().toOptional(outputError = outputError))
 
 /**
  * Create an optional guild converter, for single arguments.
  *
  * @see GuildConverter
  */
-public fun Arguments.optionalGuild(displayName: String): OptionalConverter<Guild?> =
-    arg(displayName, GuildConverter().toOptional())
+public fun Arguments.optionalGuild(displayName: String, outputError: Boolean = false): OptionalConverter<Guild?> =
+    arg(displayName, GuildConverter().toOptional(outputError = outputError))
 
 /**
  * Create a member converter, for single arguments.
@@ -206,9 +211,10 @@ public fun Arguments.optionalGuild(displayName: String): OptionalConverter<Guild
  */
 public fun Arguments.optionalMember(
     displayName: String,
-    requiredGuild: (suspend () -> Snowflake)?
+    requiredGuild: (suspend () -> Snowflake)?,
+    outputError: Boolean = false
 ): OptionalConverter<Member?> =
-    arg(displayName, MemberConverter(requiredGuild).toOptional())
+    arg(displayName, MemberConverter(requiredGuild).toOptional(outputError = outputError))
 
 /**
  * Create an optional message converter, for single arguments.
@@ -218,16 +224,25 @@ public fun Arguments.optionalMember(
 public fun Arguments.optionalMessage(
     displayName: String,
     requireGuild: Boolean = false,
-    requiredGuild: (suspend () -> Snowflake)? = null
-): OptionalConverter<Message?> = arg(displayName, MessageConverter(requireGuild, requiredGuild).toOptional())
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    outputError: Boolean = false
+): OptionalConverter<Message?> = arg(
+    displayName,
+    MessageConverter(requireGuild, requiredGuild)
+        .toOptional(outputError = outputError)
+)
 
 /**
  * Create an optional whole number converter, for single arguments.
  *
  * @see NumberConverter
  */
-public fun Arguments.optionalNumber(displayName: String, radix: Int = 10): OptionalConverter<Long?> =
-    arg(displayName, NumberConverter(radix).toOptional())
+public fun Arguments.optionalNumber(
+    displayName: String,
+    outputError: Boolean = false,
+    radix: Int = 10
+): OptionalConverter<Long?> =
+    arg(displayName, NumberConverter(radix).toOptional(outputError = outputError))
 
 /**
  * Create an optional regex converter, for single arguments.
@@ -236,9 +251,10 @@ public fun Arguments.optionalNumber(displayName: String, radix: Int = 10): Optio
  */
 public fun Arguments.optionalRegex(
     displayName: String,
-    options: Set<RegexOption> = setOf()
+    options: Set<RegexOption> = setOf(),
+    outputError: Boolean = false
 ): OptionalConverter<Regex?> =
-    arg(displayName, RegexConverter(options).toOptional())
+    arg(displayName, RegexConverter(options).toOptional(outputError = outputError))
 
 /**
  * Create an optional role converter, for single arguments.
@@ -247,33 +263,37 @@ public fun Arguments.optionalRegex(
  */
 public fun Arguments.optionalRole(
     displayName: String,
-    requiredGuild: (suspend () -> Snowflake)?
+    requiredGuild: (suspend () -> Snowflake)?,
+    outputError: Boolean = false
 ): OptionalConverter<Role?> =
-    arg(displayName, RoleConverter(requiredGuild).toOptional())
+    arg(displayName, RoleConverter(requiredGuild).toOptional(outputError = outputError))
 
 /**
  * Create an optional string converter, for single arguments.
  *
  * @see StringConverter
  */
-public fun Arguments.optionalString(displayName: String): OptionalConverter<String?> =
-    arg(displayName, StringConverter().toOptional())
+public fun Arguments.optionalString(displayName: String, outputError: Boolean = false): OptionalConverter<String?> =
+    arg(displayName, StringConverter().toOptional(outputError = outputError))
 
 /**
  * Create an optional Time4J Duration converter, for single arguments.
  *
  * @see T4JDurationConverter
  */
-public fun Arguments.optionalT4jDuration(displayName: String): OptionalConverter<net.time4j.Duration<IsoUnit>?> =
-    arg(displayName, T4JDurationConverter().toOptional())
+public fun Arguments.optionalT4jDuration(
+    displayName: String,
+    outputError: Boolean = false
+): OptionalConverter<net.time4j.Duration<IsoUnit>?> =
+    arg(displayName, T4JDurationConverter().toOptional(outputError = outputError))
 
 /**
  * Create an optional user converter, for single arguments.
  *
  * @see UserConverter
  */
-public fun Arguments.optionalUser(displayName: String): OptionalConverter<User?> =
-    arg(displayName, UserConverter().toOptional())
+public fun Arguments.optionalUser(displayName: String, outputError: Boolean = false): OptionalConverter<User?> =
+    arg(displayName, UserConverter().toOptional(outputError = outputError))
 
 // endregion
 

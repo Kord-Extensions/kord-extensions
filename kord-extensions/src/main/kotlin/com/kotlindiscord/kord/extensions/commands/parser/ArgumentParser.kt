@@ -198,7 +198,7 @@ public open class ArgumentParser(private val bot: ExtensibleBot, private val spl
                         currentValue = null
                     }
                 } catch (e: ParseException) {
-                    if (converter.required || hasKwargs) {
+                    if (converter.required || converter.outputError || hasKwargs) {
                         throw ParseException(
                             converter.handleError(e, currentValue, context, bot)
                         )
