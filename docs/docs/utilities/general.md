@@ -1,4 +1,4 @@
-# Utilities
+# General
 
 To make your life easier, Kord Extensions contains a number of utilities. These utilities have been categorized by
 type, to make things easier to find.

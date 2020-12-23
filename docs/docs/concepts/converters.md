@@ -17,7 +17,7 @@ Type                  | Description
 `CoalescingConverter` | A converter representing a required argument converted from a list of strings, combined into a single value
 `DefaultingConverter` | A converter representing a single argument with a default value, converted from up to one supplied string
 `MultiConverter`      | A converter representing an argument converted from a list of strings, one value per string - which may be either required or optional
-`OptionalConverter`   | A converter representing a single, optional/nullable argument converted from up to one supplied string
+`OptionalConverter`   | A converter representing a single, optional/nullable argument converted from up to one supplied string, with an optional `outputError` property that will fail the parse and return an error if there was a problem during parsing
 `SingleConverter`     | A converter representing a single, required argument converted from exactly one supplied string
 
 There are also some compound converters, which combine the behaviours found in other converters, such as: 

@@ -6,17 +6,19 @@ nav:
   - getting-started.md
 
   - Concepts:
-    - concepts/bot.md
-    - concepts/extensions.md
-    - concepts/events.md
-    - concepts/checks.md
-    - concepts/commands.md
-    - concepts/converters.md
+      - concepts/bot.md
+      - concepts/extensions.md
+      - concepts/events.md
+      - concepts/checks.md
+      - concepts/commands.md
+      - concepts/converters.md
 
-  - utils.md
+  - Utilities:
+      - utilities/general.md
+      - utilities/paginator.md
 
   - Integrations:
-    - integrations/sentry.md
+      - integrations/sentry.md
 
   - Dokka API Docs: "/-kord%20-extensions/"
 

@@ -1,10 +1,16 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
-import dev.kord.core.behavior.channel.createEmbed
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.booleanList
+import com.kotlindiscord.kord.extensions.commands.converters.defaultingEnum
+import com.kotlindiscord.kord.extensions.commands.converters.enum
+import com.kotlindiscord.kord.extensions.commands.converters.string
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.pagination.Paginator
+import com.kotlindiscord.kord.extensions.pagination.pages.Page
+import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import dev.kord.core.behavior.channel.createEmbed
 
 class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     override val name = "test"
@@ -55,6 +61,54 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                         }
                     }
                 }
+            }
+        }
+
+        command {
+            name = "page"
+            description = "Paginator test"
+
+            action {
+                val pages = Pages()
+
+                (0..2).forEach {
+                    pages.addPage(
+                        Page(
+                            "Short page $it.",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "Expanded",
+
+                        Page(
+                            "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "MASSIVE GROUP",
+
+                        Page(
+                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+                }
+
+                Paginator(
+                    bot,
+                    targetMessage = event.message,
+                    pages = pages,
+                    keepEmbed = true
+                ).send()
             }
         }
     }

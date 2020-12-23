@@ -1,12 +1,14 @@
 package com.kotlindiscord.kord.extensions.extensions
 
-import dev.kord.core.behavior.channel.createEmbed
-import dev.kord.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.Paginator
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.SubCommand
+import com.kotlindiscord.kord.extensions.pagination.Paginator
+import com.kotlindiscord.kord.extensions.pagination.pages.Page
+import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -38,9 +40,8 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                 if (args.isEmpty()) {
                     Paginator(
                         bot,
-                        message.channel,
-                        "Command Help",
-                        formatMainHelp(gatherCommands(event)),
+                        targetMessage = message,
+                        pages = formatMainHelp(gatherCommands(event), event),
                         owner = message.author,
                         timeout = PAGE_TIMEOUT,
                         keepEmbed = true
@@ -70,24 +71,39 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     /**
      * Generate help message by formatting a [List] of [Command] objects.
      */
-    public fun formatMainHelp(commands: List<Command>): List<String> {
-        return commands.sortedBy { it.name }.chunked(HELP_PER_PAGE).map { list ->
+    public suspend fun formatMainHelp(commands: List<Command>, event: MessageCreateEvent): Pages {
+        val pages = Pages()
+        var totalCommands = 0
+
+        commands.filter { it.runChecks(event) }.sortedBy { it.name }.chunked(HELP_PER_PAGE).map { list ->
             list.joinToString(separator = "\n\n") { command ->
+                totalCommands += 1
+
                 with(command) {
                     var desc = "**${bot.prefix}$name $signature**\n${description.takeWhile { it != '\n' }}\n"
 
-                    if (command.aliases.isNotEmpty()) {
-                        desc += "\n**Aliases: **" + command.aliases.joinToString(", ") { "`$it`" }
+                    if (aliases.isNotEmpty()) {
+                        desc += "\n**Aliases: **" + aliases.joinToString(", ") { "`$it`" }
                     }
 
-                    if (command is GroupCommand) {
-                        desc += "\n**Subcommands:** " + command.commands.joinToString(", ") { "`${it.name}`" }
+                    if (this is GroupCommand) {
+                        desc += "\n**Subcommands:** " + commands.joinToString(", ") { "`${it.name}`" }
                     }
 
                     desc
                 }
             }
+        }.forEach {
+            pages.addPage(
+                Page(
+                    description = it,
+                    title = "All Commands",
+                    footer = "$totalCommands commands available"
+                )
+            )
         }
+
+        return pages
     }
 
     /**
