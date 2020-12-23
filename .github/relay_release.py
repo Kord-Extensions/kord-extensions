@@ -9,6 +9,9 @@ webhook_url = os.environ["WEBHOOK_URL"]
 
 url = f"https://api.github.com/repos/Kotlin-Discord/kord-extensions/releases/tags/{tag}"
 
+print(f"Tag: {tag}")
+print(f"URL: {url}")
+
 r = request.urlopen(url)
 
 release: Dict[str, Any] = json.load(r)
