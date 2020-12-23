@@ -9,6 +9,8 @@ com.kotlindiscord.kord.extensions.commands.converters.impl
 com.kotlindiscord.kord.extensions.commands.parser
 com.kotlindiscord.kord.extensions.events
 com.kotlindiscord.kord.extensions.extensions
+com.kotlindiscord.kord.extensions.pagination
+com.kotlindiscord.kord.extensions.pagination.pages
 com.kotlindiscord.kord.extensions.parsers
 com.kotlindiscord.kord.extensions.sentry
 com.kotlindiscord.kord.extensions.utils
