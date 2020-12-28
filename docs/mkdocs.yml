@@ -18,6 +18,7 @@ nav:
       - utilities/paginator.md
 
   - Integrations:
+      - integrations/koin.md
       - integrations/sentry.md
 
   - Dokka API Docs: "/-kord%20-extensions/"

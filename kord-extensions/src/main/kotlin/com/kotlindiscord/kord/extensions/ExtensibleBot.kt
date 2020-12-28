@@ -28,6 +28,13 @@ import kotlinx.coroutines.flow.*
 import mu.KLogger
 import mu.KotlinLogging
 import net.time4j.tz.repo.TZDATA
+import org.koin.core.Koin
+import org.koin.core.KoinApplication
+import org.koin.core.logger.Level
+import org.koin.core.qualifier.StringQualifier
+import org.koin.dsl.koinApplication
+import org.koin.logger.slf4jLogger
+import java.io.File
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.reflect.KClass
@@ -48,6 +55,7 @@ import kotlin.reflect.full.primaryConstructor
  * @param token The Discord bot's login token.
  * @param guildsToFill Guild IDs to request all members for on connect. Set to null for all guilds, omit for none.
  * @param fillPresences Whether to request presences from the members retrieved by [guildsToFill].
+ * @param koinLogLevel Logging level Koin should use, defaulting to INFO.
  */
 public open class ExtensibleBot(
     private val token: String,
@@ -60,7 +68,8 @@ public open class ExtensibleBot(
     public open val messageCacheSize: Int = 10_000,
     public open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     public open val guildsToFill: List<Snowflake>? = listOf(),
-    public open val fillPresences: Boolean? = null
+    public open val fillPresences: Boolean? = null,
+    public open val koinLogLevel: Level = Level.INFO
 ) {
     /**
      * @suppress
@@ -70,7 +79,7 @@ public open class ExtensibleBot(
     /**
      * Sentry adapter, for working with Sentry.
      */
-    public open val sentry: SentryAdapter by lazy { SentryAdapter() }
+    public open val sentry: SentryAdapter = SentryAdapter()
 
     /**
      * A list of all registered commands.
@@ -88,7 +97,7 @@ public open class ExtensibleBot(
     public open val extensions: MutableMap<String, Extension> = mutableMapOf()
 
     /** @suppress **/
-    public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel<Any>(1)
+    public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel(1)
 
     /** @suppress **/
     public open var initialized: Boolean = false
@@ -106,8 +115,26 @@ public open class ExtensibleBot(
             .asCoroutineDispatcher()
     }
 
+    /** Configured Koin application. **/
+    public open val koinApp: KoinApplication = koinApplication {
+        slf4jLogger(koinLogLevel)
+        environmentProperties()
+
+        if (File("koin.properties").exists()) {
+            fileProperties("koin.properties")
+        }
+
+        modules()
+    }
+
+    /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
+    public val koin: Koin = koinApp.koin
+
     init {
         TZDATA.init()  // Set up time4j, since we use it
+
+        koin.declare(this, StringQualifier("bot"))
+        koin.declare(sentry, StringQualifier("sentry"))
     }
 
     /**
@@ -126,6 +153,8 @@ public open class ExtensibleBot(
                 this.intents = Intents(intents)
             }
         }
+
+        koin.declare(kord, StringQualifier("kord"))
 
         registerListeners()
         addDefaultExtensions()
