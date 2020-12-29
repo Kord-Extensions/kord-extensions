@@ -64,6 +64,6 @@ Name            | Qualifier  | Notes
 :-------------- | :--------: | :----
 `ExtensibleBot` | `"bot"`    | The current instance of the bot
 `Kord`          | `"kord"`   | Current Kord instance, **registered after `bot.start()` is called**
-`SentryAdapter` | `"sentry"` | Sentry adapter created for [the Sentry integration](/integrations/sentry.md)
+`SentryAdapter` | `"sentry"` | Sentry adapter created for [the Sentry integration](/integrations/sentry)
 
 We'll be updating this list further as parts of Kord Extensions are modularized.
