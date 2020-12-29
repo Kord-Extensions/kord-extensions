@@ -1,6 +1,6 @@
 # Koin
 
-[Kotlin](https://insert-koin.io/) is a lightweight service locator framework, written in pure Kotlin. It's a
+[Koin](https://insert-koin.io/) is a lightweight service locator framework, written in pure Kotlin. It's a
 fairly popular framework that's often used in place of a larger dependency injection framework like Dagger, and 
 Kord Extensions supports it as a first-class citizen.
 
