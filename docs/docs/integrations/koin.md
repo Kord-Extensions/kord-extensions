@@ -18,14 +18,23 @@ Kord Extensions supports it as a first-class citizen.
 
 ## Registering modules
 
-In order to register a Koin module, call the `koin.declare` function before you start your bot.
+In order to register a Koin module, call the `koin.loadModules` function before you start your bot.
 
 ```kotlin
 val config = MyBotConfig()
-val bot = ExtensibleBot(config.prefix, config.token)
+val bot = ExtensibleBot(
+    prefix = config.prefix, 
+    token = config.token
+)
 
 suspend fun main() {
-    bot.koin.declare(config)
+    bot.koin.loadModules(
+        listOf(
+            module {
+                single { config }
+            }
+        )
+    )
     
     bot.start()
 }

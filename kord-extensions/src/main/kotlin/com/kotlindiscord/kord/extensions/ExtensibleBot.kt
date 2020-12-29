@@ -32,7 +32,9 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.logger.Level
 import org.koin.core.qualifier.StringQualifier
+import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import org.koin.logger.slf4jLogger
 import java.io.File
 import java.util.*
@@ -131,10 +133,19 @@ public open class ExtensibleBot(
     public val koin: Koin = koinApp.koin
 
     init {
-        TZDATA.init()  // Set up time4j, since we use it
+        TZDATA.init()  // Set up time4j
 
-        koin.declare(this, StringQualifier("bot"))
-        koin.declare(sentry, StringQualifier("sentry"))
+        koin.loadModules(
+            listOf(
+                module {
+                    single(named("bot")) { this }
+                },
+
+                module {
+                    single(named("sentry")) { sentry }
+                }
+            )
+        )
     }
 
     /**
@@ -154,7 +165,13 @@ public open class ExtensibleBot(
             }
         }
 
-        koin.declare(kord, StringQualifier("kord"))
+        koin.loadModules(
+            listOf(
+                module {
+                    single(named("kord")) { kord }
+                }
+            )
+        )
 
         registerListeners()
         addDefaultExtensions()
