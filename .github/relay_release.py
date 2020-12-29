@@ -7,6 +7,9 @@ from urllib import request
 tag = os.environ["GITHUB_REF"]
 webhook_url = os.environ["WEBHOOK_URL"]
 
+if "/" in tag:
+    tag = tag.split("/")[-1]
+
 url = f"https://api.github.com/repos/Kotlin-Discord/kord-extensions/releases/tags/{tag}"
 
 print(f"Tag: {tag}")
