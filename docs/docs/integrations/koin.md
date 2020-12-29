@@ -1,7 +1,8 @@
 # Koin
 
-[Kotlin](https://insert-koin.io/) is a lightweight dependency injection framework, written in pure Kotlin. It's a
-fairly popular DI framework, and Kord Extensions supports it as a first-class citizen.
+[Kotlin](https://insert-koin.io/) is a lightweight service locator framework, written in pure Kotlin. It's a
+fairly popular framework that's often used in place of a larger dependency injection framework like Dagger, and 
+Kord Extensions supports it as a first-class citizen.
 
 ??? question "Do I have to use this?"
     Koin integration is entirely optional, but it cannot be unbundled from the main distribution at the moment. The
@@ -17,7 +18,7 @@ fairly popular DI framework, and Kord Extensions supports it as a first-class ci
 
 ## Registering modules
 
-In order to register a Koin module, call the `koin.declare` function, before you start your bot.
+In order to register a Koin module, call the `koin.declare` function before you start your bot.
 
 ```kotlin
 val config = MyBotConfig()
@@ -30,25 +31,39 @@ suspend fun main() {
 }
 ```
 
-## Using Koin in extensions
+## Using Koin
 
-All extensions provide a `koin` property, and a set of convenience functions that map directly to Koin's functions.
-To avoid name conflicts, these are prefixed with a `k`.
+If you'd like to make use of Koin in your extensions, you can extend `KoinExtension` instead of `Extension`. This
+class is functionally the same as `Extension`, but it implements the `KoinComponent` interface via the included
+`KoinAccessor` class. This means that all relevant Koin functions will be present within the extension, but they
+will delegate to the `koin` property on your `ExtensibleBot` instead of a global Koin context.
 
-* `kInject` -> `koin.inject`
-* `kInjectOrNull` -> `koin.injectOrNull`
-* `kGet` -> `koin.get`
-* `kGetOrNull` -> `koin.getOrNull`
+```kotlin
+class MyExtension(bot: ExtensibleBot) : KoinExtension(bot) {
+    val sentry: SentryAdapter by inject()
+}
+```
 
-These functions will always make use of the current `ExtensibleBot`'s `koin` property.
+If you need to make use of Koin in your other classes, you can extend `KoinAccessor` using composition. You can
+always extend the class directly as well, but composition is useful when your class already extends another class.
+
+```kotlin
+class MyClass(
+    bot: ExtensibleBot,
+    koinAccessor: KoinComponent = KoinAccessor(bot)
+): KoinComponent by koinAccessor {
+    val sentry: SentryAdapter by inject()
+}
+```
 
 ## Bundled modules
 
 The following modules are registered automatically.
-
 
 Name            | Qualifier  | Notes
 :-------------- | :--------: | :----
 `ExtensibleBot` | `"bot"`    | The current instance of the bot
 `Kord`          | `"kord"`   | Current Kord instance, **registered after `bot.start()` is called**
 `SentryAdapter` | `"sentry"` | Sentry adapter created for [the Sentry integration](/integrations/sentry.md)
+
+We'll be updating this list further as parts of Kord Extensions are modularized.

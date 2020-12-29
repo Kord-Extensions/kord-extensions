@@ -7,10 +7,6 @@ import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionLoadedEvent
 import com.kotlindiscord.kord.extensions.events.ExtensionUnloadedEvent
 import mu.KotlinLogging
-import org.koin.core.Koin
-import org.koin.core.parameter.ParametersDefinition
-import org.koin.core.qualifier.Qualifier
-import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
 
@@ -77,9 +73,6 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      * When an extension is unloaded, all the commands are removed from the bot.
      */
     public open val commands: MutableList<Command> = mutableListOf()
-
-    /** Quick access to this bot's Koin instance. **/
-    public open val koin: Koin = bot.koin
 
     /**
      * DSL function for easily registering a command.
@@ -199,44 +192,4 @@ public abstract class Extension(public val bot: ExtensibleBot) {
 
         return eventHandler
     }
-
-    /** Quick access to the current Koin context's `inject` function. **/
-    public inline fun <reified T : Any> kInject(
-        qualifier: Qualifier? = null,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null
-    ): Lazy<T> = koin.inject<T>(qualifier, mode, parameters)
-
-    /** Quick access to the current Koin context's `injectOrNull` function. **/
-    public inline fun <reified T : Any> kInjectOrNull(
-        qualifier: Qualifier? = null,
-        mode: LazyThreadSafetyMode = LazyThreadSafetyMode.SYNCHRONIZED,
-        noinline parameters: ParametersDefinition? = null
-    ): Lazy<T?> = koin.injectOrNull<T>(qualifier, mode, parameters)
-
-    /** Quick access to the current Koin context's `get` function. **/
-    public inline fun <reified T : Any> kGet(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
-    ): T = koin.get<T>(qualifier, parameters)
-
-    /** Quick access to the current Koin context's `getOrNull` function. **/
-    public inline fun <reified T : Any> kGetOrNull(
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
-    ): T? = koin.getOrNull<T>(qualifier, parameters)
-
-    /** Quick access to the current Koin context's `get` function. **/
-    public fun <T : Any> kGet(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
-    ): T = koin.get<T>(clazz, qualifier, parameters)
-
-    /** Quick access to the current Koin context's `getOrNull` function. **/
-    public fun <T : Any> kGetOrNull(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
-    ): T? = koin.getOrNull<T>(clazz, qualifier, parameters)
 }
