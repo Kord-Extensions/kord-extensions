@@ -69,7 +69,7 @@ public open class ExtensibleBot(
     public open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     public open val guildsToFill: List<Snowflake>? = listOf(),
     public open val fillPresences: Boolean? = null,
-    public open val koinLogLevel: Level = Level.INFO
+    public open val koinLogLevel: Level = Level.ERROR
 ) {
     /**
      * @suppress
