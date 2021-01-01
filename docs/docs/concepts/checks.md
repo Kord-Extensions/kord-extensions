@@ -46,6 +46,17 @@ Name         | Argument | Description
 `inGuild`    | `Guild`  | Asserts that an event fired within the given guild
 `notInGuild` | `Guild`  | Asserts that an event **did not** fire within the given guild
 
+### Permissions
+
+??? important "Channel overwrites"
+    Note that these checks currently only operate based on guild roles, and they ignore channel overwrites. If you
+    need checks for channel overwrites then please let us know, and we'll try to figure out a good solution.
+
+Name               | Argument     | Description
+:----------------- | :----------: | :-------------------------------------------------------------------------------------
+`hasPermission`    | `Permission` | Asserts that an event was fired by a user with the given permission
+`notHasPermission` | `Permission` | Asserts that an event was fired by a user **without** the given permission
+
 ### Roles
 
 Name                    | Argument | Description
