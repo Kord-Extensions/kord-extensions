@@ -24,7 +24,7 @@ note that Kord Extensions requires **Kotlin 1.4 or later**.
     repositories {
         maven {
             name = "Kotlin Discord"
-            url = "https://maven.kotlindiscord.com/repository/maven-snapshots/"
+            url = "https://maven.kotlindiscord.com/repository/maven-public/"
         }
     }
     

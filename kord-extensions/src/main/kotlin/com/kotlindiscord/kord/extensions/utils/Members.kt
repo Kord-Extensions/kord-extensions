@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Permission
-import dev.kord.common.entity.Permissions
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Role
 import kotlinx.coroutines.flow.toList
@@ -33,10 +32,5 @@ public suspend fun Member.getTopRole(): Role? = this.roles.toList().maxOrNull()
  * @receiver The [Member] check permissions for for
  * @return Whether the [Member] has the given permission, or the Administrator permission
  */
-public suspend fun Member.hasPermission(perm: Permission): Boolean {
-    val permissions = roles.toList()
-        .map { it.permissions }
-        .reduce { left, right -> Permissions(left.code + right.code) }
-
-    return perm in permissions || Permission.Administrator in permissions
-}
+public suspend fun Member.hasPermission(perm: Permission): Boolean =
+    perm in getPermissions()
