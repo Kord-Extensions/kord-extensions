@@ -61,8 +61,8 @@ instance and connect to Discord.
 bot.start()
 ```
 
-This function takes a number of optional arguments which - just like before - you should supply using keyword arguments
-where possible.
+This function takes an optional lambda, which you can use to provide an intents builder or presence builder via the 
+`presence` and `intents` DSL functions.
 
 ??? missing "Not Implemented: Sharding"
     Sharding is currently not supported. We haven't had a chance to look at it yet, as none of the developers are
@@ -70,10 +70,20 @@ where possible.
 
     If you need sharding, please contact us and we can work out the details.
 
-Name   |   Type   | Description
-:----- | :------: | :----------
-`presenceBuilder` | `PresenceBuilder.()` |  Provide a lambda here to set the bot's initial presence, defaulting to online with no activity
-`intents` | `IntentsBuilder.()?` | Provide a lambda here to provide a set of intents that your bot does and does not require
+Name       |   Type               | Description
+:--------- | :------------------: | :----------
+`intents`  | `IntentsBuilder.()`  | DSL function that allows you to provide a set of intents to use when logging into Discord - for more information, see [the Discord documentation on intents](https://discordpy.readthedocs.io/en/latest/intents.html)
+`presence` | `PresenceBuilder.()` | DSL function that allows you to specify a presence builder, used to set the bot's status and activity on Discord
+
+```kotlin
+bot.start {
+    intents { +Intents.all }
+
+    presence {  // This is the default behaviour if you don't provide your own presence builder
+        status = PresenceStatus.Online
+    }
+}
+```
 
 ## Properties
 

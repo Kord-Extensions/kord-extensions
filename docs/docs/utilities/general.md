@@ -33,6 +33,12 @@ inconsistent with how data is structured, bear in mind the following tips:
 * These classes were written long before Kord introduced its own optionals - they'll need to be revised to match Kord
   0.7.x and its APIs at some point
 
+## Koin
+
+Function      | Description
+:------------ | :----------
+`Koin.module` | Wrapper around Koin's `module` DSL function that immediately registers the module against the current Koin instance.
+
 ## Kord
 
 Property     | Description

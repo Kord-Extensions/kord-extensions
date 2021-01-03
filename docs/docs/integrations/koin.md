@@ -1,8 +1,8 @@
 # Koin
 
-[Koin](https://insert-koin.io/) is a lightweight service locator framework, written in pure Kotlin. It's a
-fairly popular framework that's often used in place of a larger dependency injection framework like Dagger, and 
-Kord Extensions supports it as a first-class citizen.
+[Koin](https://insert-koin.io/) is a lightweight service locator framework, written in pure Kotlin. It's a fairly
+popular framework that's often used in place of a larger dependency injection framework like Dagger, and Kord Extensions
+supports it as a first-class citizen.
 
 ??? question "Do I have to use this?"
     Koin integration is entirely optional, but it cannot be unbundled from the main distribution at the moment. The
@@ -12,9 +12,9 @@ Kord Extensions supports it as a first-class citizen.
     free to make use of it however you like.
 
 ??? tip "Koin contexts"
-    Koin is designed to be used with a single global context by default. In order to support multiple individual bots
-    in one application, however, Kord Extensions creates a separate Koin context for every instance of `ExtensibleBot`.
-    You can access it on the `ExtensibleBot#koin` property.
+    Koin is designed to be used with a single global context by default. In order to support multiple individual bots in one
+    application, however, Kord Extensions creates a separate Koin context for every instance of `ExtensibleBot`. You can
+    access it on the `ExtensibleBot#koin` property.
 
 ## Registering modules
 
@@ -22,30 +22,26 @@ In order to register a Koin module, call the `koin.loadModules` function before 
 
 ```kotlin
 val config = MyBotConfig()
+
 val bot = ExtensibleBot(
-    prefix = config.prefix, 
+    prefix = config.prefix,
     token = config.token
 )
 
 suspend fun main() {
-    bot.koin.loadModules(
-        listOf(
-            module {
-                single { config }
-            }
-        )
-    )
-    
+    bot.koin.module { single { config } }
+
     bot.start()
 }
 ```
 
 ## Using Koin
 
-If you'd like to make use of Koin in your extensions, you can extend `KoinExtension` instead of `Extension`. This
-class is functionally the same as `Extension`, but it implements the `KoinComponent` interface via the included
-`KoinAccessor` class. This means that all relevant Koin functions will be present within the extension, but they
-will delegate to the `koin` property on your `ExtensibleBot` instead of a global Koin context.
+If you'd like to make use of Koin in your extensions, you can extend `KoinExtension` instead of `Extension`. This class
+is functionally the same as `Extension`, but it implements the `KoinComponent` interface via the included
+`KoinAccessor` class. This means that all relevant Koin functions will be present within the extension, but they will
+delegate to the `koin` property on your `ExtensibleBot` instead of a global Koin context. You can also get direct access
+to the relevant Koin instance via the newly-exposed `k` property.
 
 ```kotlin
 class MyExtension(bot: ExtensibleBot) : KoinExtension(bot) {
@@ -53,26 +49,28 @@ class MyExtension(bot: ExtensibleBot) : KoinExtension(bot) {
 }
 ```
 
-If you need to make use of Koin in your other classes, you can extend `KoinAccessor` using composition. You can
-always extend the class directly as well, but composition is useful when your class already extends another class.
+If you need to make use of Koin in your other classes, you can extend `KoinAccessor` using composition. You can always
+extend the class directly as well, but composition is useful when your class already extends another class.
 
 ```kotlin
 class MyClass(
     bot: ExtensibleBot,
     koinAccessor: KoinComponent = KoinAccessor(bot)
-): KoinComponent by koinAccessor {
+) : KoinComponent by koinAccessor {
     val sentry: SentryAdapter by inject()
 }
 ```
 
 ## Bundled modules
 
-The following modules are registered automatically.
+The following modules are registered automatically. They do not have any qualifiers (it wouldn't make sense to have
+multiple instances registered at once in most cases), but you can supply your own alternatives as necessary by
+passing `override = true` to the `module` function when you create your module.
 
-Name            | Qualifier  | Notes
-:-------------- | :--------: | :----
-`ExtensibleBot` | `"bot"`    | The current instance of the bot
-`Kord`          | `"kord"`   | Current Kord instance, **registered after `bot.start()` is called**
-`SentryAdapter` | `"sentry"` | Sentry adapter created for [the Sentry integration](/integrations/sentry)
+Type            | Notes
+:-------------- | :----
+`ExtensibleBot` | The current instance of the bot
+`Kord`          | Current Kord instance, **registered after `bot.start()` is called**
+`SentryAdapter` | Sentry adapter created for [the Sentry integration](/integrations/sentry)
 
 We'll be updating this list further as parts of Kord Extensions are modularized.

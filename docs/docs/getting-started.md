@@ -1,7 +1,7 @@
 # Getting Started
 
-We recommend making use of Gradle for your build scripts, with a `kx_version` entry in your `gradle.properties`. Please
-note that Kord Extensions requires **Kotlin 1.4 or later**.
+We recommend making use of Gradle for your build scripts, with a `kordexVersion` entry in your `gradle.properties`. Please
+note that Kord (and Kord Extensions) requires **Kotlin 1.4 or later**.
 
 === "build.gradle.kts"
 
@@ -14,7 +14,7 @@ note that Kord Extensions requires **Kotlin 1.4 or later**.
     }
     
     dependencies {
-        implementation("com.kotlindiscord.kord.extensions:kord-extensions:$kx_version")
+        implementation("com.kotlindiscord.kord.extensions:kord-extensions:$kordexVersion")
     }
     ```
 
@@ -29,7 +29,7 @@ note that Kord Extensions requires **Kotlin 1.4 or later**.
     }
     
     dependencies {
-        implementation "com.kotlindiscord.kord.extensions:kord-extensions:$kx_version"
+        implementation "com.kotlindiscord.kord.extensions:kord-extensions:$kordexVersion"
     }
     ```
 
