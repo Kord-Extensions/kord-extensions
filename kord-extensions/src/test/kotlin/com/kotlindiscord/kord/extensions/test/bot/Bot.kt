@@ -10,7 +10,7 @@ suspend fun main() {
         koinLogLevel = Level.DEBUG
     )
 
-    bot.addExtension(TestExtension::class)
+    bot.addExtension(::TestExtension)
 
     bot.start()
 }

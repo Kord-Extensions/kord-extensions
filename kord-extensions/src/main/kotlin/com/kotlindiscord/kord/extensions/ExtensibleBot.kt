@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions
 
+import com.kotlindiscord.kord.extensions.builders.StartBuilder
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
@@ -7,8 +8,8 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.SentryExtension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.utils.module
 import com.kotlindiscord.kord.extensions.utils.parse
-import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
@@ -20,7 +21,6 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
-import dev.kord.gateway.builder.PresenceBuilder
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
@@ -31,9 +31,7 @@ import net.time4j.tz.repo.TZDATA
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.logger.Level
-import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
-import org.koin.dsl.module
 import org.koin.logger.slf4jLogger
 import java.io.File
 import java.util.*
@@ -134,43 +132,29 @@ public open class ExtensibleBot(
     init {
         TZDATA.init()  // Set up time4j
 
-        koin.loadModules(
-            listOf(
-                module {
-                    single(named("bot")) { this }
-                },
-
-                module {
-                    single(named("sentry")) { sentry }
-                }
-            )
-        )
+        koin.module { single { this@ExtensibleBot } }
+        koin.module { single { sentry } }
     }
 
     /**
      * This function kicks off the process, by setting up the bot and having it login.
      */
-    public open suspend fun start(
-        presenceBuilder: PresenceBuilder.() -> Unit = { status = PresenceStatus.Online },
-        intents: (Intents.IntentsBuilder.() -> Unit)? = null
-    ) {
+    public open suspend fun start(builder: suspend StartBuilder.() -> Unit = {}) {
+        val startBuilder = StartBuilder()
+
+        builder.invoke(startBuilder)
+
         kord = Kord(token) {
             cache {
                 messages(lruCache(messageCacheSize))
             }
 
-            if (intents != null) {
-                this.intents = Intents(intents)
+            if (startBuilder.intentsBuilder != null) {
+                this.intents = Intents(startBuilder.intentsBuilder!!)
             }
         }
 
-        koin.loadModules(
-            listOf(
-                module {
-                    single(named("kord")) { kord }
-                }
-            )
-        )
+        koin.module { single { kord } }
 
         registerListeners()
         addDefaultExtensions()
@@ -183,7 +167,7 @@ public open class ExtensibleBot(
             }
         }
 
-        kord.login(presenceBuilder)
+        kord.login(startBuilder.presenceBuilder)
     }
 
     /** This function sets up all of the bot's default event listeners. **/
@@ -370,17 +354,38 @@ public open class ExtensibleBot(
     /**
      * Install an [Extension] to this bot.
      *
-     * This function will instantiate the given extension class, call its [Extension.setup]
-     * function, and store it in the [extensions] map.
+     * This function will instantiate the given extension classand store the resulting extension object, ready to be
+     * set up when the next [ReadyEvent] happens.
      *
      * @param extension The [Extension] class to install.
      * @throws InvalidExtensionException Thrown if the extension has no primary constructor.
      */
     @Throws(InvalidExtensionException::class)
+    @Deprecated(
+        "Use the newer addExtension(builder) function instead. It's shorter and more flexible.",
+        ReplaceWith("this.addExtension(builder)", "com.kotlindiscord.kord.extensions.ExtensibleBot"),
+        DeprecationLevel.WARNING
+    )
     public open fun addExtension(extension: KClass<out Extension>) {
         val ctor = extension.primaryConstructor ?: throw InvalidExtensionException(extension, "No primary constructor")
 
         val extensionObj = ctor.call(this)
+
+        extensions[extensionObj.name] = extensionObj
+    }
+
+    /**
+     * Install an [Extension] to this bot.
+     *
+     * This function will call the given builder function and store the resulting extension object, ready to be
+     * set up when the next [ReadyEvent] happens.
+     *
+     * @param builder Builder function (or extension constructor) that takes an [ExtensibleBot] instance and
+     * returns an [Extension].
+     */
+    @Throws(InvalidExtensionException::class)
+    public open fun addExtension(builder: (ExtensibleBot) -> Extension) {
+        val extensionObj = builder.invoke(this)
 
         extensions[extensionObj.name] = extensionObj
     }

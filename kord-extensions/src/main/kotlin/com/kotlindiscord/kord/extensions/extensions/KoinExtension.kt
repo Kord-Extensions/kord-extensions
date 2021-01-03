@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.KoinAccessor
+import org.koin.core.Koin
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 
@@ -10,4 +11,7 @@ import org.koin.core.component.KoinComponent
 public abstract class KoinExtension(
     bot: ExtensibleBot,
     koinAccessor: KoinComponent = KoinAccessor(bot)
-) : Extension(bot), KoinComponent by koinAccessor
+) : Extension(bot), KoinComponent by koinAccessor {
+    /** Quick access to the bot's [Koin] instance. **/
+    public val k: Koin get() = bot.koin
+}
