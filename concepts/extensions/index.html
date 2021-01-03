@@ -645,7 +645,7 @@ abstract members - the <code>name</code> property and <code>setup</code> functio
 7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">val</span> <span class="py">bot</span> <span class="p">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span>
 
 <span class="n">suspend</span> <span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">bot</span><span class="p">.</span><span class="n">addExtension</span><span class="p">(</span><span class="n">TestExtension</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+    <span class="n">bot</span><span class="p">.</span><span class="n">addExtension</span><span class="p">(</span><span class="o">::</span><span class="n">TestExtension</span><span class="p">)</span>
 
     <span class="n">bot</span><span class="p">.</span><span class="n">login</span><span class="p">()</span>
 <span class="p">}</span>

@@ -658,8 +658,8 @@ prioritise it.</p>
 used. This can be done at any point, but we recommend doing it before you connect to Discord, as many extensions rely
 on Discord's <code>ReadyEvent</code> to set up.</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">bot</span><span class="p">.</span><span class="n">addExtension</span><span class="p">(</span><span class="n">LogsExtension</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
-<span class="n">bot</span><span class="p">.</span><span class="n">addExtension</span><span class="p">(</span><span class="n">TestExtension</span><span class="o">::</span><span class="k">class</span><span class="p">)</span>
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">bot</span><span class="p">.</span><span class="n">addExtension</span><span class="p">(</span><span class="o">::</span><span class="n">LogsExtension</span><span class="p">)</span>
+<span class="n">bot</span><span class="p">.</span><span class="n">addExtension</span><span class="p">(</span><span class="o">::</span><span class="n">TestExtension</span><span class="p">)</span>
 </code></pre></div>
 </td></tr></table>
 <h2 id="starting-up">Starting up</h2>
@@ -770,7 +770,7 @@ handful are <code>inline</code> for the sake of avoiding function call overhead.
 </tr>
 <tr>
 <td align="left"><code>addExtension</code></td>
-<td align="left">Instantiate and load an extension</td>
+<td align="left">Instantiate and load an extension via the given builder function (which may be the extension's constructor)</td>
 </tr>
 <tr>
 <td align="left"><code>loadExtension</code></td>
