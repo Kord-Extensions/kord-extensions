@@ -36,7 +36,7 @@ Once we've created our extension object, we'll need to register it to our [bot o
 val bot = ExtensibleBot(token, prefix)
 
 suspend fun main() {
-    bot.addExtension(TestExtension::class)
+    bot.addExtension(::TestExtension)
 
     bot.login()
 }

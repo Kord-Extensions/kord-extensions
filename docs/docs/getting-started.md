@@ -127,7 +127,7 @@ suspend fun main() {
     )
 
     // Add the extension class, the bot will instantiate it
-    bot.addExtension(TestExtension::class)
+    bot.addExtension(::TestExtension)
   
     // Start the bot, blocking the current coroutine
     bot.start()  

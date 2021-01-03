@@ -48,8 +48,8 @@ used. This can be done at any point, but we recommend doing it before you connec
 on Discord's `ReadyEvent` to set up.
 
 ```kotlin
-bot.addExtension(LogsExtension::class)
-bot.addExtension(TestExtension::class)
+bot.addExtension(::LogsExtension)
+bot.addExtension(::TestExtension)
 ```
 
 ## Starting up
@@ -113,6 +113,6 @@ Name | Description
 :--- | :----------
 `start` | Connect to Discord, blocking the coroutine scope
 `send` | Send an event to all event handlers - either a Kord `Event` or an `ExtensionEvent` object 
-`addExtension` | Instantiate and load an extension 
+`addExtension` | Instantiate and load an extension via the given builder function (which may be the extension's constructor) 
 `loadExtension` | Set up a previously-unloaded extension
 `unloadExtension` | Tear down a previously-loaded extension
