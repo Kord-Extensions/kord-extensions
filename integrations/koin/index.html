@@ -535,42 +535,51 @@
                 
                 
                 <h1 id="koin">Koin</h1>
-<p><a href="https://insert-koin.io/">Kotlin</a> is a lightweight service locator framework, written in pure Kotlin. It's a
-fairly popular framework that's often used in place of a larger dependency injection framework like Dagger, and 
-Kord Extensions supports it as a first-class citizen.</p>
+<p><a href="https://insert-koin.io/">Koin</a> is a lightweight service locator framework, written in pure Kotlin. It's a fairly
+popular framework that's often used in place of a larger dependency injection framework like Dagger, and Kord Extensions
+supports it as a first-class citizen.</p>
 <details class="question"><summary>Do I have to use this?</summary><p>Koin integration is entirely optional, but it cannot be unbundled from the main distribution at the moment. The
 integration is still in the early stages, and will be made more useful over time.</p>
 <p>We expect Koin integration to be more useful for users developing their own extensions, but you are of course
 free to make use of it however you like.</p>
 </details>
-<details class="tip"><summary>Koin contexts</summary><p>Koin is designed to be used with a single global context by default. In order to support multiple individual bots
-in one application, however, Kord Extensions creates a separate Koin context for every instance of <code>ExtensibleBot</code>.
-You can access it on the <code>ExtensibleBot#koin</code> property.</p>
+<details class="tip"><summary>Koin contexts</summary><p>Koin is designed to be used with a single global context by default. In order to support multiple individual bots in one
+application, however, Kord Extensions creates a separate Koin context for every instance of <code>ExtensibleBot</code>. You can
+access it on the <code>ExtensibleBot#koin</code> property.</p>
 </details>
 <h2 id="registering-modules">Registering modules</h2>
-<p>In order to register a Koin module, call the <code>koin.declare</code> function before you start your bot.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
-2
-3
-4
-5
-6
-7
-8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">val</span> <span class="py">config</span> <span class="p">=</span> <span class="n">MyBotConfig</span><span class="p">()</span>
-<span class="k">val</span> <span class="py">bot</span> <span class="p">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">config</span><span class="p">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">config</span><span class="p">.</span><span class="n">token</span><span class="p">)</span>
+<p>In order to register a Koin module, call the <code>koin.loadModules</code> function before you start your bot.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">val</span> <span class="py">config</span> <span class="p">=</span> <span class="n">MyBotConfig</span><span class="p">()</span>
+
+<span class="k">val</span> <span class="py">bot</span> <span class="p">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span>
+    <span class="n">prefix</span> <span class="p">=</span> <span class="n">config</span><span class="p">.</span><span class="n">prefix</span><span class="p">,</span>
+    <span class="n">token</span> <span class="p">=</span> <span class="n">config</span><span class="p">.</span><span class="n">token</span>
+<span class="p">)</span>
 
 <span class="n">suspend</span> <span class="k">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">bot</span><span class="p">.</span><span class="n">koin</span><span class="p">.</span><span class="n">declare</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">bot</span><span class="p">.</span><span class="n">koin</span><span class="p">.</span><span class="n">module</span> <span class="p">{</span> <span class="n">single</span> <span class="p">{</span> <span class="n">config</span> <span class="p">}</span> <span class="p">}</span>
 
     <span class="n">bot</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre></div>
 </td></tr></table>
 <h2 id="using-koin">Using Koin</h2>
-<p>If you'd like to make use of Koin in your extensions, you can extend <code>KoinExtension</code> instead of <code>Extension</code>. This
-class is functionally the same as <code>Extension</code>, but it implements the <code>KoinComponent</code> interface via the included
-<code>KoinAccessor</code> class. This means that all relevant Koin functions will be present within the extension, but they
-will delegate to the <code>koin</code> property on your <code>ExtensibleBot</code> instead of a global Koin context.</p>
+<p>If you'd like to make use of Koin in your extensions, you can extend <code>KoinExtension</code> instead of <code>Extension</code>. This class
+is functionally the same as <code>Extension</code>, but it implements the <code>KoinComponent</code> interface via the included
+<code>KoinAccessor</code> class. This means that all relevant Koin functions will be present within the extension, but they will
+delegate to the <code>koin</code> property on your <code>ExtensibleBot</code> instead of a global Koin context. You can also get direct access
+to the relevant Koin instance via the newly-exposed <code>k</code> property.</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MyExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">:</span> <span class="n">ExtensibleBot</span><span class="p">)</span> <span class="p">:</span> <span class="n">KoinExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span> <span class="p">{</span>
@@ -578,8 +587,8 @@ will delegate to the <code>koin</code> property on your <code>ExtensibleBot</cod
 <span class="p">}</span>
 </code></pre></div>
 </td></tr></table>
-<p>If you need to make use of Koin in your other classes, you can extend <code>KoinAccessor</code> using composition. You can
-always extend the class directly as well, but composition is useful when your class already extends another class.</p>
+<p>If you need to make use of Koin in your other classes, you can extend <code>KoinAccessor</code> using composition. You can always
+extend the class directly as well, but composition is useful when your class already extends another class.</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
 2
 3
@@ -588,35 +597,33 @@ always extend the class directly as well, but composition is useful when your cl
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span>
     <span class="n">bot</span><span class="p">:</span> <span class="n">ExtensibleBot</span><span class="p">,</span>
     <span class="n">koinAccessor</span><span class="p">:</span> <span class="n">KoinComponent</span> <span class="p">=</span> <span class="n">KoinAccessor</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span>
-<span class="p">):</span> <span class="n">KoinComponent</span> <span class="k">by</span> <span class="n">koinAccessor</span> <span class="p">{</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">KoinComponent</span> <span class="k">by</span> <span class="n">koinAccessor</span> <span class="p">{</span>
     <span class="k">val</span> <span class="py">sentry</span><span class="p">:</span> <span class="n">SentryAdapter</span> <span class="k">by</span> <span class="n">inject</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre></div>
 </td></tr></table>
 <h2 id="bundled-modules">Bundled modules</h2>
-<p>The following modules are registered automatically.</p>
+<p>The following modules are registered automatically. They do not have any qualifiers (it wouldn't make sense to have
+multiple instances registered at once in most cases), but you can supply your own alternatives as necessary by
+passing <code>override = true</code> to the <code>module</code> function when you create your module.</p>
 <table>
 <thead>
 <tr>
-<th align="left">Name</th>
-<th align="center">Qualifier</th>
+<th align="left">Type</th>
 <th align="left">Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td align="left"><code>ExtensibleBot</code></td>
-<td align="center"><code>"bot"</code></td>
 <td align="left">The current instance of the bot</td>
 </tr>
 <tr>
 <td align="left"><code>Kord</code></td>
-<td align="center"><code>"kord"</code></td>
 <td align="left">Current Kord instance, <strong>registered after <code>bot.start()</code> is called</strong></td>
 </tr>
 <tr>
 <td align="left"><code>SentryAdapter</code></td>
-<td align="center"><code>"sentry"</code></td>
 <td align="left">Sentry adapter created for <a href="/integrations/sentry">the Sentry integration</a></td>
 </tr>
 </tbody>

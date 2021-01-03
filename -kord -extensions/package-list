@@ -2,6 +2,7 @@ $dokka.format:html-v1
 $dokka.linkExtension:html
 
 com.kotlindiscord.kord.extensions
+com.kotlindiscord.kord.extensions.builders
 com.kotlindiscord.kord.extensions.checks
 com.kotlindiscord.kord.extensions.commands
 com.kotlindiscord.kord.extensions.commands.converters

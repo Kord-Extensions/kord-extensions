@@ -668,8 +668,8 @@ instance and connect to Discord.</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">bot</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
 </code></pre></div>
 </td></tr></table>
-<p>This function takes a number of optional arguments which - just like before - you should supply using keyword arguments
-where possible.</p>
+<p>This function takes an optional lambda, which you can use to provide an intents builder or presence builder via the 
+<code>presence</code> and <code>intents</code> DSL functions.</p>
 <details class="missing"><summary>Not Implemented: Sharding</summary><p>Sharding is currently not supported. We haven't had a chance to look at it yet, as none of the developers are
 currently working on bots that require sharding.</p>
 <p>If you need sharding, please contact us and we can work out the details.</p>
@@ -684,17 +684,32 @@ currently working on bots that require sharding.</p>
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>presenceBuilder</code></td>
-<td align="center"><code>PresenceBuilder.()</code></td>
-<td align="left">Provide a lambda here to set the bot's initial presence, defaulting to online with no activity</td>
+<td align="left"><code>intents</code></td>
+<td align="center"><code>IntentsBuilder.()</code></td>
+<td align="left">DSL function that allows you to provide a set of intents to use when logging into Discord - for more information, see <a href="https://discordpy.readthedocs.io/en/latest/intents.html">the Discord documentation on intents</a></td>
 </tr>
 <tr>
-<td align="left"><code>intents</code></td>
-<td align="center"><code>IntentsBuilder.()?</code></td>
-<td align="left">Provide a lambda here to provide a set of intents that your bot does and does not require</td>
+<td align="left"><code>presence</code></td>
+<td align="center"><code>PresenceBuilder.()</code></td>
+<td align="left">DSL function that allows you to specify a presence builder, used to set the bot's status and activity on Discord</td>
 </tr>
 </tbody>
 </table>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">bot</span><span class="p">.</span><span class="n">start</span> <span class="p">{</span>
+    <span class="n">intents</span> <span class="p">{</span> <span class="p">+</span><span class="n">Intents</span><span class="p">.</span><span class="n">all</span> <span class="p">}</span>
+
+    <span class="n">presence</span> <span class="p">{</span>  <span class="c1">// This is the default behaviour if you don&#39;t provide your own presence builder</span>
+        <span class="n">status</span> <span class="p">=</span> <span class="n">PresenceStatus</span><span class="p">.</span><span class="n">Online</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
 <h2 id="properties">Properties</h2>
 <p>A few properties are available to you, for getting access to Kord or querying some of the bot's state.</p>
 <details class="info"><summary>Further properties</summary><p>There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most

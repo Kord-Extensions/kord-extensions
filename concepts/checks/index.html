@@ -324,6 +324,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#permissions" class="md-nav__link">
+    Permissions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#roles" class="md-nav__link">
     Roles
   </a>
@@ -571,6 +578,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#permissions" class="md-nav__link">
+    Permissions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#roles" class="md-nav__link">
     Roles
   </a>
@@ -724,6 +738,31 @@ types of entity, so we have to manually maintain utilities that match specific e
 <td align="left"><code>notInGuild</code></td>
 <td align="center"><code>Guild</code></td>
 <td align="left">Asserts that an event <strong>did not</strong> fire within the given guild</td>
+</tr>
+</tbody>
+</table>
+<h3 id="permissions">Permissions</h3>
+<details class="important"><summary>Channel overwrites</summary><p>Note that these checks currently only operate based on guild roles, and they ignore channel overwrites. If you
+need checks for channel overwrites then please let us know, and we'll try to figure out a good solution.</p>
+</details>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>hasPermission</code></td>
+<td align="center"><code>Permission</code></td>
+<td align="left">Asserts that an event was fired by a user with the given permission</td>
+</tr>
+<tr>
+<td align="left"><code>notHasPermission</code></td>
+<td align="center"><code>Permission</code></td>
+<td align="left">Asserts that an event was fired by a user <strong>without</strong> the given permission</td>
 </tr>
 </tbody>
 </table>

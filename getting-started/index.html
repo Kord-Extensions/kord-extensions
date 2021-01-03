@@ -461,8 +461,8 @@
                 
                 
                 <h1 id="getting-started">Getting Started</h1>
-<p>We recommend making use of Gradle for your build scripts, with a <code>kx_version</code> entry in your <code>gradle.properties</code>. Please
-note that Kord Extensions requires <strong>Kotlin 1.4 or later</strong>.</p>
+<p>We recommend making use of Gradle for your build scripts, with a <code>kordexVersion</code> entry in your <code>gradle.properties</code>. Please
+note that Kord (and Kord Extensions) requires <strong>Kotlin 1.4 or later</strong>.</p>
 <div class="tabbed-set" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">build.gradle.kts</label><div class="tabbed-content">
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
  2
@@ -481,7 +481,7 @@ note that Kord Extensions requires <strong>Kotlin 1.4 or later</strong>.</p>
 <span class="p">}</span>
 
 <span class="n">dependencies</span> <span class="p">{</span>
-    <span class="n">implementation</span><span class="p">(</span><span class="s">&quot;com.kotlindiscord.kord.extensions:kord-extensions:$kx_version&quot;</span><span class="p">)</span>
+    <span class="n">implementation</span><span class="p">(</span><span class="s">&quot;com.kotlindiscord.kord.extensions:kord-extensions:$kordexVersion&quot;</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
 </td></tr></table>
@@ -499,12 +499,12 @@ note that Kord Extensions requires <strong>Kotlin 1.4 or later</strong>.</p>
 10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">repositories</span> <span class="o">{</span>
     <span class="n">maven</span> <span class="o">{</span>
         <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Kotlin Discord&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://maven.kotlindiscord.com/repository/maven-snapshots/&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://maven.kotlindiscord.com/repository/maven-public/&quot;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 
 <span class="n">dependencies</span> <span class="o">{</span>
-    <span class="n">implementation</span> <span class="s2">&quot;com.kotlindiscord.kord.extensions:kord-extensions:$kx_version&quot;</span>
+    <span class="n">implementation</span> <span class="s2">&quot;com.kotlindiscord.kord.extensions:kord-extensions:$kordexVersion&quot;</span>
 <span class="o">}</span>
 </code></pre></div>
 </td></tr></table>
