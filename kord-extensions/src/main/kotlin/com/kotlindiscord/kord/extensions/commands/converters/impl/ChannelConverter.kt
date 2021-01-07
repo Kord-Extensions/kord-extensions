@@ -69,7 +69,7 @@ public class ChannelConverter(
         }
 
         if (channel is GuildChannel && (requireSameGuild || requiredGuild != null)) {
-            val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId
+            val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id
 
             if (requireSameGuild && channel.guildId != guildId) {
                 return null  // Channel isn't in the right guild

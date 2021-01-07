@@ -38,7 +38,7 @@ public class RoleConverter(
     }
 
     private suspend fun findRole(arg: String, context: CommandContext, bot: ExtensibleBot): Role? {
-        val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId ?: return null
+        val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id ?: return null
         val guild = bot.kord.getGuild(guildId) ?: return null
 
         @Suppress("MagicNumber")

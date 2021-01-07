@@ -32,7 +32,7 @@ public abstract class OptionalConverter<T : Any?>(
      * here.
      *
      * @param arg [String] argument, provided by the user running the current command
-     * @param context Command context object, containing the event, message, and other command-related things
+     * @param context MessageCommand context object, containing the event, message, and other command-related things
      * @param bot Current instance of [ExtensibleBot], representing the currently-connected bot
      *
      * @return Whether you managed to convert the argument. If you don't want to provide extra context to the user,

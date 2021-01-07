@@ -1,11 +1,10 @@
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.*
-import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
-import com.kotlindiscord.kord.extensions.events.ExtensionLoadedEvent
-import com.kotlindiscord.kord.extensions.events.ExtensionUnloadedEvent
+import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -45,19 +44,31 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      * @suppress This is an internal API function used as part of extension lifecycle management.
      */
     public open suspend fun doSetup() {
-        this.setup()
-        loaded = true
+        this.setState(ExtensionState.LOADING)
 
-        bot.send(ExtensionLoadedEvent(bot, this))
+        try {
+            this.setup()
+        } catch (t: Throwable) {
+            this.setState(ExtensionState.FAILED_LOADING)
+            throw t
+        }
+
+        this.setState(ExtensionState.LOADED)
+    }
+
+    public open suspend fun setState(state: ExtensionState) {
+        bot.send(ExtensionStateEvent(bot, this, state))
+
+        this.state = state
     }
 
     /**
-     * Whether this extension is currently loaded.
-     *
-     * This is set during loading/unloading of the extension and is used to ensure
-     * things aren't being called when they shouldn't be.
+     * The current loading/unloading state of the extension.
      */
-    public open var loaded: Boolean = false
+    public open var state: ExtensionState = ExtensionState.UNLOADED
+
+    /** Check whether this extension's state is [ExtensionState.LOADED]. **/
+    public open val loaded: Boolean get() = state == ExtensionState.LOADED
 
     /**
      * List of registered event handlers.
@@ -72,7 +83,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * When an extension is unloaded, all the commands are removed from the bot.
      */
-    public open val commands: MutableList<Command> = mutableListOf()
+    public open val commands: MutableList<MessageCommand> = mutableListOf()
 
     /**
      * DSL function for easily registering a command.
@@ -81,8 +92,8 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun command(body: suspend Command.() -> Unit): Command {
-        val commandObj = Command(this)
+    public open suspend fun command(body: suspend MessageCommand.() -> Unit): MessageCommand {
+        val commandObj = MessageCommand(this)
         body.invoke(commandObj)
 
         return command(commandObj)
@@ -93,9 +104,9 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * You can use this if you have a custom command subclass you need to register.
      *
-     * @param commandObj Command object to register.
+     * @param commandObj MessageCommand object to register.
      */
-    public open suspend fun command(commandObj: Command): Command {
+    public open suspend fun command(commandObj: MessageCommand): MessageCommand {
         try {
             commandObj.validate()
             bot.addCommand(commandObj)
@@ -146,7 +157,17 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      * @suppress Internal function
      */
     public open suspend fun doUnload() {
-        this.unload()
+        var error: Throwable? = null
+
+        this.setState(ExtensionState.UNLOADING)
+
+        try {
+            this.unload()
+        } catch (t: Throwable) {
+            error = t
+
+            this.setState(ExtensionState.FAILED_UNLOADING)
+        }
 
         for (handler in eventHandlers) {
             handler.job?.cancel()
@@ -160,8 +181,11 @@ public abstract class Extension(public val bot: ExtensibleBot) {
         eventHandlers.clear()
         commands.clear()
 
-        loaded = false
-        bot.send(ExtensionUnloadedEvent(bot, this))
+        if (error != null) {
+            throw error
+        }
+
+        this.setState(ExtensionState.UNLOADED)
     }
 
     /**

@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.message
 import com.kotlindiscord.kord.extensions.commands.converters.messageList
+import dev.kord.core.entity.channel.MessageChannel
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -42,7 +43,7 @@ public class MessageConverter(
     }
 
     private suspend fun findMessage(arg: String, context: CommandContext, bot: ExtensibleBot): Message {
-        val requiredGid = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId
+        val requiredGid = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id
 
         return if (arg.startsWith("https://")) { // It's a message URL
             @Suppress("MagicNumber")
@@ -96,10 +97,16 @@ public class MessageConverter(
 
             channel.getMessage(mid)
         } else { // Try a message ID
-            val channel = context.message.channel.asChannelOrNull()
+            val channel = context.getChannel()
 
             if (channel !is GuildMessageChannel && channel !is DmChannel) {
                 logger.debug { "Current channel is not a guild message channel or DM channel." }
+
+                throw ParseException("Unable to find message: $arg")
+            }
+
+            if (channel !is MessageChannel) {
+                logger.debug { "Current channel is not a message channel, so it can't contain messages." }
 
                 throw ParseException("Unable to find message: $arg")
             }

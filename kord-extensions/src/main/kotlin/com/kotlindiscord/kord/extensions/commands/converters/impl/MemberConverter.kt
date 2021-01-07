@@ -61,7 +61,7 @@ public class MemberConverter(
             }
         }
 
-        val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId ?: return null
+        val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id ?: return null
 
         return user?.asMember(guildId)
     }

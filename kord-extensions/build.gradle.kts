@@ -61,7 +61,7 @@ val javadocJar = task("javadocJar",Jar::class) {
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1")
 
-    api("dev.kord:kord-core:0.7.0-RC")
+    api("dev.kord:kord-core:0.7.0-SNAPSHOT")
 
     api("net.time4j:time4j-base:5.7")
     api("net.time4j:time4j-tzdata:5.0-2020a")
