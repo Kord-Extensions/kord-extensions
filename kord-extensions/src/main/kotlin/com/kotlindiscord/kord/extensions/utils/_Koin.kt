@@ -14,8 +14,6 @@ public fun Koin.module(
     moduleDeclaration: ModuleDeclaration
 ): Module {
     val module = org.koin.dsl.module(createdAtStart, override, moduleDeclaration)
-
     loadModules(listOf(module))
-
     return module
 }

@@ -15,9 +15,13 @@ import dev.kord.rest.builder.message.MessageCreateBuilder
 import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.coroutines.*
-import mu.KotlinLogging
 import org.apache.commons.text.StringTokenizer
 import org.apache.commons.text.matcher.StringMatcherFactory
+
+/**
+ * Logger of the class
+ */
+private val LOG = classLogger()
 
 /**
  * Time to delete information
@@ -34,9 +38,9 @@ private const val DISCORD_CHANNEL_URI = "https://discordapp.com/channels"
  */
 public suspend fun MessageBehavior.deleteIgnoringNotFound() {
     try {
-        this.delete()
+        delete()
     } catch (e: RestRequestException) {
-        if(e.isNotStatus(HttpStatusCode.NotFound)){
+        if(e.hasNotStatus(HttpStatusCode.NotFound)){
             throw e
         }
     }
@@ -51,9 +55,7 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
  * @return Job spawned by the CoroutineScope.
  */
 public fun MessageBehavior.deleteWithDelay(millis: Long, retry: Boolean = true): Job {
-    val logger = KotlinLogging.logger {}
-
-    return this.kord.launch {
+    return kord.launch {
         delay(millis)
 
         try {
@@ -62,15 +64,10 @@ public fun MessageBehavior.deleteWithDelay(millis: Long, retry: Boolean = true):
             val message = this@deleteWithDelay
 
             if (retry) {
-                logger.debug(e) {
-                    "Failed to delete message, retrying: $message"
-                }
-
+                LOG.debug(e) { "Failed to delete message, retrying: $message" }
                 this@deleteWithDelay.deleteWithDelay(millis, false)
             } else {
-                logger.error(e) {
-                    "Failed to delete message: $message"
-                }
+                LOG.error(e) { "Failed to delete message: $message" }
             }
         }
     }
@@ -186,23 +183,22 @@ public suspend fun Message.respond(
     useReply: Boolean = true,
     builder: suspend MessageCreateBuilder.() -> Unit
 ): Message {
-    val mention = if (this.author != null && this.getChannelOrNull() !is DmChannel && !useReply) {
-        "${this.author!!.mention} "
-    } else {
-        ""
-    }
-
+    val author = this.author
     val innerBuilder: suspend MessageCreateBuilder.() -> Unit = {
         builder()
 
         allowedMentions {
-            if (author != null && !useReply) {
-                users.add(author!!.id)
+            when {
+                useReply -> repliedUser = true
+                author != null -> users.add(author.id)
             }
+        }
 
-            if (useReply) {
-                repliedUser = true
+        val mention = when {
+            author != null && !useReply && getChannelOrNull() !is DmChannel -> {
+                "${author.mention} "
             }
+            else -> ""
         }
 
         val contentWithMention = "$mention${content ?: ""}"
@@ -212,10 +208,9 @@ public suspend fun Message.respond(
         }
     }
 
-    return if (useReply) {
-        reply { innerBuilder() }
-    } else {
-        channel.createMessage { innerBuilder() }
+    return when(useReply) {
+        true -> reply { innerBuilder() }
+        else -> channel.createMessage { innerBuilder() }
     }
 }
 
@@ -253,24 +248,21 @@ public suspend fun Message.requireChannel(
     deleteOriginal: Boolean = true,
     deleteResponse: Boolean = true
 ): Boolean {
-    val topRole = if (getGuildOrNull() != null) {
-        this.getAuthorAsMember()!!.getTopRole()
-    } else {
-        null
+    val topRole = when(getGuildOrNull()) {
+        null -> null
+        else -> getAuthorAsMember()!!.getTopRole()
     }
 
-    val messageChannel = this.getChannelOrNull()
+    val messageChannel = getChannelOrNull()
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (
         (allowDm && messageChannel is DmChannel) ||
         (role != null && topRole != null && topRole >= role) ||
-        this.channelId == channel.id
+        channelId == channel.id
     ) return true
 
-    val response = this.respond(
-        "Please use ${channel.mention} for this command."
-    )
+    val response = respond("Please use ${channel.mention} for this command.")
 
     if (deleteResponse) response.deleteWithDelay(delay)
     if (deleteOriginal && messageChannel !is DmChannel) this.deleteWithDelay(delay)
@@ -289,18 +281,20 @@ public suspend fun Message.requireChannel(
  * @return true if the message was posted in an appropriate context, false otherwise
  */
 public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
-    val topRole = if (author != null && getGuildOrNull() != null) author!!.asMemberOrNull(getGuild().id) else null
+    val author = this.author
+    val guild = getGuildOrNull()
+    val topRole = when {
+        author != null && guild != null -> author.asMemberOrNull(guild.id)
+        else -> null
+    }
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (
         (role != null && topRole != null && topRole >= role) ||
-        this.getChannelOrNull() !is DmChannel
+        getChannelOrNull() !is DmChannel
     ) return true
 
-    this.respond(
-        "This command is not available via private message."
-    )
-
+    respond("This command is not available via private message.")
     return false
 }
 
@@ -319,17 +313,18 @@ public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
  * @return true if the message was posted in an appropriate context, false otherwise
  */
 public suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild? = null): Boolean {
-    val topRole = if (author != null) guild?.getMember(this.author!!.id)?.getTopRole() else null
+    val author = this.author
+    val topRole = when {
+        author != null -> guild?.getMember(author.id)?.getTopRole() 
+        else -> null
+    }
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (
         (role != null && topRole != null && topRole >= role) ||
-        this.getChannelOrNull() !is DmChannel
+        getChannelOrNull() !is DmChannel
     ) return true
 
-    this.respond(
-        "This command is not available via private message."
-    )
-
+    respond("This command is not available via private message.")
     return false
 }

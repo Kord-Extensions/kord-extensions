@@ -1,5 +1,5 @@
 @file:JvmMultifileClass
-@file:JvmName("EmojiKt")
+@file:JvmName("ReactionKt")
 
 package com.kotlindiscord.kord.extensions.utils
 

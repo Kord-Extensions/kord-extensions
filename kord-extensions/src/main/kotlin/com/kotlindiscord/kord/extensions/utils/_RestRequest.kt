@@ -12,7 +12,7 @@ import io.ktor.http.*
  * @param status Status to compare the code of the exception
  * @return `true` if there is one [HttpStatusCode] with the same HTTP code, `false` otherwise
  */
-public fun RestRequestException.isStatus(vararg status: HttpStatusCode): Boolean {
+public fun RestRequestException.hasStatus(vararg status: HttpStatusCode): Boolean {
     if(status.isEmpty()) return false
     val code = this.status.code
     return status.any { it.value == code }
@@ -24,5 +24,5 @@ public fun RestRequestException.isStatus(vararg status: HttpStatusCode): Boolean
  * @param status Status to compare the code of the exception
  * @return `true` if there is none [HttpStatusCode] with the same HTTP code, `false` otherwise
  */
-public fun RestRequestException.isNotStatus(vararg status: HttpStatusCode): Boolean 
-    = !isStatus(*status)
+public fun RestRequestException.hasNotStatus(vararg status: HttpStatusCode): Boolean 
+    = !hasStatus(*status)

@@ -8,7 +8,11 @@ import dev.kord.core.entity.Webhook
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
-import mu.KotlinLogging
+
+/**
+ * Logger of the class
+ */
+private val LOG = classLogger()
 
 /**
  * Ensure a webhook is created for the bot in a given channel, and return it.
@@ -28,7 +32,6 @@ public suspend fun ensureWebhook(
     logoFormat: Image.Format = Image.Format.PNG,
     logo: (suspend () -> ByteArray)?
 ): Webhook {
-    val logger = KotlinLogging.logger {}
     val webhook = channelObj.webhooks.firstOrNull { it.name == name }
 
     if (webhook != null) {
@@ -37,7 +40,7 @@ public suspend fun ensureWebhook(
 
     val guild = channelObj.guild.asGuild()
 
-    logger.info { "Creating webhook for channel: #${channelObj.name} (Guild: ${guild.name}" }
+    LOG.info { "Creating webhook for channel: #${channelObj.name} (Guild: ${guild.name}" }
 
     return channelObj.createWebhook(name) {
         if (logo != null) {

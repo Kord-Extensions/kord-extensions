@@ -7,14 +7,17 @@ import kotlinx.coroutines.*
 import mu.KotlinLogging
 import java.util.*
 
-private val logger = KotlinLogging.logger { }
+/**
+ * Logger of the class
+ */
+private val LOG = classLogger()
 
 /**
  * Class in charge of providing scheduling functions.
  */
 public open class Scheduler {
+    
     private val jobMap: MutableMap<UUID, Job> = mutableMapOf()
-
     private val scope = GlobalScope
     private val finishTask = CancellationException()
 
@@ -29,9 +32,7 @@ public open class Scheduler {
      */
     public fun <T> schedule(delay: Long, data: T?, callback: suspend (T?) -> Unit): UUID {
         val uuid = UUID.randomUUID()
-
         schedule(uuid, delay, data, callback)
-
         return uuid
     }
 
@@ -46,7 +47,7 @@ public open class Scheduler {
      * @return Return true on success, false otherwise.
      */
     public fun <T> schedule(id: UUID, delay: Long, data: T?, callback: suspend (T?) -> Unit) {
-        logger.debug { "Scheduling task $id" }
+        LOG.debug { "Scheduling task $id" }
 
         if (id in jobMap) {
             throw IllegalArgumentException("Duplicate ID: $id")
@@ -76,7 +77,7 @@ public open class Scheduler {
      * @param id ID of the targeted task.
      */
     public fun finishJob(id: UUID) {
-        logger.debug { "Finishing task $id" }
+        LOG.debug { "Finishing task $id" }
 
         jobMap[id]?.cancel(finishTask)
     }
@@ -87,7 +88,7 @@ public open class Scheduler {
      * @param id ID of the targeted task.
      */
     public fun cancelJob(id: UUID) {
-        logger.debug { "Canceling task $id" }
+        LOG.debug { "Canceling task $id" }
 
         jobMap[id]?.cancel()
     }
@@ -96,22 +97,16 @@ public open class Scheduler {
      * Immediately execute the callback of all the tasks belonging to this scheduler.
      */
     public fun finishAll() {
-        logger.debug { "Finishing all tasks." }
-
-        for (id in jobMap.keys) {
-            finishJob(id)
-        }
+        LOG.debug { "Finishing all tasks." }
+        jobMap.keys.forEach(this::finishJob)
     }
 
     /**
      * Cancel all the tasks belonging to this scheduler.
      */
     public fun cancelAll() {
-        logger.debug { "Canceling all tasks." }
-
-        for (id in jobMap.keys) {
-            cancelJob(id)
-        }
+        LOG.debug { "Canceling all tasks." }
+        jobMap.keys.forEach(this::cancelJob)
     }
 
     /**

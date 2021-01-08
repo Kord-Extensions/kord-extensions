@@ -37,6 +37,8 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
  */
 @Suppress("MagicNumber")  // These are all time units!
 public fun java.time.Duration.toHuman(): String? {
+    if(isZero) return null
+    
     val parts = mutableListOf<String>()
 
     val seconds = this.seconds % 60
@@ -49,43 +51,21 @@ public fun java.time.Duration.toHuman(): String? {
     val days = hoursTotal / 24
 
     if (days > 0) {
-        parts.add(
-            "$days " + if (days > 1) "days" else "day"
-        )
+        parts.add("$days day${if(days > 1) 's' else ""}")
     }
 
     if (hours > 0) {
-        parts.add(
-            "$hours " + if (hours > 1) "hours" else "hour"
-        )
+        parts.add("$hours hour${if(hours > 1) 's' else ""}")
     }
 
     if (minutes > 0) {
-        parts.add(
-            "$minutes " + if (minutes > 1) "minutes" else "minute"
-        )
+        parts.add("$minutes minute${if(minutes > 1) 's' else ""}")
     }
 
     if (seconds > 0) {
-        parts.add(
-            "$seconds " + if (seconds > 1) "seconds" else "second"
-        )
+        parts.add("$seconds second${if(seconds > 1) 's' else ""}")
     }
 
     if (parts.isEmpty()) return null
-
-    var output = ""
-
-    parts.forEachIndexed { i, part ->
-        if (i == parts.size - 1 && i > 0) {
-            output += " and "  // About to output the last part, and it's not the only one
-        } else if (i < parts.size - 1 && i > 0) {
-            output += ", "  // Not the last part, but not the first one either
-        }
-
-        output += part
-    }
-
-    // I have no idea how I should _actually_ do this...
-    return parts.joinToString(", ").reversed().replaceFirst(",", "dna ").reversed()
+    return parts.joinToString()
 }
