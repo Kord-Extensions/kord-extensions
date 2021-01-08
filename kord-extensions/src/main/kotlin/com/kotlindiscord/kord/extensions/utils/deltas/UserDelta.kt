@@ -23,14 +23,12 @@ public open class UserDelta(
      * A Set representing the values that have changes. Each value is represented by a human-readable string.
      */
     public open val changes: Set<String> by lazy {
-        val s = mutableSetOf<String>()
-
-        if (avatar != null) s.add("avatar")
-        if (username != null) s.add("username")
-        if (discriminator != null) s.add("discriminator")
-        if (flags != null) s.add("flags")
-
-        s
+        mutableSetOf<String>().apply {
+            if (avatar != null) add("avatar")
+            if (username != null) add("username")
+            if (discriminator != null) add("discriminator")
+            if (flags != null) add("flags")
+        }
     }
 
     public companion object {

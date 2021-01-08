@@ -1,6 +1,10 @@
+@file:JvmMultifileClass
+@file:JvmName("MessageKt")
+
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.reply
 import dev.kord.core.cache.data.MessageData
@@ -15,13 +19,126 @@ import mu.KotlinLogging
 import org.apache.commons.text.StringTokenizer
 import org.apache.commons.text.matcher.StringMatcherFactory
 
+/**
+ * Time to delete information
+ */
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 
+/**
+ * URI of Discord channels
+ */
+private const val DISCORD_CHANNEL_URI = "https://discordapp.com/channels"
+
+/**
+ * Deletes a message, catching and ignoring a HTTP 404 (Not Found) exception.
+ */
+public suspend fun MessageBehavior.deleteIgnoringNotFound() {
+    try {
+        this.delete()
+    } catch (e: RestRequestException) {
+        if(e.isNotStatus(HttpStatusCode.NotFound)){
+            throw e
+        }
+    }
+}
+
+/**
+ * Deletes a message after a delay.
+ *
+ * This function **does not block**.
+ *
+ * @param millis The delay before deleting the message, in milliseconds.
+ * @return Job spawned by the CoroutineScope.
+ */
+public fun MessageBehavior.deleteWithDelay(millis: Long, retry: Boolean = true): Job {
+    val logger = KotlinLogging.logger {}
+
+    return this.kord.launch {
+        delay(millis)
+
+        try {
+            this@deleteWithDelay.deleteIgnoringNotFound()
+        } catch (e: RestRequestException) {
+            val message = this@deleteWithDelay
+
+            if (retry) {
+                logger.debug(e) {
+                    "Failed to delete message, retrying: $message"
+                }
+
+                this@deleteWithDelay.deleteWithDelay(millis, false)
+            } else {
+                logger.error(e) {
+                    "Failed to delete message: $message"
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Requests to add an emoji with unicode format to this message.
+ * @param unicode Emoji that will be added to the message
+ * @throws [RestRequestException] if something went wrong during the request.
+ */
+public suspend inline fun MessageBehavior.addReaction(unicode: String): Unit
+    = addReaction(unicode.toReaction())
+
+/**
+ * Requests to remove an [emoji] to this message.
+ * @param emoji Emojis that will be removed to the message
+ * @throws [RestRequestException] if something went wrong during the request.
+ */
+public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: GuildEmoji): Unit
+    = deleteReaction(userId, emoji.toReaction())
+
+/**
+ * Requests to delete an [emoji] to this message.
+ * @param emoji Emoji that will be deleted to the message
+ * @throws [RestRequestException] if something went wrong during the request.
+ */
+public suspend inline fun MessageBehavior.deleteReaction(emoji: GuildEmoji): Unit =
+    this.deleteReaction(emoji.toReaction())
+
+/**
+ * Requests to delete an emoji with unicode format to this message.
+ * @param unicode Emoji that will be deleted to the message
+ * @throws [RestRequestException] if something went wrong during the request.
+ */
+public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit =
+    this.deleteReaction(unicode.toReaction())
+
+/**
+ * Requests to remove an [emoji] with unicode format to this message.
+ * @param emoji Emojis that will be removed to the message
+ * @throws [RestRequestException] if something went wrong during the request.
+ */
+public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: String): Unit
+    = deleteReaction(userId, emoji.toReaction())
+
+/**
+ * Requests to remove an [emoji] from the own bot to this message.
+ * @param emoji Emoji that will be removed to the message
+ * @throws [RestRequestException] if something went wrong during the request.
+ */
+public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): Unit
+    = deleteOwnReaction(emoji.toReaction())
+
+/**
+ * Requests to remove emoji with unicode format from the own bot to this message.
+ * @param unicode Emoji that will be removed to the message
+ * @throws [RestRequestException] if something went wrong during the request.
+ */
+public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit
+    = deleteOwnReaction(unicode.toReaction())
+
 /** ID of the message author. **/
-public val MessageData.authorId: Snowflake get() = author.id
+public val MessageData.authorId: Snowflake
+    get() = author.id
 
 /** Is the message author a bot. **/
-public val MessageData.authorIsBot: Boolean get() = author.bot.discordBoolean
+public val MessageData.authorIsBot: Boolean
+    get() = author.bot.discordBoolean
 
 /**
  * Takes a [Message] object and parses it using a [StringTokenizer].
@@ -40,11 +157,11 @@ public val MessageData.authorIsBot: Boolean get() = author.bot.discordBoolean
 public fun Message.parse(
     delimiters: CharArray = charArrayOf(' '),
     quotes: CharArray = charArrayOf('\'', '"')
-): Array<String> =
-    StringTokenizer(content)
-        .setDelimiterMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(delimiters.joinToString()))
-        .setQuoteMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(quotes.joinToString()))
-        .tokenArray
+): Array<String>
+    = StringTokenizer(content)
+    .setDelimiterMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(delimiters.joinToString()))
+    .setQuoteMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(quotes.joinToString()))
+    .tokenArray
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
@@ -110,54 +227,7 @@ public suspend fun Message.respond(
 public suspend fun Message.getUrl(): String {
     val guild = getGuildOrNull()?.id?.asString ?: "@me"
 
-    return "https://discordapp.com/channels/$guild/${channelId.value}/${id.value}"
-}
-
-/**
- * Deletes a message, catching and ignoring a HTTP 404 (Not Found) exception.
- */
-public suspend fun Message.deleteIgnoringNotFound() {
-    try {
-        this.delete()
-    } catch (e: RestRequestException) {
-        if (e.status.code != HttpStatusCode.NotFound.value) {
-            throw e
-        }
-    }
-}
-
-/**
- * Deletes a message after a delay.
- *
- * This function **does not block**.
- *
- * @param millis The delay before deleting the message, in milliseconds.
- * @return Job spawned by the CoroutineScope.
- */
-public fun Message.deleteWithDelay(millis: Long, retry: Boolean = true): Job {
-    val logger = KotlinLogging.logger {}
-
-    return this.kord.launch {
-        delay(millis)
-
-        try {
-            this@deleteWithDelay.deleteIgnoringNotFound()
-        } catch (e: RestRequestException) {
-            val message = this@deleteWithDelay
-
-            if (retry) {
-                logger.debug(e) {
-                    "Failed to delete message, retrying: $message"
-                }
-
-                this@deleteWithDelay.deleteWithDelay(millis, false)
-            } else {
-                logger.error(e) {
-                    "Failed to delete message: $message"
-                }
-            }
-        }
-    }
+    return "$DISCORD_CHANNEL_URI/$guild/${channelId.value}/${id.value}"
 }
 
 /**

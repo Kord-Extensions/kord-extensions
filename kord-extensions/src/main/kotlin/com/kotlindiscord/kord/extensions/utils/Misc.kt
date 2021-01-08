@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("MiscKt")
+
 package com.kotlindiscord.kord.extensions.utils
 
 import kotlinx.coroutines.CoroutineDispatcher

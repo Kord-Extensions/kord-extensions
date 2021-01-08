@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("TimeKt")
+
 package com.kotlindiscord.kord.extensions.utils
 
 import net.time4j.Duration

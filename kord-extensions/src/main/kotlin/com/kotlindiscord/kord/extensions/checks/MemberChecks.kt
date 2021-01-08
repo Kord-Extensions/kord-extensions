@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
-import com.kotlindiscord.kord.extensions.utils.hasPermission
+import com.kotlindiscord.kord.extensions.utils.hasPermissions
 import dev.kord.common.entity.Permission
 import dev.kord.core.event.Event
 import mu.KotlinLogging
@@ -28,7 +28,7 @@ public fun hasPermission(perm: Permission): suspend (Event) -> Boolean {
             return false
         }
 
-        return if (member.asMember().hasPermission(perm)) {
+        return if (member.asMember().hasPermissions(perm)) {
             logger.debug { "Passing check" }
             true
         } else {
@@ -61,7 +61,7 @@ public fun notHasPermission(perm: Permission): suspend (Event) -> Boolean {
             return false
         }
 
-        return if (member.asMember().hasPermission(perm)) {
+        return if (member.asMember().hasPermissions(perm)) {
             logger.debug { "Failing check: Member $member has permission $perm" }
             false
         } else {

@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("ChannelKt")
+
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.core.behavior.channel.createWebhook

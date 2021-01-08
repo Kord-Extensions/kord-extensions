@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("SchedulerKt")
+
 package com.kotlindiscord.kord.extensions.utils
 
 import kotlinx.coroutines.*

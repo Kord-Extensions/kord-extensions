@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("KoinKt")
+
 package com.kotlindiscord.kord.extensions.utils
 
 import org.koin.core.Koin
