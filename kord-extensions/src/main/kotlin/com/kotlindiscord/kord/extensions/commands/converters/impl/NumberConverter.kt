@@ -6,6 +6,10 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.number
 import com.kotlindiscord.kord.extensions.commands.converters.numberList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.IntChoiceBuilder
+import dev.kord.rest.builder.interaction.OptionsBuilder
 
 private const val DEFAULT_RADIX = 10
 
@@ -15,6 +19,7 @@ private const val DEFAULT_RADIX = 10
  * @see number
  * @see numberList
  */
+@OptIn(KordPreview::class)
 public class NumberConverter(
     private val radix: Int = DEFAULT_RADIX
 ) : SingleConverter<Long>() {
@@ -31,4 +36,7 @@ public class NumberConverter(
 
         return true
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        IntChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

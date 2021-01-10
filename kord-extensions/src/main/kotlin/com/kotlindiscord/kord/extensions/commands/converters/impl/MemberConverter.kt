@@ -1,15 +1,19 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.Member
-import dev.kord.core.entity.User
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.member
 import com.kotlindiscord.kord.extensions.commands.converters.memberList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.utils.users
+import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.Member
+import dev.kord.core.entity.User
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.UserBuilder
 import kotlinx.coroutines.flow.firstOrNull
 
 /**
@@ -25,6 +29,7 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see member
  * @see memberList
  */
+@OptIn(KordPreview::class)
 public class MemberConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null
 ) : SingleConverter<Member>() {
@@ -65,4 +70,7 @@ public class MemberConverter(
 
         return user?.asMember(guildId)
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        UserBuilder(arg.displayName, arg.description).apply { required = true }
 }

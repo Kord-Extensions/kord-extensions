@@ -1,14 +1,18 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.User
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.user
 import com.kotlindiscord.kord.extensions.commands.converters.userList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.utils.users
+import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.User
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.UserBuilder
 import kotlinx.coroutines.flow.firstOrNull
 
 /**
@@ -22,6 +26,7 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see user
  * @see userList
  */
+@OptIn(KordPreview::class)
 public class UserConverter : SingleConverter<User>() {
     override val signatureTypeString: String = "user"
 
@@ -55,4 +60,7 @@ public class UserConverter : SingleConverter<User>() {
                 }
             }
         }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        UserBuilder(arg.displayName, arg.description).apply { required = true }
 }

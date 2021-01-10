@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import dev.kord.common.annotation.KordPreview
 import kotlin.reflect.KProperty
 
 /**
@@ -13,9 +14,10 @@ import kotlin.reflect.KProperty
  *
  * @property outputError Whether the argument parser should output parsing errors on invalid arguments.
  */
+@KordPreview
 public abstract class OptionalConverter<T : Any?>(
     public val outputError: Boolean = false
-) : Converter<T>(false) {
+) : Converter<T>(false), SlashCommandConverter {
     /**
      * The parsed value.
      *
@@ -41,6 +43,7 @@ public abstract class OptionalConverter<T : Any?>(
      * @see Converter
      */
     public abstract suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean
+
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed

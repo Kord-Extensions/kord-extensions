@@ -5,6 +5,8 @@ import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
+import com.kotlindiscord.kord.extensions.slash_commands.SlashCommand
+import dev.kord.common.entity.Snowflake
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -86,6 +88,14 @@ public abstract class Extension(public val bot: ExtensibleBot) {
     public open val commands: MutableList<MessageCommand> = mutableListOf()
 
     /**
+     * List of registered slash commands.
+     *
+     * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
+     * belong to unloaded extensions will not execute.
+     */
+    public open val slashCommands: MutableList<SlashCommand> = mutableListOf()
+
+    /**
      * DSL function for easily registering a command.
      *
      * Use this in your setup function to register a command that may be executed on Discord.
@@ -115,6 +125,44 @@ public abstract class Extension(public val bot: ExtensibleBot) {
             logger.error(e) { "Failed to register command - $e" }
         } catch (e: InvalidCommandException) {
             logger.error(e) { "Failed to register command - $e" }
+        }
+
+        return commandObj
+    }
+
+    /**
+     * DSL function for easily registering a slash command.
+     *
+     * Use this in your setup function to register a slash command that may be executed on Discord.
+     *
+     * @param body Builder lambda used for setting up the slash command object.
+     */
+    public open suspend fun slashCommand(
+        guildId: Snowflake? = null,
+        body: suspend SlashCommand.() -> Unit
+    ): SlashCommand {
+        val commandObj = SlashCommand(this)
+        body.invoke(commandObj)
+
+        return slashCommand(guildId, commandObj)
+    }
+
+    /**
+     * Function for registering a custom slash command object.
+     *
+     * You can use this if you have a custom slash command subclass you need to register.
+     *
+     * @param commandObj SlashCommand object to register.
+     */
+    public open suspend fun slashCommand(guildId: Snowflake? = null, commandObj: SlashCommand): SlashCommand {
+        try {
+            commandObj.validate()
+            slashCommands.add(commandObj)
+            bot.slashCommands.register(commandObj, guildId)
+        } catch (e: CommandRegistrationException) {
+            logger.error(e) { "Failed to register slash command - $e" }
+        } catch (e: InvalidCommandException) {
+            logger.error(e) { "Failed to register slash command - $e" }
         }
 
         return commandObj

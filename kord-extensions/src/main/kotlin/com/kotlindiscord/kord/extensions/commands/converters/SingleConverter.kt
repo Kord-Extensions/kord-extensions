@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import dev.kord.common.annotation.KordPreview
 import kotlin.reflect.KProperty
 
 /**
@@ -17,7 +18,8 @@ import kotlin.reflect.KProperty
  *
  * You can create a single converter of your own by extending this class.
  */
-public abstract class SingleConverter<T : Any> : Converter<T>(true) {
+@KordPreview
+public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashCommandConverter {
     /**
      * The parsed value.
      *

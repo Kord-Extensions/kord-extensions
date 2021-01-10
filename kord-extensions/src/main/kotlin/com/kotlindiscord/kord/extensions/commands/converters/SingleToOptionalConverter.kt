@@ -2,6 +2,9 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
  * A special [OptionalConverter] that wraps a [SingleConverter], effectively turning it into an optional
@@ -16,6 +19,7 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
+@OptIn(KordPreview::class)
 public class SingleToOptionalConverter<T : Any>(
     public val singleConverter: SingleConverter<T>,
 
@@ -44,4 +48,11 @@ public class SingleToOptionalConverter<T : Any>(
         context: CommandContext,
         bot: ExtensibleBot
     ): String = singleConverter.handleError(t, value, context, bot)
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
+        val option = singleConverter.toSlashOption(arg)
+        option.required = false
+
+        return option
+    }
 }

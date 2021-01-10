@@ -1,13 +1,17 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.Role
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.role
 import com.kotlindiscord.kord.extensions.commands.converters.roleList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.Role
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.RoleBuilder
 import kotlinx.coroutines.flow.firstOrNull
 
 /**
@@ -24,6 +28,7 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see role
  * @see roleList
  */
+@OptIn(KordPreview::class)
 public class RoleConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null
 ) : SingleConverter<Role>() {
@@ -60,4 +65,7 @@ public class RoleConverter(
             }
         }
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        RoleBuilder(arg.displayName, arg.description).apply { required = true }
 }

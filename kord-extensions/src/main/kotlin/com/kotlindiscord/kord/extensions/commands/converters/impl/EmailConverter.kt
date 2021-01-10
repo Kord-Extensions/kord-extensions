@@ -6,6 +6,10 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.email
 import com.kotlindiscord.kord.extensions.commands.converters.emailList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import org.apache.commons.validator.routines.EmailValidator
 
 /**
@@ -14,6 +18,7 @@ import org.apache.commons.validator.routines.EmailValidator
  * @see email
  * @see emailList
  */
+@OptIn(KordPreview::class)
 public class EmailConverter : SingleConverter<String>() {
     override val signatureTypeString: String = "email"
 
@@ -26,4 +31,7 @@ public class EmailConverter : SingleConverter<String>() {
 
         return true
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

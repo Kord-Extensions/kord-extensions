@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.SentryExtension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.slash_commands.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.utils.module
 import com.kotlindiscord.kord.extensions.utils.parse
 import dev.kord.common.entity.Snowflake
@@ -129,11 +130,15 @@ public open class ExtensibleBot(
     /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
     public val koin: Koin = koinApp.koin
 
+    /** Slash command registry, keeps track of and executes slash commands. **/
+    public open val slashCommands: SlashCommandRegistry by koin.inject<SlashCommandRegistry>()
+
     init {
         TZDATA.init()  // Set up time4j
 
         koin.module { single { this@ExtensibleBot } }
         koin.module { single { sentry } }
+        koin.module { single { SlashCommandRegistry(this@ExtensibleBot) } }
     }
 
     /**
@@ -221,6 +226,8 @@ public open class ExtensibleBot(
                         }
                     }
                 }
+
+                slashCommands.syncAll()
             }
 
             logger.info { "Ready!" }
