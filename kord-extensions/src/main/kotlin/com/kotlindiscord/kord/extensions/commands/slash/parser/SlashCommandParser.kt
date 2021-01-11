@@ -10,7 +10,6 @@ import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
-import dev.kord.common.entity.string
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -36,7 +35,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
         val args = argumentsObj.args.toMutableList()
 
-        val values = context.event.interaction.command.options.mapValues { it.value.string() }
+        val values = context.event.interaction.command.options.mapValues { it.value.value!!.toString() }
 
         var currentArg: Argument<*>?
         var currentValue: String? = null

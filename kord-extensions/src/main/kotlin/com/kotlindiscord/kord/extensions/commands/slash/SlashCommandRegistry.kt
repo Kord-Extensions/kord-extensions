@@ -2,21 +2,13 @@ package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.KoinAccessor
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
-import com.kotlindiscord.kord.extensions.sentry.tag
-import com.kotlindiscord.kord.extensions.sentry.user
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.SlashCommands
-import dev.kord.core.behavior.followUp
-import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import io.sentry.Sentry
-import io.sentry.protocol.SentryId
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -225,116 +217,6 @@ public open class SlashCommandRegistry(
             return
         }
 
-        val firstBreadcrumb = if (sentry.enabled) {
-            val channel = event.interaction.channel.asChannelOrNull()
-            val guild = event.interaction.guild.asGuildOrNull()
-
-            val data = mutableMapOf(
-                "command" to command.name
-            )
-
-            if (command.guild != null) {
-                data["command.guild"] to command.guild!!.asString
-            }
-
-            if (channel != null) {
-                data["channel"] = when (channel) {
-                    is DmChannel -> "Private Message (${channel.id.asString})"
-                    is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
-
-                    else -> channel.id.asString
-                }
-            }
-
-            if (guild != null) {
-                data["guild"] = "${guild.name} (${guild.id.asString})"
-            }
-
-            sentry.createBreadcrumb(
-                category = "command.slash",
-                type = "user",
-                message = "Slash command \"${command.name}\" called.",
-                data = data
-            )
-        } else {
-            null
-        }
-
-        val resp = event.interaction.acknowledge(command.showSource)
-
-        if (!command.runChecks(event)) {
-            return
-        }
-
-        val context = SlashCommandContext(command, event, command.name, resp)
-
-        context.populate()
-
-        if (command.arguments != null) {
-            val args = command.parser.parse(command.arguments!!, context)
-            context.populateArgs(args)
-        }
-
-        @Suppress("TooGenericExceptionCaught")
-        try {
-            command.body.invoke(context)
-        } catch (e: ParseException) {
-            resp.followUp { content = e.reason }
-        } catch (t: Throwable) {
-            if (sentry.enabled) {
-                logger.debug { "Submitting error to sentry." }
-
-                lateinit var sentryId: SentryId
-                val channel = context.channel
-                val author = context.user.asUserOrNull()
-
-                Sentry.withScope {
-                    if (author != null) {
-                        it.user(author)
-                    }
-
-                    it.tag("private", "false")
-
-                    if (channel is DmChannel) {
-                        it.tag("private", "true")
-                    }
-
-                    it.tag("command", command.name)
-                    it.tag("extension", command.extension.name)
-
-                    it.addBreadcrumb(firstBreadcrumb!!)
-
-                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
-
-                    sentryId = Sentry.captureException(t, "MessageCommand execution failed.")
-
-                    logger.debug { "Error submitted to Sentry: $sentryId" }
-                }
-
-                sentry.addEventId(sentryId)
-
-                logger.error(t) { "Error during execution of ${command.name} slash command ($event)" }
-
-                if (bot.extensions.containsKey("sentry")) {
-                    resp.followUp {
-                        content = "Unfortunately, **an error occurred** during command processing. If you'd " +
-                            "like to submit information on what you were doing when this error happened, " +
-                            "please use the following command: ```${bot.prefix}feedback $sentryId <message>```"
-                    }
-                } else {
-                    resp.followUp {
-                        content = "Unfortunately, **an error occurred** during command processing. " +
-                            "Please let a staff member know."
-                    }
-                }
-            }
-
-            logger.error(t) { "Error during execution of ${command.name} slash command ($event)" }
-
-            resp.followUp {
-                content = "Unfortunately, **an error occurred** during command processing. " +
-                    "Please let a staff member know."
-            }
-        }
+        command.call(event)
     }
 }

@@ -1,13 +1,25 @@
 package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
+import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.sentry.tag
+import com.kotlindiscord.kord.extensions.sentry.user
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.followUp
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.InteractionCreateEvent
+import io.sentry.Sentry
+import io.sentry.protocol.SentryId
+import mu.KLogger
+import mu.KotlinLogging
+
+private val logger: KLogger = KotlinLogging.logger {}
 
 /**
  * Class representing a slash command.
@@ -122,5 +134,134 @@ public open class SlashCommand<T : Arguments>(extension: Extension) : Command(ex
             }
         }
         return true
+    }
+
+    /**
+     * Execute this command, given an [InteractionCreateEvent].
+     *
+     * This function takes a [InteractionCreateEvent] (generated when a slash command is executed), and
+     * processes it. The command's checks are invoked and, assuming all of the
+     * checks passed, the [command body][action] is executed.
+     *
+     * If an exception is thrown by the [command body][action], it is caught and a traceback
+     * is printed.
+     *
+     * @param event The interaction creation event.
+     */
+    public open suspend fun call(event: InteractionCreateEvent) {
+        val sentry = extension.bot.sentry
+
+        val resp = event.interaction.acknowledge(this.showSource)
+
+        if (!this.runChecks(event)) {
+            return
+        }
+
+        val context = SlashCommandContext(this, event, this.name, resp)
+
+        context.populate()
+
+        val firstBreadcrumb = if (sentry.enabled) {
+            val channel = context.channel.asChannelOrNull()
+            val guild = context.guild.asGuildOrNull()
+
+            val data = mutableMapOf(
+                "command" to this.name
+            )
+
+            if (this.guild != null) {
+                data["command.guild"] to this.guild!!.asString
+            }
+
+            if (channel != null) {
+                data["channel"] = when (channel) {
+                    is DmChannel -> "Private Message (${channel.id.asString})"
+                    is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+
+                    else -> channel.id.asString
+                }
+            }
+
+            if (guild != null) {
+                data["guild"] = "${guild.name} (${guild.id.asString})"
+            }
+
+            sentry.createBreadcrumb(
+                category = "command.slash",
+                type = "user",
+                message = "Slash command \"${this.name}\" called.",
+                data = data
+            )
+        } else {
+            null
+        }
+
+        @Suppress("TooGenericExceptionCaught")
+        try {
+            if (this.arguments != null) {
+                val args = this.parser.parse(this.arguments!!, context)
+                context.populateArgs(args)
+            }
+
+            this.body.invoke(context)
+        } catch (e: ParseException) {
+            resp.followUp { content = e.reason }
+        } catch (t: Throwable) {
+            if (sentry.enabled) {
+                logger.debug { "Submitting error to sentry." }
+
+                lateinit var sentryId: SentryId
+                val channel = context.channel
+                val author = context.user.asUserOrNull()
+
+                Sentry.withScope {
+                    if (author != null) {
+                        it.user(author)
+                    }
+
+                    it.tag("private", "false")
+
+                    if (channel is DmChannel) {
+                        it.tag("private", "true")
+                    }
+
+                    it.tag("command", this.name)
+                    it.tag("extension", this.extension.name)
+
+                    it.addBreadcrumb(firstBreadcrumb!!)
+
+                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
+
+                    sentryId = Sentry.captureException(t, "MessageCommand execution failed.")
+
+                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                }
+
+                sentry.addEventId(sentryId)
+
+                logger.error(t) { "Error during execution of ${this.name} slash command ($event)" }
+
+                if (extension.bot.extensions.containsKey("sentry")) {
+                    resp.followUp {
+                        content = "Unfortunately, **an error occurred** during command processing. If you'd " +
+                            "like to submit information on what you were doing when this error happened, " +
+                            "please use the following command: " +
+                            "```${extension.bot.prefix}feedback $sentryId <message>```"
+                    }
+                } else {
+                    resp.followUp {
+                        content = "Unfortunately, **an error occurred** during command processing. " +
+                            "Please let a staff member know."
+                    }
+                }
+            }
+
+            logger.error(t) { "Error during execution of ${this.name} slash command ($event)" }
+
+            resp.followUp {
+                content = "Unfortunately, **an error occurred** during command processing. " +
+                    "Please let a staff member know."
+            }
+        }
     }
 }
