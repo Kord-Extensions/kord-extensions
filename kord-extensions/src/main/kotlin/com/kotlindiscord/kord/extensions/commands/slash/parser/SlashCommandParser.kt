@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.slash_commands.parser
+package com.kotlindiscord.kord.extensions.commands.slash.parser
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
@@ -9,11 +9,21 @@ import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.slash_commands.SlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
+import dev.kord.common.entity.string
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * Parser in charge of dealing with the arguments for slash commands.
+ *
+ * This doesn't do anything special with the rich types provided by Discord, as they're useless in most cases.
+ * Instead, it transforms them to a string and puts them through the usual parsing machinery.
+ *
+ * This parser does not support coalescing or multi converters. There's no good way to represent them with
+ * Discord's API.
+ */
 public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
     public override suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
         if (context !is SlashCommandContext<out Arguments>) {
@@ -25,12 +35,8 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
-        val argsMap = args.map { Pair(it.displayName.toLowerCase(), it) }.toMap()
 
-        logger.debug { "Args map: $argsMap" }
-
-        val values = (context.event.interaction.command.data.options.value ?: mutableListOf())
-            .map { it.name to it.value.value?.value?.toString() }.toMap()
+        val values = context.event.interaction.command.options.mapValues { it.value.string() }
 
         var currentArg: Argument<*>?
         var currentValue: String? = null
@@ -46,6 +52,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
             logger.debug { "Current value: $currentValue" }
 
+            @Suppress("TooGenericExceptionCaught")
             when (val converter = currentArg.converter) {
                 // It's worth noting that Discord handles validation for required converters, so we don't need to
                 // do that checking ourselves, really

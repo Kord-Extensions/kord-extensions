@@ -81,7 +81,8 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
 
         /** Feedback message to submit to Sentry. **/
         public val feedback: String by coalescedString(
-            "feedback", "Feedback to send to the developers."
+            "feedback",
+            "Feedback to send to the developers."
         )
     }
 }

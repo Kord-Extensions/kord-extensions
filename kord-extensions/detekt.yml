@@ -216,7 +216,7 @@ exceptions:
 formatting:
   active: true
   android: false
-  autoCorrect: false
+  autoCorrect: true
   AnnotationOnSeparateLine:
     active: true
     autoCorrect: false
@@ -292,7 +292,7 @@ formatting:
     autoCorrect: false
   ParameterListWrapping:
     active: true
-    autoCorrect: false
+    autoCorrect: true
     indentSize: 4
   SpacingAroundColon:
     active: true

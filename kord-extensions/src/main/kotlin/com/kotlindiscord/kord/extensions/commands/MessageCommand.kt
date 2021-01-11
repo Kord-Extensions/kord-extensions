@@ -18,7 +18,7 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 /**
- * Class representing a single command.
+ * Class representing a message command.
  *
  * You shouldn't need to use this class directly - instead, create an [Extension] and use the
  * [command function][Extension.command] to register your command, by overriding the [Extension.setup]
@@ -78,9 +78,6 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
      */
     public open val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
-    /**
-     * @suppress
-     */
     override val parser: ArgumentParser = ArgumentParser(extension.bot)
 
     /**
@@ -185,7 +182,7 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
 
         val context = MessageCommandContext(this, event, commandName, args)
 
-        val firstBreadcrumb = if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+        val firstBreadcrumb = if (extension.bot.sentry.enabled) {
             val channel = event.message.getChannelOrNull()
             val guild = event.message.getGuildOrNull()
 
@@ -210,7 +207,7 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
             extension.bot.sentry.createBreadcrumb(
                 category = "command",
                 type = "user",
-                message = "MessageCommand \"$name\" called.",
+                message = "Command \"$name\" called.",
                 data = data
             )
         } else {

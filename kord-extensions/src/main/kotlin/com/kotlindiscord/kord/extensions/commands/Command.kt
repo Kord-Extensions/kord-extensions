@@ -4,6 +4,13 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.extensions.Extension
 
+/**
+ * Abstract base class representing the few thins that command objects can have in common.
+ *
+ * This should be used as a base class only for command types that aren't related to the other command types.
+ *
+ * @property extension The extension object this command belongs to.
+ */
 public abstract class Command(public val extension: Extension) {
     /**
      * The name of this command, for invocation and help commands.
@@ -11,7 +18,7 @@ public abstract class Command(public val extension: Extension) {
     public open lateinit var name: String
 
     /**
-     * @suppress
+     * Argument parser object responsible for transforming arguments into Kotlin types.
      */
     public abstract val parser: ArgumentParser
 

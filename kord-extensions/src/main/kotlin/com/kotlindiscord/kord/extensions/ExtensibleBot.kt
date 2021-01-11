@@ -2,13 +2,13 @@ package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.StartBuilder
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.SentryExtension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
-import com.kotlindiscord.kord.extensions.slash_commands.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.utils.module
 import com.kotlindiscord.kord.extensions.utils.parse
 import dev.kord.common.entity.Snowflake
@@ -321,12 +321,12 @@ public open class ExtensibleBot(
     public open fun addDefaultExtensions() {
         if (addHelpExtension) {
             logger.debug { "Adding help extension." }
-            addExtension(HelpExtension::class)
+            this.addExtension(::HelpExtension)
         }
 
         if (addSentryExtension) {
             logger.debug { "Adding sentry extension." }
-            addExtension(SentryExtension::class)
+            this.addExtension(::SentryExtension)
         }
     }
 
@@ -470,7 +470,8 @@ public open class ExtensibleBot(
         if (existingAlias != null) {
             throw CommandRegistrationException(
                 command.name,
-                "MessageCommand with alias '$existingAlias' already registered in '${command.extension.name}' extension."
+                "MessageCommand with alias '$existingAlias' already registered in '${command.extension.name}' " +
+                    "extension."
             )
         }
 

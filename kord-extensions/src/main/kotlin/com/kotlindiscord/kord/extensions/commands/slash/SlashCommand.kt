@@ -1,25 +1,40 @@
-package com.kotlindiscord.kord.extensions.slash_commands
+package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.slash_commands.parser.SlashCommandParser
+import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.interaction.InteractionCreateEvent
 
-public open class SlashCommand <T: Arguments> (extension: Extension) : Command(extension) {
+/**
+ * Class representing a slash command.
+ *
+ * You shouldn't need to use this class directly - instead, create an [Extension] and use the
+ * [slash command function][Extension.slashCommand] to register your command, by overriding the [Extension.setup]
+ * function.
+ *
+ * @param extension The [Extension] that registered this command.
+ */
+public open class SlashCommand<T : Arguments>(extension: Extension) : Command(extension) {
+    /** Arguments object builder for this command, if it has arguments. **/
     public open var arguments: (() -> T)? = null
 
+    /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
 
+    /** @suppress **/
     public open lateinit var body: suspend SlashCommandContext<out T>.() -> Unit
 
+    /** Guild ID this slash command is to be registered for, if any. **/
     public open var guild: Snowflake? = null
 
+    /** Whether to send a message on discord showing the command invocation. **/
     public open var showSource: Boolean = false
 
+    /** @suppress **/
     public open val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
 
     public override val parser: SlashCommandParser = SlashCommandParser(extension.bot)

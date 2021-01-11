@@ -14,7 +14,7 @@ buildscript {
 plugins {
     `maven-publish`
 
-    kotlin("jvm") version "1.4.10"
+    kotlin("jvm") version "1.4.21"
 
     id("com.github.jakemarsden.git-hooks") version "0.0.1"
     id("io.gitlab.arturbosch.detekt") version "1.13.1"
@@ -113,6 +113,8 @@ fun getCurrentGitBranch(): String {  // https://gist.github.com/lordcodes/15b2a4
 detekt {
     buildUponDefaultConfig = true
     config = files("detekt.yml")
+
+    autoCorrect = true
 }
 
 tasks.dokkaHtml.configure {

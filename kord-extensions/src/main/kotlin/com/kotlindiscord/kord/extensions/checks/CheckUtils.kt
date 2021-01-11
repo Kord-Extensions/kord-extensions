@@ -3,7 +3,7 @@ package com.kotlindiscord.kord.extensions.checks
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior
-import dev.kord.core.event.*
+import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
 import dev.kord.core.event.guild.*
 import dev.kord.core.event.message.*

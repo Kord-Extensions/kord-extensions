@@ -1,13 +1,13 @@
 @file:OptIn(KordPreview::class)
 
-package com.kotlindiscord.kord.extensions.slash_commands.converters
+package com.kotlindiscord.kord.extensions.commands.slash.converters
 
 import com.kotlindiscord.kord.extensions.commands.converters.DefaultingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.OptionalConverter
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.slash_commands.converters.impl.NumberChoiceConverter
-import com.kotlindiscord.kord.extensions.slash_commands.converters.impl.StringChoiceConverter
+import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.NumberChoiceConverter
+import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.StringChoiceConverter
 import dev.kord.common.annotation.KordPreview
 
 // region: Required (single) converters

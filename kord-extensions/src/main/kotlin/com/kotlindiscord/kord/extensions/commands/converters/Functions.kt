@@ -27,7 +27,8 @@ public fun Arguments.boolean(displayName: String, description: String): SingleCo
  * @see ChannelConverter
  */
 public fun Arguments.channel(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null
 ): SingleConverter<Channel> = arg(displayName, description, ChannelConverter(requireSameGuild, requiredGuild))
@@ -90,7 +91,8 @@ public fun Arguments.member(
  * @see MessageConverter
  */
 public fun Arguments.message(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null
 ): SingleConverter<Message> = arg(displayName, description, MessageConverter(requireGuild, requiredGuild))
@@ -176,12 +178,14 @@ public fun Arguments.optionalBoolean(
  * @see ChannelConverter
  */
 public fun Arguments.optionalChannel(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false
 ): OptionalConverter<Channel?> = arg(
-    displayName, description,
+    displayName,
+    description,
     ChannelConverter(requireSameGuild, requiredGuild)
         .toOptional(outputError = outputError)
 )
@@ -252,7 +256,8 @@ public fun Arguments.optionalGuild(
  * @see MemberConverter
  */
 public fun Arguments.optionalMember(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     requiredGuild: (suspend () -> Snowflake)?,
     outputError: Boolean = false
 ): OptionalConverter<Member?> =
@@ -264,12 +269,14 @@ public fun Arguments.optionalMember(
  * @see MessageConverter
  */
 public fun Arguments.optionalMessage(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false
 ): OptionalConverter<Message?> = arg(
-    displayName, description,
+    displayName,
+    description,
     MessageConverter(requireGuild, requiredGuild)
         .toOptional(outputError = outputError)
 )
@@ -280,7 +287,8 @@ public fun Arguments.optionalMessage(
  * @see NumberConverter
  */
 public fun Arguments.optionalNumber(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     outputError: Boolean = false,
     radix: Int = 10
 ): OptionalConverter<Long?> =
@@ -292,7 +300,8 @@ public fun Arguments.optionalNumber(
  * @see RegexConverter
  */
 public fun Arguments.optionalRegex(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     options: Set<RegexOption> = setOf(),
     outputError: Boolean = false
 ): OptionalConverter<Regex?> =
@@ -304,7 +313,8 @@ public fun Arguments.optionalRegex(
  * @see RoleConverter
  */
 public fun Arguments.optionalRole(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     requiredGuild: (suspend () -> Snowflake)?,
     outputError: Boolean = false
 ): OptionalConverter<Role?> =
@@ -328,7 +338,8 @@ public fun Arguments.optionalString(
  * @see T4JDurationConverter
  */
 public fun Arguments.optionalT4jDuration(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     outputError: Boolean = false
 ): OptionalConverter<net.time4j.Duration<IsoUnit>?> =
     arg(displayName, description, T4JDurationConverter().toOptional(outputError = outputError))
@@ -403,7 +414,8 @@ public fun Arguments.defaultingEmail(
  * @see NumberConverter
  */
 public fun Arguments.defaultingNumber(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     defaultValue: Long,
     radix: Int = 10
 ): DefaultingConverter<Long> =
@@ -415,7 +427,8 @@ public fun Arguments.defaultingNumber(
  * @see RegexConverter
  */
 public fun Arguments.defaultingRegex(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     defaultValue: Regex,
     options: Set<RegexOption> = setOf()
 ): DefaultingConverter<Regex> =
@@ -439,7 +452,8 @@ public fun Arguments.defaultingString(
  * @see T4JDurationConverter
  */
 public fun Arguments.defaultingT4jDuration(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     defaultValue: net.time4j.Duration<IsoUnit>
 ): DefaultingConverter<net.time4j.Duration<IsoUnit>> =
     arg(displayName, description, T4JDurationConverter().toDefaulting(defaultValue))
@@ -462,7 +476,8 @@ public fun Arguments.coalescedDuration(displayName: String, description: String)
  * @see RegexCoalescingConverter
  */
 public fun Arguments.coalescedRegex(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     options: Set<RegexOption> = setOf()
 ): CoalescingConverter<Regex> =
     arg(displayName, description, RegexCoalescingConverter(options))
@@ -507,7 +522,8 @@ public fun Arguments.optionalCoalescedDuration(
  * @see RegexCoalescingConverter
  */
 public fun Arguments.optionalCoalescedRegex(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     options: Set<RegexOption> = setOf()
 ): OptionalCoalescingConverter<Regex?> =
     arg(displayName, description, RegexCoalescingConverter(options).toOptional())
@@ -529,7 +545,8 @@ public fun Arguments.optionalCoalescedString(
  * @see RegexCoalescingConverter
  */
 public fun Arguments.optionalCoalescedT4jDuration(
-    displayName: String, description: String
+    displayName: String,
+    description: String
 ): OptionalCoalescingConverter<net.time4j.Duration<IsoUnit>?> =
     arg(displayName, description, T4JDurationCoalescingConverter().toOptional())
 
@@ -543,7 +560,8 @@ public fun Arguments.optionalCoalescedT4jDuration(
  * @see DurationCoalescingConverter
  */
 public fun Arguments.defaultingCoalescedDuration(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     defaultValue: Duration
 ): DefaultingCoalescingConverter<Duration> =
     arg(displayName, description, DurationCoalescingConverter().toDefaulting(defaultValue))
@@ -554,7 +572,8 @@ public fun Arguments.defaultingCoalescedDuration(
  * @see RegexCoalescingConverter
  */
 public fun Arguments.defaultingCoalescedRegex(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     defaultValue: Regex,
     options: Set<RegexOption> = setOf()
 ): DefaultingCoalescingConverter<Regex> =
@@ -566,7 +585,8 @@ public fun Arguments.defaultingCoalescedRegex(
  * @see RegexCoalescingConverter
  */
 public fun Arguments.defaultingCoalescedString(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     defaultValue: String
 ): DefaultingCoalescingConverter<String> =
     arg(displayName, description, StringCoalescingConverter().toDefaulting(defaultValue))
@@ -577,7 +597,8 @@ public fun Arguments.defaultingCoalescedString(
  * @see RegexCoalescingConverter
  */
 public fun Arguments.defaultingCoalescedT4jDuration(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     defaultValue: net.time4j.Duration<IsoUnit>
 ): DefaultingCoalescingConverter<net.time4j.Duration<IsoUnit>> =
     arg(displayName, description, T4JDurationCoalescingConverter().toDefaulting(defaultValue))
@@ -612,12 +633,14 @@ public fun Arguments.booleanList(
  * @see ChannelConverter
  */
 public fun Arguments.channelList(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     required: Boolean = true,
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null
 ): MultiConverter<Channel> = arg(
-    displayName, description,
+    displayName,
+    description,
 
     ChannelConverter(requireSameGuild, requiredGuild)
         .toMulti(required, signatureTypeString = "channels")
@@ -701,7 +724,8 @@ public fun Arguments.guildList(
  * @see MemberConverter
  */
 public fun Arguments.memberList(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     required: Boolean,
     requiredGuild: (suspend () -> Snowflake)?
 ): MultiConverter<Member> =
@@ -715,12 +739,14 @@ public fun Arguments.memberList(
  * @see MessageConverter
  */
 public fun Arguments.messageList(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     required: Boolean = true,
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null
 ): MultiConverter<Message> = arg(
-    displayName, description,
+    displayName,
+    description,
     MessageConverter(requireGuild, requiredGuild)
         .toMulti(required, signatureTypeString = "messages")
 )
@@ -748,7 +774,8 @@ public fun Arguments.numberList(
  * @see RegexConverter
  */
 public fun Arguments.regexList(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     required: Boolean = true,
     options: Set<RegexOption> = setOf()
 ): MultiConverter<Regex> =
@@ -762,7 +789,8 @@ public fun Arguments.regexList(
  * @see RoleConverter
  */
 public fun Arguments.roleList(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     required: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)?
 ): MultiConverter<Role> =
@@ -790,7 +818,8 @@ public fun Arguments.stringList(
  * @see T4JDurationConverter
  */
 public fun Arguments.t4jDurationList(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     required: Boolean = true
 ): MultiConverter<net.time4j.Duration<IsoUnit>> =
     arg(displayName, description, T4JDurationConverter().toMulti(required, signatureTypeString = "durations"))
@@ -819,7 +848,8 @@ public fun Arguments.userList(
  * @see EnumConverter
  */
 public inline fun <reified T : Enum<T>> Arguments.enum(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     typeName: String,
     noinline getter: suspend (String) -> T?
 ): SingleConverter<T> = arg(displayName, description, EnumConverter(typeName, getter))
@@ -842,7 +872,8 @@ public inline fun <reified T : Enum<T>> Arguments.enum(
  * @see EnumConverter
  */
 public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     typeName: String,
     defaultValue: T,
     noinline getter: suspend (String) -> T?
@@ -854,7 +885,8 @@ public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
  * @see EnumConverter
  */
 public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     typeName: String,
     defaultValue: T
 ): DefaultingConverter<T> =
@@ -866,7 +898,8 @@ public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
  * @see EnumConverter
  */
 public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     typeName: String,
     noinline getter: suspend (String) -> T?
 ): OptionalConverter<T?> = arg(displayName, description, EnumConverter(typeName, getter).toOptional())
@@ -877,7 +910,8 @@ public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
  * @see EnumConverter
  */
 public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     typeName: String
 ): OptionalConverter<T?> =
     optionalEnum<T>(displayName, description, typeName, ::getEnum)
@@ -890,7 +924,8 @@ public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
  * @see EnumConverter
  */
 public inline fun <reified T : Enum<T>> Arguments.enumList(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     typeName: String,
     required: Boolean = true,
     noinline getter: suspend (String) -> T?
@@ -904,7 +939,8 @@ public inline fun <reified T : Enum<T>> Arguments.enumList(
  * @see EnumConverter
  */
 public inline fun <reified T : Enum<T>> Arguments.enumList(
-    displayName: String, description: String,
+    displayName: String,
+    description: String,
     typeName: String,
     required: Boolean = true
 ): MultiConverter<T> =

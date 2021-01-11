@@ -18,7 +18,7 @@ import io.sentry.SentryLevel
  * instantiate this yourself.
  *
  * @param command Respective command for this context object.
- * @param event Event that triggered this command.
+ * @param eventObj Event that triggered this command.
  * @param commandName MessageCommand name given by the user to invoke the command - lower-cased.
  * @param args Array of string arguments for this command.
  */

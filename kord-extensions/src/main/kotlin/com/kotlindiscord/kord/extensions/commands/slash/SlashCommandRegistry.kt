@@ -1,20 +1,22 @@
-package com.kotlindiscord.kord.extensions.slash_commands
+package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.KoinAccessor
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.sentry.tag
+import com.kotlindiscord.kord.extensions.sentry.user
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
-import dev.kord.common.entity.optional.Optional
-import dev.kord.common.entity.optional.map
-import dev.kord.common.entity.optional.mapNotNull
 import dev.kord.core.SlashCommands
-import dev.kord.core.behavior.InteractionResponseBehavior
 import dev.kord.core.behavior.followUp
-import dev.kord.core.cache.data.OptionData
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.InteractionCreateEvent
+import io.sentry.Sentry
+import io.sentry.protocol.SentryId
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -25,18 +27,30 @@ import org.koin.core.component.KoinComponent
 
 private val logger: KLogger = KotlinLogging.logger {}
 
+/**
+ * Class responsible for keeping track of slash commands, registering and executing them.
+ *
+ * Currently only single-level commands are supported, no command groups or subcommands.
+ *
+ * @property bot Current instance of the bot.
+ */
 @OptIn(KoinApiExtension::class, KordPreview::class)
 public open class SlashCommandRegistry(
     public open val bot: ExtensibleBot,
     koinAccessor: KoinComponent = KoinAccessor(bot)
 ) : KoinComponent by koinAccessor {
-    // A null key means global here
+    /** @suppress **/
     public open val commands: MutableMap<Snowflake?, MutableList<SlashCommand<out Arguments>>> = mutableMapOf()
 
+    /** @suppress **/
     public open val commandMap: MutableMap<Snowflake, SlashCommand<out Arguments>> = mutableMapOf()
 
+    /** @suppress **/
     public open val api: SlashCommands get() = bot.kord.slashCommands
 
+    private val sentry: SentryAdapter by bot.koin.inject()
+
+    /** Register a slash command here, before they're synced to Discord. **/
     public open fun register(command: SlashCommand<out Arguments>, guild: Snowflake? = null): Boolean {
         commands.putIfAbsent(guild, mutableListOf())
 
@@ -66,13 +80,19 @@ public open class SlashCommandRegistry(
         return true
     }
 
+    /**
+     * Sync all slash commands to Discord, removing unrecognised ones.
+     *
+     * Note that Discord doesn't let us get a list of guilds we have commands on, so we can't
+     * remove commands for guilds the bot isn't present on.
+     */
     @Suppress("TooGenericExceptionCaught")  // Better safe than sorry
     public open suspend fun syncAll() {
         logger.info { "Synchronising slash commands. This may take some time." }
 
         try {
             sync(null)
-        } catch(t: Throwable) {
+        } catch (t: Throwable) {
             logger.error(t) { "Failed to sync global slash commands" }
         }
 
@@ -85,6 +105,7 @@ public open class SlashCommandRegistry(
         }
     }
 
+    /** @suppress **/
     public open suspend fun sync(guild: Snowflake?) {
         val guildObj = if (guild != null) {
             val guildObj = bot.kord.getGuild(guild)
@@ -101,9 +122,10 @@ public open class SlashCommandRegistry(
 
         val registered = commands[guild]!!
 
-        val existing = when (guild) {
-            null -> api.getGlobalApplicationCommands().map { Pair(it.name, it.id) }.toList()
-            else -> api.getGuildApplicationCommands(guild).map { Pair(it.name, it.id) }.toList()
+        val existing = if (guild == null) {
+            api.getGlobalApplicationCommands().map { Pair(it.name, it.id) }.toList()
+        } else {
+            api.getGuildApplicationCommands(guild).map { Pair(it.name, it.id) }.toList()
         }
 
         val toAdd = registered.filter { r -> existing.all { it.first != r.name } }
@@ -134,7 +156,7 @@ public open class SlashCommandRegistry(
                                 error("Argument ${arg.displayName} does not support slash commands.")
                             }
 
-                           if (this.options == null) this.options = mutableListOf()
+                            if (this.options == null) this.options = mutableListOf()
 
                             this.options!! += converter.toSlashOption(arg)
                         }
@@ -193,32 +215,57 @@ public open class SlashCommandRegistry(
         }
     }
 
+    /** Handle an [InteractionCreateEvent] and try to execute the corresponding command. **/
     public open suspend fun handle(event: InteractionCreateEvent) {
         val commandId = event.interaction.command.id
         val command = commandMap[commandId]
 
         if (command == null) {
             logger.warn { "Received interaction for unknown slash command: $commandId" }
-
             return
+        }
+
+        val firstBreadcrumb = if (sentry.enabled) {
+            val channel = event.interaction.channel.asChannelOrNull()
+            val guild = event.interaction.guild.asGuildOrNull()
+
+            val data = mutableMapOf(
+                "command" to command.name
+            )
+
+            if (command.guild != null) {
+                data["command.guild"] to command.guild!!.asString
+            }
+
+            if (channel != null) {
+                data["channel"] = when (channel) {
+                    is DmChannel -> "Private Message (${channel.id.asString})"
+                    is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+
+                    else -> channel.id.asString
+                }
+            }
+
+            if (guild != null) {
+                data["guild"] = "${guild.name} (${guild.id.asString})"
+            }
+
+            sentry.createBreadcrumb(
+                category = "command.slash",
+                type = "user",
+                message = "Slash command \"${command.name}\" called.",
+                data = data
+            )
+        } else {
+            null
         }
 
         val resp = event.interaction.acknowledge(command.showSource)
 
-        try {
-            runCommand(command, event, resp)
-        } catch (e: ParseException) {
-            resp.followUp { content = e.reason }
-        } catch (t: Throwable) {
-
+        if (!command.runChecks(event)) {
+            return
         }
-    }
 
-    public open suspend fun <T: Arguments> runCommand(
-        command: SlashCommand<T>,
-        event: InteractionCreateEvent,
-        resp: InteractionResponseBehavior
-    ) {
         val context = SlashCommandContext(command, event, command.name, resp)
 
         context.populate()
@@ -228,6 +275,66 @@ public open class SlashCommandRegistry(
             context.populateArgs(args)
         }
 
-        command.body.invoke(context)
+        @Suppress("TooGenericExceptionCaught")
+        try {
+            command.body.invoke(context)
+        } catch (e: ParseException) {
+            resp.followUp { content = e.reason }
+        } catch (t: Throwable) {
+            if (sentry.enabled) {
+                logger.debug { "Submitting error to sentry." }
+
+                lateinit var sentryId: SentryId
+                val channel = context.channel
+                val author = context.user.asUserOrNull()
+
+                Sentry.withScope {
+                    if (author != null) {
+                        it.user(author)
+                    }
+
+                    it.tag("private", "false")
+
+                    if (channel is DmChannel) {
+                        it.tag("private", "true")
+                    }
+
+                    it.tag("command", command.name)
+                    it.tag("extension", command.extension.name)
+
+                    it.addBreadcrumb(firstBreadcrumb!!)
+
+                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
+
+                    sentryId = Sentry.captureException(t, "MessageCommand execution failed.")
+
+                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                }
+
+                sentry.addEventId(sentryId)
+
+                logger.error(t) { "Error during execution of ${command.name} slash command ($event)" }
+
+                if (bot.extensions.containsKey("sentry")) {
+                    resp.followUp {
+                        content = "Unfortunately, **an error occurred** during command processing. If you'd " +
+                            "like to submit information on what you were doing when this error happened, " +
+                            "please use the following command: ```${bot.prefix}feedback $sentryId <message>```"
+                    }
+                } else {
+                    resp.followUp {
+                        content = "Unfortunately, **an error occurred** during command processing. " +
+                            "Please let a staff member know."
+                    }
+                }
+            }
+
+            logger.error(t) { "Error during execution of ${command.name} slash command ($event)" }
+
+            resp.followUp {
+                content = "Unfortunately, **an error occurred** during command processing. " +
+                    "Please let a staff member know."
+            }
+        }
     }
 }

@@ -44,7 +44,6 @@ public abstract class OptionalConverter<T : Any?>(
      */
     public abstract suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean
 
-
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
 

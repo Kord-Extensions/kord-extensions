@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
-import com.kotlindiscord.kord.extensions.slash_commands.SlashCommand
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import dev.kord.common.entity.Snowflake
 import mu.KotlinLogging
 
@@ -49,6 +49,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
     public open suspend fun doSetup() {
         this.setState(ExtensionState.LOADING)
 
+        @Suppress("TooGenericExceptionCaught")
         try {
             this.setup()
         } catch (t: Throwable) {
@@ -59,6 +60,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
         this.setState(ExtensionState.LOADED)
     }
 
+    /** Update this extension's state, firing the extension state change event. **/
     public open suspend fun setState(state: ExtensionState) {
         bot.send(ExtensionStateEvent(bot, this, state))
 
@@ -156,7 +158,8 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      * @param commandObj SlashCommand object to register.
      */
     public open suspend fun <T : Arguments> slashCommand(
-        guildId: Snowflake? = null, commandObj: SlashCommand<T>
+        guildId: Snowflake? = null,
+        commandObj: SlashCommand<T>
     ): SlashCommand<T> {
         try {
             commandObj.validate()
@@ -212,6 +215,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
 
         this.setState(ExtensionState.UNLOADING)
 
+        @Suppress("TooGenericExceptionCaught")
         try {
             this.unload()
         } catch (t: Throwable) {

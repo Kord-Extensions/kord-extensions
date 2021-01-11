@@ -24,6 +24,7 @@ private val logger = KotlinLogging.logger {}
  *
  * We recommend reading over the source code if you'd like to get to grips with how this all works.
  *
+ * @param bot Current instance of the bot
  * @param splitChar The character to use for splitting keyword arguments
  */
 public open class ArgumentParser(public val bot: ExtensibleBot, private val splitChar: Char = '=') {
