@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.utils
 
 import net.time4j.Duration
 import net.time4j.IsoUnit
+import java.lang.StringBuilder
 import java.time.temporal.ChronoUnit
 
 /**
@@ -39,8 +40,6 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
 public fun java.time.Duration.toHuman(): String? {
     if(isZero) return null
     
-    val parts = mutableListOf<String>()
-
     val seconds = this.seconds % 60
     val minutesTotal = this.seconds / 60
 
@@ -50,22 +49,20 @@ public fun java.time.Duration.toHuman(): String? {
     val hours = hoursTotal % 24
     val days = hoursTotal / 24
 
-    if (days > 0) {
-        parts.add("$days day${if(days > 1) 's' else ""}")
+    val builder = StringBuilder()
+    fun addToString(value: Long, title: String){
+        if(value > 0) {
+            if (builder.isNotEmpty()) {
+                builder.append(", ")
+            }
+            builder.append("$value $title${if (value > 1) 's' else ""}")
+        }
     }
+    
+    addToString(days, "day")
+    addToString(hours, "hour")
+    addToString(minutes, "minute")
+    addToString(seconds, "second")
 
-    if (hours > 0) {
-        parts.add("$hours hour${if(hours > 1) 's' else ""}")
-    }
-
-    if (minutes > 0) {
-        parts.add("$minutes minute${if(minutes > 1) 's' else ""}")
-    }
-
-    if (seconds > 0) {
-        parts.add("$seconds second${if(seconds > 1) 's' else ""}")
-    }
-
-    if (parts.isEmpty()) return null
-    return parts.joinToString()
+    return builder.toString()
 }

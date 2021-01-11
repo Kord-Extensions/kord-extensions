@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.entity.ReactionEmoji
+import dev.kord.core.event.message.ReactionAddEvent
 
 /**
  * Transform the [GuildEmoji] to a [ReactionEmoji]

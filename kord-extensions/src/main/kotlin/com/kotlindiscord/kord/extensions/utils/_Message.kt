@@ -3,6 +3,7 @@
 
 package com.kotlindiscord.kord.extensions.utils
 
+import com.kotlindiscord.kord.extensions.message.MessageEventManager
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.channel.createMessage
@@ -11,12 +12,14 @@ import dev.kord.core.cache.data.MessageData
 import dev.kord.core.entity.*
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.event.message.*
 import dev.kord.rest.builder.message.MessageCreateBuilder
 import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import org.apache.commons.text.StringTokenizer
 import org.apache.commons.text.matcher.StringMatcherFactory
+import kotlin.jvm.Throws
 
 /**
  * Logger of the class
@@ -54,18 +57,18 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
  * @param millis The delay before deleting the message, in milliseconds.
  * @return Job spawned by the CoroutineScope.
  */
-public fun MessageBehavior.deleteWithDelay(millis: Long, retry: Boolean = true): Job {
+public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
     return kord.launch {
         delay(millis)
 
         try {
-            this@deleteWithDelay.deleteIgnoringNotFound()
+            this@delete.deleteIgnoringNotFound()
         } catch (e: RestRequestException) {
-            val message = this@deleteWithDelay
+            val message = this@delete
 
             if (retry) {
                 LOG.debug(e) { "Failed to delete message, retrying: $message" }
-                this@deleteWithDelay.deleteWithDelay(millis, false)
+                this@delete.delete(millis, false)
             } else {
                 LOG.error(e) { "Failed to delete message: $message" }
             }
@@ -90,6 +93,14 @@ public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoj
     = deleteReaction(userId, emoji.toReaction())
 
 /**
+ * Requests to remove an [emoji] with unicode format to this message.
+ * @param emoji Emojis that will be removed to the message
+ * @throws [RestRequestException] if something went wrong during the request.
+ */
+public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: String): Unit
+    = deleteReaction(userId, emoji.toReaction())
+
+/**
  * Requests to delete an [emoji] to this message.
  * @param emoji Emoji that will be deleted to the message
  * @throws [RestRequestException] if something went wrong during the request.
@@ -106,14 +117,6 @@ public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit 
     this.deleteReaction(unicode.toReaction())
 
 /**
- * Requests to remove an [emoji] with unicode format to this message.
- * @param emoji Emojis that will be removed to the message
- * @throws [RestRequestException] if something went wrong during the request.
- */
-public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: String): Unit
-    = deleteReaction(userId, emoji.toReaction())
-
-/**
  * Requests to remove an [emoji] from the own bot to this message.
  * @param emoji Emoji that will be removed to the message
  * @throws [RestRequestException] if something went wrong during the request.
@@ -128,6 +131,26 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): 
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit
     = deleteOwnReaction(unicode.toReaction())
+
+/**
+ * Create listener for an events about the message.
+ * @receiver Message that will be listen to apply actions according to the events
+ * @param timeout Time to stop listening to events after the last received event corresponding to the message
+ * @param manage Block of code to create listeners
+ * @return The instance of manager created to manager the events
+ * @throws IllegalStateException Exception if this is impossible to start the listening of event
+ * because he is already started
+ */
+@Throws(IllegalStateException::class)
+public inline fun MessageBehavior.events(
+    timeout: Long? = 1000L * 60L,
+    manage: MessageEventManager.() -> Unit
+): MessageEventManager = MessageEventManager(this, timeout).apply {
+    manage(this)
+    if(!start()) {
+        error("Impossible to start the listening of events")
+    }
+}
 
 /** ID of the message author. **/
 public val MessageData.authorId: Snowflake
@@ -264,8 +287,8 @@ public suspend fun Message.requireChannel(
 
     val response = respond("Please use ${channel.mention} for this command.")
 
-    if (deleteResponse) response.deleteWithDelay(delay)
-    if (deleteOriginal && messageChannel !is DmChannel) this.deleteWithDelay(delay)
+    if (deleteResponse) response.delete(delay)
+    if (deleteOriginal && messageChannel !is DmChannel) this.delete(delay)
 
     return false
 }
@@ -315,7 +338,7 @@ public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
 public suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild? = null): Boolean {
     val author = this.author
     val topRole = when {
-        author != null -> guild?.getMember(author.id)?.getTopRole() 
+        author != null -> guild?.getMember(author.id)?.getTopRole()
         else -> null
     }
 
