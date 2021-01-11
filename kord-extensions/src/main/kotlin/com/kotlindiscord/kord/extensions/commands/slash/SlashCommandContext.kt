@@ -72,7 +72,7 @@ public open class SlashCommandContext<T : Arguments>(
         content: String? = null,
         builder: (InteractionApplicationCommandCallbackDataBuilder.() -> Unit)? = null
     ): InteractionResponseBehavior {
-        if (interactionResponse != null) {
+        if (interactionResponse == null) {
             interactionResponse = if (content == null) {
                 event.interaction.acknowledge(source)
             } else {

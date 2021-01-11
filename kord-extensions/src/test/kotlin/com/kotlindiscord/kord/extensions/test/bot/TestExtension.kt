@@ -45,8 +45,8 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             action {
                 ack(true, "") {
                     embed {
-                        name = "An embed!"
-                        description = "With a description, and without a content string!"
+                        this.title = "An embed!"
+                        this.description = "With a description, and without a content string!"
                     }
                 }
             }
