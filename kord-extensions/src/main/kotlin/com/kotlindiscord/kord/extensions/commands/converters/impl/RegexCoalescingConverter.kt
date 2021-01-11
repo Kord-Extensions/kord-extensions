@@ -4,6 +4,9 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.coalescedRegex
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
 /**
  * Coalescing argument converter for regular expression arguments, combining the arguments into a single [Regex]
@@ -28,4 +31,7 @@ public class RegexCoalescingConverter(
 
         return args.size
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

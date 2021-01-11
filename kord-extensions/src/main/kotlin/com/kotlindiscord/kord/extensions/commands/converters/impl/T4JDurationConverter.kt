@@ -6,8 +6,12 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.t4jDuration
 import com.kotlindiscord.kord.extensions.commands.converters.t4jDurationList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.parsers.parseDuration
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import net.time4j.Duration
 import net.time4j.IsoUnit
 
@@ -21,6 +25,7 @@ import net.time4j.IsoUnit
  * @see t4jDurationList
  * @see parseDuration
  */
+@OptIn(KordPreview::class)
 public class T4JDurationConverter : SingleConverter<Duration<IsoUnit>>() {
     override val signatureTypeString: String = "duration"
 
@@ -33,4 +38,7 @@ public class T4JDurationConverter : SingleConverter<Duration<IsoUnit>>() {
 
         return true
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

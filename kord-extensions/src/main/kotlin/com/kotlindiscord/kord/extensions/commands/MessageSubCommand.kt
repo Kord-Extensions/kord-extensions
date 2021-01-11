@@ -10,7 +10,8 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
  * @param extension The [Extension] that registered this command.
  * @param parent The [GroupCommand] this command exists under.
  */
-public open class SubCommand(extension: Extension, public open val parent: GroupCommand) : Command(extension) {
+public open class MessageSubCommand(extension: Extension, public open val parent: GroupCommand) :
+    MessageCommand(extension) {
     /**
      * Get the name of this command, prefixed with the name of its parent (separated by spaces).
      */

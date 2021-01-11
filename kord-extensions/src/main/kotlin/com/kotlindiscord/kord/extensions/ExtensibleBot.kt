@@ -1,7 +1,8 @@
 package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.StartBuilder
-import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -17,6 +18,7 @@ import dev.kord.core.event.Event
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
+import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
@@ -83,7 +85,7 @@ public open class ExtensibleBot(
     /**
      * A list of all registered commands.
      */
-    public open val commands: MutableList<Command> = mutableListOf()
+    public open val commands: MutableList<MessageCommand> = mutableListOf()
 
     /**
      * A list of all registered event handlers.
@@ -98,11 +100,11 @@ public open class ExtensibleBot(
     /** @suppress **/
     public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel(1)
 
-    /** @suppress **/
-    public open var initialized: Boolean = false
-
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
     public open val events: Flow<Any> get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
+
+    /** @suppress **/
+    public open var initialized: Boolean = false
 
     /** @suppress **/
     public open val logger: KLogger = KotlinLogging.logger {}
@@ -129,11 +131,15 @@ public open class ExtensibleBot(
     /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
     public val koin: Koin = koinApp.koin
 
+    /** Slash command registry, keeps track of and executes slash commands. **/
+    public open val slashCommands: SlashCommandRegistry by koin.inject<SlashCommandRegistry>()
+
     init {
         TZDATA.init()  // Set up time4j
 
         koin.module { single { this@ExtensibleBot } }
         koin.module { single { sentry } }
+        koin.module { single { SlashCommandRegistry(this@ExtensibleBot) } }
     }
 
     /**
@@ -188,12 +194,17 @@ public open class ExtensibleBot(
             logger.warn { "Disconnected: $closeCode" }
         }
 
+        on<InteractionCreateEvent> {
+            slashCommands.handle(this)
+        }
+
         on<ReadyEvent> {
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
                 for (extension in extensions.keys) {
                     @Suppress("TooGenericExceptionCaught")  // Anything could happen here
                     try {
                         loadExtension(extension)
+                        logger.debug { "Loaded extension: $extension" }
                     } catch (e: Exception) {
                         logger.error(e) { "Failed to set up '$extension' extension." }
                     }
@@ -221,6 +232,8 @@ public open class ExtensibleBot(
                         }
                     }
                 }
+
+                slashCommands.syncAll()
             }
 
             logger.info { "Ready!" }
@@ -250,12 +263,12 @@ public open class ExtensibleBot(
 
                 when {
                     parts[0].startsWith(prefix) -> {
-                        // Command with args
+                        // MessageCommand with args
                         commandName = parts[0]
                         parts = parts.sliceArray(1 until parts.size)
                     }
                     invokeCommandOnMention && parts[0] == mention -> {
-                        // Command with a mention; first part is exactly the mention
+                        // MessageCommand with a mention; first part is exactly the mention
                         commandName = parts[1]
 
                         parts = if (parts.size > 2) {
@@ -265,7 +278,7 @@ public open class ExtensibleBot(
                         }
                     }
                     invokeCommandOnMention && parts[0].startsWith(mention) -> {
-                        // Command with a mention; no space between mention and command
+                        // MessageCommand with a mention; no space between mention and command
                         commandName = parts[0].slice(mention.length until parts[0].length)
                         parts = parts.sliceArray(1 until parts.size)
                     }
@@ -309,12 +322,12 @@ public open class ExtensibleBot(
     public open fun addDefaultExtensions() {
         if (addHelpExtension) {
             logger.debug { "Adding help extension." }
-            addExtension(HelpExtension::class)
+            this.addExtension(::HelpExtension)
         }
 
         if (addSentryExtension) {
             logger.debug { "Adding sentry extension." }
-            addExtension(SentryExtension::class)
+            this.addExtension(::SentryExtension)
         }
     }
 
@@ -430,7 +443,7 @@ public open class ExtensibleBot(
     }
 
     /**
-     * Directly register a [Command] to this bot.
+     * Directly register a [MessageCommand] to this bot.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
      * call the [Extension.command] function in your [Extension.setup] function.
@@ -442,7 +455,7 @@ public open class ExtensibleBot(
      * @throws CommandRegistrationException Thrown if the command could not be registered.
      */
     @Throws(CommandRegistrationException::class)
-    public open fun addCommand(command: Command) {
+    public open fun addCommand(command: MessageCommand) {
         val existingCommand = commands.any { it.name == command.name }
         val existingAlias: String? = commands.flatMap {
             it.aliases.toList()
@@ -451,21 +464,22 @@ public open class ExtensibleBot(
         if (existingCommand) {
             throw CommandRegistrationException(
                 command.name,
-                "Command with this name already registered in '${command.extension.name}' extension."
+                "MessageCommand with this name already registered in '${command.extension.name}' extension."
             )
         }
 
         if (existingAlias != null) {
             throw CommandRegistrationException(
                 command.name,
-                "Command with alias '$existingAlias' already registered in '${command.extension.name}' extension."
+                "MessageCommand with alias '$existingAlias' already registered in '${command.extension.name}' " +
+                    "extension."
             )
         }
 
         if (commands.contains(command)) {
             throw CommandRegistrationException(
                 command.name,
-                "Command already registered in '${command.extension.name}' extension."
+                "MessageCommand already registered in '${command.extension.name}' extension."
             )
         }
 
@@ -473,14 +487,14 @@ public open class ExtensibleBot(
     }
 
     /**
-     * Directly remove a registered [Command] from this bot.
+     * Directly remove a registered [MessageCommand] from this bot.
      *
      * This function is used when extensions are unloaded, in order to clear out their commands.
      * No exception is thrown if the command wasn't registered.
      *
      * @param command The command to be removed.
      */
-    public open fun removeCommand(command: Command): Boolean = commands.remove(command)
+    public open fun removeCommand(command: MessageCommand): Boolean = commands.remove(command)
 
     /**
      * Directly register an [EventHandler] to this bot.

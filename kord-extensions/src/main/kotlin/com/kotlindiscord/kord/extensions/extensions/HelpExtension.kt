@@ -1,9 +1,9 @@
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
-import com.kotlindiscord.kord.extensions.commands.SubCommand
+import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.MessageSubCommand
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
@@ -50,7 +50,7 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                     message.channel.createEmbed {
                         val command = getCommand(args)
 
-                        title = "Command Help"
+                        title = "MessageCommand Help"
                         description = if (command == null) {
                             "Unknown command."
                         } else {
@@ -63,15 +63,15 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     }
 
     /**
-     * Gather all available commands from the bot, and return them as an array of [Command].
+     * Gather all available commands from the bot, and return them as an array of [MessageCommand].
      */
-    public suspend fun gatherCommands(event: MessageCreateEvent): List<Command> =
+    public suspend fun gatherCommands(event: MessageCreateEvent): List<MessageCommand> =
         bot.commands.filter { !it.hidden && it.enabled && it.runChecks(event) }
 
     /**
-     * Generate help message by formatting a [List] of [Command] objects.
+     * Generate help message by formatting a [List] of [MessageCommand] objects.
      */
-    public suspend fun formatMainHelp(commands: List<Command>, event: MessageCreateEvent): Pages {
+    public suspend fun formatMainHelp(commands: List<MessageCommand>, event: MessageCreateEvent): Pages {
         val pages = Pages()
         var totalCommands = 0
 
@@ -107,12 +107,12 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     }
 
     /**
-     * Return the [Command] specified in the arguments, or null if it can't be found.
+     * Return the [MessageCommand] specified in the arguments, or null if it can't be found.
      */
-    public fun getCommand(args: Array<String>): Command? {
+    public fun getCommand(args: Array<String>): MessageCommand? {
         val firstArg = args.first()
 
-        var command: Command? = bot.commands.firstOrNull { it.name == firstArg || it.aliases.contains(firstArg) }
+        var command: MessageCommand? = bot.commands.firstOrNull { it.name == firstArg || it.aliases.contains(firstArg) }
 
         args.drop(1).forEach {
             if (command != null && command is GroupCommand) {
@@ -128,9 +128,9 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
      *
      * @param command The command to format the description of.
      */
-    public fun formatLongHelp(command: Command): String {
+    public fun formatLongHelp(command: MessageCommand): String {
         val name = when (command) {
-            is SubCommand -> command.getFullName()
+            is MessageSubCommand -> command.getFullName()
             is GroupCommand -> command.getFullName()
 
             else -> command.name

@@ -2,9 +2,9 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
+import com.kotlindiscord.kord.extensions.utils.getTopRole
 import dev.kord.core.entity.Role
 import dev.kord.core.event.Event
-import com.kotlindiscord.kord.extensions.utils.getTopRole
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 

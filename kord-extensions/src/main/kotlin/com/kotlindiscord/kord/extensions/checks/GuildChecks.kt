@@ -1,4 +1,3 @@
-
 @file:Suppress("RedundantSuspendModifier")
 
 package com.kotlindiscord.kord.extensions.checks

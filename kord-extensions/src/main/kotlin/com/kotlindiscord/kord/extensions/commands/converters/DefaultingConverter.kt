@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import dev.kord.common.annotation.KordPreview
 import kotlin.reflect.KProperty
 
 /**
@@ -14,7 +15,10 @@ import kotlin.reflect.KProperty
  *
  * You can create a defaulting converter of your own by extending this class.
  */
-public abstract class DefaultingConverter<T : Any>(defaultValue: T) : Converter<T>(false) {
+@KordPreview
+public abstract class DefaultingConverter<T : Any>(
+    defaultValue: T
+) : Converter<T>(false), SlashCommandConverter {
     /**
      * The parsed value.
      *
@@ -31,7 +35,7 @@ public abstract class DefaultingConverter<T : Any>(defaultValue: T) : Converter<
      * here.
      *
      * @param arg [String] argument, provided by the user running the current command
-     * @param context Command context object, containing the event, message, and other command-related things
+     * @param context MessageCommand context object, containing the event, message, and other command-related things
      * @param bot Current instance of [ExtensibleBot], representing the currently-connected bot
      *
      * @return Whether you managed to convert the argument. If you don't want to provide extra context to the user,

@@ -5,6 +5,10 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.regex
 import com.kotlindiscord.kord.extensions.commands.converters.regexList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
 /**
  * Argument converter for regular expression arguments, converting them into [Regex] objects.
@@ -20,6 +24,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.regexList
  * @see regexList
  */
 
+@OptIn(KordPreview::class)
 public class RegexConverter(
     private val options: Set<RegexOption> = setOf()
 ) : SingleConverter<Regex>() {
@@ -30,4 +35,7 @@ public class RegexConverter(
 
         return true
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

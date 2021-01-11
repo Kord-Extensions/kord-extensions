@@ -1,15 +1,20 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.Message
-import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.message
 import com.kotlindiscord.kord.extensions.commands.converters.messageList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -28,6 +33,7 @@ private val logger = KotlinLogging.logger {}
  * @see message
  * @see messageList
  */
+@OptIn(KordPreview::class)
 public class MessageConverter(
     private var requireGuild: Boolean = false,
     private var requiredGuild: (suspend () -> Snowflake)? = null
@@ -42,7 +48,7 @@ public class MessageConverter(
     }
 
     private suspend fun findMessage(arg: String, context: CommandContext, bot: ExtensibleBot): Message {
-        val requiredGid = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId
+        val requiredGid = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id
 
         return if (arg.startsWith("https://")) { // It's a message URL
             @Suppress("MagicNumber")
@@ -96,10 +102,16 @@ public class MessageConverter(
 
             channel.getMessage(mid)
         } else { // Try a message ID
-            val channel = context.message.channel.asChannelOrNull()
+            val channel = context.getChannel()
 
             if (channel !is GuildMessageChannel && channel !is DmChannel) {
                 logger.debug { "Current channel is not a guild message channel or DM channel." }
+
+                throw ParseException("Unable to find message: $arg")
+            }
+
+            if (channel !is MessageChannel) {
+                logger.debug { "Current channel is not a message channel, so it can't contain messages." }
 
                 throw ParseException("Unable to find message: $arg")
             }
@@ -111,4 +123,7 @@ public class MessageConverter(
             }
         }
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

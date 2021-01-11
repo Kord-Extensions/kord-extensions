@@ -19,11 +19,35 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
 
     override suspend fun setup() {
         if (bot.sentry.enabled) {
-            command {
-                name = "last-event"
+            slashCommand<FeedbackArgs> {
+                name = "feedback"
+                description = "Provide feedback on what you were doing when an error occurred."
+
+                arguments { FeedbackArgs() }
 
                 action {
-                    message.respond(Sentry.getLastEventId().toString())
+                    if (!bot.sentry.hasEventId(arguments.id)) {
+                        followUp(
+                            "The Sentry event ID you supplied either doesn't exist, or is not awaiting " +
+                                "feedback."
+                        )
+
+                        return@action
+                    }
+                    val feedback = UserFeedback(
+                        arguments.id,
+                        member.asMember().tag,
+                        member.id.asString,
+                        arguments.feedback
+                    )
+
+                    Sentry.captureUserFeedback(feedback)
+                    bot.sentry.removeEventId(arguments.id)
+
+                    followUp(
+                        "Thanks for your feedback - we'll use it to improve our bot and fix " +
+                            "the error you encountered!"
+                    )
                 }
             }
 
@@ -77,9 +101,12 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
     /** Arguments for the feedback command. **/
     public class FeedbackArgs : Arguments() {
         /** Sentry event ID. **/
-        public val id: SentryId by sentryId("id")
+        public val id: SentryId by sentryId("id", "Sentry event ID")
 
         /** Feedback message to submit to Sentry. **/
-        public val feedback: String by coalescedString("feedback")
+        public val feedback: String by coalescedString(
+            "feedback",
+            "Feedback to send to the developers."
+        )
     }
 }

@@ -56,8 +56,8 @@ write an event handler that reacts to message creation events.
 override suspend fun setup() {
     event<MessageCreateEvent> {
         action {
-            if (it.message.content.equals("ping", true)) {
-                it.message.respond("pong")
+            if (event.message.content.equals("ping", true)) {
+                event.message.respond("pong")
             }
         }
     }

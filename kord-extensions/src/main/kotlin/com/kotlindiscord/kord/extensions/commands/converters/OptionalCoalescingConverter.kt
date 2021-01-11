@@ -1,9 +1,9 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.ParseException
 import kotlin.reflect.KProperty
 
 /**
@@ -36,7 +36,7 @@ public abstract class OptionalCoalescingConverter<T : Any?> : Converter<List<T>>
      * that situation, however.
      *
      * @param args List of [String] arguments, provided by the user running the current command
-     * @param context Command context object, containing the event, message, and other command-related things
+     * @param context MessageCommand context object, containing the event, message, and other command-related things
      * @param bot Current instance of [ExtensibleBot], representing the currently-connected bot
      *
      * @return The number of arguments this converter consumed to produce its resulting value. Return 0 if you didn't

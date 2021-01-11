@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions
 
-import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import kotlin.reflect.KClass
@@ -50,10 +50,10 @@ public class EventHandlerRegistrationException(public val reason: String) : Exte
 }
 
 /**
- * Thrown when a [Command] could not be validated.
+ * Thrown when a [MessageCommand] could not be validated.
  *
- * @param name The [Command] name
- * @param reason Why this [Command] is considered invalid.
+ * @param name The [MessageCommand] name
+ * @param reason Why this [MessageCommand] is considered invalid.
  */
 public class InvalidCommandException(public val name: String?, public val reason: String) : ExtensionsException() {
     override fun toString(): String {
@@ -66,10 +66,10 @@ public class InvalidCommandException(public val name: String?, public val reason
 }
 
 /**
- * Thrown when an attempt to register a [Command] fails.
+ * Thrown when an attempt to register a [MessageCommand] fails.
  *
- * @param name The [Command] name
- * @param reason Why this [Command] could not be registered.
+ * @param name The [MessageCommand] name
+ * @param reason Why this [MessageCommand] could not be registered.
  */
 public class CommandRegistrationException(public val name: String?, public val reason: String) : ExtensionsException() {
     override fun toString(): String {

@@ -1,9 +1,9 @@
 package com.kotlindiscord.kord.extensions.commands
 
-import dev.kord.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -21,9 +21,9 @@ private val logger = KotlinLogging.logger {}
 public open class GroupCommand(
     extension: Extension,
     public open val parent: GroupCommand? = null
-) : Command(extension) {
+) : MessageCommand(extension) {
     /** @suppress **/
-    public open val commands: MutableList<Command> = mutableListOf<Command>()
+    public open val commands: MutableList<MessageCommand> = mutableListOf<MessageCommand>()
 
     override lateinit var name: String
 
@@ -44,7 +44,7 @@ public open class GroupCommand(
     }
 
     /** @suppress **/
-    override var body: suspend CommandContext.() -> Unit = {
+    override var body: suspend MessageCommandContext.() -> Unit = {
         val mention = message.author!!.mention
 
         val error = if (args.isNotEmpty()) {
@@ -63,8 +63,8 @@ public open class GroupCommand(
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun command(body: suspend Command.() -> Unit): Command {
-        val commandObj = SubCommand(extension, this)
+    public open suspend fun command(body: suspend MessageCommand.() -> Unit): MessageCommand {
+        val commandObj = MessageSubCommand(extension, this)
         body.invoke(commandObj)
 
         return command(commandObj)
@@ -75,9 +75,9 @@ public open class GroupCommand(
      *
      * You can use this if you have a custom command subclass you need to register.
      *
-     * @param commandObj Command object to register.
+     * @param commandObj MessageCommand object to register.
      */
-    public open suspend fun command(commandObj: Command): Command {
+    public open suspend fun command(commandObj: MessageCommand): MessageCommand {
         try {
             commandObj.validate()
             commands.add(commandObj)
@@ -108,7 +108,7 @@ public open class GroupCommand(
     }
 
     /** @suppress **/
-    public open fun getCommand(commandName: String?): Command? =
+    public open fun getCommand(commandName: String?): MessageCommand? =
         commands.firstOrNull { it.name == commandName } ?: commands.firstOrNull { it.aliases.contains(commandName) }
 
     /**

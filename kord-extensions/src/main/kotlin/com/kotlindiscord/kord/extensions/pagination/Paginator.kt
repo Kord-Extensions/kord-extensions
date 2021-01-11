@@ -74,6 +74,7 @@ public open class Paginator(
             throw IllegalArgumentException("Must provide either a target channel or target message")
         }
     }
+
     /** Basic emojis that should be added to every paginator. **/
     public open val emojis: Array<ReactionEmoji> = arrayOf(
         FIRST_PAGE_EMOJI,
