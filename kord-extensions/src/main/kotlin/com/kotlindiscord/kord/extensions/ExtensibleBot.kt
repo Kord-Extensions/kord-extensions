@@ -18,6 +18,7 @@ import dev.kord.core.event.Event
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
+import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
@@ -191,6 +192,10 @@ public open class ExtensibleBot(
 
         on<DisconnectEvent.DiscordCloseEvent> {
             logger.warn { "Disconnected: $closeCode" }
+        }
+
+        on<InteractionCreateEvent> {
+            slashCommands.handle(this)
         }
 
         on<ReadyEvent> {

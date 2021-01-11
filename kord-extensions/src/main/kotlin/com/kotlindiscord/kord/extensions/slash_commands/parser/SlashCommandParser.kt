@@ -30,7 +30,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
         logger.debug { "Args map: $argsMap" }
 
         val values = (context.event.interaction.command.data.options.value ?: mutableListOf())
-            .map { it.name to it.value.toString() }.toMap()
+            .map { it.name to it.value.value?.value?.toString() }.toMap()
 
         var currentArg: Argument<*>?
         var currentValue: String? = null

@@ -9,6 +9,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.behavior.followUp
 import dev.kord.core.behavior.respond
 
 @OptIn(KordPreview::class)
@@ -40,11 +41,12 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
         slashCommand<SlashArgs> {
             name = "test"
             description = "Test command, please ignore"
+            showSource = true
 
             arguments { SlashArgs() }
 
             action {
-                this.event.interaction.respond("Command executed!", false) {
+                interactionResponse.followUp {
                     embed {
                         title = "Test response"
                         description = "Test description"
@@ -73,6 +75,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                 }
             }
         }
+
         command {
             name = "test"
             description = "Test command, please ignore"

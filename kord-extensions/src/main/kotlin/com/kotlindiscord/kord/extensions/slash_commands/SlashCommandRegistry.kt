@@ -214,8 +214,8 @@ public open class SlashCommandRegistry(
         }
     }
 
-    public open suspend fun runCommand(
-        command: SlashCommand<out Arguments>,
+    public open suspend fun <T: Arguments> runCommand(
+        command: SlashCommand<T>,
         event: InteractionCreateEvent,
         resp: InteractionResponseBehavior
     ) {
