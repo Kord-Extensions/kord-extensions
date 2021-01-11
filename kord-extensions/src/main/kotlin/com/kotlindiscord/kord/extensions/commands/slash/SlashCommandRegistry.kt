@@ -217,6 +217,11 @@ public open class SlashCommandRegistry(
             return
         }
 
+        if (!command.extension.loaded) {
+            logger.info { "Ignoring slash command ${command.name} as the extension is unloaded." }
+            return
+        }
+
         command.call(event)
     }
 }
