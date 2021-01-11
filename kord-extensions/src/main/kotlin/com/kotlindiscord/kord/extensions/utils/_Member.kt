@@ -9,6 +9,14 @@ import dev.kord.core.entity.Role
 import kotlinx.coroutines.flow.toList
 
 /**
+ * Check if the user has the provided [Role].
+ * @param role Role to check for
+ * @return true if the user has the given role, false otherwise
+ */
+public suspend fun Member.hasRole(role: Role): Boolean
+    = roles.toList().contains(role)
+
+/**
  * Check if the user has the roles
  * @param roles Roles to check for
  * @return `true` if the user has all roles, `false` otherwise
@@ -58,7 +66,7 @@ public suspend inline fun Member.hasPermissions(vararg perms: Permission): Boole
  *
  * @receiver The [Member] check permissions for
  * @param perms The permissions to check for
- * @return `true` if the collection is empty, 
+ * @return `true` if the collection is empty,
  * or the [Member] has the permissions (also if he has the administrator permission),
  * `false` otherwise
  */
