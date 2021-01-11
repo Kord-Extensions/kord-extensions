@@ -38,7 +38,7 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
  */
 @Suppress("MagicNumber")  // These are all time units!
 public fun java.time.Duration.toHuman(): String? {
-    if(isZero) return null
+    if(seconds == 0L) return null
     
     val seconds = this.seconds % 60
     val minutesTotal = this.seconds / 60
@@ -64,5 +64,5 @@ public fun java.time.Duration.toHuman(): String? {
     addToString(minutes, "minute")
     addToString(seconds, "second")
 
-    return builder.toString()
+    return if(builder.isEmpty()) null else builder.toString()
 }
