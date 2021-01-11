@@ -9,8 +9,6 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.createEmbed
-import dev.kord.core.behavior.followUp
-import dev.kord.core.behavior.respond
 
 @OptIn(KordPreview::class)
 class TestExtension(bot: ExtensibleBot) : Extension(bot) {
