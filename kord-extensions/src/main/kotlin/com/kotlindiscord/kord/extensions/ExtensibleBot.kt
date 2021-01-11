@@ -100,11 +100,11 @@ public open class ExtensibleBot(
     /** @suppress **/
     public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel(1)
 
-    /** @suppress **/
-    public open var initialized: Boolean = false
-
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
     public open val events: Flow<Any> get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
+
+    /** @suppress **/
+    public open var initialized: Boolean = false
 
     /** @suppress **/
     public open val logger: KLogger = KotlinLogging.logger {}
@@ -204,6 +204,7 @@ public open class ExtensibleBot(
                     @Suppress("TooGenericExceptionCaught")  // Anything could happen here
                     try {
                         loadExtension(extension)
+                        logger.debug { "Loaded extension: $extension" }
                     } catch (e: Exception) {
                         logger.error(e) { "Failed to set up '$extension' extension." }
                     }

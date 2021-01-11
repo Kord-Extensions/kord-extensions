@@ -88,7 +88,7 @@ public open class SlashCommandRegistry(
             logger.error(t) { "Failed to sync global slash commands" }
         }
 
-        commands.keys.forEach {
+        commands.keys.filterNotNull().forEach {
             try {
                 sync(it)
             } catch (t: Throwable) {
