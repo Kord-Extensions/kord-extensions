@@ -2,11 +2,19 @@ package com.kotlindiscord.kord.extensions.slash_commands
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.KoinAccessor
+import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
+import dev.kord.common.entity.optional.Optional
+import dev.kord.common.entity.optional.map
+import dev.kord.common.entity.optional.mapNotNull
 import dev.kord.core.SlashCommands
-import dev.kord.rest.builder.interaction.BaseApplicationBuilder
+import dev.kord.core.behavior.InteractionResponseBehavior
+import dev.kord.core.behavior.followUp
+import dev.kord.core.cache.data.OptionData
+import dev.kord.core.event.interaction.InteractionCreateEvent
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -22,17 +30,29 @@ public open class SlashCommandRegistry(
     public open val bot: ExtensibleBot,
     koinAccessor: KoinComponent = KoinAccessor(bot)
 ) : KoinComponent by koinAccessor {
-    public open val commands: MutableMap<Snowflake?, MutableList<SlashCommand>> = mutableMapOf()  // null means global
+    // A null key means global here
+    public open val commands: MutableMap<Snowflake?, MutableList<SlashCommand<out Arguments>>> = mutableMapOf()
+
+    public open val commandMap: MutableMap<Snowflake, SlashCommand<out Arguments>> = mutableMapOf()
 
     public open val api: SlashCommands get() = bot.kord.slashCommands
 
-    public open fun register(command: SlashCommand, guild: Snowflake? = null): Boolean {
+    public open fun register(command: SlashCommand<out Arguments>, guild: Snowflake? = null): Boolean {
         commands.putIfAbsent(guild, mutableListOf())
 
-        command.arguments?.args?.forEach { arg ->
+        val args = command.arguments?.invoke()
+        var lastArgRequired = true  // Start with `true` because required args must come first
+
+        args?.args?.forEach { arg ->
             if (arg.converter !is SlashCommandConverter) {
                 error("Argument ${arg.displayName} does not support slash commands.")
             }
+
+            if (arg.converter.required && !lastArgRequired) {
+                error("Required arguments must be placed before non-required arguments.")
+            }
+
+            lastArgRequired = arg.converter.required
         }
 
         val exists = commands[guild]!!.any { it.name == command.name }
@@ -79,12 +99,12 @@ public open class SlashCommandRegistry(
             null
         }
 
+        val registered = commands[guild]!!
+
         val existing = when (guild) {
             null -> api.getGlobalApplicationCommands().map { Pair(it.name, it.id) }.toList()
             else -> api.getGuildApplicationCommands(guild).map { Pair(it.name, it.id) }.toList()
         }
-
-        val registered = commands[guild]!!
 
         val toAdd = registered.filter { r -> existing.all { it.first != r.name } }
         val toUpdate = registered.filter { r -> existing.any { it.first == r.name } }
@@ -100,12 +120,14 @@ public open class SlashCommandRegistry(
         }
 
         (toAdd + toUpdate).forEach {
+            val args = it.arguments?.invoke()
+
             if (guild == null) {
                 logger.debug { "Adding/updating global slash command ${it.name}" }
 
-                api.createGlobalApplicationCommand(it.name, it.description) {
-                    if (it.arguments != null) {
-                        it.arguments?.args?.forEach { arg ->
+                val response = api.createGlobalApplicationCommand(it.name, it.description) {
+                    if (args != null) {
+                        args.args.forEach { arg ->
                             val converter = arg.converter
 
                             if (converter !is SlashCommandConverter) {
@@ -118,12 +140,14 @@ public open class SlashCommandRegistry(
                         }
                     }
                 }
+
+                commandMap[response.id] = it
             } else {
                 logger.debug { "Adding/updating slash command ${it.name} for guild: ${guildObj?.name}" }
 
-                api.createGuildApplicationCommand(guild, it.name, it.description) {
-                    if (it.arguments != null) {
-                        it.arguments?.args?.forEach { arg ->
+                val response = api.createGuildApplicationCommand(guild, it.name, it.description) {
+                    if (args != null) {
+                        args.args.forEach { arg ->
                             val converter = arg.converter
 
                             if (converter !is SlashCommandConverter) {
@@ -136,6 +160,8 @@ public open class SlashCommandRegistry(
                         }
                     }
                 }
+
+                commandMap[response.id] = it
             }
         }
 
@@ -165,5 +191,43 @@ public open class SlashCommandRegistry(
                 "Finished synchronising slash commands for guild ${guildObj?.name}"
             }
         }
+    }
+
+    public open suspend fun handle(event: InteractionCreateEvent) {
+        val commandId = event.interaction.command.id
+        val command = commandMap[commandId]
+
+        if (command == null) {
+            logger.warn { "Received interaction for unknown slash command: $commandId" }
+
+            return
+        }
+
+        val resp = event.interaction.acknowledge(command.showSource)
+
+        try {
+            runCommand(command, event, resp)
+        } catch (e: ParseException) {
+            resp.followUp { content = e.reason }
+        } catch (t: Throwable) {
+
+        }
+    }
+
+    public open suspend fun runCommand(
+        command: SlashCommand<out Arguments>,
+        event: InteractionCreateEvent,
+        resp: InteractionResponseBehavior
+    ) {
+        val context = SlashCommandContext(command, event, command.name, resp)
+
+        context.populate()
+
+        if (command.arguments != null) {
+            val args = command.parser.parse(command.arguments!!, context)
+            context.populateArgs(args)
+        }
+
+        command.body.invoke(context)
     }
 }

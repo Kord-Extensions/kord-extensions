@@ -23,7 +23,7 @@ import io.sentry.SentryLevel
  * @param args Array of string arguments for this command.
  */
 public abstract class CommandContext(
-    public open val command: MessageCommand,
+    public open val command: Command,
     public open val eventObj: Event,
     public open val commandName: String,
     public open val args: Array<String>

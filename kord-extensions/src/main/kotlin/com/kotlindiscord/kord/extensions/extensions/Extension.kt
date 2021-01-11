@@ -1,8 +1,9 @@
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.*
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
+import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import com.kotlindiscord.kord.extensions.slash_commands.SlashCommand
@@ -93,7 +94,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
      * belong to unloaded extensions will not execute.
      */
-    public open val slashCommands: MutableList<SlashCommand> = mutableListOf()
+    public open val slashCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
 
     /**
      * DSL function for easily registering a command.
@@ -137,11 +138,11 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the slash command object.
      */
-    public open suspend fun slashCommand(
+    public open suspend fun <T : Arguments> slashCommand(
         guildId: Snowflake? = null,
-        body: suspend SlashCommand.() -> Unit
-    ): SlashCommand {
-        val commandObj = SlashCommand(this)
+        body: suspend SlashCommand<T>.() -> Unit
+    ): SlashCommand<T> {
+        val commandObj = SlashCommand<T>(this)
         body.invoke(commandObj)
 
         return slashCommand(guildId, commandObj)
@@ -154,7 +155,9 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * @param commandObj SlashCommand object to register.
      */
-    public open suspend fun slashCommand(guildId: Snowflake? = null, commandObj: SlashCommand): SlashCommand {
+    public open suspend fun <T : Arguments> slashCommand(
+        guildId: Snowflake? = null, commandObj: SlashCommand<T>
+    ): SlashCommand<T> {
         try {
             commandObj.validate()
             slashCommands.add(commandObj)

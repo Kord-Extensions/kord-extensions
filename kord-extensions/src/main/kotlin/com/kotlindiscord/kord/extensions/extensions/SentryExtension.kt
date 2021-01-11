@@ -77,9 +77,11 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
     /** Arguments for the feedback command. **/
     public class FeedbackArgs : Arguments() {
         /** Sentry event ID. **/
-        public val id: SentryId by sentryId("id")
+        public val id: SentryId by sentryId("id", "Sentry event ID")
 
         /** Feedback message to submit to Sentry. **/
-        public val feedback: String by coalescedString("feedback")
+        public val feedback: String by coalescedString(
+            "feedback", "Feedback to send to the developers."
+        )
     }
 }

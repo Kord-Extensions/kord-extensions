@@ -1,28 +1,78 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.commands.converters.booleanList
-import com.kotlindiscord.kord.extensions.commands.converters.defaultingEnum
-import com.kotlindiscord.kord.extensions.commands.converters.enum
-import com.kotlindiscord.kord.extensions.commands.converters.string
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.behavior.respond
 
+@OptIn(KordPreview::class)
 class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     override val name = "test"
 
     class TestArgs : Arguments() {
-        val string by string("string")
-        val enum by enum<TestEnum>("enum", "test")
-        val optionalEnum by defaultingEnum("optional-enum", "test", TestEnum.THREE)
-        val bools by booleanList("bools")
+        val string by string("string", "String argument")
+        val enum by enum<TestEnum>("enum", "Enum argument", "test")
+
+        val optionalEnum by defaultingEnum(
+            "optional-enum", "Defaulting enum argument", "test", TestEnum.THREE
+        )
+
+        val bools by booleanList("bools", "Boolean list argument")
+    }
+
+    class SlashArgs : Arguments() {
+        val string by string("string", "String argument")
+        val enum by enum<TestEnum>("enum", "Enum argument", "test")
+        val bool by boolean("bool", "Boolean argument")
+
+        val optionalEnum by defaultingEnum(
+            "optional-enum", "Defaulting enum argument", "test", TestEnum.THREE
+        )
     }
 
     override suspend fun setup() {
+        slashCommand<SlashArgs> {
+            name = "test"
+            description = "Test command, please ignore"
+
+            arguments { SlashArgs() }
+
+            action {
+                this.event.interaction.respond("Command executed!", false) {
+                    embed {
+                        title = "Test response"
+                        description = "Test description"
+
+                        field {
+                            name = "String"
+                            value = arguments.string
+                        }
+
+                        field {
+                            name = "Enum"
+                            value = arguments.enum.toString()
+                        }
+
+                        field {
+                            name = "Optional Enum"
+                            value = arguments.optionalEnum.toString()
+                        }
+
+                        field {
+                            name = "Bool"
+
+                            value = arguments.bool.toString()
+                        }
+                    }
+                }
+            }
+        }
         command {
             name = "test"
             description = "Test command, please ignore"

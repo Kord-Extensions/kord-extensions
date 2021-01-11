@@ -9,16 +9,19 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.interaction.InteractionCreateEvent
 
-public open class SlashCommand(extension: Extension) : Command(extension) {
-    public open var arguments: Arguments? = null
+public open class SlashCommand <T: Arguments> (extension: Extension) : Command(extension) {
+    public open var arguments: (() -> T)? = null
 
     public open lateinit var description: String
 
-    public open lateinit var body: suspend SlashCommandContext.() -> Unit
+    public open lateinit var body: suspend SlashCommandContext<out T>.() -> Unit
 
     public open var guild: Snowflake? = null
 
+    public open var showSource: Boolean = false
+
     public open val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
+
     public override val parser: SlashCommandParser = SlashCommandParser(extension.bot)
 
     /**
@@ -39,6 +42,8 @@ public open class SlashCommand(extension: Extension) : Command(extension) {
         }
     }
 
+    // region: DSL functions
+
     /** Specify a specific guild for this slash command. **/
     public open fun guild(guild: Snowflake) {
         this.guild = guild
@@ -54,14 +59,17 @@ public open class SlashCommand(extension: Extension) : Command(extension) {
         this.guild = guild.id
     }
 
-    // region: DSL functions
+    /** Specify the arguments builder for this slash command. **/
+    public open fun arguments(args: () -> T) {
+        this.arguments = args
+    }
 
     /**
      * Define what will happen when your command is invoked.
      *
      * @param action The body of your command, which will be executed when your command is invoked.
      */
-    public open fun action(action: suspend SlashCommandContext.() -> Unit) {
+    public open fun action(action: suspend SlashCommandContext<out T>.() -> Unit) {
         this.body = action
     }
 

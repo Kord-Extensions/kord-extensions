@@ -32,7 +32,7 @@ public class NumberChoiceConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         IntChoiceBuilder(arg.displayName, arg.description).apply {
             required = true
-            this@NumberChoiceConverter.choices.forEach { choice(it.key) { it.value } }
+            this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
         }
 }
 

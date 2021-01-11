@@ -22,6 +22,6 @@ public class StringChoiceConverter(choices: Map<String, String>) : ChoiceConvert
         StringChoiceBuilder(arg.displayName, arg.description).apply {
             required = true
 
-            this@StringChoiceConverter.choices.forEach { choice(it.key) { it.value } }
+            this@StringChoiceConverter.choices.forEach { choice(it.key, it.value) }
         }
 }

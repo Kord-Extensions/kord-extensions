@@ -44,7 +44,7 @@ public open class GroupCommand(
     }
 
     /** @suppress **/
-    override var body: suspend CommandContext.() -> Unit = {
+    override var body: suspend MessageCommandContext.() -> Unit = {
         val mention = message.author!!.mention
 
         val error = if (args.isNotEmpty()) {

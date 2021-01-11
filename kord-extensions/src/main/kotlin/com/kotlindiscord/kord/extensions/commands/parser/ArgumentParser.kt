@@ -26,7 +26,7 @@ private val logger = KotlinLogging.logger {}
  *
  * @param splitChar The character to use for splitting keyword arguments
  */
-public open class ArgumentParser(private val bot: ExtensibleBot, private val splitChar: Char = '=') {
+public open class ArgumentParser(public val bot: ExtensibleBot, private val splitChar: Char = '=') {
     /**
      * Given a builder returning an [Arguments] subclass and [CommandContext], parse the command's arguments into
      * the [Arguments] subclass and return it.
