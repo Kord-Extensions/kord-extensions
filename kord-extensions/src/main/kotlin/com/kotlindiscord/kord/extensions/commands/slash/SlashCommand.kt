@@ -10,7 +10,6 @@ import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
-import dev.kord.core.behavior.followUp
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.InteractionCreateEvent
@@ -42,6 +41,9 @@ public open class SlashCommand<T : Arguments>(extension: Extension) : Command(ex
 
     /** Guild ID this slash command is to be registered for, if any. **/
     public open var guild: Snowflake? = null
+
+    /** Whether to automatically acknowledge this command. Make sure you `ack` your command within 3 seconds! **/
+    public open var autoAck: Boolean = true
 
     /** Whether to send a message on discord showing the command invocation. **/
     public open var showSource: Boolean = false
@@ -151,10 +153,14 @@ public open class SlashCommand<T : Arguments>(extension: Extension) : Command(ex
     public open suspend fun call(event: InteractionCreateEvent) {
         val sentry = extension.bot.sentry
 
-        val resp = event.interaction.acknowledge(this.showSource)
-
         if (!this.runChecks(event)) {
             return
+        }
+
+        val resp = if (autoAck) {
+            event.interaction.acknowledge(this.showSource)
+        } else {
+            null
         }
 
         val context = SlashCommandContext(this, event, this.name, resp)
@@ -205,7 +211,11 @@ public open class SlashCommand<T : Arguments>(extension: Extension) : Command(ex
 
             this.body.invoke(context)
         } catch (e: ParseException) {
-            resp.followUp { content = e.reason }
+            if (resp != null) {
+                context.reply(e.reason)
+            } else {
+                context.ack(showSource, e.reason)
+            }
         } catch (t: Throwable) {
             if (sentry.enabled) {
                 logger.debug { "Submitting error to sentry." }
@@ -241,26 +251,32 @@ public open class SlashCommand<T : Arguments>(extension: Extension) : Command(ex
 
                 logger.error(t) { "Error during execution of ${this.name} slash command ($event)" }
 
-                if (extension.bot.extensions.containsKey("sentry")) {
-                    resp.followUp {
-                        content = "Unfortunately, **an error occurred** during command processing. If you'd " +
-                            "like to submit information on what you were doing when this error happened, " +
-                            "please use the following command: " +
-                            "```${extension.bot.prefix}feedback $sentryId <message>```"
-                    }
+                val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
+                    "Unfortunately, **an error occurred** during command processing. If you'd " +
+                        "like to submit information on what you were doing when this error happened, " +
+                        "please use the following command: " +
+                        "```${extension.bot.prefix}feedback $sentryId <message>```"
                 } else {
-                    resp.followUp {
-                        content = "Unfortunately, **an error occurred** during command processing. " +
-                            "Please let a staff member know."
-                    }
+                    "Unfortunately, **an error occurred** during command processing. " +
+                        "Please let a staff member know."
+                }
+
+                if (resp != null) {
+                    context.reply(errorMessage)
+                } else {
+                    context.ack(showSource, errorMessage)
                 }
             }
 
             logger.error(t) { "Error during execution of ${this.name} slash command ($event)" }
 
-            resp.followUp {
-                content = "Unfortunately, **an error occurred** during command processing. " +
-                    "Please let a staff member know."
+            val errorMessage = "Unfortunately, **an error occurred** during command processing. " +
+                "Please let a staff member know."
+
+            if (resp != null) {
+                context.reply(errorMessage)
+            } else {
+                context.ack(showSource, errorMessage)
             }
         }
     }

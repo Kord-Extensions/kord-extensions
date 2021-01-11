@@ -38,15 +38,31 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     }
 
     override suspend fun setup() {
+        slashCommand<Arguments> {
+            name = "test-noack"
+            description = "Don't auto-ack this one"
+            autoAck = false
+            showSource = true
+
+            action {
+                ack(true, "") {
+                    embed {
+                        name = "An embed!"
+                        description = "With a description, and without a content string!"
+                    }
+                }
+            }
+        }
+
         slashCommand<SlashArgs> {
-            name = "test"
+            name = "test-embed"
             description = "Test command, please ignore"
             showSource = true
 
             arguments { SlashArgs() }
 
             action {
-                interactionResponse.followUp {
+                followUp {
                     embed {
                         title = "Test response"
                         description = "Test description"

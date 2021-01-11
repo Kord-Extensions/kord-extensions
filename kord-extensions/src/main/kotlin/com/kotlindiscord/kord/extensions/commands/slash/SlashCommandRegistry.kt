@@ -180,22 +180,19 @@ public open class SlashCommandRegistry(
         }
 
         if (guild == null) {
-            api.getGlobalApplicationCommands().filter { e ->
-                toRemove.any {
-                    logger.debug { "Removing global slash command ${it.first}" }
-
-                    it.second == e.id
+            api.getGlobalApplicationCommands().filter { e -> toRemove.any { it.second == e.id } }
+                .toList()
+                .forEach {
+                    logger.debug { "Removing global slash command ${it.name}" }
+                    it.delete()
                 }
-            }.toList().forEach { it.delete() }
         } else {
-            api.getGuildApplicationCommands(guild).filter { e ->
-
-                toRemove.any {
-                    logger.debug { "Removing slash command ${it.first} for guild: ${guildObj?.name}" }
-
-                    it.second == e.id
+            api.getGuildApplicationCommands(guild).filter { e -> toRemove.any { it.second == e.id } }
+                .toList()
+                .forEach {
+                    logger.debug { "Removing global slash command ${it.name}" }
+                    it.delete()
                 }
-            }.toList().forEach { it.delete() }
         }
 
         logger.info {
@@ -213,7 +210,7 @@ public open class SlashCommandRegistry(
         val command = commandMap[commandId]
 
         if (command == null) {
-            logger.warn { "Received interaction for unknown slash command: $commandId" }
+            logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
             return
         }
 
