@@ -44,6 +44,18 @@ public suspend fun Member.getTopRole(): Role?
     = roles.toList().maxOrNull()
 
 /**
+ * Convenience function to check whether a guild member has a permission.
+ *
+ * This function only checks for permissions based on roles, and does not deal with channel overrides. It will
+ * always return `true` if the member has the `Administrator` permission in one of their roles.
+ *
+ * @receiver The [Member] check permissions for for
+ * @return Whether the [Member] has the given permission, or the Administrator permission
+ */
+public suspend fun Member.hasPermission(perm: Permission): Boolean
+    = perm in getPermissions()
+
+/**
  * Convenience function to check whether a guild member has the permissions.
  *
  * This function only checks for permissions based on roles, and does not deal with channel overrides. It will
