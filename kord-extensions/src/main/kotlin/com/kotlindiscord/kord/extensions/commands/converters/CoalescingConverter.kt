@@ -19,7 +19,7 @@ import kotlin.reflect.KProperty
  *
  * You can create a coalescing converter of your own by extending this class.
  */
-public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true) {
+public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true), SlashCommandConverter {
     /**
      * The parsed value.
      *

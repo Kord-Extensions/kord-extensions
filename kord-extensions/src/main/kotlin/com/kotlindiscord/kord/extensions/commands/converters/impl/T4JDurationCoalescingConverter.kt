@@ -4,8 +4,11 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.coalescedT4jDuration
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.parsers.parseDuration
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import net.time4j.Duration
 import net.time4j.IsoUnit
 
@@ -40,4 +43,7 @@ public class T4JDurationCoalescingConverter : CoalescingConverter<Duration<IsoUn
 
         return durations.size
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
