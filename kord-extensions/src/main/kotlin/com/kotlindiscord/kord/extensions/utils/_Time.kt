@@ -38,8 +38,7 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
  */
 @Suppress("MagicNumber")  // These are all time units!
 public fun java.time.Duration.toHuman(): String? {
-    if(seconds == 0L) return null
-    
+    if (seconds == 0L) return null
     val seconds = this.seconds % 60
     val minutesTotal = this.seconds / 60
 
@@ -50,19 +49,19 @@ public fun java.time.Duration.toHuman(): String? {
     val days = hoursTotal / 24
 
     val builder = StringBuilder()
-    fun addToString(value: Long, title: String){
-        if(value > 0) {
+    fun addToString(value: Long, title: String) {
+        if (value > 0) {
             if (builder.isNotEmpty()) {
                 builder.append(", ")
             }
             builder.append("$value $title${if (value > 1) 's' else ""}")
         }
     }
-    
+
     addToString(days, "day")
     addToString(hours, "hour")
     addToString(minutes, "minute")
     addToString(seconds, "second")
 
-    return if(builder.isEmpty()) null else builder.toString()
+    return if (builder.isEmpty()) null else builder.toString()
 }

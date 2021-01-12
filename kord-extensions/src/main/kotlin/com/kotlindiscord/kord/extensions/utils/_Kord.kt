@@ -27,9 +27,12 @@ public val Kord.users: Flow<User>
 public suspend inline fun <reified T : Event> Kord.waitFor(
     timeout: Long? = null,
     noinline condition: (suspend T.() -> Boolean) = { true }
-): T? = when(timeout){
-    null -> events.filterIsInstance<T>().firstOrNull(condition)
-    else -> withTimeoutOrNull(timeout) {
+): T? {
+    return if (timeout == null) {
         events.filterIsInstance<T>().firstOrNull(condition)
+    } else {
+        withTimeoutOrNull(timeout) {
+            events.filterIsInstance<T>().firstOrNull(condition)
+        }
     }
 }

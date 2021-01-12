@@ -13,25 +13,26 @@ import kotlinx.coroutines.flow.toList
  * @param role Role to check for
  * @return true if the user has the given role, false otherwise
  */
-public suspend fun Member.hasRole(role: Role): Boolean
-    = roles.toList().contains(role)
+public suspend fun Member.hasRole(role: Role): Boolean =
+    roles.toList().contains(role)
 
 /**
- * Check if the user has the roles
- * @param roles Roles to check for
- * @return `true` if the user has all roles, `false` otherwise
+ * Check if the user has the roles.
+ * @param roles Roles to check for.
+ * @return `true` if the user has all roles, `false` otherwise.
  */
-public suspend inline fun Member.hasRoles(vararg roles: Role): Boolean
-    = this.hasRoles(roles.toList())
+public suspend inline fun Member.hasRoles(vararg roles: Role): Boolean =
+    this.hasRoles(roles.toList())
 
 /**
- * Check if the user has the roles
- * @param roles Roles to check for
- * @return `true` if the user has all roles, `false` otherwise
+ * Check if the user has the roles.
+ * @param roles Roles to check for.
+ * @return `true` if the user has all roles, `false` otherwise.
  */
-public suspend fun Member.hasRoles(roles: Collection<Role>): Boolean = when {
-    roles.isEmpty() -> true
-    else -> this.roles.toList().containsAll(roles)
+public suspend fun Member.hasRoles(roles: Collection<Role>): Boolean {
+    return if (roles.isEmpty()) {
+        true
+    } else this.roles.toList().containsAll(roles)
 }
 
 /**
@@ -40,8 +41,8 @@ public suspend fun Member.hasRoles(roles: Collection<Role>): Boolean = when {
  * @receiver The [Member] to get the top role for
  * @return The user's top role, or `null` if they have no roles
  */
-public suspend fun Member.getTopRole(): Role?
-    = roles.toList().maxOrNull()
+public suspend fun Member.getTopRole(): Role? =
+    roles.toList().maxOrNull()
 
 /**
  * Convenience function to check whether a guild member has a permission.
@@ -52,8 +53,8 @@ public suspend fun Member.getTopRole(): Role?
  * @receiver The [Member] check permissions for for
  * @return Whether the [Member] has the given permission, or the Administrator permission
  */
-public suspend fun Member.hasPermission(perm: Permission): Boolean
-    = perm in getPermissions()
+public suspend fun Member.hasPermission(perm: Permission): Boolean =
+    perm in getPermissions()
 
 /**
  * Convenience function to check whether a guild member has the permissions.
@@ -67,8 +68,8 @@ public suspend fun Member.hasPermission(perm: Permission): Boolean
  * or the [Member] has the permissions (also if he has the administrator permission),
  * `false` otherwise
  */
-public suspend inline fun Member.hasPermissions(vararg perms: Permission): Boolean
-    = hasPermissions(perms.toList())
+public suspend inline fun Member.hasPermissions(vararg perms: Permission): Boolean =
+    hasPermissions(perms.toList())
 
 /**
  * Convenience function to check whether a guild member has the permissions.
@@ -83,7 +84,7 @@ public suspend inline fun Member.hasPermissions(vararg perms: Permission): Boole
  * `false` otherwise
  */
 public suspend fun Member.hasPermissions(perms: Collection<Permission>): Boolean {
-    if(perms.isEmpty()) return true
+    if (perms.isEmpty()) return true
     val permissions = getPermissions()
     return perms.all { it in permissions }
 }

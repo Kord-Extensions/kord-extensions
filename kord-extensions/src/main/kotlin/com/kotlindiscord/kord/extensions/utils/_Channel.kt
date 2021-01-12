@@ -10,7 +10,7 @@ import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
 
 /**
- * Logger of the class
+ * Logger of the class.
  */
 private val LOG = classLogger()
 

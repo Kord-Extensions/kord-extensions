@@ -22,17 +22,17 @@ import org.apache.commons.text.matcher.StringMatcherFactory
 import kotlin.jvm.Throws
 
 /**
- * Logger of the class
+ * Logger of the class.
  */
 private val LOG = classLogger()
 
 /**
- * Time to delete information
+ * Time to delete information.
  */
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 
 /**
- * URI of Discord channels
+ * URI of Discord channels.
  */
 private const val DISCORD_CHANNEL_URI = "https://discordapp.com/channels"
 
@@ -43,7 +43,7 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
     try {
         delete()
     } catch (e: RestRequestException) {
-        if(e.hasNotStatus(HttpStatusCode.NotFound)){
+        if (e.hasNotStatus(HttpStatusCode.NotFound)) {
             throw e
         }
     }
@@ -81,24 +81,24 @@ public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
  * @param unicode Emoji that will be added to the message
  * @throws [RestRequestException] if something went wrong during the request.
  */
-public suspend inline fun MessageBehavior.addReaction(unicode: String): Unit
-    = addReaction(unicode.toReaction())
+public suspend inline fun MessageBehavior.addReaction(unicode: String): Unit =
+    addReaction(unicode.toReaction())
 
 /**
  * Requests to remove an [emoji] to this message.
  * @param emoji Emojis that will be removed to the message
  * @throws [RestRequestException] if something went wrong during the request.
  */
-public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: GuildEmoji): Unit
-    = deleteReaction(userId, emoji.toReaction())
+public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: GuildEmoji): Unit =
+    deleteReaction(userId, emoji.toReaction())
 
 /**
  * Requests to remove an [emoji] with unicode format to this message.
  * @param emoji Emojis that will be removed to the message
  * @throws [RestRequestException] if something went wrong during the request.
  */
-public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: String): Unit
-    = deleteReaction(userId, emoji.toReaction())
+public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: String): Unit =
+    deleteReaction(userId, emoji.toReaction())
 
 /**
  * Requests to delete an [emoji] to this message.
@@ -121,16 +121,16 @@ public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit 
  * @param emoji Emoji that will be removed to the message
  * @throws [RestRequestException] if something went wrong during the request.
  */
-public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): Unit
-    = deleteOwnReaction(emoji.toReaction())
+public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): Unit =
+    deleteOwnReaction(emoji.toReaction())
 
 /**
  * Requests to remove emoji with unicode format from the own bot to this message.
  * @param unicode Emoji that will be removed to the message
  * @throws [RestRequestException] if something went wrong during the request.
  */
-public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit
-    = deleteOwnReaction(unicode.toReaction())
+public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit =
+    deleteOwnReaction(unicode.toReaction())
 
 /**
  * Create listener for an events about the message.
@@ -143,11 +143,11 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  */
 @Throws(IllegalStateException::class)
 public inline fun MessageBehavior.events(
-    timeout: Long? = 1000L * 60L,
+    timeout: Long? = MessageEventManager.DEFAULT_TIME_LISTENING,
     manage: MessageEventManager.() -> Unit
 ): MessageEventManager = MessageEventManager(this, timeout).apply {
     manage(this)
-    if(!start()) {
+    if (!start()) {
         error("Impossible to start the listening of events")
     }
 }
@@ -177,11 +177,11 @@ public val MessageData.authorIsBot: Boolean
 public fun Message.parse(
     delimiters: CharArray = charArrayOf(' '),
     quotes: CharArray = charArrayOf('\'', '"')
-): Array<String>
-    = StringTokenizer(content)
-    .setDelimiterMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(delimiters.joinToString()))
-    .setQuoteMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(quotes.joinToString()))
-    .tokenArray
+): Array<String> =
+    StringTokenizer(content)
+        .setDelimiterMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(delimiters.joinToString()))
+        .setQuoteMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(quotes.joinToString()))
+        .tokenArray
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
@@ -217,11 +217,10 @@ public suspend fun Message.respond(
             }
         }
 
-        val mention = when {
-            author != null && !useReply && getChannelOrNull() !is DmChannel -> {
-                "${author.mention} "
-            }
-            else -> ""
+        val mention = if (author != null && !useReply && getChannelOrNull() !is DmChannel) {
+            "${author.mention} "
+        } else {
+            ""
         }
 
         val contentWithMention = "$mention${content ?: ""}"
@@ -231,10 +230,9 @@ public suspend fun Message.respond(
         }
     }
 
-    return when(useReply) {
-        true -> reply { innerBuilder() }
-        else -> channel.createMessage { innerBuilder() }
-    }
+    return if (useReply) {
+        reply { innerBuilder() }
+    } else channel.createMessage { innerBuilder() }
 }
 
 /**
@@ -271,10 +269,9 @@ public suspend fun Message.requireChannel(
     deleteOriginal: Boolean = true,
     deleteResponse: Boolean = true
 ): Boolean {
-    val topRole = when(getGuildOrNull()) {
-        null -> null
-        else -> getAuthorAsMember()!!.getTopRole()
-    }
+    val topRole = if (getGuildOrNull() == null) {
+        null
+    } else getAuthorAsMember()!!.getTopRole()
 
     val messageChannel = getChannelOrNull()
 
@@ -306,10 +303,9 @@ public suspend fun Message.requireChannel(
 public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
     val author = this.author
     val guild = getGuildOrNull()
-    val topRole = when {
-        author != null && guild != null -> author.asMemberOrNull(guild.id)
-        else -> null
-    }
+    val topRole = if (author != null && guild != null) {
+        author.asMemberOrNull(guild.id)
+    } else null
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (
@@ -337,9 +333,10 @@ public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
  */
 public suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild? = null): Boolean {
     val author = this.author
-    val topRole = when {
-        author != null -> guild?.getMember(author.id)?.getTopRole()
-        else -> null
+    val topRole = if (author != null) {
+        guild?.getMember(author.id)?.getTopRole()
+    } else {
+        null
     }
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable

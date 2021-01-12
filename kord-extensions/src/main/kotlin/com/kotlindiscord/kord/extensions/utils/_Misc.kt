@@ -11,10 +11,9 @@ import mu.KLogger
 import mu.KotlinLogging
 
 /**
- * Neutral and default logger
+ * Neutral and default logger.
  */
-public fun classLogger(): KLogger 
-     = KotlinLogging.logger() {}
+public fun classLogger(): KLogger = KotlinLogging.logger() {}
 
 /**
  * Run a block of code within a coroutine scope, defined by a given dispatcher.
@@ -29,5 +28,3 @@ public suspend fun <T> runSuspended(
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     body: suspend CoroutineScope.() -> T
 ): T = withContext(dispatcher, body)
-
-

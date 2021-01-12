@@ -38,9 +38,10 @@ public suspend inline fun User.dm(builder: MessageCreateBuilder.() -> Unit): Mes
     return try {
         this.getDmChannel().createMessage { builder() }
     } catch (e: RestRequestException) {
-        when{
-            e.hasStatus(HttpStatusCode.Forbidden) -> null
-            else -> throw e
+        if (e.hasStatus(HttpStatusCode.Forbidden)) {
+            null
+        } else {
+            throw e
         }
     }
 }
@@ -60,13 +61,13 @@ public suspend fun User.dm(content: String): Message? = this.dm { this.content =
  *
  * @return Lambda returning the user's top role, or null if they're not on the guild or have no roles.
  */
-public fun topRole(guildID: Snowflake): suspend (User) -> Role?
-    = { it.asMemberOrNull(guildID)?.getTopRole() }
+public fun topRole(guildID: Snowflake): suspend (User) -> Role? =
+    { it.asMemberOrNull(guildID)?.getTopRole() }
 
 /**
- * Know if the user is null or is a bot
- * @receiver User or `null` value that will be checked to know if this is a `null` value or discord bot
- * @return `true` if the user is `null` or a bot
+ * Know if the user is null or is a bot.
+ * @receiver User or `null` value that will be checked to know if this is a `null` value or discord bot.
+ * @return `true` if the user is `null` or a bot.
  */
 public fun User?.isNullOrBot(): Boolean {
     contract {

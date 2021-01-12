@@ -7,14 +7,14 @@ import com.kotlindiscord.kord.extensions.ParseException
 import kotlin.jvm.Throws
 
 /**
- * Regex to know if a [String] corresponding to a [Boolean] `true` value, in several language format
+ * Regex to know if a [String] corresponding to a [Boolean] `true` value, in several language format.
  */
 private val BOOL_TRUE_REGEX by lazy {
     Regex("1|y(es)?|t(rue)?", RegexOption.IGNORE_CASE)
 }
 
 /**
- * Regex to know if a [String] corresponding to a [Boolean] `false` value, in several language format
+ * Regex to know if a [String] corresponding to a [Boolean] `false` value, in several language format.
  */
 private val BOOL_FALSE_REGEX by lazy {
     Regex("0|no?|f(alse)?", RegexOption.IGNORE_CASE)
@@ -26,8 +26,8 @@ private val BOOL_FALSE_REGEX by lazy {
  *
  * @return `true` if the string starts with an English vowel, `false` otherwise.
  */
-public fun String.startsWithVowel(): Boolean
-    = "aeiou".any { startsWith(it, true) }
+public fun String.startsWithVowel(): Boolean =
+    "aeiou".any { startsWith(it, true) }
 
 /**
  * Parse a string into a boolean, based on English characters.
@@ -38,8 +38,8 @@ public fun String.startsWithVowel(): Boolean
  * @see [parseBooleanOrNull]
  */
 @Throws(ParseException::class)
-public fun String.parseBoolean(): Boolean
-    = parseBooleanOrNull() ?: throw ParseException("The value cannot be parsed to a Boolean value")
+public fun String.parseBoolean(): Boolean =
+    parseBooleanOrNull() ?: throw ParseException("The value cannot be parsed to a Boolean value")
 
 /**
  * Parse a string into a boolean, based on English characters.
@@ -67,7 +67,9 @@ public fun String.parseBooleanOrNull(): Boolean? = when {
  *
  * @param predicate Predicate used to determine the split.
  */
-public fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> = when(val i = indexOfFirst(predicate)){
-    -1 -> this to ""
-    else -> slice(IntRange(0, i - 1)) to slice(IntRange(i, this.length - 1))
+public fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
+    val i = indexOfFirst(predicate)
+    return if (i == -1) {
+        this to ""
+    } else slice(IntRange(0, i - 1)) to slice(IntRange(i, this.length - 1))
 }
