@@ -1,9 +1,13 @@
 package com.kotlindiscord.kord.extensions.commands
 
-import dev.kord.core.entity.Message
-import dev.kord.core.event.message.MessageCreateEvent
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.MemberBehavior
+import dev.kord.core.behavior.MessageBehavior
+import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.channel.ChannelBehavior
+import dev.kord.core.event.Event
 import io.sentry.Breadcrumb
 import io.sentry.SentryLevel
 
@@ -14,23 +18,36 @@ import io.sentry.SentryLevel
  * instantiate this yourself.
  *
  * @param command Respective command for this context object.
- * @param event Event that triggered this command.
- * @param commandName Command name given by the user to invoke the command - lower-cased.
+ * @param eventObj Event that triggered this command.
+ * @param commandName MessageCommand name given by the user to invoke the command - lower-cased.
  * @param args Array of string arguments for this command.
  */
-public open class CommandContext(
+public abstract class CommandContext(
     public open val command: Command,
-    public open val event: MessageCreateEvent,
+    public open val eventObj: Event,
     public open val commandName: String,
     public open val args: Array<String>
 ) {
-    /**
-     * Message object representing the message that invoked the command.
-     */
-    public open val message: Message by lazy { event.message }
-
     /** A list of Sentry breadcrumbs created during command execution. **/
     public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
+
+    /** Called before command processing, used to populate any extra variables from event data. **/
+    public abstract suspend fun populate()
+
+    /** Extract channel information from event data, if that context is available. **/
+    public abstract suspend fun getChannel(): ChannelBehavior?
+
+    /** Extract guild information from event data, if that context is available. **/
+    public abstract suspend fun getGuild(): GuildBehavior?
+
+    /** Extract member information from event data, if that context is available. **/
+    public abstract suspend fun getMember(): MemberBehavior?
+
+    /** Extract message information from event data, if that context is available. **/
+    public abstract suspend fun getMessage(): MessageBehavior?
+
+    /** Extract user information from event data, if that context is available. **/
+    public abstract suspend fun getUser(): UserBehavior?
 
     /**
      * Attempt to parse the arguments in this CommandContext into a given data class.

@@ -6,6 +6,10 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.decimal
 import com.kotlindiscord.kord.extensions.commands.converters.decimalList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
 /**
  * Argument converter for decimal arguments, converting them into [Double].
@@ -13,6 +17,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.decimalList
  * @see decimal
  * @see decimalList
  */
+@OptIn(KordPreview::class)
 public class DecimalConverter : SingleConverter<Double>() {
     override val signatureTypeString: String = "decimal"
 
@@ -27,4 +32,7 @@ public class DecimalConverter : SingleConverter<Double>() {
 
         return true
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

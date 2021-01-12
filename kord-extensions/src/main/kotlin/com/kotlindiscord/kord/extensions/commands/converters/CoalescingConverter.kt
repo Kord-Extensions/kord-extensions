@@ -1,9 +1,9 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.ParseException
 import kotlin.reflect.KProperty
 
 /**
@@ -19,7 +19,7 @@ import kotlin.reflect.KProperty
  *
  * You can create a coalescing converter of your own by extending this class.
  */
-public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true) {
+public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true), SlashCommandConverter {
     /**
      * The parsed value.
      *
@@ -37,7 +37,7 @@ public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true) {
      * that situation, however.
      *
      * @param args List of [String] arguments, provided by the user running the current command
-     * @param context Command context object, containing the event, message, and other command-related things
+     * @param context MessageCommand context object, containing the event, message, and other command-related things
      * @param bot Current instance of [ExtensibleBot], representing the currently-connected bot
      *
      * @return The number of arguments this converter consumed to produce its resulting value. Return 0 if you didn't

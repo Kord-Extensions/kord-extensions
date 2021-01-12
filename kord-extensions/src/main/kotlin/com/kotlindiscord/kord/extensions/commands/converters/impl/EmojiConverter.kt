@@ -1,13 +1,17 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.GuildEmoji
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.emoji
 import com.kotlindiscord.kord.extensions.commands.converters.emojiList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.GuildEmoji
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
@@ -25,6 +29,7 @@ import kotlinx.coroutines.flow.mapNotNull
  * @see emoji
  * @see emojiList
  */
+@OptIn(KordPreview::class)
 public class EmojiConverter : SingleConverter<GuildEmoji>() {
     override val signatureTypeString: String = "server emoji"
 
@@ -64,4 +69,7 @@ public class EmojiConverter : SingleConverter<GuildEmoji>() {
                 }.firstOrNull()
             }
         }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

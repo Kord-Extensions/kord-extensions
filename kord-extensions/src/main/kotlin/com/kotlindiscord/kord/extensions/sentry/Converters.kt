@@ -11,16 +11,16 @@ import io.sentry.protocol.SentryId
  *
  * @see SentryIdConverter
  */
-public fun Arguments.sentryId(displayName: String): SingleConverter<SentryId> =
-    arg(displayName, SentryIdConverter())
+public fun Arguments.sentryId(displayName: String, description: String): SingleConverter<SentryId> =
+    arg(displayName, description, SentryIdConverter())
 
 /**
  * Create an optional Sentry ID argument converter, for single arguments.
  *
  * @see SentryIdConverter
  */
-public fun Arguments.optionalSentryId(displayName: String): OptionalConverter<SentryId?> =
-    arg(displayName, SentryIdConverter().toOptional())
+public fun Arguments.optionalSentryId(displayName: String, description: String): OptionalConverter<SentryId?> =
+    arg(displayName, description, SentryIdConverter().toOptional())
 
 /**
  * Create a Sentry ID argument converter, for lists of arguments.
@@ -29,6 +29,7 @@ public fun Arguments.optionalSentryId(displayName: String): OptionalConverter<Se
  */
 public fun Arguments.sentryIdList(
     displayName: String,
+    description: String,
     required: Boolean = true
 ): MultiConverter<SentryId> =
-    arg(displayName, SentryIdConverter().toMulti(required))
+    arg(displayName, description, SentryIdConverter().toMulti(required))

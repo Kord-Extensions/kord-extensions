@@ -14,7 +14,7 @@ buildscript {
 plugins {
     `maven-publish`
 
-    kotlin("jvm") version "1.4.10"
+    kotlin("jvm") version "1.4.21"
 
     id("com.github.jakemarsden.git-hooks") version "0.0.1"
     id("io.gitlab.arturbosch.detekt") version "1.13.1"
@@ -62,7 +62,7 @@ val javadocJar = task("javadocJar",Jar::class) {
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1")
 
-    api("dev.kord:kord-core:0.7.0-RC")
+    api("dev.kord:kord-core:0.7.0-SNAPSHOT")
 
     api("net.time4j:time4j-base:5.7")
     api("net.time4j:time4j-tzdata:5.0-2020a")
@@ -114,6 +114,8 @@ fun getCurrentGitBranch(): String {  // https://gist.github.com/lordcodes/15b2a4
 detekt {
     buildUponDefaultConfig = true
     config = files("detekt.yml")
+
+    autoCorrect = true
 }
 
 tasks.dokkaHtml.configure {

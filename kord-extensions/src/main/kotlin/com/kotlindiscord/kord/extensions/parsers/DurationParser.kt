@@ -42,6 +42,7 @@ public val unitMap: Map<String, IsoUnit> = mapOf(
     "year" to CalendarUnit.YEARS,
     "years" to CalendarUnit.YEARS
 )
+
 /**
  * Mapping character to its actual unit.
  */

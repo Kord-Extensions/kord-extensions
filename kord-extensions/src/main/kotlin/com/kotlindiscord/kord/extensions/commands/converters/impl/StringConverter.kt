@@ -5,6 +5,10 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.string
 import com.kotlindiscord.kord.extensions.commands.converters.stringList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
+import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
 /**
  * Coalescing argument that simply returns the argument as it was given.
@@ -14,6 +18,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.stringList
  * @see string
  * @see stringList
  */
+@OptIn(KordPreview::class)
 public class StringConverter : SingleConverter<String>() {
     override val signatureTypeString: String = "text"
     override val showTypeInSignature: Boolean = false
@@ -23,4 +28,7 @@ public class StringConverter : SingleConverter<String>() {
 
         return true
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

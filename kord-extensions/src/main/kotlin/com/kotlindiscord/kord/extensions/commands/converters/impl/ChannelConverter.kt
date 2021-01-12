@@ -1,14 +1,18 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.channel.Channel
-import dev.kord.core.entity.channel.GuildChannel
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.channel
 import com.kotlindiscord.kord.extensions.commands.converters.channelList
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.channel.Channel
+import dev.kord.core.entity.channel.GuildChannel
+import dev.kord.rest.builder.interaction.ChannelBuilder
+import dev.kord.rest.builder.interaction.OptionsBuilder
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 
@@ -27,6 +31,7 @@ import kotlinx.coroutines.flow.toList
  * @see channel
  * @see channelList
  */
+@OptIn(KordPreview::class)
 public class ChannelConverter(
     private val requireSameGuild: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null
@@ -69,7 +74,7 @@ public class ChannelConverter(
         }
 
         if (channel is GuildChannel && (requireSameGuild || requiredGuild != null)) {
-            val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.event.guildId
+            val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id
 
             if (requireSameGuild && channel.guildId != guildId) {
                 return null  // Channel isn't in the right guild
@@ -78,4 +83,7 @@ public class ChannelConverter(
 
         return channel
     }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        ChannelBuilder(arg.displayName, arg.description).apply { required = true }
 }
