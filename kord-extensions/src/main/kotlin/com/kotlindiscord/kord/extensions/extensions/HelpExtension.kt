@@ -87,7 +87,7 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                     }
 
                     if (this is GroupCommand) {
-                        desc += "\n**Subcommands:** " + commands.joinToString(", ") { "`${it.name}`" }
+                        desc += "\n**Subcommands:** " + this.commands.joinToString(", ") { "`${it.name}`" }
                     }
 
                     desc
