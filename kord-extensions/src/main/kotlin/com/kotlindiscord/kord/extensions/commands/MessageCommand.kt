@@ -182,6 +182,8 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
 
         val context = MessageCommandContext(this, event, commandName, args)
 
+        context.populate()
+
         val firstBreadcrumb = if (extension.bot.sentry.enabled) {
             val channel = event.message.getChannelOrNull()
             val guild = event.message.getGuildOrNull()
