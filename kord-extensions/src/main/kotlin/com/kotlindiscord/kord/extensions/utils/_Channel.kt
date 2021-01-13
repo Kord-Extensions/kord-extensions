@@ -7,7 +7,7 @@ import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
 import mu.KotlinLogging
 
-private val LOG = KotlinLogging.logger() {}
+private val LOG = KotlinLogging.logger {}
 
 /**
  * Ensure a webhook is created for the bot in a given channel, and return it.

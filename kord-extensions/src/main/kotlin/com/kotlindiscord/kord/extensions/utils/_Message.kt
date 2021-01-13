@@ -19,7 +19,7 @@ import mu.KotlinLogging
 import org.apache.commons.text.StringTokenizer
 import org.apache.commons.text.matcher.StringMatcherFactory
 
-private val LOG = KotlinLogging.logger() {}
+private val LOG = KotlinLogging.logger {}
 
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 

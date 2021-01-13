@@ -89,7 +89,8 @@ public open class MessageEventManager(
     public open fun reaction(emoji: ReactionEmoji? = null, block: suspend (Event) -> Unit) {
         event {
             if (it is ReactionAddEvent && (emoji == null || emoji == it.emoji) ||
-                it is ReactionRemoveEvent && (emoji == null || emoji == it.emoji)) {
+                it is ReactionRemoveEvent && (emoji == null || emoji == it.emoji)
+            ) {
                 block(it)
             }
         }

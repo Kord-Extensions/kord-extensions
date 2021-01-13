@@ -4,7 +4,7 @@ import kotlinx.coroutines.*
 import mu.KotlinLogging
 import java.util.*
 
-private val LOG = KotlinLogging.logger() {}
+private val LOG = KotlinLogging.logger {}
 
 /**
  * Class in charge of providing scheduling functions.
