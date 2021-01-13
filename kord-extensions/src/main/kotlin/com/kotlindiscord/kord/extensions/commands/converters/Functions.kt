@@ -98,12 +98,20 @@ public fun Arguments.message(
 ): SingleConverter<Message> = arg(displayName, description, MessageConverter(requireGuild, requiredGuild))
 
 /**
- * Create a whole number converter, for single arguments.
+ * Create a long converter, for single arguments.
  *
- * @see NumberConverter
+ * @see LongConverter
  */
-public fun Arguments.number(displayName: String, description: String, radix: Int = 10): SingleConverter<Long> =
-    arg(displayName, description, NumberConverter(radix))
+public fun Arguments.long(displayName: String, description: String, radix: Int = 10): SingleConverter<Long> =
+    arg(displayName, description, LongConverter(radix))
+
+/**
+ * Create an integer converter, for single arguments.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.int(displayName: String, description: String, radix: Int = 10): SingleConverter<Int> =
+    arg(displayName, description, IntConverter(radix))
 
 /**
  * Create a regex converter, for single arguments.
@@ -282,17 +290,30 @@ public fun Arguments.optionalMessage(
 )
 
 /**
- * Create an optional whole number converter, for single arguments.
+ * Create an optional long converter, for single arguments.
  *
- * @see NumberConverter
+ * @see LongConverter
  */
-public fun Arguments.optionalNumber(
+public fun Arguments.optionalLong(
     displayName: String,
     description: String,
     outputError: Boolean = false,
     radix: Int = 10
 ): OptionalConverter<Long?> =
-    arg(displayName, description, NumberConverter(radix).toOptional(outputError = outputError))
+    arg(displayName, description, LongConverter(radix).toOptional(outputError = outputError))
+
+/**
+ * Create an optional integer converter, for single arguments.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.optionalInt(
+    displayName: String,
+    description: String,
+    outputError: Boolean = false,
+    radix: Int = 10
+): OptionalConverter<Int?> =
+    arg(displayName, description, IntConverter(radix).toOptional(outputError = outputError))
 
 /**
  * Create an optional regex converter, for single arguments.
@@ -409,17 +430,30 @@ public fun Arguments.defaultingEmail(
     arg(displayName, description, EmailConverter().toDefaulting(defaultValue))
 
 /**
- * Create a defaulting whole number converter, for single arguments.
+ * Create a defaulting long converter, for single arguments.
  *
- * @see NumberConverter
+ * @see LongConverter
  */
-public fun Arguments.defaultingNumber(
+public fun Arguments.defaultingLong(
     displayName: String,
     description: String,
     defaultValue: Long,
     radix: Int = 10
 ): DefaultingConverter<Long> =
-    arg(displayName, description, NumberConverter(radix).toDefaulting(defaultValue))
+    arg(displayName, description, LongConverter(radix).toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting integer converter, for single arguments.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.defaultingInt(
+    displayName: String,
+    description: String,
+    defaultValue: Int,
+    radix: Int = 10
+): DefaultingConverter<Int> =
+    arg(displayName, description, IntConverter(radix).toDefaulting(defaultValue))
 
 /**
  * Create a defaulting regex converter, for single arguments.
@@ -752,19 +786,34 @@ public fun Arguments.messageList(
 )
 
 /**
- * Create a whole number converter, for lists of arguments.
+ * Create a long converter, for lists of arguments.
  *
  * @param required Whether command parsing should fail if no arguments could be converted.
  *
- * @see NumberConverter
+ * @see LongConverter
  */
-public fun Arguments.numberList(
+public fun Arguments.longList(
     displayName: String,
     description: String,
     required: Boolean = true,
     radix: Int = 10
 ): MultiConverter<Long> =
-    arg(displayName, description, NumberConverter(radix).toMulti(required, signatureTypeString = "numbers"))
+    arg(displayName, description, LongConverter(radix).toMulti(required, signatureTypeString = "numbers"))
+
+/**
+ * Create an integer converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.intList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    radix: Int = 10
+): MultiConverter<Int> =
+    arg(displayName, description, IntConverter(radix).toMulti(required, signatureTypeString = "numbers"))
 
 /**
  * Create a regex converter, for lists of arguments.

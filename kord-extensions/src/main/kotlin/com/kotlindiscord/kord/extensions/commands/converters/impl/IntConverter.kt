@@ -4,8 +4,8 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.number
-import com.kotlindiscord.kord.extensions.commands.converters.numberList
+import com.kotlindiscord.kord.extensions.commands.converters.int
+import com.kotlindiscord.kord.extensions.commands.converters.intList
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.IntChoiceBuilder
@@ -14,20 +14,20 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 private const val DEFAULT_RADIX = 10
 
 /**
- * Argument converter for whole number arguments, converting them into [Long].
+ * Argument converter for integer arguments, converting them into [Int].
  *
- * @see number
- * @see numberList
+ * @see int
+ * @see intList
  */
 @OptIn(KordPreview::class)
-public class NumberConverter(
+public class IntConverter(
     private val radix: Int = DEFAULT_RADIX
-) : SingleConverter<Long>() {
+) : SingleConverter<Int>() {
     override val signatureTypeString: String = "number"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         try {
-            this.parsed = arg.toLong(radix)
+            this.parsed = arg.toInt(radix)
         } catch (e: NumberFormatException) {
             throw ParseException(
                 "Value '$arg' is not a valid whole number" + if (radix != DEFAULT_RADIX) " in base-$radix." else "."
