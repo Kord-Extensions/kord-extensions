@@ -98,6 +98,21 @@ public fun Arguments.message(
 ): SingleConverter<Message> = arg(displayName, description, MessageConverter(requireGuild, requiredGuild))
 
 /**
+ * Create a whole number converter, for single arguments.
+ *
+ * @see NumberConverter
+ */
+@Deprecated(
+    "Renamed to long",
+    replaceWith = ReplaceWith(
+        "long(displayName, description, radix)",
+        "com.kotlindiscord.kord.extensions.commands.converters"
+    )
+)
+public fun Arguments.number(displayName: String, description: String, radix: Int = 10): SingleConverter<Long> =
+    arg(displayName, description, NumberConverter(radix))
+
+/**
  * Create a long converter, for single arguments.
  *
  * @see LongConverter
@@ -290,6 +305,26 @@ public fun Arguments.optionalMessage(
 )
 
 /**
+ * Create an optional whole number converter, for single arguments.
+ *
+ * @see NumberConverter
+ */
+@Deprecated(
+    "Renamed to optionalLong",
+    replaceWith = ReplaceWith(
+        "long(displayName, description, outputError, radix)",
+        "com.kotlindiscord.kord.extensions.commands.converters"
+    )
+)
+public fun Arguments.optionalNumber(
+    displayName: String,
+    description: String,
+    outputError: Boolean = false,
+    radix: Int = 10
+): OptionalConverter<Long?> =
+    arg(displayName, description, NumberConverter(radix).toOptional(outputError = outputError))
+
+/**
  * Create an optional long converter, for single arguments.
  *
  * @see LongConverter
@@ -428,6 +463,26 @@ public fun Arguments.defaultingEmail(
     defaultValue: String
 ): DefaultingConverter<String> =
     arg(displayName, description, EmailConverter().toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting whole number converter, for single arguments.
+ *
+ * @see NumberConverter
+ */
+@Deprecated(
+    "Renamed to defaultingLong",
+    replaceWith = ReplaceWith(
+        "longList(displayName, description, defaultValue, radix)",
+        "com.kotlindiscord.kord.extensions.commands.converters"
+    )
+)
+public fun Arguments.defaultingNumber(
+    displayName: String,
+    description: String,
+    defaultValue: Long,
+    radix: Int = 10
+): DefaultingConverter<Long> =
+    arg(displayName, description, NumberConverter(radix).toDefaulting(defaultValue))
 
 /**
  * Create a defaulting long converter, for single arguments.
@@ -784,6 +839,28 @@ public fun Arguments.messageList(
     MessageConverter(requireGuild, requiredGuild)
         .toMulti(required, signatureTypeString = "messages")
 )
+
+/**
+ * Create a whole number converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see NumberConverter
+ */
+@Deprecated(
+    "Renamed to longList",
+    replaceWith = ReplaceWith(
+        "longList(displayName, description, required, radix)",
+        "com.kotlindiscord.kord.extensions.commands.converters"
+    )
+)
+public fun Arguments.numberList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    radix: Int = 10
+): MultiConverter<Long> =
+    arg(displayName, description, NumberConverter(radix).toMulti(required, signatureTypeString = "numbers"))
 
 /**
  * Create a long converter, for lists of arguments.
