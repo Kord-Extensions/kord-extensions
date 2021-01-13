@@ -134,17 +134,38 @@ public abstract class Extension(public val bot: ExtensibleBot) {
     }
 
     /**
-     * DSL function for easily registering a slash command.
+     * DSL function for easily registering a slash command, with arguments.
      *
      * Use this in your setup function to register a slash command that may be executed on Discord.
      *
+     * @param arguments Arguments builder (probably a reference to the class constructor).
+     * @param guildId Optional guild, if this command is to be limited to a specific guild.
      * @param body Builder lambda used for setting up the slash command object.
      */
     public open suspend fun <T : Arguments> slashCommand(
+        arguments: (() -> T)?,
         guildId: Snowflake? = null,
         body: suspend SlashCommand<T>.() -> Unit
     ): SlashCommand<T> {
-        val commandObj = SlashCommand<T>(this)
+        val commandObj = SlashCommand<T>(this, arguments)
+        body.invoke(commandObj)
+
+        return slashCommand(guildId, commandObj)
+    }
+
+    /**
+     * DSL function for easily registering a slash command, without arguments.
+     *
+     * Use this in your setup function to register a slash command that may be executed on Discord.
+     *
+     * @param guildId Optional guild, if this command is to be limited to a specific guild.
+     * @param body Builder lambda used for setting up the slash command object.
+     */
+    public open suspend fun slashCommand(
+        guildId: Snowflake? = null,
+        body: suspend SlashCommand<out Arguments>.() -> Unit
+    ): SlashCommand<out Arguments> {
+        val commandObj = SlashCommand<Arguments>(this, null)
         body.invoke(commandObj)
 
         return slashCommand(guildId, commandObj)
@@ -155,6 +176,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * You can use this if you have a custom slash command subclass you need to register.
      *
+     * @param guildId Optional guild, if this command is to be limited to a specific guild.
      * @param commandObj SlashCommand object to register.
      */
     public open suspend fun <T : Arguments> slashCommand(

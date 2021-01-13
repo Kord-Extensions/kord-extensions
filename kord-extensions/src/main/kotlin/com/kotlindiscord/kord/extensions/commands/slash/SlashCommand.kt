@@ -28,11 +28,12 @@ private val logger: KLogger = KotlinLogging.logger {}
  * function.
  *
  * @param extension The [Extension] that registered this command.
+ * @param arguments Arguments object builder for this command, if it has arguments.
  */
-public open class SlashCommand<T : Arguments>(extension: Extension) : Command(extension) {
-    /** Arguments object builder for this command, if it has arguments. **/
-    public open var arguments: (() -> T)? = null
-
+public open class SlashCommand<T : Arguments>(
+    extension: Extension,
+    public open val arguments: (() -> T)? = null
+) : Command(extension) {
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
 
@@ -86,11 +87,6 @@ public open class SlashCommand<T : Arguments>(extension: Extension) : Command(ex
     /** Specify a specific guild for this slash command. **/
     public open fun guild(guild: GuildBehavior) {
         this.guild = guild.id
-    }
-
-    /** Specify the arguments builder for this slash command. **/
-    public open fun arguments(args: () -> T) {
-        this.arguments = args
     }
 
     /**

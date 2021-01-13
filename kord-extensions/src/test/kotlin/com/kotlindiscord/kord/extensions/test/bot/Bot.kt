@@ -7,7 +7,8 @@ suspend fun main() {
     val bot = ExtensibleBot(
         System.getenv("TOKEN"),
         "!",
-        koinLogLevel = Level.DEBUG
+        koinLogLevel = Level.DEBUG,
+        handleSlashCommands = true,
     )
 
     bot.addExtension(::TestExtension)

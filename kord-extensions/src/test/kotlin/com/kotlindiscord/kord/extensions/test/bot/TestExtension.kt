@@ -36,7 +36,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     }
 
     override suspend fun setup() {
-        slashCommand<Arguments> {
+        slashCommand {
             name = "test-noack"
             description = "Don't auto-ack this one"
             autoAck = false
@@ -52,12 +52,10 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             }
         }
 
-        slashCommand<SlashArgs> {
+        slashCommand(::SlashArgs) {
             name = "test-embed"
             description = "Test command, please ignore"
             showSource = true
-
-            arguments { SlashArgs() }
 
             action {
                 followUp {

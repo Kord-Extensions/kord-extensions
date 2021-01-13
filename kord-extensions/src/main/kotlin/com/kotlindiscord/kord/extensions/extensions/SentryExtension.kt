@@ -19,11 +19,9 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
 
     override suspend fun setup() {
         if (bot.sentry.enabled) {
-            slashCommand<FeedbackArgs> {
+            slashCommand(::FeedbackArgs) {
                 name = "feedback"
                 description = "Provide feedback on what you were doing when an error occurred."
-
-                arguments { FeedbackArgs() }
 
                 action {
                     if (!bot.sentry.hasEventId(arguments.id)) {
