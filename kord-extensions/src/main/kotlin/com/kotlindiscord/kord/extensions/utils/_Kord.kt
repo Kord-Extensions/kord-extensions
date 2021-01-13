@@ -1,6 +1,3 @@
-@file:JvmMultifileClass
-@file:JvmName("KordKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.core.Kord

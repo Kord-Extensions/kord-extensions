@@ -1,11 +1,7 @@
-@file:JvmMultifileClass
-@file:JvmName("TimeKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import net.time4j.Duration
 import net.time4j.IsoUnit
-import java.lang.StringBuilder
 import java.time.temporal.ChronoUnit
 
 /**
@@ -38,7 +34,8 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
  */
 @Suppress("MagicNumber")  // These are all time units!
 public fun java.time.Duration.toHuman(): String? {
-    if (seconds == 0L) return null
+    val parts = mutableListOf<String>()
+
     val seconds = this.seconds % 60
     val minutesTotal = this.seconds / 60
 
@@ -48,20 +45,32 @@ public fun java.time.Duration.toHuman(): String? {
     val hours = hoursTotal % 24
     val days = hoursTotal / 24
 
-    val builder = StringBuilder()
-    fun addToString(value: Long, title: String) {
-        if (value > 0) {
-            if (builder.isNotEmpty()) {
-                builder.append(", ")
-            }
-            builder.append("$value $title${if (value > 1) 's' else ""}")
-        }
+    if (days > 0) {
+        parts.add(
+            "$days " + if (days > 1) "days" else "day"
+        )
     }
 
-    addToString(days, "day")
-    addToString(hours, "hour")
-    addToString(minutes, "minute")
-    addToString(seconds, "second")
+    if (hours > 0) {
+        parts.add(
+            "$hours " + if (hours > 1) "hours" else "hour"
+        )
+    }
 
-    return if (builder.isEmpty()) null else builder.toString()
+    if (minutes > 0) {
+        parts.add(
+            "$minutes " + if (minutes > 1) "minutes" else "minute"
+        )
+    }
+
+    if (seconds > 0) {
+        parts.add(
+            "$seconds " + if (seconds > 1) "seconds" else "second"
+        )
+    }
+
+    if (parts.isEmpty()) return null
+
+    // I have no idea how I should _actually_ do this...
+    return parts.joinToString(", ").reversed().replaceFirst(",", "dna ").reversed()
 }

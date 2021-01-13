@@ -1,15 +1,10 @@
-@file:JvmMultifileClass
-@file:JvmName("SchedulerKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import kotlinx.coroutines.*
+import mu.KotlinLogging
 import java.util.*
 
-/**
- * Logger of the class.
- */
-private val LOG = classLogger()
+private val LOG = KotlinLogging.logger() {}
 
 /**
  * Class in charge of providing scheduling functions.

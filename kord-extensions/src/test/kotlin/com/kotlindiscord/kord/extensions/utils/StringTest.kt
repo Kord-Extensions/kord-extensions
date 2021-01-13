@@ -1,10 +1,8 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.kotlindiscord.kord.extensions.ParseException
 import dev.kord.core.entity.ReactionEmoji
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import kotlin.jvm.Throws
 
 /**
  * Class test for the extension of [String] class
@@ -27,7 +25,6 @@ class StringTest {
     @Test
     fun `start with vowel`() {
         arrayOf("at", "et", "it", "ot", "ut").forEach {
-            assertTrue(it.toUpperCase().startsWithVowel())
             assertTrue(it.startsWithVowel())
         }
     }
@@ -37,6 +34,10 @@ class StringTest {
      */
     @Test
     fun `no start with vowel`() {
+        arrayOf("at", "et", "it", "ot", "ut").forEach {
+            assertFalse(it.toUpperCase().startsWithVowel())
+        }
+
         arrayOf("yt", "ét", "àt", "ût", "wt", "/t").forEach {
             assertFalse(it.toUpperCase().startsWithVowel())
             assertFalse(it.startsWithVowel())
@@ -48,14 +49,14 @@ class StringTest {
      */
     @Test
     fun `parse string to boolean with several format`() {
-        arrayOf("1", "y", "yes", "t", "true").forEach {
-            assertTrue(it.toUpperCase().parseBoolean())
-            assertTrue(it.parseBoolean())
+        arrayOf("1", "y", "t", "yeah", "true").forEach {
+            assertTrue(it.parseBoolean()!!)
+            assertTrue(it.toUpperCase().parseBoolean()!!)
         }
 
-        arrayOf("0", "n", "no", "f", "false").forEach {
-            assertFalse(it.toUpperCase().parseBoolean())
-            assertFalse(it.parseBoolean())
+        arrayOf("0", "n", "f", "no", "false").forEach {
+            assertFalse(it.parseBoolean()!!)
+            assertFalse(it.toUpperCase().parseBoolean()!!)
         }
     }
 
@@ -64,18 +65,8 @@ class StringTest {
      */
     @Test
     fun `parse string to boolean with several format and get null value`() {
-        arrayOf("2", "yeah", "oui", "si", "ye").forEach {
-            assertNull(it.parseBooleanOrNull())
-        }
-    }
-
-    /**
-     * Test the parsing of [String] to [Boolean] with error and throw an exception
-     */
-    @Test()
-    fun `parse string to boolean with several format and get exception`() {
-        arrayOf("2", "yeah", "oui", "si", "ye").forEach {
-            assertThrows(ParseException::class.java) {  it.parseBoolean() }
+        arrayOf("2", "oui", "si").forEach {
+            assertNull(it.parseBoolean())
         }
     }
 

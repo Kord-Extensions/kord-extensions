@@ -1,8 +1,6 @@
-@file:JvmMultifileClass
-@file:JvmName("MessageKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
+import com.kotlindiscord.kord.extensions.message.DEFAULT_TIME_LISTENING
 import com.kotlindiscord.kord.extensions.message.MessageEventManager
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MessageBehavior
@@ -17,23 +15,14 @@ import dev.kord.rest.builder.message.MessageCreateBuilder
 import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.coroutines.*
+import mu.KotlinLogging
 import org.apache.commons.text.StringTokenizer
 import org.apache.commons.text.matcher.StringMatcherFactory
-import kotlin.jvm.Throws
 
-/**
- * Logger of the class.
- */
-private val LOG = classLogger()
+private val LOG = KotlinLogging.logger() {}
 
-/**
- * Time to delete information.
- */
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 
-/**
- * URI of Discord channels.
- */
 private const val DISCORD_CHANNEL_URI = "https://discordapp.com/channels"
 
 /**
@@ -48,6 +37,17 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
         }
     }
 }
+
+/**
+ * Deletes a message after a delay.
+ *
+ * This function **does not block**.
+ *
+ * @param millis The delay before deleting the message, in milliseconds.
+ * @return Job spawned by the CoroutineScope.
+ */
+@Deprecated("The name of the method has changed, please use the replace method", ReplaceWith("delete(millis, retry)"))
+public fun Message.deleteWithDelay(millis: Long, retry: Boolean = true): Job = delete(millis, retry)
 
 /**
  * Deletes a message after a delay.
@@ -143,7 +143,7 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  */
 @Throws(IllegalStateException::class)
 public inline fun MessageBehavior.events(
-    timeout: Long? = MessageEventManager.DEFAULT_TIME_LISTENING,
+    timeout: Long? = DEFAULT_TIME_LISTENING,
     manage: MessageEventManager.() -> Unit
 ): MessageEventManager = MessageEventManager(this, timeout).apply {
     manage(this)
@@ -232,7 +232,9 @@ public suspend fun Message.respond(
 
     return if (useReply) {
         reply { innerBuilder() }
-    } else channel.createMessage { innerBuilder() }
+    } else {
+        channel.createMessage { innerBuilder() }
+    }
 }
 
 /**
@@ -271,7 +273,9 @@ public suspend fun Message.requireChannel(
 ): Boolean {
     val topRole = if (getGuildOrNull() == null) {
         null
-    } else getAuthorAsMember()!!.getTopRole()
+    } else {
+        getAuthorAsMember()!!.getTopRole()
+    }
 
     val messageChannel = getChannelOrNull()
 
@@ -303,9 +307,12 @@ public suspend fun Message.requireChannel(
 public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
     val author = this.author
     val guild = getGuildOrNull()
+
     val topRole = if (author != null && guild != null) {
         author.asMemberOrNull(guild.id)
-    } else null
+    } else {
+        null
+    }
 
     @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
     if (

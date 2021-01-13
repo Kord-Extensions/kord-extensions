@@ -1,6 +1,3 @@
-@file:JvmMultifileClass
-@file:JvmName("RestRequestKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.rest.request.RestRequestException

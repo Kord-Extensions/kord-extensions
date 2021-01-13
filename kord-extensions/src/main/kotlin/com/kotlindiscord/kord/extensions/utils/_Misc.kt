@@ -1,19 +1,9 @@
-@file:JvmMultifileClass
-@file:JvmName("MiscKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import mu.KLogger
-import mu.KotlinLogging
-
-/**
- * Neutral and default logger.
- */
-public fun classLogger(): KLogger = KotlinLogging.logger() {}
 
 /**
  * Run a block of code within a coroutine scope, defined by a given dispatcher.

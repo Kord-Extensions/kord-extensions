@@ -1,6 +1,3 @@
-@file:JvmMultifileClass
-@file:JvmName("UserKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Snowflake

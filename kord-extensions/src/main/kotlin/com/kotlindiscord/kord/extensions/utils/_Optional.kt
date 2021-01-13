@@ -1,6 +1,3 @@
-@file:JvmMultifileClass
-@file:JvmName("OptionalKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import java.util.*

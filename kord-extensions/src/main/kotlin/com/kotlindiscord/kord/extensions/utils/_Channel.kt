@@ -1,6 +1,3 @@
-@file:JvmMultifileClass
-@file:JvmName("ChannelKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.core.behavior.channel.createWebhook
@@ -8,11 +5,9 @@ import dev.kord.core.entity.Webhook
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
+import mu.KotlinLogging
 
-/**
- * Logger of the class.
- */
-private val LOG = classLogger()
+private val LOG = KotlinLogging.logger() {}
 
 /**
  * Ensure a webhook is created for the bot in a given channel, and return it.

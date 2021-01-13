@@ -13,6 +13,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /**
+ * 5 minutes, default time to wait for message events before stopping.
+ */
+public const val DEFAULT_TIME_LISTENING: Long = 1000L * 60L * 5L
+
+/**
  * Manager of listeners about the events for a message.
  * @property message Message responsible of events.
  * @property timeout Time to stop listening to events after the last received event corresponding to the message.
@@ -21,13 +26,6 @@ public open class MessageEventManager(
     public val message: MessageBehavior,
     private val timeout: Long? = DEFAULT_TIME_LISTENING
 ) {
-
-    public companion object {
-        /**
-         * Default time before stop the listening of events.
-         */
-        public const val DEFAULT_TIME_LISTENING: Long = 1000L * 60L * 5L
-    }
 
     /**
      * Kord instance.
@@ -152,12 +150,15 @@ public open class MessageEventManager(
         event {
             val deleteEvent = when (it) {
                 is MessageDeleteEvent -> it
+
                 is MessageBulkDeleteEvent -> {
                     val msg = if (message is Message) message else null
                     MessageDeleteEvent(message.id, it.channelId, it.guildId, msg, it.kord, it.shard, it.supplier)
                 }
+
                 else -> return@event
             }
+
             block(deleteEvent)
         }
     }
@@ -221,11 +222,13 @@ public open class MessageEventManager(
 
         job = kord.launch {
             val condition = getCondition()
-            listening = true
             var isDelete = false
+
+            listening = true
 
             while (isActive && listening && !isDelete) {
                 val event = kord.waitFor(timeout, condition)
+
                 if (event == null) {
                     listening = false
                 } else {
@@ -233,12 +236,21 @@ public open class MessageEventManager(
                     isDelete = event is MessageDeleteEvent || event is MessageBulkDeleteEvent
                 }
             }
-            listening = false
-            stopAction?.invoke(if (isDelete) null else message)
-            job = null
+
+            endListeningAction(isDelete)
         }
 
         return true
+    }
+
+    /**
+     * Apply specific action when the listening is ended.
+     * @param messageDeleted `true` if the message is deleted by an event, `false` otherwise.
+     */
+    private suspend fun endListeningAction(messageDeleted: Boolean) {
+        listening = false
+        stopAction?.invoke(if (messageDeleted) null else message)
+        job = null
     }
 
     /**

@@ -1,6 +1,3 @@
-@file:JvmMultifileClass
-@file:JvmName("MemberKt")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Permission
@@ -85,6 +82,8 @@ public suspend inline fun Member.hasPermissions(vararg perms: Permission): Boole
  */
 public suspend fun Member.hasPermissions(perms: Collection<Permission>): Boolean {
     if (perms.isEmpty()) return true
+
     val permissions = getPermissions()
+
     return perms.all { it in permissions }
 }
