@@ -57,6 +57,7 @@ import kotlin.reflect.full.primaryConstructor
  * @param guildsToFill Guild IDs to request all members for on connect. Set to null for all guilds, omit for none.
  * @param fillPresences Whether to request presences from the members retrieved by [guildsToFill].
  * @param koinLogLevel Logging level Koin should use, defaulting to INFO.
+ * @param handleSlashCommands Whether to support registration and invocation of slash commands. Defaults to `false`.
  */
 public open class ExtensibleBot(
     private val token: String,
@@ -70,7 +71,8 @@ public open class ExtensibleBot(
     public open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     public open val guildsToFill: List<Snowflake>? = listOf(),
     public open val fillPresences: Boolean? = null,
-    public open val koinLogLevel: Level = Level.ERROR
+    public open val koinLogLevel: Level = Level.ERROR,
+    public open val handleSlashCommands: Boolean = false,
 ) {
     /**
      * @suppress
@@ -194,8 +196,10 @@ public open class ExtensibleBot(
             logger.warn { "Disconnected: $closeCode" }
         }
 
-        on<InteractionCreateEvent> {
-            slashCommands.handle(this)
+        if (handleSlashCommands) {
+            on<InteractionCreateEvent> {
+                slashCommands.handle(this)
+            }
         }
 
         on<ReadyEvent> {
@@ -233,7 +237,14 @@ public open class ExtensibleBot(
                     }
                 }
 
-                slashCommands.syncAll()
+                if (handleSlashCommands) {
+                    slashCommands.syncAll()
+                } else {
+                    logger.info {
+                        "Slash command support is disabled - set `handleSlashCommands` to `true` if " +
+                            "you want to use them."
+                    }
+                }
             }
 
             logger.info { "Ready!" }

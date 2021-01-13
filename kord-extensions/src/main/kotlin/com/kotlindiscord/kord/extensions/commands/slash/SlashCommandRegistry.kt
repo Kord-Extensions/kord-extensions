@@ -32,7 +32,9 @@ public open class SlashCommandRegistry(
     koinAccessor: KoinComponent = KoinAccessor(bot)
 ) : KoinComponent by koinAccessor {
     /** @suppress **/
-    public open val commands: MutableMap<Snowflake?, MutableList<SlashCommand<out Arguments>>> = mutableMapOf()
+    public open val commands: MutableMap<Snowflake?, MutableList<SlashCommand<out Arguments>>> = mutableMapOf(
+        null to mutableListOf()  // So that global commands always have a list here
+    )
 
     /** @suppress **/
     public open val commandMap: MutableMap<Snowflake, SlashCommand<out Arguments>> = mutableMapOf()
