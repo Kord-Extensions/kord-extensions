@@ -312,7 +312,7 @@ public fun Arguments.optionalMessage(
 @Deprecated(
     "Renamed to optionalLong",
     replaceWith = ReplaceWith(
-        "long(displayName, description, outputError, radix)",
+        "optionalLong(displayName, description, outputError, radix)",
         "com.kotlindiscord.kord.extensions.commands.converters"
     )
 )
@@ -472,7 +472,7 @@ public fun Arguments.defaultingEmail(
 @Deprecated(
     "Renamed to defaultingLong",
     replaceWith = ReplaceWith(
-        "longList(displayName, description, defaultValue, radix)",
+        "defaultingLong(displayName, description, defaultValue, radix)",
         "com.kotlindiscord.kord.extensions.commands.converters"
     )
 )
