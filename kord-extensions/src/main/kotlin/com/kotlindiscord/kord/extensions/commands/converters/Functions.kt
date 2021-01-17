@@ -74,6 +74,22 @@ public fun Arguments.guild(displayName: String, description: String): SingleConv
     arg(displayName, description, GuildConverter())
 
 /**
+ * Create an integer converter, for single arguments.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.int(displayName: String, description: String, radix: Int = 10): SingleConverter<Int> =
+    arg(displayName, description, IntConverter(radix))
+
+/**
+ * Create a long converter, for single arguments.
+ *
+ * @see LongConverter
+ */
+public fun Arguments.long(displayName: String, description: String, radix: Int = 10): SingleConverter<Long> =
+    arg(displayName, description, LongConverter(radix))
+
+/**
  * Create a member converter, for single arguments.
  *
  * @see MemberConverter
@@ -102,6 +118,14 @@ public fun Arguments.message(
  *
  * @see NumberConverter
  */
+@Deprecated(
+    "Renamed to long",
+    replaceWith = ReplaceWith(
+        "long(displayName, description, radix)",
+        "com.kotlindiscord.kord.extensions.commands.converters"
+    ),
+    level = DeprecationLevel.WARNING
+)
 public fun Arguments.number(displayName: String, description: String, radix: Int = 10): SingleConverter<Long> =
     arg(displayName, description, NumberConverter(radix))
 
@@ -251,6 +275,32 @@ public fun Arguments.optionalGuild(
     arg(displayName, description, GuildConverter().toOptional(outputError = outputError))
 
 /**
+ * Create an optional integer converter, for single arguments.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.optionalInt(
+    displayName: String,
+    description: String,
+    outputError: Boolean = false,
+    radix: Int = 10
+): OptionalConverter<Int?> =
+    arg(displayName, description, IntConverter(radix).toOptional(outputError = outputError))
+
+/**
+ * Create an optional long converter, for single arguments.
+ *
+ * @see LongConverter
+ */
+public fun Arguments.optionalLong(
+    displayName: String,
+    description: String,
+    outputError: Boolean = false,
+    radix: Int = 10
+): OptionalConverter<Long?> =
+    arg(displayName, description, LongConverter(radix).toOptional(outputError = outputError))
+
+/**
  * Create a member converter, for single arguments.
  *
  * @see MemberConverter
@@ -286,6 +336,14 @@ public fun Arguments.optionalMessage(
  *
  * @see NumberConverter
  */
+@Deprecated(
+    "Renamed to optionalLong",
+    replaceWith = ReplaceWith(
+        "optionalLong(displayName, description, outputError, radix)",
+        "com.kotlindiscord.kord.extensions.commands.converters"
+    ),
+    level = DeprecationLevel.WARNING
+)
 public fun Arguments.optionalNumber(
     displayName: String,
     description: String,
@@ -409,10 +467,44 @@ public fun Arguments.defaultingEmail(
     arg(displayName, description, EmailConverter().toDefaulting(defaultValue))
 
 /**
+ * Create a defaulting integer converter, for single arguments.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.defaultingInt(
+    displayName: String,
+    description: String,
+    defaultValue: Int,
+    radix: Int = 10
+): DefaultingConverter<Int> =
+    arg(displayName, description, IntConverter(radix).toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting long converter, for single arguments.
+ *
+ * @see LongConverter
+ */
+public fun Arguments.defaultingLong(
+    displayName: String,
+    description: String,
+    defaultValue: Long,
+    radix: Int = 10
+): DefaultingConverter<Long> =
+    arg(displayName, description, LongConverter(radix).toDefaulting(defaultValue))
+
+/**
  * Create a defaulting whole number converter, for single arguments.
  *
  * @see NumberConverter
  */
+@Deprecated(
+    "Renamed to defaultingLong",
+    replaceWith = ReplaceWith(
+        "defaultingLong(displayName, description, defaultValue, radix)",
+        "com.kotlindiscord.kord.extensions.commands.converters"
+    ),
+    level = DeprecationLevel.WARNING
+)
 public fun Arguments.defaultingNumber(
     displayName: String,
     description: String,
@@ -717,6 +809,36 @@ public fun Arguments.guildList(
     arg(displayName, description, GuildConverter().toMulti(required, signatureTypeString = "servers"))
 
 /**
+ * Create an integer converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.intList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    radix: Int = 10
+): MultiConverter<Int> =
+    arg(displayName, description, IntConverter(radix).toMulti(required, signatureTypeString = "numbers"))
+
+/**
+ * Create a long converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see LongConverter
+ */
+public fun Arguments.longList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    radix: Int = 10
+): MultiConverter<Long> =
+    arg(displayName, description, LongConverter(radix).toMulti(required, signatureTypeString = "numbers"))
+
+/**
  * Create a member converter, for lists of arguments.
  *
  * @param required Whether command parsing should fail if no arguments could be converted.
@@ -758,6 +880,14 @@ public fun Arguments.messageList(
  *
  * @see NumberConverter
  */
+@Deprecated(
+    "Renamed to longList",
+    replaceWith = ReplaceWith(
+        "longList(displayName, description, required, radix)",
+        "com.kotlindiscord.kord.extensions.commands.converters"
+    ),
+    level = DeprecationLevel.WARNING
+)
 public fun Arguments.numberList(
     displayName: String,
     description: String,
