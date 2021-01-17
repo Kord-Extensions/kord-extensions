@@ -81,8 +81,7 @@ public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
  * @param unicode Emoji that will be added to the message
  * @throws [RestRequestException] if something went wrong during the request.
  */
-public suspend inline fun MessageBehavior.addReaction(unicode: String): Unit =
-    addReaction(unicode.toReaction())
+public suspend inline fun MessageBehavior.addReaction(unicode: String): Unit = addReaction(unicode.toReaction())
 
 /**
  * Requests to remove an [emoji] to this message.
@@ -105,16 +104,14 @@ public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoj
  * @param emoji Emoji that will be deleted to the message
  * @throws [RestRequestException] if something went wrong during the request.
  */
-public suspend inline fun MessageBehavior.deleteReaction(emoji: GuildEmoji): Unit =
-    this.deleteReaction(emoji.toReaction())
+public suspend inline fun MessageBehavior.deleteReaction(emoji: GuildEmoji): Unit = deleteReaction(emoji.toReaction())
 
 /**
  * Requests to delete an emoji with unicode format to this message.
  * @param unicode Emoji that will be deleted to the message
  * @throws [RestRequestException] if something went wrong during the request.
  */
-public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit =
-    this.deleteReaction(unicode.toReaction())
+public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit = deleteReaction(unicode.toReaction())
 
 /**
  * Requests to remove an [emoji] from the own bot to this message.
@@ -147,9 +144,7 @@ public inline fun MessageBehavior.events(
     manage: MessageEventManager.() -> Unit
 ): MessageEventManager = MessageEventManager(this, timeout).apply {
     manage(this)
-    if (!start()) {
-        error("Impossible to start the listening of events")
-    }
+    check(start()) { "Unable to start the listening of events" }
 }
 
 /** ID of the message author. **/

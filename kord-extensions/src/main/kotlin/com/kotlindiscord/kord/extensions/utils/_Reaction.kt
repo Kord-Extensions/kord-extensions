@@ -9,8 +9,7 @@ import dev.kord.core.entity.ReactionEmoji
  * @return A new instance of [ReactionEmoji].
  * @see [ReactionEmoji.from]
  */
-public fun GuildEmoji.toReaction(): ReactionEmoji =
-    ReactionEmoji.from(this)
+public fun GuildEmoji.toReaction(): ReactionEmoji = ReactionEmoji.from(this)
 
 /**
  * Transform a [String] with the unicode format to a [ReactionEmoji].
@@ -18,5 +17,4 @@ public fun GuildEmoji.toReaction(): ReactionEmoji =
  * @return A new instance of [ReactionEmoji].
  * @see [ReactionEmoji.Unicode]
  */
-public fun String.toReaction(): ReactionEmoji =
-    ReactionEmoji.Unicode(this)
+public fun String.toReaction(): ReactionEmoji = ReactionEmoji.Unicode(this)

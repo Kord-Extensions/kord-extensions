@@ -12,5 +12,4 @@ public fun Optional<*>.isAbsent(): Boolean = isPresent.not()
 /**
  * Get the value from an [Optional] if it's present, otherwise return `null`.
  */
-public fun <T> Optional<T>.getOrNull(): T? =
-    if (isPresent) get() else null
+public fun <T> Optional<T>.getOrNull(): T? = if (isPresent) get() else null

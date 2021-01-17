@@ -58,8 +58,7 @@ public suspend fun User.dm(content: String): Message? = this.dm { this.content =
  *
  * @return Lambda returning the user's top role, or null if they're not on the guild or have no roles.
  */
-public fun topRole(guildID: Snowflake): suspend (User) -> Role? =
-    { it.asMemberOrNull(guildID)?.getTopRole() }
+public fun topRole(guildID: Snowflake): suspend (User) -> Role? = { it.asMemberOrNull(guildID)?.getTopRole() }
 
 /**
  * Know if the user is null or is a bot.

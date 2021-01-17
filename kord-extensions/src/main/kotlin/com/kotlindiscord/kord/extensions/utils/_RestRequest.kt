@@ -33,8 +33,7 @@ public fun RestRequestException.hasStatusCode(vararg codes: Int): Boolean {
  * @param status Status to compare the code of the exception.
  * @return `true` if there is none [HttpStatusCode] with the same HTTP code, `false` otherwise.
  */
-public fun RestRequestException.hasNotStatus(vararg status: HttpStatusCode): Boolean =
-    !hasStatus(*status)
+public fun RestRequestException.hasNotStatus(vararg status: HttpStatusCode): Boolean = !hasStatus(*status)
 
 /**
  * Check if the [RestRequestException] has not the same HTTP code of a [HttpStatusCode].
@@ -42,5 +41,4 @@ public fun RestRequestException.hasNotStatus(vararg status: HttpStatusCode): Boo
  * @param codes Status code to compare the code of the exception.
  * @return `true` if there is none [HttpStatusCode] with the same HTTP code, `false` otherwise.
  */
-public fun RestRequestException.hasNotStatusCode(vararg codes: Int): Boolean =
-    !hasStatusCode(*codes)
+public fun RestRequestException.hasNotStatusCode(vararg codes: Int): Boolean = !hasStatusCode(*codes)
