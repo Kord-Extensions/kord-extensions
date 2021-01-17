@@ -19,7 +19,7 @@ import mu.KotlinLogging
 import org.apache.commons.text.StringTokenizer
 import org.apache.commons.text.matcher.StringMatcherFactory
 
-private val LOG = KotlinLogging.logger {}
+private val logger = KotlinLogging.logger {}
 
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 
@@ -67,10 +67,10 @@ public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
             val message = this@delete
 
             if (retry) {
-                LOG.debug(e) { "Failed to delete message, retrying: $message" }
+                logger.debug(e) { "Failed to delete message, retrying: $message" }
                 this@delete.delete(millis, false)
             } else {
-                LOG.error(e) { "Failed to delete message: $message" }
+                logger.error(e) { "Failed to delete message: $message" }
             }
         }
     }
