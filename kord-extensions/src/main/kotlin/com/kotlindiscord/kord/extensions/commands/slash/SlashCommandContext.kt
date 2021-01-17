@@ -73,10 +73,10 @@ public open class SlashCommandContext<T : Arguments>(
         builder: (InteractionApplicationCommandCallbackDataBuilder.() -> Unit)? = null
     ): InteractionResponseBehavior {
         if (interactionResponse == null) {
-            interactionResponse = if (content == null) {
+            interactionResponse = if (content == null && builder == null) {
                 event.interaction.acknowledge(source)
             } else {
-                event.interaction.respond(content, source, builder ?: {})
+                event.interaction.respond(source, builder ?: { this.content = content })
             }
 
             return interactionResponse!!
