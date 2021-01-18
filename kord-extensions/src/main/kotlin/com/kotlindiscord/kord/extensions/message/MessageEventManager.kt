@@ -56,19 +56,6 @@ public open class MessageEventManager(
      */
     public var stopAction: (suspend (MessageBehavior?) -> Unit)? = null
 
-    init {
-        addDefaultRemoveAllReactionEvent()
-    }
-
-    /**
-     * Add the default event when all reaction are removed to stop the listening.
-     * @see [reactionRemoveAll]
-     * @see [stopListening]
-     */
-    protected open fun addDefaultRemoveAllReactionEvent() {
-        reactionRemoveAll { stopListening() }
-    }
-
     /**
      * Execute a block of code when the listening is ended.
      * @param action Action to execute.
@@ -234,7 +221,7 @@ public open class MessageEventManager(
                     listening = false
                 } else {
                     events.forEach { it(event) }
-                    isDelete = event is MessageDeleteEvent || event is MessageBulkDeleteEvent
+                    isDelete = isDeleteEvent(event)
                 }
             }
 
@@ -243,6 +230,15 @@ public open class MessageEventManager(
 
         return true
     }
+
+    /**
+     * Check if the event is a delete event.
+     * @param event Event concerned.
+     * @return `true` if the event is about the delete of message, `false` otherwise.
+     * @see [MessageDeleteEvent]
+     * @see [MessageBulkDeleteEvent]
+     */
+    private fun isDeleteEvent(event: Event): Boolean = event is MessageDeleteEvent || event is MessageBulkDeleteEvent
 
     /**
      * Apply specific action when the listening is ended.
