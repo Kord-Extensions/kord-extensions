@@ -1,16 +1,15 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import dev.kord.core.entity.ReactionEmoji
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 /**
- * Class test for the extension of [String] class
+ * Tests for [String] extension functions.
  */
 class StringTest {
 
     /**
-     * Transform a [String] to a [ReactionEmoji] and compare the unicode value
+     * Check that `.toReaction()` for a unicode emoji transforms the string correctly.
      */
     @Test
     fun `unicode to reaction`() {
@@ -20,24 +19,21 @@ class StringTest {
     }
 
     /**
-     * Test if the words starting by a, e, i, o, u are considered as beginning with a vowel
+     * Check that `.startsWithVowel()` returns the correct result for values that start with vowels.
      */
     @Test
-    fun `start with vowel`() {
+    fun `starts with a vowel`() {
         arrayOf("at", "et", "it", "ot", "ut").forEach {
+            assertTrue(it.toUpperCase().startsWithVowel())
             assertTrue(it.startsWithVowel())
         }
     }
 
     /**
-     * Test if the words starting by y, accent, random char, are don't considered as beginning with a vowel
+     * Check that `.startsWithVowel()` returns the correct result for values that **do not** start with vowels.
      */
     @Test
-    fun `no start with vowel`() {
-        arrayOf("at", "et", "it", "ot", "ut").forEach {
-            assertFalse(it.toUpperCase().startsWithVowel())
-        }
-
+    fun `does not start with a vowel`() {
         arrayOf("yt", "ét", "àt", "ût", "wt", "/t").forEach {
             assertFalse(it.toUpperCase().startsWithVowel())
             assertFalse(it.startsWithVowel())
@@ -45,10 +41,10 @@ class StringTest {
     }
 
     /**
-     * Test the parsing of [String] to [Boolean] without error
+     * Check that `.parseBoolean()` correctly parses various strings into booleans.
      */
     @Test
-    fun `parse string to boolean with several format`() {
+    fun `parse strings to booleans`() {
         arrayOf("1", "y", "t", "yeah", "true").forEach {
             assertTrue(it.parseBoolean()!!)
             assertTrue(it.toUpperCase().parseBoolean()!!)
@@ -61,22 +57,24 @@ class StringTest {
     }
 
     /**
-     * Test the parsing of [String] to [Boolean] with error and get null value
+     * Check that `.parseBoolean()` returns `null` for invalid values.
      */
     @Test
-    fun `parse string to boolean with several format and get null value`() {
+    fun `parsing invalid strings to booleans returns null`() {
         arrayOf("2", "oui", "si").forEach {
             assertNull(it.parseBoolean())
         }
     }
 
     /**
-     * Split a string in two parts with the index if a char
+     * Check that `.splitOn()` correctly splits a string into a pair with the given separator.
      */
     @Test
-    fun `split string based on the index of a char`() {
+    fun `splitting strings returns the correct pairs`() {
         assertEquals("Kord" to "-Ext", "Kord-Ext".splitOn { it == '-' })
         assertEquals("KordExt" to "", "KordExt".splitOn { it == '-' })
         assertEquals("Disc" to "ord bot", "Discord bot".splitOn { it == 'o' })
+
+        assertEquals("Discord bot" to "", "Discord bot".splitOn { it == 'x' })
     }
 }

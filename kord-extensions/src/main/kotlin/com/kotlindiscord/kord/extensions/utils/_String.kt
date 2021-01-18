@@ -1,25 +1,29 @@
 package com.kotlindiscord.kord.extensions.utils
 
 /**
- * Return a [Pair] made of the start of the string up to the first character matching the predicate excluded,
- * and the rest of the string.
+ * Return a [Pair] containing the start of the given string up to the first [separator] character, followed by
+ * the rest of the string. If the [separator] character wasn't found, the returned [Pair] will contain the entire
+ * string as the first element, followed by the empty string.
  *
- * @param predicate Predicate used to determine the split.
+ * @param separator Separator character to split on.
+ * @return Pair containing the split string.
  */
-public fun String.splitOn(predicate: (Char) -> Boolean): Pair<String, String> {
-    val i = this.indexOfFirst(predicate)
+public fun String.splitOn(separator: (Char) -> Boolean): Pair<String, String> {
+    val i = this.indexOfFirst(separator)
+
     if (i == -1) {
         return this to ""
     }
+
     return slice(IntRange(0, i - 1)) to slice(IntRange(i, this.length - 1))
 }
 
 /**
- * Check whether a string starts with a vowel.
+ * Check whether a string starts with a vowel, ignoring case.
  *
  * @return `true` if the string starts with an English vowel, `false` otherwise.
  */
-public fun String.startsWithVowel(): Boolean = "aeiou".any { startsWith(it) }
+public fun String.startsWithVowel(): Boolean = "aeiou".any { startsWith(it, true) }
 
 /**
  * Parse a string into a boolean, based on English characters.

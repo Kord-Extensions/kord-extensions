@@ -4,9 +4,9 @@ import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import dev.kord.common.entity.Snowflake
 import mu.KotlinLogging
 

@@ -4,8 +4,6 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.number
-import com.kotlindiscord.kord.extensions.commands.converters.numberList
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.IntChoiceBuilder

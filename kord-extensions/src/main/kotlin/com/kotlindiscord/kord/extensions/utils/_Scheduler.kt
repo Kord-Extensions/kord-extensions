@@ -10,7 +10,6 @@ private val logger = KotlinLogging.logger {}
  * Class in charge of providing scheduling functions.
  */
 public open class Scheduler {
-
     private val jobMap: MutableMap<UUID, Job> = mutableMapOf()
     private val scope = GlobalScope
     private val finishTask = CancellationException()
@@ -26,7 +25,9 @@ public open class Scheduler {
      */
     public fun <T> schedule(delay: Long, data: T?, callback: suspend (T?) -> Unit): UUID {
         val uuid = UUID.randomUUID()
+
         schedule(uuid, delay, data, callback)
+
         return uuid
     }
 

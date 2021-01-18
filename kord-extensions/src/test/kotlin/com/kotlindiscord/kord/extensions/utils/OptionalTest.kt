@@ -6,22 +6,24 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 /**
- * Class test for the extension of [Optional] class
+ * Tests for [Optional] extension functions.
  */
 class OptionalTest {
 
     /**
-     * Test the retrieve of value when the optional value can be null or not
+     * Check that `.getOrNull()` returns the correct value.
      */
     @Test
     fun `get or null value`() {
         val value = 1
+        val valueNull: Int? = null
+
         val opt = Optional.of(value)
         val result = opt.getOrNull()
+
         assertEquals(value, result)
-        
-        val valueNull: Int? = null
-        assertNull(Optional.ofNullable(valueNull).getOrNull())
         assertEquals(value, Optional.ofNullable(value).getOrNull())
+
+        assertNull(Optional.ofNullable(valueNull).getOrNull())
     }
 }

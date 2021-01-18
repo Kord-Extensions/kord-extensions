@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.kotlindiscord.kord.extensions.message.DEFAULT_TIME_LISTENING
+import com.kotlindiscord.kord.extensions.message.DEFAULT_TIMEOUT
 import com.kotlindiscord.kord.extensions.message.MessageEventManager
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MessageBehavior
@@ -22,7 +22,6 @@ import org.apache.commons.text.matcher.StringMatcherFactory
 private val logger = KotlinLogging.logger {}
 
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
-
 private const val DISCORD_CHANNEL_URI = "https://discordapp.com/channels"
 
 /**
@@ -77,81 +76,89 @@ public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
 }
 
 /**
- * Requests to add an emoji with unicode format to this message.
- * @param unicode Emoji that will be added to the message
- * @throws [RestRequestException] if something went wrong during the request.
+ * Add a reaction to this message, using the Unicode emoji represented by the given string.
+ *
+ * @param emoji Emoji to add to the message.
  */
-public suspend inline fun MessageBehavior.addReaction(unicode: String): Unit = addReaction(unicode.toReaction())
+public suspend inline fun MessageBehavior.addReaction(emoji: String): Unit = addReaction(emoji.toReaction())
 
 /**
- * Requests to remove an [emoji] to this message.
- * @param emoji Emojis that will be removed to the message
- * @throws [RestRequestException] if something went wrong during the request.
+ * Remove a reaction from this message, using a guild's custom emoji object.
+ *
+ * @param emoji Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: GuildEmoji): Unit =
     deleteReaction(userId, emoji.toReaction())
 
 /**
- * Requests to remove an [emoji] with unicode format to this message.
- * @param emoji Emojis that will be removed to the message
- * @throws [RestRequestException] if something went wrong during the request.
+ * Remove a reaction from this message, using the Unicode emoji represented by the given string.
+ *
+ * @param emoji Emoji to remove from message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: String): Unit =
     deleteReaction(userId, emoji.toReaction())
 
 /**
- * Requests to delete an [emoji] to this message.
- * @param emoji Emoji that will be deleted to the message
- * @throws [RestRequestException] if something went wrong during the request.
+ * Remove a reaction from this message, using a guild's custom emoji object.
+ *
+ * @param emoji Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(emoji: GuildEmoji): Unit = deleteReaction(emoji.toReaction())
 
 /**
- * Requests to delete an emoji with unicode format to this message.
- * @param unicode Emoji that will be deleted to the message
- * @throws [RestRequestException] if something went wrong during the request.
+ * Remove a reaction from this message, using the Unicode emoji represented by the given string.
+ *
+ * @param emoji Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit = deleteReaction(unicode.toReaction())
 
 /**
- * Requests to remove an [emoji] from the own bot to this message.
- * @param emoji Emoji that will be removed to the message
- * @throws [RestRequestException] if something went wrong during the request.
+ * Remove a reaction from this message belonging to the bot, using a guild's custom emoji object.
+ *
+ * @param emoji Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): Unit =
     deleteOwnReaction(emoji.toReaction())
 
 /**
- * Requests to remove emoji with unicode format from the own bot to this message.
- * @param unicode Emoji that will be removed to the message
- * @throws [RestRequestException] if something went wrong during the request.
+ * Remove a reaction from this message belonging to the bot, using the Unicode emoji represented by the given string.
+ *
+ * @param emoji Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit =
     deleteOwnReaction(unicode.toReaction())
 
 /**
- * Create listener for an events about the message.
- * @receiver Message that will be listen to apply actions according to the events
- * @param timeout Time to stop listening to events after the last received event corresponding to the message
- * @param manage Block of code to create listeners
- * @return The instance of manager created to manager the events
+ * Create a [MessageEventManager] for the current message, which can be used to listen for specific events that
+ * concern the message.
+ *
+ * This function **does not block**.
+ *
+ * @receiver Message to listen to events for.
+ *
+ * @param timeout Time to wait (in millis) after the last relevant event before stopping, defaulting to 5 minutes.
+ * @param builder Event manager builder - use this to register your event listeners.
+ *
+ * @return The newly-created [MessageEventManager] instance.
+ *
  * @throws IllegalStateException Exception if this is impossible to start the listening of event
  * because he is already started
  */
 @Throws(IllegalStateException::class)
 public inline fun MessageBehavior.events(
-    timeout: Long? = DEFAULT_TIME_LISTENING,
-    manage: MessageEventManager.() -> Unit
+    timeout: Long? = DEFAULT_TIMEOUT,
+    builder: MessageEventManager.() -> Unit
 ): MessageEventManager = MessageEventManager(this, timeout).apply {
-    manage(this)
-    check(start()) { "Unable to start the listening of events" }
+    builder(this)
+
+    check(start()) { "Failed to listen for events: Already listening (this should never happen!)" }
 }
 
-/** ID of the message author. **/
+/** Message author's ID. **/
 public val MessageData.authorId: Snowflake
     get() = author.id
 
-/** Is the message author a bot. **/
+/** Whether the message author is a bot. **/
 public val MessageData.authorIsBot: Boolean
     get() = author.bot.discordBoolean
 

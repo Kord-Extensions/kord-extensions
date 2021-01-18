@@ -14,13 +14,13 @@ import kotlin.contracts.contract
 private const val DISCORD_USERS_URI = "https://discordapp.com/users"
 
 /**
- * A Discord profile link for this user.
+ * The user's Discord profile URL.
  */
 public val User.profileLink: String
     get() = "$DISCORD_USERS_URI/${id.asString}/"
 
 /**
- * The creation timestamp for this user.
+ * The user's creation timestamp.
  */
 public val User.createdAt: Instant
     get() = this.id.timeStamp
@@ -61,9 +61,10 @@ public suspend fun User.dm(content: String): Message? = this.dm { this.content =
 public fun topRole(guildID: Snowflake): suspend (User) -> Role? = { it.asMemberOrNull(guildID)?.getTopRole() }
 
 /**
- * Know if the user is null or is a bot.
- * @receiver User or `null` value that will be checked to know if this is a `null` value or discord bot.
- * @return `true` if the user is `null` or a bot.
+ * Check whether the given user is `null` or a bot.
+ *
+ * @receiver Nullable [User] to check.
+ * @return `true` if the user is `null` or a bot, `false` otherwise.
  */
 public fun User?.isNullOrBot(): Boolean {
     contract {
