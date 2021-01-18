@@ -7,6 +7,8 @@ import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
 import mu.KotlinLogging
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * Ensure a webhook is created for the bot in a given channel, and return it.
  *
@@ -25,7 +27,6 @@ public suspend fun ensureWebhook(
     logoFormat: Image.Format = Image.Format.PNG,
     logo: (suspend () -> ByteArray)?
 ): Webhook {
-    val logger = KotlinLogging.logger {}
     val webhook = channelObj.webhooks.firstOrNull { it.name == name }
 
     if (webhook != null) {

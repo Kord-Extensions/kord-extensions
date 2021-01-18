@@ -71,18 +71,6 @@ public fun java.time.Duration.toHuman(): String? {
 
     if (parts.isEmpty()) return null
 
-    var output = ""
-
-    parts.forEachIndexed { i, part ->
-        if (i == parts.size - 1 && i > 0) {
-            output += " and "  // About to output the last part, and it's not the only one
-        } else if (i < parts.size - 1 && i > 0) {
-            output += ", "  // Not the last part, but not the first one either
-        }
-
-        output += part
-    }
-
     // I have no idea how I should _actually_ do this...
     return parts.joinToString(", ").reversed().replaceFirst(",", "dna ").reversed()
 }

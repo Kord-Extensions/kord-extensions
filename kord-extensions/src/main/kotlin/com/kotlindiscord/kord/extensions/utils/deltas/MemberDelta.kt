@@ -36,14 +36,12 @@ public class MemberDelta(
      * A Set representing the values that have changes. Each value is represented by a human-readable string.
      */
     override val changes: Set<String> by lazy {
-        val s = super.changes.toMutableSet()
-
-        if (nickname != null) s.add("nickname")
-        if (boosting != null) s.add("boosting")
-        if (roles != null) s.add("roles")
-        if (owner != null) s.add("owner")
-
-        s
+        super.changes.toMutableSet().apply {
+            if (nickname != null) add("nickname")
+            if (boosting != null) add("boosting")
+            if (roles != null) add("roles")
+            if (owner != null) add("owner")
+        }
     }
 
     public companion object {
