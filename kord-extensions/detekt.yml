@@ -16,20 +16,25 @@ processors:
   active: true
   exclude:
     - 'DetektProgressListener'
-  # - 'FunctionCountProcessor'
-  # - 'PropertyCountProcessor'
-  # - 'ClassCountProcessor'
-  # - 'PackageCountProcessor'
-  # - 'KtFileCountProcessor'
+    - 'FunctionCountProcessor'
+    - 'PropertyCountProcessor'
+    - 'ClassCountProcessor'
+    - 'PackageCountProcessor'
+    - 'KtFileCountProcessor'
 
 console-reports:
   active: true
   exclude:
      - 'ProjectStatisticsReport'
-     - 'ComplexityReport'
      - 'NotificationReport'
-  #  - 'FindingsReport'
      - 'FileBasedFindingsReport'
+
+output-reports:
+  active: true
+  exclude:
+    # - 'HtmlOutputReport'
+    - 'TxtOutputReport'
+    # - 'XmlOutputReport'
 
 comments:
   active: true
@@ -56,17 +61,17 @@ comments:
     active: true
 
 complexity:
-  active: false
+  active: true
   ComplexCondition:
     active: true
-    threshold: 4
+    threshold: 6
   ComplexInterface:
     active: false
     threshold: 10
     includeStaticDeclarations: false
     includePrivateDeclarations: false
   ComplexMethod:
-    active: true
+    active: false
     threshold: 15
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
@@ -76,13 +81,13 @@ complexity:
     active: false
     ignoredLabels: []
   LargeClass:
-    active: true
+    active: false
     threshold: 600
   LongMethod:
-    active: true
+    active: false
     threshold: 60
   LongParameterList:
-    active: true
+    active: false
     functionThreshold: 6
     constructorThreshold: 7
     ignoreDefaultParameters: false
@@ -92,17 +97,19 @@ complexity:
     active: false
     threshold: 6
   NestedBlockDepth:
-    active: true
-    threshold: 4
-  StringLiteralDuplication:
     active: false
+    threshold: 4
+  ReplaceSafeCallChainWithRun:
+    active: true
+  StringLiteralDuplication:
+    active: true
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
     threshold: 3
     ignoreAnnotation: true
     excludeStringsWithLessThan5Characters: true
     ignoreStringsRegex: '$^'
   TooManyFunctions:
-    active: true
+    active: false
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
     thresholdInFiles: 11
     thresholdInClasses: 11
@@ -118,6 +125,8 @@ coroutines:
   GlobalCoroutineUsage:
     active: true
   RedundantSuspendModifier:
+    active: true
+  SuspendFunWithFlowReturnType:
     active: true
 
 empty-blocks:
@@ -189,7 +198,7 @@ exceptions:
     exceptions:
      - IllegalArgumentException
      - IllegalStateException
-     - IOException'
+     - IOException
   ThrowingNewInstanceOfSameException:
     active: true
   TooGenericExceptionCaught:
@@ -219,25 +228,32 @@ formatting:
   autoCorrect: true
   AnnotationOnSeparateLine:
     active: true
-    autoCorrect: false
+    autoCorrect: true
+  AnnotationSpacing:
+    active: true
+    autoCorrect: true
+  ArgumentListWrapping:
+    active: true
+    autoCorrect: true
   ChainWrapping:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   CommentSpacing:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   EnumEntryNameCase:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   Filename:
     active: true
   FinalNewline:
     active: true
-    autoCorrect: false
+    autoCorrect: true
     insertFinalNewLine: true
   ImportOrdering:
-    active: false
-    autoCorrect: false
+    active: true
+    autoCorrect: true
+    layout: idea
   Indentation:
     active: false
     autoCorrect: false
@@ -248,79 +264,88 @@ formatting:
     maxLineLength: 120
   ModifierOrdering:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   MultiLineIfElse:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoBlankLineBeforeRbrace:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoConsecutiveBlankLines:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoEmptyClassBody:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoEmptyFirstLineInMethodBlock:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoLineBreakAfterElse:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoLineBreakBeforeAssignment:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoMultipleSpaces:
     active: false
     autoCorrect: false
   NoSemicolons:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoTrailingSpaces:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoUnitReturn:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoUnusedImports:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   NoWildcardImports:
     active: false
   PackageName:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   ParameterListWrapping:
     active: true
     autoCorrect: true
     indentSize: 4
   SpacingAroundColon:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   SpacingAroundComma:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   SpacingAroundCurly:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   SpacingAroundDot:
     active: true
-    autoCorrect: false
+    autoCorrect: true
+  SpacingAroundDoubleColon:
+    active: true
+    autoCorrect: true
   SpacingAroundKeyword:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   SpacingAroundOperators:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   SpacingAroundParens:
     active: true
-    autoCorrect: false
+    autoCorrect: true
   SpacingAroundRangeOperator:
     active: true
-    autoCorrect: false
+    autoCorrect: true
+  SpacingBetweenDeclarationsWithAnnotations:
+    active: true
+    autoCorrect: true
+  SpacingBetweenDeclarationsWithComments:
+    active: true
+    autoCorrect: true
   StringTemplate:
     active: true
-    autoCorrect: false
+    autoCorrect: true
 
 naming:
   active: true
@@ -365,13 +390,15 @@ naming:
     ignoreOverridden: true
   InvalidPackageDeclaration:
     active: true
-    rootPackage: ''
+    rootPackage: 'com.kotlindiscord'
   MatchingDeclarationName:
     active: true
     mustBeFirst: true
   MemberNameEqualsClassName:
     active: true
     ignoreOverridden: true
+  NonBooleanPropertyPrefixedWithIs:
+    active: true
   ObjectPropertyNaming:
     active: true
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
@@ -412,7 +439,7 @@ performance:
     active: true
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
   SpreadOperator:
-    active: false
+    active: true
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
   UnnecessaryTemporaryInstantiation:
     active: true
@@ -431,8 +458,13 @@ potential-bugs:
     active: true
   HasPlatformType:
     active: true
+  IgnoredReturnValue:
+    active: true
   ImplicitDefaultLocale:
     active: false
+  ImplicitUnitReturnType:
+    active: true
+    allowExplicitReturnType: true
   InvalidRange:
     active: true
   IteratorHasNextCallsNextMethod:
@@ -447,6 +479,8 @@ potential-bugs:
   MapGetWithNotNullAssertionOperator:
     active: true
   MissingWhenCase:
+    active: true
+  NullableToStringCall:
     active: true
   RedundantElseInWhen:
     active: true
@@ -469,6 +503,8 @@ potential-bugs:
 
 style:
   active: true
+  ClassOrdering:
+    active: true
   CollapsibleIfStatements:
     active: true
   DataClassContainsFunctions:
@@ -512,6 +548,8 @@ style:
     excludeAnnotatedFunction: ['dagger.Provides']
   LibraryCodeMustSpecifyReturnType:
     active: true
+  LibraryEntitiesShouldNotBePublic:
+    active: true
   LoopWithTooManyJumpStatements:
     active: true
     maxJumpCount: 3
@@ -529,6 +567,8 @@ style:
     ignoreEnums: true
     ignoreRanges: false
   MandatoryBracesIfStatements:
+    active: true
+  MandatoryBracesLoops:
     active: true
   MaxLineLength:
     active: true
@@ -553,7 +593,7 @@ style:
   OptionalWhenBraces:
     active: true
   PreferToOverPairSyntax:
-    active: false
+    active: true
   ProtectedMemberInFinalClass:
     active: true
   RedundantExplicitType:
@@ -605,15 +645,21 @@ style:
     allowedNames: '(_|ignored|expected|serialVersionUID)'
   UseArrayLiteralsInAnnotations:
     active: true
+  UseCheckNotNull:
+    active: true
   UseCheckOrError:
     active: true
   UseDataClass:
     active: true
     excludeAnnotatedClasses: []
     allowVars: false
+  UseEmptyCounterpart:
+    active: true
   UseIfInsteadOfWhen:
     active: true
   UseRequire:
+    active: true
+  UseRequireNotNull:
     active: true
   UselessCallOnNotNull:
     active: true

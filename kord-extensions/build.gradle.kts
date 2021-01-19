@@ -17,7 +17,7 @@ plugins {
     kotlin("jvm") version "1.4.21"
 
     id("com.github.jakemarsden.git-hooks") version "0.0.1"
-    id("io.gitlab.arturbosch.detekt") version "1.13.1"
+    id("io.gitlab.arturbosch.detekt") version "1.15.0"
     id("org.jetbrains.dokka") version "1.4.10.2"
 }
 
@@ -60,7 +60,7 @@ val javadocJar = task("javadocJar",Jar::class) {
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
 
     api("dev.kord:kord-core:0.7.0-SNAPSHOT")
 
