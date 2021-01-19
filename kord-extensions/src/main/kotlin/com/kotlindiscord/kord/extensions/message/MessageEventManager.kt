@@ -1,11 +1,14 @@
 package com.kotlindiscord.kord.extensions.message
 
 import com.kotlindiscord.kord.extensions.utils.waitFor
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.event.Event
+import dev.kord.core.event.channel.ChannelDeleteEvent
+import dev.kord.core.event.guild.GuildDeleteEvent
 import dev.kord.core.event.message.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
@@ -20,10 +23,12 @@ public const val DEFAULT_TIMEOUT: Long = 1000L * 60L * 5L
  * Message event manager, in charge of registering (and dispatching to) message-specific event handlers.
  *
  * @property message Message to listen to events for.
+ * @property guildId Message guild ID
  * @property timeout How long to wait before cancelling listening, after the last relevant event.
  */
 public open class MessageEventManager(
-    public val message: MessageBehavior,
+    public val message: Message,
+    public val guildId: Snowflake?,
     private val timeout: Long? = DEFAULT_TIMEOUT
 ) {
 
@@ -146,23 +151,12 @@ public open class MessageEventManager(
      * @param block Lambda (or function) to execute when a matching event is fired.
      *
      * @see [event]
-     * @see [MessageDeleteEvent]
-     * @see [MessageBulkDeleteEvent]
      */
-    public open fun delete(block: suspend (MessageDeleteEvent) -> Unit) {
+    public open fun delete(block: suspend () -> Unit) {
         event {
-            val deleteEvent = when (it) {
-                is MessageDeleteEvent -> it
-
-                is MessageBulkDeleteEvent -> {
-                    val msg = if (message is Message) message else null
-                    MessageDeleteEvent(message.id, it.channelId, it.guildId, msg, it.kord, it.shard, it.supplier)
-                }
-
-                else -> return@event
+            if (isDeleteEvent(it)) {
+                block()
             }
-
-            block(deleteEvent)
         }
     }
 
@@ -197,6 +191,42 @@ public open class MessageEventManager(
     public open fun deleteOnly(block: suspend (MessageDeleteEvent) -> Unit) {
         event {
             if (it is MessageDeleteEvent) {
+                block(it)
+            }
+        }
+    }
+
+    /**
+     * Listen for [ChannelDeleteEvent]s for the tracked message.
+     *
+     * This function will listen for channel deletes where is the message is located
+     *
+     * @param block Lambda (or function) to execute when a matching event is fired.
+     *
+     * @see [event]
+     * @see [ChannelDeleteEvent]
+     */
+    public open fun deleteChannel(block: suspend (ChannelDeleteEvent) -> Unit) {
+        event {
+            if (it is ChannelDeleteEvent) {
+                block(it)
+            }
+        }
+    }
+
+    /**
+     * Listen for [GuildDeleteEvent]s for the tracked message.
+     *
+     * This function will listen for guild deletes where is the message is located
+     *
+     * @param block Lambda (or function) to execute when a matching event is fired.
+     *
+     * @see [event]
+     * @see [GuildDeleteEvent]
+     */
+    public open fun deleteGuild(block: suspend (GuildDeleteEvent) -> Unit) {
+        event {
+            if (it is GuildDeleteEvent) {
                 block(it)
             }
         }
@@ -271,7 +301,11 @@ public open class MessageEventManager(
      * @see [MessageDeleteEvent]
      * @see [MessageBulkDeleteEvent]
      */
-    private fun isDeleteEvent(event: Event): Boolean = event is MessageDeleteEvent || event is MessageBulkDeleteEvent
+    private fun isDeleteEvent(event: Event): Boolean =
+        event is MessageDeleteEvent ||
+            event is MessageBulkDeleteEvent ||
+            event is ChannelDeleteEvent ||
+            event is GuildDeleteEvent
 
     /**
      * Stop listening for events, invoking the [stopAction] if one has been registered.
@@ -295,7 +329,6 @@ public open class MessageEventManager(
      */
     protected open fun getCheck(): suspend (Event) -> Boolean = {
         val id = message.id
-
         when (it) {
             is ReactionAddEvent -> id == it.messageId && it.userId != kord.selfId
             is ReactionRemoveEvent -> id == it.messageId && it.userId != kord.selfId
@@ -303,6 +336,8 @@ public open class MessageEventManager(
             is MessageDeleteEvent -> id == it.messageId
             is MessageUpdateEvent -> id == it.messageId
             is MessageBulkDeleteEvent -> id in it.messageIds
+            is ChannelDeleteEvent -> it.channel.id == message.channelId
+            is GuildDeleteEvent -> it.guildId == guildId
 
             else -> false
         }

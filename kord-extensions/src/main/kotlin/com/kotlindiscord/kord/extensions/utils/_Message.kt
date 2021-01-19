@@ -11,6 +11,7 @@ import dev.kord.core.entity.*
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.*
+import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.rest.builder.message.MessageCreateBuilder
 import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
@@ -136,6 +137,7 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  *
  * @receiver Message to listen to events for.
  *
+ * @param start `true` to start the listening instantly, `false` otherwise
  * @param timeout Time to wait (in millis) after the last relevant event before stopping, defaulting to 5 minutes.
  * @param builder Event manager builder - use this to register your event listeners.
  *
@@ -145,13 +147,20 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  * because he is already started
  */
 @Throws(IllegalStateException::class)
-public inline fun MessageBehavior.events(
+public suspend inline fun Message.events(
+    start: Boolean = true,
     timeout: Long? = DEFAULT_TIMEOUT,
     builder: MessageEventManager.() -> Unit
-): MessageEventManager = MessageEventManager(this, timeout).apply {
-    builder(this)
+): MessageEventManager {
+    val guildId = withStrategy(EntitySupplyStrategy.cacheWithRestFallback).getGuildOrNull()?.id
 
-    check(start()) { "Failed to listen for events: Already listening (this should never happen!)" }
+    return MessageEventManager(this, guildId, timeout).apply {
+        builder(this)
+
+        if (start) {
+            check(start()) { "Failed to listen for events: Already listening (this should never happen!)" }
+        }
+    }
 }
 
 /** Message author's ID. **/
