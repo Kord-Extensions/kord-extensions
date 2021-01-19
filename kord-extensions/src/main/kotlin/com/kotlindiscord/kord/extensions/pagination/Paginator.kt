@@ -20,6 +20,8 @@ import dev.kord.core.event.message.ReactionRemoveEvent
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
 
+private const val WRONG_TYPE = "Wrong event type!"
+
 /** Emoji used to jump to the first page. **/
 public val FIRST_PAGE_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u23EE")
 
@@ -215,21 +217,21 @@ public open class Paginator(
             is ReactionAddEvent -> event.emoji
             is ReactionRemoveEvent -> event.emoji
 
-            else -> error("Wrong event type!")
+            else -> error(WRONG_TYPE)
         }
 
         val message = when (event) {
             is ReactionAddEvent -> event.message.asMessage()
             is ReactionRemoveEvent -> event.message.asMessage()
 
-            else -> error("Wrong event type!")
+            else -> error(WRONG_TYPE)
         }
 
         val userId = when (event) {
             is ReactionAddEvent -> event.userId
             is ReactionRemoveEvent -> event.userId
 
-            else -> error("Wrong event type!")
+            else -> error(WRONG_TYPE)
         }
 
         logger.debug { "Paginator received emoji ${emoji.name}" }

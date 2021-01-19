@@ -1,4 +1,11 @@
-@file:OptIn(KordPreview::class)
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
+@file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.commands.converters
 

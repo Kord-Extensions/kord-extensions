@@ -17,6 +17,7 @@ import io.sentry.protocol.SentryId
 public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
     override val name: String = "sentry"
 
+    @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
         if (bot.sentry.enabled) {
             slashCommand(::FeedbackArgs) {

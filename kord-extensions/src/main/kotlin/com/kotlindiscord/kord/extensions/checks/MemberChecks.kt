@@ -24,15 +24,15 @@ public fun hasPermission(perm: Permission): suspend (Event) -> Boolean {
         val member = memberFor(event)
 
         if (member == null) {
-            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            logger.nullMember(event)
             return false
         }
 
         return if (member.asMember().hasPermission(perm)) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Member $member does not have permission $perm" }
+            logger.failed("Member $member does not have permission $perm")
             false
         }
     }
@@ -57,15 +57,15 @@ public fun notHasPermission(perm: Permission): suspend (Event) -> Boolean {
         val member = memberFor(event)
 
         if (member == null) {
-            logger.debug { "Member for event $event is null. This type of event may not be supported." }
+            logger.nullMember(event)
             return false
         }
 
         return if (member.asMember().hasPermission(perm)) {
-            logger.debug { "Failing check: Member $member has permission $perm" }
+            logger.failed("Member $member has permission $perm")
             false
         } else {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         }
     }

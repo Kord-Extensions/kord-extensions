@@ -1,3 +1,5 @@
+@file:Suppress("StringLiteralDuplication")  // There's no good way to avoid this repetition at the moment
+
 package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot

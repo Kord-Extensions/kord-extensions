@@ -23,11 +23,17 @@ public fun inChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
-        return eventChannel.id == channel.id
+        return if (eventChannel.id == channel.id) {
+            logger.passed()
+            true
+        } else {
+            logger.failed("Channel $eventChannel is not the same as channel $channel")
+            false
+        }
     }
 
     return ::inner
@@ -48,11 +54,17 @@ public fun notInChannel(channel: ChannelBehavior): suspend (Event) -> Boolean {
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
-        return eventChannel.id != channel.id
+        return if (eventChannel.id != channel.id) {
+            logger.passed()
+            true
+        } else {
+            logger.failed("Channel $eventChannel is the same as channel $channel")
+            false
+        }
     }
 
     return ::inner
@@ -73,17 +85,17 @@ public fun inCategory(category: CategoryBehavior): suspend (Event) -> Boolean {
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
         val channels = category.channels.toList().map { it.id }
 
         return if (channels.contains(eventChannel.id)) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Channel $eventChannel not in category $category" }
+            logger.failed("Channel $eventChannel is not in category $category")
             false
         }
     }
@@ -106,17 +118,17 @@ public fun notInCategory(category: CategoryBehavior): suspend (Event) -> Boolean
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
         val channels = category.channels.toList().map { it.id }
 
         return if (channels.contains(eventChannel.id)) {
-            logger.debug { "Failing check: Channel $eventChannel in category $category" }
+            logger.failed("Channel $eventChannel is in category $category")
             false
         } else {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         }
     }
@@ -139,15 +151,15 @@ public fun channelHigher(channel: ChannelBehavior): suspend (Event) -> Boolean {
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
         return if (eventChannel > channel) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Channel $eventChannel is lower than or equal to $channel" }
+            logger.failed("Channel $eventChannel is lower than or equal to $channel")
             false
         }
     }
@@ -170,15 +182,15 @@ public fun channelLower(channel: ChannelBehavior): suspend (Event) -> Boolean {
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
         return if (eventChannel < channel) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Channel $eventChannel is higher than or equal to $channel" }
+            logger.failed("Channel $eventChannel is higher than or equal to $channel")
             false
         }
     }
@@ -201,15 +213,15 @@ public fun channelHigherOrEqual(channel: ChannelBehavior): suspend (Event) -> Bo
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
         return if (eventChannel >= channel) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Channel $eventChannel is lower than $channel" }
+            logger.failed("Channel $eventChannel is lower than $channel")
             false
         }
     }
@@ -232,15 +244,15 @@ public fun channelLowerOrEqual(channel: ChannelBehavior): suspend (Event) -> Boo
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
         return if (eventChannel <= channel) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Channel $eventChannel is higher than $channel" }
+            logger.failed("Channel $eventChannel is higher than $channel")
             false
         }
     }

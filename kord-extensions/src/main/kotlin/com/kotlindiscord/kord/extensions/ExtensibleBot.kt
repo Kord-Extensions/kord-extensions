@@ -312,7 +312,7 @@ public open class ExtensibleBot(
                 parts = if (parts.isEmpty()) {
                     arrayOf("\n${split.last()}")
                 } else {
-                    arrayOf("\n${split.last()}", *parts)
+                    arrayOf("\n${split.last()}") + parts
                 }
             }
 

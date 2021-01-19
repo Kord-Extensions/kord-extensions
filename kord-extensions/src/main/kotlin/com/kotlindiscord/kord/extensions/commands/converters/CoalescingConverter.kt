@@ -81,6 +81,7 @@ public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true), S
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
      */
+    @ConverterToOptional
     public open fun toOptional(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
@@ -112,6 +113,7 @@ public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true), S
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
      */
+    @ConverterToDefaulting
     public open fun toDefaulting(
         defaultValue: T,
         signatureTypeString: String? = null,

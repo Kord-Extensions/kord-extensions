@@ -1,4 +1,7 @@
-@file:Suppress("TooGenericExceptionCaught")
+@file:Suppress(
+    "TooGenericExceptionCaught",
+    "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
+)
 
 package com.kotlindiscord.kord.extensions.commands.parser
 

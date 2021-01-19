@@ -21,15 +21,15 @@ public fun inGuild(guild: Guild): suspend (Event) -> Boolean {
         val eventGuild = guildFor(event)
 
         if (eventGuild == null) {
-            logger.debug { "Guild for event $event is null. This type of event may not be supported." }
+            logger.nullGuild(event)
             return false
         }
 
         return if (eventGuild.id == guild.id) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Guild $eventGuild does not match $guild" }
+            logger.failed("Guild $eventGuild does not match $guild")
             false
         }
     }
@@ -52,15 +52,15 @@ public fun notInGuild(guild: Guild): suspend (Event) -> Boolean {
         val eventGuild = guildFor(event)
 
         if (eventGuild == null) {
-            logger.debug { "Guild for event $event is null. This type of event may not be supported." }
+            logger.nullGuild(event)
             return false
         }
 
         return if (eventGuild.id != guild.id) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Guild $eventGuild matches $guild" }
+            logger.failed("Guild $eventGuild matches $guild")
             false
         }
     }

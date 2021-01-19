@@ -88,6 +88,7 @@ public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashComman
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
      */
+    @ConverterToMulti
     public open fun toMulti(
         required: Boolean = true,
         signatureTypeString: String? = null,
@@ -122,6 +123,7 @@ public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashComman
      * @param outputError Optionally, provide `true` to fail parsing and return errors if the converter throws a
      * [ParseException], instead of continuing.
      */
+    @ConverterToOptional
     public open fun toOptional(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
@@ -155,6 +157,7 @@ public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashComman
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
      */
+    @ConverterToDefaulting
     public open fun toDefaulting(
         defaultValue: T,
         signatureTypeString: String? = null,

@@ -27,6 +27,19 @@ public open class GroupCommand(
 
     override lateinit var name: String
 
+    /** @suppress **/
+    override var body: suspend MessageCommandContext.() -> Unit = {
+        val mention = message.author!!.mention
+
+        val error = if (args.isNotEmpty()) {
+            "$mention Unknown subcommand: `${args.first()}`"
+        } else {
+            "$mention Subcommands: " + commands.joinToString(", ") { "`${it.name}`" }
+        }
+
+        message.channel.createMessage(error)
+    }
+
     /**
      * An internal function used to ensure that all of a command group's required arguments are present.
      *
@@ -41,19 +54,6 @@ public open class GroupCommand(
         if (commands.isEmpty()) {
             throw InvalidCommandException(name, "No subcommands registered.")
         }
-    }
-
-    /** @suppress **/
-    override var body: suspend MessageCommandContext.() -> Unit = {
-        val mention = message.author!!.mention
-
-        val error = if (args.isNotEmpty()) {
-            "$mention Unknown subcommand: `${args.first()}`"
-        } else {
-            "$mention Subcommands: " + commands.joinToString(", ") { "`${it.name}`" }
-        }
-
-        message.channel.createMessage(error)
     }
 
     /**

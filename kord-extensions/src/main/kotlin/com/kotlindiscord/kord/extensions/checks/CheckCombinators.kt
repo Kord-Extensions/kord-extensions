@@ -17,10 +17,10 @@ public fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boo
 
     suspend fun inner(event: Event): Boolean {
         return if (checks.any { it.invoke(event) }) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: None of the given checks passed" }
+            logger.failed("None of the given checks passed")
             false
         }
     }
@@ -45,10 +45,10 @@ public fun and(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Bo
 
     suspend fun inner(event: Event): Boolean {
         return if (checks.all { it.invoke(event) }) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: At least one of the given checks failed" }
+            logger.failed("At least one of the given checks failed")
             false
         }
     }
