@@ -300,6 +300,8 @@ public open class MessageEventManager(
      *
      * @see [MessageDeleteEvent]
      * @see [MessageBulkDeleteEvent]
+     * @see [ChannelDeleteEvent]
+     * @see [GuildDeleteEvent]
      */
     private fun isDeleteEvent(event: Event): Boolean =
         event is MessageDeleteEvent ||
