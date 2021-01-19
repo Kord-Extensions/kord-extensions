@@ -152,10 +152,10 @@ public open class MessageEventManager(
      *
      * @see [event]
      */
-    public open fun delete(block: suspend () -> Unit) {
+    public open fun delete(block: suspend (Event) -> Unit) {
         event {
             if (isDeleteEvent(it)) {
-                block()
+                block(it)
             }
         }
     }
