@@ -23,7 +23,7 @@ public const val DEFAULT_TIMEOUT: Long = 1000L * 60L * 5L
  * Message event manager, in charge of registering (and dispatching to) message-specific event handlers.
  *
  * @property message Message to listen to events for.
- * @property guildId Message guild ID
+ * @property guildId Message guild ID.
  * @property timeout How long to wait before cancelling listening, after the last relevant event.
  */
 public open class MessageEventManager(
@@ -199,7 +199,7 @@ public open class MessageEventManager(
     /**
      * Listen for [ChannelDeleteEvent]s for the tracked message.
      *
-     * This function will listen for channel deletes where is the message is located
+     * This function will listen for channel deletes where is the message is located.
      *
      * @param block Lambda (or function) to execute when a matching event is fired.
      *
@@ -217,7 +217,7 @@ public open class MessageEventManager(
     /**
      * Listen for [GuildDeleteEvent]s for the tracked message.
      *
-     * This function will listen for guild deletes where is the message is located
+     * This function will listen for guild deletes where is the message is located.
      *
      * @param block Lambda (or function) to execute when a matching event is fired.
      *

@@ -79,9 +79,9 @@ public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
 /**
  * Add a reaction to this message, using the Unicode emoji represented by the given string.
  *
- * @param emoji Emoji to add to the message.
+ * @param unicode Emoji to add to the message.
  */
-public suspend inline fun MessageBehavior.addReaction(emoji: String): Unit = addReaction(emoji.toReaction())
+public suspend inline fun MessageBehavior.addReaction(unicode: String): Unit = addReaction(unicode.toReaction())
 
 /**
  * Remove a reaction from this message, using a guild's custom emoji object.
@@ -109,7 +109,7 @@ public suspend inline fun MessageBehavior.deleteReaction(emoji: GuildEmoji): Uni
 /**
  * Remove a reaction from this message, using the Unicode emoji represented by the given string.
  *
- * @param emoji Emoji to remove from the message.
+ * @param unicode Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit = deleteReaction(unicode.toReaction())
 
@@ -124,7 +124,7 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): 
 /**
  * Remove a reaction from this message belonging to the bot, using the Unicode emoji represented by the given string.
  *
- * @param emoji Emoji to remove from the message.
+ * @param unicode Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit =
     deleteOwnReaction(unicode.toReaction())
@@ -137,7 +137,7 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  *
  * @receiver Message to listen to events for.
  *
- * @param start `true` to start the listening instantly, `false` otherwise
+ * @param start `true` to start the listening instantly, `false` otherwise.
  * @param timeout Time to wait (in millis) after the last relevant event before stopping, defaulting to 5 minutes.
  * @param builder Event manager builder - use this to register your event listeners.
  *
