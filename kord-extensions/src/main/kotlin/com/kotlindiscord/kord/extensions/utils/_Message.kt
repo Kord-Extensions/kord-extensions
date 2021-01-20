@@ -137,7 +137,7 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  *
  * @receiver Message to listen to events for.
  *
- * @param start `true` to start the listening instantly, `false` otherwise.
+ * @param launch `true` to launch the listening instantly, `false` otherwise.
  * @param timeout Time to wait (in millis) after the last relevant event before stopping, defaulting to 5 minutes.
  * @param builder Event manager builder - use this to register your event listeners.
  *
@@ -148,7 +148,7 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  */
 @Throws(IllegalStateException::class)
 public suspend inline fun Message.events(
-    start: Boolean = true,
+    launch: Boolean = true,
     timeout: Long? = DEFAULT_TIMEOUT,
     builder: MessageEventManager.() -> Unit
 ): MessageEventManager {
@@ -157,7 +157,7 @@ public suspend inline fun Message.events(
     return MessageEventManager(this, guildId, timeout).apply {
         builder(this)
 
-        if (start) {
+        if (launch) {
             check(start()) { "Failed to listen for events: Already listening (this should never happen!)" }
         }
     }
