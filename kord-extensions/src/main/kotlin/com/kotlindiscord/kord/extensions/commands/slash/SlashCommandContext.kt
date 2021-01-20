@@ -17,7 +17,7 @@ import dev.kord.rest.builder.interaction.InteractionApplicationCommandCallbackDa
  * @property interactionResponse Interaction response object, for following up
  */
 @OptIn(KordPreview::class)
-public open class SlashCommandContext<T : Arguments>(
+public open class SlashCommandContext<T : Arguments> (
     private val slashCommand: SlashCommand<out T>,
     event: InteractionCreateEvent,
     commandName: String,

@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.StartBuilder
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
@@ -87,7 +88,7 @@ public open class ExtensibleBot(
     /**
      * A list of all registered commands.
      */
-    public open val commands: MutableList<MessageCommand> = mutableListOf()
+    public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
 
     /**
      * A list of all registered event handlers.
@@ -466,7 +467,7 @@ public open class ExtensibleBot(
      * @throws CommandRegistrationException Thrown if the command could not be registered.
      */
     @Throws(CommandRegistrationException::class)
-    public open fun addCommand(command: MessageCommand) {
+    public open fun addCommand(command: MessageCommand<out Arguments>) {
         val existingCommand = commands.any { it.name == command.name }
         val existingAlias: String? = commands.flatMap {
             it.aliases.toList()
@@ -505,7 +506,7 @@ public open class ExtensibleBot(
      *
      * @param command The command to be removed.
      */
-    public open fun removeCommand(command: MessageCommand): Boolean = commands.remove(command)
+    public open fun removeCommand(command: MessageCommand<out Arguments>): Boolean = commands.remove(command)
 
     /**
      * Directly register an [EventHandler] to this bot.

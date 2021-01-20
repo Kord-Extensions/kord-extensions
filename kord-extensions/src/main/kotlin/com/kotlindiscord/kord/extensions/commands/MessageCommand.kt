@@ -25,12 +25,16 @@ private val logger = KotlinLogging.logger {}
  * function.
  *
  * @param extension The [Extension] that registered this command.
+ * @param arguments Arguments object builder for this command, if it has arguments.
  */
-public open class MessageCommand(extension: Extension) : Command(extension) {
+public open class MessageCommand<T : Arguments>(
+    extension: Extension,
+    public open val arguments: (() -> T)? = null
+) : Command(extension) {
     /**
      * @suppress
      */
-    public open lateinit var body: suspend MessageCommandContext.() -> Unit
+    public open lateinit var body: suspend MessageCommandContext<out T>.() -> Unit
 
     /**
      * A description of what this function and how it's intended to be used.
@@ -57,15 +61,6 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
     public open var hidden: Boolean = false
 
     /**
-     * The command signature, specifying how the command's arguments should be structured.
-     *
-     * You may leave this as it is if your command doesn't take any arguments, you give the [signature] function
-     * a dataclass to generate a signature, or you can specify this in the [Extension.command] builder function
-     * if you'd like to provide something a bit more specific.
-     */
-    public open var signature: String = ""
-
-    /**
      * Alternative names that can be used to invoke your command.
      *
      * There's no limit on the number of aliases a command may have, but in the event of an alias matching
@@ -79,6 +74,15 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
     public open val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
     override val parser: ArgumentParser = ArgumentParser(extension.bot)
+
+    /**
+     * The command signature, specifying how the command's arguments should be structured.
+     *
+     * You may leave this as it is if your command doesn't take any arguments or you're happy with the generated
+     * signature,or you can specify this in the [Extension.command] builder function if you'd like to provide
+     * something a bit more specific.
+     */
+    public open var signature: String = if (arguments != null) parser.signature(arguments!!) else ""
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present.
@@ -101,7 +105,7 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
      *
      * @param action The body of your command, which will be executed when your command is invoked.
      */
-    public open fun action(action: suspend MessageCommandContext.() -> Unit) {
+    public open fun action(action: suspend MessageCommandContext<out T>.() -> Unit) {
         this.body = action
     }
 
@@ -130,20 +134,6 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
     }
 
     // endregion
-
-    /**
-     * Attempt to generate a signature string from a given data class.
-     *
-     * This will produce \[argument] for optional parameters, and <argument> for required parameters. List
-     * parameters will produce \[argument ...] or <argument ...> respectively.
-     *
-     * @param T Data class to generate a signature string for.
-     * @throws ParseException Thrown if the class passed isn't a data class.
-     */
-    @Throws(ParseException::class)
-    public inline fun <reified T : Arguments> signature(noinline builder: () -> T) {
-        signature = parser.signature(builder)
-    }
 
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
     public open suspend fun runChecks(event: MessageCreateEvent): Boolean {
@@ -218,6 +208,11 @@ public open class MessageCommand(extension: Extension) : Command(extension) {
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
+            if (this.arguments != null) {
+                val args = this.parser.parse(this.arguments!!, context)
+                context.populateArgs(args)
+            }
+
             this.body(context)
         } catch (e: ParseException) {
             event.message.respond(e.toString())
