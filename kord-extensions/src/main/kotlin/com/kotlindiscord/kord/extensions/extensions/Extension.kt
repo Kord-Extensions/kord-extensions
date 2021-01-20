@@ -31,6 +31,37 @@ public abstract class Extension(public val bot: ExtensibleBot) {
     public abstract val name: String
 
     /**
+     * The current loading/unloading state of the extension.
+     */
+    public open var state: ExtensionState = ExtensionState.UNLOADED
+
+    /** Check whether this extension's state is [ExtensionState.LOADED]. **/
+    public open val loaded: Boolean get() = state == ExtensionState.LOADED
+
+    /**
+     * List of registered event handlers.
+     *
+     * When an extension is unloaded, all the event handlers are cancelled and
+     * removed from the bot.
+     */
+    public open val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
+
+    /**
+     * List of registered commands.
+     *
+     * When an extension is unloaded, all the commands are removed from the bot.
+     */
+    public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
+
+    /**
+     * List of registered slash commands.
+     *
+     * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
+     * belong to unloaded extensions will not execute.
+     */
+    public open val slashCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
+
+    /**
      * Override this in your subclass and use it to register your commands and event
      * handlers.
      *
@@ -68,45 +99,33 @@ public abstract class Extension(public val bot: ExtensibleBot) {
     }
 
     /**
-     * The current loading/unloading state of the extension.
-     */
-    public open var state: ExtensionState = ExtensionState.UNLOADED
-
-    /** Check whether this extension's state is [ExtensionState.LOADED]. **/
-    public open val loaded: Boolean get() = state == ExtensionState.LOADED
-
-    /**
-     * List of registered event handlers.
-     *
-     * When an extension is unloaded, all the event handlers are cancelled and
-     * removed from the bot.
-     */
-    public open val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
-
-    /**
-     * List of registered commands.
-     *
-     * When an extension is unloaded, all the commands are removed from the bot.
-     */
-    public open val commands: MutableList<MessageCommand> = mutableListOf()
-
-    /**
-     * List of registered slash commands.
-     *
-     * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
-     * belong to unloaded extensions will not execute.
-     */
-    public open val slashCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
-
-    /**
      * DSL function for easily registering a command.
      *
      * Use this in your setup function to register a command that may be executed on Discord.
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun command(body: suspend MessageCommand.() -> Unit): MessageCommand {
-        val commandObj = MessageCommand(this)
+    public open suspend fun <T : Arguments> command(
+        arguments: (() -> T)?,
+        body: suspend MessageCommand<T>.() -> Unit
+    ): MessageCommand<T> {
+        val commandObj = MessageCommand(this, arguments)
+        body.invoke(commandObj)
+
+        return command(commandObj)
+    }
+
+    /**
+     * DSL function for easily registering a command, without arguments.
+     *
+     * Use this in your setup function to register a command that may be executed on Discord.
+     *
+     * @param body Builder lambda used for setting up the command object.
+     */
+    public open suspend fun command(
+        body: suspend MessageCommand<Arguments>.() -> Unit
+    ): MessageCommand<Arguments> {
+        val commandObj = MessageCommand<Arguments>(this)
         body.invoke(commandObj)
 
         return command(commandObj)
@@ -119,7 +138,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * @param commandObj MessageCommand object to register.
      */
-    public open suspend fun command(commandObj: MessageCommand): MessageCommand {
+    public open suspend fun <T : Arguments> command(commandObj: MessageCommand<T>): MessageCommand<T> {
         try {
             commandObj.validate()
             bot.addCommand(commandObj)
@@ -147,7 +166,7 @@ public abstract class Extension(public val bot: ExtensibleBot) {
         guildId: Snowflake? = null,
         body: suspend SlashCommand<T>.() -> Unit
     ): SlashCommand<T> {
-        val commandObj = SlashCommand<T>(this, arguments)
+        val commandObj = SlashCommand(this, arguments)
         body.invoke(commandObj)
 
         return slashCommand(guildId, commandObj)
@@ -206,8 +225,28 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
-        val commandObj = GroupCommand(this)
+    public open suspend fun <T : Arguments> group(
+        arguments: (() -> T)?,
+        body: suspend GroupCommand<T>.() -> Unit
+    ): GroupCommand<T> {
+        val commandObj = GroupCommand(this, arguments)
+        body.invoke(commandObj)
+
+        return command(commandObj) as GroupCommand
+    }
+
+    /**
+     * DSL function for easily registering a grouped command, without its own arguments.
+     *
+     * Use this in your setup function to register a group of commands.
+     *
+     * The body of the grouped command will be executed if there is no
+     * matching subcommand.
+     *
+     * @param body Builder lambda used for setting up the command object.
+     */
+    public open suspend fun group(body: suspend GroupCommand<Arguments>.() -> Unit): GroupCommand<Arguments> {
+        val commandObj = GroupCommand<Arguments>(this)
         body.invoke(commandObj)
 
         return command(commandObj) as GroupCommand

@@ -1,4 +1,11 @@
-@file:OptIn(KordPreview::class)
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
+@file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.commands.converters
 
@@ -559,8 +566,12 @@ public fun Arguments.defaultingT4jDuration(
  *
  * @see DurationCoalescingConverter
  */
-public fun Arguments.coalescedDuration(displayName: String, description: String): CoalescingConverter<Duration> =
-    arg(displayName, description, DurationCoalescingConverter())
+public fun Arguments.coalescedDuration(
+    displayName: String,
+    description: String,
+    shouldThrow: Boolean = false
+): CoalescingConverter<Duration> =
+    arg(displayName, description, DurationCoalescingConverter(shouldThrow = shouldThrow))
 
 /**
  * Create a coalescing regex converter.
@@ -589,9 +600,10 @@ public fun Arguments.coalescedString(displayName: String, description: String): 
  */
 public fun Arguments.coalescedT4jDuration(
     displayName: String,
-    description: String
+    description: String,
+    shouldThrow: Boolean = false
 ): CoalescingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationCoalescingConverter())
+    arg(displayName, description, T4JDurationCoalescingConverter(shouldThrow = shouldThrow))
 
 // endregion
 
@@ -604,9 +616,16 @@ public fun Arguments.coalescedT4jDuration(
  */
 public fun Arguments.optionalCoalescedDuration(
     displayName: String,
-    description: String
+    description: String,
+    outputError: Boolean = false
 ): OptionalCoalescingConverter<Duration?> =
-    arg(displayName, description, DurationCoalescingConverter().toOptional())
+    arg(
+        displayName,
+        description,
+
+        DurationCoalescingConverter(shouldThrow = outputError)
+            .toOptional(outputError = outputError)
+    )
 
 /**
  * Create an optional coalescing regex converter.
@@ -618,7 +637,12 @@ public fun Arguments.optionalCoalescedRegex(
     description: String,
     options: Set<RegexOption> = setOf()
 ): OptionalCoalescingConverter<Regex?> =
-    arg(displayName, description, RegexCoalescingConverter(options).toOptional())
+    arg(
+        displayName,
+        description,
+
+        RegexCoalescingConverter(options).toOptional()
+    )
 
 /**
  * Create an optional coalescing string converter.
@@ -627,9 +651,14 @@ public fun Arguments.optionalCoalescedRegex(
  */
 public fun Arguments.optionalCoalescedString(
     displayName: String,
-    description: String
+    description: String,
 ): OptionalCoalescingConverter<String?> =
-    arg(displayName, description, StringCoalescingConverter().toOptional())
+    arg(
+        displayName,
+        description,
+
+        StringCoalescingConverter().toOptional()
+    )
 
 /**
  * Create an optional coalescing Time4J Duration converter.
@@ -638,9 +667,16 @@ public fun Arguments.optionalCoalescedString(
  */
 public fun Arguments.optionalCoalescedT4jDuration(
     displayName: String,
-    description: String
+    description: String,
+    outputError: Boolean = false
 ): OptionalCoalescingConverter<net.time4j.Duration<IsoUnit>?> =
-    arg(displayName, description, T4JDurationCoalescingConverter().toOptional())
+    arg(
+        displayName,
+        description,
+
+        T4JDurationCoalescingConverter(shouldThrow = outputError)
+            .toOptional(outputError = outputError)
+    )
 
 // endregion
 
@@ -654,9 +690,10 @@ public fun Arguments.optionalCoalescedT4jDuration(
 public fun Arguments.defaultingCoalescedDuration(
     displayName: String,
     description: String,
-    defaultValue: Duration
+    defaultValue: Duration,
+    shouldThrow: Boolean = false
 ): DefaultingCoalescingConverter<Duration> =
-    arg(displayName, description, DurationCoalescingConverter().toDefaulting(defaultValue))
+    arg(displayName, description, DurationCoalescingConverter(shouldThrow = shouldThrow).toDefaulting(defaultValue))
 
 /**
  * Create a defaulting coalescing regex converter.
@@ -691,9 +728,10 @@ public fun Arguments.defaultingCoalescedString(
 public fun Arguments.defaultingCoalescedT4jDuration(
     displayName: String,
     description: String,
-    defaultValue: net.time4j.Duration<IsoUnit>
+    defaultValue: net.time4j.Duration<IsoUnit>,
+    shouldThrow: Boolean = false
 ): DefaultingCoalescingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationCoalescingConverter().toDefaulting(defaultValue))
+    arg(displayName, description, T4JDurationCoalescingConverter(shouldThrow = shouldThrow).toDefaulting(defaultValue))
 
 // endregion
 

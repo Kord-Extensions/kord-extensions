@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
@@ -18,14 +19,28 @@ private val logger = KotlinLogging.logger {}
  * @param parent The [GroupCommand] this group exists under, if any.
  */
 @Suppress("LateinitVarOverridesLateinitVar")  // This is intentional
-public open class GroupCommand(
+public open class GroupCommand<T : Arguments>(
     extension: Extension,
-    public open val parent: GroupCommand? = null
-) : MessageCommand(extension) {
+    arguments: (() -> T)? = null,
+    public open val parent: GroupCommand<out Arguments>? = null
+) : MessageCommand<T>(extension, arguments) {
     /** @suppress **/
-    public open val commands: MutableList<MessageCommand> = mutableListOf<MessageCommand>()
+    public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
 
     override lateinit var name: String
+
+    /** @suppress **/
+    override var body: suspend MessageCommandContext<out T>.() -> Unit = {
+        val mention = message.author!!.mention
+
+        val error = if (args.isNotEmpty()) {
+            "$mention Unknown subcommand: `${args.first()}`"
+        } else {
+            "$mention Subcommands: " + commands.joinToString(", ") { "`${it.name}`" }
+        }
+
+        message.channel.createMessage(error)
+    }
 
     /**
      * An internal function used to ensure that all of a command group's required arguments are present.
@@ -43,19 +58,6 @@ public open class GroupCommand(
         }
     }
 
-    /** @suppress **/
-    override var body: suspend MessageCommandContext.() -> Unit = {
-        val mention = message.author!!.mention
-
-        val error = if (args.isNotEmpty()) {
-            "$mention Unknown subcommand: `${args.first()}`"
-        } else {
-            "$mention Subcommands: " + commands.joinToString(", ") { "`${it.name}`" }
-        }
-
-        message.channel.createMessage(error)
-    }
-
     /**
      * DSL function for easily registering a command.
      *
@@ -63,8 +65,27 @@ public open class GroupCommand(
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun command(body: suspend MessageCommand.() -> Unit): MessageCommand {
-        val commandObj = MessageSubCommand(extension, this)
+    public open suspend fun <R : Arguments> command(
+        arguments: (() -> R)?,
+        body: suspend MessageCommand<R>.() -> Unit
+    ): MessageCommand<R> {
+        val commandObj = MessageSubCommand<R>(extension, arguments, this)
+        body.invoke(commandObj)
+
+        return command(commandObj)
+    }
+
+    /**
+     * DSL function for easily registering a command, without arguments.
+     *
+     * Use this in your setup function to register a command that may be executed on Discord.
+     *
+     * @param body Builder lambda used for setting up the command object.
+     */
+    public open suspend fun command(
+        body: suspend MessageCommand<Arguments>.() -> Unit
+    ): MessageCommand<Arguments> {
+        val commandObj = MessageSubCommand<Arguments>(extension, parent = this)
         body.invoke(commandObj)
 
         return command(commandObj)
@@ -77,7 +98,7 @@ public open class GroupCommand(
      *
      * @param commandObj MessageCommand object to register.
      */
-    public open suspend fun command(commandObj: MessageCommand): MessageCommand {
+    public open suspend fun <R : Arguments> command(commandObj: MessageCommand<R>): MessageCommand<R> {
         try {
             commandObj.validate()
             commands.add(commandObj)
@@ -100,15 +121,37 @@ public open class GroupCommand(
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun group(body: suspend GroupCommand.() -> Unit): GroupCommand {
-        val commandObj = GroupCommand(extension, this)
+    public open suspend fun <R : Arguments> group(
+        arguments: (() -> R)?,
+        body: suspend GroupCommand<R>.() -> Unit
+    ): GroupCommand<R> {
+        val commandObj = GroupCommand(extension, arguments, this)
         body.invoke(commandObj)
 
-        return command(commandObj) as GroupCommand
+        return command(commandObj) as GroupCommand<R>
+    }
+
+    /**
+     * DSL function for easily registering a grouped command, without its own arguments.
+     *
+     * Use this in your setup function to register a group of commands.
+     *
+     * The body of the grouped command will be executed if there is no
+     * matching subcommand.
+     *
+     * @param body Builder lambda used for setting up the command object.
+     */
+    public open suspend fun group(
+        body: suspend GroupCommand<Arguments>.() -> Unit
+    ): GroupCommand<Arguments> {
+        val commandObj = GroupCommand<Arguments>(extension, parent = this)
+        body.invoke(commandObj)
+
+        return command(commandObj) as GroupCommand<Arguments>
     }
 
     /** @suppress **/
-    public open fun getCommand(commandName: String?): MessageCommand? =
+    public open fun getCommand(commandName: String?): MessageCommand<out Arguments>? =
         commands.firstOrNull { it.name == commandName } ?: commands.firstOrNull { it.aliases.contains(commandName) }
 
     /**

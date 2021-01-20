@@ -1,4 +1,7 @@
-@file:Suppress("TooGenericExceptionCaught")
+@file:Suppress(
+    "TooGenericExceptionCaught",
+    "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
+)
 
 package com.kotlindiscord.kord.extensions.commands.parser
 
@@ -350,11 +353,13 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: ParseException) {
-                    if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
+                    if (converter.required || converter.outputError || hasKwargs) {
+                        throw ParseException(converter.handleError(e, values, context, bot))
+                    }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (converter.required) {
+                    if (converter.required || hasKwargs) {
                         throw t
                     }
                 }

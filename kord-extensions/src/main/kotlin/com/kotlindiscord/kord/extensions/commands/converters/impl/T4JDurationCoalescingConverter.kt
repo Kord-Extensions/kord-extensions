@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.coalescedT4jDuration
@@ -21,7 +22,9 @@ import net.time4j.IsoUnit
  * @see coalescedT4jDuration
  * @see parseDuration
  */
-public class T4JDurationCoalescingConverter : CoalescingConverter<Duration<IsoUnit>>() {
+public class T4JDurationCoalescingConverter(
+    shouldThrow: Boolean = false
+) :  CoalescingConverter<Duration<IsoUnit>>(shouldThrow) {
     override val signatureTypeString: String = "duration"
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
@@ -33,6 +36,10 @@ public class T4JDurationCoalescingConverter : CoalescingConverter<Duration<IsoUn
                 parseDuration(arg)
                 durations.add(arg)
             } catch (e: InvalidTimeUnitException) {
+                if (this.shouldThrow) {
+                    throw ParseException("Invalid duration unit specified: ${e.unit}")
+                }
+
                 break
             }
         }

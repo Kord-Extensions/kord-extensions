@@ -88,14 +88,12 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             }
         }
 
-        command {
+        command(::TestArgs) {
             name = "test"
             description = "Test command, please ignore"
 
-            signature(::TestArgs)
-
             action {
-                with(parse(::TestArgs)) {
+                with(arguments) {
                     message.channel.createEmbed {
                         title = "Test response"
                         description = "Test description"

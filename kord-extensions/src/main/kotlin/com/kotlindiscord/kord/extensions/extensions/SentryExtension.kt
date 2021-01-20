@@ -17,6 +17,7 @@ import io.sentry.protocol.SentryId
 public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
     override val name: String = "sentry"
 
+    @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
         if (bot.sentry.enabled) {
             slashCommand(::FeedbackArgs) {
@@ -49,7 +50,7 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
                 }
             }
 
-            command {
+            command(::FeedbackArgs) {
                 name = "feedback"
                 description = "If you've been given a Sentry ID by the bot, you can submit feedback on what you were" +
                     "doing using this command.\n\n" +
@@ -62,12 +63,8 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
 
                 aliases = arrayOf("sentry-feedback")
 
-                signature(::FeedbackArgs)
-
                 action {
-                    val parsed = parse(::FeedbackArgs)
-
-                    if (!bot.sentry.hasEventId(parsed.id)) {
+                    if (!bot.sentry.hasEventId(arguments.id)) {
                         message.respond(
                             "The Sentry event ID you supplied either doesn't exist, or is not awaiting " +
                                 "feedback."
@@ -78,14 +75,14 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
 
                     val author = message.author!!
                     val feedback = UserFeedback(
-                        parsed.id,
+                        arguments.id,
                         author.tag,
                         author.id.asString,
-                        parsed.feedback
+                        arguments.feedback
                     )
 
                     Sentry.captureUserFeedback(feedback)
-                    bot.sentry.removeEventId(parsed.id)
+                    bot.sentry.removeEventId(arguments.id)
 
                     message.respond(
                         "Thanks for your feedback - we'll use it to improve our bot and fix " +

@@ -21,17 +21,17 @@ public fun channelType(vararg channelTypes: ChannelType): suspend (Event) -> Boo
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
         val type = eventChannel.asChannel().type
 
         return if (channelTypes.contains(type)) {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         } else {
-            logger.debug { "Failing check: Type $type is not within $channelTypes" }
+            logger.failed("Type $type is not within $channelTypes")
             false
         }
     }
@@ -54,17 +54,17 @@ public fun notChannelType(vararg channelTypes: ChannelType): suspend (Event) -> 
         val eventChannel = channelFor(event)
 
         if (eventChannel == null) {
-            logger.debug { "Channel for event $event is null. This type of event may not be supported." }
+            logger.nullChannel(event)
             return false
         }
 
         val type = eventChannel.asChannel().type
 
         return if (channelTypes.contains(type)) {
-            logger.debug { "Failing check: Type $type is within $channelTypes" }
+            logger.failed("Type $type is within $channelTypes")
             false
         } else {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         }
     }

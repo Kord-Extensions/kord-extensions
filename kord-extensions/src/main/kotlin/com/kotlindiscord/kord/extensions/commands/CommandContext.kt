@@ -1,7 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands
 
-import com.kotlindiscord.kord.extensions.ParseException
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
@@ -48,16 +46,6 @@ public abstract class CommandContext(
 
     /** Extract user information from event data, if that context is available. **/
     public abstract suspend fun getUser(): UserBehavior?
-
-    /**
-     * Attempt to parse the arguments in this CommandContext into a given data class.
-     *
-     * @param T Data class to parse arguments into.
-     * @throws ParseException Thrown when parsing fails. If you don't catch this, an error message will be sent.
-     */
-    @Throws(ParseException::class)
-    public suspend inline fun <reified T : Arguments> parse(noinline builder: () -> T): T =
-        command.parser.parse(builder, this)
 
     /**
      * Add a Sentry breadcrumb to this command context.

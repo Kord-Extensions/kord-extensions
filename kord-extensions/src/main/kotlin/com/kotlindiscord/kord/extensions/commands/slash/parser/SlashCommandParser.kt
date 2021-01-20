@@ -1,3 +1,7 @@
+@file:Suppress(
+    "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
+)
+
 package com.kotlindiscord.kord.extensions.commands.slash.parser
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot

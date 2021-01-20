@@ -17,8 +17,12 @@ import kotlin.reflect.KProperty
  * An optional coalescing converter has a nullable type - you'll get `null` from it if nothing could be parsed.
  *
  * You can create an optional coalescing converter of your own by extending this class.
+ *
+ * @property outputError Whether the argument parser should output parsing errors on invalid arguments.
  */
-public abstract class OptionalCoalescingConverter<T : Any?> : Converter<List<T>>(false) {
+public abstract class OptionalCoalescingConverter<T : Any?>(
+    public val outputError: Boolean = false
+) : Converter<List<T>>(false) {
     /**
      * The parsed value.
      *
