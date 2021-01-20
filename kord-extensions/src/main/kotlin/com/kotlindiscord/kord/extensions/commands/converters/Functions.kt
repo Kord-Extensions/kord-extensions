@@ -611,9 +611,16 @@ public fun Arguments.coalescedT4jDuration(
  */
 public fun Arguments.optionalCoalescedDuration(
     displayName: String,
-    description: String
+    description: String,
+    outputError: Boolean = false
 ): OptionalCoalescingConverter<Duration?> =
-    arg(displayName, description, DurationCoalescingConverter().toOptional())
+    arg(
+        displayName,
+        description,
+
+        DurationCoalescingConverter(shouldThrow = outputError)
+            .toOptional(outputError = outputError)
+    )
 
 /**
  * Create an optional coalescing regex converter.
@@ -623,9 +630,16 @@ public fun Arguments.optionalCoalescedDuration(
 public fun Arguments.optionalCoalescedRegex(
     displayName: String,
     description: String,
+    outputError: Boolean = false,
     options: Set<RegexOption> = setOf()
 ): OptionalCoalescingConverter<Regex?> =
-    arg(displayName, description, RegexCoalescingConverter(options).toOptional())
+    arg(
+        displayName,
+        description,
+
+        RegexCoalescingConverter(options, shouldThrow = outputError)
+            .toOptional(outputError = outputError)
+    )
 
 /**
  * Create an optional coalescing string converter.
@@ -634,9 +648,16 @@ public fun Arguments.optionalCoalescedRegex(
  */
 public fun Arguments.optionalCoalescedString(
     displayName: String,
-    description: String
+    description: String,
+    outputError: Boolean = false
 ): OptionalCoalescingConverter<String?> =
-    arg(displayName, description, StringCoalescingConverter().toOptional())
+    arg(
+        displayName,
+        description,
+
+        StringCoalescingConverter(shouldThrow = outputError)
+            .toOptional(outputError = outputError)
+    )
 
 /**
  * Create an optional coalescing Time4J Duration converter.
@@ -645,9 +666,16 @@ public fun Arguments.optionalCoalescedString(
  */
 public fun Arguments.optionalCoalescedT4jDuration(
     displayName: String,
-    description: String
+    description: String,
+    outputError: Boolean = false
 ): OptionalCoalescingConverter<net.time4j.Duration<IsoUnit>?> =
-    arg(displayName, description, T4JDurationCoalescingConverter().toOptional())
+    arg(
+        displayName,
+        description,
+
+        T4JDurationCoalescingConverter(shouldThrow = outputError)
+            .toOptional(outputError = outputError)
+    )
 
 // endregion
 

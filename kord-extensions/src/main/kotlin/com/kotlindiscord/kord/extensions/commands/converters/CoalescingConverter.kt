@@ -18,8 +18,14 @@ import kotlin.reflect.KProperty
  * or [toOptional] respectively.
  *
  * You can create a coalescing converter of your own by extending this class.
+ *
+ * @property shouldThrow Intended only for use if this converter is the last one in a set of arguments, if this is
+ * `true` then the converter should throw a [ParseException] when an argument can't be parsed, instead of just
+ * stopping and allowing parsing to continue.
  */
-public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true), SlashCommandConverter {
+public abstract class CoalescingConverter<T : Any>(
+    public open val shouldThrow: Boolean = false
+) : Converter<List<T>>(true), SlashCommandConverter {
     /**
      * The parsed value.
      *
@@ -80,17 +86,23 @@ public abstract class CoalescingConverter<T : Any> : Converter<List<T>>(true), S
      *
      * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
      * provides.
+     *
+     * @param outputError Optionally, provide `true` to fail parsing and return errors if the converter throws a
+     * [ParseException], instead of continuing. You probably only want to set this if the converter is the last one
+     * in a set of arguments.
      */
     @ConverterToOptional
     public open fun toOptional(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
-        errorTypeString: String? = null
+        errorTypeString: String? = null,
+        outputError: Boolean = false
     ): OptionalCoalescingConverter<T?> = CoalescingToOptionalConverter(
         this,
         signatureTypeString,
         showTypeInSignature,
-        errorTypeString
+        errorTypeString,
+        outputError
     )
 
     /**
