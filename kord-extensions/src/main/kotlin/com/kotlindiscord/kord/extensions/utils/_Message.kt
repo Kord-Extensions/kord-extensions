@@ -137,8 +137,8 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  *
  * @receiver Message to listen to events for.
  *
- * @param launch `true` to launch the listening instantly, `false` otherwise.
  * @param timeout Time to wait (in millis) after the last relevant event before stopping, defaulting to 5 minutes.
+ * @param launch `true` to launch the listening instantly, `false` otherwise.
  * @param builder Event manager builder - use this to register your event listeners.
  *
  * @return The newly-created [MessageEventManager] instance.
@@ -148,8 +148,8 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Un
  */
 @Throws(IllegalStateException::class)
 public suspend inline fun Message.events(
-    launch: Boolean = true,
     timeout: Long? = DEFAULT_TIMEOUT,
+    launch: Boolean = true,
     builder: MessageEventManager.() -> Unit
 ): MessageEventManager {
     val guildId = withStrategy(EntitySupplyStrategy.cacheWithRestFallback).getGuildOrNull()?.id
