@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 
 @OptIn(KordPreview::class)
@@ -47,6 +48,42 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                     embed {
                         this.title = "An embed!"
                         this.description = "With a description, and without a content string!"
+                    }
+                }
+            }
+        }
+
+        slashCommand(::SlashArgs, Snowflake(787452339908116521)) {  // Our test server
+            name = "guild-embed"
+            description = "Test command, please ignore"
+            showSource = true
+
+            action {
+                followUp {
+                    embed {
+                        title = "Guild response"
+                        description = "Guild description"
+
+                        field {
+                            name = "String"
+                            value = arguments.string
+                        }
+
+                        field {
+                            name = "Enum"
+                            value = arguments.enum.toString()
+                        }
+
+                        field {
+                            name = "Optional Enum"
+                            value = arguments.optionalEnum.toString()
+                        }
+
+                        field {
+                            name = "Bool"
+
+                            value = arguments.bool.toString()
+                        }
                     }
                 }
             }
