@@ -92,7 +92,7 @@ public open class SlashCommandContext<T : Arguments>(
         val innerBuilder: suspend FollowupMessageCreateBuilder.() -> Unit = {
             builder()
 
-            content = "${member.mention}${content ?: ""}"
+            content = "${member.mention} ${content ?: ""}"
         }
 
         return followUp(innerBuilder)
