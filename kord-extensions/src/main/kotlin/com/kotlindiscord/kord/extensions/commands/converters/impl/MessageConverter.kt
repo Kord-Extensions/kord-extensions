@@ -17,7 +17,6 @@ import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import mu.KotlinLogging
-import kotlin.contracts.contract
 
 private val logger = KotlinLogging.logger {}
 
