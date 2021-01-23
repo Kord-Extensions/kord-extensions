@@ -18,13 +18,13 @@ import io.sentry.SentryLevel
  * @param command Respective command for this context object.
  * @param eventObj Event that triggered this command.
  * @param commandName MessageCommand name given by the user to invoke the command - lower-cased.
- * @param args Array of string arguments for this command.
+ * @param argsList Array of string arguments for this command.
  */
 public abstract class CommandContext(
     public open val command: Command,
     public open val eventObj: Event,
     public open val commandName: String,
-    public open val args: Array<String>
+    public open val argsList: Array<String>
 ) {
     /** A list of Sentry breadcrumbs created during command execution. **/
     public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()

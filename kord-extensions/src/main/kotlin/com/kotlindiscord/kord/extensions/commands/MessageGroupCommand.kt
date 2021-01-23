@@ -33,8 +33,8 @@ public open class GroupCommand<T : Arguments>(
     override var body: suspend MessageCommandContext<out T>.() -> Unit = {
         val mention = message.author!!.mention
 
-        val error = if (args.isNotEmpty()) {
-            "$mention Unknown subcommand: `${args.first()}`"
+        val error = if (argsList.isNotEmpty()) {
+            "$mention Unknown subcommand: `${argsList.first()}`"
         } else {
             "$mention Subcommands: " + commands.joinToString(", ") { "`${it.name}`" }
         }

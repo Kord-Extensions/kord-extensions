@@ -14,9 +14,10 @@ The basic converter types are as follows:
 
 Type                  | Description
 :-------------------: | :----------
+`ChoiceConverter`     | A slash command-specific converter which includes a set of up to ten options that the user can pick from - **this type of converter is not supported by normal message commands**
 `CoalescingConverter` | A converter representing a required argument converted from a list of strings, combined into a single value
 `DefaultingConverter` | A converter representing a single argument with a default value, converted from up to one supplied string
-`MultiConverter`      | A converter representing an argument converted from a list of strings, one value per string - which may be either required or optional
+`MultiConverter`      | A converter representing an argument converted from a list of strings, one value per string - which may be either required or optional - **this type of converter is not supported by slash commands**
 `OptionalConverter`   | A converter representing a single, optional/nullable argument converted from up to one supplied string, with an optional `outputError` property that will fail the parse and return an error if there was a problem during parsing
 `SingleConverter`     | A converter representing a single, required argument converted from exactly one supplied string
 
@@ -65,34 +66,52 @@ specially-created extension functions that create converters for you. Here's an 
 ```kotlin
 class PostArguments : Arguments() {
     // Single required string argument
-    val title by string("title")
+    val title by string("title", "Post title")
 
     // Single required Discord user argument
-    val author by user("author")
+    val author by user("author", "User that this post should be attributed to")
 
     // Consumes the rest of the arguments into a single string
-    val body by coalescedString("body")
+    val body by coalescedString("body", "Text content to be placed within the posts's body")
 }
 ```
 
 In this example, we have three arguments:
 
-* `title` - a required String argument, with the friendly name of "title"
-* `author` - a required Discord User argument, with the friendly name of "author"
-* `body` - A required coalescing String argument, with the friendly name of "body"
+* `title` - a required String argument, with the friendly name of "title" and a human-readable description
+* `author` - a required Discord User argument, with the friendly name of "author" and a human-readable description
+* `body` - A required coalescing String argument, with the friendly name of "body" and a human-readable description
 
-All arguments require a friendly name. This name will be used to refer to that argument in the command's signature,
-as well as error and other help messages. It's also the name that will be used for keyword arguments.
+All arguments require a friendly name, and a human-readable description.
+
+The name will be used to refer to that argument in the command's signature, as well as error and other help messages. 
+It's also the name that will be used for keyword arguments.
+
+The description will be used by the help extension to explain what each argument is for, and will be displayed directly
+on Discord when you're working with slash commands. Try to keep it short, but descriptive!
 
 On top of this, different converters (and types of converters) may take extra arguments. For example, all defaulting
 converters require you to pass a default value to their creation function, while optional converters do not take
 a default value and instead will return `null` by default.
 
 ??? tip "Finding converter functions"
-    As of this writing, there are over 700 lines covering `Arguments` object extension functions. While you can read
+    As of this writing, there are over 1,100 lines covering `Arguments` object extension functions. While you can read
     the generated Dokka documentation for a full list, we recommend making use of your IDE's auto-completion 
     functionality for discovery - especially if you've written custom converters, or you're making use of third-party
     converters.
+
+## Slash commands and converters
+
+While slash commands make use of all the usual converter types, the following points are worth bearing in mind:
+
+* Multi converters are not supported by slash commands - Discord has provided no way to provide a list of parameters
+  for a single argument, and any additional parsing we do to try to achieve that is likely to be confusing or 
+  difficult to use, let alone brittle.
+* There are additional `ChoiceConverter`-based converters for numbers and strings available. These converters are
+  **only supported for slash commands**, and will not work with the usual message-based commands.
+* As Discord does not provide a rich array of types for their commands, many converters will be shown as string
+  arguments within the Discord client. Your argument descriptions should be up-front about what the argument is
+  meant to be, and how it works.
 
 ## Custom converters
 
@@ -111,9 +130,13 @@ questions.
 ??? question "How do I bail when something goes wrong?"
     As you may expect, errors are handled using Kotlin's exceptions system. Exceptions can be thrown as normal, and
     they'll be caught by the argument parser and transformed into an error message. However, you may wish to provide
-    a more useful error message to the user - for these cases, you should create and throw an instance of
+    a more useful error message to the user - for these cases, you should create and throw an instance of 
     `ParseException` yourself. The message passed to `ParseException` will be returned to the user verbatim, so make
     it descriptive!
+
+    When writing a `CoalescingConverter` subclass, your converter is expected to check the `shouldThrow` property. If
+    this property is `true`, then you should throw a `ParseException` when your converter fails to parse a value,
+    explaining what exactly went wrong in the exception's description.
 
     **Remember that your end users are not necessarily developers!** Most people will not understand a technical
     description or a default exception message - any `ParseException` instances you throw should contain
@@ -127,3 +150,20 @@ Once you've created your converters, we recommend writing `Arguments` extension 
 heavily recommend reading the source for the extension functions that already exist - they're quite simple, but it 
 always pays to try to write the best APIs you can, especially if you expect someone else to make use of your code 
 someday!
+
+When writing your extension functions, you'll need to make use of some restricted converter functions. We recommend
+placing the following statement at the top of the file that defines these extension functions, to make your life
+easier.
+
+```kotlin
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+```
+
+This will allow you to use the `toDefaulting`, `toMulti` and `toOptional` functions that will return wrapped versions
+of the converter they're being called against. Please note that **users should never make use of these functions as they
+may cause all kinds of strange issues** - provide wrapping extension functions instead!

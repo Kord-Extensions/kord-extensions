@@ -64,7 +64,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
         logger.debug { "Args map: $argsMap" }
 
-        val values = context.args.filter { v ->
+        val values = context.argsList.filter { v ->
             if (v.contains(splitChar)) {
                 logger.debug { "Potential keyword argument: $v" }
 

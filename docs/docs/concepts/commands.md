@@ -61,25 +61,30 @@ Name        | Description
 
 ### Command context
 
-A `CommandContext` object is a light wrapper around the command invocation, and it exists only for the  duration of 
-your command's `action`. It exists to provide a little extra context and functionality for your command body
+A `MessageCommandContext` object is a light wrapper around the command invocation, and it exists only for the duration 
+of your command's `action`. It exists to provide a little extra context and functionality for your command body
 
-`CommandContext` objects expose the following properties.
+`MessageCommandContext` objects expose the following properties.
 
 Name          | Type                       | Description
 :------------ | :------------------------: | :----------
 `args`        | `Array <String>`           | A simple array of string arguments that were passed to this command invocation
+`arguments`   | `T`                        | Arguments object containing the command's parsed arguments, as described below
 `breadcrumbs` | `MutableList <Breadcrumb>` | List of Sentry breadcrumbs, for the [Sentry intgration](/integrations/sentry)
-`command`     | `Command`                  | Current command being invoked 
+`channel`     | `MessageChannelBehavior`   | The message channel this command happened in
+`command`     | `Command`                  | Current command being invoked - note that this is a generic type, and you'll need to cast it to `MessageCommand`
+`commandName` | `String`                   | Name of the current command being invoked, as provided by the user and lower-cased (meaning that this will be an alias if the user called the command that way)
 `event`       | `MessageCreateEvent`       | MessageCreateEvent that is responsible for causing this command invocation
+`guild`       | `Guild?`                   | The guild this command happened in, if any
+`member`      | `Member?`                  | Guild member responsible for executing this command, if it happened in a guild and the user wasn't actually a webhook
 `message`     | `Message`                  | Message object from the `event`
+`user`        | `User?`                    | User responsible for executing this command, if the user wasn't actually a webhook
 
-Additionally, `CommandContext` objects expose the following functions.
+Additionally, `MessageCommandContext` objects expose the following functions.
 
 Name         | Description
 :----------- | :----------
 `breadcrumb` | Convenience function to create and add a Sentry breadcrumb, for the [Sentry intgration](/integrations/sentry).
-`parse`      | Given a function or constructor reference that returns an Arguments object, parses the command's arguments and returns a filled Arguments object - see below for more information
 
 ### Command arguments
 
@@ -89,13 +94,13 @@ extension functions. Defining the arguments for your command is fairly simple:
 ```kotlin
 class PostArguments : Arguments() {
     // Single required string argument
-    val title by string("title")
+    val title by string("title", "Post title")
 
     // Single required Discord user argument
-    val author by user("author")
+    val author by user("author", "User that this post should be attributed to")
 
     // Consumes the rest of the arguments into a single string
-    val body by coalescedString("body")
+    val body by coalescedString("body", "Text content to be placed within the posts's body")
 }
 ```
 
@@ -103,23 +108,19 @@ We recommend writing this as an inner class, but it's up to you where you put it
 created your argument class, you can start using it in your commands:
 
 ```kotlin
-command {
+command(::PostArguments) {
     name = "post"
     description = "Create a post"
-    
-    signature(::PostArguments)
-    
+
     action {
         // Option 1
-        val parsed = parse(::PostArguments)
-        
         message.respond(
-            "**${parsed.title}** (by ${parsed.author.mention})\n\n" +
-                parsed.body
+            "**${arguments.title}** (by ${arguments.author.mention})\n\n" +
+                arguments.body
         )
-        
+
         // Option 2
-        with(parse(::PostArguments)) {
+        with(arguments) {
             message.respond(
                 "**$title** (by ${author.mention})\n\n" +
                     body
@@ -254,15 +255,16 @@ This is a fairly simple example, and you can write some fairly complicated comma
 
 ## Custom command types
 
-Kord Extensions provides three command types (`Command`, `GroupCommand` and `SubCommand`), which should be fairly
-self-explanatory. You can also create your own command types by subclassing `Command` and overriding different
-properties and functions.
+Kord Extensions provides three command types (`MessageCommand`, `MessageGroupCommand` and `MessageSubCommand`), which 
+should be fairly self-explanatory. You can also create your own command types by subclassing `MessageCommand` and 
+overriding different properties and functions. We also support Discord's slash commands - you can read about them in 
+a later section on this page.
 
 Some properties you may be interested in include:
 
 Name        | Type                                          | Description
 :---------- | :-------------------------------------------: | :----------
-`body`      | `CommandContext.()`                           | The command body, normally set using the `action` function
+`body`      | `MessageCommandContext <T>.()`                | The command body, normally set using the `action` function
 `checkList` | `MutableList <MessageCreateEvent -> Boolean>` | A list of check predicates required for command execution
 `parser`    | `ArgumentParser`                              | Class in charge of handling argument parsing, which you can override if you'd like to change how that works
 
@@ -276,3 +278,49 @@ Name        | Description
 As the command system is still constantly evolving, you'll want to keep up with releases and double-check for breakages
 in your custom command types. Despite this maintenance burden, custom command types have a lot of uses - so feel free
 to experiment!
+
+## Slash commands
+
+At some point, Discord came up with the idea of integrating slash commands with the Discord client. Kord Extensions
+supports slash commands as well, via the `slashCommand` function and `SlashCommand` class. Usage is very similar to
+the message-based commands above, with a few notable changes.
+
+??? missing "Not Implemented: Command groups"
+    As of this writing, Kord Extensions does not support command groups or subcommands when working with slash
+    commands. While Discord does provide support for this pattern, we haven't figured out a good way to implement it
+    just yet - we're looking into it!
+
+```kotlin
+slashCommand(::PostArguments) {
+    name = "post"
+    description = "Create a post"
+
+    action {
+        followUp {
+            content = "**${arguments.title}** (by ${arguments.author.mention})\n\n" +
+                arguments.body
+        }
+    }
+}
+```
+
+Slash commands support the following options. They can be set directly within the `slashCommand` lambda - please 
+note that the properties marked with :warning: are required and must be set in order to properly register a command.
+
+Name          | Type             | Description
+:------------ | :--------------: | :----------
+`autoAck`     | `Boolean`        | Whether to automatically acknowledge this command invocation when we get it - in most cases, you'll want this to be the default value (`true`) as you only get a few seconds to acknowledge a command invocation before Discord considers it invalid, but you can set this to `false` and use the `ack` function in your command body to acknowledge it yourself and provide a response if you need to
+`showSource`  | `Boolean`        | Whether to send a message on Discord showing the command invocation and the arguments provided to it, in the channel the command invocation happened in - this defaults to `false`
+`name`        | `String`         | :warning: The primary name of the command, which must be unique throughout the bot and is used for invocation
+`description` | `String`         | :warning: A description for this command, which will be shown to users on Discord
+
+Additionally, the following functions are available - please note that functions marked with :warning: are  required
+and must be called in order to properly register the command.
+
+Name        | Description
+:---------- | :----------
+`action`    | :warning: A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
+`check`     | A function allowing you to define one or more checks for this command - see [the Checks page](/concepts/checks) for more information
+`guild`     | A function allowing you to specify a specific guild for this command to be restricted to, if you don't want it to be registered globally
+
+If your slash command has no arguments, simply omit the argument builder parameter.

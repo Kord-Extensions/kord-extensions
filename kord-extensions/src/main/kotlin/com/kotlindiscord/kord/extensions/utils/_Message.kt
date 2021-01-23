@@ -45,7 +45,12 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
  * @param millis The delay before deleting the message, in milliseconds.
  * @return Job spawned by the CoroutineScope.
  */
-@Deprecated("The name of the method has changed, please use the replace method", ReplaceWith("delete(millis, retry)"))
+@Deprecated(
+    "The name of the method has changed, please use the replace method",
+
+    ReplaceWith("delete(millis, retry)"),
+    DeprecationLevel.ERROR
+)
 public fun Message.deleteWithDelay(millis: Long, retry: Boolean = true): Job = delete(millis, retry)
 
 /**
@@ -220,12 +225,12 @@ public suspend fun Message.respond(
         }
 
         val mention = if (author != null && !useReply && getChannelOrNull() !is DmChannel) {
-            "${author.mention} "
+            author.mention
         } else {
             ""
         }
 
-        val contentWithMention = "$mention${content ?: ""}"
+        val contentWithMention = "$mention ${content ?: ""}".trim()
 
         if (contentWithMention.isNotEmpty()) {
             content = contentWithMention

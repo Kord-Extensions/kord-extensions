@@ -53,10 +53,12 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             }
         }
 
-        slashCommand(::SlashArgs, Snowflake(787452339908116521)) {  // Our test server
+        slashCommand(::SlashArgs) {
             name = "guild-embed"
             description = "Test command, please ignore"
             showSource = true
+
+            guild(787452339908116521) // Our test server
 
             action {
                 followUp {

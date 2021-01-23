@@ -21,6 +21,9 @@ nav:
       - integrations/koin.md
       - integrations/sentry.md
 
+  - Migrating:
+      - migrating/1.4.0.md
+
   - Dokka API Docs: "/-kord%20-extensions/"
 
 theme:
@@ -42,6 +45,7 @@ markdown_extensions:
   - attr_list
   - sane_lists
   - toc
+  - mdx_truly_sane_lists
 
   - pymdownx.details
   - pymdownx.superfences

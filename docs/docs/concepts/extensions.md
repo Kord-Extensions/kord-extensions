@@ -89,6 +89,25 @@ override suspend fun setup() {
 }
 ```
 
+Similarly, we support Discord's slash commands. For example:
+
+
+
+```kotlin
+override suspend fun setup() {
+    slashCommand {
+        name = "ping"
+        description = "Ping!"
+
+        action {
+            followUp {
+                content = "pong"
+            }
+        }
+    }
+}
+```
+
 ??? note "Further functionality"
 
     The commands framework is a deep, rich and feature-filled system that aims to support bot developers by making

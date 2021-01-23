@@ -46,7 +46,7 @@ Name         | Argument | Description
 `inGuild`    | `Guild`  | Asserts that an event fired within the given guild
 `notInGuild` | `Guild`  | Asserts that an event **did not** fire within the given guild
 
-### Permissions
+### Members
 
 ??? important "Channel overwrites"
     Note that these checks currently only operate based on guild roles, and they ignore channel overwrites. If you
@@ -86,6 +86,9 @@ to extract a given type from any event.
 
 If an event is unsupported, then each of the below functions will return `null`. Please note that there are some events
 that these functions do support that may themselves return a nullable value when queried.
+
+As interaction events generally only contain `Snowflake`s, most of the below functions will query the Kord cache or REST
+when dealing with them.
 
 Name                  | Return Type       | Notes
 :-------------------- | :---------------: | :-------------------------------------------------------------------------------------

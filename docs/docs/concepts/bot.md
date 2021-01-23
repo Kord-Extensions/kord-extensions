@@ -40,6 +40,8 @@ Name   |   Type   |   Default   | Description
 `commandThreads` | `Int` | CPUs * 2 | How many threads to use for the command execution threadpool
 `guildsToFill` | `List <Snowflake>` | `[ ]` | A list of guilds to request all members for during the connection phase. This requires the `GuildMembers` intent, specified in the `start` function
 `fillPresences` | `Boolean?` | `null` | Whether to request presences for the above members (`true`/`false`, or `null` for the default). This requires the `GuildPresences` intent, specified in the `start` function
+`koinLogLevel` | `Level` | `ERROR` | The default logging level that Koin should use
+`handleSlashCommands` | `Boolean` | `false` | Whether to support registration and invocation of slash commands. Setting this to fault will not raise errors for extensions that register slash commands, however - they just won't work
 
 ## Adding extensions
 
@@ -87,7 +89,8 @@ bot.start {
 
 ## Properties
 
-A few properties are available to you, for getting access to Kord or querying some of the bot's state.
+A few properties are available to you, for getting access to Kord, querying some of the bot's state, and some other 
+things.
 
 ??? info "Further properties"
     There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most
@@ -95,10 +98,12 @@ A few properties are available to you, for getting access to Kord or querying so
 
 Name | Type | Description
 :--- | :--: | :----------
-`kord` | `Kord` | Current connected Kord instance, if the bot has been started
 `commands` | `List <Command>` | All currently-registered command objects
 `eventHandlers` | `List <EventHandler>` | All currently-registered event handler objects
 `extensions` | `Map <String, Extension>` | All currently-loaded extension objects
+`koin` | `Koin` | Koin instance to be made use of instead of the global one
+`kord` | `Kord` | Current connected Kord instance, if the bot has been started
+`slashCommands` | `SlashCommandRegistry` | Slash command registry that keeps track of slash commands, and invokes them when the relevant events are received
 
 ## Functions
 

@@ -57,7 +57,7 @@ import kotlin.reflect.full.primaryConstructor
  * @param token The Discord bot's login token.
  * @param guildsToFill Guild IDs to request all members for on connect. Set to null for all guilds, omit for none.
  * @param fillPresences Whether to request presences from the members retrieved by [guildsToFill].
- * @param koinLogLevel Logging level Koin should use, defaulting to INFO.
+ * @param koinLogLevel Logging level Koin should use, defaulting to ERROR.
  * @param handleSlashCommands Whether to support registration and invocation of slash commands. Defaults to `false`.
  */
 public open class ExtensibleBot(
@@ -389,7 +389,7 @@ public open class ExtensibleBot(
     @Deprecated(
         "Use the newer addExtension(builder) function instead. It's shorter and more flexible.",
         ReplaceWith("this.addExtension(builder)", "com.kotlindiscord.kord.extensions.ExtensibleBot"),
-        DeprecationLevel.WARNING
+        DeprecationLevel.ERROR
     )
     public open fun addExtension(extension: KClass<out Extension>) {
         val ctor = extension.primaryConstructor ?: throw InvalidExtensionException(extension, "No primary constructor")

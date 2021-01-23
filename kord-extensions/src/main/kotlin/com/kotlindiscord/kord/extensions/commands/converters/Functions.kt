@@ -53,8 +53,12 @@ public fun Arguments.decimal(displayName: String, description: String): SingleCo
  *
  * @see DurationConverter
  */
-public fun Arguments.duration(displayName: String, description: String): SingleConverter<Duration> =
-    arg(displayName, description, DurationConverter())
+public fun Arguments.duration(
+    displayName: String,
+    description: String,
+    longHelp: Boolean = true,
+): SingleConverter<Duration> =
+    arg(displayName, description, DurationConverter(longHelp = longHelp))
 
 /**
  * Create an email converter, for single arguments.
@@ -175,9 +179,10 @@ public fun Arguments.string(displayName: String, description: String): SingleCon
  */
 public fun Arguments.t4jDuration(
     displayName: String,
-    description: String
+    description: String,
+    longHelp: Boolean = true
 ): SingleConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationConverter())
+    arg(displayName, description, T4JDurationConverter(longHelp = longHelp))
 
 /**
  * Create a user converter, for single arguments.
@@ -241,9 +246,10 @@ public fun Arguments.optionalDecimal(
 public fun Arguments.optionalDuration(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     outputError: Boolean = false
 ): OptionalConverter<Duration?> =
-    arg(displayName, description, DurationConverter().toOptional(outputError = outputError))
+    arg(displayName, description, DurationConverter(longHelp = longHelp).toOptional(outputError = outputError))
 
 /**
  * Create an optional email converter, for single arguments.
@@ -405,9 +411,10 @@ public fun Arguments.optionalString(
 public fun Arguments.optionalT4jDuration(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     outputError: Boolean = false
 ): OptionalConverter<net.time4j.Duration<IsoUnit>?> =
-    arg(displayName, description, T4JDurationConverter().toOptional(outputError = outputError))
+    arg(displayName, description, T4JDurationConverter(longHelp = longHelp).toOptional(outputError = outputError))
 
 /**
  * Create an optional user converter, for single arguments.
@@ -457,9 +464,10 @@ public fun Arguments.defaultingDecimal(
 public fun Arguments.defaultingDuration(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     defaultValue: Duration
 ): DefaultingConverter<Duration> =
-    arg(displayName, description, DurationConverter().toDefaulting(defaultValue))
+    arg(displayName, description, DurationConverter(longHelp = longHelp).toDefaulting(defaultValue))
 
 /**
  * Create a defaulting email converter, for single arguments.
@@ -553,9 +561,10 @@ public fun Arguments.defaultingString(
 public fun Arguments.defaultingT4jDuration(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     defaultValue: net.time4j.Duration<IsoUnit>
 ): DefaultingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationConverter().toDefaulting(defaultValue))
+    arg(displayName, description, T4JDurationConverter(longHelp = longHelp).toDefaulting(defaultValue))
 
 // endregion
 
@@ -569,9 +578,10 @@ public fun Arguments.defaultingT4jDuration(
 public fun Arguments.coalescedDuration(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     shouldThrow: Boolean = false
 ): CoalescingConverter<Duration> =
-    arg(displayName, description, DurationCoalescingConverter(shouldThrow = shouldThrow))
+    arg(displayName, description, DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow))
 
 /**
  * Create a coalescing regex converter.
@@ -601,9 +611,10 @@ public fun Arguments.coalescedString(displayName: String, description: String): 
 public fun Arguments.coalescedT4jDuration(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     shouldThrow: Boolean = false
 ): CoalescingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationCoalescingConverter(shouldThrow = shouldThrow))
+    arg(displayName, description, T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow))
 
 // endregion
 
@@ -617,13 +628,14 @@ public fun Arguments.coalescedT4jDuration(
 public fun Arguments.optionalCoalescedDuration(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     outputError: Boolean = false
 ): OptionalCoalescingConverter<Duration?> =
     arg(
         displayName,
         description,
 
-        DurationCoalescingConverter(shouldThrow = outputError)
+        DurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError)
             .toOptional(outputError = outputError)
     )
 
@@ -668,13 +680,14 @@ public fun Arguments.optionalCoalescedString(
 public fun Arguments.optionalCoalescedT4jDuration(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     outputError: Boolean = false
 ): OptionalCoalescingConverter<net.time4j.Duration<IsoUnit>?> =
     arg(
         displayName,
         description,
 
-        T4JDurationCoalescingConverter(shouldThrow = outputError)
+        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError)
             .toOptional(outputError = outputError)
     )
 
@@ -691,9 +704,15 @@ public fun Arguments.defaultingCoalescedDuration(
     displayName: String,
     description: String,
     defaultValue: Duration,
+    longHelp: Boolean = true,
     shouldThrow: Boolean = false
 ): DefaultingCoalescingConverter<Duration> =
-    arg(displayName, description, DurationCoalescingConverter(shouldThrow = shouldThrow).toDefaulting(defaultValue))
+    arg(
+        displayName,
+        description,
+        DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow)
+                    .toDefaulting(defaultValue)
+    )
 
 /**
  * Create a defaulting coalescing regex converter.
@@ -729,9 +748,15 @@ public fun Arguments.defaultingCoalescedT4jDuration(
     displayName: String,
     description: String,
     defaultValue: net.time4j.Duration<IsoUnit>,
+    longHelp: Boolean = true,
     shouldThrow: Boolean = false
 ): DefaultingCoalescingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationCoalescingConverter(shouldThrow = shouldThrow).toDefaulting(defaultValue))
+    arg(
+        displayName,
+        description,
+        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow)
+                    .toDefaulting(defaultValue)
+    )
 
 // endregion
 
@@ -800,9 +825,15 @@ public fun Arguments.decimalList(
 public fun Arguments.durationList(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     required: Boolean = true
 ): MultiConverter<Duration> =
-    arg(displayName, description, DurationConverter().toMulti(required, signatureTypeString = "durations"))
+    arg(
+        displayName,
+        description,
+        DurationConverter(longHelp = longHelp)
+                    .toMulti(required, signatureTypeString = "durations")
+    )
 
 /**
  * Create an email converter, for lists of arguments.
@@ -988,9 +1019,15 @@ public fun Arguments.stringList(
 public fun Arguments.t4jDurationList(
     displayName: String,
     description: String,
+    longHelp: Boolean = true,
     required: Boolean = true
 ): MultiConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationConverter().toMulti(required, signatureTypeString = "durations"))
+    arg(
+        displayName,
+        description,
+        T4JDurationConverter(longHelp = longHelp)
+                    .toMulti(required, signatureTypeString = "durations")
+    )
 
 /**
  * Create a user converter, for lists of arguments.

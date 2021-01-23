@@ -7,7 +7,6 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
-import dev.kord.common.entity.Snowflake
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -158,18 +157,16 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      * Use this in your setup function to register a slash command that may be executed on Discord.
      *
      * @param arguments Arguments builder (probably a reference to the class constructor).
-     * @param guildId Optional guild, if this command is to be limited to a specific guild.
      * @param body Builder lambda used for setting up the slash command object.
      */
     public open suspend fun <T : Arguments> slashCommand(
         arguments: (() -> T)?,
-        guildId: Snowflake? = null,
         body: suspend SlashCommand<T>.() -> Unit
     ): SlashCommand<T> {
         val commandObj = SlashCommand(this, arguments)
         body.invoke(commandObj)
 
-        return slashCommand(guildId, commandObj)
+        return slashCommand(commandObj)
     }
 
     /**
@@ -177,17 +174,15 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * Use this in your setup function to register a slash command that may be executed on Discord.
      *
-     * @param guildId Optional guild, if this command is to be limited to a specific guild.
      * @param body Builder lambda used for setting up the slash command object.
      */
     public open suspend fun slashCommand(
-        guildId: Snowflake? = null,
         body: suspend SlashCommand<out Arguments>.() -> Unit
     ): SlashCommand<out Arguments> {
         val commandObj = SlashCommand<Arguments>(this, null)
         body.invoke(commandObj)
 
-        return slashCommand(guildId, commandObj)
+        return slashCommand(commandObj)
     }
 
     /**
@@ -195,17 +190,15 @@ public abstract class Extension(public val bot: ExtensibleBot) {
      *
      * You can use this if you have a custom slash command subclass you need to register.
      *
-     * @param guildId Optional guild, if this command is to be limited to a specific guild.
      * @param commandObj SlashCommand object to register.
      */
     public open suspend fun <T : Arguments> slashCommand(
-        guildId: Snowflake? = null,
         commandObj: SlashCommand<T>
     ): SlashCommand<T> {
         try {
             commandObj.validate()
             slashCommands.add(commandObj)
-            bot.slashCommands.register(commandObj, guildId)
+            bot.slashCommands.register(commandObj, commandObj.guild)
         } catch (e: CommandRegistrationException) {
             logger.error(e) { "Failed to register slash command - $e" }
         } catch (e: InvalidCommandException) {

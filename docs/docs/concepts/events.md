@@ -5,8 +5,8 @@ your bot will react to things happening on Discord, and they're an absolute esse
 
 ??? info "Subclassing these types"
     While the event handler and context types that are about to be described do support subclassing, we do not 
-    currently provide a way to provide your subclasses in the typical fashion you'd want to use them. If you have
-    a use-case for this then please let us know, and we'll prioritise it!
+    currently provide a way to provide your subclasses in the typical manner. If you have a use-case for this 
+    then please let us know, and we'll prioritise it!
 
 ## Event Handlers
 
@@ -60,10 +60,9 @@ going to need.
 
 Additionally, Kord Extensions supports custom events. The following additional event types are provided:
 
-Type                        | Description
-:-------------------------- | :---------------------------------------------------------------------------------
-`ExtensionLoadedEvent`      | Fired when an extension is loaded, either on first load or programmatically later.
-`ExtensionUnloadedEvent`    | Fired when an extension is unloaded programmatically.
+Type                    | Description
+:---------------------- | :---------------------------------------------------------------------------------
+`ExtensionStateEvent`   | Fired when an extension's loading state changes, containing an `ExtensionState` enum value that may be `FAILED_LOADING`, `FAILED_UNLOADING`, `LOADED`, `LOADING`, `UNLOADED` or `UNLOADING`
 
 ## Custom Events
 
@@ -74,7 +73,7 @@ your event objects, and use the types you create for matching in your event hand
 To fire your event, you can use the `send` convenience function on the `ExtensibleBot` object.
 
 ```kotlin
-class NoteEvent(bot: ExtensibleBot, val note: String) : ExtensionEvent(bot)
+class NoteEvent(override val bot: ExtensibleBot, val note: String) : ExtensionEvent
 
 // ...
 

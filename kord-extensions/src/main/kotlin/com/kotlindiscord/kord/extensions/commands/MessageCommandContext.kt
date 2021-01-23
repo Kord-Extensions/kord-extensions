@@ -11,7 +11,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 /**
  * Command context object representing the context given to message commands.
  */
-public open class MessageCommandContext<T : Arguments> (
+public open class MessageCommandContext<T : Arguments>(
     command: MessageCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
@@ -21,7 +21,7 @@ public open class MessageCommandContext<T : Arguments> (
     public val event: MessageCreateEvent get() = eventObj as MessageCreateEvent
 
     /** Message channel this command happened in, if any. **/
-    public open var channel: MessageChannelBehavior? = null
+    public open lateinit var channel: MessageChannelBehavior
 
     /** Guild this command happened in, if any. **/
     public open var guild: Guild? = null
