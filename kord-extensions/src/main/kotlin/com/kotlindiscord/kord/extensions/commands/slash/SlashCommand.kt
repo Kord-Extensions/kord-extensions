@@ -262,17 +262,17 @@ public open class SlashCommand<T : Arguments>(
                 } else {
                     context.ack(showSource, errorMessage)
                 }
-            }
-
-            logger.error(t) { "Error during execution of ${this.name} slash command ($event)" }
-
-            val errorMessage = "Unfortunately, **an error occurred** during command processing. " +
-                "Please let a staff member know."
-
-            if (resp != null) {
-                context.reply(errorMessage)
             } else {
-                context.ack(showSource, errorMessage)
+                logger.error(t) { "Error during execution of ${this.name} slash command ($event)" }
+
+                val errorMessage = "Unfortunately, **an error occurred** during command processing. " +
+                    "Please let a staff member know."
+
+                if (resp != null) {
+                    context.reply(errorMessage)
+                } else {
+                    context.ack(showSource, errorMessage)
+                }
             }
         }
     }

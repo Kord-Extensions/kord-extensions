@@ -13,9 +13,11 @@ import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import mu.KotlinLogging
+import kotlin.contracts.contract
 
 private val logger = KotlinLogging.logger {}
 
@@ -100,7 +102,11 @@ public class MessageConverter(
                 throw ParseException("Value '${split[4]}' is not a valid message ID.")
             }
 
-            channel.getMessage(mid)
+            try {
+                channel.getMessage(mid)
+            } catch (e: EntityNotFoundException) {
+                errorNoMessage(mid.asString)
+            }
         } else { // Try a message ID
             val channel = context.getChannel()
 
@@ -120,6 +126,8 @@ public class MessageConverter(
                 channel.getMessage(Snowflake(arg))
             } catch (e: NumberFormatException) {
                 throw ParseException("Value '$arg' is not a valid message ID.")
+            } catch (e: EntityNotFoundException) {
+                errorNoMessage(arg)
             }
         }
     }
@@ -127,5 +135,7 @@ public class MessageConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    private fun errorNoMessage(arg: String): Nothing = throw ParseException("Unable to find message: $arg")
+    private fun errorNoMessage(arg: String): Nothing {
+        throw ParseException("Unable to find message: $arg")
+    }
 }
