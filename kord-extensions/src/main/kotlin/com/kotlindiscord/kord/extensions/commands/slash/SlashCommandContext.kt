@@ -6,7 +6,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.*
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.Channel
-import dev.kord.core.entity.interaction.FollowupMessage
+import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.rest.builder.interaction.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.interaction.InteractionApplicationCommandCallbackDataBuilder
@@ -88,7 +88,7 @@ public open class SlashCommandContext<T : Arguments>(
     /** Quickly send a reply, mentioning the user. **/
     public suspend fun reply(
         builder: suspend FollowupMessageCreateBuilder.() -> Unit
-    ): FollowupMessage {
+    ): InteractionFollowup {
         val innerBuilder: suspend FollowupMessageCreateBuilder.() -> Unit = {
             builder()
 
@@ -99,10 +99,10 @@ public open class SlashCommandContext<T : Arguments>(
     }
 
     /** Quickly send a string reply, mentioning the user. **/
-    public suspend fun reply(text: String): FollowupMessage = reply { content = text }
+    public suspend fun reply(text: String): InteractionFollowup = reply { content = text }
 
     /** Quick access to the `followUp` function on the interaction response object. **/
-    public suspend fun followUp(builder: suspend FollowupMessageCreateBuilder.() -> Unit): FollowupMessage {
+    public suspend fun followUp(builder: suspend FollowupMessageCreateBuilder.() -> Unit): InteractionFollowup {
         if (interactionResponse == null) {
             error("You must acknowledge this command before sending a follow-up message.")
         }
@@ -111,5 +111,5 @@ public open class SlashCommandContext<T : Arguments>(
     }
 
     /** Quick access to the `followUp` function on the interaction response object, just for a string message. **/
-    public suspend inline fun followUp(content: String): FollowupMessage = followUp { this.content = content }
+    public suspend inline fun followUp(content: String): InteractionFollowup = followUp { this.content = content }
 }
