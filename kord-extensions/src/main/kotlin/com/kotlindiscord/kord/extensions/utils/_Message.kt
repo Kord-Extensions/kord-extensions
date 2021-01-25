@@ -1,7 +1,5 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.kotlindiscord.kord.extensions.message.DEFAULT_TIMEOUT
-import com.kotlindiscord.kord.extensions.message.MessageEventManager
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.channel.createMessage
@@ -132,32 +130,6 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): 
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit =
     deleteOwnReaction(unicode.toReaction())
-
-/**
- * Create a [MessageEventManager] for the current message, which can be used to listen for specific events that
- * concern the message.
- *
- * This function **does not block**.
- *
- * @receiver Message to listen to events for.
- *
- * @param timeout Time to wait (in millis) after the last relevant event before stopping, defaulting to 5 minutes.
- * @param builder Event manager builder - use this to register your event listeners.
- *
- * @return The newly-created [MessageEventManager] instance.
- *
- * @throws IllegalStateException Exception if this is impossible to start the listening of event
- * because he is already started
- */
-@Throws(IllegalStateException::class)
-public inline fun MessageBehavior.events(
-    timeout: Long? = DEFAULT_TIMEOUT,
-    builder: MessageEventManager.() -> Unit
-): MessageEventManager = MessageEventManager(this, timeout).apply {
-    builder(this)
-
-    check(start()) { "Failed to listen for events: Already listening (this should never happen!)" }
-}
 
 /** Message author's ID. **/
 public val MessageData.authorId: Snowflake

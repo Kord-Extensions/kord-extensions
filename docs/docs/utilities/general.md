@@ -48,6 +48,7 @@ Property     | Description
 Function       | Description
 :------------- | :----------
 `Kord.waitFor` | Simple function for waiting for a specific Kord event, with a timeout
+`KordLiveEntity.waitFor` | Simple function for waiting for a specific Kord event that refers to the given live entity, with a timeout
 
 ## Members
 
@@ -73,7 +74,6 @@ Function                         | Description
 `Message.deleteOwnReaction`      | Convenience function to remove a reaction from the message that was previously added by the bot
 `Message.deleteIgnoringNotFound` | Convenience function to delete a message and ignore any errors if the message no longer exists
 `Message.delete`                 | Convenience function to delete a message after a delay, which **does not block** the current coroutine or thread
-`Message.events`                 | DSL function that allows you to react to events that specifically concern this message object
 `Message.getUrl`                 | Convenience function to construct the URL for a message
 `Message.parse`                  | Parses message content into a list using an Apache Commons `StringTokenizer`, which supports quotes for individual values with spaces
 `Message.requireChannel`         | Function that ensures a message was sent within a given channel (with some options), responding with an error if not
