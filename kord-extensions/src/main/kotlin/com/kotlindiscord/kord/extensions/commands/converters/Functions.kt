@@ -32,8 +32,8 @@ public fun Arguments.union(
     displayName: String,
     description: String,
     typeName: String,
+    shouldThrow: Boolean = false,
     vararg converters: Converter<*>,
-    shouldThrow: Boolean = false
 ): UnionConverter {
     val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
 
@@ -63,8 +63,8 @@ public fun Arguments.optionalUnion(
     displayName: String,
     description: String,
     typeName: String,
+    shouldThrow: Boolean = false,
     vararg converters: Converter<*>,
-    shouldThrow: Boolean = false
 ): OptionalCoalescingConverter<Any?> {
     val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
 
