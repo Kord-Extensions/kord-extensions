@@ -50,6 +50,39 @@ public fun Arguments.union(
     return converter
 }
 
+/**
+ * Create an optional union converter, for combining other converters into a single argument - with the caveat of
+ * type erasure.
+ *
+ * This function will automatically remove converters if they were previously registered, so you can use pass it the
+ * results of the usual extension functions.
+ *
+ * @see UnionConverter
+ */
+public fun Arguments.optionalUnion(
+    displayName: String,
+    description: String,
+    typeName: String,
+    vararg converters: Converter<*>,
+    shouldThrow: Boolean = false
+): OptionalCoalescingConverter<Any?> {
+    val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
+
+    converter.validate()
+
+    this.args.toList().forEach {
+        if (it.converter in converters) {
+            this.args.remove(it)
+        }
+    }
+
+    val optionalConverter = converter.toOptional()
+
+    arg(displayName, description, optionalConverter)
+
+    return optionalConverter
+}
+
 // endregion
 
 // region: Required (single) converters
