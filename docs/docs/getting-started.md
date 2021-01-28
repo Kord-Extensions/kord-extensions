@@ -118,17 +118,13 @@ Finally, create your `main` function, creating a bot, adding your extension to i
 ```kotlin
 suspend fun main() {
     // New instance of the bot provided by Kord Extensions
-    val bot = ExtensibleBot(
-        // Discord bot token for logging in
-        System.getenv("TOKEN"),
+    val bot = ExtensibleBot(System.getenv("TOKEN")) {  // Discord bot token for logging in
+        extensions {
+            // Add the extension, the bot will instantiate it
+            add(::TestExtension)
+        }
+    }
 
-        // Prefix required before all command names
-         "!"
-    )
-
-    // Add the extension class, the bot will instantiate it
-    bot.addExtension(::TestExtension)
-  
     // Start the bot, blocking the current coroutine
     bot.start()  
 }

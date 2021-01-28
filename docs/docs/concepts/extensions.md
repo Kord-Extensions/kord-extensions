@@ -33,12 +33,14 @@ class TextExtension(bot: ExtensibleBot) : Extension(bot) {
 Once we've created our extension object, we'll need to register it to our [bot object](/concepts/bot).
 
 ```kotlin
-val bot = ExtensibleBot(token, prefix)
+val bot = ExtensibleBot(token) {
+    extensions {
+        add(::TextExtension)
+    }
+}
 
 suspend fun main() {
-    bot.addExtension(::TestExtension)
-
-    bot.login()
+    bot.start()
 }
 ```
 

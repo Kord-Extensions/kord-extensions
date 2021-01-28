@@ -16,18 +16,131 @@ The first thing you'll want to do is create an instance of ExtensibleBot. A basi
 
 ```kotlin
 val token = "..."  // Get your bot token
-val prefix = "!"  // Prefix required before all command invocations
+val commandPrefix = "!"  // Prefix required before all command invocations - "!" is the default and can be omitted
 
-val bot = ExtensibleBot(token, prefix)  // Create the bot
+val bot = ExtensibleBot(token) {
+    commands {
+        prefix = commandPrefix
+    }
+}
+```
+The ExtensibleBot class is configured using a builder pattern, providing a set of properties and DSL functions
+that you can make use of to configure your bot.
+
+Name                      | Type         | Default | Description
+:------------------------ | :----------: | :-----: | :----------
+koinLogLevel              | Level        | `ERROR` | Koin logger level
+cache                     | DSL function |         | Configure the bot's caching options using a builder
+commands                  | DSL function |         | Configure the bot's command options using a builder
+extensions                | DSL function |         | Configure the bot's extension options using a builder, and add custom extensions
+intents                   | DSL function |         | Configure the bot's intents using a builder
+members                   | DSL function |         | Configure the bot's member-related options using a builder
+presence                  | DSL function |         | Configure the bot's initial presence using a builder
+
+Each of the DSL functions configures a specific part of the bot, and they're documented in their own sections below.
+
+### Cache configuration
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    cache {
+        cachedMessages = null
+
+        kord {  // https://github.com/kordlib/kord/wiki/Caching
+            messages(MySpecialCache())
+        }
+    }
+}
 ```
 
-The ExtensibleBot constructor takes a number of arguments. We recommend supplying them using keyword arguments, just
-in case the order needs to be changed later on.
+Name                      | Type         | Default  | Description
+:------------------------ | :----------: | :------: | :----------
+cachedMessages            | Int?         | `10_000` | Number of messages to store in Kord's cache by default - set this to `null` to disable, or if you're customizing Kord's message cache yourself using the `kord` DSL function
+kord                      | DSL function |          | Customize Kord's cache yourself using a builder - for more information, [see Kord's wiki on caching](https://github.com/kordlib/kord/wiki/Caching)
+
+### Command configuration
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    commands {
+        prefix = "!"
+
+        invokeOnMention = true
+        slashCommands = true
+    }
+}
+```
 
 ??? bug "Invoke command on mention"
-    Currently a bug exists that prevents the functionality referenced by `invokeCommandOnMention` from working. We'll
-    look into this as soon as we can - but if you need this functionality for your bots, contact us and we'll
-    prioritise it.
+Currently a bug exists that prevents the functionality referenced by `invokeCommandOnMention` from working. We'll
+look into this as soon as we can - but if you need this functionality for your bots, contact us and we'll
+prioritise it.
+
+Name                      | Type         | Default    | Description
+:------------------------ | :----------: | :--------: | :----------
+invokeOnMention           | Boolean      | `true`     | Whether commands may also be invoked by mentioning the bot
+prefix                    | String       | `!`        | Prefix required before all command invocations
+slashCommands             | Boolean      | `false`    | Whether to support registration and invocation of slash commands
+threads                   | Int          | `CPus * 2` | How many threads to use for the command execution threadpool
+
+### Extensions configuration
+
+For more information on what extensions are and how they work, please
+[see the Extensions concept page](/concepts/extensions).
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    extensions {
+        help = true
+        sentry = false
+
+        add(::LogsExtension)
+        add(::TestExtension)
+    }
+}
+```
+
+Name                      | Type         | Default    | Description
+:------------------------ | :----------: | :--------: | :----------
+add                       | Function     |            | Use this function to add your own custom extensions to the bot
+help                      | Boolean      | `true`     | Whether to enabled the bundled help extension
+sentry                    | Boolean      | `true`     | Whether to enabled the bundled [Sentry extension](/integrations/sentry)
+
+### Intent configuration
+
+This matches Kord's intents API. For a list of available intents, 
+[see the Kord documentation](https://kordlib.github.io/kord/gateway/gateway/dev.kord.gateway/-intent/index.html).
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    intents {
+        +Intents.all
+    }
+}
+```
+
+### Member-related configuration
+
+This builder configures automatic cache filling for members that are part of the guilds the bot is present on. Please
+note that you will need the `GUILD_MEMBERS` privileged intent to fill the cache with guild member information, and the
+`GUILD_PRESENCES` privileged intent if you'd also like to fill the cache with (and receive) their presences.
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    members {
+        fillPresences = true
+        
+        all()
+    }
+}
+```
+
+Name                      | Type         | Description
+:------------------------ | :----------: | :----------
+all                       | Function     | State that you'd like to fill the cache with member info for all guilds the bot is part of
+fill                      | Function     | Use this function to specify guild IDs (or collections of guild IDs) that you'd like to cache member information for
+fillPresences             | Boolean?     | Set this to `true` to state that you'd like to receive user presences
+none                      | Function     | State that you would not like to cache any member info - this is the default behaviour
 
 Name   |   Type   |   Default   | Description
 :----- | :------: | :---------: | :------------
@@ -43,16 +156,21 @@ Name   |   Type   |   Default   | Description
 `koinLogLevel` | `Level` | `ERROR` | The default logging level that Koin should use
 `handleSlashCommands` | `Boolean` | `false` | Whether to support registration and invocation of slash commands. Setting this to fault will not raise errors for extensions that register slash commands, however - they just won't work
 
-## Adding extensions
+### Presence configuration
 
-When you've written some [Extensions](/concepts/extensions), you'll need to add them to the bot before they can be
-used. This can be done at any point, but we recommend doing it before you connect to Discord, as many extensions rely
-on Discord's `ReadyEvent` to set up.
+This matches Kord's initial presence API. For more information,
+[see the Kord documentation](https://kordlib.github.io/kord/gateway/gateway/dev.kord.gateway.builder/-presence-builder/index.html).
 
 ```kotlin
-bot.addExtension(::LogsExtension)
-bot.addExtension(::TestExtension)
+val bot = ExtensibleBot(token) {
+    presence {
+        status = PresenceStatus.Online
+
+        playing("!help for command help")
+    }
+}
 ```
+
 
 ## Starting up
 
@@ -63,29 +181,11 @@ instance and connect to Discord.
 bot.start()
 ```
 
-This function takes an optional lambda, which you can use to provide an intents builder or presence builder via the 
-`presence` and `intents` DSL functions.
-
 ??? missing "Not Implemented: Sharding"
     Sharding is currently not supported. We haven't had a chance to look at it yet, as none of the developers are
     currently working on bots that require sharding.
 
     If you need sharding, please contact us and we can work out the details.
-
-Name       |   Type               | Description
-:--------- | :------------------: | :----------
-`intents`  | `IntentsBuilder.()`  | DSL function that allows you to provide a set of intents to use when logging into Discord - for more information, see [the Discord documentation on intents](https://discordpy.readthedocs.io/en/latest/intents.html)
-`presence` | `PresenceBuilder.()` | DSL function that allows you to specify a presence builder, used to set the bot's status and activity on Discord
-
-```kotlin
-bot.start {
-    intents { +Intents.all }
-
-    presence {  // This is the default behaviour if you don't provide your own presence builder
-        status = PresenceStatus.Online
-    }
-}
-```
 
 ## Properties
 
@@ -114,10 +214,9 @@ A number of functions are available to you as well.
     of the functions are `open` to facilitate niche use-cases that require extending the ExtensibleBot class, but a
     handful are `inline` for the sake of avoiding function call overhead.
 
-Name | Description
-:--- | :----------
-`start` | Connect to Discord, blocking the coroutine scope
-`send` | Send an event to all event handlers - either a Kord `Event` or an `ExtensionEvent` object 
-`addExtension` | Instantiate and load an extension via the given builder function (which may be the extension's constructor) 
-`loadExtension` | Set up a previously-unloaded extension
+Name              | Description
+:---------------- | :----------
+`loadExtension`   | Set up a previously-unloaded extension
+`start`           | Connect to Discord, blocking the coroutine scope
+`send`            | Send an event to all event handlers - either a Kord `Event` or an `ExtensionEvent` object
 `unloadExtension` | Tear down a previously-loaded extension

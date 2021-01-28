@@ -23,10 +23,11 @@ In order to register a Koin module, call the `koin.loadModules` function before 
 ```kotlin
 val config = MyBotConfig()
 
-val bot = ExtensibleBot(
-    prefix = config.prefix,
-    token = config.token
-)
+val bot = ExtensibleBot(config.token) {
+    commands {
+        prefix = config.prefix
+    }
+}
 
 suspend fun main() {
     bot.koin.module { single { config } }

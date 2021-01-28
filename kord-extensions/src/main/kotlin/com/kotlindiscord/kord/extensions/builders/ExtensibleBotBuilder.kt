@@ -136,11 +136,11 @@ public open class ExtensibleBotBuilder {
         /** Whether to invoke commands on bot mentions, in addition to using message prefixes. Defaults to `true`. **/
         public var invokeOnMention: Boolean = true
 
-        /** Whether to register and process slash commands. Defaults to `false`. **/
-        public var slashCommands: Boolean = false
-
         /** Prefix to require for command invocations on Discord. Defaults to `"!"`. **/
         public var prefix: String = "!"
+
+        /** Whether to register and process slash commands. Defaults to `false`. **/
+        public var slashCommands: Boolean = false
 
         /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
         public var threads: Int = Runtime.getRuntime().availableProcessors() * 2

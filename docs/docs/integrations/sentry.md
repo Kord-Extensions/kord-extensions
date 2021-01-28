@@ -22,7 +22,11 @@ The `ExtensibleBot` object contains a `sentry` property referring to a `SentryAd
 Sentry integration, you'll need to set this object up using its `init` function. For example:
 
 ```kotlin
-val bot = ExtensibleBot("!", TOKEN)
+val bot = ExtensibleBot(TOKEN) {
+    commands {
+        prefix = "!"
+    }
+}
 
 if (System.getenv().getOrDefault("SENTRY_DSN", null) != null) {
     bot.sentry.init {

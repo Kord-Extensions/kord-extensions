@@ -28,7 +28,7 @@ discord.py). Despite this, we still strive to provide an idiomatic API that make
 ## Usage
 
 To make use of Kord Extensions, update your build script to add
-`https://maven.kotlindiscord.com/repository/maven-snapshots/` as a Maven repository, and use 
+`https://maven.kotlindiscord.com/repository/maven-public/` as a Maven repository, and use 
 `com.kotlindiscord.kord.extensions:kord-extensions:VERSION` as the Maven coordinate. Click on the badges at the top
 of this page to find a full list of all snapshot and release versions.
 
