@@ -24,7 +24,7 @@ public open class ExtensibleBotBuilder {
     public val commandsBuilder: CommandsBuilder = CommandsBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
+    public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = null
@@ -61,7 +61,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see ExtensionsBuilder
      */
-    public fun extensions(builder: ExtensionsBuilder.() -> Unit) {
+    public open fun extensions(builder: ExtensionsBuilder.() -> Unit) {
         builder(extensionsBuilder)
     }
 
@@ -149,9 +149,9 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used for configuring the bot's extension options, and registering custom extensions. **/
-    public class ExtensionsBuilder {
+    public open class ExtensionsBuilder {
         /** @suppress Internal list that shouldn't be modified by the user directly. **/
-        public val extensions: MutableList<(ExtensibleBot) -> Extension> = mutableListOf()
+        public open val extensions: MutableList<(ExtensibleBot) -> Extension> = mutableListOf()
 
         /** Whether to enable the bundled help extension. Defaults to `true`. **/
         public var help: Boolean = true
@@ -160,7 +160,7 @@ public open class ExtensibleBotBuilder {
         public var sentry: Boolean = true
 
         /** Add a custom extension to the bot via a builder - probably the extension constructor. **/
-        public fun add(builder: (ExtensibleBot) -> Extension) {
+        public open fun add(builder: (ExtensibleBot) -> Extension) {
             extensions.add(builder)
         }
     }

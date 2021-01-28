@@ -110,7 +110,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /** Quick access to the bot's configured command prefix. **/
-    public val prefix: String get() = settings.commandsBuilder.prefix
+    public open val prefix: String get() = settings.commandsBuilder.prefix
 
     /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
     public val koin: Koin = koinApp.koin
@@ -535,6 +535,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
          * want to configure your bot using the other version of this function.
          */
         public suspend operator fun invoke(token: String): ExtensibleBot =
-            ExtensibleBotBuilder().build(token)
+            this(token) {}
     }
 }

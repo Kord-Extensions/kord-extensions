@@ -20,7 +20,7 @@ private val logger = KotlinLogging.logger {}
  *
  * @param bot The [ExtensibleBot] instance that this extension is installed to.
  */
-public abstract class Extension(public val bot: ExtensibleBot) {
+public abstract class Extension(public open val bot: ExtensibleBot) {
     /**
      * The name of this extension.
      *
