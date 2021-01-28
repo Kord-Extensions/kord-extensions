@@ -16,7 +16,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 @OptIn(KordPreview::class)
 public class UnionConverter(
-    private val converters: Collection<Converter<Any>>,
+    private val converters: Collection<Converter<*>>,
 
     typeName: String,
     shouldThrow: Boolean = false

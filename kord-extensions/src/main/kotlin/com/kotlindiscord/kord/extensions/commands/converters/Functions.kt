@@ -32,7 +32,7 @@ public fun Arguments.union(
     displayName: String,
     description: String,
     typeName: String,
-    vararg converters: Converter<Any>,
+    vararg converters: Converter<*>,
     shouldThrow: Boolean = false
 ): UnionConverter {
     val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
