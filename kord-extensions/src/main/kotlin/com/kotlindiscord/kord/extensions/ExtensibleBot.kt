@@ -126,10 +126,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         koin.module { single { SlashCommandRegistry(this@ExtensibleBot) } }
     }
 
-    /**
-     * This function kicks off the process, by setting up the bot and having it login.
-     */
-    public open suspend fun start() {
+    /** @suppress Function that sets up the bot early on, called by the builder. **/
+    public open suspend fun setup() {
         kord = Kord(token) {
             cache {
                 settings.cacheBuilder.builder.invoke(this, it)
@@ -146,15 +144,14 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         addDefaultExtensions()
 
         kord.on<Event> {
-            val event = this
-
             kord.launch {
-                send(event)
+                send(this@on)
             }
         }
-
-        kord.login(settings.presenceBuilder)
     }
+
+    /** Start up the bot and log into Discord. **/
+    public open suspend fun start(): Unit = kord.login(settings.presenceBuilder)
 
     /** This function sets up all of the bot's default event listeners. **/
     @OptIn(PrivilegedIntent::class)
@@ -530,14 +527,14 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
          *
          * `ExtensibleBot(token) { extensions { add(::MyExtension) } }`
          */
-        public operator fun invoke(token: String, builder: ExtensibleBotBuilder.() -> Unit): ExtensibleBot =
+        public suspend operator fun invoke(token: String, builder: ExtensibleBotBuilder.() -> Unit): ExtensibleBot =
             ExtensibleBotBuilder().apply(builder).build(token)
 
         /**
          * DSL function for creating a bot instance. Token only. This is provided for completeness, but you probably
          * want to configure your bot using the other version of this function.
          */
-        public operator fun invoke(token: String): ExtensibleBot =
+        public suspend operator fun invoke(token: String): ExtensibleBot =
             ExtensibleBotBuilder().build(token)
     }
 }
