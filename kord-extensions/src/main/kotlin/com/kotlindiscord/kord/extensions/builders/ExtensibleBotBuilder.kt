@@ -93,7 +93,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** @suppress Internal function used to build a bot instance. **/
-    public suspend fun build(token: String): ExtensibleBot {
+    public open suspend fun build(token: String): ExtensibleBot {
         val bot = ExtensibleBot(this, token)
 
         bot.setup()
