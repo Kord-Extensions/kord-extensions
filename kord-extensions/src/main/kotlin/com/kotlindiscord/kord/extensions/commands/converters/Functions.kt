@@ -18,6 +18,40 @@ import dev.kord.core.entity.channel.Channel
 import net.time4j.IsoUnit
 import java.time.Duration
 
+// region: Novelty converters
+
+/**
+ * Create a union converter, for combining other converters into a single argument - with the caveat of type erasure.
+ *
+ * This function will automatically remove converters if they were previously registered, so you can use pass it the
+ * results of the usual extension functions.
+ *
+ * @see UnionConverter
+ */
+public fun Arguments.union(
+    displayName: String,
+    description: String,
+    typeName: String,
+    vararg converters: Converter<Any>,
+    shouldThrow: Boolean = false
+): UnionConverter {
+    val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
+
+    converter.validate()
+
+    this.args.toList().forEach {
+        if (it.converter in converters) {
+            this.args.remove(it)
+        }
+    }
+
+    arg(displayName, description, converter)
+
+    return converter
+}
+
+// endregion
+
 // region: Required (single) converters
 
 /**
