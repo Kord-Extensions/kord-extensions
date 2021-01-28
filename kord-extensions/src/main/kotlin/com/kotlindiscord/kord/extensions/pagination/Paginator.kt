@@ -297,6 +297,10 @@ public open class Paginator(
      * This will stop the paginator from processing events, and delete its message if [keepEmbed] is `false`.
      */
     public open suspend fun destroy(message: MessageBehavior) {
+        if (!active) {
+            return
+        }
+
         if (!keepEmbed) {
             message.delete()
         } else {
