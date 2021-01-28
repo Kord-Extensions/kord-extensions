@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions
 
-import com.kotlindiscord.kord.extensions.builders.StartBuilder
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
@@ -12,7 +12,6 @@ import com.kotlindiscord.kord.extensions.extensions.SentryExtension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.module
 import com.kotlindiscord.kord.extensions.utils.parse
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
@@ -33,7 +32,6 @@ import mu.KotlinLogging
 import net.time4j.tz.repo.TZDATA
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.logger.Level
 import org.koin.dsl.koinApplication
 import org.koin.logger.slf4jLogger
 import java.io.File
@@ -48,33 +46,13 @@ import kotlin.reflect.full.primaryConstructor
  * This is your jumping-off point. ExtensibleBot provides a system for managing extensions, commands and event
  * handlers. Either subclass ExtensibleBot or use it as-is if it suits your needs.
  *
- * @param addHelpExtension Whether to automatically install the bundled help command extension.
- * @param addSentryExtension Whether to automatically install the bundled Sentry command extension.
- * @param commandThreads Number of threads to use for command execution. Defaults to twice the number of CPU threads.
- * @param invokeCommandOnMention Whether to invoke commands that are prefixed with a mention, as well as the prefix.
- * @param messageCacheSize How many previous messages to store - default to 10,000.
- * @param prefix The command prefix, for command invocations on Discord.
- * @param token The Discord bot's login token.
- * @param guildsToFill Guild IDs to request all members for on connect. Set to null for all guilds, omit for none.
- * @param fillPresences Whether to request presences from the members retrieved by [guildsToFill].
- * @param koinLogLevel Logging level Koin should use, defaulting to ERROR.
- * @param handleSlashCommands Whether to support registration and invocation of slash commands. Defaults to `false`.
+ * You shouldn't construct this class directly - use the builder pattern via the companion object's `invoke` method:
+ * `ExtensibleBot(token) { extensions { add(::MyExtension) } }`.
+ *
+ * @param settings Bot builder object containing the bot's settings.
+ * @param token Token for connecting to Discord.
  */
-public open class ExtensibleBot(
-    private val token: String,
-
-    public open val prefix: String,
-
-    public open val addHelpExtension: Boolean = true,
-    public open val addSentryExtension: Boolean = true,
-    public open val invokeCommandOnMention: Boolean = true,
-    public open val messageCacheSize: Int = 10_000,
-    public open val commandThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
-    public open val guildsToFill: List<Snowflake>? = listOf(),
-    public open val fillPresences: Boolean? = null,
-    public open val koinLogLevel: Level = Level.ERROR,
-    public open val handleSlashCommands: Boolean = false,
-) {
+public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, private val token: String) {
     /**
      * @suppress
      */
@@ -115,13 +93,13 @@ public open class ExtensibleBot(
     /** @suppress **/
     public open val commandThreadPool: ExecutorCoroutineDispatcher by lazy {
         Executors
-            .newFixedThreadPool(commandThreads)
+            .newFixedThreadPool(settings.commandsBuilder.threads)
             .asCoroutineDispatcher()
     }
 
     /** Configured Koin application. **/
     public open val koinApp: KoinApplication = koinApplication {
-        slf4jLogger(koinLogLevel)
+        slf4jLogger(settings.koinLogLevel)
         environmentProperties()
 
         if (File("koin.properties").exists()) {
@@ -130,6 +108,9 @@ public open class ExtensibleBot(
 
         modules()
     }
+
+    /** Quick access to the bot's configured command prefix. **/
+    public val prefix: String get() = settings.commandsBuilder.prefix
 
     /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
     public val koin: Koin = koinApp.koin
@@ -148,18 +129,14 @@ public open class ExtensibleBot(
     /**
      * This function kicks off the process, by setting up the bot and having it login.
      */
-    public open suspend fun start(builder: suspend StartBuilder.() -> Unit = {}) {
-        val startBuilder = StartBuilder()
-
-        builder.invoke(startBuilder)
-
+    public open suspend fun start() {
         kord = Kord(token) {
             cache {
-                messages(lruCache(messageCacheSize))
+                settings.cacheBuilder.builder.invoke(this, it)
             }
 
-            if (startBuilder.intentsBuilder != null) {
-                this.intents = Intents(startBuilder.intentsBuilder!!)
+            if (settings.intentsBuilder != null) {
+                this.intents = Intents(settings.intentsBuilder!!)
             }
         }
 
@@ -176,18 +153,21 @@ public open class ExtensibleBot(
             }
         }
 
-        kord.login(startBuilder.presenceBuilder)
+        kord.login(settings.presenceBuilder)
     }
 
     /** This function sets up all of the bot's default event listeners. **/
     @OptIn(PrivilegedIntent::class)
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
-            if (guildsToFill == null || guildsToFill!!.contains(guild.id)) {
+            if (
+                settings.membersBuilder.guildsToFill == null ||
+                settings.membersBuilder.guildsToFill!!.contains(guild.id)
+            ) {
                 logger.info { "Requesting members for guild: ${guild.name}" }
 
                 guild.requestMembers {
-                    presences = fillPresences
+                    presences = settings.membersBuilder.fillPresences
                     requestAllMembers()
                 }.collect()
             }
@@ -197,7 +177,7 @@ public open class ExtensibleBot(
             logger.warn { "Disconnected: $closeCode" }
         }
 
-        if (handleSlashCommands) {
+        if (settings.commandsBuilder.slashCommands) {
             on<InteractionCreateEvent> {
                 slashCommands.handle(this)
             }
@@ -238,7 +218,7 @@ public open class ExtensibleBot(
                     }
                 }
 
-                if (handleSlashCommands) {
+                if (settings.commandsBuilder.slashCommands) {
                     slashCommands.syncAll()
                 } else {
                     logger.info {
@@ -279,7 +259,7 @@ public open class ExtensibleBot(
                         commandName = parts[0]
                         parts = parts.sliceArray(1 until parts.size)
                     }
-                    invokeCommandOnMention && parts[0] == mention -> {
+                    settings.commandsBuilder.invokeOnMention && parts[0] == mention -> {
                         // MessageCommand with a mention; first part is exactly the mention
                         commandName = parts[1]
 
@@ -289,7 +269,7 @@ public open class ExtensibleBot(
                             arrayOf()
                         }
                     }
-                    invokeCommandOnMention && parts[0].startsWith(mention) -> {
+                    settings.commandsBuilder.invokeOnMention && parts[0].startsWith(mention) -> {
                         // MessageCommand with a mention; no space between mention and command
                         commandName = parts[0].slice(mention.length until parts[0].length)
                         parts = parts.sliceArray(1 until parts.size)
@@ -332,12 +312,12 @@ public open class ExtensibleBot(
 
     /** This function adds all of the default extensions when the bot is being set up. **/
     public open fun addDefaultExtensions() {
-        if (addHelpExtension) {
+        if (settings.extensionsBuilder.help) {
             logger.debug { "Adding help extension." }
             this.addExtension(::HelpExtension)
         }
 
-        if (addSentryExtension) {
+        if (settings.extensionsBuilder.sentry) {
             logger.debug { "Adding sentry extension." }
             this.addExtension(::SentryExtension)
         }
@@ -543,4 +523,21 @@ public open class ExtensibleBot(
      * @param handler The event handler to be removed.
      */
     public open fun removeEventHandler(handler: EventHandler<out Any>): Boolean = eventHandlers.remove(handler)
+
+    public companion object {
+        /**
+         * DSL function for creating a bot instance. Use the bot class like a builder!
+         *
+         * `ExtensibleBot(token) { extensions { add(::MyExtension) } }`
+         */
+        public operator fun invoke(token: String, builder: ExtensibleBotBuilder.() -> Unit): ExtensibleBot =
+            ExtensibleBotBuilder().apply(builder).build(token)
+
+        /**
+         * DSL function for creating a bot instance. Token only. This is provided for completeness, but you probably
+         * want to configure your bot using the other version of this function.
+         */
+        public operator fun invoke(token: String): ExtensibleBot =
+            ExtensibleBotBuilder().build(token)
+    }
 }

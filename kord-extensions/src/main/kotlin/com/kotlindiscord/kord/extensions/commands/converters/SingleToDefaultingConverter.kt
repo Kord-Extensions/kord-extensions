@@ -35,6 +35,8 @@ public class SingleToDefaultingConverter<T : Any>(
 
         if (result) {
             this.parsed = singleConverter.parsed
+
+            return true
         }
 
         return false
