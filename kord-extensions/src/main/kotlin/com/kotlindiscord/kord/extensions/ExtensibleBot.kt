@@ -7,7 +7,6 @@ import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.ExtensionState
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.SentryExtension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter

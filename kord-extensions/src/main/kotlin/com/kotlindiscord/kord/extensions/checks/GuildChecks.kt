@@ -7,6 +7,52 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.Event
 import mu.KotlinLogging
 
+/**
+ * Check asserting an [Event] was fired within a guild.
+ *
+ * **Note:** This check can't tell the difference between an event that wasn't fired within a guild, and an event
+ * that fired within a guild the bot doesn't have access to, or that it can't get the GuildBehavior for (for
+ * example, due to a niche Kord configuration).
+ *
+ * @param event Event object to check.
+ */
+public suspend fun anyGuild(event: Event): Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.anyGuild")
+
+    return if (guildFor(event) != null) {
+        logger.passed()
+
+        true
+    } else {
+        logger.failed("Event did not happen within a guild.")
+
+        false
+    }
+}
+
+/**
+ * Check asserting an [Event] was **not** fired within a guild.
+ *
+ * **Note:** This check can't tell the difference between an event that wasn't fired within a guild, and an event
+ * that fired within a guild the bot doesn't have access to, or that it can't get the GuildBehavior for (for
+ * example, due to a niche Kord configuration).
+ *
+ * @param event Event object to check.
+ */
+public suspend fun noGuild(event: Event): Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.noGuild")
+
+    return if (guildFor(event) == null) {
+        logger.passed()
+
+        true
+    } else {
+        logger.failed("Event happened within a guild.")
+
+        false
+    }
+}
+
 // region: Entity DSL versions
 
 /**

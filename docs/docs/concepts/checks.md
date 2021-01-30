@@ -47,9 +47,15 @@ Name             | Argument      | Description
 **Note:** All checks in this category take a DSL-style lambda argument that returns the type specified in the table
 below, or a `Snowflake` that should resolve to an entity of that type.
 
+Additionally, the `anyGuild` and `noGuild` checks are not currently able to tell the difference between an event that
+wasn't fired within a guild, and an event that fired within a guild the bot doesn't have access to, or that it can't 
+get the GuildBehavior for (for example, due to a niche Kord configuration).
+
 Name         | Expected Type     | Description
 :----------- | :---------------: | :-------------------------------------------------------------
+`anyGuild`   |                   | Asserts that an event fired within any guild
 `inGuild`    | `Guild Behavior`  | Asserts that an event fired within the given guild
+`noGuild`    |                   | Asserts that an event **did not** fire within a guild
 `notInGuild` | `Guild Behavior`  | Asserts that an event **did not** fire within the given guild
 
 ### Members
