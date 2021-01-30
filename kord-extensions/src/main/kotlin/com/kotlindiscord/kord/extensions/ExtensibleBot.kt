@@ -7,6 +7,7 @@ import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.ExtensionState
 import com.kotlindiscord.kord.extensions.extensions.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.SentryExtension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
@@ -182,38 +183,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         on<ReadyEvent> {
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
-                for (extension in extensions.keys) {
-                    @Suppress("TooGenericExceptionCaught")  // Anything could happen here
-                    try {
-                        loadExtension(extension)
-                        logger.debug { "Loaded extension: $extension" }
-                    } catch (e: Exception) {
-                        logger.error(e) { "Failed to set up '$extension' extension." }
-                    }
-                }
-
                 initialized = true
-
-                // Since the setup method is called after the first ReadyEvent, all ReadyEvent handlers need to be
-                // manually called here in order to make sure they fire as expected. However, since the setup method
-                // has now been run, they'll be properly subscribed next time.
-                for (handler in eventHandlers) {
-                    if (handler.type == ReadyEvent::class) {
-                        @Suppress("TooGenericExceptionCaught")  // Anything could happen here
-                        try {
-                            val event = this
-
-                            kord.launch {
-                                (handler as EventHandler<ReadyEvent>)  // We know it wants a ReadyEvent already
-                                    .call(event)
-                            }
-                        } catch (e: Exception) {
-                            logger.error(e) {
-                                "ReadyEvent handler in '${handler.extension.name}' extension threw an exception."
-                            }
-                        }
-                    }
-                }
 
                 if (settings.commandsBuilder.slashCommands) {
                     slashCommands.syncAll()
@@ -308,14 +278,12 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /** This function adds all of the default extensions when the bot is being set up. **/
-    public open fun addDefaultExtensions() {
+    public open suspend fun addDefaultExtensions() {
         if (settings.extensionsBuilder.help) {
-            logger.debug { "Adding help extension." }
             this.addExtension(::HelpExtension)
         }
 
         if (settings.extensionsBuilder.sentry) {
-            logger.debug { "Adding sentry extension." }
             this.addExtension(::SentryExtension)
         }
     }
@@ -368,12 +336,12 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         ReplaceWith("this.addExtension(builder)", "com.kotlindiscord.kord.extensions.ExtensibleBot"),
         DeprecationLevel.ERROR
     )
-    public open fun addExtension(extension: KClass<out Extension>) {
+    public open suspend fun addExtension(extension: KClass<out Extension>) {
         val ctor = extension.primaryConstructor ?: throw InvalidExtensionException(extension, "No primary constructor")
 
         val extensionObj = ctor.call(this)
 
-        extensions[extensionObj.name] = extensionObj
+        addExtension { extensionObj }
     }
 
     /**
@@ -386,10 +354,17 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * returns an [Extension].
      */
     @Throws(InvalidExtensionException::class)
-    public open fun addExtension(builder: (ExtensibleBot) -> Extension) {
+    public open suspend fun addExtension(builder: (ExtensibleBot) -> Extension) {
         val extensionObj = builder.invoke(this)
 
         extensions[extensionObj.name] = extensionObj
+        loadExtension(extensionObj.name)
+
+        if (!extensionObj.loaded) {
+            logger.warn { "Failed to set up extension: ${extensionObj.name}" }
+        } else {
+            logger.debug { "Loaded extension: ${extensionObj.name}" }
+        }
     }
 
     /**
