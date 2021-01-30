@@ -2,9 +2,12 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
-import dev.kord.core.entity.Guild
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.Event
 import mu.KotlinLogging
+
+// region: Entity DSL versions
 
 /**
  * Check asserting that the guild an [Event] fired for is in a specific guild.
@@ -12,9 +15,9 @@ import mu.KotlinLogging
  * Only events that can reasonably be associated with a guild are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
  *
- * @param guild The guild to compare to.
+ * @param builder Lambda returning the guild to compare to.
  */
-public fun inGuild(guild: Guild): suspend (Event) -> Boolean {
+public fun inGuild(builder: suspend () -> GuildBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
 
     suspend fun inner(event: Event): Boolean {
@@ -24,6 +27,8 @@ public fun inGuild(guild: Guild): suspend (Event) -> Boolean {
             logger.nullGuild(event)
             return false
         }
+
+        val guild = builder()
 
         return if (eventGuild.id == guild.id) {
             logger.passed()
@@ -43,9 +48,9 @@ public fun inGuild(guild: Guild): suspend (Event) -> Boolean {
  * Only events that can reasonably be associated with a guild are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
  *
- * @param guild The guild to compare to.
+ * @param builder Lambda returning the guild to compare to.
  */
-public fun notInGuild(guild: Guild): suspend (Event) -> Boolean {
+public fun notInGuild(builder: suspend () -> GuildBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
 
     suspend fun inner(event: Event): Boolean {
@@ -55,6 +60,8 @@ public fun notInGuild(guild: Guild): suspend (Event) -> Boolean {
             logger.nullGuild(event)
             return false
         }
+
+        val guild = builder()
 
         return if (eventGuild.id != guild.id) {
             logger.passed()
@@ -67,3 +74,59 @@ public fun notInGuild(guild: Guild): suspend (Event) -> Boolean {
 
     return ::inner
 }
+
+// endregion
+
+// region: Snowflake versions
+
+/**
+ * Check asserting that the guild an [Event] fired for is in a specific guild.
+ *
+ * Only events that can reasonably be associated with a guild are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ *
+ * @param id Guild snowflake to compare to.
+ */
+public fun inGuild(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
+
+    suspend fun inner(event: Event): Boolean {
+        val guild = event.kord.getGuild(id)
+
+        if (guild == null) {
+            logger.noGuildId(id)
+            return false
+        }
+
+        return inGuild { guild }(event)
+    }
+
+    return ::inner
+}
+
+/**
+ * Check asserting that the guild an [Event] fired for **is not** in a specific guild.
+ *
+ * Only events that can reasonably be associated with a guild are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ *
+ * @param id Guild snowflake to compare to.
+ */
+public fun notInGuild(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
+
+    suspend fun inner(event: Event): Boolean {
+        val guild = event.kord.getGuild(id)
+
+        if (guild == null) {
+            logger.noGuildId(id)
+            return false
+        }
+
+        return notInGuild { guild }(event)
+    }
+
+    return ::inner
+}
+
+// endregion

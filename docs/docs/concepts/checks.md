@@ -21,30 +21,36 @@ for writing your own checks or extracting information from Kord events.
 
 ### Channels
 
-Name                    | Argument   | Description
-:---------------------- | :--------: | :-------------------------------------------------------------------------------------
-`channelHigherOrEqual`  | `Channel`  | Asserts that an event fired in a channel **higher than or equal to** the given channel
-`channelHigher`         | `Channel`  | Asserts that an event fired in a channel **higher than** the given channel
-`channelLowerOrEqual`   | `Channel`  | Asserts that an event fired in a channel **lower than or equal to** the given channel
-`channelLower`          | `Channel`  | Asserts that an event fired in a channel **lower than** the given channel
-`inCategory`            | `Category` | Asserts that an event fired within the given channel category
-`inChannel`             | `Channel`  | Asserts that an event fired within the given channel
-`notInCategory`         | `Category` | Asserts that an event **did not** fire within the given channel category
-`notInChannel`          | `Channel`  | Asserts that an event **did not** fire within the given channel
+**Note:** All checks in this category take a DSL-style lambda argument that returns the type specified in the table
+below, or a `Snowflake` that should resolve to an entity of that type.
+
+Name                    | Expected Type       | Description
+:---------------------- | :-----------------: | :-------------------------------------------------------------------------------------
+`channelHigherOrEqual`  | `Channel Behavior`  | Asserts that an event fired in a channel **higher than or equal to** the given channel
+`channelHigher`         | `Channel Behavior`  | Asserts that an event fired in a channel **higher than** the given channel
+`channelLowerOrEqual`   | `Channel Behavior`  | Asserts that an event fired in a channel **lower than or equal to** the given channel
+`channelLower`          | `Channel Behavior`  | Asserts that an event fired in a channel **lower than** the given channel
+`inCategory`            | `Category Behavior` | Asserts that an event fired within the given channel category
+`inChannel`             | `Channel Behavior`  | Asserts that an event fired within the given channel
+`notInCategory`         | `Category Behavior` | Asserts that an event **did not** fire within the given channel category
+`notInChannel`          | `Channel Behavior`  | Asserts that an event **did not** fire within the given channel
 
 ### Channel types
 
 Name             | Argument      | Description
 :--------------- | :-----------: | :------------------------------------------------------------------------------
-`channelType`    | `ChannelType` | Asserts that an event fired within a channel matching the given type
-`notChannelType` | `ChannelType` | Asserts that an event **did not** fire within a channel matching the given type
+`channelType`    | `Channel Type` | Asserts that an event fired within a channel matching the given type
+`notChannelType` | `Channel Type` | Asserts that an event **did not** fire within a channel matching the given type
 
 ### Guilds
 
-Name         | Argument | Description
-:----------- | :------: | :-------------------------------------------------------------
-`inGuild`    | `Guild`  | Asserts that an event fired within the given guild
-`notInGuild` | `Guild`  | Asserts that an event **did not** fire within the given guild
+**Note:** All checks in this category take a DSL-style lambda argument that returns the type specified in the table
+below, or a `Snowflake` that should resolve to an entity of that type.
+
+Name         | Expected Type     | Description
+:----------- | :---------------: | :-------------------------------------------------------------
+`inGuild`    | `Guild Behavior`  | Asserts that an event fired within the given guild
+`notInGuild` | `Guild Behavior`  | Asserts that an event **did not** fire within the given guild
 
 ### Members
 
@@ -59,16 +65,19 @@ Name               | Argument     | Description
 
 ### Roles
 
-Name                    | Argument | Description
-:---------------------- | :------: | :-------------------------------------------------------------------------------------
-`hasRole`               | `Role`   | Asserts that an event was fired by a user with the given role
-`notHasRole`            | `Role`   | Asserts that an event was fired by a user **without** the given role
-`topRoleEqual`          | `Role`   | Asserts that an event was fired by a user with a top role that matches the given role
-`topRoleHigherOrEqual`  | `Role`   | Asserts that an event was fired by a user with a top role **higher than or equal to** the given role
-`topRoleHigher`         | `Role`   | Asserts that an event was fired by a user with a top role **higher than** the given role
-`topRoleLowerOrEqual`   | `Role`   | Asserts that an event was fired by a user with a top role **lower than or equal to** the given role
-`topRoleLower`          | `Role`   | Asserts that an event was fired by a user with a top role **lower than** the given role
-`topRoleNotEqual`       | `Role`   | Asserts that an event was fired by a user with a top role that **does not** match the given role
+**Note:** All checks in this category take a DSL-style lambda argument that returns the type specified in the table
+below, or a `Snowflake` that should resolve to an entity of that type.
+
+Name                    | Expected Type   | Description
+:---------------------- | :-------------: | :-------------------------------------------------------------------------------------
+`hasRole`               | `Role Behavior` | Asserts that an event was fired by a user with the given role
+`notHasRole`            | `Role Behavior` | Asserts that an event was fired by a user **without** the given role
+`topRoleEqual`          | `Role Behavior` | Asserts that an event was fired by a user with a top role that matches the given role
+`topRoleHigherOrEqual`  | `Role Behavior` | Asserts that an event was fired by a user with a top role **higher than or equal to** the given role
+`topRoleHigher`         | `Role Behavior` | Asserts that an event was fired by a user with a top role **higher than** the given role
+`topRoleLowerOrEqual`   | `Role Behavior` | Asserts that an event was fired by a user with a top role **lower than or equal to** the given role
+`topRoleLower`          | `Role Behavior` | Asserts that an event was fired by a user with a top role **lower than** the given role
+`topRoleNotEqual`       | `Role Behavior` | Asserts that an event was fired by a user with a top role that **does not** match the given role
 
 ### Combinators
 
@@ -90,66 +99,109 @@ that these functions do support that may themselves return a nullable value when
 As interaction events generally only contain `Snowflake`s, most of the below functions will query the Kord cache or REST
 when dealing with them.
 
-Name                  | Return Type       | Notes
-:-------------------- | :---------------: | :-------------------------------------------------------------------------------------
-`channelFor`          | `ChannelBehavior` | 
-`channelIdFor`        | `Long`            | This function will return a `Long` taken from a `Snowflake`, rather than the `Snowflake` itself
-`channelSnowflakeFor` | `Snowflake`       | This function is just like the previous, but will not unwrap the `Snowflake`
-`guildFor`            | `GuildBehavior`   | This function will query the Kord cache or REST for `MessageCreateEvent` and `MessageUpdateEvent`
-`memberFor`           | `MemberBehavior`  | This function will query the Kord cache or REST for all supported events except for `MemberJoinEvent` and `MemberUpdateEvent`
-`messageFor`          | `MessageBehavior` | This function will query the Kord cache or REST for `MessageUpdateEvent`
-`roleFor`             | `RoleBehavior`    | 
-`userFor`             | `UserBehavior`    | This function will query the Kord cache or REST for `MessageUpdateEvent`, and will only return the first user that isn't the bot for `DMChannelCreateEvent`, `DMChannelDeleteEvent` and `DMChannelUpdateEvent` (as we don't support selfbots)
+Name                  | Return Type        | Notes
+:-------------------- | :----------------: | :-------------------------------------------------------------------------------------
+`channelFor`          | `Channel Behavior` | 
+`channelIdFor`        | `Long`             | This function will return a `Long` taken from a `Snowflake`, rather than the `Snowflake` itself
+`channelSnowflakeFor` | `Snowflake`        | This function is just like the previous, but will not unwrap the `Snowflake`
+`guildFor`            | `Guild Behavior`   | This function will query the Kord cache or REST for `MessageCreateEvent` and `MessageUpdateEvent`
+`memberFor`           | `Member Behavior`  | This function will query the Kord cache or REST for all supported events except for `MemberJoinEvent` and `MemberUpdateEvent`
+`messageFor`          | `Message Behavior` | This function will query the Kord cache or REST for `MessageUpdateEvent`
+`roleFor`             | `Role Behavior`    | 
+`userFor`             | `User Behavior`    | This function will query the Kord cache or REST for `MessageUpdateEvent`, and will only return the first user that isn't the bot for `DMChannelCreateEvent`, `DMChannelDeleteEvent` and `DMChannelUpdateEvent` (as we don't support selfbots)
 
 ## Creating reusable checks
 
-All checks may be defined as functions, and all check functions will accept a function reference. As an example, it's
-common practise to define a "default" check that applies to most commands like the following:
+??? warning "Checks concerning entities: Always resolve late!"
+    If you're writing a check that concerns a Kord entity - for example, a `GuildBehavior` or `ChannelBehavior` (or,
+    indeed, `Guild` or `Channel`), it's important that you provide two very specific implementations:
+    
+    * A version that takes a lambda returning the entity you're checking, which **is called within an inner function
+      that is returned by your outer check function**.
+    * A version that takes a `Snowflake` and wraps the lambda version you wrote above.
+    
+    The reason this is required is to ensure that extensions making use of these checks do not try to resolve entities
+    before the bot has connected to Discord. If you require your user to directly pass entities to your check functions,
+    or your check functions immediately try to resolve entities by calling the passed lambda too early, those
+    extensions will throw exceptions when they're being registered.
+    
+    Here's an example: 
+
+    ```kotlin
+    public fun inChannel(builder: suspend () -> ChannelBehavior): suspend (Event) -> Boolean {
+        val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
+    
+        suspend fun inner(event: Event): Boolean {
+            val eventChannel = channelFor(event)
+        
+           if (eventChannel == null) {
+               logger.nullChannel(event)
+               return false
+           }
+    
+           val channel = builder()
+    
+           return if (eventChannel.id == channel.id) {
+               logger.passed()
+               true
+           } else {
+               logger.failed("Channel $eventChannel is not the same as channel $channel")
+               false
+           }
+        }
+    
+        return ::inner
+    }
+    ```
+
+All checks may be defined as functions, and all check functions will accept a function reference. We also provide a set
+of logger extension functions to make creating consistent log messages easier.
+
+As an example, it's common practise to define a "default" check that applies to most commands like the following:
 
 ```kotlin
 suspend fun defaultCheck(event: Event): Boolean {
     val logger = KotlinLogging.logger("my.package.defaultCheck")
-
     val message = messageFor(event)?.asMessage()
 
     return when {
         message == null -> {
-            logger.debug { "Failing check: Message for event $event is null. This type of event may not be supported." }
+            logger.nullMessage()
             false
         }
 
         message.author == null -> {
-            logger.debug { "Failing check: Message sent by a webhook or system message" }
+            logger.failed("Message sent by a webhook or system message")
             false
         }
 
         message.author!!.id == bot.kord.getSelf().id -> {
-            logger.debug { "Failing check: We sent this message" }
+            logger.failed("We sent this message")
             false
         }
 
         message.author!!.isBot -> {
-            logger.debug { "Failing check: This message was sent by another bot" }
+            logger.failed("This message was sent by another bot")
             false
         }
 
         message.getChannelOrNull() is DmChannel -> {
-            logger.debug { "Passing check: This message was sent in a DM" }
+            logger.passed("This message was sent in a DM")
             true
         }
 
         message.getGuildOrNull()?.id != config.getGuild().id -> {
-            logger.debug { "Failing check: Not in the correct guild" }
+            logger.failed("Not in the correct guild")
             false
         }
 
         else -> {
-            logger.debug { "Passing check" }
+            logger.passed()
             true
         }
     }
 }
 ```
 
-If you've written a check that you think would be useful for the majority users (and it can be written in a generic
+If you've written a check that you think would be useful for most users (and it can be written in a generic
 way) then feel free to open an issue or pull request, and we'll look at getting it added to the framework proper.

@@ -3,10 +3,13 @@
 package com.kotlindiscord.kord.extensions.checks
 
 import com.kotlindiscord.kord.extensions.utils.getTopRole
-import dev.kord.core.entity.Role
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.event.Event
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
+
+// region: Entity DSL versions
 
 /**
  * Check asserting that the user an [Event] fired for has a given role.
@@ -14,9 +17,9 @@ import mu.KotlinLogging
  * Only events that can reasonably be associated with a guild member are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
  *
- * @param role The role to compare to.
+ * @param builder Lambda returning the role to compare to.
  */
-public fun hasRole(role: Role): suspend (Event) -> Boolean {
+public fun hasRole(builder: suspend () -> RoleBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasRole")
 
     suspend fun inner(event: Event): Boolean {
@@ -26,6 +29,8 @@ public fun hasRole(role: Role): suspend (Event) -> Boolean {
             logger.nullMember(event)
             return false
         }
+
+        val role = builder()
 
         return if (member.asMember().roles.toList().contains(role)) {
             logger.passed()
@@ -45,9 +50,9 @@ public fun hasRole(role: Role): suspend (Event) -> Boolean {
  * Only events that can reasonably be associated with a guild member are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
  *
- * @param role The role to compare to.
+ * @param builder Lambda returning the role to compare to.
  */
-public fun notHasRole(role: Role): suspend (Event) -> Boolean {
+public fun notHasRole(builder: suspend () -> RoleBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasRole")
 
     suspend fun inner(event: Event): Boolean {
@@ -57,6 +62,8 @@ public fun notHasRole(role: Role): suspend (Event) -> Boolean {
             logger.nullMember(event)
             return false
         }
+
+        val role = builder()
 
         return if (member.asMember().roles.toList().contains(role)) {
             logger.failed("Member $member has role $role")
@@ -76,9 +83,9 @@ public fun notHasRole(role: Role): suspend (Event) -> Boolean {
  * Only events that can reasonably be associated with a guild member are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
  *
- * @param role The role to compare to.
+ * @param builder Lambda returning the role to compare to.
  */
-public fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
+public fun topRoleEqual(builder: suspend () -> RoleBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleEqual")
 
     suspend fun inner(event: Event): Boolean {
@@ -89,6 +96,7 @@ public fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
+        val role = builder()
         val topRole = member.asMember().getTopRole()
 
         return when {
@@ -118,9 +126,9 @@ public fun topRoleEqual(role: Role): suspend (Event) -> Boolean {
  * Only events that can reasonably be associated with a guild member are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
  *
- * @param role The role to compare to.
+ * @param builder Lambda returning the role to compare to.
  */
-public fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
+public fun topRoleNotEqual(builder: suspend () -> RoleBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleNotEqual")
 
     suspend fun inner(event: Event): Boolean {
@@ -130,6 +138,8 @@ public fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
             logger.nullMember(event)
             return false
         }
+
+        val role = builder()
 
         return when (member.asMember().getTopRole()) {
             null -> {
@@ -156,9 +166,9 @@ public fun topRoleNotEqual(role: Role): suspend (Event) -> Boolean {
  * Only events that can reasonably be associated with a guild member are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
  *
- * @param role The role to compare to.
+ * @param builder Lambda returning the role to compare to.
  */
-public fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
+public fun topRoleHigher(builder: suspend () -> RoleBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleHigher")
 
     suspend fun inner(event: Event): Boolean {
@@ -169,6 +179,7 @@ public fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
+        val role = builder()
         val topRole = member.asMember().getTopRole()
 
         return when {
@@ -200,9 +211,9 @@ public fun topRoleHigher(role: Role): suspend (Event) -> Boolean {
  *
  * Returns `true` if the user doesn't have any roles.
  *
- * @param role The role to compare to.
+ * @param builder Lambda returning the role to compare to.
  */
-public fun topRoleLower(role: Role): suspend (Event) -> Boolean {
+public fun topRoleLower(builder: suspend () -> RoleBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleLower")
 
     suspend fun inner(event: Event): Boolean {
@@ -213,6 +224,7 @@ public fun topRoleLower(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
+        val role = builder()
         val topRole = member.asMember().getTopRole()
 
         return when {
@@ -243,9 +255,9 @@ public fun topRoleLower(role: Role): suspend (Event) -> Boolean {
  * an issue if an event you expected to be supported, isn't.
  * role.
  *
- * @param role The role to compare to.
+ * @param builder Lambda returning the role to compare to.
  */
-public fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
+public fun topRoleHigherOrEqual(builder: suspend () -> RoleBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleHigherOrEqual")
 
     suspend fun inner(event: Event): Boolean {
@@ -256,6 +268,7 @@ public fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
+        val role = builder()
         val topRole = member.asMember().getTopRole()
 
         return when {
@@ -288,9 +301,9 @@ public fun topRoleHigherOrEqual(role: Role): suspend (Event) -> Boolean {
  *
  * Returns `true` if the user doesn't have any roles.
  *
- * @param role The role to compare to.
+ * @param builder Lambda returning the role to compare to.
  */
-public fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
+public fun topRoleLowerOrEqual(builder: suspend () -> RoleBehavior): suspend (Event) -> Boolean {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleLowerOrEqual")
 
     suspend fun inner(event: Event): Boolean {
@@ -301,6 +314,7 @@ public fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
             return false
         }
 
+        val role = builder()
         val topRole = member.asMember().getTopRole()
 
         return when {
@@ -323,3 +337,215 @@ public fun topRoleLowerOrEqual(role: Role): suspend (Event) -> Boolean {
 
     return ::inner
 }
+
+// endregion
+
+// region: Snowflake versions
+
+/**
+ * Check asserting that the user an [Event] fired for has a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ *
+ * @param id Role snowflake to compare to.
+ */
+public fun hasRole(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasRole")
+
+    suspend fun inner(event: Event): Boolean {
+        val role = guildFor(event)?.getRoleOrNull(id)
+
+        if (role == null) {
+            logger.noRoleId(id)
+            return false
+        }
+
+        return hasRole { role }(event)
+    }
+
+    return ::inner
+}
+
+/**
+ * Check asserting that the user an [Event] fired for **does not have** a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ *
+ * @param id Role snowflake to compare to.
+ */
+public fun notHasRole(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasRole")
+
+    suspend fun inner(event: Event): Boolean {
+        val role = guildFor(event)?.getRoleOrNull(id)
+
+        if (role == null) {
+            logger.noRoleId(id)
+            return false
+        }
+
+        return notHasRole { role }(event)
+    }
+
+    return ::inner
+}
+
+/**
+ * Check asserting that the top role for the user an [Event] fired for is equal to a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ *
+ * @param id Role snowflake to compare to.
+ */
+public fun topRoleEqual(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleEqual")
+
+    suspend fun inner(event: Event): Boolean {
+        val role = guildFor(event)?.getRoleOrNull(id)
+
+        if (role == null) {
+            logger.noRoleId(id)
+            return false
+        }
+
+        return topRoleEqual { role }(event)
+    }
+
+    return ::inner
+}
+
+/**
+ * Check asserting that the top role for the user an [Event] fired for is **not** equal to a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ *
+ * @param id Role snowflake to compare to.
+ */
+public fun topRoleNotEqual(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleNotEqual")
+
+    suspend fun inner(event: Event): Boolean {
+        val role = guildFor(event)?.getRoleOrNull(id)
+
+        if (role == null) {
+            logger.noRoleId(id)
+            return false
+        }
+
+        return topRoleNotEqual { role }(event)
+    }
+
+    return ::inner
+}
+
+/**
+ * Check asserting that the top role for the user an [Event] fired for is higher than a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ *
+ * @param id Role snowflake to compare to.
+ */
+public fun topRoleHigher(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleHigher")
+
+    suspend fun inner(event: Event): Boolean {
+        val role = guildFor(event)?.getRoleOrNull(id)
+
+        if (role == null) {
+            logger.noRoleId(id)
+            return false
+        }
+
+        return topRoleHigher { role }(event)
+    }
+
+    return ::inner
+}
+
+/**
+ * Check asserting that the top role for the user an [Event] fired for is lower than a given role.
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ *
+ * Returns `true` if the user doesn't have any roles.
+ *
+ * @param id Role snowflake to compare to.
+ */
+public fun topRoleLower(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleLower")
+
+    suspend fun inner(event: Event): Boolean {
+        val role = guildFor(event)?.getRoleOrNull(id)
+
+        if (role == null) {
+            logger.noRoleId(id)
+            return false
+        }
+
+        return topRoleLower { role }(event)
+    }
+
+    return ::inner
+}
+
+/**
+ * Check asserting that the top role for the user an [Event] fired for is higher than or equal to a given
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ * role.
+ *
+ * @param id Role snowflake to compare to.
+ */
+public fun topRoleHigherOrEqual(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleHigherOrEqual")
+
+    suspend fun inner(event: Event): Boolean {
+        val role = guildFor(event)?.getRoleOrNull(id)
+
+        if (role == null) {
+            logger.noRoleId(id)
+            return false
+        }
+
+        return topRoleHigherOrEqual { role }(event)
+    }
+
+    return ::inner
+}
+
+/**
+ * Check asserting that the top role for the user an [Event] fired for is lower than or equal to a given
+ *
+ * Only events that can reasonably be associated with a guild member are supported. Please raise
+ * an issue if an event you expected to be supported, isn't.
+ * role.
+ *
+ * Returns `true` if the user doesn't have any roles.
+ *
+ * @param id Role snowflake to compare to.
+ */
+public fun topRoleLowerOrEqual(id: Snowflake): suspend (Event) -> Boolean {
+    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.topRoleLowerOrEqual")
+
+    suspend fun inner(event: Event): Boolean {
+        val role = guildFor(event)?.getRoleOrNull(id)
+
+        if (role == null) {
+            logger.noRoleId(id)
+            return false
+        }
+
+        return topRoleLowerOrEqual { role }(event)
+    }
+
+    return ::inner
+}
+
+// endregion
