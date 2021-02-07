@@ -11,6 +11,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.SlashCommands
 import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.rest.builder.interaction.ApplicationCommandCreateBuilder
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -138,46 +139,16 @@ public open class SlashCommandRegistry(
         }
 
         (toAdd + toUpdate).forEach {
-            val args = it.arguments?.invoke()
-
             if (guild == null) {
                 logger.debug { "Adding/updating global slash command ${it.name}" }
 
-                val response = api.createGlobalApplicationCommand(it.name, it.description) {
-                    if (args != null) {
-                        args.args.forEach { arg ->
-                            val converter = arg.converter
-
-                            if (converter !is SlashCommandConverter) {
-                                error("Argument ${arg.displayName} does not support slash commands.")
-                            }
-
-                            if (this.options == null) this.options = mutableListOf()
-
-                            this.options!! += converter.toSlashOption(arg)
-                        }
-                    }
-                }
+                val response = api.createGlobalApplicationCommand(it.name, it.description) { register(it) }
 
                 commandMap[response.id] = it
             } else {
                 logger.debug { "Adding/updating slash command ${it.name} for guild: ${guildObj?.name}" }
 
-                val response = api.createGuildApplicationCommand(guild, it.name, it.description) {
-                    if (args != null) {
-                        args.args.forEach { arg ->
-                            val converter = arg.converter
-
-                            if (converter !is SlashCommandConverter) {
-                                error("Argument ${arg.displayName} does not support slash commands.")
-                            }
-
-                            if (this.options == null) this.options = mutableListOf()
-
-                            this.options!! += converter.toSlashOption(arg)
-                        }
-                    }
-                }
+                val response = api.createGuildApplicationCommand(guild, it.name, it.description) { register(it) }
 
                 commandMap[response.id] = it
             }
@@ -204,6 +175,70 @@ public open class SlashCommandRegistry(
                 "Finished synchronising global slash commands"
             } else {
                 "Finished synchronising slash commands for guild ${guildObj?.name}"
+            }
+        }
+    }
+
+    internal open suspend fun ApplicationCommandCreateBuilder.register(command: SlashCommand<out Arguments>) {
+        if (command.hasBody) {
+            val args = command.arguments?.invoke()
+
+            if (args != null) {
+                args.args.forEach { arg ->
+                    val converter = arg.converter
+
+                    if (converter !is SlashCommandConverter) {
+                        error("Argument ${arg.displayName} does not support slash commands.")
+                    }
+
+                    if (this.options == null) this.options = mutableListOf()
+
+                    this.options!! += converter.toSlashOption(arg)
+                }
+            }
+        } else {
+            command.subCommands.forEach {
+                val args = it.arguments?.invoke()?.args?.map { arg ->
+                    val converter = arg.converter
+
+                    if (converter !is SlashCommandConverter) {
+                        error("Argument ${arg.displayName} does not support slash commands.")
+                    }
+
+                    converter.toSlashOption(arg)
+                }
+
+                this.subCommand(it.name, it.description) {
+                    if (args != null) {
+                        if (this.options == null) this.options = mutableListOf()
+
+                        this.options!!.addAll(args)
+                    }
+                }
+            }
+
+            command.groups.values.forEach { group ->
+                this.group(group.name, group.description) {
+                    group.subCommands.forEach {
+                        val args = it.arguments?.invoke()?.args?.map { arg ->
+                            val converter = arg.converter
+
+                            if (converter !is SlashCommandConverter) {
+                                error("Argument ${arg.displayName} does not support slash commands.")
+                            }
+
+                            converter.toSlashOption(arg)
+                        }
+
+                        this.subCommand(it.name, it.description) {
+                            if (args != null) {
+                                if (this.options == null) this.options = mutableListOf()
+
+                                this.options!!.addAll(args)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

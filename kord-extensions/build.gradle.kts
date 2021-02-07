@@ -14,7 +14,7 @@ buildscript {
 plugins {
     `maven-publish`
 
-    kotlin("jvm") version "1.4.21"
+    kotlin("jvm") version "1.4.30"
 
     id("com.github.jakemarsden.git-hooks") version "0.0.1"
     id("io.gitlab.arturbosch.detekt") version "1.15.0"

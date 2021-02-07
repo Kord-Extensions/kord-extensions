@@ -39,8 +39,16 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
+        val command = context.event.interaction.command
 
-        val values = context.event.interaction.command.options.mapValues { it.value.value!!.toString() }
+        val options = when {
+            command.subCommands.isNotEmpty() -> command.subCommands.values.first().options
+            command.groups.isNotEmpty() -> command.groups.values.first().subCommands.values.first().options
+
+            else -> command.options
+        }
+
+        val values = options.mapValues { it.value.value!!.toString() }
 
         var currentArg: Argument<*>?
         var currentValue: String? = null

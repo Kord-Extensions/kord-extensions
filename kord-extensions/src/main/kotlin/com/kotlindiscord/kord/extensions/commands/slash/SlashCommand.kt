@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.slash
 
+import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.Command
@@ -19,6 +20,7 @@ import mu.KLogger
 import mu.KotlinLogging
 
 private val logger: KLogger = KotlinLogging.logger {}
+private const val DISCORD_LIMIT: Int = 10
 
 /**
  * Class representing a slash command.
@@ -29,16 +31,24 @@ private val logger: KLogger = KotlinLogging.logger {}
  *
  * @param extension The [Extension] that registered this command.
  * @param arguments Arguments object builder for this command, if it has arguments.
+ * @param parentCommand If this is a subcommand, the root command this command belongs to.
+ * @param parentGroup If this is a grouped subcommand, the group this command belongs to.
  */
 public open class SlashCommand<T : Arguments>(
     extension: Extension,
-    public open val arguments: (() -> T)? = null
+    public open val arguments: (() -> T)? = null,
+
+    public open val parentCommand: SlashCommand<out Arguments>? = null,
+    public open val parentGroup: SlashGroup? = null
 ) : Command(extension) {
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
 
     /** @suppress **/
     public open lateinit var body: suspend SlashCommandContext<out T>.() -> Unit
+
+    /** Whether this command has a body/action set. **/
+    public open val hasBody: Boolean get() = ::body.isInitialized
 
     /** Guild ID this slash command is to be registered for, if any. **/
     public open var guild: Snowflake? = null
@@ -48,6 +58,12 @@ public open class SlashCommand<T : Arguments>(
 
     /** Whether to send a message on discord showing the command invocation. **/
     public open var showSource: Boolean = false
+
+    /** Map of group names to slash command groups, if any. **/
+    public open val groups: MutableMap<String, SlashGroup> = mutableMapOf()
+
+    /** List of subcommands, if any. **/
+    public open val subCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
 
     /** @suppress **/
     public open val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
@@ -67,12 +83,57 @@ public open class SlashCommand<T : Arguments>(
             throw InvalidCommandException(name, "No command description given.")
         }
 
-        if (!::body.isInitialized) {
-            throw InvalidCommandException(name, "No command action given.")
+        if (!::body.isInitialized && groups.isEmpty() && subCommands.isEmpty()) {
+            throw InvalidCommandException(name, "No command action or subcommands/groups given.")
+        }
+
+        if (::body.isInitialized && !(groups.isEmpty() && subCommands.isEmpty())) {
+            throw InvalidCommandException(
+                name,
+
+                "Command action and subcommands/groups given, but slash commands may not have an action if they have" +
+                    " a subcommand or group."
+            )
         }
     }
 
     // region: DSL functions
+
+    /**
+     * Create a command group, using the given name.
+     *
+     * Note that only root/top-level commands can contain command groups. An error will be thrown if you try to use
+     * this with a subcommand.
+     *
+     * @param name Name of the command group on Discord.
+     * @param body Lambda used to build the [SlashGroup] object.
+     */
+    public open suspend fun group(name: String, body: suspend SlashGroup.() -> Unit): SlashGroup {
+        if (parentCommand != null) {
+            error("Command groups may not be nested inside subcommands.")
+        }
+
+        if (subCommands.isNotEmpty()) {
+            error("Commands may only contain subcommands or command groups, not both.")
+        }
+
+        if (groups.size >= DISCORD_LIMIT) {
+            error("Commands may only contain up to 10 command groups.")
+        }
+
+        if (groups[name] != null) {
+            error("A command group with the name '$name' has already been registered.")
+        }
+
+        val group = SlashGroup(name, this)
+
+        body.invoke(group)
+        group.validate()
+
+        groups[name] = group
+
+        return group
+    }
 
     /** Specify a specific guild for this slash command. **/
     public open fun guild(guild: Snowflake) {
@@ -87,6 +148,74 @@ public open class SlashCommand<T : Arguments>(
     /** Specify a specific guild for this slash command. **/
     public open fun guild(guild: GuildBehavior) {
         this.guild = guild.id
+    }
+
+    /**
+     * DSL function for easily registering a subcommand, with arguments.
+     *
+     * Use this in your setup function to register a subcommand that may be executed on Discord.
+     *
+     * @param arguments Arguments builder (probably a reference to the class constructor).
+     * @param body Builder lambda used for setting up the slash command object.
+     */
+    public open suspend fun <T : Arguments> subCommand(
+        arguments: (() -> T)?,
+        body: suspend SlashCommand<T>.() -> Unit
+    ): SlashCommand<T> {
+        val commandObj = SlashCommand(this.extension, arguments, this)
+        body.invoke(commandObj)
+
+        return subCommand(commandObj)
+    }
+
+    /**
+     * DSL function for easily registering a subcommand, without arguments.
+     *
+     * Use this in your slash command function to register a subcommand that may be executed on Discord.
+     *
+     * @param body Builder lambda used for setting up the subcommand object.
+     */
+    public open suspend fun subCommand(
+        body: suspend SlashCommand<out Arguments>.() -> Unit
+    ): SlashCommand<out Arguments> {
+        val commandObj = SlashCommand<Arguments>(this.extension, null, this)
+        body.invoke(commandObj)
+
+        return subCommand(commandObj)
+    }
+
+    /**
+     * Function for registering a custom slash command object, for subcommands.
+     *
+     * You can use this if you have a custom slash command subclass you need to register.
+     *
+     * @param commandObj SlashCommand object to register as a subcommand.
+     */
+    public open suspend fun <T : Arguments> subCommand(
+        commandObj: SlashCommand<T>
+    ): SlashCommand<T> {
+        if (parentCommand != null) {
+            error("Subcommands may not be nested inside subcommands.")
+        }
+
+        if (groups.isNotEmpty()) {
+            error("Commands may only contain subcommands or command groups, not both.")
+        }
+
+        if (subCommands.size >= DISCORD_LIMIT) {
+            error("Commands may only contain up to 10 top-level subcommands.")
+        }
+
+        try {
+            commandObj.validate()
+            subCommands.add(commandObj)
+        } catch (e: CommandRegistrationException) {
+            logger.error(e) { "Failed to register subcommand - $e" }
+        } catch (e: InvalidCommandException) {
+            logger.error(e) { "Failed to register subcommand - $e" }
+        }
+
+        return commandObj
     }
 
     /**
@@ -126,6 +255,14 @@ public open class SlashCommand<T : Arguments>(
 
     /** Run checks with the provided [InteractionCreateEvent]. Return false if any failed, true otherwise. **/
     public open suspend fun runChecks(event: InteractionCreateEvent): Boolean {
+        if (parentCommand != null) {
+            val parentChecks = parentCommand!!.runChecks(event)
+
+            if (!parentChecks) {
+                return false
+            }
+        }
+
         for (check in checkList) {
             if (!check.invoke(event)) {
                 return false
@@ -149,17 +286,36 @@ public open class SlashCommand<T : Arguments>(
     public open suspend fun call(event: InteractionCreateEvent) {
         val sentry = extension.bot.sentry
 
-        if (!this.runChecks(event)) {
+        val eventCommand = event.interaction.command
+
+        // We lie to the compiler thrice below to work around an issue with generics.
+        val commandObj: SlashCommand<Arguments> = if (eventCommand.subCommands.isNotEmpty()) {
+            val firstSubCommandKey = eventCommand.subCommands.keys.first()
+
+            this.subCommands.firstOrNull { it.name == firstSubCommandKey } as SlashCommand<Arguments>?
+                ?: error("Unknown subcommand: $firstSubCommandKey")
+        } else if (eventCommand.groups.isNotEmpty()) {
+            val firstEventGroupKey = eventCommand.groups.keys.first()
+            val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
+            val firstSubCommandKey = eventCommand.groups[firstEventGroupKey]!!.subCommands.keys.first()
+
+            group.subCommands.firstOrNull { it.name == firstSubCommandKey } as SlashCommand<Arguments>?
+                ?: error("Unknown subcommand: $firstSubCommandKey")
+        } else {
+            this as SlashCommand<Arguments>
+        }
+
+        if (!commandObj.runChecks(event)) {
             return
         }
 
-        val resp = if (autoAck) {
-            event.interaction.acknowledge(this.showSource)
+        val resp = if (commandObj.autoAck) {
+            event.interaction.acknowledge(commandObj.showSource)
         } else {
             null
         }
 
-        val context = SlashCommandContext(this, event, this.name, resp)
+        val context = SlashCommandContext(commandObj, event, commandObj.name, resp)
 
         context.populate()
 
@@ -168,7 +324,7 @@ public open class SlashCommand<T : Arguments>(
             val guild = context.guild.asGuildOrNull()
 
             val data = mutableMapOf(
-                "command" to this.name
+                "command" to commandObj.name
             )
 
             if (this.guild != null) {
@@ -191,7 +347,7 @@ public open class SlashCommand<T : Arguments>(
             sentry.createBreadcrumb(
                 category = "command.slash",
                 type = "user",
-                message = "Slash command \"${this.name}\" called.",
+                message = "Slash command \"${commandObj.name}\" called.",
                 data = data
             )
         } else {
@@ -200,17 +356,17 @@ public open class SlashCommand<T : Arguments>(
 
         @Suppress("TooGenericExceptionCaught")
         try {
-            if (this.arguments != null) {
-                val args = this.parser.parse(this.arguments!!, context)
+            if (commandObj.arguments != null) {
+                val args = commandObj.parser.parse(commandObj.arguments!!, context)
                 context.populateArgs(args)
             }
 
-            this.body.invoke(context)
+            commandObj.body(context)
         } catch (e: ParseException) {
             if (resp != null) {
                 context.reply(e.reason)
             } else {
-                context.ack(showSource, e.reason)
+                context.ack(commandObj.showSource, e.reason)
             }
         } catch (t: Throwable) {
             if (sentry.enabled) {
@@ -231,8 +387,8 @@ public open class SlashCommand<T : Arguments>(
                         it.tag("private", "true")
                     }
 
-                    it.tag("command", this.name)
-                    it.tag("extension", this.extension.name)
+                    it.tag("command", commandObj.name)
+                    it.tag("extension", commandObj.extension.name)
 
                     it.addBreadcrumb(firstBreadcrumb!!)
 
@@ -245,7 +401,7 @@ public open class SlashCommand<T : Arguments>(
 
                 sentry.addEventId(sentryId)
 
-                logger.error(t) { "Error during execution of ${this.name} slash command ($event)" }
+                logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 
                 val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
                     "Unfortunately, **an error occurred** during command processing. If you'd " +
@@ -260,10 +416,10 @@ public open class SlashCommand<T : Arguments>(
                 if (resp != null) {
                     context.reply(errorMessage)
                 } else {
-                    context.ack(showSource, errorMessage)
+                    context.ack(commandObj.showSource, errorMessage)
                 }
             } else {
-                logger.error(t) { "Error during execution of ${this.name} slash command ($event)" }
+                logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 
                 val errorMessage = "Unfortunately, **an error occurred** during command processing. " +
                     "Please let a staff member know."
@@ -271,7 +427,7 @@ public open class SlashCommand<T : Arguments>(
                 if (resp != null) {
                     context.reply(errorMessage)
                 } else {
-                    context.ack(showSource, errorMessage)
+                    context.ack(commandObj.showSource, errorMessage)
                 }
             }
         }

@@ -53,38 +53,48 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             }
         }
 
-        slashCommand(::SlashArgs) {
+        slashCommand() {
             name = "guild-embed"
             description = "Test command, please ignore"
             showSource = true
 
             guild(787452339908116521) // Our test server
 
-            action {
-                followUp {
-                    embed {
-                        title = "Guild response"
-                        description = "Guild description"
+            group("first") {
+                description = "First group."
 
-                        field {
-                            name = "String"
-                            value = arguments.string
-                        }
+                subCommand(::SlashArgs) {
+                    name = "inner-test"
+                    description = "Test command, please ignore"
+                    showSource = true
 
-                        field {
-                            name = "Enum"
-                            value = arguments.enum.toString()
-                        }
+                    action {
+                        followUp {
+                            embed {
+                                title = "Guild response"
+                                description = "Guild description"
 
-                        field {
-                            name = "Optional Enum"
-                            value = arguments.optionalEnum.toString()
-                        }
+                                field {
+                                    name = "String"
+                                    value = arguments.string
+                                }
 
-                        field {
-                            name = "Bool"
+                                field {
+                                    name = "Enum"
+                                    value = arguments.enum.toString()
+                                }
 
-                            value = arguments.bool.toString()
+                                field {
+                                    name = "Optional Enum"
+                                    value = arguments.optionalEnum.toString()
+                                }
+
+                                field {
+                                    name = "Bool"
+
+                                    value = arguments.bool.toString()
+                                }
+                            }
                         }
                     }
                 }
