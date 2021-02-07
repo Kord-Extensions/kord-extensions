@@ -2,9 +2,11 @@ package com.kotlindiscord.kord.extensions.builders
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import dev.kord.cache.api.DataCache
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
+import dev.kord.core.Kord
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
@@ -109,7 +111,8 @@ public open class ExtensibleBotBuilder {
          * Number of messages to keep in the cache. Defaults to 10,000.
          *
          * To disable automatic configuration of the message cache, set this to `null` or `0`. You can configure the
-         * cache yourself using the [kord] function.
+         * cache yourself using the [kord] function, and interact with the resulting [DataCache] object using the
+         * [transformCache] function.
          */
         @Suppress("MagicNumber")
         public var cachedMessages: Int? = 10_000
@@ -121,6 +124,9 @@ public open class ExtensibleBotBuilder {
             }
         }
 
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var dataCacheBuilder: suspend Kord.(cache: DataCache) -> Unit = {}
+
         /** DSL function allowing you to customize Kord's cache. **/
         public fun kord(builder: KordCacheBuilder.(resources: ClientResources) -> Unit) {
             this.builder = {
@@ -130,6 +136,11 @@ public open class ExtensibleBotBuilder {
 
                 builder.invoke(this, it)
             }
+        }
+
+        /** DSL function allowing you to interact with Kord's [DataCache] before it connects to Discord. **/
+        public fun transformCache(builder: suspend Kord.(cache: DataCache) -> Unit) {
+            this.dataCacheBuilder = builder
         }
     }
 

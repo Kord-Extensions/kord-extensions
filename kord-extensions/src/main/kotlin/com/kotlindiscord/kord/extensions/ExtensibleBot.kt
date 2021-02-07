@@ -138,6 +138,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             }
         }
 
+        settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
+
         koin.module { single { kord } }
 
         registerListeners()
