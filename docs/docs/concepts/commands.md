@@ -315,8 +315,6 @@ slashCommand(::PostArguments) {
             }
         }
     }
-
-    
 }
 ```
 
