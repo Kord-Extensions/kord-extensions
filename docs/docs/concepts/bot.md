@@ -57,6 +57,7 @@ Name                      | Type         | Default  | Description
 :------------------------ | :----------: | :------: | :----------
 cachedMessages            | Int?         | `10_000` | Number of messages to store in Kord's cache by default - set this to `null` to disable, or if you're customizing Kord's message cache yourself using the `kord` DSL function
 kord                      | DSL function |          | Customize Kord's cache yourself using a builder - for more information, [see Kord's wiki on caching](https://github.com/kordlib/kord/wiki/Caching)
+transformCache            | DSL function |          | Interact with Kord's `DataCache` object before it connects to Discord - for more information, [see Kord's wiki on caching](https://github.com/kordlib/kord/wiki/Caching)
 
 ### Command configuration
 

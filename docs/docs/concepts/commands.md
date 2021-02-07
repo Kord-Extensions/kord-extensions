@@ -285,22 +285,32 @@ At some point, Discord came up with the idea of integrating slash commands with 
 supports slash commands as well, via the `slashCommand` function and `SlashCommand` class. Usage is very similar to
 the message-based commands above, with a few notable changes.
 
-??? missing "Not Implemented: Command groups"
-    As of this writing, Kord Extensions does not support command groups or subcommands when working with slash
-    commands. While Discord does provide support for this pattern, we haven't figured out a good way to implement it
-    just yet - we're looking into it!
-
 ```kotlin
 slashCommand(::PostArguments) {
     name = "post"
-    description = "Create a post"
+    description = "Commands for working with posts."
+    
+    subCommand(::GetArguments) {
+        action {
+            val post = getPostByTitle(arguments.title)
 
-    action {
-        followUp {
-            content = "**${arguments.title}** (by ${arguments.author.mention})\n\n" +
-                arguments.body
+            followUp {
+                content = "**${post.title}** (by ${post.author.mention})\n\n" +
+                    post.body
+            }
         }
     }
+    
+    subCommand(::PostArguments) {
+        action {
+            followUp {
+                content = "**${arguments.title}** (by ${arguments.author.mention})\n\n" +
+                    arguments.body
+            }
+        }
+    }
+
+    
 }
 ```
 
@@ -317,10 +327,27 @@ Name          | Type             | Description
 Additionally, the following functions are available - please note that functions marked with :warning: are  required
 and must be called in order to properly register the command.
 
-Name        | Description
-:---------- | :----------
-`action`    | :warning: A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
-`check`     | A function allowing you to define one or more checks for this command - see [the Checks page](/concepts/checks) for more information
-`guild`     | A function allowing you to specify a specific guild for this command to be restricted to, if you don't want it to be registered globally
+??? note "Command groups and subcommands"
+    Subcommands (whether inside a command group or directly within a slash command) work just like regular slash commands do, with the following caveats:
+    
+    * Subcommands may not be guild-limited, and setting the `guild` property will result in an error. Instead, you'll 
+      have to limit the root command, and all subcommands will be similarly limited.
+    * Subcommands run the root command's checks first, if any - both the root command's checks and the subcommand's 
+      checks must pass for the command to be run.
+    
+    You may only have 10 command groups (with a max of 10 subcommands per group) per command. If you're using top-level 
+    subcommands, each slash command may only have 10 of those.
+    
+    On a top-level command, you may only have an action, some command groups, **or** some subcommands. Providing more 
+    than one of these will result in an error - exactly one must always be provided. Additionally, subcommands may not
+    have their own subcommands or command groups.
+
+Name         | Description
+:----------- | :----------
+`action`     | :warning: A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
+`check`      | A function allowing you to define one or more checks for this command - see [the Checks page](/concepts/checks) for more information
+`guild`      | A function allowing you to specify a specific guild for this command to be restricted to, if you don't want it to be registered globally
+`group`      | A function allowing you to create a named subcommand group that will be shown on Discord. Just like slash commands, command groups require you to set a description - don't forget to!
+`subCommand` | A function allowing you to create a subcommand, either directly within the top-level command or within a command group.
 
 If your slash command has no arguments, simply omit the argument builder parameter.
