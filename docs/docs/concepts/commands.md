@@ -324,9 +324,6 @@ Name          | Type             | Description
 `name`        | `String`         | :warning: The primary name of the command, which must be unique throughout the bot and is used for invocation
 `description` | `String`         | :warning: A description for this command, which will be shown to users on Discord
 
-Additionally, the following functions are available - please note that functions marked with :warning: are  required
-and must be called in order to properly register the command.
-
 ??? note "Command groups and subcommands"
     Subcommands (whether inside a command group or directly within a slash command) work just like regular slash commands do, with the following caveats:
     
@@ -342,12 +339,15 @@ and must be called in order to properly register the command.
     than one of these will result in an error - exactly one must always be provided. Additionally, subcommands may not
     have their own subcommands or command groups.
 
+Additionally, the following functions are available. Please note that all slash commands require at least one call to
+either `action`, `group` or `subcommand`, but you may only pick one - these options are mutually exclusive.
+
 Name         | Description
 :----------- | :----------
-`action`     | :warning: A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
+`action`     | A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
 `check`      | A function allowing you to define one or more checks for this command - see [the Checks page](/concepts/checks) for more information
-`guild`      | A function allowing you to specify a specific guild for this command to be restricted to, if you don't want it to be registered globally
 `group`      | A function allowing you to create a named subcommand group that will be shown on Discord. Just like slash commands, command groups require you to set a description - don't forget to!
+`guild`      | A function allowing you to specify a specific guild for this command to be restricted to, if you don't want it to be registered globally
 `subCommand` | A function allowing you to create a subcommand, either directly within the top-level command or within a command group.
 
 If your slash command has no arguments, simply omit the argument builder parameter.
