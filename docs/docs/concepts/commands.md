@@ -288,9 +288,12 @@ the message-based commands above, with a few notable changes.
 ```kotlin
 slashCommand(::PostArguments) {
     name = "post"
-    description = "Commands for working with posts."
+    description = "Commands for working with posts"
     
     subCommand(::GetArguments) {
+        name = "get"
+        description = "Get a post by title"
+
         action {
             val post = getPostByTitle(arguments.title)
 
@@ -301,7 +304,10 @@ slashCommand(::PostArguments) {
         }
     }
     
-    subCommand(::PostArguments) {
+    subCommand(::CreateArguments) {
+        name = "create"
+        description = "Create a new post"
+
         action {
             followUp {
                 content = "**${arguments.title}** (by ${arguments.author.mention})\n\n" +
