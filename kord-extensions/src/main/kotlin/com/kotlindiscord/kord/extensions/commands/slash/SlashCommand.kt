@@ -95,6 +95,15 @@ public open class SlashCommand<T : Arguments>(
                     " a subcommand or group."
             )
         }
+
+        if (parentCommand != null && guild != null) {
+            throw InvalidCommandException(
+                name,
+
+                "Subcommands may not be limited to specific guilds - set the `guild` property on the parent command " +
+                    "instead."
+            )
+        }
     }
 
     // region: DSL functions
