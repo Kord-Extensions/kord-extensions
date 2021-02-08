@@ -31,7 +31,7 @@ import java.time.Duration
 public fun Arguments.union(
     displayName: String,
     description: String,
-    typeName: String,
+    typeName: String? = null,
     shouldThrow: Boolean = false,
     vararg converters: Converter<*>,
 ): UnionConverter {
@@ -62,7 +62,7 @@ public fun Arguments.union(
 public fun Arguments.optionalUnion(
     displayName: String,
     description: String,
-    typeName: String,
+    typeName: String? = null,
     shouldThrow: Boolean = false,
     vararg converters: Converter<*>,
 ): OptionalCoalescingConverter<Any?> {

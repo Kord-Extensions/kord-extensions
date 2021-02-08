@@ -18,10 +18,11 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 public class UnionConverter(
     private val converters: Collection<Converter<*>>,
 
-    typeName: String,
+    typeName: String? = null,
     shouldThrow: Boolean = false
 ) : CoalescingConverter<Any>(shouldThrow) {
     override val signatureTypeString: String = typeName
+        ?: converters.joinToString(" | ") { it.signatureTypeString }
 
     /** @suppress Internal validation function. **/
     public fun validate() {
@@ -49,89 +50,99 @@ public class UnionConverter(
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
         for (converter in converters) {
             @Suppress("TooGenericExceptionCaught")
-            try {
-                when (converter) {
-                    is SingleConverter<*> -> {
-                        val result = converter.parse(args.first(), context, bot)
+            when (converter) {
+                is SingleConverter<*> -> try {
+                    val result = converter.parse(args.first(), context, bot)
 
-                        if (result) {
-                            converter.parseSuccess = true
-                            this.parsed = converter.parsed
+                    if (result) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
 
-                            return 1
-                        }
+                        return 1
                     }
-
-                    is DefaultingConverter<*> -> {
-                        val result = converter.parse(args.first(), context, bot)
-
-                        if (result) {
-                            converter.parseSuccess = true
-                            this.parsed = converter.parsed
-
-                            return 1
-                        }
-                    }
-
-                    is OptionalConverter<*> -> {
-                        val result = converter.parse(args.first(), context, bot)
-
-                        if (result && converter.parsed != null) {
-                            converter.parseSuccess = true
-                            this.parsed = converter.parsed!!
-
-                            return 1
-                        }
-                    }
-
-                    is MultiConverter<*> -> {
-                        val result = converter.parse(args, context, bot)
-
-                        if (result > 0) {
-                            converter.parseSuccess = true
-                            this.parsed = converter.parsed
-
-                            return result
-                        }
-                    }
-
-                    is CoalescingConverter<*> -> {
-                        val result = converter.parse(args, context, bot)
-
-                        if (result > 0) {
-                            converter.parseSuccess = true
-                            this.parsed = converter.parsed
-
-                            return result
-                        }
-                    }
-
-                    is DefaultingCoalescingConverter<*> -> {
-                        val result = converter.parse(args, context, bot)
-
-                        if (result > 0) {
-                            converter.parseSuccess = true
-                            this.parsed = converter.parsed
-
-                            return result
-                        }
-                    }
-
-                    is OptionalCoalescingConverter<*> -> {
-                        val result = converter.parse(args, context, bot)
-
-                        if (result > 0 && converter.parsed != null) {
-                            converter.parseSuccess = true
-                            this.parsed = converter.parsed!!
-
-                            return result
-                        }
-                    }
-
-                    else -> throw ParseException("Unknown converter type provided: $converter")
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
                 }
-            } catch (t: Throwable) {
-                if (shouldThrow) throw t
+
+                is DefaultingConverter<*> -> try {
+                    val result = converter.parse(args.first(), context, bot)
+
+                    if (result) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
+
+                        return 1
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is OptionalConverter<*> -> try {
+                    val result = converter.parse(args.first(), context, bot)
+
+                    if (result && converter.parsed != null) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed!!
+
+                        return 1
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is MultiConverter<*> -> try {
+                    val result = converter.parse(args, context, bot)
+
+                    if (result > 0) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
+
+                        return result
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is CoalescingConverter<*> -> try {
+                    val result = converter.parse(args, context, bot)
+
+                    if (result > 0) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
+
+                        return result
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is DefaultingCoalescingConverter<*> -> try {
+                    val result = converter.parse(args, context, bot)
+
+                    if (result > 0) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
+
+                        return result
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is OptionalCoalescingConverter<*> -> try {
+                    val result = converter.parse(args, context, bot)
+
+                    if (result > 0 && converter.parsed != null) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed!!
+
+                        return result
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                else -> throw ParseException("Unknown converter type provided: $converter")
             }
         }
 
