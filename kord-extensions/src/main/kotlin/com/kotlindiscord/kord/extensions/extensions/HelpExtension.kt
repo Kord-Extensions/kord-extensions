@@ -40,11 +40,13 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                 "Specify the name of a command to get help for that specific command."
 
             action {
+                val prefix = bot.messageCommands.getPrefix(event)
+
                 if (arguments.command.isEmpty()) {
                     Paginator(
                         bot,
                         targetMessage = message,
-                        pages = formatMainHelp(gatherCommands(event), event),
+                        pages = formatMainHelp(gatherCommands(event), event, prefix),
                         owner = message.author,
                         timeout = PAGE_TIMEOUT,
                         keepEmbed = true
@@ -58,7 +60,7 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                         description = if (command == null) {
                             "Unknown command."
                         } else {
-                            formatLongHelp(command)
+                            formatLongHelp(command, prefix)
                         }
                     }
                 }
@@ -70,12 +72,16 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
      * Gather all available commands from the bot, and return them as an array of [MessageCommand].
      */
     public suspend fun gatherCommands(event: MessageCreateEvent): List<MessageCommand<out Arguments>> =
-        bot.commands.filter { !it.hidden && it.enabled && it.runChecks(event) }
+        bot.messageCommands.commands.filter { !it.hidden && it.enabled && it.runChecks(event) }
 
     /**
      * Generate help message by formatting a [List] of [MessageCommand] objects.
      */
-    public suspend fun formatMainHelp(commands: List<MessageCommand<out Arguments>>, event: MessageCreateEvent): Pages {
+    public suspend fun formatMainHelp(
+        commands: List<MessageCommand<out Arguments>>,
+        event: MessageCreateEvent,
+        prefix: String
+    ): Pages {
         val pages = Pages(COMMANDS_GROUP)
         var totalCommands = 0
 
@@ -88,7 +94,7 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                     totalCommands += 1
 
                     with(command) {
-                        var desc = "**${bot.prefix}$name $signature**\n${description.takeWhile { it != '\n' }}\n"
+                        var desc = "**${prefix}$name $signature**\n${description.takeWhile { it != '\n' }}\n"
 
                         if (aliases.isNotEmpty()) {
                             desc += "\n**Aliases: **" + aliases.joinToString(", ") { "`$it`" }
@@ -112,13 +118,13 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
 
                     with(command) {
                         if (arguments == null) {
-                            "**${bot.prefix}$name $signature**\n\nNo arguments."
+                            "**${prefix}$name $signature**\n\nNo arguments."
                         } else {
                             @Suppress("TooGenericExceptionCaught")  // Hard to say really
                             try {
                                 val argsObj = arguments!!.invoke()
 
-                                "**${bot.prefix}$name $signature**\n\n" +
+                                "**${prefix}$name $signature**\n\n" +
                                     argsObj.args.joinToString("\n") {
                                         var desc = "**»** `${it.displayName}"
 
@@ -133,7 +139,7 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
                             } catch (t: Throwable) {
                                 logger.error(t) { "Failed to retrieve argument list for command: $name" }
 
-                                "**${bot.prefix}$name $signature**\n\n" +
+                                "**${prefix}$name $signature**\n\n" +
 
                                     "Failed to retrieve argument list due to an error."
                             }
@@ -175,7 +181,7 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
     public fun getCommand(args: List<String>): MessageCommand<out Arguments>? {
         val firstArg = args.first()
 
-        var command: MessageCommand<out Arguments>? = bot.commands.firstOrNull {
+        var command: MessageCommand<out Arguments>? = bot.messageCommands.commands.firstOrNull {
             it.name == firstArg || it.aliases.contains(firstArg)
         }
 
@@ -193,7 +199,7 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
      *
      * @param command The command to format the description of.
      */
-    public fun formatLongHelp(command: MessageCommand<out Arguments>): String {
+    public fun formatLongHelp(command: MessageCommand<out Arguments>, prefix: String): String {
         val name = when (command) {
             is MessageSubCommand -> command.getFullName()
             is GroupCommand -> command.getFullName()
@@ -201,7 +207,7 @@ public class HelpExtension(bot: ExtensibleBot) : Extension(bot) {
             else -> command.name
         }
 
-        var desc = "**${bot.prefix}$name ${command.signature}**\n\n${command.description}\n"
+        var desc = "**${prefix}$name ${command.signature}**\n\n${command.description}\n"
 
         if (command.arguments != null) {
             val argsObj = command.arguments!!.invoke()

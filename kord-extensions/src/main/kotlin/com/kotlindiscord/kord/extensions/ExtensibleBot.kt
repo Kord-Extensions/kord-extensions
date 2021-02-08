@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
@@ -11,7 +12,6 @@ import com.kotlindiscord.kord.extensions.extensions.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.SentryExtension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.module
-import com.kotlindiscord.kord.extensions.utils.parse
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
@@ -32,11 +32,11 @@ import mu.KotlinLogging
 import net.time4j.tz.repo.TZDATA
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
+import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
 import org.koin.logger.slf4jLogger
 import java.io.File
 import java.util.*
-import java.util.concurrent.Executors
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -66,7 +66,12 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     /**
      * A list of all registered commands.
      */
-    public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
+    @Deprecated(
+        "Use the equivalent variable in `messageCommands` instead.",
+        ReplaceWith("messageCommands.commands"),
+        level = DeprecationLevel.ERROR
+    )
+    public open val commands: MutableList<MessageCommand<out Arguments>> get() = messageCommands.commands
 
     /**
      * A list of all registered event handlers.
@@ -90,13 +95,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     /** @suppress **/
     public open val logger: KLogger = KotlinLogging.logger {}
 
-    /** @suppress **/
-    public open val commandThreadPool: ExecutorCoroutineDispatcher by lazy {
-        Executors
-            .newFixedThreadPool(settings.commandsBuilder.threads)
-            .asCoroutineDispatcher()
-    }
-
     /** Configured Koin application. **/
     public open val koinApp: KoinApplication = koinApplication {
         slf4jLogger(settings.koinLogLevel)
@@ -109,21 +107,41 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         modules()
     }
 
-    /** Quick access to the bot's configured command prefix. **/
-    public open val prefix: String get() = settings.commandsBuilder.prefix
+    /** Quick access to the bot's configured default command prefix. **/
+    @Deprecated(
+        "Use the getter function in `messageCommands`, or get the default prefix from `settings`.",
+        ReplaceWith("messageCommands.getPrefix(event)"),
+        level = DeprecationLevel.ERROR
+    )
+    public open val prefix: String get() = settings.commandsBuilder.defaultPrefix
 
     /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
     public val koin: Koin = koinApp.koin
 
+    /** Message command registry, keeps track of and executes message commands. **/
+    public open val messageCommands: MessageCommandRegistry by koin.inject()
+
     /** Slash command registry, keeps track of and executes slash commands. **/
-    public open val slashCommands: SlashCommandRegistry by koin.inject<SlashCommandRegistry>()
+    public open val slashCommands: SlashCommandRegistry by koin.inject()
 
     init {
         TZDATA.init()  // Set up time4j
 
         koin.module { single { this@ExtensibleBot } }
+        koin.module { single { settings } }
         koin.module { single { sentry } }
-        koin.module { single { SlashCommandRegistry(this@ExtensibleBot) } }
+
+        koin.module {
+            single {
+                settings.commandsBuilder.messageRegistryBuilder(this@ExtensibleBot)
+            } bind MessageCommandRegistry::class
+        }
+
+        koin.module {
+            single {
+                settings.commandsBuilder.slashRegistryBuilder(this@ExtensibleBot)
+            } bind SlashCommandRegistry::class
+        }
     }
 
     /** @suppress Function that sets up the bot early on, called by the builder. **/
@@ -176,12 +194,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.warn { "Disconnected: $closeCode" }
         }
 
-        if (settings.commandsBuilder.slashCommands) {
-            on<InteractionCreateEvent> {
-                slashCommands.handle(this)
-            }
-        }
-
         on<ReadyEvent> {
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
                 initialized = true
@@ -199,81 +211,15 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.info { "Ready!" }
         }
 
-        on<MessageCreateEvent> {
-            var commandName: String? = null
-            var parts = message.parse()
-
-            if (parts.isEmpty()) {
-                // Empty message.
-                return@on
+        if (settings.commandsBuilder.messageCommands) {
+            on<MessageCreateEvent> {
+                messageCommands.handleEvent(this)
             }
+        }
 
-            if (parts.size == 1) {
-                // It's just the command with no arguments
-
-                if (parts[0].startsWith(prefix)) {
-                    commandName = parts[0]
-                    parts = arrayOf()
-                } else {
-                    // Doesn't start with the right prefix
-                    return@on
-                }
-            } else {
-                val mention = kord.getSelf().mention
-
-                when {
-                    parts[0].startsWith(prefix) -> {
-                        // MessageCommand with args
-                        commandName = parts[0]
-                        parts = parts.sliceArray(1 until parts.size)
-                    }
-                    settings.commandsBuilder.invokeOnMention && parts[0] == mention -> {
-                        // MessageCommand with a mention; first part is exactly the mention
-                        commandName = parts[1]
-
-                        parts = if (parts.size > 2) {
-                            parts.sliceArray(2 until parts.size)
-                        } else {
-                            arrayOf()
-                        }
-                    }
-                    settings.commandsBuilder.invokeOnMention && parts[0].startsWith(mention) -> {
-                        // MessageCommand with a mention; no space between mention and command
-                        commandName = parts[0].slice(mention.length until parts[0].length)
-                        parts = parts.sliceArray(1 until parts.size)
-                    }
-                }
-            }
-
-            if (commandName == null || commandName == prefix) {
-                return@on  // After all that, we couldn't find a command.
-            }
-
-            if (commandName.startsWith(prefix)) {
-                commandName = commandName.slice(prefix.length until commandName.length)
-            }
-
-            if (commandName.contains("\n")) {
-                val split = commandName.split("\n", limit = 2)
-
-                commandName = split.first()
-
-                parts = if (parts.isEmpty()) {
-                    arrayOf("\n${split.last()}")
-                } else {
-                    arrayOf("\n${split.last()}") + parts
-                }
-            }
-
-            commandName = commandName.toLowerCase()
-
-            val command = commands.firstOrNull { it.name == commandName }
-                ?: commands.firstOrNull { it.aliases.contains(commandName) }
-
-            val event = this
-
-            commandThreadPool.invoke {
-                command?.call(event, commandName, parts)
+        if (settings.commandsBuilder.slashCommands) {
+            on<InteractionCreateEvent> {
+                slashCommands.handle(this)
             }
         }
     }
@@ -419,37 +365,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @param command The command to be registered.
      * @throws CommandRegistrationException Thrown if the command could not be registered.
      */
+    @Deprecated(
+        "Use the equivalent function within `messageCommands` instead.",
+        ReplaceWith("messageCommands.add(command)"),
+        level = DeprecationLevel.ERROR
+    )
     @Throws(CommandRegistrationException::class)
-    public open fun addCommand(command: MessageCommand<out Arguments>) {
-        val existingCommand = commands.any { it.name == command.name }
-        val existingAlias: String? = commands.flatMap {
-            it.aliases.toList()
-        }.firstOrNull { command.aliases.contains(it) }
-
-        if (existingCommand) {
-            throw CommandRegistrationException(
-                command.name,
-                "MessageCommand with this name already registered in '${command.extension.name}' extension."
-            )
-        }
-
-        if (existingAlias != null) {
-            throw CommandRegistrationException(
-                command.name,
-                "MessageCommand with alias '$existingAlias' already registered in '${command.extension.name}' " +
-                    "extension."
-            )
-        }
-
-        if (commands.contains(command)) {
-            throw CommandRegistrationException(
-                command.name,
-                "MessageCommand already registered in '${command.extension.name}' extension."
-            )
-        }
-
-        commands.add(command)
-    }
+    public open fun addCommand(command: MessageCommand<out Arguments>): Unit = messageCommands.add(command)
 
     /**
      * Directly remove a registered [MessageCommand] from this bot.
@@ -459,7 +381,12 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      *
      * @param command The command to be removed.
      */
-    public open fun removeCommand(command: MessageCommand<out Arguments>): Boolean = commands.remove(command)
+    @Deprecated(
+        "Use the equivalent function within `messageCommands` instead.",
+        ReplaceWith("messageCommands.remove(command)"),
+        level = DeprecationLevel.ERROR
+    )
+    public open fun removeCommand(command: MessageCommand<out Arguments>): Boolean = messageCommands.remove(command)
 
     /**
      * Directly register an [EventHandler] to this bot.

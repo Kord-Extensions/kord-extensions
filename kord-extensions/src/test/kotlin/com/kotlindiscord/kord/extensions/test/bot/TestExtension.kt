@@ -12,6 +12,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 
 @OptIn(KordPreview::class)
+@Suppress("UnderscoresInNumericLiterals")  // They're IDs
 class TestExtension(bot: ExtensibleBot) : Extension(bot) {
     override val name = "test"
 
@@ -20,7 +21,10 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
         val enum by enum<TestEnum>("enum", "Enum argument", "test")
 
         val optionalEnum by defaultingEnum(
-            "optional-enum", "Defaulting enum argument", "test", TestEnum.THREE
+            "optional-enum",
+            "Defaulting enum argument",
+            "test",
+            TestEnum.THREE
         )
 
         val bools by booleanList("bools", "Boolean list argument")
@@ -32,7 +36,10 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
         val bool by boolean("bool", "Boolean argument")
 
         val optionalEnum by defaultingEnum(
-            "optional-enum", "Defaulting enum argument", "test", TestEnum.THREE
+            "optional-enum",
+            "Defaulting enum argument",
+            "test",
+            TestEnum.THREE
         )
     }
 

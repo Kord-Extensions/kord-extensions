@@ -263,10 +263,12 @@ public open class MessageCommand<T : Arguments>(
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
                 if (extension.bot.extensions.containsKey("sentry")) {
+                    val prefix = extension.bot.messageCommands.getPrefix(event)
+
                     event.message.respond(
                         "Unfortunately, **an error occurred** during command processing. If you'd like to submit " +
                             "information on what you were doing when this error happened, please use the following " +
-                            "command: ```${extension.bot.prefix}feedback $sentryId <message>```"
+                            "command: ```${prefix}feedback $sentryId <message>```"
                     )
                 } else {
                     event.message.respond(

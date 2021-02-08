@@ -416,7 +416,7 @@ public open class SlashCommand<T : Arguments>(
                     "Unfortunately, **an error occurred** during command processing. If you'd " +
                         "like to submit information on what you were doing when this error happened, " +
                         "please use the following command: " +
-                        "```${extension.bot.prefix}feedback $sentryId <message>```"
+                        "```/feedback $sentryId <message>```"
                 } else {
                     "Unfortunately, **an error occurred** during command processing. " +
                         "Please let a staff member know."

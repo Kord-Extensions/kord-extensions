@@ -64,7 +64,7 @@ transformCache            | DSL function |          | Interact with Kord's `Data
 ```kotlin
 val bot = ExtensibleBot(token) {
     commands {
-        prefix = "!"
+        defaultPrefix = "?"
 
         invokeOnMention = true
         slashCommands = true
@@ -72,16 +72,15 @@ val bot = ExtensibleBot(token) {
 }
 ```
 
-??? bug "Invoke command on mention"
-Currently a bug exists that prevents the functionality referenced by `invokeCommandOnMention` from working. We'll
-look into this as soon as we can - but if you need this functionality for your bots, contact us and we'll
-prioritise it.
-
 Name                      | Type         | Default    | Description
 :------------------------ | :----------: | :--------: | :----------
 invokeOnMention           | Boolean      | `true`     | Whether commands may also be invoked by mentioning the bot
-prefix                    | String       | `!`        | Prefix required before all command invocations
+defaultPrefix             | String       | `!`        | Prefix required before all command invocations
+prefix                    | DSL Function |            | Register a receiver function for `MessageEvent` objects, that takes the configured `defaultPrefix` and returns a `String` that should be used as the message command prefix, given the context. This can be used to, for example, set up unique command prefixes for different guilds. **Note:** this is used in several places, and not just the command invocation logic - so make sure you don't interact with Discord any more than you have to!
+messageCommands           | Boolean      | `true`     | Whether to support registration and invocation of message commands
+messageRegistry           | DSL Functon  |            | If you'd like to use a `MessageCommandRegistry` subclass, then you can register a builder that returns it here.
 slashCommands             | Boolean      | `false`    | Whether to support registration and invocation of slash commands
+slashRegistry             | DSL Functon  |            | If you'd like to use a `SlashCommandRegistry` subclass, then you can register a builder that returns it here.
 threads                   | Int          | `CPus * 2` | How many threads to use for the command execution threadpool
 
 ### Extensions configuration

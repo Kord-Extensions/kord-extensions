@@ -140,7 +140,7 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
     public open suspend fun <T : Arguments> command(commandObj: MessageCommand<T>): MessageCommand<T> {
         try {
             commandObj.validate()
-            bot.addCommand(commandObj)
+            bot.messageCommands.add(commandObj)
             commands.add(commandObj)
         } catch (e: CommandRegistrationException) {
             logger.error(e) { "Failed to register command - $e" }
@@ -284,7 +284,7 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
         }
 
         for (command in commands) {
-            bot.removeCommand(command)
+            bot.messageCommands.remove(command)
         }
 
         eventHandlers.clear()

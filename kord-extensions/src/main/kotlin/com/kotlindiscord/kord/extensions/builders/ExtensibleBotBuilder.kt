@@ -1,6 +1,8 @@
 package com.kotlindiscord.kord.extensions.builders
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.cache.api.DataCache
 import dev.kord.common.entity.PresenceStatus
@@ -8,6 +10,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
 import dev.kord.core.Kord
 import dev.kord.core.cache.KordCacheBuilder
+import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
 import org.koin.core.logger.Level
@@ -150,13 +153,52 @@ public open class ExtensibleBotBuilder {
         public var invokeOnMention: Boolean = true
 
         /** Prefix to require for command invocations on Discord. Defaults to `"!"`. **/
-        public var prefix: String = "!"
+        public var defaultPrefix: String = "!"
+
+        /** Whether to register and process message commands. Defaults to `true`. **/
+        public var messageCommands: Boolean = true
 
         /** Whether to register and process slash commands. Defaults to `false`. **/
         public var slashCommands: Boolean = false
 
         /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
         public var threads: Int = Runtime.getRuntime().availableProcessors() * 2
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var messageRegistryBuilder: (ExtensibleBot) -> MessageCommandRegistry = { MessageCommandRegistry(it) }
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var slashRegistryBuilder: (ExtensibleBot) -> SlashCommandRegistry = { SlashCommandRegistry(it) }
+
+        /**
+         * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
+         * command prefix to be made use of for that message event.
+         *
+         * This is intended to allow for different message command prefixes in different contexts - for example,
+         * guild-specific prefixes.
+         */
+        public fun prefix(builder: suspend (MessageCreateEvent).(String) -> String) {
+            prefixCallback = builder
+        }
+
+        /**
+         * Register the builder used to create the [MessageCommandRegistry]. You can change this if you need to make
+         * use of a subclass.
+         */
+        public fun messageRegistry(builder: (ExtensibleBot) -> MessageCommandRegistry) {
+            messageRegistryBuilder = builder
+        }
+
+        /**
+         * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
+         * use of a subclass.
+         */
+        public fun slashRegistry(builder: (ExtensibleBot) -> SlashCommandRegistry) {
+            slashRegistryBuilder = builder
+        }
     }
 
     /** Builder used for configuring the bot's extension options, and registering custom extensions. **/

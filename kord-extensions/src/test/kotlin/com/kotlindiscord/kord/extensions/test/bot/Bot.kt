@@ -8,7 +8,16 @@ suspend fun main() {
         koinLogLevel = Level.DEBUG
 
         commands {
+            defaultPrefix = "?"
             slashCommands = true
+
+            prefix { default ->
+                if (guildId?.asString == "787452339908116521") {
+                    "!"
+                } else {
+                    default  // "?"
+                }
+            }
         }
 
         extensions {
