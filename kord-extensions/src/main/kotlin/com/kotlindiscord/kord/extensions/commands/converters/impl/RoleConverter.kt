@@ -53,7 +53,7 @@ public class RoleConverter(
             try {
                 guild.getRole(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '$id' is not a valid emoji ID.")
+                throw ParseException("Value '$id' is not a valid role ID.")
             }
         } else {
             try { // Try for a role ID first

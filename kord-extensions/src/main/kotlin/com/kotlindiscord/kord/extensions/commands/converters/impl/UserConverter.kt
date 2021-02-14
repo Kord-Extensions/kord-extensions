@@ -45,7 +45,7 @@ public class UserConverter : SingleConverter<User>() {
             try {
                 bot.kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '$id' is not a valid emoji ID.")
+                throw ParseException("Value '$id' is not a valid user ID.")
             }
         } else {
             try { // Try for a user ID first
