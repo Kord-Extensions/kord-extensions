@@ -138,15 +138,15 @@ public open class MessageCommand<T : Arguments>(
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
     public open suspend fun runChecks(event: MessageCreateEvent): Boolean {
         // global command checks
-        for(check in extension.bot.settings.messageCommandsBuilder.checkList) {
-            if(!check.invoke(event)) {
+        for (check in extension.bot.settings.messageCommandsBuilder.checkList) {
+            if (!check.invoke(event)) {
                 return false
             }
         }
 
         // local extension checks
-        for(check in extension.commandChecks) {
-            if(!check.invoke(event)) {
+        for (check in extension.commandChecks) {
+            if (!check.invoke(event)) {
                 return false
             }
         }

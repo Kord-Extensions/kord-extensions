@@ -265,15 +265,15 @@ public open class SlashCommand<T : Arguments>(
     /** Run checks with the provided [InteractionCreateEvent]. Return false if any failed, true otherwise. **/
     public open suspend fun runChecks(event: InteractionCreateEvent): Boolean {
         // global checks
-        for(check in extension.bot.settings.slashCommandsBuilder.checkList) {
-            if(!check.invoke(event)) {
+        for (check in extension.bot.settings.slashCommandsBuilder.checkList) {
+            if (!check.invoke(event)) {
                 return false
             }
         }
 
         // local extension checks
-        for(check in extension.slashCommandChecks) {
-            if(!check.invoke(event)) {
+        for (check in extension.slashCommandChecks) {
+            if (!check.invoke(event)) {
                 return false
             }
         }
