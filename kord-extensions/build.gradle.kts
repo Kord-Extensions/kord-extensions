@@ -62,43 +62,7 @@ val javadocJar = task("javadocJar",Jar::class) {
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
 
-    // TODO: Remove/replace with usual version when we're done releasing for specific snapshot versions
-    api("dev.kord:kord-core") {
-        version {
-            strictly("0.7.0-20210226.152409-21")
-        }
-    }
-
-    api("dev.kord.cache:cache-api") {
-        version {
-            strictly("0.3.0-20210128.083522-3")
-        }
-    }
-
-    api("dev.kord.cache:cache-map") {
-        version {
-            strictly("0.3.0-20210128.083522-3")
-        }
-    }
-
-    api("dev.kord:kord-common") {
-        version {
-            strictly("0.7.0-20210226.152409-21")
-        }
-    }
-
-    api("dev.kord:kord-gateway") {
-        version {
-            strictly("0.7.0-20210226.152409-21")
-        }
-    }
-
-    api("dev.kord:kord-rest") {
-        version {
-            strictly("0.7.0-20210226.152409-21")
-        }
-    }
-    // end
+    api("dev.kord:kord-core:0.7.0-SNAPSHOT")
 
     api("net.time4j:time4j-base:5.7")
     api("net.time4j:time4j-tzdata:5.0-2020a")
