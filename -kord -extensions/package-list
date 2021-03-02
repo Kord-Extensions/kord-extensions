@@ -8,6 +8,10 @@ com.kotlindiscord.kord.extensions.commands
 com.kotlindiscord.kord.extensions.commands.converters
 com.kotlindiscord.kord.extensions.commands.converters.impl
 com.kotlindiscord.kord.extensions.commands.parser
+com.kotlindiscord.kord.extensions.commands.slash
+com.kotlindiscord.kord.extensions.commands.slash.converters
+com.kotlindiscord.kord.extensions.commands.slash.converters.impl
+com.kotlindiscord.kord.extensions.commands.slash.parser
 com.kotlindiscord.kord.extensions.events
 com.kotlindiscord.kord.extensions.extensions
 com.kotlindiscord.kord.extensions.pagination
