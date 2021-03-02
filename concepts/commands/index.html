@@ -8,11 +8,11 @@
       
       
       
-      
         <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/concepts/commands/">
       
+      
       <link rel="shortcut icon" href="../../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.4">
     
     
       
@@ -20,10 +20,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1655a90d.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.358818c7.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.7fa14f5b.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f0267088.min.css">
         
       
     
@@ -31,9 +31,9 @@
     
       
         
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
       
     
     
@@ -57,7 +57,6 @@
         <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
       
   
-    
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -76,49 +75,44 @@
       
 
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="https://kord-extensions.docs.kotlindiscord.com" title="Kord Extensions" class="md-header__button md-logo" aria-label="Kord Extensions">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://kord-extensions.docs.kotlindiscord.com" title="Kord Extensions" class="md-header-nav__button md-logo" aria-label="Kord Extensions">
       
   <img src="../../assets/logo.png" alt="logo">
 
     </a>
-    <label class="md-header__button md-icon" for="__drawer">
+    <label class="md-header-nav__button md-icon" for="__drawer">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
     </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
             Kord Extensions
           </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
             
               Commands
             
           </span>
         </div>
-      </div>
-    </div>
-    <div class="md-header__options">
       
     </div>
     
-      <label class="md-header__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
       </label>
       
 <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
       <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
-      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
       </button>
     </form>
@@ -148,14 +142,10 @@
         <div class="md-main__inner md-grid">
           
             
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
-
-
-
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
@@ -173,15 +163,24 @@
       
       
 
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
-        Home
-      </a>
-    </li>
-  
+
+  <li class="md-nav__item">
+    <a href="../.." class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../getting-started/" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
 
     
       
@@ -189,113 +188,96 @@
       
 
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
-        Getting Started
-      </a>
-    </li>
-  
 
-    
-      
-      
-      
 
-  
-  
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-  
-  
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
-      
-      <label class="md-nav__link" for="__nav_3">
+    <label class="md-nav__link" for="nav-3">
+      Concepts
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Concepts" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
         Concepts
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bot/" class="md-nav__link">
+      The Bot Object
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../extensions/" class="md-nav__link">
+      Extensions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../events/" class="md-nav__link">
+      Events
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../checks/" class="md-nav__link">
+      Checks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Commands
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Concepts" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Concepts
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../bot/" class="md-nav__link">
-        The Bot Object
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../extensions/" class="md-nav__link">
-        Extensions
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../events/" class="md-nav__link">
-        Events
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../checks/" class="md-nav__link">
-        Checks
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
     
-  
-  
-    <li class="md-nav__item md-nav__item--active">
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Commands
+    </a>
+    
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Commands
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Commands
-      </a>
-      
-        
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -306,7 +288,7 @@
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+    <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#the-basics" class="md-nav__link">
@@ -373,192 +355,175 @@
     </ul>
   
 </nav>
-      
-    </li>
-  
+    
+  </li>
 
+        
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../converters/" class="md-nav__link">
-        Converters
-      </a>
-    </li>
-  
+          
+          
 
-          
-        </ul>
-      </nav>
-    </li>
-  
+
+  <li class="md-nav__item">
+    <a href="../converters/" class="md-nav__link">
+      Converters
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
 
     
       
       
       
 
-  
-  
-  
+
+  <li class="md-nav__item md-nav__item--nested">
     
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
-      
-      <label class="md-nav__link" for="__nav_4">
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Utilities
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Utilities" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon"></span>
         Utilities
-        <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Utilities" data-md-level="1">
-        <label class="md-nav__title" for="__nav_4">
-          <span class="md-nav__icon md-icon"></span>
-          Utilities
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../utilities/general/" class="md-nav__link">
-        General
-      </a>
-    </li>
-  
+          
+          
 
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../utilities/paginator/" class="md-nav__link">
-        Paginator
-      </a>
-    </li>
-  
 
+  <li class="md-nav__item">
+    <a href="../../utilities/general/" class="md-nav__link">
+      General
+    </a>
+  </li>
+
+        
           
-        </ul>
-      </nav>
-    </li>
-  
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../utilities/paginator/" class="md-nav__link">
+      Paginator
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
 
     
       
       
       
 
-  
-  
-  
+
+  <li class="md-nav__item md-nav__item--nested">
     
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
-      
-      <label class="md-nav__link" for="__nav_5">
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Integrations
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Integrations" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon"></span>
         Integrations
-        <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Integrations" data-md-level="1">
-        <label class="md-nav__title" for="__nav_5">
-          <span class="md-nav__icon md-icon"></span>
-          Integrations
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../integrations/koin/" class="md-nav__link">
-        Koin
-      </a>
-    </li>
-  
+          
+          
 
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../integrations/sentry/" class="md-nav__link">
-        Sentry
-      </a>
-    </li>
-  
 
+  <li class="md-nav__item">
+    <a href="../../integrations/koin/" class="md-nav__link">
+      Koin
+    </a>
+  </li>
+
+        
           
-        </ul>
-      </nav>
-    </li>
-  
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../integrations/sentry/" class="md-nav__link">
+      Sentry
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
 
     
       
       
       
 
-  
-  
-  
+
+  <li class="md-nav__item md-nav__item--nested">
     
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
-      
-      <label class="md-nav__link" for="__nav_6">
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Migrating
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Migrating" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon"></span>
         Migrating
-        <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="Migrating" data-md-level="1">
-        <label class="md-nav__title" for="__nav_6">
-          <span class="md-nav__icon md-icon"></span>
-          Migrating
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../migrating/1.4.0/" class="md-nav__link">
-        Migrating: 1.3.x to 1.4.x
-      </a>
-    </li>
-  
+          
+          
 
-          
-        </ul>
-      </nav>
-    </li>
-  
+
+  <li class="md-nav__item">
+    <a href="../../migrating/1.4.0/" class="md-nav__link">
+      Migrating: 1.3.x to 1.4.x
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
 
     
       
       
       
 
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/-kord%20-extensions/" class="md-nav__link">
-        Dokka API Docs
-      </a>
-    </li>
-  
+
+  <li class="md-nav__item">
+    <a href="/-kord%20-extensions/" class="md-nav__link">
+      Dokka API Docs
+    </a>
+  </li>
 
     
   </ul>
@@ -568,8 +533,7 @@
               </div>
             
             
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -583,7 +547,7 @@
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+    <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#the-basics" class="md-nav__link">
@@ -655,7 +619,7 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
+          <div class="md-content">
             <article class="md-content__inner md-typeset">
               
                 
@@ -671,27 +635,27 @@ wish. That said, it's usually best to start with the basics.</p>
 <p>Commands provide a way for you to specify a set of actions the bot can take on a user's behalf, specified using a
 prefixed message in a Discord channel or private message. Creating one is simple - just use the <code>command</code> function in 
 your extension's <code>setup</code> function.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">command</span> <span class="p">{</span>  <span class="c1">// this: Command</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;ping&quot;</span>  <span class="c1">// Command name</span>
-    <span class="n">aliases</span> <span class="o">=</span> <span class="n">arrayOf</span><span class="p">(</span><span class="s">&quot;pong&quot;</span><span class="p">)</span>  <span class="c1">// Alternate command names</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Returns &#39;Pong!&#39;&quot;</span>  <span class="c1">// Help text for the help command</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">command</span> <span class="p">{</span>  <span class="c1">// this: Command</span>
+    <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;ping&quot;</span>  <span class="c1">// Command name</span>
+    <span class="n">aliases</span> <span class="p">=</span> <span class="n">arrayOf</span><span class="p">(</span><span class="s">&quot;pong&quot;</span><span class="p">)</span>  <span class="c1">// Alternate command names</span>
+    <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Returns &#39;Pong!&#39;&quot;</span>  <span class="c1">// Help text for the help command</span>
 
-    <span class="n">check</span> <span class="p">{</span> <span class="n">event</span> <span class="o">-&gt;</span> <span class="kc">true</span> <span class="p">}</span>  <span class="c1">// Return `false` to prevent the action</span>
+    <span class="n">check</span> <span class="p">{</span> <span class="n">event</span> <span class="p">-&gt;</span> <span class="k">true</span> <span class="p">}</span>  <span class="c1">// Return `false` to prevent the action</span>
     <span class="n">check</span><span class="p">(</span><span class="o">::</span><span class="n">returnTrue</span><span class="p">)</span>  <span class="c1">// You can also pass it a function</span>
 
     <span class="n">action</span> <span class="p">{</span>  <span class="c1">// this: CommandContext</span>
-        <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Pong!&quot;</span><span class="p">)</span>
+        <span class="n">message</span><span class="p">.</span><span class="n">respond</span><span class="p">(</span><span class="s">&quot;Pong!&quot;</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -857,63 +821,63 @@ of your command's <code>action</code>. It exists to provide a little extra conte
 <h3 id="command-arguments">Command arguments</h3>
 <p>Kord Extensions provides an object-based approach to argument parsing, using a base <code>Arguments</code> type and delegation to
 extension functions. Defining the arguments for your command is fairly simple:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">PostArguments</span> <span class="p">:</span> <span class="n">Arguments</span><span class="p">()</span> <span class="p">{</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">PostArguments</span> <span class="p">:</span> <span class="n">Arguments</span><span class="p">()</span> <span class="p">{</span>
     <span class="c1">// Single required string argument</span>
-    <span class="kd">val</span> <span class="nv">title</span> <span class="k">by</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;Post title&quot;</span><span class="p">)</span>
+    <span class="k">val</span> <span class="py">title</span> <span class="k">by</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;Post title&quot;</span><span class="p">)</span>
 
     <span class="c1">// Single required Discord user argument</span>
-    <span class="kd">val</span> <span class="nv">author</span> <span class="k">by</span> <span class="n">user</span><span class="p">(</span><span class="s">&quot;author&quot;</span><span class="p">,</span> <span class="s">&quot;User that this post should be attributed to&quot;</span><span class="p">)</span>
+    <span class="k">val</span> <span class="py">author</span> <span class="k">by</span> <span class="n">user</span><span class="p">(</span><span class="s">&quot;author&quot;</span><span class="p">,</span> <span class="s">&quot;User that this post should be attributed to&quot;</span><span class="p">)</span>
 
     <span class="c1">// Consumes the rest of the arguments into a single string</span>
-    <span class="kd">val</span> <span class="nv">body</span> <span class="k">by</span> <span class="n">coalescedString</span><span class="p">(</span><span class="s">&quot;body&quot;</span><span class="p">,</span> <span class="s">&quot;Text content to be placed within the posts&#39;s body&quot;</span><span class="p">)</span>
+    <span class="k">val</span> <span class="py">body</span> <span class="k">by</span> <span class="n">coalescedString</span><span class="p">(</span><span class="s">&quot;body&quot;</span><span class="p">,</span> <span class="s">&quot;Text content to be placed within the posts&#39;s body&quot;</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
 </td></tr></table>
 <p>We recommend writing this as an inner class, but it's up to you where you put it (as long as it's public). Once you've
 created your argument class, you can start using it in your commands:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">command</span><span class="p">(</span><span class="o">::</span><span class="n">PostArguments</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;post&quot;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Create a post&quot;</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">command</span><span class="p">(</span><span class="o">::</span><span class="n">PostArguments</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;post&quot;</span>
+    <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Create a post&quot;</span>
 
     <span class="n">action</span> <span class="p">{</span>
         <span class="c1">// Option 1</span>
-        <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span>
-            <span class="s">&quot;**</span><span class="si">${</span><span class="n">arguments</span><span class="p">.</span><span class="na">title</span><span class="si">}</span><span class="s">** (by </span><span class="si">${</span><span class="n">arguments</span><span class="p">.</span><span class="na">author</span><span class="p">.</span><span class="na">mention</span><span class="si">}</span><span class="s">)\n\n&quot;</span> <span class="o">+</span>
-                <span class="n">arguments</span><span class="p">.</span><span class="na">body</span>
+        <span class="n">message</span><span class="p">.</span><span class="n">respond</span><span class="p">(</span>
+            <span class="s">&quot;**${arguments.title}** (by ${arguments.author.mention})\n\n&quot;</span> <span class="p">+</span>
+                <span class="n">arguments</span><span class="p">.</span><span class="n">body</span>
         <span class="p">)</span>
 
         <span class="c1">// Option 2</span>
         <span class="n">with</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span>
-                <span class="s">&quot;**</span><span class="si">$</span><span class="n">title</span><span class="s">** (by </span><span class="si">${</span><span class="n">author</span><span class="p">.</span><span class="na">mention</span><span class="si">}</span><span class="s">)\n\n&quot;</span> <span class="o">+</span>
+            <span class="n">message</span><span class="p">.</span><span class="n">respond</span><span class="p">(</span>
+                <span class="s">&quot;**$title** (by ${author.mention})\n\n&quot;</span> <span class="p">+</span>
                     <span class="n">body</span>
             <span class="p">)</span>
         <span class="p">}</span>
@@ -937,91 +901,91 @@ Grouped commands work just like regular commands, but with a few differences:</p
 </ul>
 <p>The help extension also fully supports subcommands, and understands what you meant if you try to request help for a
 subcommand - just provide the full command, and you're good to go.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">group</span> <span class="p">{</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;sport&quot;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport!&quot;</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">group</span> <span class="p">{</span>
+    <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;sport&quot;</span>
+    <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Set your favourite sport!&quot;</span>
 
     <span class="n">command</span> <span class="p">{</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;basketball&quot;</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport to basketball&quot;</span>
+        <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;basketball&quot;</span>
+        <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Set your favourite sport to basketball&quot;</span>
 
         <span class="n">action</span> <span class="p">{</span>
-            <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now basketball.&quot;</span><span class="p">)</span>
+            <span class="n">message</span><span class="p">.</span><span class="n">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now basketball.&quot;</span><span class="p">)</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
     <span class="n">command</span> <span class="p">{</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;football&quot;</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport to football&quot;</span>
+        <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;football&quot;</span>
+        <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Set your favourite sport to football&quot;</span>
 
         <span class="n">action</span> <span class="p">{</span>
-            <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now football.&quot;</span><span class="p">)</span>
+            <span class="n">message</span><span class="p">.</span><span class="n">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now football.&quot;</span><span class="p">)</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
     <span class="n">group</span> <span class="p">{</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;craft&quot;</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Sports are boring, pick a craft instead!&quot;</span>
+        <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;craft&quot;</span>
+        <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Sports are boring, pick a craft instead!&quot;</span>
 
         <span class="n">command</span> <span class="p">{</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;knitting&quot;</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport to knitting&quot;</span>
+            <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;knitting&quot;</span>
+            <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Set your favourite sport to knitting&quot;</span>
 
             <span class="n">action</span> <span class="p">{</span>
-                <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now knitting.&quot;</span><span class="p">)</span>
+                <span class="n">message</span><span class="p">.</span><span class="n">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now knitting.&quot;</span><span class="p">)</span>
             <span class="p">}</span>
         <span class="p">}</span>
 
         <span class="n">command</span> <span class="p">{</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;painting&quot;</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport to painting&quot;</span>
+            <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;painting&quot;</span>
+            <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Set your favourite sport to painting&quot;</span>
 
             <span class="n">action</span> <span class="p">{</span>
-                <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now painting.&quot;</span><span class="p">)</span>
+                <span class="n">message</span><span class="p">.</span><span class="n">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now painting.&quot;</span><span class="p">)</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
@@ -1046,15 +1010,15 @@ us know!</p>
 </details>
 <p>Additionally, single arguments can contain spaces if you <code>"surround them in quotes"</code>. As an example, take the 
 following command:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>!post author=109040264529608704 &quot;This is my title&quot; <span class="gs">**My Post**</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>!post author=109040264529608704 &quot;This is my title&quot; **My Post**
 
 This is part of the body of my post, despite being a couple lines down.
 Arguments can happily contain newlines - although arguments can&#39;t be 
-<span class="ge">*separated*</span> using newlines, so be careful!
+*separated* using newlines, so be careful!
 </code></pre></div>
 </td></tr></table>
 <p>Assuming a command prefix of <code>!</code>:</p>
@@ -1135,61 +1099,61 @@ to experiment!</p>
 <p>At some point, Discord came up with the idea of integrating slash commands with the Discord client. Kord Extensions
 supports slash commands as well, via the <code>slashCommand</code> function and <code>SlashCommand</code> class. Usage is very similar to
 the message-based commands above, with a few notable changes.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">slashCommand</span><span class="p">(</span><span class="o">::</span><span class="n">PostArguments</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;post&quot;</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Commands for working with posts&quot;</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">slashCommand</span><span class="p">(</span><span class="o">::</span><span class="n">PostArguments</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;post&quot;</span>
+    <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Commands for working with posts&quot;</span>
 
     <span class="n">subCommand</span><span class="p">(</span><span class="o">::</span><span class="n">GetArguments</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;get&quot;</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Get a post by title&quot;</span>
+        <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;get&quot;</span>
+        <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Get a post by title&quot;</span>
 
         <span class="n">action</span> <span class="p">{</span>
-            <span class="kd">val</span> <span class="nv">post</span> <span class="o">=</span> <span class="n">getPostByTitle</span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="na">title</span><span class="p">)</span>
+            <span class="k">val</span> <span class="py">post</span> <span class="p">=</span> <span class="n">getPostByTitle</span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">title</span><span class="p">)</span>
 
             <span class="n">followUp</span> <span class="p">{</span>
-                <span class="n">content</span> <span class="o">=</span> <span class="s">&quot;**</span><span class="si">${</span><span class="n">post</span><span class="p">.</span><span class="na">title</span><span class="si">}</span><span class="s">** (by </span><span class="si">${</span><span class="n">post</span><span class="p">.</span><span class="na">author</span><span class="p">.</span><span class="na">mention</span><span class="si">}</span><span class="s">)\n\n&quot;</span> <span class="o">+</span>
-                    <span class="n">post</span><span class="p">.</span><span class="na">body</span>
+                <span class="n">content</span> <span class="p">=</span> <span class="s">&quot;**${post.title}** (by ${post.author.mention})\n\n&quot;</span> <span class="p">+</span>
+                    <span class="n">post</span><span class="p">.</span><span class="n">body</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
     <span class="n">subCommand</span><span class="p">(</span><span class="o">::</span><span class="n">CreateArguments</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;create&quot;</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Create a new post&quot;</span>
+        <span class="n">name</span> <span class="p">=</span> <span class="s">&quot;create&quot;</span>
+        <span class="n">description</span> <span class="p">=</span> <span class="s">&quot;Create a new post&quot;</span>
 
         <span class="n">action</span> <span class="p">{</span>
             <span class="n">followUp</span> <span class="p">{</span>
-                <span class="n">content</span> <span class="o">=</span> <span class="s">&quot;**</span><span class="si">${</span><span class="n">arguments</span><span class="p">.</span><span class="na">title</span><span class="si">}</span><span class="s">** (by </span><span class="si">${</span><span class="n">arguments</span><span class="p">.</span><span class="na">author</span><span class="p">.</span><span class="na">mention</span><span class="si">}</span><span class="s">)\n\n&quot;</span> <span class="o">+</span>
-                    <span class="n">arguments</span><span class="p">.</span><span class="na">body</span>
+                <span class="n">content</span> <span class="p">=</span> <span class="s">&quot;**${arguments.title}** (by ${arguments.author.mention})\n\n&quot;</span> <span class="p">+</span>
+                    <span class="n">arguments</span><span class="p">.</span><span class="n">body</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
@@ -1290,38 +1254,40 @@ either <code>action</code>, <code>group</code> or <code>subcommand</code>, but y
         
 <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
-      
-        <a href="../checks/" class="md-footer__link md-footer__link--prev" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Checks
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../checks/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
-          </div>
-        </a>
-      
-      
-        <a href="../converters/" class="md-footer__link md-footer__link--next" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Converters
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Checks
+              </div>
             </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
+          </a>
+        
+        
+          <a href="../converters/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Converters
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1338,13 +1304,19 @@ either <code>action</code>, <code>group</code> or <code>subcommand</code>, but y
 </footer>
       
     </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
     
-    
-      <script src="../../assets/javascripts/bundle.ca5457b8.min.js"></script>
+      <script src="../../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../../assets/javascripts/bundle.b3a72adc.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
       
     
   </body>
