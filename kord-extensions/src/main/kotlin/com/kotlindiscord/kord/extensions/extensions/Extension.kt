@@ -7,6 +7,8 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
+import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -59,6 +61,20 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
      * belong to unloaded extensions will not execute.
      */
     public open val slashCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
+
+    /**
+     * List of slash command checks.
+     *
+     * These checks will be checked against all commands in this extension.
+     */
+    public open val commandChecks: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+
+    /**
+     * List of slash command checks.
+     *
+     * These checks will be checked against all slash commands in this extension.
+     */
+    public open val slashCommandChecks: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
 
     /**
      * Override this in your subclass and use it to register your commands and event
@@ -324,5 +340,55 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
         }
 
         return eventHandler
+    }
+
+    /**
+     * Define a check which must pass for the command to be executed. This check will be applied to all
+     * slash commands in this extension.
+     *
+     * A command may have multiple checks - all checks must pass for the command to be executed.
+     * Checks will be run in the order that they're defined.
+     *
+     * This function can be used DSL-style with a given body, or it can be passed one or more
+     * predefined functions. See the samples for more information.
+     *
+     * @param checks Checks to apply to all slash commands in this extension.
+     */
+    public open fun slashCheck(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+        checks.forEach { slashCommandChecks.add(it) }
+    }
+
+    /**
+     * Overloaded check function to allow for DSL syntax.
+     *
+     * @param check Check to apply to all slash commands in this extension.
+     */
+    public open fun slashCheck(check: suspend (InteractionCreateEvent) -> Boolean) {
+        slashCommandChecks.add(check)
+    }
+
+    /**
+     * Define a check which must pass for the command to be executed. This check will be applied to all commands
+     * in this extension.
+     *
+     * A command may have multiple checks - all checks must pass for the command to be executed.
+     * Checks will be run in the order that they're defined.
+     *
+     * This function can be used DSL-style with a given body, or it can be passed one or more
+     * predefined functions. See the samples for more information.
+     *
+     * @param checks Checks to apply to all commands in this extension.
+     */
+    public open fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+        checks.forEach { commandChecks.add(it) }
+    }
+
+    /**
+     * Overloaded check function to allow for DSL syntax.
+     *
+     * @param check Check to apply to all commands in this extension.
+     */
+    public open fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+        commandChecks.add(check)
     }
 }
