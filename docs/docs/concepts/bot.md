@@ -19,7 +19,7 @@ val token = "..."  // Get your bot token
 val commandPrefix = "!"  // Prefix required before all command invocations - "!" is the default and can be omitted
 
 val bot = ExtensibleBot(token) {
-    commands {
+    messageCommands {
         prefix = commandPrefix
     }
 }
@@ -61,25 +61,44 @@ transformCache            | DSL function |          | Interact with Kord's `Data
 
 ### Command configuration
 
+Kord Extensions supports two types of commands - message commands and slash commands. They are configured separately.
+
+#### Message commands
+
 ```kotlin
 val bot = ExtensibleBot(token) {
-    commands {
+    messageCommands {
         defaultPrefix = "?"
 
         invokeOnMention = true
-        slashCommands = true
     }
 }
 ```
 
 Name                      | Type         | Default    | Description
 :------------------------ | :----------: | :--------: | :----------
-invokeOnMention           | Boolean      | `true`     | Whether commands may also be invoked by mentioning the bot
+check                     | DSL function |            | Register a [check](/concepets/checks) that will be applied to all message commands.
 defaultPrefix             | String       | `!`        | Prefix required before all command invocations
-prefix                    | DSL Function |            | Register a receiver function for `MessageEvent` objects, that takes the configured `defaultPrefix` and returns a `String` that should be used as the message command prefix, given the context. This can be used to, for example, set up unique command prefixes for different guilds. **Note:** this is used in several places, and not just the command invocation logic - so make sure you don't interact with Discord any more than you have to!
-messageCommands           | Boolean      | `true`     | Whether to support registration and invocation of message commands
+enabled                   | Boolean      | `true`     | Whether to support registration and invocation of message commands
+invokeOnMention           | Boolean      | `true`     | Whether commands may also be invoked by mentioning the bot
 messageRegistry           | DSL Functon  |            | If you'd like to use a `MessageCommandRegistry` subclass, then you can register a builder that returns it here.
-slashCommands             | Boolean      | `false`    | Whether to support registration and invocation of slash commands
+prefix                    | DSL Function |            | Register a receiver function for `MessageEvent` objects, that takes the configured `defaultPrefix` and returns a `String` that should be used as the message command prefix, given the context. This can be used to, for example, set up unique command prefixes for different guilds. **Note:** this is used in several places, and not just the command invocation logic - so make sure you don't interact with Discord any more than you have to!
+threads                   | Int          | `CPus * 2` | How many threads to use for the command execution threadpool
+
+#### Slash commands
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    slashCommands {
+        enabled = true
+    }
+}
+```
+
+Name                      | Type         | Default    | Description
+:------------------------ | :----------: | :--------: | :----------
+check                     | DSL function |            | Register a [check](/concepets/checks) that will be applied to all message commands.
+enabled                   | Boolean      | `false`    | Whether to support registration and invocation of slash commands
 slashRegistry             | DSL Functon  |            | If you'd like to use a `SlashCommandRegistry` subclass, then you can register a builder that returns it here.
 threads                   | Int          | `CPus * 2` | How many threads to use for the command execution threadpool
 
@@ -196,14 +215,14 @@ things.
     There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most
     of the properties are `open` to facilitate niche use-cases that require extending the ExtensibleBot class.
 
-Name | Type | Description
-:--- | :--: | :----------
-`commands` | `List <Command>` | All currently-registered command objects
-`eventHandlers` | `List <EventHandler>` | All currently-registered event handler objects
-`extensions` | `Map <String, Extension>` | All currently-loaded extension objects
-`koin` | `Koin` | Koin instance to be made use of instead of the global one
-`kord` | `Kord` | Current connected Kord instance, if the bot has been started
-`slashCommands` | `SlashCommandRegistry` | Slash command registry that keeps track of slash commands, and invokes them when the relevant events are received
+Name            | Type                      | Description
+:-------------- | :-----------------------: | :----------
+`commands`      | `List <Command>`          | All currently-registered command objects
+`eventHandlers` | `List <EventHandler>`     | All currently-registered event handler objects
+`extensions`    | `Map <String, Extension>` | All currently-loaded extension objects
+`koin`          | `Koin`                    | Koin instance to be made use of instead of the global one
+`kord`          | `Kord`                    | Current connected Kord instance, if the bot has been started
+`slashCommands` | `SlashCommandRegistry`    | Slash command registry that keeps track of slash commands, and invokes them when the relevant events are received
 
 ## Functions
 
