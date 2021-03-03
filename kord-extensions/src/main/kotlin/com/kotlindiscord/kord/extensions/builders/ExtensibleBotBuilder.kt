@@ -10,6 +10,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
 import dev.kord.core.Kord
 import dev.kord.core.cache.KordCacheBuilder
+import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
@@ -26,7 +27,10 @@ public open class ExtensibleBotBuilder {
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val commandsBuilder: CommandsBuilder = CommandsBuilder()
+    public val messageCommandsBuilder: MessageCommandsBuilder = MessageCommandsBuilder()
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
@@ -53,12 +57,21 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
-     * DSL function used to configure the bot's command options.
+     * DSL function used to configure the bot's message command options.
      *
-     * @see CommandsBuilder
+     * @see MessageCommandsBuilder
      */
-    public fun commands(builder: CommandsBuilder.() -> Unit) {
-        builder(commandsBuilder)
+    public fun messageCommands(builder: MessageCommandsBuilder.() -> Unit) {
+        builder(messageCommandsBuilder)
+    }
+
+    /**
+     * DSL function used to configure the bot's slash command options.
+     *
+     * @see SlashCommandsBuilder
+     */
+    public fun slashCommands(builder: SlashCommandsBuilder.() -> Unit) {
+        builder(slashCommandsBuilder)
     }
 
     /**
@@ -147,8 +160,57 @@ public open class ExtensibleBotBuilder {
         }
     }
 
-    /** Builder used for configuring the bot's command options. **/
-    public class CommandsBuilder {
+    /** Builder used for configuring the bot's slash command options. **/
+    public class SlashCommandsBuilder {
+        /** Whether to register and process slash commands. Defaults to `false`. **/
+        public var enabled: Boolean = false
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var slashRegistryBuilder: (ExtensibleBot) -> SlashCommandRegistry = { SlashCommandRegistry(it) }
+
+        /**
+         * List of slash command checks.
+         *
+         * These checks will be checked against all slash commands.
+         */
+        public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
+
+        /**
+         * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
+         * use of a subclass.
+         */
+        public fun slashRegistry(builder: (ExtensibleBot) -> SlashCommandRegistry) {
+            slashRegistryBuilder = builder
+        }
+
+        /**
+         * Define a check which must pass for a command to be executed. This check will be applied to all
+         * slash commands.
+         *
+         * A command may have multiple checks - all checks must pass for the command to be executed.
+         * Checks will be run in the order that they're defined.
+         *
+         * This function can be used DSL-style with a given body, or it can be passed one or more
+         * predefined functions. See the samples for more information.
+         *
+         * @param checks Checks to apply to all slash commands.
+         */
+        public fun check(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+            checks.forEach { checkList.add(it) }
+        }
+
+        /**
+         * Overloaded check function to allow for DSL syntax.
+         *
+         * @param check Check to apply to all slash commands.
+         */
+        public fun check(check: suspend (InteractionCreateEvent) -> Boolean) {
+            checkList.add(check)
+        }
+    }
+
+    /** Builder used for configuring the bot's message command options. **/
+    public class MessageCommandsBuilder {
         /** Whether to invoke commands on bot mentions, in addition to using message prefixes. Defaults to `true`. **/
         public var invokeOnMention: Boolean = true
 
@@ -156,10 +218,7 @@ public open class ExtensibleBotBuilder {
         public var defaultPrefix: String = "!"
 
         /** Whether to register and process message commands. Defaults to `true`. **/
-        public var messageCommands: Boolean = true
-
-        /** Whether to register and process slash commands. Defaults to `false`. **/
-        public var slashCommands: Boolean = false
+        public var enabled: Boolean = true
 
         /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
         public var threads: Int = Runtime.getRuntime().availableProcessors() * 2
@@ -170,8 +229,12 @@ public open class ExtensibleBotBuilder {
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var messageRegistryBuilder: (ExtensibleBot) -> MessageCommandRegistry = { MessageCommandRegistry(it) }
 
-        /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var slashRegistryBuilder: (ExtensibleBot) -> SlashCommandRegistry = { SlashCommandRegistry(it) }
+        /**
+         * List of command checks.
+         *
+         * These checks will be checked against all commands.
+         */
+        public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
@@ -193,11 +256,27 @@ public open class ExtensibleBotBuilder {
         }
 
         /**
-         * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
-         * use of a subclass.
+         * Define a check which must pass for the command to be executed. This check will be applied to all commands.
+         *
+         * A command may have multiple checks - all checks must pass for the command to be executed.
+         * Checks will be run in the order that they're defined.
+         *
+         * This function can be used DSL-style with a given body, or it can be passed one or more
+         * predefined functions. See the samples for more information.
+         *
+         * @param checks Checks to apply to all commands.
          */
-        public fun slashRegistry(builder: (ExtensibleBot) -> SlashCommandRegistry) {
-            slashRegistryBuilder = builder
+        public fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+            checks.forEach { checkList.add(it) }
+        }
+
+        /**
+         * Overloaded check function to allow for DSL syntax.
+         *
+         * @param check Checks to apply to all commands.
+         */
+        public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+            checkList.add(check)
         }
     }
 
