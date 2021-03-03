@@ -7,9 +7,8 @@ suspend fun main() {
     val bot = ExtensibleBot(System.getenv("TOKEN")) {
         koinLogLevel = Level.DEBUG
 
-        commands {
+        messageCommands {
             defaultPrefix = "?"
-            slashCommands = true
 
             prefix { default ->
                 if (guildId?.asString == "787452339908116521") {
@@ -18,6 +17,10 @@ suspend fun main() {
                     default  // "?"
                 }
             }
+        }
+
+        slashCommands {
+            enabled = true
         }
 
         extensions {

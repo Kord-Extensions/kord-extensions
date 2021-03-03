@@ -38,7 +38,7 @@ public open class MessageCommandRegistry(
     /** @suppress **/
     public open val commandThreadPool: ExecutorCoroutineDispatcher by lazy {
         Executors
-            .newFixedThreadPool(settings.commandsBuilder.threads)
+            .newFixedThreadPool(settings.messageCommandsBuilder.threads)
             .asCoroutineDispatcher()
     }
 
@@ -103,7 +103,7 @@ public open class MessageCommandRegistry(
      * needed.
      */
     public open suspend fun getPrefix(event: MessageCreateEvent): String =
-        settings.commandsBuilder.prefixCallback(event, settings.commandsBuilder.defaultPrefix)
+        settings.messageCommandsBuilder.prefixCallback(event, settings.messageCommandsBuilder.defaultPrefix)
 
     /**
      * Check whether the given string starts with a mention referring to the bot. If so, the matching mention string
@@ -156,7 +156,7 @@ public open class MessageCommandRegistry(
                     parts = parts.sliceArray(1 until parts.size)
                 }
 
-                settings.commandsBuilder.invokeOnMention &&
+                settings.messageCommandsBuilder.invokeOnMention &&
                     matchedMention != null && parts[0] == matchedMention -> {
                     // MessageCommand with a mention; first part is exactly the mention
 
@@ -169,7 +169,7 @@ public open class MessageCommandRegistry(
                     }
                 }
 
-                settings.commandsBuilder.invokeOnMention &&
+                settings.messageCommandsBuilder.invokeOnMention &&
                     matchedMention != null && parts[0].startsWith(matchedMention) -> {
                     // MessageCommand with a mention; no space between mention and command
 

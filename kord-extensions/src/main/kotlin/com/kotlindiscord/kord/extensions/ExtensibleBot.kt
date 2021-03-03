@@ -113,7 +113,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         ReplaceWith("messageCommands.getPrefix(event)"),
         level = DeprecationLevel.ERROR
     )
-    public open val prefix: String get() = settings.commandsBuilder.defaultPrefix
+    public open val prefix: String get() = settings.messageCommandsBuilder.defaultPrefix
 
     /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
     public val koin: Koin = koinApp.koin
@@ -133,13 +133,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         koin.module {
             single {
-                settings.commandsBuilder.messageRegistryBuilder(this@ExtensibleBot)
+                settings.messageCommandsBuilder.messageRegistryBuilder(this@ExtensibleBot)
             } bind MessageCommandRegistry::class
         }
 
         koin.module {
             single {
-                settings.commandsBuilder.slashRegistryBuilder(this@ExtensibleBot)
+                settings.slashCommandsBuilder.slashRegistryBuilder(this@ExtensibleBot)
             } bind SlashCommandRegistry::class
         }
     }
@@ -198,7 +198,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
                 initialized = true
 
-                if (settings.commandsBuilder.slashCommands) {
+                if (settings.slashCommandsBuilder.enabled) {
                     slashCommands.syncAll()
                 } else {
                     logger.info {
@@ -211,13 +211,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.info { "Ready!" }
         }
 
-        if (settings.commandsBuilder.messageCommands) {
+        if (settings.messageCommandsBuilder.enabled) {
             on<MessageCreateEvent> {
                 messageCommands.handleEvent(this)
             }
         }
 
-        if (settings.commandsBuilder.slashCommands) {
+        if (settings.slashCommandsBuilder.enabled) {
             on<InteractionCreateEvent> {
                 slashCommands.handle(this)
             }
