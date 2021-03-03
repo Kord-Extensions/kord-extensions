@@ -168,6 +168,11 @@ public open class ExtensibleBotBuilder {
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var slashRegistryBuilder: (ExtensibleBot) -> SlashCommandRegistry = { SlashCommandRegistry(it) }
 
+        /**
+         * List of slash command checks.
+         *
+         * These checks will be checked against all slash commands.
+         */
         public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
 
         /**
@@ -224,6 +229,11 @@ public open class ExtensibleBotBuilder {
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var messageRegistryBuilder: (ExtensibleBot) -> MessageCommandRegistry = { MessageCommandRegistry(it) }
 
+        /**
+         * List of command checks.
+         *
+         * These checks will be checked against all commands.
+         */
         public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
         /**

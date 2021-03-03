@@ -62,8 +62,18 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
      */
     public open val slashCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
 
+    /**
+     * List of slash command checks.
+     *
+     * These checks will be checked against all commands in this extension.
+     */
     public open val commandChecks: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
+    /**
+     * List of slash command checks.
+     *
+     * These checks will be checked against all slash commands in this extension.
+     */
     public open val slashCommandChecks: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
 
     /**
