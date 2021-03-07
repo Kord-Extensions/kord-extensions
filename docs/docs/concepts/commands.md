@@ -324,7 +324,6 @@ note that the properties marked with :warning: are required and must be set in o
 Name          | Type             | Description
 :------------ | :--------------: | :----------
 `autoAck`     | `Boolean`        | Whether to automatically acknowledge this command invocation when we get it - in most cases, you'll want this to be the default value (`true`) as you only get a few seconds to acknowledge a command invocation before Discord considers it invalid, but you can set this to `false` and use the `ack` function in your command body to acknowledge it yourself and provide a response if you need to
-`showSource`  | `Boolean`        | Whether to send a message on Discord showing the command invocation and the arguments provided to it, in the channel the command invocation happened in - this defaults to `false`
 `name`        | `String`         | :warning: The primary name of the command, which must be unique throughout the bot and is used for invocation
 `description` | `String`         | :warning: A description for this command, which will be shown to users on Discord
 
