@@ -14,7 +14,7 @@ buildscript {
 plugins {
     `maven-publish`
 
-    kotlin("jvm") version "1.4.30"
+    kotlin("jvm") version "1.4.31"
 
     id("com.github.jakemarsden.git-hooks") version "0.0.1"
     id("io.gitlab.arturbosch.detekt") version "1.15.0"
@@ -29,6 +29,8 @@ tasks.withType<KotlinCompile> {
 
     kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.contracts.ExperimentalContracts"
+
+    kotlinOptions.useIR = true
 }
 
 java {

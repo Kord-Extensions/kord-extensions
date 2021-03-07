@@ -33,10 +33,11 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
 
                         return@action
                     }
+
                     val feedback = UserFeedback(
                         arguments.id,
-                        member.asMember().tag,
-                        member.id.asString,
+                        member!!.asMember().tag,
+                        member!!.id.asString,
                         arguments.feedback
                     )
 

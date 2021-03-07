@@ -40,13 +40,14 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
         val args = argumentsObj.args.toMutableList()
         val command = context.event.interaction.command
+        val options = command.options
 
-        val options = when {
-            command.subCommands.isNotEmpty() -> command.subCommands.values.first().options
-            command.groups.isNotEmpty() -> command.groups.values.first().subCommands.values.first().options
-
-            else -> command.options
-        }
+//        val options = when {
+//            command.subCommands.isNotEmpty() -> command.subCommands.values.first().options
+//            command.groups.isNotEmpty() -> command.groups.values.first().subCommands.values.first().options
+//
+//            else -> command.options
+//        }
 
         val values = options.mapValues { it.value.value!!.toString() }
 

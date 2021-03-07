@@ -13,6 +13,8 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.interaction.GroupCommand
+import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
@@ -312,15 +314,15 @@ public open class SlashCommand<T : Arguments>(
         val eventCommand = event.interaction.command
 
         // We lie to the compiler thrice below to work around an issue with generics.
-        val commandObj: SlashCommand<Arguments> = if (eventCommand.subCommands.isNotEmpty()) {
-            val firstSubCommandKey = eventCommand.subCommands.keys.first()
+        val commandObj: SlashCommand<Arguments> = if (eventCommand is SubCommand) {
+            val firstSubCommandKey = eventCommand.name
 
             this.subCommands.firstOrNull { it.name == firstSubCommandKey } as SlashCommand<Arguments>?
                 ?: error("Unknown subcommand: $firstSubCommandKey")
-        } else if (eventCommand.groups.isNotEmpty()) {
-            val firstEventGroupKey = eventCommand.groups.keys.first()
+        } else if (eventCommand is GroupCommand) {
+            val firstEventGroupKey = eventCommand.groupName
             val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
-            val firstSubCommandKey = eventCommand.groups[firstEventGroupKey]!!.subCommands.keys.first()
+            val firstSubCommandKey = eventCommand.name
 
             group.subCommands.firstOrNull { it.name == firstSubCommandKey } as SlashCommand<Arguments>?
                 ?: error("Unknown subcommand: $firstSubCommandKey")
@@ -333,7 +335,7 @@ public open class SlashCommand<T : Arguments>(
         }
 
         val resp = if (commandObj.autoAck) {
-            event.interaction.acknowledge(commandObj.showSource)
+            event.interaction.acknowledge()
         } else {
             null
         }
@@ -344,7 +346,7 @@ public open class SlashCommand<T : Arguments>(
 
         val firstBreadcrumb = if (sentry.enabled) {
             val channel = context.channel.asChannelOrNull()
-            val guild = context.guild.asGuildOrNull()
+            val guild = context.guild?.asGuildOrNull()
 
             val data = mutableMapOf(
                 "command" to commandObj.name
@@ -389,15 +391,16 @@ public open class SlashCommand<T : Arguments>(
             if (resp != null) {
                 context.reply(e.reason)
             } else {
-                context.ack(commandObj.showSource, e.reason)
+                context.ack(e.reason)
             }
         } catch (t: Throwable) {
             if (sentry.enabled) {
                 logger.debug { "Submitting error to sentry." }
 
                 lateinit var sentryId: SentryId
+
                 val channel = context.channel
-                val author = context.user.asUserOrNull()
+                val author = context.user?.asUserOrNull()
 
                 Sentry.withScope {
                     if (author != null) {
@@ -439,7 +442,7 @@ public open class SlashCommand<T : Arguments>(
                 if (resp != null) {
                     context.reply(errorMessage)
                 } else {
-                    context.ack(commandObj.showSource, errorMessage)
+                    context.ack(errorMessage)
                 }
             } else {
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
@@ -450,7 +453,7 @@ public open class SlashCommand<T : Arguments>(
                 if (resp != null) {
                     context.reply(errorMessage)
                 } else {
-                    context.ack(commandObj.showSource, errorMessage)
+                    context.ack(errorMessage)
                 }
             }
         }

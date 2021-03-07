@@ -245,7 +245,7 @@ public open class SlashCommandRegistry(
 
     /** Handle an [InteractionCreateEvent] and try to execute the corresponding command. **/
     public open suspend fun handle(event: InteractionCreateEvent) {
-        val commandId = event.interaction.command.id
+        val commandId = event.interaction.command.rootId
         val command = commandMap[commandId]
 
         if (command == null) {
