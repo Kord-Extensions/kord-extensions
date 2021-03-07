@@ -20,7 +20,7 @@ val commandPrefix = "!"  // Prefix required before all command invocations - "!"
 
 val bot = ExtensibleBot(token) {
     messageCommands {
-        prefix = commandPrefix
+        defaultPrefix = commandPrefix
     }
 }
 ```

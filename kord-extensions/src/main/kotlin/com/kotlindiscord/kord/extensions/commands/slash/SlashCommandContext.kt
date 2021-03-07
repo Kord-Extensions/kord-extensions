@@ -1,5 +1,9 @@
 package com.kotlindiscord.kord.extensions.commands.slash
 
+import com.kotlindiscord.kord.extensions.checks.channelFor
+import com.kotlindiscord.kord.extensions.checks.guildFor
+import com.kotlindiscord.kord.extensions.checks.memberFor
+import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
@@ -30,13 +34,13 @@ public open class SlashCommandContext<T : Arguments>(
     public open lateinit var channel: Channel
 
     /** Guild this command happened in. **/
-    public open lateinit var guild: Guild
+    public open var guild: Guild? = null
 
     /** Guild member responsible for executing this command. **/
-    public open lateinit var member: MemberBehavior
+    public open var member: MemberBehavior? = null
 
     /** User responsible for executing this command. **/
-    public open lateinit var user: UserBehavior
+    public open var user: UserBehavior? = null
 
     /** Arguments object containing this command's parsed arguments. **/
     public open lateinit var arguments: T
@@ -55,11 +59,11 @@ public open class SlashCommandContext<T : Arguments>(
         arguments = args
     }
 
-    override suspend fun getChannel(): Channel = event.interaction.getChannel()
-    override suspend fun getGuild(): Guild = event.interaction.getGuild()
-    override suspend fun getMember(): MemberBehavior = event.interaction.member
+    override suspend fun getChannel(): Channel = channelFor(event)!!.asChannel()
+    override suspend fun getGuild(): Guild? = guildFor(event)?.asGuildOrNull()
+    override suspend fun getMember(): MemberBehavior? = memberFor(event)?.asMemberOrNull()
     override suspend fun getMessage(): MessageBehavior? = null
-    override suspend fun getUser(): UserBehavior = event.interaction.member
+    override suspend fun getUser(): UserBehavior? = userFor(event)?.asUserOrNull()
 
     /**
      * If your command has autoAck set to `false`, use this to acknowledge the command, optionally with a message.
@@ -68,15 +72,14 @@ public open class SlashCommandContext<T : Arguments>(
      * that, you won't be able to do anything with it - so it's best to acknowledge it as early as possible.
      */
     public suspend fun ack(
-        source: Boolean = false,
         content: String? = null,
         builder: (InteractionApplicationCommandCallbackDataBuilder.() -> Unit)? = null
     ): InteractionResponseBehavior {
         if (interactionResponse == null) {
             interactionResponse = if (content == null && builder == null) {
-                event.interaction.acknowledge(source)
+                event.interaction.acknowledge()
             } else {
-                event.interaction.respond(source, builder ?: { this.content = content })
+                event.interaction.respond(builder ?: { this.content = content })
             }
 
             return interactionResponse!!
@@ -92,7 +95,7 @@ public open class SlashCommandContext<T : Arguments>(
         val innerBuilder: suspend FollowupMessageCreateBuilder.() -> Unit = {
             builder()
 
-            content = "${member.mention} ${content ?: ""}"
+            content = "${user?.mention?.plus(" ") ?: ""}${content ?: ""}"
         }
 
         return followUp(innerBuilder)

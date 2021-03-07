@@ -3,6 +3,8 @@ package com.kotlindiscord.kord.extensions.checks
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior
+import dev.kord.core.entity.interaction.DmInteraction
+import dev.kord.core.entity.interaction.GuildInteraction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
 import dev.kord.core.event.guild.*
@@ -138,7 +140,13 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is GuildDeleteEvent -> event.guild
         is GuildUpdateEvent -> event.guild
         is IntegrationsUpdateEvent -> event.guild
-        is InteractionCreateEvent -> event.interaction.guild
+
+        is InteractionCreateEvent -> if (event.interaction is GuildInteraction) {
+            (event.interaction as GuildInteraction).guild
+        } else {
+            null
+        }
+
         is InviteCreateEvent -> event.guild
         is InviteDeleteEvent -> event.guild
         is MembersChunkEvent -> event.guild
@@ -183,7 +191,12 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
     return when {
-        event is InteractionCreateEvent -> event.interaction.member
+        event is InteractionCreateEvent -> if (event.interaction is GuildInteraction) {
+            (event.interaction as GuildInteraction).member
+        } else {
+            null
+        }
+
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member
 
@@ -279,7 +292,13 @@ public suspend fun userFor(event: Event): UserBehavior? {
         is DMChannelDeleteEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelUpdateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
 
-        is InteractionCreateEvent -> event.interaction.member
+        is InteractionCreateEvent -> when (val interaction = event.interaction) {
+            is GuildInteraction -> interaction.member
+            is DmInteraction -> interaction.user
+
+            else -> null
+        }
+
         is MemberJoinEvent -> event.member
         is MemberLeaveEvent -> event.user
         is MemberUpdateEvent -> event.member

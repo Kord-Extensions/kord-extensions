@@ -47,7 +47,7 @@ public abstract class DefaultingCoalescingConverter<T : Any>(defaultValue: T) : 
     public abstract suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
-    public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
+    public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.

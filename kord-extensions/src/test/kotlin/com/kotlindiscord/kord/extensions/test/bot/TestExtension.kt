@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.MessageFlags
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 
@@ -51,7 +52,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             showSource = true
 
             action {
-                ack(true, "") {
+                ack() {
                     embed {
                         this.title = "An embed!"
                         this.description = "With a description, and without a content string!"
