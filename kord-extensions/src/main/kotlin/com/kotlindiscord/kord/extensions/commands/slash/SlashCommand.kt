@@ -58,9 +58,6 @@ public open class SlashCommand<T : Arguments>(
     /** Whether to automatically acknowledge this command. Make sure you `ack` your command within 3 seconds! **/
     public open var autoAck: Boolean = true
 
-    /** Whether to send a message on discord showing the command invocation. **/
-    public open var showSource: Boolean = false
-
     /** Map of group names to slash command groups, if any. **/
     public open val groups: MutableMap<String, SlashGroup> = mutableMapOf()
 

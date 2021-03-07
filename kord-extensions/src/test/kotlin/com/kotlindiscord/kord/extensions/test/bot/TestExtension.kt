@@ -49,7 +49,6 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             name = "test-noack"
             description = "Don't auto-ack this one"
             autoAck = false
-            showSource = true
 
             action {
                 ack() {
@@ -64,7 +63,6 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
         slashCommand() {
             name = "guild-embed"
             description = "Test command, please ignore"
-            showSource = true
 
             guild(787452339908116521) // Our test server
 
@@ -74,7 +72,6 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                 subCommand(::SlashArgs) {
                     name = "inner-test"
                     description = "Test command, please ignore"
-                    showSource = true
 
                     action {
                         followUp {
@@ -112,7 +109,6 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
         slashCommand(::SlashArgs) {
             name = "test-embed"
             description = "Test command, please ignore"
-            showSource = true
 
             action {
                 followUp {
