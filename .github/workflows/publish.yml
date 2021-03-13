@@ -2,8 +2,8 @@ name: Publish
 
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - "root"
 
 jobs:
   publish:

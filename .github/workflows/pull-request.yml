@@ -1,6 +1,10 @@
-name: CI (PRs)
+name: CI (PRs/root)
 
 on:
+  push:
+    branches:
+      - "root"
+
   pull_request:
 
 jobs:
