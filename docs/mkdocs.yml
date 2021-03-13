@@ -21,6 +21,10 @@ nav:
       - integrations/koin.md
       - integrations/sentry.md
 
+  - Modules:
+      - modules/common.md
+#      - modules/mappings.md
+
   - Migrating:
       - migrating/1.4.0.md
 
