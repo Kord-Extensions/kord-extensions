@@ -1,8 +1,8 @@
 # Common
 
 [![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/gjXqqCS)
-[![Release](https://img.shields.io/nexus/r/com.kotlindiscord.kordex.ext.common/ext-common?nexusVersion=3&logo=gradle&color=blue&label=Release&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-releases:ext.common%2Fext-common)
-[![Snapshot](https://img.shields.io/nexus/s/com.kotlindiscord.kordex.ext.common/ext-common?logo=gradle&color=orange&label=Snapshot&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:ext.common%2Fext-common)
+[![Release](https://img.shields.io/nexus/r/com.kotlindiscord.kordex.ext.common/ext-common?nexusVersion=3&logo=gradle&color=blue&label=Release&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-releases:com.kotlindiscord.kordex.ext.common%2Fext-common)
+[![Snapshot](https://img.shields.io/nexus/s/com.kotlindiscord.kordex.ext.common/ext-common?logo=gradle&color=orange&label=Snapshot&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com.kotlindiscord.kordex.ext.common%2Fext-common)
 
 The Common module provides shared code that is intended for use by other extensions, and extra extensions that provide
 additional services for other extensions to use. While this does make it largely a developer tool and library, users
