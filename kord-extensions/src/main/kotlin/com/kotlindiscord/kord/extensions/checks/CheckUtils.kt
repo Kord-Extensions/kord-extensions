@@ -291,14 +291,7 @@ public suspend fun userFor(event: Event): UserBehavior? {
         is DMChannelCreateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelDeleteEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelUpdateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
-
-        is InteractionCreateEvent -> when (val interaction = event.interaction) {
-            is GuildInteraction -> interaction.member
-            is DmInteraction -> interaction.user
-
-            else -> null
-        }
-
+        is InteractionCreateEvent -> event.interaction.user
         is MemberJoinEvent -> event.member
         is MemberLeaveEvent -> event.user
         is MemberUpdateEvent -> event.member
