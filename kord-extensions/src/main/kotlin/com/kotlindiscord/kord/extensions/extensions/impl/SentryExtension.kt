@@ -1,8 +1,9 @@
-package com.kotlindiscord.kord.extensions.extensions
+package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.converters.coalescedString
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.sentryId
 import com.kotlindiscord.kord.extensions.utils.respond
 import io.sentry.Sentry
@@ -20,7 +21,7 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
     @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
         if (bot.sentry.enabled) {
-            slashCommand(::FeedbackArgs) {
+            slashCommand(SentryExtension::FeedbackArgs) {
                 name = "feedback"
                 description = "Provide feedback on what you were doing when an error occurred."
 
@@ -51,7 +52,7 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
                 }
             }
 
-            command(::FeedbackArgs) {
+            command(SentryExtension::FeedbackArgs) {
                 name = "feedback"
                 description = "If you've been given a Sentry ID by the bot, you can submit feedback on what you were" +
                     "doing using this command.\n\n" +

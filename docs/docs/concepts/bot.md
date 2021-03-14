@@ -235,6 +235,8 @@ A number of functions are available to you as well.
 
 Name              | Description
 :---------------- | :----------
+`findExtension`   | Find the first loaded extension matching the given type, or `null` if there isn't one
+`findExtensions`  | Get a list of all loaded extensions matching the given type
 `loadExtension`   | Set up a previously-unloaded extension
 `start`           | Connect to Discord, blocking the coroutine scope
 `send`            | Send an event to all event handlers - either a Kord `Event` or an `ExtensionEvent` object

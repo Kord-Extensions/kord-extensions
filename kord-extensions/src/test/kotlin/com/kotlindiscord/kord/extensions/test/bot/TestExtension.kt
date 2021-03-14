@@ -108,7 +108,9 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
         slashCommand(::SlashArgs) {
             name = "test-embed"
-            description = "Test command, please ignore"
+            description = "Test command, please ignore\n\n" +
+
+                "Now with some newlines in the description!"
 
             action {
                 followUp {
@@ -143,7 +145,9 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
         command(::TestArgs) {
             name = "test"
-            description = "Test command, please ignore"
+            description = "Test command, please ignore\n\n" +
+
+                "Now with some newlines in the description!"
 
             action {
                 with(arguments) {
@@ -177,6 +181,17 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                         }
                     }
                 }
+            }
+        }
+
+        command(::TestArgs) {
+            name = "test-help"
+            description = "Sends help for this command.\n\n" +
+
+                "Now with some newlines in the description!"
+
+            action {
+                sendHelp()
             }
         }
 

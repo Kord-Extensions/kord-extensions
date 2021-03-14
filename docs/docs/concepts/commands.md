@@ -23,7 +23,7 @@ command {  // this: Command
     check { event -> true }  // Return `false` to prevent the action
     check(::returnTrue)  // You can also pass it a function
     
-    action {  // this: CommandContext
+    action {  // this: MessageCommandContext
         message.respond("Pong!")
     }
 }
@@ -33,7 +33,7 @@ Use the `check` function to define a set of predicates that must all return `tru
 be run - you can read more about checks on [the Checks page](/concepts/checks). Once all the checks pass, the `action`
 lambda will be called.
 
-Note that the `action` lambda above is a receiver function, where `this` is bound to a `CommandContext` object.
+Note that the `action` lambda above is a receiver function, where `this` is bound to a `MessageCommandContext` object.
 
 ### Options
 
@@ -85,6 +85,7 @@ Additionally, `MessageCommandContext` objects expose the following functions.
 Name         | Description
 :----------- | :----------
 `breadcrumb` | Convenience function to create and add a Sentry breadcrumb, for the [Sentry intgration](/integrations/sentry).
+`sendHelp`   | Attempts to respond with command help using the loaded help extension, returning `false` if no such extension is loaded. Help extensions implement the `HelpProvider` interface.
 
 ### Command arguments
 

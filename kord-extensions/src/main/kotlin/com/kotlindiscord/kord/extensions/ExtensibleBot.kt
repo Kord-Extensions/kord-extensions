@@ -8,8 +8,8 @@ import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.HelpExtension
-import com.kotlindiscord.kord.extensions.extensions.SentryExtension
+import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
+import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.module
 import dev.kord.core.Kord
@@ -71,7 +71,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         ReplaceWith("messageCommands.commands"),
         level = DeprecationLevel.ERROR
     )
-    public open val commands: MutableList<MessageCommand<out Arguments>> get() = messageCommands.commands
+    public open val commands: MutableList<MessageCommand<out Arguments>>
+        get() = messageCommands.commands
 
     /**
      * A list of all registered event handlers.
@@ -113,7 +114,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         ReplaceWith("messageCommands.getPrefix(event)"),
         level = DeprecationLevel.ERROR
     )
-    public open val prefix: String get() = settings.messageCommandsBuilder.defaultPrefix
+    public open val prefix: String
+        get() = settings.messageCommandsBuilder.defaultPrefix
 
     /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
     public val koin: Koin = koinApp.koin
@@ -333,6 +335,26 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             extensionObj.doSetup()
         }
     }
+
+    /**
+     * Find the first loaded extension that is an instance of the type provided in `T`.
+     *
+     * This can be used to find an extension based on, for example, an implemented interface.
+     *
+     * @param T Type to match extensions against.
+     */
+    public inline fun <reified T> findExtension(): T? =
+        findExtensions<T>().firstOrNull()
+
+    /**
+     * Find all loaded extensions that are instances of the type provided in `T`.
+     *
+     * This can be used to find extensions based on, for example, an implemented interface.
+     *
+     * @param T Type to match extensions against.
+     */
+    public inline fun <reified T> findExtensions(): List<T> =
+        extensions.values.filterIsInstance<T>()
 
     /**
      * Unload an installed [Extension] from this bot, by name.
