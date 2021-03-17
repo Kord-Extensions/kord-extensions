@@ -129,6 +129,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     init {
         TZDATA.init()  // Set up time4j
 
+        settings.hooksBuilder.runAfterKoinCreated(this)
+
         koin.module { single { this@ExtensibleBot } }
         koin.module { single { settings } }
         koin.module { single { sentry } }
@@ -173,7 +175,11 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /** Start up the bot and log into Discord. **/
-    public open suspend fun start(): Unit = kord.login(settings.presenceBuilder)
+    public open suspend fun start() {
+        settings.hooksBuilder.runBeforeStart(this)
+
+        kord.login(settings.presenceBuilder)
+    }
 
     /** This function sets up all of the bot's default event listeners. **/
     @OptIn(PrivilegedIntent::class)
@@ -313,6 +319,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.warn { "Failed to set up extension: ${extensionObj.name}" }
         } else {
             logger.debug { "Loaded extension: ${extensionObj.name}" }
+
+            settings.hooksBuilder.runExtensionAdded(this, extensionObj)
         }
     }
 

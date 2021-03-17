@@ -125,6 +125,37 @@ add                       | Function     |            | Use this function to add
 help                      | Boolean      | `true`     | Whether to enabled the bundled help extension
 sentry                    | Boolean      | `true`     | Whether to enabled the bundled [Sentry extension](/integrations/sentry)
 
+### Hooks
+
+Hooks allow you to set up lambdas that are to be run at various points in the bot's lifecycle, allowing you to set up
+the bot precisely how you need it.
+
+All hook functions may be called multiple times, if you need to add multiple hooks for the same lifecycle stage.
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    hooks {
+        created {
+            println("ExtensibleBot object created, but not yet set up.")
+        }
+    }
+}
+```
+
+??? important "ExtensibleBotBuilder subclasses"
+    Please note that some hooks are called by the `build` function - if you override this function, you need to remember
+    to similarly call the corresponding hook functions yourself.
+
+Lifecycle Function        | Description
+:------------------------ | :----------
+afterExtensionsAdded      | Lambdas registered here are called after all the extensions specified in the `extensions` builder above have been registered
+afterKoinCreated          | Lambdas registered here are called as part of the bot's initialisation process, after the Koin context has been created
+beforeExtensionsAdded     | Lambdas registered here are called before all the extensions specified in the `extensions` builder above have been registered
+beforeStart               | Lambdas registered here are called just before the bot tries to connect to Discord
+created                   | Lambdas registered here are called just after the `ExtensibleBot` object has been created, before it's been set up
+extensionAdded            | Lambdas registered here are called every time an extension is added successfully, with the extension object as a parameter
+setup                     | Lambdas registered here are called after the `ExtensibleBot` object has been created and set up
+
 ### Intent configuration
 
 This matches Kord's intents API. For a list of available intents, 

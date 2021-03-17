@@ -42,6 +42,9 @@ public open class ExtensibleBotBuilder {
     public val membersBuilder: MembersBuilder = MembersBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val hooksBuilder: HooksBuilder = HooksBuilder()
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
     public var presenceBuilder: PresenceBuilder.() -> Unit = { status = PresenceStatus.Online }
 
     /** Logging level Koin should use, defaulting to ERROR. **/
@@ -54,6 +57,15 @@ public open class ExtensibleBotBuilder {
      */
     public fun cache(builder: CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
+    }
+
+    /**
+     * DSL function used to insert code at various points in the bot's lifecycle.
+     *
+     * @see HooksBuilder
+     */
+    public fun hooks(builder: HooksBuilder.() -> Unit) {
+        builder(hooksBuilder)
     }
 
     /**
@@ -114,9 +126,13 @@ public open class ExtensibleBotBuilder {
     public open suspend fun build(token: String): ExtensibleBot {
         val bot = ExtensibleBot(this, token)
 
+        hooksBuilder.runCreated(bot)
         bot.setup()
+        hooksBuilder.runSetup(bot)
 
+        hooksBuilder.runBeforeExtensionsAdded(bot)
         extensionsBuilder.extensions.forEach { bot.addExtension(it) }
+        hooksBuilder.runAfterExtensionsAdded(bot)
 
         return bot
     }
@@ -376,5 +392,172 @@ public open class ExtensibleBotBuilder {
         public fun none() {
             guildsToFill = mutableListOf()
         }
+    }
+
+    /** Builder used to insert code at various points in the bot's lifecycle. **/
+    @Suppress("TooGenericExceptionCaught")  // We need to catch literally everything in here
+    public class HooksBuilder {
+        // region: Hook lists
+
+        /** @suppress Internal list of hooks. **/
+        public val afterExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
+
+        /** @suppress Internal list of hooks. **/
+        public val afterKoinCreatedList: MutableList<ExtensibleBot.() -> Unit> = mutableListOf()
+
+        /** @suppress Internal list of hooks. **/
+        public val beforeExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
+
+        /** @suppress Internal list of hooks. **/
+        public val beforeStartList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
+
+        /** @suppress Internal list of hooks. **/
+        public val createdList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
+
+        /** @suppress Internal list of hooks. **/
+        public val extensionAddedList: MutableList<suspend ExtensibleBot.(extension: Extension) -> Unit> =
+            mutableListOf()
+
+        /** @suppress Internal list of hooks. **/
+        public val setupList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
+
+        // endregion
+
+        // region DSL functions
+
+        /**
+         * Register a lambda to be called after all the extensions in the [ExtensionsBuilder] have been added. This
+         * will be called regardless of how many were successfully set up.
+         */
+        public fun afterExtensionsAdded(body: suspend ExtensibleBot.() -> Unit): Boolean =
+            afterExtensionsAddedList.add(body)
+
+        /**
+         * Register a lambda to be called after the bot's Koin context has been set up. You can use this to register
+         * Koin modules early.
+         */
+        public fun afterKoinCreated(body: ExtensibleBot.() -> Unit): Boolean =
+            afterKoinCreatedList.add(body)
+
+        /**
+         * Register a lambda to be called before all the extensions in the [ExtensionsBuilder] have been added.
+         */
+        public fun beforeExtensionsAdded(body: suspend ExtensibleBot.() -> Unit): Boolean =
+            beforeExtensionsAddedList.add(body)
+
+        /**
+         * Register a lambda to be called just before the bot tries to connect to Discord.
+         */
+        public fun beforeStart(body: suspend ExtensibleBot.() -> Unit): Boolean =
+            beforeStartList.add(body)
+
+        /**
+         * Register a lambda to be called right after the [ExtensibleBot] object has been created, before it gets set
+         * up.
+         */
+        public fun created(body: suspend ExtensibleBot.() -> Unit): Boolean =
+            createdList.add(body)
+
+        /**
+         * Register a lambda to be called before after any extension is successfully added to the bot..
+         */
+        public fun extensionAdded(body: suspend ExtensibleBot.(extension: Extension) -> Unit): Boolean =
+            extensionAddedList.add(body)
+
+        /**
+         * Register a lambda to be called after the [ExtensibleBot] object has been created and set up.
+         */
+        public fun setup(body: suspend ExtensibleBot.() -> Unit): Boolean =
+            setupList.add(body)
+
+        // endregion
+
+        // region Hook execution functions
+
+        /** @suppress Internal hook execution function. **/
+        public suspend fun runAfterExtensionsAdded(bot: ExtensibleBot): Unit =
+            afterExtensionsAddedList.forEach {
+                try {
+                    it.invoke(bot)
+                } catch (t: Throwable) {
+                    bot.logger.error(t) {
+                        "Failed to run extensionAdded hook $it"
+                    }
+                }
+            }
+
+        /** @suppress Internal hook execution function. **/
+        public fun runAfterKoinCreated(bot: ExtensibleBot): Unit =
+            afterKoinCreatedList.forEach {
+                try {
+                    it.invoke(bot)
+                } catch (t: Throwable) {
+                    bot.logger.error(t) {
+                        "Failed to run afterKoinCreated hook $it"
+                    }
+                }
+            }
+
+        /** @suppress Internal hook execution function. **/
+        public suspend fun runBeforeExtensionsAdded(bot: ExtensibleBot): Unit =
+            beforeExtensionsAddedList.forEach {
+                try {
+                    it.invoke(bot)
+                } catch (t: Throwable) {
+                    bot.logger.error(t) {
+                        "Failed to run beforeExtensionsAdded hook $it"
+                    }
+                }
+            }
+
+        /** @suppress Internal hook execution function. **/
+        public suspend fun runBeforeStart(bot: ExtensibleBot): Unit =
+            beforeStartList.forEach {
+                try {
+                    it.invoke(bot)
+                } catch (t: Throwable) {
+                    bot.logger.error(t) {
+                        "Failed to run beforeStart hook $it"
+                    }
+                }
+            }
+
+        /** @suppress Internal hook execution function. **/
+        public suspend fun runCreated(bot: ExtensibleBot): Unit =
+            createdList.forEach {
+                try {
+                    it.invoke(bot)
+                } catch (t: Throwable) {
+                    bot.logger.error(t) {
+                        "Failed to run created hook $it"
+                    }
+                }
+            }
+
+        /** @suppress Internal hook execution function. **/
+        public suspend fun runExtensionAdded(bot: ExtensibleBot, extension: Extension): Unit =
+            extensionAddedList.forEach {
+                try {
+                    it.invoke(bot, extension)
+                } catch (t: Throwable) {
+                    bot.logger.error(t) {
+                        "Failed to run extensionAdded hook $it"
+                    }
+                }
+            }
+
+        /** @suppress Internal hook execution function. **/
+        public suspend fun runSetup(bot: ExtensibleBot): Unit =
+            setupList.forEach {
+                try {
+                    it.invoke(bot)
+                } catch (t: Throwable) {
+                    bot.logger.error(t) {
+                        "Failed to run setup hook $it"
+                    }
+                }
+            }
+
+        // endregion
     }
 }
