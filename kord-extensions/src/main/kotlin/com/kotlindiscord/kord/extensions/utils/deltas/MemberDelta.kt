@@ -2,45 +2,44 @@ package com.kotlindiscord.kord.extensions.utils.deltas
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.common.entity.UserFlags
+import dev.kord.common.entity.optional.Optional
 import dev.kord.core.entity.Member
+import dev.kord.core.entity.User
 import java.time.Instant
-import java.util.*
+import kotlin.contracts.contract
 
 /**
  * Represents the difference between two Kord [Member] objects. This includes everything from [UserDelta].
  *
  * This is intended for use with events that change things, to make logging easier - but may have other applications.
+ * All properties available on this object have the same names as the corresponding properties on the [Member] object.
  *
- * @param avatar The new object's avatar URL, or null if there's no difference.
- * @param username The new object's username, or null if there's no difference.
- * @param discriminator The new object's discriminator, or null if there's no difference.
- * @param flags The new object's user flags, or null if there's no difference.
- *
- * @param nickname The new object's nickname. This is an [Optional] that will be absent if there's no difference.
- * @param boosting The new object's boosting status. This is an [Optional] that will be absent if there's no difference.
- * @param roles The new object's role IDs, or null if there's no difference.
- * @param owner The new object's server owner status, or null if there's no difference.
+ * Optionals will be [Optional.Missing] if there was no change - otherwise they'll contain the value from the `new`
+ * [Member].
  */
+@Suppress("UndocumentedPublicProperty")
 public class MemberDelta(
-    avatar: String?,
-    username: String?,
-    discriminator: String?,
-    flags: UserFlags?,
+    avatar: Optional<User.Avatar>,
+    username: Optional<String>,
+    discriminator: Optional<String>,
+    flags: Optional<UserFlags?>,
 
-    public val nickname: Optional<String>?,
-    public val boosting: Optional<Instant>?,
-    public val roles: Set<Snowflake>?,
-    public val owner: Boolean?
+    public val nickname: Optional<String?>,
+    public val boosting: Optional<Instant?>,
+    public val roles: Optional<Set<Snowflake>>,
+    public val owner: Optional<Boolean>,
+    public val pending: Optional<Boolean>
 ) : UserDelta(avatar, username, discriminator, flags) {
     /**
      * A Set representing the values that have changes. Each value is represented by a human-readable string.
      */
     override val changes: Set<String> by lazy {
         super.changes.toMutableSet().apply {
-            if (nickname != null) add("nickname")
-            if (boosting != null) add("boosting")
-            if (roles != null) add("roles")
-            if (owner != null) add("owner")
+            if (nickname !is Optional.Missing) add("nickname")
+            if (boosting !is Optional.Missing) add("boosting")
+            if (roles !is Optional.Missing) add("roles")
+            if (owner !is Optional.Missing) add("owner")
+            if (pending !is Optional.Missing) add("pending")
         }
     }
 
@@ -52,6 +51,10 @@ public class MemberDelta(
          * @param new The newer [Member] object.
          */
         public suspend fun from(old: Member?, new: Member): MemberDelta? {
+            contract {
+                returns(null) implies(old == null)
+            }
+
             old ?: return null
 
             val user = UserDelta.from(old, new) ?: return null
@@ -62,20 +65,11 @@ public class MemberDelta(
                 user.discriminator,
                 user.flags,
 
-                if (old.nickname != new.nickname) {
-                    Optional.ofNullable(new.nickname)
-                } else {
-                    null
-                },
-
-                if (old.premiumSince != new.premiumSince) {
-                    Optional.ofNullable(new.premiumSince)
-                } else {
-                    null
-                },
-
-                if (old.roleIds != new.roleIds) new.roleIds else null,
-                if (old.isOwner() != new.isOwner()) new.isOwner() else null
+                if (old.nickname != new.nickname) Optional(new.nickname) else Optional.Missing(),
+                if (old.premiumSince != new.premiumSince) Optional(new.premiumSince) else Optional.Missing(),
+                if (old.roleIds != new.roleIds) Optional(new.roleIds) else Optional.Missing(),
+                if (old.isOwner() != new.isOwner()) Optional(new.isOwner()) else Optional.Missing(),
+                if (old.isPending != new.isPending) Optional(new.isPending) else Optional.Missing()
             )
         }
     }

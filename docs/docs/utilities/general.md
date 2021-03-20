@@ -24,14 +24,13 @@ you can use to find the difference between certain objects.
 
 * `UserDelta` for comparing two base `User` objects
 * `MemberDelta` for comparing two guild `Member` objects
+* `MessageDelta` for comparing two guild `Message` objects
 
-In both cases, you should use the static `from` function to create a delta object. Because Discord's API is very
-inconsistent with how data is structured, bear in mind the following tips:
+In all cases, you should use the static `from` function to create a delta object. All properties on delta objects are
+Kord `Optional`s - they'll be set to `Optional.Missing` if there was no change between the two objects, otherwise
+they'll contain the **newly changed** value.
 
-* If a property is `null`, then there was no difference between the two objects - aside from `nickname` and `boosting`,
-  which will be an absent Java `Optional` if there was no change
-* These classes were written long before Kord introduced its own optionals - they'll need to be revised to match Kord
-  0.7.x and its APIs at some point
+If the `from` function returns `null`, then the `old` object you passed as the first parameter is also `null`.
 
 ## Koin
 
