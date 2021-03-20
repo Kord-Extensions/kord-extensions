@@ -85,15 +85,6 @@ Function                 | Description
 :----------------------- | :----------
 `runSuspended`           | Convenience function to run a block of code in a coroutine dispatcher, defaulting to `Dispatchers.IO` - useful for otherwise blocking calls
 
-## Optional
-
-This utility only concerns Java's own `Optional`s, not Kord's `Optional`s
-
-Function             | Description
-:------------------- | :----------
-`Optional.getOrNull` | Returns the `Optional`'s value if it's present, or `null` if it isn't
-`Optional.isAbsent`  | Checks whether the `Optional` is **not** present
-
 ## Reaction
 
 This utility transforms other types to `ReactionEmoji` objects.
