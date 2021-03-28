@@ -42,5 +42,8 @@ jobs:
 
       - name: Deploy Docs
         run: |
+          git config --global user.name GitHub Action
+          git config --global user.email github-action@users.noreply.github.com
+
           cd docs
           mike deploy --push --update-aliases dev ${{ steps.get_tag.outputs.VERSION }}
