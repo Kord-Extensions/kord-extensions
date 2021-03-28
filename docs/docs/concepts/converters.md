@@ -96,9 +96,8 @@ a default value and instead will return `null` by default.
 
 ??? tip "Finding converter functions"
     As of this writing, there are over 1,100 lines covering `Arguments` object extension functions. While you can read
-    the generated Dokka documentation for a full list, we recommend making use of your IDE's auto-completion 
-    functionality for discovery - especially if you've written custom converters, or you're making use of third-party
-    converters.
+    the source for a full list, we recommend making use of your IDE's auto-completion functionality for discovery - 
+    especially if you've written custom converters, or you're making use of third-party converters.
 
 ## Slash commands and converters
 
@@ -122,10 +121,9 @@ to start by subclassing one of the following converter base classes:
 * `SingleConverter` for single converters, which can be wrapped into defaulting, multi and optional converters
 * `CoalescingConverter` for coalescing converters, which can be wrapped into defaulting and optional variants
 
-When creating your converter, one of the biggest things you can do to help yourself is to read over the Dokka
-generated documentation for the base classes, and look at the source for the bundled converters. Custom converters can
-be a little tricky to get your head around at first, so feel free to join the Kotlin Discord server if you need to ask
-questions.
+When creating your converter, one of the biggest things you can do to help yourself is to read over the source for the
+base classes and bundled converters. Custom converters can be a little tricky to get your head around at first, so 
+feel free to join the Kotlin Discord server if you need to ask questions.
 
 ??? question "How do I bail when something goes wrong?"
     As you may expect, errors are handled using Kotlin's exceptions system. Exceptions can be thrown as normal, and

@@ -31,9 +31,6 @@ nav:
   - Migrating:
       - migrating/1.4.0.md
 
-  - Other:
-      - Dokka API Docs: "/-kord%20-extensions/"
-
 theme:
   name: material
   logo: assets/logo.png
