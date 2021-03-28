@@ -3,6 +3,8 @@
 We recommend making use of Gradle for your build scripts, with a `kordexVersion` entry in your `gradle.properties`. Please
 note that Kord (and Kord Extensions) requires **Kotlin 1.4 or later**.
 
+[![Release](https://img.shields.io/nexus/r/com.kotlindiscord.kord.extensions/kord-extensions?nexusVersion=3&logo=gradle&color=blue&label=Release&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-releases:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions) [![Snapshot](https://img.shields.io/nexus/s/com.kotlindiscord.kord.extensions/kord-extensions?logo=gradle&color=orange&label=Snapshot&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions)
+
 === "build.gradle.kts"
 
     ```kotlin
@@ -72,39 +74,34 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
     class TestArgs : Arguments() {  // The arguments our command takes
         // A single required string argument
-        val string by string("string")  
+        val string by string("string", "String argument")  
 
         // Multiple boolean arguments, requiring at least one
-        val bools by booleanList("bools")  
+        val bools by booleanList("bools", "Multiple boolean arguments")  
     }
 
     // This will be called when the extension gets set up
     override suspend fun setup() {
-        command {  // Define a command
+        command(::Arguments) {  // Define a command
             // The name of the command
             name = "test"
 
             // A description for the help command to show
-            description = "Test command, please ignore"  
-
-            // Generate a command signature from the arguments class
-            signature(::TestArgs)  
+            description = "Test command, please ignore"
 
             action {  // This block will be executed when the command is run
-                with(parse(::TestArgs)) {  // Parse the command arguments
-                    message.channel.createEmbed {  // Kord: Create an embed
-                        title = "Test response"
-                        description = "Test description"
+                message.channel.createEmbed {  // Kord: Create an embed
+                    title = "Test response"
+                    description = "Test description"
 
-                        field {
-                            name = "String"
-                            value = string  // Required string is never null
-                        }
+                    field {
+                        name = "String"
+                        value = arguments.string  // Required string is never null
+                    }
 
-                        field {
-                            name = "Bools (${bools.size})"
-                            value = bools.joinToString(", ") { "`$it`" }
-                        }
+                    field {
+                        name = "Bools (${arguments.bools.size})"
+                        value = arguments.bools.joinToString(", ") { "`$it`" }
                     }
                 }
             }
@@ -118,7 +115,7 @@ Finally, create your `main` function, creating a bot, adding your extension to i
 ```kotlin
 suspend fun main() {
     // New instance of the bot provided by Kord Extensions
-    val bot = ExtensibleBot(System.getenv("TOKEN")) {  // Discord bot token for logging in
+    val bot = ExtensibleBot(env("TOKEN")!!) {  // Discord bot token for logging in, using the env util function
         extensions {
             // Add the extension, the bot will instantiate it
             add(::TestExtension)

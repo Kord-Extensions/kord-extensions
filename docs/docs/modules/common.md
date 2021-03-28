@@ -26,7 +26,7 @@ At its simplest, you can add the extensions directly to your bot with no further
 
 ```kotlin
 suspend fun main() {
-    val bot = ExtensibleBot(System.getenv("TOKEN")) {
+    val bot = ExtensibleBot(env("TOKEN")!!) {
         commands {
             defaultPrefix = "!"
         }
@@ -67,7 +67,7 @@ can then register it in the builder when you set up your bot:
 
 ```kotlin
 suspend fun main() {
-  val bot = ExtensibleBot(System.getenv("TOKEN")) {
+  val bot = ExtensibleBot(env("TOKEN")!!) {
     commands {
       defaultPrefix = "!"
     }

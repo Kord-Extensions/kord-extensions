@@ -32,6 +32,12 @@ they'll contain the **newly changed** value.
 
 If the `from` function returns `null`, then the `old` object you passed as the first parameter is also `null`.
 
+## Environment
+
+Function  | Description
+:-------- | :----------
+`env`     | Get the value for an environmental variable (if it exists), attempting to load from a `.env` file in the current working directory first.
+
 ## Koin
 
 Function      | Description
