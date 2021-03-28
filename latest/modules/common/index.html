@@ -1,0 +1,1216 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/modules/common/">
+      
+      <link rel="icon" href="../../assets/icon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.7">
+    
+    
+      
+        <title>Common - Kord Extensions</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.c772ddf0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="" data-md-color-accent="">
+      
+        <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#common" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kord Extensions" class="md-header__button md-logo" aria-label="Kord Extensions" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kord Extensions
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Common
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/Kord-Extensions/kord-extensions/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Kord-Extensions/kord-extensions
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../getting-started/" class="md-tabs__link">
+      Getting Started
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../concepts/bot/" class="md-tabs__link">
+        Concepts
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../utilities/general/" class="md-tabs__link">
+        Utilities
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../integrations/koin/" class="md-tabs__link">
+        Integrations
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        Modules
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../migrating/1.4.0/" class="md-tabs__link">
+        Migrating
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="/-kord%20-extensions/" class="md-tabs__link">
+        Other
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kord Extensions" class="md-nav__button md-logo" aria-label="Kord Extensions" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Kord Extensions
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/Kord-Extensions/kord-extensions/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Kord-Extensions/kord-extensions
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Concepts
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Concepts" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Concepts
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/bot/" class="md-nav__link">
+        The Bot Object
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/extensions/" class="md-nav__link">
+        Extensions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/events/" class="md-nav__link">
+        Events
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/checks/" class="md-nav__link">
+        Checks
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/commands/" class="md-nav__link">
+        Commands
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/converters/" class="md-nav__link">
+        Converters
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        Utilities
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Utilities" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Utilities
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/general/" class="md-nav__link">
+        General
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/paginator/" class="md-nav__link">
+        Paginator
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Integrations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Integrations" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Integrations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/koin/" class="md-nav__link">
+        Koin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/sentry/" class="md-nav__link">
+        Sentry
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
+      
+      <label class="md-nav__link" for="__nav_6">
+        Modules
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Modules" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Modules
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Common
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Common
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#provided-extensions" class="md-nav__link">
+    Provided Extensions
+  </a>
+  
+    <nav class="md-nav" aria-label="Provided Extensions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    Getting Started
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-emoji-extension" class="md-nav__link">
+    Configuration: Emoji Extension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abstract-classes" class="md-nav__link">
+    Abstract Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Abstract Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tomlconfig" class="md-nav__link">
+    TomlConfig
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serializeddata" class="md-nav__link">
+    SerializedData
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      <label class="md-nav__link" for="__nav_7">
+        Migrating
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Migrating" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Migrating
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrating/1.4.0/" class="md-nav__link">
+        1.3.x to 1.4.x
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      <label class="md-nav__link" for="__nav_8">
+        Other
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Other" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Other
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/-kord%20-extensions/" class="md-nav__link">
+        Dokka API Docs
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/Kord-Extensions/kord-extensions/edit/master/docs/modules/common.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="common">Common<a class="headerlink" href="#common" title="Permanent link">&para;</a></h1>
+<p><a href="https://discord.gg/gjXqqCS"><img alt="Discord: Click here" src="https://img.shields.io/static/v1?label=Discord&amp;message=Click%20here&amp;color=7289DA&amp;style=for-the-badge&amp;logo=discord" /></a>
+<a href="https://maven.kotlindiscord.com/#browse/browse:maven-releases:com.kotlindiscord.kordex.ext.common%2Fext-common"><img alt="Release" src="https://img.shields.io/nexus/r/com.kotlindiscord.kordex.ext.common/ext-common?nexusVersion=3&amp;logo=gradle&amp;color=blue&amp;label=Release&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a>
+<a href="https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com.kotlindiscord.kordex.ext.common%2Fext-common"><img alt="Snapshot" src="https://img.shields.io/nexus/s/com.kotlindiscord.kordex.ext.common/ext-common?logo=gradle&amp;color=orange&amp;label=Snapshot&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a></p>
+<p>The Common module provides shared code that is intended for use by other extensions, and extra extensions that provide
+additional services for other extensions to use. While this does make it largely a developer tool and library, users
+may also want to configure the bundled extensions.</p>
+<h2 id="provided-extensions">Provided Extensions<a class="headerlink" href="#provided-extensions" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>EmojiExtension</code> - keeps track of Discord custom emoji present on the bot's guilds, providing simple ways for other
+  extensions to get at them (or default to something else if the emoji aren't available).</li>
+</ul>
+<h3 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Maven repo:</strong> <code>https://maven.kotlindiscord.com/repository/maven-public/</code></li>
+<li><strong>Maven coordinates:</strong> <code>com.kotlindiscord.kordex.ext.common:ext-common:VERSION</code></li>
+</ul>
+<p>This module doesn't contain much that a user may need to interact with directly, but if you're using another module
+that makes use of one of the extensions in this one, you may need to configure them as explained below. As of this
+writing, none of the bundled extensions add any commands or user-facing components.</p>
+<p>At its simplest, you can add the extensions directly to your bot with no further configuration. For example:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">env</span><span class="p">(</span><span class="s">&quot;TOKEN&quot;</span><span class="p">)</span><span class="o">!!</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">commands</span> <span class="p">{</span>
+            <span class="n">defaultPrefix</span> <span class="o">=</span> <span class="s">&quot;!&quot;</span>
+        <span class="p">}</span>
+
+        <span class="n">extensions</span> <span class="p">{</span>
+            <span class="n">extCommon</span> <span class="p">{</span> <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">bot</span><span class="p">.</span><span class="na">start</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<h3 id="configuration-emoji-extension">Configuration: Emoji Extension<a class="headerlink" href="#configuration-emoji-extension" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Env var prefix:</strong> <code>KORDEX_EMOJI</code></li>
+<li><strong>System property prefix:</strong> <code>kordex.emoji</code></li>
+</ul>
+<p>This extension makes use of the Konf library for configuration. Included in the JAR is a default configuration file,
+<code>kordex/emoji/default.toml</code>. You may configure the extension in one of the following ways:</p>
+<ul>
+<li><strong>TOML file as a resource:</strong> <code>kordex/emoji/config.toml</code></li>
+<li><strong>TOML file on the filesystem:</strong> <code>./config/ext/emoji.toml</code></li>
+<li><strong>Environment variables,</strong> prefixed with <code>KORDEX_EMOJI_</code>, upper-casing keys and replacing <code>.</code> with <code>_</code> in key names</li>
+<li><strong>System properties,</strong> prefixed with <code>kordex.emoji.</code></li>
+</ul>
+<p>For an example, feel free to 
+<a href="https://github.com/Kord-Extensions/ext-common/blob/root/src/main/resources/kordex/emoji/default.toml">read the included default.toml</a>. 
+The following configuration keys are available:</p>
+<ul>
+<li><code>emoji.guilds</code>: List of guild IDs to index custom emoji from, if required - omit this or set it to an empty list and
+  all guilds will be indexed, in the order the bot joined them in.</li>
+<li><code>emoji.overrides</code>: Mapping of emoji names to guild IDs, if you need emoji with a specific name to come from a
+  specific guild while ignoring the sorted list of indexed guilds.</li>
+</ul>
+<p>If you'd like to provide your own configuration adapter, implement the <code>EmojiConfig</code> interface in your own class. You
+can then register it in the builder when you set up your bot:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">env</span><span class="p">(</span><span class="s">&quot;TOKEN&quot;</span><span class="p">)</span><span class="o">!!</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">commands</span> <span class="p">{</span>
+      <span class="n">defaultPrefix</span> <span class="o">=</span> <span class="s">&quot;!&quot;</span>
+    <span class="p">}</span>
+
+    <span class="n">extensions</span> <span class="p">{</span>
+      <span class="n">extCommon</span> <span class="p">{</span>
+          <span class="n">emojiConfig</span> <span class="o">=</span> <span class="n">CustomEmojiConfig</span><span class="p">()</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="n">bot</span><span class="p">.</span><span class="na">start</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="abstract-classes">Abstract Classes<a class="headerlink" href="#abstract-classes" title="Permanent link">&para;</a></h2>
+<p>This extension provides a number of abstract classes that you can use when developing your own extensions.</p>
+<h3 id="tomlconfig">TomlConfig<a class="headerlink" href="#tomlconfig" title="Permanent link">&para;</a></h3>
+<p>The <code>TomlConfig</code> abstract class provides a set of functionality that allows extensions that can be configured to
+behave consistently, which makes things easier to understand for users. This extension makes use of the Konf library,
+to keep things concise. The class constructor takes the following arguments:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>baseName</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">Module/extension name in lowerCamelCase</td>
+</tr>
+<tr>
+<td align="left"><code>specs</code></td>
+<td align="center"><code>vararg: Spec</code></td>
+<td align="left">All of the Konf <code>Spec</code> objects that should be loaded, in the order they should be loaded in</td>
+</tr>
+<tr>
+<td align="left"><code>resourcePrefix</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">Name for the resource group, <code>"kordex"</code> (by default) for all KordEx modules</td>
+</tr>
+<tr>
+<td align="left"><code>configFolder</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">Name for the inner config folder, <code>"ext"</code> (by default) for KordEx extension modules.</td>
+</tr>
+<tr>
+<td align="left"><code>configModifier</code></td>
+<td align="center"><code>Config.()</code></td>
+<td align="left">Lambda that will be inserted into the <code>Config</code> object instantiation, if you need to customize it.</td>
+</tr>
+</tbody>
+</table>
+<p>This class takes the following steps to resolve a configuration, with the values from later steps overriding earlier ones:</p>
+<ol>
+<li>Look for <code>$resourcePrefix/$baseName/default.toml</code> in the JAR's resources (you should ship this with your module)</li>
+<li>Look for <code>$resourcePrefix/$baseName/config.toml</code> in the JAR's resources (users can provide this in their dist)</li>
+<li>Look for <code>./config/$configFolder/$baseName.toml</code> on the filesystem (for users to write their own config files)</li>
+<li>Look for env vars prefixed with <code>$resourcePrefix_$baseName</code>, in <code>ALL_CAPS</code></li>
+<li>Look for system properties prefixed with <code>$resourcePrefix.$baseName.</code></li>
+</ol>
+<p>When extending this class, we recommend you create an interface containing getter functions that should return whatever
+values are required by your extension, to be implemented by your primary configuration class. This makes it easy to
+allow users to specify their own configuration classes for their own specific use-cases - for example, loading the
+configuration from a database. Here's an example of one way you can do this:</p>
+<div class="tabbed-set" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">MyConfigSpec</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">object</span> <span class="nc">MyConfigSpec</span> <span class="p">:</span> <span class="n">ConfigSpec</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="nv">enabled</span> <span class="k">by</span> <span class="n">required</span><span class="o">&lt;</span><span class="kt">Boolean</span><span class="o">&gt;</span><span class="p">()</span>
+    <span class="kd">val</span> <span class="nv">guild</span> <span class="k">by</span> <span class="n">required</span><span class="o">&lt;</span><span class="n">Snowflake</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">MyConfigAdapter</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">interface</span> <span class="nc">MyConfigAdapter</span> <span class="p">{</span>
+    <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">isEnabled</span><span class="p">():</span> <span class="kt">Boolean</span>
+    <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">getGuild</span><span class="p">():</span> <span class="n">Snowflake</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><label for="__tabbed_1_3">MyTomlConfig</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">MyTomlConfig</span> <span class="p">:</span> <span class="n">MyConfigAdapter</span><span class="p">,</span> <span class="n">TomlConfig</span><span class="p">(</span><span class="s">&quot;my&quot;</span><span class="p">,</span> <span class="n">MyConfigSpec</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">override</span> <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">isEnabled</span><span class="p">():</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="n">config</span><span class="o">[</span><span class="n">MyConfigSpec</span><span class="p">.</span><span class="na">enabled</span><span class="o">]</span>
+    <span class="kd">override</span> <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">getGuild</span><span class="p">():</span> <span class="n">Snowflake</span> <span class="o">=</span> <span class="n">config</span><span class="o">[</span><span class="n">MyConfigSpec</span><span class="p">.</span><span class="na">guild</span><span class="o">]</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+</div>
+<h3 id="serializeddata">SerializedData<a class="headerlink" href="#serializeddata" title="Permanent link">&para;</a></h3>
+<p>The <code>SerializedData</code> abstract class provides a set of functionality that allows you to serialize (and deserialize)
+data (generally, extension state) to disk. This class makes use of <code>kotlinx.serialization</code>, and can be customized for 
+different formats. The class constructor takes the following arguments:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>T</code></td>
+<td align="center"><code>TypeVar: Any</code></td>
+<td align="left">Type of the class you plan to serialize.</td>
+</tr>
+<tr>
+<td align="left"><code>baseName</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">Filename, excluding extension.</td>
+</tr>
+<tr>
+<td align="left"><code>dataFolder</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">Folder within the <code>./data</code> folder to place the file within.</td>
+</tr>
+<tr>
+<td align="left"><code>serializerObj</code></td>
+<td align="center"><code>KSerializer&lt;T&gt;</code></td>
+<td align="left">Serializer for your data class - pass <code>serializer()</code> if you don't have a custom one.</td>
+</tr>
+<tr>
+<td align="left"><code>defaultBuilder</code></td>
+<td align="center"><code>() -&gt; T</code></td>
+<td align="left">Builder function or lambda that creates a new instance of your data class, with defaults set up. If all of the parameters in your data class have default values, you can pass the constructor using <code>::T</code> instead.</td>
+</tr>
+<tr>
+<td align="left"><code>fileExtension</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">File extension, defaulting to <code>"json"</code> - if you're using a custom format, you can change this in your subclass.</td>
+</tr>
+</tbody>
+</table>
+<p>By default, this class assumes you want to use JSON, and will serialize to JSON files on disk. You can change this
+behaviour in your subclasses by overriding the <code>decode</code> and <code>encode</code> functions and changing the <code>fileExtension</code>
+constructor parameter.</p>
+<p>This class saves data in <code>./data/$dataFolder/$baseName.$fileExtension</code>. You always need to provide the
+<code>baseName</code> and <code>dataFolder</code> parameters, but <code>fileExtension</code> will default to <code>"json"</code> if you don't set it. We
+recommend providing these as part of the superclass invocation rather than as constructor parameters in your
+subclass, if that's appropriate.</p>
+<p>If the file doesn't exist or is empty, then it will automatically be filled with the data class created by the
+<code>defaultBuilder</code> function at load time. Deserialization errors will not result in the file being overwritten with
+default data, you'll need to handle that yourself if it's what you need.</p>
+<div class="admonition warning">
+<p class="admonition-title">Saving Data</p>
+<p><strong>Note:</strong> You will need to manually call the <code>save</code> and <code>load</code> functions. For example, if your data class tracks 
+an <code>enabled</code> value, you should implement either a <code>getEnabled()</code> and <code>setEnabled(bool)</code> function, or a <code>val</code> with 
+custom getters and setters - but both options <strong>must</strong> call <code>save</code> as appropriate when data is modified!</p>
+</div>
+<p>When extending this class, we recommend you create an interface containing getter and setter functions that should 
+interface with the <code>data</code> property, to be implemented by your primary data serialization class. This makes it easy to
+allow users to specify their own serialization classes for their own specific use-cases - for example, loading the
+data from a database, and writing it back. Here's an example of one way you can do this:</p>
+<div class="tabbed-set" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">MyData</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@Serializable</span>
+<span class="kd">data</span> <span class="kd">class</span> <span class="nc">MyData</span><span class="p">(</span>
+    <span class="kd">var</span> <span class="nv">enabled</span><span class="p">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="kd">var</span> <span class="nv">guild</span><span class="p">:</span> <span class="n">Snowflake? </span><span class="o">=</span> <span class="kc">null</span>
+<span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">MyDataAdapter</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">interface</span> <span class="nc">MyDataAdapter</span> <span class="p">{</span>
+    <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">isEnabled</span><span class="p">():</span> <span class="kt">Boolean</span>
+    <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">setEnabled</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="kt">Boolean</span><span class="p">)</span>
+
+    <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">getGuild</span><span class="p">():</span> <span class="n">Snowflake</span>
+    <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">setGuild</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Snowflake</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><label for="__tabbed_2_3">MyJsonData</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">MyJsonData</span> <span class="p">:</span> <span class="n">MyDataAdapter</span><span class="p">,</span> <span class="n">SerializedData</span><span class="o">&lt;</span><span class="n">MyData</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="s">&quot;data&quot;</span><span class="p">,</span> <span class="s">&quot;my&quot;</span><span class="p">,</span> <span class="n">serializer</span><span class="p">(),</span> <span class="o">::</span><span class="n">MyData</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">init</span> <span class="p">{</span> <span class="n">load</span><span class="p">()</span> <span class="p">}</span>
+
+    <span class="kd">override</span> <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">isEnabled</span><span class="p">():</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="na">enabled</span>
+    <span class="kd">override</span> <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">getGuild</span><span class="p">():</span> <span class="n">Snowflake</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="na">guild</span>
+
+    <span class="kd">override</span> <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">setEnabled</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="kt">Boolean</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="n">data</span><span class="p">.</span><span class="na">enabled</span> <span class="o">=</span> <span class="n">value</span> 
+
+        <span class="n">save</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">override</span> <span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">setGuild</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Snowflake</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="n">data</span><span class="p">.</span><span class="na">guild</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="n">save</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+</div>
+                
+                  
+                    
+
+<hr>
+<div class="md-source-date">
+  <small>
+    
+      Last update: 2021-03-28
+    
+  </small>
+</div>
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../../integrations/sentry/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Sentry
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../../migrating/1.4.0/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              1.3.x to 1.4.x
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tabs", "navigation.tracking", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.65ce87ac.min.js"></script>
+      
+    
+  </body>
+</html>
