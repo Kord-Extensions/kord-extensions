@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
@@ -42,8 +42,5 @@ jobs:
 
       - name: Deploy Docs
         run: |
-          git config --global user.name GitHub Action
-          git config --global user.email github-action@users.noreply.github.com
-
           cd docs
           mike deploy --push --update-aliases latest ${{ steps.get_tag.outputs.VERSION }}
