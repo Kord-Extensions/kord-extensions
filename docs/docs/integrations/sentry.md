@@ -61,11 +61,11 @@ There's nothing more that you need to do - you'll see the issue appear in Sentry
 associated context!
 
 <figure>
-    <a href="../assets/sentry-breadcrumbs.png">
-        <img src="../assets/sentry-breadcrumbs.png" width="100%" alt="Sentry breadcrumbs" /> 
+    <a href="../../assets/sentry-breadcrumbs.png">
+        <img src="../../assets/sentry-breadcrumbs.png" width="100%" alt="Sentry breadcrumbs" /> 
     </a>
-    <a href="../assets/sentry-data.png">
-        <img src="../assets/sentry-data.png" width="100%" alt="Sentry data" /> 
+    <a href="../../assets/sentry-data.png">
+        <img src="../../assets/sentry-data.png" width="100%" alt="Sentry data" /> 
     </a>
 </figure>
 
@@ -81,9 +81,9 @@ includes a `feedback` command, which will be automatically registered by the Sen
 If you wish to disable this, pass `false` for the `addSentryExtension` constructor param for your `ExtensibleBot`
 instance, and both the Sentry ID in the error and the `feedback` command will be disabled.
 
-<a href="../assets/sentry-feedback.png">
+<a href="../../assets/sentry-feedback.png">
     <figure>
-        <img src="../assets/sentry-feedback.png" width="100%" alt="Sentry feedback" /> 
+        <img src="../../assets/sentry-feedback.png" width="100%" alt="Sentry feedback" /> 
     </figure>
 </a>
 
