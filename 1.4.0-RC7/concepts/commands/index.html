@@ -1,0 +1,1390 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/concepts/commands/">
+      
+      <link rel="icon" href="../../assets/icon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.7">
+    
+    
+      
+        <title>Commands - Kord Extensions</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.c772ddf0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="" data-md-color-accent="">
+      
+        <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#commands" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Kord Extensions" class="md-header__button md-logo" aria-label="Kord Extensions" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kord Extensions
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Commands
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Kord Extensions" class="md-nav__button md-logo" aria-label="Kord Extensions" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Kord Extensions
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      <label class="md-nav__link" for="__nav_3">
+        Concepts
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Concepts" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Concepts
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot/" class="md-nav__link">
+        The Bot Object
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        Extensions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../events/" class="md-nav__link">
+        Events
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../checks/" class="md-nav__link">
+        Checks
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Commands
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Commands
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-basics" class="md-nav__link">
+    The basics
+  </a>
+  
+    <nav class="md-nav" aria-label="The basics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    Options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-context" class="md-nav__link">
+    Command context
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-arguments" class="md-nav__link">
+    Command arguments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-groups" class="md-nav__link">
+    Command groups
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-parsing" class="md-nav__link">
+    Command parsing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-command-types" class="md-nav__link">
+    Custom command types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#slash-commands" class="md-nav__link">
+    Slash commands
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../converters/" class="md-nav__link">
+        Converters
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        Utilities
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Utilities" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Utilities
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/general/" class="md-nav__link">
+        General
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/paginator/" class="md-nav__link">
+        Paginator
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Integrations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Integrations" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Integrations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/koin/" class="md-nav__link">
+        Koin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/sentry/" class="md-nav__link">
+        Sentry
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Modules
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Modules" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Modules
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modules/common/" class="md-nav__link">
+        Common
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      <label class="md-nav__link" for="__nav_7">
+        Migrating
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Migrating" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Migrating
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrating/1.4.0/" class="md-nav__link">
+        Migrating: 1.3.x to 1.4.x
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/-kord%20-extensions/" class="md-nav__link">
+        Dokka API Docs
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-basics" class="md-nav__link">
+    The basics
+  </a>
+  
+    <nav class="md-nav" aria-label="The basics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    Options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-context" class="md-nav__link">
+    Command context
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-arguments" class="md-nav__link">
+    Command arguments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-groups" class="md-nav__link">
+    Command groups
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-parsing" class="md-nav__link">
+    Command parsing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-command-types" class="md-nav__link">
+    Custom command types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#slash-commands" class="md-nav__link">
+    Slash commands
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="commands">Commands</h1>
+<p>If you want your bot to interact with users in a more complex manner than simply reacting to events, then you'll
+probably want to write some commands. Kord Extensions provides a robust and flexible commands system, built around
+a custom argument parsing solution that allows you to specify the arguments for your command in an entirely type-safe
+manner.</p>
+<p>We support both standalone and grouped commands, and you can even create your own specialised command types if you
+wish. That said, it's usually best to start with the basics.</p>
+<h2 id="the-basics">The basics</h2>
+<p>Commands provide a way for you to specify a set of actions the bot can take on a user's behalf, specified using a
+prefixed message in a Discord channel or private message. Creating one is simple - just use the <code>command</code> function in 
+your extension's <code>setup</code> function.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">command</span> <span class="p">{</span>  <span class="c1">// this: Command</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;ping&quot;</span>  <span class="c1">// Command name</span>
+    <span class="n">aliases</span> <span class="o">=</span> <span class="n">arrayOf</span><span class="p">(</span><span class="s">&quot;pong&quot;</span><span class="p">)</span>  <span class="c1">// Alternate command names</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Returns &#39;Pong!&#39;&quot;</span>  <span class="c1">// Help text for the help command</span>
+
+    <span class="n">check</span> <span class="p">{</span> <span class="n">event</span> <span class="o">-&gt;</span> <span class="kc">true</span> <span class="p">}</span>  <span class="c1">// Return `false` to prevent the action</span>
+    <span class="n">check</span><span class="p">(</span><span class="o">::</span><span class="n">returnTrue</span><span class="p">)</span>  <span class="c1">// You can also pass it a function</span>
+
+    <span class="n">action</span> <span class="p">{</span>  <span class="c1">// this: CommandContext</span>
+        <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Pong!&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<p>Use the <code>check</code> function to define a set of predicates that must all return <code>true</code> in order for the command's action to
+be run - you can read more about checks on <a href="/concepts/checks">the Checks page</a>. Once all the checks pass, the <code>action</code>
+lambda will be called.</p>
+<p>Note that the <code>action</code> lambda above is a receiver function, where <code>this</code> is bound to a <code>CommandContext</code> object.</p>
+<h3 id="options">Options</h3>
+<p>Commands have quite a lot of options that you may be interested in while setting one up. The following properties
+are available right in the <code>command</code> lambda - please note that properties marked with <img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> are required and must
+be set in order to properly register a command.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>name</code></td>
+<td align="center"><code>String</code></td>
+<td align="left"><img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> The primary name of the command, which must be unique throughout the bot and is used for invocation</td>
+</tr>
+<tr>
+<td align="left"><code>aliases</code></td>
+<td align="center"><code>Array &lt;String&gt;</code></td>
+<td align="left">An array of secondary names to use for this command, which are also used for invocation and help commands</td>
+</tr>
+<tr>
+<td align="left"><code>description</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">A long description used by the help extension to describe the command - the first line of which should be a short summary</td>
+</tr>
+<tr>
+<td align="left"><code>enabled</code></td>
+<td align="center"><code>Boolean</code></td>
+<td align="left">Defaulting to <code>true</code>, this can be set programmatically in order to entirely disable or re-enable the command</td>
+</tr>
+<tr>
+<td align="left"><code>hidden</code></td>
+<td align="center"><code>Boolean</code></td>
+<td align="left">Default to <code>false</code>, this can be set to <code>true</code> to completely hide the command from the help extension's command listings</td>
+</tr>
+<tr>
+<td align="left"><code>signature</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">A string representing the arguments for the command - you can have this automatically generated using the <code>signature()</code> function as described later on in this document</td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, the following functions are available - please note that functions marked with <img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> are  required 
+and must be called in order to properly register a command.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>action</code></td>
+<td align="left"><img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference</td>
+</tr>
+<tr>
+<td align="left"><code>check</code></td>
+<td align="left">A function allowing you to define one or more checks for this command - see <a href="/concepts/checks">the Checks page</a> for more information</td>
+</tr>
+<tr>
+<td align="left"><code>signature</code></td>
+<td align="left">A function that will generate the command signature for you, when passed a function or constructor reference that returns an Arguments object, which will be described later on in this document</td>
+</tr>
+</tbody>
+</table>
+<h3 id="command-context">Command context</h3>
+<p>A <code>MessageCommandContext</code> object is a light wrapper around the command invocation, and it exists only for the duration 
+of your command's <code>action</code>. It exists to provide a little extra context and functionality for your command body</p>
+<p><code>MessageCommandContext</code> objects expose the following properties.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>args</code></td>
+<td align="center"><code>Array &lt;String&gt;</code></td>
+<td align="left">A simple array of string arguments that were passed to this command invocation</td>
+</tr>
+<tr>
+<td align="left"><code>arguments</code></td>
+<td align="center"><code>T</code></td>
+<td align="left">Arguments object containing the command's parsed arguments, as described below</td>
+</tr>
+<tr>
+<td align="left"><code>breadcrumbs</code></td>
+<td align="center"><code>MutableList &lt;Breadcrumb&gt;</code></td>
+<td align="left">List of Sentry breadcrumbs, for the <a href="/integrations/sentry">Sentry intgration</a></td>
+</tr>
+<tr>
+<td align="left"><code>channel</code></td>
+<td align="center"><code>MessageChannelBehavior</code></td>
+<td align="left">The message channel this command happened in</td>
+</tr>
+<tr>
+<td align="left"><code>command</code></td>
+<td align="center"><code>Command</code></td>
+<td align="left">Current command being invoked - note that this is a generic type, and you'll need to cast it to <code>MessageCommand</code></td>
+</tr>
+<tr>
+<td align="left"><code>commandName</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">Name of the current command being invoked, as provided by the user and lower-cased (meaning that this will be an alias if the user called the command that way)</td>
+</tr>
+<tr>
+<td align="left"><code>event</code></td>
+<td align="center"><code>MessageCreateEvent</code></td>
+<td align="left">MessageCreateEvent that is responsible for causing this command invocation</td>
+</tr>
+<tr>
+<td align="left"><code>guild</code></td>
+<td align="center"><code>Guild?</code></td>
+<td align="left">The guild this command happened in, if any</td>
+</tr>
+<tr>
+<td align="left"><code>member</code></td>
+<td align="center"><code>Member?</code></td>
+<td align="left">Guild member responsible for executing this command, if it happened in a guild and the user wasn't actually a webhook</td>
+</tr>
+<tr>
+<td align="left"><code>message</code></td>
+<td align="center"><code>Message</code></td>
+<td align="left">Message object from the <code>event</code></td>
+</tr>
+<tr>
+<td align="left"><code>user</code></td>
+<td align="center"><code>User?</code></td>
+<td align="left">User responsible for executing this command, if the user wasn't actually a webhook</td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, <code>MessageCommandContext</code> objects expose the following functions.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>breadcrumb</code></td>
+<td align="left">Convenience function to create and add a Sentry breadcrumb, for the <a href="/integrations/sentry">Sentry intgration</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="command-arguments">Command arguments</h3>
+<p>Kord Extensions provides an object-based approach to argument parsing, using a base <code>Arguments</code> type and delegation to
+extension functions. Defining the arguments for your command is fairly simple:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">PostArguments</span> <span class="p">:</span> <span class="n">Arguments</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Single required string argument</span>
+    <span class="kd">val</span> <span class="nv">title</span> <span class="k">by</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;Post title&quot;</span><span class="p">)</span>
+
+    <span class="c1">// Single required Discord user argument</span>
+    <span class="kd">val</span> <span class="nv">author</span> <span class="k">by</span> <span class="n">user</span><span class="p">(</span><span class="s">&quot;author&quot;</span><span class="p">,</span> <span class="s">&quot;User that this post should be attributed to&quot;</span><span class="p">)</span>
+
+    <span class="c1">// Consumes the rest of the arguments into a single string</span>
+    <span class="kd">val</span> <span class="nv">body</span> <span class="k">by</span> <span class="n">coalescedString</span><span class="p">(</span><span class="s">&quot;body&quot;</span><span class="p">,</span> <span class="s">&quot;Text content to be placed within the posts&#39;s body&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<p>We recommend writing this as an inner class, but it's up to you where you put it (as long as it's public). Once you've
+created your argument class, you can start using it in your commands:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">command</span><span class="p">(</span><span class="o">::</span><span class="n">PostArguments</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;post&quot;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Create a post&quot;</span>
+
+    <span class="n">action</span> <span class="p">{</span>
+        <span class="c1">// Option 1</span>
+        <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span>
+            <span class="s">&quot;**</span><span class="si">${</span><span class="n">arguments</span><span class="p">.</span><span class="na">title</span><span class="si">}</span><span class="s">** (by </span><span class="si">${</span><span class="n">arguments</span><span class="p">.</span><span class="na">author</span><span class="p">.</span><span class="na">mention</span><span class="si">}</span><span class="s">)\n\n&quot;</span> <span class="o">+</span>
+                <span class="n">arguments</span><span class="p">.</span><span class="na">body</span>
+        <span class="p">)</span>
+
+        <span class="c1">// Option 2</span>
+        <span class="n">with</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span>
+                <span class="s">&quot;**</span><span class="si">$</span><span class="n">title</span><span class="s">** (by </span><span class="si">${</span><span class="n">author</span><span class="p">.</span><span class="na">mention</span><span class="si">}</span><span class="s">)\n\n&quot;</span> <span class="o">+</span>
+                    <span class="n">body</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<p>The argument parser will validate the command arguments for you automatically - if there's a problem, a
+<code>ParseException</code> will be thrown. These exceptions are automatically handled by the bot, and will be returned to
+whoever invoked the command to let them know what exactly went wrong.</p>
+<p>For more information on how exactly this parsing works (and how to customize it), please see 
+<a href="/concepts/converters">the Converters page</a>.</p>
+<h2 id="command-groups">Command groups</h2>
+<p>For ease of use, we also provide a special type of command that includes the ability to nest commands within it.
+Grouped commands work just like regular commands, but with a few differences:</p>
+<ul>
+<li>Grouped commands have a default action that informs the user of the available subcommands, which means you don't have
+  to define an <code>action</code> unless you want to override this behaviour</li>
+<li>Grouped commands have their own <code>command</code> and <code>group</code> functions that can be used for nesting</li>
+<li>Checks are tested while traversing the tree, which means that a parent's checks must pass for a subcommand to execute</li>
+</ul>
+<p>The help extension also fully supports subcommands, and understands what you meant if you try to request help for a
+subcommand - just provide the full command, and you're good to go.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">group</span> <span class="p">{</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;sport&quot;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport!&quot;</span>
+
+    <span class="n">command</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;basketball&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport to basketball&quot;</span>
+
+        <span class="n">action</span> <span class="p">{</span>
+            <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now basketball.&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">command</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;football&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport to football&quot;</span>
+
+        <span class="n">action</span> <span class="p">{</span>
+            <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now football.&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">group</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;craft&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Sports are boring, pick a craft instead!&quot;</span>
+
+        <span class="n">command</span> <span class="p">{</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;knitting&quot;</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport to knitting&quot;</span>
+
+            <span class="n">action</span> <span class="p">{</span>
+                <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now knitting.&quot;</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="n">command</span> <span class="p">{</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;painting&quot;</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Set your favourite sport to painting&quot;</span>
+
+            <span class="n">action</span> <span class="p">{</span>
+                <span class="n">message</span><span class="p">.</span><span class="na">respond</span><span class="p">(</span><span class="s">&quot;Your favourite sport is now painting.&quot;</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<h2 id="command-parsing">Command parsing</h2>
+<p>While not everyone will need to understand precisely how commands are parsed under the hood, it's worth exploring
+some specifics - you'll need to understand how to specify arguments on Discord, and your users will likewise need
+an understanding of this.</p>
+<p>Kord Extensions supports two ways to supply arguments out of the box: Positional arguments, and keyword arguments.
+You can mix both approaches; arguments will always be parsed in the order they're defined in the <code>Arguments</code> subclass,
+but keyword arguments can appear anywhere in the command (aside from inside another argument). Positional arguments are
+always parsed in order.</p>
+<details class="missing"><summary>Not Implemented: Flags</summary><p>Occasionally, a user will ask us why our parser doesn't support Unix-style flags - for example, <code>--argument</code> or
+<code>-a value</code>. The primary reason for this is that the current argument parser is already fairly complex, and 
+supporting flags within it would massively increase the maintenance burden it already carries.</p>
+<p>Additionally, while developers and Linux users will be very familiar with flags, we don't feel that most users
+will find them as simple to understand as our current keyword arguments. That said, you're always free to subclass
+the <code>ArgumentParser</code> class and implement your own parsing - if you do anything interesting with this, please let
+us know!</p>
+</details>
+<p>Additionally, single arguments can contain spaces if you <code>"surround them in quotes"</code>. As an example, take the 
+following command:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>!post author=109040264529608704 &quot;This is my title&quot; <span class="gs">**My Post**</span>
+
+This is part of the body of my post, despite being a couple lines down.
+Arguments can happily contain newlines - although arguments can&#39;t be 
+<span class="ge">*separated*</span> using newlines, so be careful!
+</code></pre></div>
+</td></tr></table>
+<p>Assuming a command prefix of <code>!</code>:</p>
+<ol>
+<li>Our command is named <code>post</code></li>
+<li>Next, a keyword argument referring to <code>author</code> is found, and a reference is stored</li>
+<li><code>title</code> is parsed first, into the string <code>"This is my title"</code></li>
+<li>Next, <code>author</code> is parsed - the bot will search for a user with the given ID, but a mention or <code>user#discrim</code> string can also be provided instead</li>
+<li>Finally, <code>body</code> is parsed - it's a coalescing string converter, so it consumes the rest of the arguments</li>
+</ol>
+<p>This is a fairly simple example, and you can write some fairly complicated command handling if you feel so inclined.</p>
+<details class="tip"><summary>Consuming multiple arguments</summary><p>Multi and coalescing converters consume arguments until they come across something they can no longer consume - for
+example, the <code>numberList</code> extension function returns a <code>MultiConverter</code> that consumes whole numbers until it no 
+longer can. It will consume  numbers from its starting argument onwards, until it encounters something that isn't 
+a number. At that point, it stops and tells the argument parser how many arguments have been consumed, and 
+processing continues to the next converter.</p>
+</details>
+<details class="tip"><summary>Extensible converters</summary><p>Converters themselves are quite extensible, and you shouldn't be afraid to write custom converters for types that
+are unique to your bot. Additionally, the order of the arguments defined in your <code>Arguments</code> subclass will be
+matched by the parser, so it is technically possible to create a converter that, for example, takes a lambda that
+relies on the value of a previously specified argument.</p>
+</details>
+<h2 id="custom-command-types">Custom command types</h2>
+<p>Kord Extensions provides three command types (<code>MessageCommand</code>, <code>MessageGroupCommand</code> and <code>MessageSubCommand</code>), which 
+should be fairly self-explanatory. You can also create your own command types by subclassing <code>MessageCommand</code> and 
+overriding different properties and functions. We also support Discord's slash commands - you can read about them in 
+a later section on this page.</p>
+<p>Some properties you may be interested in include:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>body</code></td>
+<td align="center"><code>MessageCommandContext &lt;T&gt;.()</code></td>
+<td align="left">The command body, normally set using the <code>action</code> function</td>
+</tr>
+<tr>
+<td align="left"><code>checkList</code></td>
+<td align="center"><code>MutableList &lt;MessageCreateEvent -&gt; Boolean&gt;</code></td>
+<td align="left">A list of check predicates required for command execution</td>
+</tr>
+<tr>
+<td align="left"><code>parser</code></td>
+<td align="center"><code>ArgumentParser</code></td>
+<td align="left">Class in charge of handling argument parsing, which you can override if you'd like to change how that works</td>
+</tr>
+</tbody>
+</table>
+<p>The following functions may also be interesting for subclasses:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>runChecks</code></td>
+<td align="left">Function in charge of running all the checks and reporting its success</td>
+</tr>
+<tr>
+<td align="left"><code>call</code></td>
+<td align="left">Function called to handle the actual command invocation - a lot of things happen here, you'll want to read the source before overriding this</td>
+</tr>
+</tbody>
+</table>
+<p>As the command system is still constantly evolving, you'll want to keep up with releases and double-check for breakages
+in your custom command types. Despite this maintenance burden, custom command types have a lot of uses - so feel free
+to experiment!</p>
+<h2 id="slash-commands">Slash commands</h2>
+<p>At some point, Discord came up with the idea of integrating slash commands with the Discord client. Kord Extensions
+supports slash commands as well, via the <code>slashCommand</code> function and <code>SlashCommand</code> class. Usage is very similar to
+the message-based commands above, with a few notable changes.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">slashCommand</span><span class="p">(</span><span class="o">::</span><span class="n">PostArguments</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;post&quot;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Commands for working with posts&quot;</span>
+
+    <span class="n">subCommand</span><span class="p">(</span><span class="o">::</span><span class="n">GetArguments</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;get&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Get a post by title&quot;</span>
+
+        <span class="n">action</span> <span class="p">{</span>
+            <span class="kd">val</span> <span class="nv">post</span> <span class="o">=</span> <span class="n">getPostByTitle</span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="na">title</span><span class="p">)</span>
+
+            <span class="n">followUp</span> <span class="p">{</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="s">&quot;**</span><span class="si">${</span><span class="n">post</span><span class="p">.</span><span class="na">title</span><span class="si">}</span><span class="s">** (by </span><span class="si">${</span><span class="n">post</span><span class="p">.</span><span class="na">author</span><span class="p">.</span><span class="na">mention</span><span class="si">}</span><span class="s">)\n\n&quot;</span> <span class="o">+</span>
+                    <span class="n">post</span><span class="p">.</span><span class="na">body</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">subCommand</span><span class="p">(</span><span class="o">::</span><span class="n">CreateArguments</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;create&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Create a new post&quot;</span>
+
+        <span class="n">action</span> <span class="p">{</span>
+            <span class="n">followUp</span> <span class="p">{</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="s">&quot;**</span><span class="si">${</span><span class="n">arguments</span><span class="p">.</span><span class="na">title</span><span class="si">}</span><span class="s">** (by </span><span class="si">${</span><span class="n">arguments</span><span class="p">.</span><span class="na">author</span><span class="p">.</span><span class="na">mention</span><span class="si">}</span><span class="s">)\n\n&quot;</span> <span class="o">+</span>
+                    <span class="n">arguments</span><span class="p">.</span><span class="na">body</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<p>Slash commands support the following options. They can be set directly within the <code>slashCommand</code> lambda - please 
+note that the properties marked with <img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> are required and must be set in order to properly register a command.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>autoAck</code></td>
+<td align="center"><code>Boolean</code></td>
+<td align="left">Whether to automatically acknowledge this command invocation when we get it - in most cases, you'll want this to be the default value (<code>true</code>) as you only get a few seconds to acknowledge a command invocation before Discord considers it invalid, but you can set this to <code>false</code> and use the <code>ack</code> function in your command body to acknowledge it yourself and provide a response if you need to</td>
+</tr>
+<tr>
+<td align="left"><code>showSource</code></td>
+<td align="center"><code>Boolean</code></td>
+<td align="left">Whether to send a message on Discord showing the command invocation and the arguments provided to it, in the channel the command invocation happened in - this defaults to <code>false</code></td>
+</tr>
+<tr>
+<td align="left"><code>name</code></td>
+<td align="center"><code>String</code></td>
+<td align="left"><img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> The primary name of the command, which must be unique throughout the bot and is used for invocation</td>
+</tr>
+<tr>
+<td align="left"><code>description</code></td>
+<td align="center"><code>String</code></td>
+<td align="left"><img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> A description for this command, which will be shown to users on Discord</td>
+</tr>
+</tbody>
+</table>
+<details class="note"><summary>Command groups and subcommands</summary><p>Subcommands (whether inside a command group or directly within a slash command) work just like regular slash commands do, with the following caveats:</p>
+<ul>
+<li>Subcommands may not be guild-limited, and setting the <code>guild</code> property will result in an error. Instead, you'll 
+  have to limit the root command, and all subcommands will be similarly limited.</li>
+<li>Subcommands run the root command's checks first, if any - both the root command's checks and the subcommand's 
+  checks must pass for the command to be run.</li>
+</ul>
+<p>You may only have 10 command groups (with a max of 10 subcommands per group) per command. If you're using top-level 
+subcommands, each slash command may only have 10 of those.</p>
+<p>On a top-level command, you may only have an action, some command groups, <strong>or</strong> some subcommands. Providing more 
+than one of these will result in an error - exactly one must always be provided. Additionally, subcommands may not
+have their own subcommands or command groups.</p>
+</details>
+<p>Additionally, the following functions are available. Please note that all slash commands require at least one call to
+either <code>action</code>, <code>group</code> or <code>subcommand</code>, but you may only pick one - these options are mutually exclusive.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>action</code></td>
+<td align="left">A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference</td>
+</tr>
+<tr>
+<td align="left"><code>check</code></td>
+<td align="left">A function allowing you to define one or more checks for this command - see <a href="/concepts/checks">the Checks page</a> for more information</td>
+</tr>
+<tr>
+<td align="left"><code>group</code></td>
+<td align="left">A function allowing you to create a named subcommand group that will be shown on Discord. Just like slash commands, command groups require you to set a description - don't forget to!</td>
+</tr>
+<tr>
+<td align="left"><code>guild</code></td>
+<td align="left">A function allowing you to specify a specific guild for this command to be restricted to, if you don't want it to be registered globally</td>
+</tr>
+<tr>
+<td align="left"><code>subCommand</code></td>
+<td align="left">A function allowing you to create a subcommand, either directly within the top-level command or within a command group.</td>
+</tr>
+</tbody>
+</table>
+<p>If your slash command has no arguments, simply omit the argument builder parameter.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../checks/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Checks
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../converters/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Converters
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.65ce87ac.min.js"></script>
+      
+    
+  </body>
+</html>
