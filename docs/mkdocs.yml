@@ -1,6 +1,9 @@
 site_name: Kord Extensions
 site_url: https://kord-extensions.docs.kotlindiscord.com
 
+repo_name: Kord-Extensions/kord-extensions
+repo_url: https://github.com/Kord-Extensions/kord-extensions
+
 nav:
   - index.md
   - getting-started.md
@@ -28,27 +31,42 @@ nav:
   - Migrating:
       - migrating/1.4.0.md
 
-  - Dokka API Docs: "/-kord%20-extensions/"
+  - Other:
+      - Dokka API Docs: "/-kord%20-extensions/"
 
 theme:
   name: material
   logo: assets/logo.png
   favicon: assets/icon.png
 
+  icon:
+    repo: fontawesome/brands/github
+
   palette:
     scheme: preference
+
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tracking
+    - toc.integrate
+
+extra:
+  version:
+    provider: mike
 
 extra_css:
   - stylesheets/extra.css
 
 plugins:
+  - git-revision-date
   - search
 
 markdown_extensions:
   - admonition
   - attr_list
   - sane_lists
-  - toc
+
   - mdx_truly_sane_lists
 
   - pymdownx.details
@@ -61,3 +79,6 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+
+  - toc:
+      permalink: true

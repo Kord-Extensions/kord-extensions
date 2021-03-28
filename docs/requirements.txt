@@ -1,5 +1,7 @@
+mike
+mdx_truly_sane_lists
 mkdocs
+mkdocs-git-revision-date-plugin
+mkdocs-material
 mkdocs-material-extensions
 pygments
-mdx_truly_sane_lists
-

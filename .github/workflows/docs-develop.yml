@@ -1,0 +1,69 @@
+name: Docs (Develop)
+
+on:
+  push:
+    branches:
+      - "develop"
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
+
+#      - name: Set up Java
+#        uses: actions/setup-java@v1
+#
+#        with:
+#          java-version: 1.14
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+        with:
+          python-version: 3.x
+
+      - name: Install Python packages
+        run: pip install -r docs/requirements.txt
+
+#      - name: Set up Gradle properties
+#        run: |
+#          mkdir -p ~/.gradle
+#          echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
+
+#      - name: Gradle (Build)
+#        run: sh gradlew kord-extensions:build kord-extensions:dokkaHtml docs:build
+
+#      - name: Gradle (Build)
+#        run: sh gradlew kord-extensions:build docs:build
+
+#      - name: Copy Dokka docs
+#        run: cp -r kord-extensions/build/dokka/html/* docs/build/mkdocs
+
+#      - name: Add CNAME file
+#        run: |
+#          echo "kord-extensions.docs.kotlindiscord.com" >> docs/build/mkdocs/CNAME
+
+      - name: Set up git credentials
+        uses: oleksiyrudenko/gha-git-credentials@v2-latest
+
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+
+#      - name: Deploy Docs
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          github_token: '${{ secrets.GITHUB_TOKEN }}'
+#          publish_dir: docs/build/mkdocs
+
+      - name: Get version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(sh ./gradlew -q printVersion)
+
+      - name: Deploy Docs
+        run: |
+          cd docs
+          mike deploy --push --update-aliases dev ${{ steps.get_tag.outputs.NAME }}

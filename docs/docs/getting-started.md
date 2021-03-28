@@ -1,3 +1,8 @@
+---
+hide:
+- navigation
+---
+
 # Getting Started
 
 We recommend making use of Gradle for your build scripts, with a `kordexVersion` entry in your `gradle.properties`. Please

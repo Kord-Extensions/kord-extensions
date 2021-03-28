@@ -61,8 +61,14 @@ val javadocJar = task("javadocJar",Jar::class) {
     from(tasks.javadoc)
 }
 
+val printVersion = task("printVersion") {
+    print(version.toString())
+}
+
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+
+    api("com.kotlindiscord.pluralkot:PluralKot:1.0.0")
 
     api("dev.kord:kord-core:0.7.0-SNAPSHOT")
 

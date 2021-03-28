@@ -1,3 +1,9 @@
+---
+hide:
+- navigation
+- toc
+---
+
 # Home
 
 [![Docs: You are here](https://img.shields.io/static/v1?label=Docs&message=You%20are%20here&color=7289DA&style=for-the-badge&logo=read-the-docs)](https://kord-extensions.docs.kotlindiscord.com/) [![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/gjXqqCS) [![Build Status](https://img.shields.io/github/workflow/status/Kotlin-Discord/kord-extensions/CI/root?logo=github&style=for-the-badge)](https://github.com/Kotlin-Discord/kord-extensions/actions?query=workflow%3ACI+branch%3Aroot) <br />

@@ -1,0 +1,39 @@
+name: Release Tag
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+        with:
+          python-version: 3.x
+
+      - name: Install Python packages
+        run: pip install -r docs/requirements.txt
+
+      - name: Set up git credentials
+        uses: oleksiyrudenko/gha-git-credentials@v2-latest
+
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Get version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(sh ./gradlew -q printVersion)
+
+      - name: Deploy Docs
+        run: |
+          cd docs
+          mike deploy --push --update-aliases latest ${{ steps.get_tag.outputs.NAME }}
