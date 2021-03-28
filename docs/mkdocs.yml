@@ -4,6 +4,8 @@ site_url: https://kord-extensions.docs.kotlindiscord.com
 repo_name: Kord-Extensions/kord-extensions
 repo_url: https://github.com/Kord-Extensions/kord-extensions
 
+edit_uri: ""  # Hide edit button
+
 nav:
   - index.md
   - getting-started.md
