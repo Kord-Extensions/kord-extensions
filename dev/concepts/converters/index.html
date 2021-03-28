@@ -265,22 +265,6 @@
   
 
       
-        
-  
-  
-
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="/-kord%20-extensions/" class="md-tabs__link">
-        Other
-      </a>
-    </li>
-  
-
-      
     </ul>
   </div>
 </nav>
@@ -718,48 +702,6 @@
   
 
     
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
-      
-      <label class="md-nav__link" for="__nav_8">
-        Other
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Other" data-md-level="1">
-        <label class="md-nav__title" for="__nav_8">
-          <span class="md-nav__icon md-icon"></span>
-          Other
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/-kord%20-extensions/" class="md-nav__link">
-        Dokka API Docs
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -894,9 +836,8 @@ on Discord when you're working with slash commands. Try to keep it short, but de
 converters require you to pass a default value to their creation function, while optional converters do not take
 a default value and instead will return <code>null</code> by default.</p>
 <details class="tip"><summary>Finding converter functions</summary><p>As of this writing, there are over 1,100 lines covering <code>Arguments</code> object extension functions. While you can read
-the generated Dokka documentation for a full list, we recommend making use of your IDE's auto-completion 
-functionality for discovery - especially if you've written custom converters, or you're making use of third-party
-converters.</p>
+the source for a full list, we recommend making use of your IDE's auto-completion functionality for discovery - 
+especially if you've written custom converters, or you're making use of third-party converters.</p>
 </details>
 <h2 id="slash-commands-and-converters">Slash commands and converters<a class="headerlink" href="#slash-commands-and-converters" title="Permanent link">&para;</a></h2>
 <p>While slash commands make use of all the usual converter types, the following points are worth bearing in mind:</p>
@@ -918,10 +859,9 @@ to start by subclassing one of the following converter base classes:</p>
 <li><code>SingleConverter</code> for single converters, which can be wrapped into defaulting, multi and optional converters</li>
 <li><code>CoalescingConverter</code> for coalescing converters, which can be wrapped into defaulting and optional variants</li>
 </ul>
-<p>When creating your converter, one of the biggest things you can do to help yourself is to read over the Dokka
-generated documentation for the base classes, and look at the source for the bundled converters. Custom converters can
-be a little tricky to get your head around at first, so feel free to join the Kotlin Discord server if you need to ask
-questions.</p>
+<p>When creating your converter, one of the biggest things you can do to help yourself is to read over the source for the
+base classes and bundled converters. Custom converters can be a little tricky to get your head around at first, so 
+feel free to join the Kotlin Discord server if you need to ask questions.</p>
 <details class="question"><summary>How do I bail when something goes wrong?</summary><p>As you may expect, errors are handled using Kotlin's exceptions system. Exceptions can be thrown as normal, and
 they'll be caught by the argument parser and transformed into an error message. However, you may wish to provide
 a more useful error message to the user - for these cases, you should create and throw an instance of 
@@ -968,7 +908,7 @@ may cause all kinds of strange issues</strong> - provide wrapping extension func
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-23
+      Last update: 2021-03-28
     
   </small>
 </div>
