@@ -16,7 +16,7 @@ into individual extension classes.
 The approach taken here is relatively different from a lot of Kotlin libraries, many of which prefer to provide a DSL 
 for quickly prototyping or implementing a small application. Instead, 
 [discord.py](https://github.com/Rapptz/discord.py) (the Discord library for Python) is a primary source of inspiration 
-for our fairly object-oriented design, especially where it comes to its extensions (which are known as cogs in  
+for our fairly object-oriented design, especially where it comes to its extensions (which are known as cogs in 
 discord.py). Despite this, we still strive to provide an idiomatic API that makes full use of Kotlin's niceties.
 
 ??? summary "Why not kordx.commands?"
