@@ -9,7 +9,7 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.*
 import dev.kord.core.entity.Guild
-import dev.kord.core.entity.channel.Channel
+import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.rest.builder.interaction.FollowupMessageCreateBuilder
@@ -31,7 +31,7 @@ public open class SlashCommandContext<T : Arguments>(
     public val event: InteractionCreateEvent get() = eventObj as InteractionCreateEvent
 
     /** Channel this command happened in. **/
-    public open lateinit var channel: Channel
+    public open lateinit var channel: MessageChannel
 
     /** Guild this command happened in. **/
     public open var guild: Guild? = null
@@ -59,7 +59,7 @@ public open class SlashCommandContext<T : Arguments>(
         arguments = args
     }
 
-    override suspend fun getChannel(): Channel = channelFor(event)!!.asChannel()
+    override suspend fun getChannel(): MessageChannel = channelFor(event)!!.asChannel() as MessageChannel
     override suspend fun getGuild(): Guild? = guildFor(event)?.asGuildOrNull()
     override suspend fun getMember(): MemberBehavior? = memberFor(event)?.asMemberOrNull()
     override suspend fun getMessage(): MessageBehavior? = null
