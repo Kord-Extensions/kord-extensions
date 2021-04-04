@@ -384,6 +384,15 @@ public open class SlashCommand<T : Arguments>(
             }
 
             commandObj.body(context)
+
+            if (autoAck) {
+                extension.bot.kord.rest.interaction.modifyInteractionResponse(
+                    event.interaction.applicationId,
+                    event.interaction.token
+                ) {
+                    content = "Done!"
+                }
+            }
         } catch (e: ParseException) {
             if (resp != null) {
                 context.reply(e.reason)
