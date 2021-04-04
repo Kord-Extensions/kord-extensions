@@ -394,7 +394,7 @@ public open class SlashCommand<T : Arguments>(
                 }
             }
         } catch (e: ParseException) {
-            if (resp != null) {
+            if (context.interactionResponse != null) {
                 context.reply(e.reason)
             } else {
                 context.ack(e.reason)
