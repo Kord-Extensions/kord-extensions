@@ -45,6 +45,9 @@ public open class SlashCommandContext<T : Arguments>(
     /** Arguments object containing this command's parsed arguments. **/
     public open lateinit var arguments: T
 
+    /** Whether a response or ack has already been sent by the user. **/
+    public open var acked: Boolean = false
+
     override val command: SlashCommand<out T> get() = slashCommand
 
     override suspend fun populate() {
@@ -75,12 +78,14 @@ public open class SlashCommandContext<T : Arguments>(
         content: String? = null,
         builder: (InteractionApplicationCommandCallbackDataBuilder.() -> Unit)? = null
     ): InteractionResponseBehavior {
-        if (interactionResponse == null) {
+        if (interactionResponse == null || acked) {
             interactionResponse = if (content == null && builder == null) {
                 event.interaction.acknowledge()
             } else {
                 event.interaction.respond(builder ?: { this.content = content })
             }
+
+            acked = true
 
             return interactionResponse!!
         }
@@ -110,7 +115,11 @@ public open class SlashCommandContext<T : Arguments>(
             error("You must acknowledge this command before sending a follow-up message.")
         }
 
-        return interactionResponse!!.followUp { builder() }
+        val response = interactionResponse!!.followUp { builder() }
+
+        acked = true
+
+        return response
     }
 
     /** Quick access to the `followUp` function on the interaction response object, just for a string message. **/

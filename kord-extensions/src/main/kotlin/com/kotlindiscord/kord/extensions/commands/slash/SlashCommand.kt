@@ -385,7 +385,7 @@ public open class SlashCommand<T : Arguments>(
 
             commandObj.body(context)
 
-            if (autoAck) {
+            if (autoAck && !context.acked) {
                 extension.bot.kord.rest.interaction.modifyInteractionResponse(
                     event.interaction.applicationId,
                     event.interaction.token

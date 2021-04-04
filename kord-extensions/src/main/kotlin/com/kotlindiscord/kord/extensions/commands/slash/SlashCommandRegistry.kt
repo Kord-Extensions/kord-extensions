@@ -138,21 +138,55 @@ public open class SlashCommandRegistry(
             }
         }
 
-        (toAdd + toUpdate).forEach {
-            if (guild == null) {
-                logger.debug { "Adding/updating global slash command ${it.name}" }
+        val toCreate = toAdd + toUpdate
 
-                val response = api.createGlobalApplicationCommand(it.name, it.description) { register(it) }
+        if (guild == null) {
+            val response = api.createGlobalApplicationCommands {
+                toCreate.forEach {
+                    logger.debug { "Adding/updating global slash command ${it.name}" }
 
-                commandMap[response.id] = it
-            } else {
-                logger.debug { "Adding/updating slash command ${it.name} for guild: ${guildObj?.name}" }
+                    command(it.name, it.description) { register(it) }
+                }
+            }
 
-                val response = api.createGuildApplicationCommand(guild, it.name, it.description) { register(it) }
+            response.forEach {
+                val slashCommand = toCreate.first { command -> command.name == it.name }
 
-                commandMap[response.id] = it
+                commandMap[it.id] = slashCommand
+            }
+        } else {
+            toCreate.groupBy { it.guild!! }.forEach { (snowflake, commands) ->
+                val response = api.createGuildApplicationCommands(snowflake) {
+                    commands.forEach {
+                        logger.debug { "Adding/updating global slash command ${it.name}" }
+
+                        command(it.name, it.description) { register(it) }
+                    }
+                }
+
+                response.forEach {
+                    val slashCommand = commands.first { command -> command.name == it.name }
+
+                    commandMap[it.id] = slashCommand
+                }
             }
         }
+
+//        (toAdd + toUpdate).forEach {
+//            if (guild == null) {
+//                logger.debug { "Adding/updating global slash command ${it.name}" }
+//
+//                val response = api.createGlobalApplicationCommand(it.name, it.description) { register(it) }
+//
+//                commandMap[response.id] = it
+//            } else {
+//                logger.debug { "Adding/updating slash command ${it.name} for guild: ${guildObj?.name}" }
+//
+//                val response = api.createGuildApplicationCommand(guild, it.name, it.description) { register(it) }
+//
+//                commandMap[response.id] = it
+//            }
+//        }
 
         if (guild == null) {
             api.getGlobalApplicationCommands().filter { e -> toRemove.any { it.second == e.id } }
@@ -165,7 +199,7 @@ public open class SlashCommandRegistry(
             api.getGuildApplicationCommands(guild).filter { e -> toRemove.any { it.second == e.id } }
                 .toList()
                 .forEach {
-                    logger.debug { "Removing global slash command ${it.name}" }
+                    logger.debug { "Removing guild slash command ${it.name}" }
                     it.delete()
                 }
         }
