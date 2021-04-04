@@ -945,6 +945,30 @@ they'll contain the <strong>newly changed</strong> value.</p>
 <td align="left"><code>MessageData.authorIsBot</code></td>
 <td align="left">Quick access to check whether the message author is a bot</td>
 </tr>
+<tr>
+<td align="left"><code>Message.isCrossPost</code></td>
+<td align="left">Whether this message was sent from a different guild's followed announcement channel</td>
+</tr>
+<tr>
+<td align="left"><code>Message.isEphemeral</code></td>
+<td align="left">Whether this is an ephemeral message from the Interactions system</td>
+</tr>
+<tr>
+<td align="left"><code>Message.isPublished</code></td>
+<td align="left">Whether this message was published to the guilds that are following its channel</td>
+</tr>
+<tr>
+<td align="left"><code>Message.isUrgent</code></td>
+<td align="left">Whether this message came from Discord's urgent message system</td>
+</tr>
+<tr>
+<td align="left"><code>Message.originalMessageDeleted</code></td>
+<td align="left">When <code>isCrossPost</code>, whether the source message has been deleted from the original guild</td>
+</tr>
+<tr>
+<td align="left"><code>Message.suppressEmbeds</code></td>
+<td align="left">Whether this message's embeds should be serialized</td>
+</tr>
 </tbody>
 </table>
 <table>
@@ -1188,7 +1212,7 @@ to cancel the <code>Job</code> early if required. The following instance functio
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-28
+      Last update: 2021-04-04
     
   </small>
 </div>
