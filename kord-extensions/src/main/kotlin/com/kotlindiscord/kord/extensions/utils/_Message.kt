@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.utils
 
+import dev.kord.common.entity.MessageFlag
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.channel.createMessage
@@ -334,3 +335,27 @@ public suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild?
     respond("This command is not available via private message.")
     return false
 }
+
+/** Whether this message was published to the guilds that are following its channel. **/
+public val Message.isPublished: Boolean get() =
+    data.flags.value?.contains(MessageFlag.CrossPosted) == true
+
+/** Whether this message was sent from a different guild's followed announcement channel. **/
+public val Message.isCrossPost: Boolean get() =
+    data.flags.value?.contains(MessageFlag.IsCrossPost) == true
+
+/** Whether this message's embeds should be serialized. **/
+public val Message.suppressEmbeds: Boolean get() =
+    data.flags.value?.contains(MessageFlag.SuppressEmbeds) == true
+
+/** When [isCrossPost], whether the source message has been deleted from the original guild. **/
+public val Message.originalMessageDeleted: Boolean get() =
+    data.flags.value?.contains(MessageFlag.SourceMessageDeleted) == true
+
+/** Whether this message came from Discord's urgent message system. **/
+public val Message.isUrgent: Boolean get() =
+    data.flags.value?.contains(MessageFlag.Urgent) == true
+
+/** Whether this is an ephemeral message from the Interactions system. **/
+public val Message.isEphemeral: Boolean get() =
+    data.flags.value?.contains(MessageFlag.Ephemeral) == true

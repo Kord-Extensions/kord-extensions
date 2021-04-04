@@ -67,10 +67,16 @@ Function                | Description
 
 ## Messages
 
-Property                  | Description
-:------------------------ | :----------
-`MessageData.authorId`    | Quick access to the message author's ID
-`MessageData.authorIsBot` | Quick access to check whether the message author is a bot
+Property                         | Description
+:------------------------------- | :----------
+`MessageData.authorId`           | Quick access to the message author's ID
+`MessageData.authorIsBot`        | Quick access to check whether the message author is a bot
+`Message.isCrossPost`            | Whether this message was sent from a different guild's followed announcement channel
+`Message.isEphemeral`            | Whether this is an ephemeral message from the Interactions system
+`Message.isPublished`            | Whether this message was published to the guilds that are following its channel
+`Message.isUrgent`               | Whether this message came from Discord's urgent message system
+`Message.originalMessageDeleted` | When `isCrossPost`, whether the source message has been deleted from the original guild
+`Message.suppressEmbeds`         | Whether this message's embeds should be serialized
 
 Function                         | Description
 :------------------------------- | :----------
