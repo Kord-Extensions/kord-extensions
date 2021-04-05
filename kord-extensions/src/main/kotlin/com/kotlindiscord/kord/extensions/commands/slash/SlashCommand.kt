@@ -167,7 +167,7 @@ public open class SlashCommand<T : Arguments>(
      * @param body Builder lambda used for setting up the slash command object.
      */
     public open suspend fun <T : Arguments> subCommand(
-        arguments: (() -> T)?,
+        arguments: (() -> T),
         body: suspend SlashCommand<T>.() -> Unit
     ): SlashCommand<T> {
         val commandObj = SlashCommand(this.extension, arguments, this)

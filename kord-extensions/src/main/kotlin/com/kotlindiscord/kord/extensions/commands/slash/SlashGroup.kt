@@ -49,7 +49,7 @@ public open class SlashGroup(
      * @param body Builder lambda used for setting up the subcommand object.
      */
     public open suspend fun <T : Arguments> subCommand(
-        arguments: (() -> T)?,
+        arguments: (() -> T),
         body: suspend SlashCommand<T>.() -> Unit
     ): SlashCommand<T> {
         val commandObj = SlashCommand(parent.extension, arguments, parent, this)

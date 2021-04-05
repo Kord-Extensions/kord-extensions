@@ -62,6 +62,48 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             }
         }
 
+        slashCommand {
+            name = "group"
+            description = "Test command, please ignore"
+
+            group("one") {
+                subCommand(::SlashArgs) {
+                    name = "test"
+                    description = "Test command, please ignore"
+
+                    action {
+                        followUp {
+                            embed {
+                                title = "Guild response"
+                                description = "Guild description"
+
+                                field {
+                                    name = "String"
+                                    value = arguments.string
+                                }
+
+                                field {
+                                    name = "Enum"
+                                    value = arguments.enum.toString()
+                                }
+
+                                field {
+                                    name = "Optional Enum"
+                                    value = arguments.optionalEnum.toString()
+                                }
+
+                                field {
+                                    name = "Bool"
+
+                                    value = arguments.bool.toString()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         slashCommand() {
             name = "guild-embed"
             description = "Test command, please ignore"

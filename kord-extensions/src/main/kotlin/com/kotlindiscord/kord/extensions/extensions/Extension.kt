@@ -176,7 +176,7 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
      * @param body Builder lambda used for setting up the slash command object.
      */
     public open suspend fun <T : Arguments> slashCommand(
-        arguments: (() -> T)?,
+        arguments: (() -> T),
         body: suspend SlashCommand<T>.() -> Unit
     ): SlashCommand<T> {
         val commandObj = SlashCommand(this, arguments)
