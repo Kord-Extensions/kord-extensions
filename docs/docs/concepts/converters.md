@@ -54,6 +54,7 @@ Converters are provided that support the following type conversions, out of the 
 * `Regex` (Kotlin wrapper type only) with special-casing for coalescing conversion
 * `Role`
 * `String` with special-casing for coalescing conversion
+* `Snowflake`
 * `User`
 
 ## Usage

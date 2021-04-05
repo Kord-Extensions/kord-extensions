@@ -232,6 +232,14 @@ public fun Arguments.role(
     arg(displayName, description, RoleConverter(requiredGuild))
 
 /**
+ * Create a snowflake converter, for single arguments.
+ *
+ * @see SnowflakeConverter
+ */
+public fun Arguments.snowflake(displayName: String, description: String): SingleConverter<Snowflake> =
+    arg(displayName, description, SnowflakeConverter())
+
+/**
  * Create a string converter, for single arguments.
  *
  * @see StringConverter
@@ -459,6 +467,18 @@ public fun Arguments.optionalRole(
     arg(displayName, description, RoleConverter(requiredGuild).toOptional(outputError = outputError))
 
 /**
+ * Create an optional snowflake converter, for single arguments.
+ *
+ * @see SnowflakeConverter
+ */
+public fun Arguments.optionalSnowflake(
+    displayName: String,
+    description: String,
+    outputError: Boolean = false
+): OptionalConverter<Snowflake?> =
+    arg(displayName, description, SnowflakeConverter().toOptional(outputError = outputError))
+
+/**
  * Create an optional string converter, for single arguments.
  *
  * @see StringConverter
@@ -607,6 +627,18 @@ public fun Arguments.defaultingRegex(
     options: Set<RegexOption> = setOf()
 ): DefaultingConverter<Regex> =
     arg(displayName, description, RegexConverter(options).toDefaulting(defaultValue))
+
+/**
+ * Create a defaulting snowflake converter, for single arguments.
+ *
+ * @see SnowflakeConverter
+ */
+public fun Arguments.defaultingString(
+    displayName: String,
+    description: String,
+    defaultValue: Snowflake
+): DefaultingConverter<Snowflake> =
+    arg(displayName, description, SnowflakeConverter().toDefaulting(defaultValue))
 
 /**
  * Create a defaulting string converter, for single arguments.
@@ -1061,6 +1093,20 @@ public fun Arguments.roleList(
     requiredGuild: (suspend () -> Snowflake)?
 ): MultiConverter<Role> =
     arg(displayName, description, RoleConverter(requiredGuild).toMulti(required, signatureTypeString = "roles"))
+
+/**
+ * Create a snowflake converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see SnowflakeConverter
+ */
+public fun Arguments.snowflakeList(
+    displayName: String,
+    description: String,
+    required: Boolean = true
+): MultiConverter<Snowflake> =
+    arg(displayName, description, SnowflakeConverter().toMulti(required))
 
 /**
  * Create a string converter, for lists of arguments.

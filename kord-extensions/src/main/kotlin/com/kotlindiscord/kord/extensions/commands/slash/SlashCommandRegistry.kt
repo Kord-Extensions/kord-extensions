@@ -147,13 +147,18 @@ public open class SlashCommandRegistry(
 
                     command(it.name, it.description) { register(it) }
                 }
+            }.associate { it.name to it.id }
+
+            toCreate.forEach {
+                commandMap[response[it.name]!!] = it
             }
 
-            response.forEach {
-                val slashCommand = toCreate.first { command -> command.name == it.name }
-
-                commandMap[it.id] = slashCommand
-            }
+            api.getGlobalApplicationCommands().filter { e -> toRemove.any { it.second == e.id } }
+                .toList()
+                .forEach {
+                    logger.debug { "Removing global slash command ${it.name}" }
+                    it.delete()
+                }
         } else {
             toCreate.groupBy { it.guild!! }.forEach { (snowflake, commands) ->
                 val response = api.createGuildApplicationCommands(snowflake) {
@@ -162,40 +167,13 @@ public open class SlashCommandRegistry(
 
                         command(it.name, it.description) { register(it) }
                     }
-                }
+                }.associate { it.name to it.id }
 
-                response.forEach {
-                    val slashCommand = commands.first { command -> command.name == it.name }
-
-                    commandMap[it.id] = slashCommand
+                commands.forEach {
+                    commandMap[response[it.name]!!] = it
                 }
             }
-        }
 
-//        (toAdd + toUpdate).forEach {
-//            if (guild == null) {
-//                logger.debug { "Adding/updating global slash command ${it.name}" }
-//
-//                val response = api.createGlobalApplicationCommand(it.name, it.description) { register(it) }
-//
-//                commandMap[response.id] = it
-//            } else {
-//                logger.debug { "Adding/updating slash command ${it.name} for guild: ${guildObj?.name}" }
-//
-//                val response = api.createGuildApplicationCommand(guild, it.name, it.description) { register(it) }
-//
-//                commandMap[response.id] = it
-//            }
-//        }
-
-        if (guild == null) {
-            api.getGlobalApplicationCommands().filter { e -> toRemove.any { it.second == e.id } }
-                .toList()
-                .forEach {
-                    logger.debug { "Removing global slash command ${it.name}" }
-                    it.delete()
-                }
-        } else {
             api.getGuildApplicationCommands(guild).filter { e -> toRemove.any { it.second == e.id } }
                 .toList()
                 .forEach {
