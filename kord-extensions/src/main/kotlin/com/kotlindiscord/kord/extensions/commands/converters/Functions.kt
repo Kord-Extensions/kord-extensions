@@ -175,7 +175,7 @@ public fun Arguments.long(displayName: String, description: String, radix: Int =
 public fun Arguments.member(
     displayName: String,
     description: String,
-    requiredGuild: (suspend () -> Snowflake)?
+    requiredGuild: (suspend () -> Snowflake)? = null
 ): SingleConverter<Member> =
     arg(displayName, description, MemberConverter(requiredGuild))
 
@@ -227,7 +227,7 @@ public fun Arguments.regex(
 public fun Arguments.role(
     displayName: String,
     description: String,
-    requiredGuild: (suspend () -> Snowflake)?
+    requiredGuild: (suspend () -> Snowflake)? = null
 ): SingleConverter<Role> =
     arg(displayName, description, RoleConverter(requiredGuild))
 
@@ -396,7 +396,7 @@ public fun Arguments.optionalLong(
 public fun Arguments.optionalMember(
     displayName: String,
     description: String,
-    requiredGuild: (suspend () -> Snowflake)?,
+    requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false
 ): OptionalConverter<Member?> =
     arg(displayName, description, MemberConverter(requiredGuild).toOptional(outputError = outputError))
@@ -461,7 +461,7 @@ public fun Arguments.optionalRegex(
 public fun Arguments.optionalRole(
     displayName: String,
     description: String,
-    requiredGuild: (suspend () -> Snowflake)?,
+    requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false
 ): OptionalConverter<Role?> =
     arg(displayName, description, RoleConverter(requiredGuild).toOptional(outputError = outputError))
@@ -1017,7 +1017,7 @@ public fun Arguments.memberList(
     displayName: String,
     description: String,
     required: Boolean,
-    requiredGuild: (suspend () -> Snowflake)?
+    requiredGuild: (suspend () -> Snowflake)? = null
 ): MultiConverter<Member> =
     arg(displayName, description, MemberConverter(requiredGuild).toMulti(required, signatureTypeString = "members"))
 
@@ -1090,7 +1090,7 @@ public fun Arguments.roleList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    requiredGuild: (suspend () -> Snowflake)?
+    requiredGuild: (suspend () -> Snowflake)? = null
 ): MultiConverter<Role> =
     arg(displayName, description, RoleConverter(requiredGuild).toMulti(required, signatureTypeString = "roles"))
 
