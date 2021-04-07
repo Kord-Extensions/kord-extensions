@@ -103,6 +103,8 @@ public open class SlashCommandContext<T : Arguments>(
             content = "${user?.mention?.plus(" ") ?: ""}${content ?: ""}"
         }
 
+        acked = true
+
         return followUp(innerBuilder)
     }
 

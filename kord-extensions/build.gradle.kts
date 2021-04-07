@@ -70,7 +70,7 @@ dependencies {
 
     api("com.kotlindiscord.pluralkot:PluralKot:1.0.0")
 
-    api("dev.kord:kord-core:0.7.x-SNAPSHOT")
+    api("dev.kord:kord-core:interaction-message-flags-SNAPSHOT")
 
     api("net.time4j:time4j-base:5.7")
     api("net.time4j:time4j-tzdata:5.0-2020a")

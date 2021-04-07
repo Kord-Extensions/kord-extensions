@@ -1,3 +1,5 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
@@ -9,8 +11,12 @@ import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParse
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.MessageFlag
+import dev.kord.common.entity.MessageFlags
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.edit
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.GroupCommand
@@ -23,6 +29,9 @@ import mu.KotlinLogging
 
 private val logger: KLogger = KotlinLogging.logger {}
 private const val DISCORD_LIMIT: Int = 10
+
+/** Quick access to a MessageFlags object with the Ephemeral message flag. **/
+public val EPHEMERAL: MessageFlags = MessageFlags(MessageFlag.Ephemeral)
 
 /**
  * Class representing a slash command.
@@ -332,7 +341,7 @@ public open class SlashCommand<T : Arguments>(
         }
 
         val resp = if (commandObj.autoAck) {
-            event.interaction.acknowledge()
+            event.interaction.acknowledge(EPHEMERAL)
         } else {
             null
         }
@@ -386,18 +395,27 @@ public open class SlashCommand<T : Arguments>(
             commandObj.body(context)
 
             if (autoAck && !context.acked) {
-                extension.bot.kord.rest.interaction.modifyInteractionResponse(
-                    event.interaction.applicationId,
-                    event.interaction.token
-                ) {
+                context.interactionResponse!!.edit {
                     content = "Done!"
+
+                    flags = EPHEMERAL
                 }
             }
         } catch (e: ParseException) {
             if (context.interactionResponse != null) {
-                context.reply(e.reason)
+                if (autoAck) {
+                    context.interactionResponse!!.edit {
+                        content = e.reason
+                        flags = EPHEMERAL
+                    }
+                } else {
+                    context.reply(e.reason)
+                }
             } else {
-                context.ack(e.reason)
+                context.ack {
+                    content = e.reason
+                    flags = EPHEMERAL
+                }
             }
         } catch (t: Throwable) {
             if (sentry.enabled) {
@@ -445,10 +463,20 @@ public open class SlashCommand<T : Arguments>(
                         "Please let a staff member know."
                 }
 
-                if (resp != null) {
-                    context.reply(errorMessage)
+                if (context.interactionResponse != null) {
+                    if (autoAck) {
+                        context.interactionResponse!!.edit {
+                            content = errorMessage
+                            flags = EPHEMERAL
+                        }
+                    } else {
+                        context.reply(errorMessage)
+                    }
                 } else {
-                    context.ack(errorMessage)
+                    context.ack {
+                        content = errorMessage
+                        flags = EPHEMERAL
+                    }
                 }
             } else {
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
@@ -456,10 +484,20 @@ public open class SlashCommand<T : Arguments>(
                 val errorMessage = "Unfortunately, **an error occurred** during command processing. " +
                     "Please let a staff member know."
 
-                if (resp != null) {
-                    context.reply(errorMessage)
+                if (context.interactionResponse != null) {
+                    if (autoAck) {
+                        context.interactionResponse!!.edit {
+                            content = errorMessage
+                            flags = EPHEMERAL
+                        }
+                    } else {
+                        context.reply(errorMessage)
+                    }
                 } else {
-                    context.ack(errorMessage)
+                    context.ack {
+                        content = errorMessage
+                        flags = EPHEMERAL
+                    }
                 }
             }
         }
