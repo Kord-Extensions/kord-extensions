@@ -25,7 +25,7 @@ public suspend fun ensureWebhook(
     channelObj: GuildMessageChannel,
     name: String,
     logoFormat: Image.Format = Image.Format.PNG,
-    logo: (suspend () -> ByteArray)?
+    logo: (suspend () -> ByteArray)? = null
 ): Webhook {
     val webhook = channelObj.webhooks.firstOrNull { it.name == name }
 
