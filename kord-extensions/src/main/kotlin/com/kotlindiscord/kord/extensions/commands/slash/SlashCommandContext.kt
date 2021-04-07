@@ -3,7 +3,6 @@ package com.kotlindiscord.kord.extensions.commands.slash
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.memberFor
-import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
@@ -66,7 +65,7 @@ public open class SlashCommandContext<T : Arguments>(
     override suspend fun getGuild(): Guild? = guildFor(event)?.asGuildOrNull()
     override suspend fun getMember(): MemberBehavior? = memberFor(event)?.asMemberOrNull()
     override suspend fun getMessage(): MessageBehavior? = null
-    override suspend fun getUser(): UserBehavior? = userFor(event)?.asUserOrNull()
+    override suspend fun getUser(): UserBehavior = event.interaction.user
 
     /**
      * If your command has autoAck set to `false`, use this to acknowledge the command, optionally with a message.
