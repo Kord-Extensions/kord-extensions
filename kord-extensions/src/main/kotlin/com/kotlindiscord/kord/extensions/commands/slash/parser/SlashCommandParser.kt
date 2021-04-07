@@ -61,7 +61,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
             logger.debug { "Current argument: ${currentArg.displayName}" }
 
-            currentValue = values[currentArg.displayName]
+            currentValue = values[currentArg.displayName.toLowerCase()]
 
             logger.debug { "Current value: $currentValue" }
 
