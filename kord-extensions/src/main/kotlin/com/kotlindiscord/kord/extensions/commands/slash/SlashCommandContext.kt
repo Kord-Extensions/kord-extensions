@@ -73,14 +73,21 @@ public open class SlashCommandContext<T : Arguments>(
      *
      * Note that Discord only gives you 3 seconds from the interaction create event to acknowledge a command. After
      * that, you won't be able to do anything with it - so it's best to acknowledge it as early as possible.
+     *
+     * If an ack or response has already been sent, the `ephemeral` flag is ignored.
      */
     public suspend fun ack(
         content: String? = null,
+        ephemeral: Boolean = true,
         builder: (InteractionApplicationCommandCallbackDataBuilder.() -> Unit)? = null
     ): InteractionResponseBehavior {
         if (interactionResponse == null || acked) {
             interactionResponse = if (content == null && builder == null) {
-                event.interaction.acknowledge()
+                if (ephemeral) {
+                    event.interaction.acknowledge(EPHEMERAL)
+                } else {
+                    event.interaction.acknowledge()
+                }
             } else {
                 event.interaction.respond(builder ?: { this.content = content })
             }
