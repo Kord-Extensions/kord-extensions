@@ -147,7 +147,7 @@ public open class SlashCommandRegistry(
 
                     command(it.name, it.description) { register(it) }
                 }
-            }.associate { it.name to it.id }
+            }.toList().associate { it.name to it.id }
 
             toCreate.forEach {
                 commandMap[response[it.name]!!] = it
@@ -167,7 +167,7 @@ public open class SlashCommandRegistry(
 
                         command(it.name, it.description) { register(it) }
                     }
-                }.associate { it.name to it.id }
+                }.toList().associate { it.name to it.id }
 
                 commands.forEach {
                     commandMap[response[it.name]!!] = it
