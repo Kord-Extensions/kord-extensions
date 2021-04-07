@@ -39,7 +39,7 @@ public open class SlashCommandContext<T : Arguments>(
     public open var member: MemberBehavior? = null
 
     /** User responsible for executing this command. **/
-    public open var user: UserBehavior? = null
+    public open lateinit var user: UserBehavior
 
     /** Arguments object containing this command's parsed arguments. **/
     public open lateinit var arguments: T
