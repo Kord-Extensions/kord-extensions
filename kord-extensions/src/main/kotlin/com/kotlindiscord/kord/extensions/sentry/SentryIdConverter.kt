@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.sentry
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
@@ -22,7 +22,7 @@ public class SentryIdConverter : SingleConverter<SentryId>() {
         try {
             this.parsed = SentryId(arg)
         } catch (e: IllegalArgumentException) {
-            throw ParseException("Invalid Sentry event ID specified: `$arg`")
+            throw CommandException("Invalid Sentry event ID specified: `$arg`")
         }
 
         return true

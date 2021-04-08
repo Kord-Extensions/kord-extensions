@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.guild
@@ -30,7 +30,7 @@ public class GuildConverter : SingleConverter<Guild>() {
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val guild = findGuild(arg, bot)
-            ?: throw ParseException("Unable to find server: $arg")
+            ?: throw CommandException("Unable to find server: $arg")
 
         parsed = guild
         return true

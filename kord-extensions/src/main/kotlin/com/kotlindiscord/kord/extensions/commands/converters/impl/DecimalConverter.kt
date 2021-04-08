@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.decimal
@@ -25,7 +25,7 @@ public class DecimalConverter : SingleConverter<Double>() {
         try {
             this.parsed = arg.toDouble()
         } catch (e: NumberFormatException) {
-            throw ParseException(
+            throw CommandException(
                 "Value '$arg' is not a valid decimal number."
             )
         }

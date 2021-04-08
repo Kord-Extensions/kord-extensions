@@ -5,8 +5,8 @@
 
 package com.kotlindiscord.kord.extensions.commands.slash.parser
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.DefaultingConverter
@@ -81,7 +81,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                     }
 
                     if (converter.required && !parsed) {
-                        throw ParseException(
+                        throw CommandException(
                             "Invalid value for argument `${currentArg.displayName}` " +
                                 "(which accepts ${converter.getErrorString()}): $currentValue"
                         )
@@ -93,9 +93,9 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                         converter.parseSuccess = true
                         currentValue = null
                     }
-                } catch (e: ParseException) {
+                } catch (e: CommandException) {
                     if (converter.required) {
-                        throw ParseException(converter.handleError(e, currentValue, context, bot))
+                        throw CommandException(converter.handleError(e, currentValue, context, bot))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -113,7 +113,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                     }
 
                     if (converter.required && !parsed) {
-                        throw ParseException(
+                        throw CommandException(
                             "Invalid value for argument `${currentArg.displayName}` " +
                                 "(which accepts ${converter.getErrorString()}): $currentValue"
                         )
@@ -125,7 +125,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                         converter.parseSuccess = true
                         currentValue = null
                     }
-                } catch (e: ParseException) {
+                } catch (e: CommandException) {
                     if (converter.required) {
                         val wrappedValues = mutableListOf<String>()
 
@@ -133,7 +133,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                             wrappedValues += currentValue
                         }
 
-                        throw ParseException(converter.handleError(e, wrappedValues, context, bot))
+                        throw CommandException(converter.handleError(e, wrappedValues, context, bot))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -156,9 +156,9 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                         converter.parseSuccess = true
                         currentValue = null
                     }
-                } catch (e: ParseException) {
+                } catch (e: CommandException) {
                     if (converter.required || converter.outputError) {
-                        throw ParseException(
+                        throw CommandException(
                             converter.handleError(e, currentValue, context, bot)
                         )
                     }

@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.message
@@ -57,14 +57,14 @@ public class MessageConverter(
 
             @Suppress("MagicNumber")
             if (split.size < 3) {
-                throw ParseException("Invalid message url provided: <$arg>")
+                throw CommandException("Invalid message url provided: <$arg>")
             }
 
             @Suppress("MagicNumber")
             val gid = try {
                 Snowflake(split[2])
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '${split[2]}' is not a valid guild ID.")
+                throw CommandException("Value '${split[2]}' is not a valid guild ID.")
             }
 
             if (requireGuild && requiredGid != gid) {
@@ -77,7 +77,7 @@ public class MessageConverter(
             val cid = try {
                 Snowflake(split[3])
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '${split[3]}' is not a valid channel ID.")
+                throw CommandException("Value '${split[3]}' is not a valid channel ID.")
             }
 
             val channel = bot.kord.getGuild(gid)?.getChannel(cid)
@@ -98,7 +98,7 @@ public class MessageConverter(
             val mid = try {
                 Snowflake(split[4])
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '${split[4]}' is not a valid message ID.")
+                throw CommandException("Value '${split[4]}' is not a valid message ID.")
             }
 
             try {
@@ -124,7 +124,7 @@ public class MessageConverter(
             try {
                 channel.getMessage(Snowflake(arg))
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '$arg' is not a valid message ID.")
+                throw CommandException("Value '$arg' is not a valid message ID.")
             } catch (e: EntityNotFoundException) {
                 errorNoMessage(arg)
             }
@@ -135,6 +135,6 @@ public class MessageConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     private fun errorNoMessage(arg: String): Nothing {
-        throw ParseException("Unable to find message: $arg")
+        throw CommandException("Unable to find message: $arg")
     }
 }

@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.email
@@ -24,7 +24,7 @@ public class EmailConverter : SingleConverter<String>() {
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         if (!EmailValidator.getInstance().isValid(arg)) {
-            throw ParseException("Invalid email address specified: `$arg`")
+            throw CommandException("Invalid email address specified: `$arg`")
         }
 
         this.parsed = arg

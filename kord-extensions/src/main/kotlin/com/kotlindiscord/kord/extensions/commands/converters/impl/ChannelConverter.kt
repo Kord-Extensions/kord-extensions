@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.channel
@@ -40,7 +40,7 @@ public class ChannelConverter(
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val channel = findChannel(arg, context, bot)
-            ?: throw ParseException("Unable to find channel: $arg")
+            ?: throw CommandException("Unable to find channel: $arg")
 
         parsed = channel
         return true
@@ -53,7 +53,7 @@ public class ChannelConverter(
             try {
                 bot.kord.getChannel(Snowflake(id.toLong()))
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '$id' is not a valid channel ID.")
+                throw CommandException("Value '$id' is not a valid channel ID.")
             }
         } else {
             val string = if (arg.startsWith("#")) arg.substring(1) else arg

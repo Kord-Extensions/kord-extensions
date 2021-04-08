@@ -2,9 +2,9 @@
 
 package com.kotlindiscord.kord.extensions.commands.slash
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
@@ -401,7 +401,7 @@ public open class SlashCommand<T : Arguments>(
                     flags = EPHEMERAL
                 }
             }
-        } catch (e: ParseException) {
+        } catch (e: CommandException) {
             if (context.interactionResponse != null) {
                 if (autoAck) {
                     context.interactionResponse!!.edit {

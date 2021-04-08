@@ -82,12 +82,14 @@ public class CommandRegistrationException(public val name: String?, public val r
 }
 
 /**
- * Thrown when we fail to parse arguments for a command.
+ * Thrown when something bad happens during command processing.
+ *
+ * Provided [reason] will be returned to the user verbatim.
  *
  * @param reason Human-readable reason for the failure.
  */
-public class ParseException(public var reason: String) : ExtensionsException() {
-    public constructor(other: ParseException) : this(other.reason)
+public open class CommandException(public var reason: String) : ExtensionsException() {
+    public constructor(other: CommandException) : this(other.reason)
 
     override fun toString(): String = reason
 }

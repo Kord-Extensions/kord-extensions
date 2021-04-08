@@ -132,7 +132,7 @@ command(::PostArguments) {
 ```
 
 The argument parser will validate the command arguments for you automatically - if there's a problem, a
-`ParseException` will be thrown. These exceptions are automatically handled by the bot, and will be returned to
+`CommandException` will be thrown. These exceptions are automatically handled by the bot, and will be returned to
 whoever invoked the command to let them know what exactly went wrong.
 
 For more information on how exactly this parsing works (and how to customize it), please see 

@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.user
@@ -32,7 +32,7 @@ public class UserConverter : SingleConverter<User>() {
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val user = findUser(arg, bot)
-            ?: throw ParseException("Unable to find user: $arg")
+            ?: throw CommandException("Unable to find user: $arg")
 
         parsed = user
         return true
@@ -45,7 +45,7 @@ public class UserConverter : SingleConverter<User>() {
             try {
                 bot.kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '$id' is not a valid user ID.")
+                throw CommandException("Value '$id' is not a valid user ID.")
             }
         } else {
             try { // Try for a user ID first

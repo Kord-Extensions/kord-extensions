@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.emoji
@@ -35,7 +35,7 @@ public class EmojiConverter : SingleConverter<GuildEmoji>() {
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val emoji = findEmoji(arg, bot)
-            ?: throw ParseException("Unable to find emoji: $arg")
+            ?: throw CommandException("Unable to find emoji: $arg")
 
         parsed = emoji
         return true
@@ -52,7 +52,7 @@ public class EmojiConverter : SingleConverter<GuildEmoji>() {
                     it.getEmojiOrNull(snowflake)
                 }.firstOrNull()
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '$id' is not a valid emoji ID.")
+                throw CommandException("Value '$id' is not a valid emoji ID.")
             }
         } else { // ID or name
             val name = if (arg.startsWith(":") && arg.endsWith(":")) arg.substring(1, arg.length - 1) else arg

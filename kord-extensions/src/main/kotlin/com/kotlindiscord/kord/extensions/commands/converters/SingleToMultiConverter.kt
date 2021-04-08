@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 
@@ -45,7 +45,7 @@ public class SingleToMultiConverter<T : Any>(
                 val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
 
                 values.add(value)
-            } catch (e: ParseException) {
+            } catch (e: CommandException) {
                 break
             }
         }

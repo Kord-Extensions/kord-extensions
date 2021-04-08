@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import kotlin.reflect.KProperty
@@ -20,7 +20,7 @@ import kotlin.reflect.KProperty
  * You can create a coalescing converter of your own by extending this class.
  *
  * @property shouldThrow Intended only for use if this converter is the last one in a set of arguments, if this is
- * `true` then the converter should throw a [ParseException] when an argument can't be parsed, instead of just
+ * `true` then the converter should throw a [CommandException] when an argument can't be parsed, instead of just
  * stopping and allowing parsing to continue.
  */
 public abstract class CoalescingConverter<T : Any>(
@@ -38,9 +38,9 @@ public abstract class CoalescingConverter<T : Any>(
      *
      * The resulting value should be stored in [parsed] - this will not be done for you.
      *
-     * This type of converter should avoid throwing [ParseException]. The commands framework will return an appropriate
-     * error to the user, if this converter is marked as required. A thrown [ParseException] will still be shown in
-     * that situation, however.
+     * This type of converter should avoid throwing [CommandException]. The commands framework will return an
+     * appropriate error to the user, if this converter is marked as required. A thrown [CommandException] will still
+     * be shown in that situation, however.
      *
      * @param args List of [String] arguments, provided by the user running the current command
      * @param context MessageCommand context object, containing the event, message, and other command-related things
@@ -88,7 +88,7 @@ public abstract class CoalescingConverter<T : Any>(
      * provides.
      *
      * @param outputError Optionally, provide `true` to fail parsing and return errors if the converter throws a
-     * [ParseException], instead of continuing. You probably only want to set this if the converter is the last one
+     * [CommandException], instead of continuing. You probably only want to set this if the converter is the last one
      * in a set of arguments.
      */
     @ConverterToOptional

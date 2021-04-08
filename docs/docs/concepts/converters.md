@@ -130,19 +130,19 @@ feel free to join the Kotlin Discord server if you need to ask questions.
     As you may expect, errors are handled using Kotlin's exceptions system. Exceptions can be thrown as normal, and
     they'll be caught by the argument parser and transformed into an error message. However, you may wish to provide
     a more useful error message to the user - for these cases, you should create and throw an instance of 
-    `ParseException` yourself. The message passed to `ParseException` will be returned to the user verbatim, so make
-    it descriptive!
+    `CommandException` yourself. The message passed to `CommandException` will be returned to the user verbatim, so
+    make it descriptive!
 
     When writing a `CoalescingConverter` subclass, your converter is expected to check the `shouldThrow` property. If
-    this property is `true`, then you should throw a `ParseException` when your converter fails to parse a value,
+    this property is `true`, then you should throw a `CommandException` when your converter fails to parse a value,
     explaining what exactly went wrong in the exception's description.
 
     **Remember that your end users are not necessarily developers!** Most people will not understand a technical
-    description or a default exception message - any `ParseException` instances you throw should contain
+    description or a default exception message - any `CommandException` instances you throw should contain
     a human-readable error message that **tells the user what went wrong so that they can correct** their command
     invocation and try again. If you need to provide developer-oriented feedback, use a logger!
 
-    Because of this, only `ParseException` instances will be returned to the user verbatim. All other exception types
+    Because of this, only `CommandException` instances will be returned to the user verbatim. All other exception types
     will be logged, and a generic error message will be returned to the user.
 
 Once you've created your converters, we recommend writing `Arguments` extension functions for them. As before, we

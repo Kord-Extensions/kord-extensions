@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.member
@@ -37,7 +37,7 @@ public class MemberConverter(
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val member = findMember(arg, context, bot)
-            ?: throw ParseException("Unable to find member: $arg")
+            ?: throw CommandException("Unable to find member: $arg")
 
         parsed = member
         return true
@@ -50,7 +50,7 @@ public class MemberConverter(
             try {
                 bot.kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw ParseException("Value '$id' is not a valid member ID.")
+                throw CommandException("Value '$id' is not a valid member ID.")
             }
         } else {
             try { // Try for a user ID first

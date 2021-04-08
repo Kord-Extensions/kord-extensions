@@ -5,8 +5,8 @@
 
 package com.kotlindiscord.kord.extensions.commands.parser
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import io.ktor.client.features.*
@@ -51,7 +51,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
      * @param context MessageCommand context for this command invocation.
      *
      * @return Built [Arguments] object, with converters filled.
-     * @throws ParseException Thrown based on a lot of possible cases. This is intended for display on Discord.
+     * @throws CommandException Thrown based on a lot of possible cases. This is intended for display on Discord.
      */
     public open suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
         val argumentsObj = builder.invoke()
@@ -119,7 +119,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                 is SingleConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
-                            throw ParseException(
+                            throw CommandException(
                                 "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
                                     "${kwValue.size} were provided."
                             )
@@ -131,7 +131,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
 
                     if ((converter.required || hasKwargs) && !parsed) {
-                        throw ParseException(
+                        throw CommandException(
                             "Invalid value for argument `${currentArg.displayName}` " +
                                 "(which accepts ${converter.getErrorString()}): $currentValue"
                         )
@@ -143,9 +143,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                         converter.parseSuccess = true
                         currentValue = null
                     }
-                } catch (e: ParseException) {
+                } catch (e: CommandException) {
                     if (converter.required || hasKwargs) {
-                        throw ParseException(
+                        throw CommandException(
                             converter.handleError(e, currentValue, context, bot)
                         )
                     }
@@ -160,7 +160,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                 is DefaultingConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
-                            throw ParseException(
+                            throw CommandException(
                                 "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
                                     "${kwValue.size} were provided."
                             )
@@ -184,7 +184,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                 is OptionalConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
-                            throw ParseException(
+                            throw CommandException(
                                 "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
                                     "${kwValue.size} were provided."
                             )
@@ -201,9 +201,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                         converter.parseSuccess = true
                         currentValue = null
                     }
-                } catch (e: ParseException) {
+                } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
-                        throw ParseException(
+                        throw CommandException(
                             converter.handleError(e, currentValue, context, bot)
                         )
                     }
@@ -223,7 +223,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw ParseException(
+                        throw CommandException(
                             "Invalid value for argument `${currentArg.displayName}` (which accepts " +
                                 "${converter.getErrorString()}): $currentValue"
                         )
@@ -231,7 +231,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
-                            throw ParseException(
+                            throw CommandException(
                                 "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
                                     "value${if (kwValue.size > 1) "d" else ""}, but " +
                                     if (parsedCount >= 1) {
@@ -254,8 +254,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
-                } catch (e: ParseException) {
-                    if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
+                } catch (e: CommandException) {
+                    if (converter.required) throw CommandException(converter.handleError(e, values, context, bot))
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -272,7 +272,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw ParseException(
+                        throw CommandException(
                             "Invalid value for argument `${currentArg.displayName}` (which accepts " +
                                 "${converter.getErrorString()}): $currentValue"
                         )
@@ -280,7 +280,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
-                            throw ParseException(
+                            throw CommandException(
                                 "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
                                     "value${if (kwValue.size > 1) "d" else ""}, but " +
                                     if (parsedCount >= 1) {
@@ -303,8 +303,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
-                } catch (e: ParseException) {
-                    if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
+                } catch (e: CommandException) {
+                    if (converter.required) throw CommandException(converter.handleError(e, values, context, bot))
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -321,7 +321,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw ParseException(
+                        throw CommandException(
                             "Invalid value for argument `${currentArg.displayName}` (which accepts " +
                                 "${converter.getErrorString()}): $currentValue"
                         )
@@ -329,7 +329,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
-                            throw ParseException(
+                            throw CommandException(
                                 "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
                                     "value${if (kwValue.size > 1) "d" else ""}, but " +
                                     if (parsedCount >= 1) {
@@ -352,9 +352,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
-                } catch (e: ParseException) {
+                } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
-                        throw ParseException(converter.handleError(e, values, context, bot))
+                        throw CommandException(converter.handleError(e, values, context, bot))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -372,7 +372,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw ParseException(
+                        throw CommandException(
                             "Invalid value for argument `${currentArg.displayName}` (which accepts " +
                                 "${converter.getErrorString()}): $currentValue"
                         )
@@ -380,7 +380,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
-                            throw ParseException(
+                            throw CommandException(
                                 "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
                                     "value${if (kwValue.size > 1) "d" else ""}, but " +
                                     if (parsedCount >= 1) {
@@ -403,8 +403,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
-                } catch (e: ParseException) {
-                    if (converter.required) throw ParseException(converter.handleError(e, values, context, bot))
+                } catch (e: CommandException) {
+                    if (converter.required) throw CommandException(converter.handleError(e, values, context, bot))
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -413,7 +413,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
                 }
 
-                else -> throw ParseException("Unknown converter type provided: ${currentArg.converter}")
+                else -> throw CommandException("Unknown converter type provided: ${currentArg.converter}")
             }
         }
 
@@ -424,11 +424,11 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
         if (filledRequiredArgs < allRequiredArgs) {
             if (filledRequiredArgs < 1) {
-                throw ParseException(
+                throw CommandException(
                     "This command has $allRequiredArgs required argument${if (allRequiredArgs > 1) "s" else ""}."
                 )
             } else {
-                throw ParseException(
+                throw CommandException(
                     "This command has $allRequiredArgs required argument${if (allRequiredArgs > 1) "s" else ""}, " +
                         "but only $filledRequiredArgs could be filled."
                 )

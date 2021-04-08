@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
@@ -142,7 +142,7 @@ public class UnionConverter(
                     if (shouldThrow) throw t
                 }
 
-                else -> throw ParseException("Unknown converter type provided: $converter")
+                else -> throw CommandException("Unknown converter type provided: $converter")
             }
         }
 

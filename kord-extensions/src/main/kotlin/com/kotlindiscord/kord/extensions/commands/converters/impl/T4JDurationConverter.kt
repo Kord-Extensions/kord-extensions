@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.t4jDuration
@@ -58,7 +58,7 @@ public class T4JDurationConverter(public val longHelp: Boolean = true) : SingleC
                 ""
             }
 
-            throw ParseException(message)
+            throw CommandException(message)
         }
 
         return true

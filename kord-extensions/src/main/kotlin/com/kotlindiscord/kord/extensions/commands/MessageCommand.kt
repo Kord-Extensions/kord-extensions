@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -228,7 +228,7 @@ public open class MessageCommand<T : Arguments>(
             }
 
             this.body(context)
-        } catch (e: ParseException) {
+        } catch (e: CommandException) {
             event.message.respond(e.toString())
         } catch (t: Throwable) {
             if (extension.bot.sentry.enabled) {

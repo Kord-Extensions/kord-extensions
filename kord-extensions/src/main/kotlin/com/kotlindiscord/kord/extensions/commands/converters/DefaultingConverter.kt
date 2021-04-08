@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
@@ -31,7 +31,7 @@ public abstract class DefaultingConverter<T : Any>(
      *
      * The resulting value should be stored in [parsed] - this will not be done for you.
      *
-     * If you'd like to return more detailed feedback to the user on invalid input, you can throw a [ParseException]
+     * If you'd like to return more detailed feedback to the user on invalid input, you can throw a [CommandException]
      * here.
      *
      * @param arg [String] argument, provided by the user running the current command
@@ -51,7 +51,7 @@ public abstract class DefaultingConverter<T : Any>(
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
      *
-     * This will always be called if an unhandled exception is thrown, unless it's a [ParseException] - those will be
+     * This will always be called if an unhandled exception is thrown, unless it's a [CommandException] - those will be
      * displayed as an error message on Discord. If appropriate for your converter, you can use this function to
      * transform a thrown exception into a nicer, human-readable format..
      */

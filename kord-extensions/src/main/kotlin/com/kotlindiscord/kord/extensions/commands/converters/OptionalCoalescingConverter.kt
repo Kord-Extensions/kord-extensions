@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import kotlin.reflect.KProperty
@@ -35,9 +35,9 @@ public abstract class OptionalCoalescingConverter<T : Any?>(
      *
      * The resulting value should be stored in [parsed] - this will not be done for you.
      *
-     * This type of converter should avoid throwing [ParseException]. The commands framework will return an appropriate
-     * error to the user, if this converter is marked as required. A thrown [ParseException] will still be shown in
-     * that situation, however.
+     * This type of converter should avoid throwing [CommandException]. The commands framework will return an
+     * appropriate error to the user, if this converter is marked as required. A thrown [CommandException] will still
+     * be shown in that situation, however.
      *
      * @param args List of [String] arguments, provided by the user running the current command
      * @param context MessageCommand context object, containing the event, message, and other command-related things

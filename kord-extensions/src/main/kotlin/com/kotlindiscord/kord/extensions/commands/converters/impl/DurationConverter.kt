@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.duration
@@ -57,7 +57,7 @@ public class DurationConverter(public val longHelp: Boolean = true) : SingleConv
                 ""
             }
 
-            throw ParseException(message)
+            throw CommandException(message)
         }
 
         return true

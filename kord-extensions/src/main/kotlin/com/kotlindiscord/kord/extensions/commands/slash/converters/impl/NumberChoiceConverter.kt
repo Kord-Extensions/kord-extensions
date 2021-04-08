@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.slash.converters.impl
 
+import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.ParseException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
@@ -29,7 +29,7 @@ public class NumberChoiceConverter(
         try {
             this.parsed = arg.toInt(radix)
         } catch (e: NumberFormatException) {
-            throw ParseException(
+            throw CommandException(
                 "Value '$arg' is not a valid whole number" + if (radix != DEFAULT_RADIX) " in base-$radix." else "."
             )
         }
