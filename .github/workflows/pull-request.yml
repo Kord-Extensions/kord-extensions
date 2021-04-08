@@ -20,6 +20,11 @@ jobs:
         with:
           java-version: 1.14
 
+      - name: Set up Gradle properties
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
+
       - name: Gradle (Build)
         run: sh gradlew kord-extensions:build
 

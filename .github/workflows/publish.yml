@@ -22,6 +22,7 @@ jobs:
         run: |
           mkdir -p ~/.gradle
           echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
+          echo -e "\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
 
       - name: Gradle (Build)
         run: sh gradlew kord-extensions:build

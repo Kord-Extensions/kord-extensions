@@ -26,6 +26,11 @@ jobs:
         with:
           python-version: 3.x
 
+      - name: Set up Gradle properties
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
+
       - name: Install Python packages
         run: pip install -r docs/requirements.txt
 
