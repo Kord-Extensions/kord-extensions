@@ -1,17 +1,20 @@
 package com.kotlindiscord.kord.extensions.commands.slash
 
+import behavior.interaction.*
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.memberFor
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
-import dev.kord.core.behavior.*
-import dev.kord.core.behavior.channel.PublicInteractionResponseBehavior
-import dev.kord.core.behavior.channel.edit
+import dev.kord.core.behavior.MemberBehavior
+import dev.kord.core.behavior.MessageBehavior
+import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.interaction.InteractionResponseBehavior
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.InteractionFollowup
+import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.rest.builder.interaction.*
 import mu.KLogger
@@ -204,45 +207,47 @@ public open class SlashCommandContext<T : Arguments>(
     }
 
     /**
-     * Assuming an acknowledgement or response has been sent, send a follow-up message.
+     * Assuming an acknowledgement or response has been sent, send an ephemeral follow-up message.
      *
-     * Note that this message will be ephemeral or public based on the acknowledgement or response that was sent
-     * earlier on - the follow-up message will match the ephemeral state of what came before it.
+     * This function will throw an exception if no acknowledgement or response has been sent yet, or this interaction
+     * has already been interacted with in a non-ephemeral manner.
      *
-     * This function will throw an exception if no acknowledgement or response has been sent yet, or this is an
-     * ephemeral reaction and one of the following is true:
-     *
-     * * You didn't supply a content string in the builder
-     * * You supplied one or more embeds in the builder
-     * * You supplied one or more files in the builder.
+     * Note that ephemeral follow-ups require a content string, and may not contain embeds or files.
      */
-    public suspend inline fun followUp(builder: FollowupMessageCreateBuilder.() -> Unit): InteractionFollowup {
+    public suspend fun ephemeralFollowUp(
+        content: String,
+        builder: EphemeralFollowupMessageCreateBuilder.() -> Unit
+    ): InteractionFollowup {
         if (interactionResponse == null) {
-            error("Tried to send a follow-up before acknowledging or sending a response.")
+            error("Tried send an interaction follow-up before acknowledging it or sending a response.")
         }
 
-        val result = interactionResponse!!.followUp {
-            builder()
-
-            if (isEphemeral == true) {
-                if (content.isNullOrEmpty()) {
-                    error(
-                        "Tried to send a follow-up to an ephemeral interaction without providing any message content."
-                    )
-                }
-
-                if (embeds.isNotEmpty()) {
-                    error("Tried to send a follow-up to an ephemeral interaction with one or more embeds.")
-                }
-
-                if (files.isNotEmpty()) {
-                    error("Tried to send a follow-up to an ephemeral interaction with one or more files.")
-                }
-            }
+        if (isEphemeral == false) {
+            error("Tried send an ephemeral follow-up for a non-ephemeral interaction.")
         }
 
         hasSentText = true
+        return (interactionResponse as EphemeralInteractionResponseBehavior).followUp(content, builder)
+    }
 
-        return result
+    /**
+     * Assuming an acknowledgement or response has been sent, send a public follow-up message.
+     *
+     * This function will throw an exception if no acknowledgement or response has been sent yet, or this interaction
+     * has already been interacted with in an ephemeral manner.
+     */
+    public suspend fun publicFollowUp(
+        builder: PublicFollowupMessageCreateBuilder.() -> Unit
+    ): PublicFollowupMessage {
+        if (interactionResponse == null) {
+            error("Tried send an interaction follow-up before acknowledging it or sending a response.")
+        }
+
+        if (isEphemeral == true) {
+            error("Tried to send a public follow-up for an ephemeral interaction.")
+        }
+
+        hasSentText = true
+        return (interactionResponse as PublicInteractionResponseBehavior).followUp(builder)
     }
 }
