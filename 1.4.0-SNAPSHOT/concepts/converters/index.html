@@ -500,6 +500,19 @@
     Usage
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#validators" class="md-nav__link">
+    Validators
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -856,6 +869,34 @@ a default value and instead will return <code>null</code> by default.</p>
 the source for a full list, we recommend making use of your IDE's auto-completion functionality for discovery - 
 especially if you've written custom converters, or you're making use of third-party converters.</p>
 </details>
+<h3 id="validators">Validators<a class="headerlink" href="#validators" title="Permanent link">&para;</a></h3>
+<p>All converters support validators. Validators allow you to specify a simple lambda that acts on the parsed result, and
+throws a <code>CommandException</code> if something is wrong - which will be sent to the user. For example...</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">PostArguments</span> <span class="p">:</span> <span class="n">Arguments</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Single required string argument</span>
+    <span class="kd">val</span> <span class="nv">title</span> <span class="k">by</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;Post title&quot;</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="k">if</span> <span class="p">(</span><span class="nb">it</span><span class="p">.</span><span class="na">length</span> <span class="o">&gt;</span> <span class="m">30</span><span class="p">)</span> <span class="k">throw</span> <span class="n">CommandError</span><span class="p">(</span><span class="s">&quot;Post title must be 30 characters at most&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Single required Discord user argument</span>
+    <span class="kd">val</span> <span class="nv">author</span> <span class="k">by</span> <span class="n">user</span><span class="p">(</span><span class="s">&quot;author&quot;</span><span class="p">,</span> <span class="s">&quot;User that this post should be attributed to&quot;</span><span class="p">)</span>
+
+    <span class="c1">// Consumes the rest of the arguments into a single string</span>
+    <span class="kd">val</span> <span class="nv">body</span> <span class="k">by</span> <span class="n">coalescedString</span><span class="p">(</span><span class="s">&quot;body&quot;</span><span class="p">,</span> <span class="s">&quot;Text content to be placed within the posts&#39;s body&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
 <h2 id="slash-commands-and-converters">Slash commands and converters<a class="headerlink" href="#slash-commands-and-converters" title="Permanent link">&para;</a></h2>
 <p>While slash commands make use of all the usual converter types, the following points are worth bearing in mind:</p>
 <ul>
@@ -882,16 +923,16 @@ feel free to join the Kotlin Discord server if you need to ask questions.</p>
 <details class="question"><summary>How do I bail when something goes wrong?</summary><p>As you may expect, errors are handled using Kotlin's exceptions system. Exceptions can be thrown as normal, and
 they'll be caught by the argument parser and transformed into an error message. However, you may wish to provide
 a more useful error message to the user - for these cases, you should create and throw an instance of 
-<code>ParseException</code> yourself. The message passed to <code>ParseException</code> will be returned to the user verbatim, so make
-it descriptive!</p>
+<code>CommandException</code> yourself. The message passed to <code>CommandException</code> will be returned to the user verbatim, so
+make it descriptive!</p>
 <p>When writing a <code>CoalescingConverter</code> subclass, your converter is expected to check the <code>shouldThrow</code> property. If
-this property is <code>true</code>, then you should throw a <code>ParseException</code> when your converter fails to parse a value,
+this property is <code>true</code>, then you should throw a <code>CommandException</code> when your converter fails to parse a value,
 explaining what exactly went wrong in the exception's description.</p>
 <p><strong>Remember that your end users are not necessarily developers!</strong> Most people will not understand a technical
-description or a default exception message - any <code>ParseException</code> instances you throw should contain
+description or a default exception message - any <code>CommandException</code> instances you throw should contain
 a human-readable error message that <strong>tells the user what went wrong so that they can correct</strong> their command
 invocation and try again. If you need to provide developer-oriented feedback, use a logger!</p>
-<p>Because of this, only <code>ParseException</code> instances will be returned to the user verbatim. All other exception types
+<p>Because of this, only <code>CommandException</code> instances will be returned to the user verbatim. All other exception types
 will be logged, and a generic error message will be returned to the user.</p>
 </details>
 <p>Once you've created your converters, we recommend writing <code>Arguments</code> extension functions for them. As before, we
@@ -925,7 +966,7 @@ may cause all kinds of strange issues</strong> - provide wrapping extension func
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-05
+      Last update: 2021-04-08
     
   </small>
 </div>

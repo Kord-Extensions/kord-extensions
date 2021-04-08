@@ -885,9 +885,14 @@ of your command's <code>action</code>. It exists to provide a little extra conte
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>args</code></td>
+<td align="left"><code>argList</code></td>
 <td align="center"><code>Array &lt;String&gt;</code></td>
 <td align="left">A simple array of string arguments that were passed to this command invocation</td>
+</tr>
+<tr>
+<td align="left"><code>argString</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">String representing the command invocation's arguments, exactly how they were sent on Discord</td>
 </tr>
 <tr>
 <td align="left"><code>arguments</code></td>
@@ -1028,7 +1033,7 @@ created your argument class, you can start using it in your commands:</p>
 </code></pre></div>
 </td></tr></table>
 <p>The argument parser will validate the command arguments for you automatically - if there's a problem, a
-<code>ParseException</code> will be thrown. These exceptions are automatically handled by the bot, and will be returned to
+<code>CommandException</code> will be thrown. These exceptions are automatically handled by the bot, and will be returned to
 whoever invoked the command to let them know what exactly went wrong.</p>
 <p>For more information on how exactly this parsing works (and how to customize it), please see 
 <a href="/concepts/converters">the Converters page</a>.</p>
@@ -1315,8 +1320,8 @@ note that the properties marked with <img alt="⚠" class="twemoji" src="https:/
 <tbody>
 <tr>
 <td align="left"><code>autoAck</code></td>
-<td align="center"><code>Boolean</code></td>
-<td align="left">Whether to automatically acknowledge this command invocation when we get it - in most cases, you'll want this to be the default value (<code>true</code>) as you only get a few seconds to acknowledge a command invocation before Discord considers it invalid, but you can set this to <code>false</code> and use the <code>ack</code> function in your command body to acknowledge it yourself and provide a response if you need to</td>
+<td align="center"><code>AutoAckType</code></td>
+<td align="left">Whether to automatically ack with an ephemeral (<code>EPHEMERAL</code>) or public (<code>PUBLIC</code>) acknowledgement, or none at all (<code>NONE</code>) if you want to do it yourself</td>
 </tr>
 <tr>
 <td align="left"><code>name</code></td>
@@ -1384,7 +1389,7 @@ either <code>action</code>, <code>group</code> or <code>subcommand</code>, but y
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-14
+      Last update: 2021-04-08
     
   </small>
 </div>
