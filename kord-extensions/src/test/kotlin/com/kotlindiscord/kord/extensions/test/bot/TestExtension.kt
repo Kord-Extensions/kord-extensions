@@ -51,7 +51,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
         slashCommand {
             name = "test-noack"
             description = "Don't auto-ack this one"
-            autoAck = AutoAckType.PUBLIC
+            autoAck = AutoAckType.NONE
 
             action {
                 createPublicResponse {
@@ -77,7 +77,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                     autoAck = AutoAckType.PUBLIC
 
                     action {
-                        followUp {
+                        publicFollowUp {
                             content = "Some content"
 
                             embed {
@@ -109,40 +109,12 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                     }
                 }
 
-                subCommand(::SlashArgs) {
+                subCommand {
                     name = "test-two"
                     description = "Test command, please ignore"
 
                     action {
-                        followUp {
-                            content = "Some content"
-
-                            embed {
-                                title = "Guild response"
-                                description = "Guild description"
-
-                                field {
-                                    name = "String"
-                                    value = arguments.string
-                                }
-
-                                field {
-                                    name = "Enum"
-                                    value = arguments.enum.toString()
-                                }
-
-                                field {
-                                    name = "Optional Enum"
-                                    value = arguments.optionalEnum.toString()
-                                }
-
-                                field {
-                                    name = "Bool"
-
-                                    value = arguments.bool.toString()
-                                }
-                            }
-                        }
+                        ephemeralFollowUp("Some content")
                     }
                 }
             }
@@ -161,8 +133,10 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                     name = "inner-test"
                     description = "Test command, please ignore"
 
+                    autoAck = AutoAckType.PUBLIC
+
                     action {
-                        followUp {
+                        publicFollowUp {
                             embed {
                                 title = "Guild response"
                                 description = "Guild description"
@@ -200,8 +174,10 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
                 "Now with some newlines in the description!"
 
+            autoAck = AutoAckType.PUBLIC
+
             action {
-                followUp {
+                publicFollowUp {
                     embed {
                         title = "Test response"
                         description = "Test description"

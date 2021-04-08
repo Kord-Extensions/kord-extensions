@@ -216,7 +216,7 @@ public open class SlashCommandContext<T : Arguments>(
      */
     public suspend fun ephemeralFollowUp(
         content: String,
-        builder: EphemeralFollowupMessageCreateBuilder.() -> Unit
+        builder: EphemeralFollowupMessageCreateBuilder.() -> Unit = {}
     ): InteractionFollowup {
         if (interactionResponse == null) {
             error("Tried send an interaction follow-up before acknowledging it or sending a response.")
