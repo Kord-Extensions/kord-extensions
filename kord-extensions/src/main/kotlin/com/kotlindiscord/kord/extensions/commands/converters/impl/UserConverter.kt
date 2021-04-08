@@ -27,7 +27,9 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see userList
  */
 @OptIn(KordPreview::class)
-public class UserConverter : SingleConverter<User>() {
+public class UserConverter(
+    override var validator: (suspend (User) -> Unit)? = null
+) : SingleConverter<User>() {
     override val signatureTypeString: String = "user"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

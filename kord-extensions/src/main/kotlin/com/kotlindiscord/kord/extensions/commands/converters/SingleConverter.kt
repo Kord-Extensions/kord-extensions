@@ -17,9 +17,13 @@ import kotlin.reflect.KProperty
  * using [toDefaulting]. [toMulti] or [toOptional] respectively.
  *
  * You can create a single converter of your own by extending this class.
+ *
+ * @property validator Validation lambda, which may throw a [CommandException] if required.
  */
 @KordPreview
-public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashCommandConverter {
+public abstract class SingleConverter<T : Any>(
+    public open var validator: (suspend (T) -> Unit)? = null
+) : Converter<T>(true), SlashCommandConverter {
     /**
      * The parsed value.
      *
@@ -48,6 +52,11 @@ public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashComman
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
+
+    /** Call the validator lambda, if one was provided. **/
+    public open suspend fun validate() {
+        validator?.let { it(parsed) }
+    }
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
@@ -93,13 +102,15 @@ public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashComman
         required: Boolean = true,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
-        errorTypeString: String? = null
+        errorTypeString: String? = null,
+        nestedValidator: (suspend (List<T>) -> Unit)? = null
     ): MultiConverter<T> = SingleToMultiConverter(
         required,
         this,
         signatureTypeString,
         showTypeInSignature,
-        errorTypeString
+        errorTypeString,
+        nestedValidator
     )
 
     /**
@@ -128,13 +139,15 @@ public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashComman
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
-        outputError: Boolean = false
+        outputError: Boolean = false,
+        nestedValidator: (suspend (T?) -> Unit)? = null
     ): OptionalConverter<T?> = SingleToOptionalConverter(
         this,
         signatureTypeString,
         showTypeInSignature,
         errorTypeString,
-        outputError
+        outputError,
+        nestedValidator
     )
 
     /**
@@ -162,12 +175,14 @@ public abstract class SingleConverter<T : Any> : Converter<T>(true), SlashComman
         defaultValue: T,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
-        errorTypeString: String? = null
+        errorTypeString: String? = null,
+        nestedValidator: (suspend (T) -> Unit)? = null
     ): DefaultingConverter<T> = SingleToDefaultingConverter(
         this,
         defaultValue,
         signatureTypeString,
         showTypeInSignature,
-        errorTypeString
+        errorTypeString,
+        nestedValidator
     )
 }

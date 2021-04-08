@@ -15,8 +15,13 @@ import kotlin.reflect.KProperty
  * unused arguments, passing them to the remaining converters.
  *
  * You can create a multi converter of your own by extending this class.
+ *
+ * @property validator Validation lambda, which may throw a [CommandException] if required.
  */
-public abstract class MultiConverter<T : Any>(required: Boolean = true) : Converter<List<T>>(required) {
+public abstract class MultiConverter<T : Any>(
+    required: Boolean = true,
+    public open var validator: (suspend (List<T>) -> Unit)? = null
+) : Converter<List<T>>(required) {
     /**
      * The parsed value.
      *
@@ -46,6 +51,11 @@ public abstract class MultiConverter<T : Any>(required: Boolean = true) : Conver
 
     /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
     public operator fun getValue(thisRef: Arguments, property: KProperty<*>): List<T> = parsed
+
+    /** Call the validator lambda, if one was provided. **/
+    public open suspend fun validate() {
+        validator?.let { it(parsed) }
+    }
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.

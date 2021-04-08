@@ -19,7 +19,9 @@ import org.apache.commons.validator.routines.EmailValidator
  * @see emailList
  */
 @OptIn(KordPreview::class)
-public class EmailConverter : SingleConverter<String>() {
+public class EmailConverter(
+    override var validator: (suspend (String) -> Unit)? = null
+) : SingleConverter<String>() {
     override val signatureTypeString: String = "email"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

@@ -24,7 +24,9 @@ public class SingleToMultiConverter<T : Any>(
 
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,
-    newErrorTypeString: String? = null
+    newErrorTypeString: String? = null,
+
+    override var validator: (suspend (List<T>) -> Unit)? = null
 ) : MultiConverter<T>(required) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature

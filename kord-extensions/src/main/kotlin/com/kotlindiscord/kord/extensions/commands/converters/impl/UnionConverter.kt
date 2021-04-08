@@ -19,13 +19,15 @@ public class UnionConverter(
     private val converters: Collection<Converter<*>>,
 
     typeName: String? = null,
-    shouldThrow: Boolean = false
+    shouldThrow: Boolean = false,
+
+    override var validator: (suspend (Any) -> Unit)? = null
 ) : CoalescingConverter<Any>(shouldThrow) {
     override val signatureTypeString: String = typeName
         ?: converters.joinToString(" | ") { it.signatureTypeString }
 
     /** @suppress Internal validation function. **/
-    public fun validate() {
+    public fun validateUnion() {
         val allConverters = converters.toMutableList()
 
         allConverters.removeLast()  // The last converter can be any type.

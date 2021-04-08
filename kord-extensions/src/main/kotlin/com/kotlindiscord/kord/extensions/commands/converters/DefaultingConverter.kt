@@ -14,10 +14,13 @@ import kotlin.reflect.KProperty
  * will be provided in case parsing fails.
  *
  * You can create a defaulting converter of your own by extending this class.
+ *
+ * @property validator Validation lambda, which may throw a [CommandException] if required.
  */
 @KordPreview
 public abstract class DefaultingConverter<T : Any>(
-    defaultValue: T
+    defaultValue: T,
+    public open var validator: (suspend (T) -> Unit)? = null
 ) : Converter<T>(false), SlashCommandConverter {
     /**
      * The parsed value.
@@ -47,6 +50,11 @@ public abstract class DefaultingConverter<T : Any>(
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
+
+    /** Call the validator lambda, if one was provided. **/
+    public open suspend fun validate() {
+        validator?.let { it(parsed) }
+    }
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.

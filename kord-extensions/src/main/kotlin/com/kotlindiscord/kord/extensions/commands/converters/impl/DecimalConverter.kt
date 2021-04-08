@@ -18,7 +18,9 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see decimalList
  */
 @OptIn(KordPreview::class)
-public class DecimalConverter : SingleConverter<Double>() {
+public class DecimalConverter(
+    override var validator: (suspend (Double) -> Unit)? = null
+) : SingleConverter<Double>() {
     override val signatureTypeString: String = "decimal"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

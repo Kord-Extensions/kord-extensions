@@ -68,7 +68,8 @@ of your command's `action`. It exists to provide a little extra context and func
 
 Name          | Type                       | Description
 :------------ | :------------------------: | :----------
-`args`        | `Array <String>`           | A simple array of string arguments that were passed to this command invocation
+`argList`     | `Array <String>`           | A simple array of string arguments that were passed to this command invocation
+`argString`   | `String`                   | String representing the command invocation's arguments, exactly how they were sent on Discord
 `arguments`   | `T`                        | Arguments object containing the command's parsed arguments, as described below
 `breadcrumbs` | `MutableList <Breadcrumb>` | List of Sentry breadcrumbs, for the [Sentry intgration](/integrations/sentry)
 `channel`     | `MessageChannelBehavior`   | The message channel this command happened in
@@ -324,7 +325,7 @@ note that the properties marked with :warning: are required and must be set in o
 
 Name          | Type             | Description
 :------------ | :--------------: | :----------
-`autoAck`     | `Boolean`        | Whether to automatically acknowledge this command invocation when we get it - in most cases, you'll want this to be the default value (`true`) as you only get a few seconds to acknowledge a command invocation before Discord considers it invalid, but you can set this to `false` and use the `ack` function in your command body to acknowledge it yourself and provide a response if you need to
+`autoAck`     | `AutoAckType`    | Whether to automatically ack with an ephemeral (`EPHEMERAL`) or public (`PUBLIC`) acknowledgement, or none at all (`NONE`) if you want to do it yourself
 `name`        | `String`         | :warning: The primary name of the command, which must be unique throughout the bot and is used for invocation
 `description` | `String`         | :warning: A description for this command, which will be shown to users on Discord
 

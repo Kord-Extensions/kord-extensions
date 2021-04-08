@@ -7,12 +7,17 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.*
+import dev.kord.core.behavior.channel.PublicInteractionResponseBehavior
+import dev.kord.core.behavior.channel.edit
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import dev.kord.rest.builder.interaction.FollowupMessageCreateBuilder
-import dev.kord.rest.builder.interaction.InteractionApplicationCommandCallbackDataBuilder
+import dev.kord.rest.builder.interaction.*
+import mu.KLogger
+import mu.KotlinLogging
+
+private val logger: KLogger = KotlinLogging.logger {}
 
 /**
  * Command context object representing the context given to message commands.
@@ -45,7 +50,19 @@ public open class SlashCommandContext<T : Arguments>(
     public open lateinit var arguments: T
 
     /** Whether a response or ack has already been sent by the user. **/
-    public open var acked: Boolean = false
+    public open val acked: Boolean get() = interactionResponse != null
+
+    /** Whether the user has created a response or follow-up. **/
+    public open var hasSentText: Boolean = false
+
+    /** Whether we're working ephemerally, or null if no ack or response was sent yet. **/
+    public open val isEphemeral: Boolean?
+        get() = when (interactionResponse) {
+            is EphemeralInteractionResponseBehavior -> true
+            is PublicInteractionResponseBehavior -> false
+
+            else -> null
+        }
 
     override val command: SlashCommand<out T> get() = slashCommand
 
@@ -68,68 +85,164 @@ public open class SlashCommandContext<T : Arguments>(
     override suspend fun getUser(): UserBehavior = event.interaction.user
 
     /**
-     * If your command has autoAck set to `false`, use this to acknowledge the command, optionally with a message.
+     * Send an acknowledgement manually, assuming you have `autoAck` set to `NONE`.
      *
-     * Note that Discord only gives you 3 seconds from the interaction create event to acknowledge a command. After
-     * that, you won't be able to do anything with it - so it's best to acknowledge it as early as possible.
+     * Note that what you supply for `ephemeral` will decide how the rest of your interactions - both responses and
+     * follow-ups. They must match in ephemeral state.
      *
-     * If an ack or response has already been sent, the `ephemeral` flag is ignored.
+     * This function will throw an exception if an acknowledgement or response has already been sent.
+     *
+     * @param ephemeral Whether this should be an ephemeral acknowledgement or not.
      */
-    public suspend fun ack(
-        content: String? = null,
-        ephemeral: Boolean = true,
-        builder: (InteractionApplicationCommandCallbackDataBuilder.() -> Unit)? = null
-    ): InteractionResponseBehavior {
-        if (interactionResponse == null || acked) {
-            interactionResponse = if (content == null && builder == null) {
-                if (ephemeral) {
-                    event.interaction.acknowledge(EPHEMERAL)
-                } else {
-                    event.interaction.acknowledge()
-                }
-            } else {
-                event.interaction.respond(builder ?: { this.content = content })
-            }
-
-            acked = true
-
-            return interactionResponse!!
+    public suspend fun ack(ephemeral: Boolean): InteractionResponseBehavior {
+        if (acked) {
+            error("Attempted to acknowledge an interaction that's already been acknowledged or responded to.")
         }
 
-        error("This command has already been acknowledged.")
+        interactionResponse = if (ephemeral) {
+            event.interaction.acknowledgeEphemeral()
+        } else {
+            event.interaction.ackowledgePublic()
+        }
+
+        return interactionResponse!!
     }
 
-    /** Quickly send a reply, mentioning the user. **/
-    public suspend fun reply(
-        builder: suspend FollowupMessageCreateBuilder.() -> Unit
-    ): InteractionFollowup {
-        val innerBuilder: suspend FollowupMessageCreateBuilder.() -> Unit = {
+    /**
+     * Send an ephemeral response, assuming this interaction hasn't been acknowledged or responded to yet.
+     *
+     * This function will throw an exception if an acknowledgement or response has already been sent.
+     *
+     * Note that ephemeral responses require a content string, and may not contain embeds or files.
+     */
+    public suspend inline fun createEphemeralResponse(
+        content: String,
+        builder: EphemeralInteractionResponseCreateBuilder.() -> Unit = {}
+    ): EphemeralInteractionResponseBehavior {
+        if (interactionResponse != null) {
+            error("Tried to send a response to an interaction that already has an acknowledgement or response.")
+        }
+
+        if (isEphemeral == false) {
+            error("Tried to send an ephemeral response to a non-ephemeral interaction.")
+        }
+
+        hasSentText = true
+        interactionResponse = event.interaction.respondEphemeral(content, builder)
+
+        return interactionResponse!! as EphemeralInteractionResponseBehavior
+    }
+
+    /**
+     * Send a public response, assuming this interaction hasn't been acknowledged or responded to yet.
+     *
+     * This function will throw an exception if an acknowledgement or response has already been sent.
+     */
+    public suspend inline fun createPublicResponse(
+        builder: PublicInteractionResponseCreateBuilder.() -> Unit
+    ): PublicInteractionResponseBehavior {
+        if (interactionResponse != null) {
+            error("Tried to send a response to an interaction that already has an acknowledgement or response.")
+        }
+
+        if (isEphemeral == true) {
+            error("Tried to send a non-ephemeral response to an ephemeral interaction.")
+        }
+
+        hasSentText = true
+        interactionResponse = event.interaction.respondPublic(builder)
+
+        return interactionResponse!! as PublicInteractionResponseBehavior
+    }
+
+    /**
+     * Assuming an acknowledgement or response has been sent, edit the interaction response ephemerally.
+     *
+     * This function will throw an exception if no acknowledgement or response has been sent yet, or this interaction
+     * has already been interacted with in a non-ephemeral manner.
+     *
+     * Note that ephemeral responses require a content string, and may not contain embeds or files.
+     */
+    public suspend fun editEphemeralResponse(
+        builder: EphemeralInteractionResponseModifyBuilder.() -> Unit
+    ): EphemeralInteractionResponseBehavior {
+        if (interactionResponse == null) {
+            error("Tried to edit an interaction response before acknowledging it or sending a response.")
+        }
+
+        if (isEphemeral == false) {
+            error("Tried to edit an ephemeral response for a non-ephemeral interaction.")
+        }
+
+        hasSentText = true
+        (interactionResponse as EphemeralInteractionResponseBehavior).edit(builder)
+
+        return interactionResponse!! as EphemeralInteractionResponseBehavior
+    }
+
+    /**
+     * Assuming an acknowledgement or response has been sent, edit the interaction response publicly.
+     *
+     * This function will throw an exception if no acknowledgement or response has been sent yet, or this interaction
+     * has already been interacted with in an ephemeral manner.
+     */
+    public suspend fun editPublicResponse(
+        builder: PublicInteractionResponseModifyBuilder.() -> Unit
+    ): PublicInteractionResponseBehavior {
+        if (interactionResponse == null) {
+            error("Tried to edit an interaction response before acknowledging it or sending a response.")
+        }
+
+        if (isEphemeral == true) {
+            error("Tried to edit a non-ephemeral response for an ephemeral interaction.")
+        }
+
+        hasSentText = true
+        (interactionResponse as PublicInteractionResponseBehavior).edit(builder)
+
+        return interactionResponse!! as PublicInteractionResponseBehavior
+    }
+
+    /**
+     * Assuming an acknowledgement or response has been sent, send a follow-up message.
+     *
+     * Note that this message will be ephemeral or public based on the acknowledgement or response that was sent
+     * earlier on - the follow-up message will match the ephemeral state of what came before it.
+     *
+     * This function will throw an exception if no acknowledgement or response has been sent yet, or this is an
+     * ephemeral reaction and one of the following is true:
+     *
+     * * You didn't supply a content string in the builder
+     * * You supplied one or more embeds in the builder
+     * * You supplied one or more files in the builder.
+     */
+    public suspend inline fun followUp(builder: FollowupMessageCreateBuilder.() -> Unit): InteractionFollowup {
+        if (interactionResponse == null) {
+            error("Tried to send a follow-up before acknowledging or sending a response.")
+        }
+
+        val result = interactionResponse!!.followUp {
             builder()
 
-            content = "${user?.mention?.plus(" ") ?: ""}${content ?: ""}"
+            if (isEphemeral == true) {
+                if (content.isNullOrEmpty()) {
+                    error(
+                        "Tried to send a follow-up to an ephemeral interaction without providing any message content."
+                    )
+                }
+
+                if (embeds.isNotEmpty()) {
+                    error("Tried to send a follow-up to an ephemeral interaction with one or more embeds.")
+                }
+
+                if (files.isNotEmpty()) {
+                    error("Tried to send a follow-up to an ephemeral interaction with one or more files.")
+                }
+            }
         }
 
-        acked = true
+        hasSentText = true
 
-        return followUp(innerBuilder)
+        return result
     }
-
-    /** Quickly send a string reply, mentioning the user. **/
-    public suspend fun reply(text: String): InteractionFollowup = reply { content = text }
-
-    /** Quick access to the `followUp` function on the interaction response object. **/
-    public suspend fun followUp(builder: suspend FollowupMessageCreateBuilder.() -> Unit): InteractionFollowup {
-        if (interactionResponse == null) {
-            error("You must acknowledge this command before sending a follow-up message.")
-        }
-
-        val response = interactionResponse!!.followUp { builder() }
-
-        acked = true
-
-        return response
-    }
-
-    /** Quick access to the `followUp` function on the interaction response object, just for a string message. **/
-    public suspend inline fun followUp(content: String): InteractionFollowup = followUp { this.content = content }
 }

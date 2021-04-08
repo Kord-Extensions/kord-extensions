@@ -41,7 +41,10 @@ private const val HELP_MESSAGE = "__How to use durations__\n\n" +
  * @see parseDuration
  */
 @OptIn(KordPreview::class)
-public class T4JDurationConverter(public val longHelp: Boolean = true) : SingleConverter<Duration<IsoUnit>>() {
+public class T4JDurationConverter(
+    public val longHelp: Boolean = true,
+    override var validator: (suspend (Duration<IsoUnit>) -> Unit)? = null
+) : SingleConverter<Duration<IsoUnit>>() {
     override val signatureTypeString: String = "duration"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

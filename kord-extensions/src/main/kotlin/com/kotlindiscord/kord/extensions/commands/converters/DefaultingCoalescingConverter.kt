@@ -17,8 +17,15 @@ import kotlin.reflect.KProperty
  * A defaulting coalescing converter has a default value that will be provided if nothing could be parsed.
  *
  * You can create an optional coalescing converter of your own by extending this class.
+ *
+ * @property validator Validation lambda, which may throw a [CommandException] if required.
  */
-public abstract class DefaultingCoalescingConverter<T : Any>(defaultValue: T) : Converter<List<T>>(false) {
+public abstract class DefaultingCoalescingConverter<T : Any>(
+    defaultValue: T,
+    public open var validator: (suspend (T) -> Unit)? = null
+) : Converter<List<T>>(
+    false
+) {
     /**
      * The parsed value.
      *
@@ -48,6 +55,11 @@ public abstract class DefaultingCoalescingConverter<T : Any>(defaultValue: T) : 
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
+
+    /** Call the validator lambda, if one was provided. **/
+    public open suspend fun validate() {
+        validator?.let { it(parsed) }
+    }
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.

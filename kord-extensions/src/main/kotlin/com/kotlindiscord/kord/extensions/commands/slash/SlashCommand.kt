@@ -12,11 +12,9 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import dev.kord.common.annotation.KordPreview
-import dev.kord.common.entity.MessageFlag
-import dev.kord.common.entity.MessageFlags
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
-import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.InteractionResponseBehavior
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.GroupCommand
@@ -29,9 +27,6 @@ import mu.KotlinLogging
 
 private val logger: KLogger = KotlinLogging.logger {}
 private const val DISCORD_LIMIT: Int = 10
-
-/** Quick access to a MessageFlags object with the Ephemeral message flag. **/
-public val EPHEMERAL: MessageFlags = MessageFlags(MessageFlag.Ephemeral)
 
 /**
  * Class representing a slash command.
@@ -64,8 +59,8 @@ public open class SlashCommand<T : Arguments>(
     /** Guild ID this slash command is to be registered for, if any. **/
     public open var guild: Snowflake? = null
 
-    /** Whether to automatically acknowledge this command. Make sure you `ack` your command within 3 seconds! **/
-    public open var autoAck: Boolean = true
+    /** Type of automatic ack to use, if any. **/
+    public open var autoAck: AutoAckType = AutoAckType.EPHEMERAL
 
     /** Map of group names to slash command groups, if any. **/
     public open val groups: MutableMap<String, SlashGroup> = mutableMapOf()
@@ -340,10 +335,11 @@ public open class SlashCommand<T : Arguments>(
             return
         }
 
-        val resp = if (commandObj.autoAck) {
-            event.interaction.acknowledge(EPHEMERAL)
-        } else {
-            null
+        val resp = when (commandObj.autoAck) {
+            AutoAckType.EPHEMERAL -> event.interaction.acknowledgeEphemeral()
+            AutoAckType.PUBLIC -> event.interaction.ackowledgePublic()
+
+            AutoAckType.NONE -> null
         }
 
         val context = SlashCommandContext(commandObj, event, commandObj.name, resp)
@@ -394,29 +390,9 @@ public open class SlashCommand<T : Arguments>(
 
             commandObj.body(context)
 
-            if (autoAck && !context.acked) {
-                context.interactionResponse!!.edit {
-                    content = "Done!"
-
-                    flags = EPHEMERAL
-                }
-            }
+            respondText(commandObj, context, "Done!")
         } catch (e: CommandException) {
-            if (context.interactionResponse != null) {
-                if (autoAck) {
-                    context.interactionResponse!!.edit {
-                        content = e.reason
-                        flags = EPHEMERAL
-                    }
-                } else {
-                    context.reply(e.reason)
-                }
-            } else {
-                context.ack {
-                    content = e.reason
-                    flags = EPHEMERAL
-                }
-            }
+            respondText(commandObj, context, e.reason)
         } catch (t: Throwable) {
             if (sentry.enabled) {
                 logger.debug { "Submitting error to sentry." }
@@ -424,7 +400,7 @@ public open class SlashCommand<T : Arguments>(
                 lateinit var sentryId: SentryId
 
                 val channel = context.channel
-                val author = context.user?.asUserOrNull()
+                val author = context.user.asUserOrNull()
 
                 Sentry.withScope {
                     if (author != null) {
@@ -463,43 +439,40 @@ public open class SlashCommand<T : Arguments>(
                         "Please let a staff member know."
                 }
 
-                if (context.interactionResponse != null) {
-                    if (autoAck) {
-                        context.interactionResponse!!.edit {
-                            content = errorMessage
-                            flags = EPHEMERAL
-                        }
-                    } else {
-                        context.reply(errorMessage)
-                    }
-                } else {
-                    context.ack {
-                        content = errorMessage
-                        flags = EPHEMERAL
-                    }
-                }
+                respondText(commandObj, context, errorMessage)
             } else {
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 
                 val errorMessage = "Unfortunately, **an error occurred** during command processing. " +
                     "Please let a staff member know."
 
-                if (context.interactionResponse != null) {
-                    if (autoAck) {
-                        context.interactionResponse!!.edit {
-                            content = errorMessage
-                            flags = EPHEMERAL
-                        }
-                    } else {
-                        context.reply(errorMessage)
-                    }
-                } else {
-                    context.ack {
-                        content = errorMessage
-                        flags = EPHEMERAL
-                    }
-                }
+                respondText(commandObj, context, errorMessage)
             }
         }
     }
-}
+
+    private suspend fun respondText(
+        commandObj: SlashCommand<*>,
+        context: SlashCommandContext<*>,
+        text: String
+    ): InteractionResponseBehavior? =
+        if (!context.hasSentText) {
+            if (!context.acked) {
+                when (commandObj.autoAck) {
+                    AutoAckType.EPHEMERAL -> context.createEphemeralResponse(text)
+                    AutoAckType.PUBLIC -> context.createPublicResponse { content = text }
+
+                    AutoAckType.NONE -> null
+                }
+            } else {
+                when (commandObj.autoAck) {
+                    AutoAckType.EPHEMERAL -> context.editEphemeralResponse { content = text }
+                    AutoAckType.PUBLIC -> context.editPublicResponse { content = text }
+
+                    AutoAckType.NONE -> null
+                }
+            }
+        } else {
+            null
+        }
+    }

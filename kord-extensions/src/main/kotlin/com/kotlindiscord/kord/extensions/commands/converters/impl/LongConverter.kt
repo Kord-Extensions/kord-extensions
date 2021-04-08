@@ -21,7 +21,8 @@ private const val DEFAULT_RADIX = 10
  */
 @OptIn(KordPreview::class)
 public class LongConverter(
-    private val radix: Int = DEFAULT_RADIX
+    private val radix: Int = DEFAULT_RADIX,
+    override var validator: (suspend (Long) -> Unit)? = null
 ) : SingleConverter<Long>() {
     override val signatureTypeString: String = "number"
 

@@ -92,6 +92,8 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                         converter.parseSuccess = true
                         currentValue = null
+
+                        converter.validate()
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
@@ -124,6 +126,8 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                         converter.parseSuccess = true
                         currentValue = null
+
+                        converter.validate()
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
@@ -155,6 +159,8 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                         converter.parseSuccess = true
                         currentValue = null
+
+                        converter.validate()
                     }
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError) {
@@ -178,6 +184,8 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                         converter.parseSuccess = true
                         currentValue = null
+
+                        converter.validate()
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }

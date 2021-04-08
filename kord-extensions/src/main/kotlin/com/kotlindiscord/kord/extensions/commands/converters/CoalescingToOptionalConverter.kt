@@ -22,7 +22,9 @@ public class CoalescingToOptionalConverter<T : Any>(
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
-    outputError: Boolean = false
+    outputError: Boolean = false,
+
+    override var validator: (suspend (T?) -> Unit)? = null
 ) : OptionalCoalescingConverter<T?>(outputError) {
     override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature

@@ -31,7 +31,8 @@ import kotlinx.coroutines.flow.firstOrNull
  */
 @OptIn(KordPreview::class)
 public class MemberConverter(
-    private var requiredGuild: (suspend () -> Snowflake)? = null
+    private var requiredGuild: (suspend () -> Snowflake)? = null,
+    override var validator: (suspend (Member) -> Unit)? = null
 ) : SingleConverter<Member>() {
     override val signatureTypeString: String = "member"
 

@@ -129,6 +129,7 @@ public open class MessageCommandRegistry(
         var commandName: String? = null
         var parts = message.parse()
         val prefix = getPrefix(event)
+        var argString = event.message.content
 
         if (parts.isEmpty()) {
             // Empty message.
@@ -154,6 +155,9 @@ public open class MessageCommandRegistry(
 
                     commandName = parts[0]
                     parts = parts.sliceArray(1 until parts.size)
+
+                    argString = argString.replaceFirst(prefix, "")
+                        .trim()
                 }
 
                 settings.messageCommandsBuilder.invokeOnMention &&
@@ -167,6 +171,9 @@ public open class MessageCommandRegistry(
                     } else {
                         arrayOf()
                     }
+
+                    argString = argString.replaceFirst(matchedMention, "")
+                        .trim()
                 }
 
                 settings.messageCommandsBuilder.invokeOnMention &&
@@ -175,6 +182,9 @@ public open class MessageCommandRegistry(
 
                     commandName = parts[0].slice(matchedMention.length until parts[0].length)
                     parts = parts.sliceArray(1 until parts.size)
+
+                    argString = argString.replaceFirst(matchedMention, "")
+                        .trim()
                 }
             }
         }
@@ -186,6 +196,9 @@ public open class MessageCommandRegistry(
         if (commandName.startsWith(prefix)) {
             commandName = commandName.slice(prefix.length until commandName.length)
         }
+
+        argString = argString.replaceFirst(commandName, "")
+            .trim()
 
         if (commandName.contains("\n")) {
             val split = commandName.split("\n", limit = 2)
@@ -205,7 +218,7 @@ public open class MessageCommandRegistry(
             ?: commands.firstOrNull { it.aliases.contains(commandName) }
 
         commandThreadPool.invoke {
-            command?.call(event, commandName, parts)
+            command?.call(event, commandName, parts, argString)
         }
     }
 }

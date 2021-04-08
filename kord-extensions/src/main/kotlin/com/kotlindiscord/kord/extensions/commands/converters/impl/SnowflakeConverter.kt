@@ -19,7 +19,9 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see longList
  */
 @OptIn(KordPreview::class)
-public class SnowflakeConverter : SingleConverter<Snowflake>() {
+public class SnowflakeConverter(
+    override var validator: (suspend (Snowflake) -> Unit)? = null
+) : SingleConverter<Snowflake>() {
     override val signatureTypeString: String = "ID"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

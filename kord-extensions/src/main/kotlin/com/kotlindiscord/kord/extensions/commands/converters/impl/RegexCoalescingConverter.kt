@@ -22,7 +22,8 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 public class RegexCoalescingConverter(
     private val options: Set<RegexOption> = setOf(),
-    shouldThrow: Boolean = false
+    shouldThrow: Boolean = false,
+    override var validator: (suspend (Regex) -> Unit)? = null
 ) : CoalescingConverter<Regex>(shouldThrow) {
     override val signatureTypeString: String = "regexes"
     override val showTypeInSignature: Boolean = false

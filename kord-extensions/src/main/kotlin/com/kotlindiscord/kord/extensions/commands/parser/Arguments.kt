@@ -24,11 +24,11 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <T : Any> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
-        converter: SingleConverter<T>
-    ): SingleConverter<T> {
+        converter: SingleConverter<R>
+    ): SingleConverter<R> {
         args.add(Argument(displayName, description, converter))
 
         return converter
@@ -45,11 +45,11 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <T : Any> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
-        converter: DefaultingConverter<T>
-    ): DefaultingConverter<T> {
+        converter: DefaultingConverter<R>
+    ): DefaultingConverter<R> {
         args.add(Argument(displayName, description, converter))
 
         return converter
@@ -66,11 +66,11 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <T : Any?> arg(
+    public fun <R : Any?> arg(
         displayName: String,
         description: String,
-        converter: OptionalConverter<T>
-    ): OptionalConverter<T> {
+        converter: OptionalConverter<R>
+    ): OptionalConverter<R> {
         args.add(Argument(displayName, description, converter))
 
         return converter
@@ -87,11 +87,11 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <T : Any> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
-        converter: MultiConverter<T>
-    ): MultiConverter<T> {
+        converter: MultiConverter<R>
+    ): MultiConverter<R> {
         args.add(Argument(displayName, description, converter))
 
         return converter
@@ -108,11 +108,11 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <T : Any> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
-        converter: CoalescingConverter<T>
-    ): CoalescingConverter<T> {
+        converter: CoalescingConverter<R>
+    ): CoalescingConverter<R> {
         args.add(Argument(displayName, description, converter))
 
         return converter
@@ -129,11 +129,11 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <T : Any> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
-        converter: DefaultingCoalescingConverter<T>
-    ): DefaultingCoalescingConverter<T> {
+        converter: DefaultingCoalescingConverter<R>
+    ): DefaultingCoalescingConverter<R> {
         args.add(Argument(displayName, description, converter))
 
         return converter
@@ -150,11 +150,11 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <T : Any?> arg(
+    public fun <R : Any?> arg(
         displayName: String,
         description: String,
-        converter: OptionalCoalescingConverter<T>
-    ): OptionalCoalescingConverter<T> {
+        converter: OptionalCoalescingConverter<R>
+    ): OptionalCoalescingConverter<R> {
         args.add(Argument(displayName, description, converter))
 
         return converter

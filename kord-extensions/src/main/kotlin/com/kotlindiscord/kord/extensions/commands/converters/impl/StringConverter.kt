@@ -19,7 +19,9 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see stringList
  */
 @OptIn(KordPreview::class)
-public class StringConverter : SingleConverter<String>() {
+public class StringConverter(
+    override var validator: (suspend (String) -> Unit)? = null
+) : SingleConverter<String>() {
     override val signatureTypeString: String = "text"
     override val showTypeInSignature: Boolean = false
 

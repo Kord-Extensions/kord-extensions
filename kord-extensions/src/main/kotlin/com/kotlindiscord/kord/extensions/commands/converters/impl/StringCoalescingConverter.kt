@@ -16,7 +16,8 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see coalescedString
  */
 public class StringCoalescingConverter(
-    shouldThrow: Boolean = false
+    shouldThrow: Boolean = false,
+    override var validator: (suspend (String) -> Unit)? = null
 ) : CoalescingConverter<String>(shouldThrow) {
     override val signatureTypeString: String = "text"
     override val showTypeInSignature: Boolean = false

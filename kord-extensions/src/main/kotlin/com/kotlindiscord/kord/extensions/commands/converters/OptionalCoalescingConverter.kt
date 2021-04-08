@@ -19,9 +19,12 @@ import kotlin.reflect.KProperty
  * You can create an optional coalescing converter of your own by extending this class.
  *
  * @property outputError Whether the argument parser should output parsing errors on invalid arguments.
+ *
+ * @property validator Validation lambda, which may throw a [CommandException] if required.
  */
 public abstract class OptionalCoalescingConverter<T : Any?>(
-    public val outputError: Boolean = false
+    public val outputError: Boolean = false,
+    public open var validator: (suspend (T?) -> Unit)? = null
 ) : Converter<List<T>>(false) {
     /**
      * The parsed value.
@@ -52,6 +55,11 @@ public abstract class OptionalCoalescingConverter<T : Any?>(
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
+
+    /** Call the validator lambda, if one was provided. **/
+    public open suspend fun validate() {
+        validator?.let { it(parsed) }
+    }
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.

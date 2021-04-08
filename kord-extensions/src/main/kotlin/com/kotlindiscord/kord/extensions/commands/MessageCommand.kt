@@ -178,13 +178,14 @@ public open class MessageCommand<T : Arguments>(
         event: MessageCreateEvent,
         commandName: String,
         args: Array<String>,
+        argString: String,
         skipChecks: Boolean = false
     ) {
         if (!skipChecks && !runChecks(event)) {
             return
         }
 
-        val context = MessageCommandContext(this, event, commandName, args)
+        val context = MessageCommandContext(this, event, commandName, args, argString)
 
         context.populate()
 

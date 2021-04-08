@@ -100,6 +100,27 @@ a default value and instead will return `null` by default.
     the source for a full list, we recommend making use of your IDE's auto-completion functionality for discovery - 
     especially if you've written custom converters, or you're making use of third-party converters.
 
+### Validators
+
+All converters support validators. Validators allow you to specify a simple lambda that acts on the parsed result, and
+throws a `CommandException` if something is wrong - which will be sent to the user. For example...
+
+```kotlin
+
+class PostArguments : Arguments() {
+    // Single required string argument
+    val title by string("title", "Post title") { 
+        if (it.length > 30) throw CommandError("Post title must be 30 characters at most")
+    }
+
+    // Single required Discord user argument
+    val author by user("author", "User that this post should be attributed to")
+
+    // Consumes the rest of the arguments into a single string
+    val body by coalescedString("body", "Text content to be placed within the posts's body")
+}
+```
+
 ## Slash commands and converters
 
 While slash commands make use of all the usual converter types, the following points are worth bearing in mind:

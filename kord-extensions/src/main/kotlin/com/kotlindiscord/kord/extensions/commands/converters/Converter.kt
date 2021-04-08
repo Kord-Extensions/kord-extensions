@@ -13,7 +13,9 @@ import com.kotlindiscord.kord.extensions.utils.startsWithVowel
  *
  * @param required Whether this converter must succeed for a command invocation to be valid.
  */
-public abstract class Converter<T : Any?>(public open val required: Boolean = true) {
+public abstract class Converter<T : Any?>(
+    public open val required: Boolean = true,
+) {
     /** This will be set to true by the argument parser if the conversion succeeded. **/
     public var parseSuccess: Boolean = false
 

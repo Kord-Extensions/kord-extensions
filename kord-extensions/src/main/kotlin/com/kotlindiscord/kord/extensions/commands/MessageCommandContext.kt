@@ -16,12 +16,14 @@ import dev.kord.core.event.message.MessageCreateEvent
  * Command context object representing the context given to message commands.
  *
  * @property messageCommand Message command object, typed as [MessageCommand] rather than [Command]
+ * @property argString String containing the command's unparsed arguments, raw, fresh from Discord itself.
  */
 public open class MessageCommandContext<T : Arguments>(
     public val messageCommand: MessageCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
-    argsList: Array<String>
+    argsList: Array<String>,
+    public val argString: String
 ) : CommandContext(messageCommand, eventObj, commandName, argsList) {
     /** Event that triggered this command execution. **/
     public val event: MessageCreateEvent get() = eventObj as MessageCreateEvent

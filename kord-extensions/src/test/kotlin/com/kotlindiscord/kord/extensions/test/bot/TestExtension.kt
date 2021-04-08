@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
@@ -50,13 +51,13 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
         slashCommand {
             name = "test-noack"
             description = "Don't auto-ack this one"
-            autoAck = false
+            autoAck = AutoAckType.PUBLIC
 
             action {
-                ack() {
+                createPublicResponse {
                     embed {
-                        this.title = "An embed!"
-                        this.description = "With a description, and without a content string!"
+                        title = "An embed!"
+                        description = "With a description, and without a content string!"
                     }
                 }
             }
@@ -67,12 +68,18 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             description = "Test command, please ignore"
 
             group("one") {
+                description = "Group one"
+
                 subCommand(::SlashArgs) {
                     name = "test"
                     description = "Test command, please ignore"
 
+                    autoAck = AutoAckType.PUBLIC
+
                     action {
                         followUp {
+                            content = "Some content"
+
                             embed {
                                 title = "Guild response"
                                 description = "Guild description"
@@ -108,6 +115,8 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
                     action {
                         followUp {
+                            content = "Some content"
+
                             embed {
                                 title = "Guild response"
                                 description = "Guild description"

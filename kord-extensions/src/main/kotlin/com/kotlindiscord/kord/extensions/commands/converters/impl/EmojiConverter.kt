@@ -30,7 +30,9 @@ import kotlinx.coroutines.flow.mapNotNull
  * @see emojiList
  */
 @OptIn(KordPreview::class)
-public class EmojiConverter : SingleConverter<GuildEmoji>() {
+public class EmojiConverter(
+    override var validator: (suspend (GuildEmoji) -> Unit)? = null
+) : SingleConverter<GuildEmoji>() {
     override val signatureTypeString: String = "server emoji"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

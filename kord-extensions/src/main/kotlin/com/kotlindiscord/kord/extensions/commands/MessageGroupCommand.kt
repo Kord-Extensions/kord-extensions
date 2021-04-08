@@ -172,6 +172,7 @@ public open class GroupCommand<T : Arguments>(
         event: MessageCreateEvent,
         commandName: String,
         args: Array<String>,
+        argString: String,
         skipChecks: Boolean
     ) {
         if (skipChecks || !runChecks(event)) {
@@ -183,9 +184,9 @@ public open class GroupCommand<T : Arguments>(
         val subCommand = getCommand(command)
 
         if (subCommand == null) {
-            super.call(event, commandName, args, true)
+            super.call(event, commandName, args, argString, true)
         } else {
-            subCommand.call(event, commandName, remainingArgs)
+            subCommand.call(event, commandName, remainingArgs, argString)
         }
     }
 

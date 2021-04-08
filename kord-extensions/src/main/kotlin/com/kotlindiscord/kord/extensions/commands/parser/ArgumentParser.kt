@@ -9,8 +9,25 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import io.ktor.client.features.*
 import mu.KotlinLogging
+import kotlin.collections.MutableList
+import kotlin.collections.count
+import kotlin.collections.filter
+import kotlin.collections.first
+import kotlin.collections.forEach
+import kotlin.collections.joinToString
+import kotlin.collections.last
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.plus
+import kotlin.collections.removeFirst
+import kotlin.collections.removeFirstOrNull
+import kotlin.collections.set
+import kotlin.collections.toList
+import kotlin.collections.toMap
+import kotlin.collections.toMutableList
 
 private val logger = KotlinLogging.logger {}
 
@@ -142,6 +159,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                         converter.parseSuccess = true
                         currentValue = null
+
+                        converter.validate()
                     }
                 } catch (e: CommandException) {
                     if (converter.required || hasKwargs) {
@@ -176,6 +195,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                         converter.parseSuccess = true
                         currentValue = null
+
+                        converter.validate()
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -200,6 +221,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                         converter.parseSuccess = true
                         currentValue = null
+
+                        converter.validate()
                     }
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
@@ -250,6 +273,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                             currentValue = null
                             converter.parseSuccess = true
+
+                            converter.validate()
                         }
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
@@ -299,6 +324,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                             currentValue = null
                             converter.parseSuccess = true
+
+                            converter.validate()
                         }
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
@@ -348,6 +375,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                             currentValue = null
                             converter.parseSuccess = true
+
+                            converter.validate()
                         }
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
@@ -399,6 +428,8 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                             currentValue = null
                             converter.parseSuccess = true
+
+                            converter.validate()
                         }
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }

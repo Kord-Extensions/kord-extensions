@@ -23,7 +23,8 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @OptIn(KordPreview::class)
 public class EnumConverter<E : Enum<E>>(
     typeName: String,
-    private val getter: suspend (String) -> E?
+    private val getter: suspend (String) -> E?,
+    override var validator: (suspend (E) -> Unit)? = null
 ) : SingleConverter<E>() {
     override val signatureTypeString: String = typeName
 

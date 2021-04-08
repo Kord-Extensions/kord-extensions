@@ -22,7 +22,9 @@ public class CoalescingToDefaultingConverter<T : Any>(
 
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,
-    newErrorTypeString: String? = null
+    newErrorTypeString: String? = null,
+
+    override var validator: (suspend (T) -> Unit)? = null
 ) : DefaultingCoalescingConverter<T>(defaultValue) {
     override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature

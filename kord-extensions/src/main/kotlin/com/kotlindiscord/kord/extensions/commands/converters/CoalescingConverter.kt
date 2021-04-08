@@ -14,7 +14,7 @@ import kotlin.reflect.KProperty
  * its final result and tells the parser how many arguments it managed to consume. The parser will continue
  * processing the unused arguments, passing them to the remaining converters.
  *
- * You can convert a [CoalescingConverter] instance to a defaulting or multi converter using [toDefaulting]
+ * You can convert a [CoalescingConverter] instance to a defaulting or optional converter using [toDefaulting]
  * or [toOptional] respectively.
  *
  * You can create a coalescing converter of your own by extending this class.
@@ -22,9 +22,12 @@ import kotlin.reflect.KProperty
  * @property shouldThrow Intended only for use if this converter is the last one in a set of arguments, if this is
  * `true` then the converter should throw a [CommandException] when an argument can't be parsed, instead of just
  * stopping and allowing parsing to continue.
+ *
+ * @property validator Validation lambda, which may throw a [CommandException] if required.
  */
 public abstract class CoalescingConverter<T : Any>(
-    public open val shouldThrow: Boolean = false
+    public open val shouldThrow: Boolean = false,
+    public open var validator: (suspend (T) -> Unit)? = null
 ) : Converter<List<T>>(true), SlashCommandConverter {
     /**
      * The parsed value.
@@ -55,6 +58,11 @@ public abstract class CoalescingConverter<T : Any>(
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
+
+    /** Call the validator lambda, if one was provided. **/
+    public open suspend fun validate() {
+        validator?.let { it(parsed) }
+    }
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
@@ -96,13 +104,15 @@ public abstract class CoalescingConverter<T : Any>(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
-        outputError: Boolean = false
+        outputError: Boolean = false,
+        nestedValidator: (suspend (T?) -> Unit)? = null
     ): OptionalCoalescingConverter<T?> = CoalescingToOptionalConverter(
         this,
         signatureTypeString,
         showTypeInSignature,
         errorTypeString,
-        outputError
+        outputError,
+        nestedValidator
     )
 
     /**
@@ -130,12 +140,14 @@ public abstract class CoalescingConverter<T : Any>(
         defaultValue: T,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
-        errorTypeString: String? = null
+        errorTypeString: String? = null,
+        nestedValidator: (suspend (T) -> Unit)? = null
     ): DefaultingCoalescingConverter<T> = CoalescingToDefaultingConverter(
         this,
         defaultValue,
         signatureTypeString,
         showTypeInSignature,
-        errorTypeString
+        errorTypeString,
+        nestedValidator
     )
 }

@@ -37,7 +37,8 @@ private val logger = KotlinLogging.logger {}
 @OptIn(KordPreview::class)
 public class MessageConverter(
     private var requireGuild: Boolean = false,
-    private var requiredGuild: (suspend () -> Snowflake)? = null
+    private var requiredGuild: (suspend () -> Snowflake)? = null,
+    override var validator: (suspend (Message) -> Unit)? = null
 ) : SingleConverter<Message>() {
     override val signatureTypeString: String = "message"
 

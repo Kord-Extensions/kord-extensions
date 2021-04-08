@@ -40,7 +40,10 @@ private const val HELP_MESSAGE = "__How to use durations__\n\n" +
  * @see parseDurationJ8
  */
 @OptIn(KordPreview::class)
-public class DurationConverter(public val longHelp: Boolean = true) : SingleConverter<Duration>() {
+public class DurationConverter(
+    public val longHelp: Boolean = true,
+    override var validator: (suspend (Duration) -> Unit)? = null
+) : SingleConverter<Duration>() {
     override val signatureTypeString: String = "duration"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
