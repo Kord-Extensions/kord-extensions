@@ -55,9 +55,6 @@ public open class SlashCommandContext<T : Arguments>(
     /** Whether a response or ack has already been sent by the user. **/
     public open val acked: Boolean get() = interactionResponse != null
 
-    /** Whether the user has created a response or follow-up. **/
-    public open var hasSentText: Boolean = false
-
     /** Whether we're working ephemerally, or null if no ack or response was sent yet. **/
     public open val isEphemeral: Boolean?
         get() = when (interactionResponse) {
@@ -130,7 +127,6 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried to send an ephemeral response to a non-ephemeral interaction.")
         }
 
-        hasSentText = true
         interactionResponse = event.interaction.respondEphemeral(content, builder)
 
         return interactionResponse!! as EphemeralInteractionResponseBehavior
@@ -152,7 +148,6 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried to send a non-ephemeral response to an ephemeral interaction.")
         }
 
-        hasSentText = true
         interactionResponse = event.interaction.respondPublic(builder)
 
         return interactionResponse!! as PublicInteractionResponseBehavior
@@ -177,7 +172,6 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried to edit an ephemeral response for a non-ephemeral interaction.")
         }
 
-        hasSentText = true
         (interactionResponse as EphemeralInteractionResponseBehavior).edit(builder)
 
         return interactionResponse!! as EphemeralInteractionResponseBehavior
@@ -200,7 +194,6 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried to edit a non-ephemeral response for an ephemeral interaction.")
         }
 
-        hasSentText = true
         (interactionResponse as PublicInteractionResponseBehavior).edit(builder)
 
         return interactionResponse!! as PublicInteractionResponseBehavior
@@ -226,7 +219,6 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried send an ephemeral follow-up for a non-ephemeral interaction.")
         }
 
-        hasSentText = true
         return (interactionResponse as EphemeralInteractionResponseBehavior).followUp(content, builder)
     }
 
@@ -247,7 +239,6 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried to send a public follow-up for an ephemeral interaction.")
         }
 
-        hasSentText = true
         return (interactionResponse as PublicInteractionResponseBehavior).followUp(builder)
     }
 }

@@ -337,8 +337,8 @@ Name          | Type             | Description
     * Subcommands run the root command's checks first, if any - both the root command's checks and the subcommand's 
       checks must pass for the command to be run.
     
-    You may only have 10 command groups (with a max of 10 subcommands per group) per command. If you're using top-level 
-    subcommands, each slash command may only have 10 of those.
+    You may only have 25 command groups (with a max of 25 subcommands per group) per command. If you're using top-level 
+    subcommands, each slash command may only have 25 of those.
     
     On a top-level command, you may only have an action, some command groups, **or** some subcommands. Providing more 
     than one of these will result in an error - exactly one must always be provided. Additionally, subcommands may not

@@ -13,8 +13,8 @@ import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.KordObject
 import dev.kord.core.behavior.GuildBehavior
-import dev.kord.core.behavior.interaction.InteractionResponseBehavior
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.GroupCommand
@@ -26,7 +26,7 @@ import mu.KLogger
 import mu.KotlinLogging
 
 private val logger: KLogger = KotlinLogging.logger {}
-private const val DISCORD_LIMIT: Int = 10
+private const val DISCORD_LIMIT: Int = 25
 
 /**
  * Class representing a slash command.
@@ -130,7 +130,7 @@ public open class SlashCommand<T : Arguments>(
         }
 
         if (groups.size >= DISCORD_LIMIT) {
-            error("Commands may only contain up to 10 command groups.")
+            error("Commands may only contain up to $DISCORD_LIMIT command groups.")
         }
 
         if (groups[name] != null) {
@@ -215,7 +215,7 @@ public open class SlashCommand<T : Arguments>(
         }
 
         if (subCommands.size >= DISCORD_LIMIT) {
-            error("Commands may only contain up to 10 top-level subcommands.")
+            error("Commands may only contain up to $DISCORD_LIMIT top-level subcommands.")
         }
 
         try {
@@ -389,8 +389,6 @@ public open class SlashCommand<T : Arguments>(
             }
 
             commandObj.body(context)
-
-            respondText(commandObj, context, "Done!")
         } catch (e: CommandException) {
             respondText(commandObj, context, e.reason)
         } catch (t: Throwable) {
@@ -455,24 +453,15 @@ public open class SlashCommand<T : Arguments>(
         commandObj: SlashCommand<*>,
         context: SlashCommandContext<*>,
         text: String
-    ): InteractionResponseBehavior? =
-        if (!context.hasSentText) {
-            if (!context.acked) {
-                when (commandObj.autoAck) {
-                    AutoAckType.EPHEMERAL -> context.createEphemeralResponse(text)
-                    AutoAckType.PUBLIC -> context.createPublicResponse { content = text }
+    ): KordObject = when (commandObj.autoAck) {
+        AutoAckType.EPHEMERAL -> context.ephemeralFollowUp(text)
+        AutoAckType.PUBLIC -> context.publicFollowUp { content = text }
 
-                    AutoAckType.NONE -> null
-                }
-            } else {
-                when (commandObj.autoAck) {
-                    AutoAckType.EPHEMERAL -> context.editEphemeralResponse { content = text }
-                    AutoAckType.PUBLIC -> context.editPublicResponse { content = text }
+        AutoAckType.NONE -> when (context.isEphemeral) {
+            null -> context.createEphemeralResponse(text)
 
-                    AutoAckType.NONE -> null
-                }
-            }
-        } else {
-            null
+            true -> context.ephemeralFollowUp(text)
+            false -> context.publicFollowUp { content = text }
         }
     }
+}
