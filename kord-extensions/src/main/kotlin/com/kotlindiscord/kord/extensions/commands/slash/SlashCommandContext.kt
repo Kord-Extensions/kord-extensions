@@ -1,6 +1,8 @@
 package com.kotlindiscord.kord.extensions.commands.slash
 
-import behavior.interaction.*
+import behavior.interaction.EphemeralInteractionResponseBehavior
+import behavior.interaction.PublicInteractionResponseBehavior
+import behavior.interaction.followUp
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.memberFor
@@ -16,11 +18,8 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import dev.kord.rest.builder.interaction.*
-import mu.KLogger
-import mu.KotlinLogging
-
-private val logger: KLogger = KotlinLogging.logger {}
+import dev.kord.rest.builder.interaction.EphemeralFollowupMessageCreateBuilder
+import dev.kord.rest.builder.interaction.PublicFollowupMessageCreateBuilder
 
 /**
  * Command context object representing the context given to message commands.
@@ -96,7 +95,7 @@ public open class SlashCommandContext<T : Arguments>(
      */
     public suspend fun ack(ephemeral: Boolean): InteractionResponseBehavior {
         if (acked) {
-            error("Attempted to acknowledge an interaction that's already been acknowledged or responded to.")
+            error("Attempted to acknowledge an interaction that's already been acknowledged.")
         }
 
         interactionResponse = if (ephemeral) {
@@ -106,97 +105,6 @@ public open class SlashCommandContext<T : Arguments>(
         }
 
         return interactionResponse!!
-    }
-
-    /**
-     * Send an ephemeral response, assuming this interaction hasn't been acknowledged or responded to yet.
-     *
-     * This function will throw an exception if an acknowledgement or response has already been sent.
-     *
-     * Note that ephemeral responses require a content string, and may not contain embeds or files.
-     */
-    public suspend inline fun createEphemeralResponse(
-        content: String,
-        builder: EphemeralInteractionResponseCreateBuilder.() -> Unit = {}
-    ): EphemeralInteractionResponseBehavior {
-        if (interactionResponse != null) {
-            error("Tried to send a response to an interaction that already has an acknowledgement or response.")
-        }
-
-        if (isEphemeral == false) {
-            error("Tried to send an ephemeral response to a non-ephemeral interaction.")
-        }
-
-        interactionResponse = event.interaction.respondEphemeral(content, builder)
-
-        return interactionResponse!! as EphemeralInteractionResponseBehavior
-    }
-
-    /**
-     * Send a public response, assuming this interaction hasn't been acknowledged or responded to yet.
-     *
-     * This function will throw an exception if an acknowledgement or response has already been sent.
-     */
-    public suspend inline fun createPublicResponse(
-        builder: PublicInteractionResponseCreateBuilder.() -> Unit
-    ): PublicInteractionResponseBehavior {
-        if (interactionResponse != null) {
-            error("Tried to send a response to an interaction that already has an acknowledgement or response.")
-        }
-
-        if (isEphemeral == true) {
-            error("Tried to send a non-ephemeral response to an ephemeral interaction.")
-        }
-
-        interactionResponse = event.interaction.respondPublic(builder)
-
-        return interactionResponse!! as PublicInteractionResponseBehavior
-    }
-
-    /**
-     * Assuming an acknowledgement or response has been sent, edit the interaction response ephemerally.
-     *
-     * This function will throw an exception if no acknowledgement or response has been sent yet, or this interaction
-     * has already been interacted with in a non-ephemeral manner.
-     *
-     * Note that ephemeral responses require a content string, and may not contain embeds or files.
-     */
-    public suspend fun editEphemeralResponse(
-        builder: EphemeralInteractionResponseModifyBuilder.() -> Unit
-    ): EphemeralInteractionResponseBehavior {
-        if (interactionResponse == null) {
-            error("Tried to edit an interaction response before acknowledging it or sending a response.")
-        }
-
-        if (isEphemeral == false) {
-            error("Tried to edit an ephemeral response for a non-ephemeral interaction.")
-        }
-
-        (interactionResponse as EphemeralInteractionResponseBehavior).edit(builder)
-
-        return interactionResponse!! as EphemeralInteractionResponseBehavior
-    }
-
-    /**
-     * Assuming an acknowledgement or response has been sent, edit the interaction response publicly.
-     *
-     * This function will throw an exception if no acknowledgement or response has been sent yet, or this interaction
-     * has already been interacted with in an ephemeral manner.
-     */
-    public suspend fun editPublicResponse(
-        builder: PublicInteractionResponseModifyBuilder.() -> Unit
-    ): PublicInteractionResponseBehavior {
-        if (interactionResponse == null) {
-            error("Tried to edit an interaction response before acknowledging it or sending a response.")
-        }
-
-        if (isEphemeral == true) {
-            error("Tried to edit a non-ephemeral response for an ephemeral interaction.")
-        }
-
-        (interactionResponse as PublicInteractionResponseBehavior).edit(builder)
-
-        return interactionResponse!! as PublicInteractionResponseBehavior
     }
 
     /**
@@ -212,11 +120,11 @@ public open class SlashCommandContext<T : Arguments>(
         builder: EphemeralFollowupMessageCreateBuilder.() -> Unit = {}
     ): InteractionFollowup {
         if (interactionResponse == null) {
-            error("Tried send an interaction follow-up before acknowledging it or sending a response.")
+            error("Tried send an interaction follow-up before acknowledging it.")
         }
 
         if (isEphemeral == false) {
-            error("Tried send an ephemeral follow-up for a non-ephemeral interaction.")
+            error("Tried send an ephemeral follow-up for a public interaction.")
         }
 
         return (interactionResponse as EphemeralInteractionResponseBehavior).followUp(content, builder)
@@ -232,7 +140,7 @@ public open class SlashCommandContext<T : Arguments>(
         builder: PublicFollowupMessageCreateBuilder.() -> Unit
     ): PublicFollowupMessage {
         if (interactionResponse == null) {
-            error("Tried send an interaction follow-up before acknowledging it or sending a response.")
+            error("Tried send an interaction follow-up before acknowledging it.")
         }
 
         if (isEphemeral == true) {

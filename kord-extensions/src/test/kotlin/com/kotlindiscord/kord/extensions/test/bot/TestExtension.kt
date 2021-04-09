@@ -1,8 +1,6 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
@@ -11,8 +9,6 @@ import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
-import dev.kord.common.entity.MessageFlags
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 
 @OptIn(KordPreview::class)
@@ -54,7 +50,9 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             autoAck = AutoAckType.NONE
 
             action {
-                createPublicResponse {
+                ack(false)  // Public ack
+
+                publicFollowUp {
                     embed {
                         title = "An embed!"
                         description = "With a description, and without a content string!"

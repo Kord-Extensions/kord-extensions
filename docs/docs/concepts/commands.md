@@ -356,3 +356,15 @@ Name         | Description
 `subCommand` | A function allowing you to create a subcommand, either directly within the top-level command or within a command group.
 
 If your slash command has no arguments, simply omit the argument builder parameter.
+
+??? note "Slash commands and response types"
+    Slash commands are quite beta, at least as far as Discord is concerned. There are some strange behaviours that are
+    difficult to understand, so we've done our best to make sure things work as intuitively as we can.
+
+    When you create a slash command and set the `autoAckType`, you're expected to use the corresponding `followUp`
+    function when sending responses to your slash command. If you're using an ephemeral style for your reponses,
+    remember that you can (often) send a normal message if you want to show something in public.
+
+    Until Discord makes things work more sensibly, we will not be supporting the `response` API. If you need to use
+    this in the meantime, you can set the `autoAckType` to `NONE` and make use of Kord's interaction API that's
+    exposed on the `event` object directly.
