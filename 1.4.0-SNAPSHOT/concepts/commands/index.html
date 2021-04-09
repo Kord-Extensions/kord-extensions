@@ -1381,6 +1381,15 @@ either <code>action</code>, <code>group</code> or <code>subcommand</code>, but y
 </tbody>
 </table>
 <p>If your slash command has no arguments, simply omit the argument builder parameter.</p>
+<details class="note"><summary>Slash commands and response types</summary><p>Slash commands are quite beta, at least as far as Discord is concerned. There are some strange behaviours that are
+difficult to understand, so we've done our best to make sure things work as intuitively as we can.</p>
+<p>When you create a slash command and set the <code>autoAckType</code>, you're expected to use the corresponding <code>followUp</code>
+function when sending responses to your slash command. If you're using an ephemeral style for your reponses,
+remember that you can (often) send a normal message if you want to show something in public.</p>
+<p>Until Discord makes things work more sensibly, we will not be supporting the <code>response</code> API. If you need to use
+this in the meantime, you can set the <code>autoAckType</code> to <code>NONE</code> and make use of Kord's interaction API that's
+exposed on the <code>event</code> object directly.</p>
+</details>
                 
                   
                     
@@ -1389,7 +1398,7 @@ either <code>action</code>, <code>group</code> or <code>subcommand</code>, but y
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-08
+      Last update: 2021-04-09
     
   </small>
 </div>
