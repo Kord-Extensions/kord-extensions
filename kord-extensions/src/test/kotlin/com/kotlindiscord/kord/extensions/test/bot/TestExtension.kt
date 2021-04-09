@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
+import com.kotlindiscord.kord.extensions.commands.slash.converters.enumChoice
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
@@ -43,11 +44,17 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
         )
     }
 
+    class SlashChoiceArgs : Arguments() {
+        val arg by enumChoice<TestChoiceEnum>("choice", "Enum Choice", "test")
+    }
+
     override suspend fun setup() {
         slashCommand {
             name = "test-noack"
             description = "Don't auto-ack this one"
             autoAck = AutoAckType.NONE
+
+            guild(787452339908116521) // Our test server
 
             action {
                 ack(false)  // Public ack
@@ -61,9 +68,25 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             }
         }
 
+        slashCommand(::SlashChoiceArgs) {
+            name = "choice"
+            description = "Choice-based"
+            autoAck = AutoAckType.PUBLIC
+
+            guild(787452339908116521) // Our test server
+
+            action {
+                publicFollowUp {
+                    content = "Your choice: ${arguments.arg.readableName} -> ${arguments.arg.name}"
+                }
+            }
+        }
+
         slashCommand {
             name = "group"
             description = "Test command, please ignore"
+
+            guild(787452339908116521) // Our test server
 
             group("one") {
                 description = "Group one"
@@ -173,6 +196,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                 "Now with some newlines in the description!"
 
             autoAck = AutoAckType.PUBLIC
+            guild(787452339908116521) // Our test server
 
             action {
                 publicFollowUp {

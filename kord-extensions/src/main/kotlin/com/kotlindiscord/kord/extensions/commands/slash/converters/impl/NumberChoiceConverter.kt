@@ -12,16 +12,15 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 private const val DEFAULT_RADIX = 10
 
 /**
- * Choice converter for integer arguments. Supports mapping up to 10 choices to integers.
- *
- * If you want users to be able to input any integer, don't provide any choices.
+ * Choice converter for integer arguments. Supports mapping up to 25 choices to integers.
  *
  * Discord doesn't support longs or floating point types, so this is the only numeric type you can use directly.
  */
 @OptIn(KordPreview::class)
 public class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
-    choices: Map<String, Int>
+    choices: Map<String, Int>,
+    override var validator: (suspend (Int) -> Unit)? = null
 ) : ChoiceConverter<Int>(choices) {
     override val signatureTypeString: String = "number"
 
@@ -40,6 +39,7 @@ public class NumberChoiceConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         IntChoiceBuilder(arg.displayName, arg.description).apply {
             required = true
+
             this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
         }
 }

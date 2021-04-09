@@ -4,22 +4,32 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
+import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceEnum
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
 /**
- * Choice converter for string arguments. Supports mapping up to 25 choices to string.
+ * Choice converter for enum arguments. Supports mapping up to 25 choices to an enum type.
+ *
+ * All enums used for this must implement the [ChoiceEnum] interface.
  */
 @OptIn(KordPreview::class)
-public class StringChoiceConverter(
-    choices: Map<String, String>,
-    override var validator: (suspend (String) -> Unit)? = null
-) : ChoiceConverter<String>(choices) {
-    override val signatureTypeString: String = "text"
+public class EnumChoiceConverter<E>(
+    typeName: String,
+    private val getter: suspend (String) -> E?,
+    choices: Array<E>,
+    override var validator: (suspend (E) -> Unit)? = null
+
+) : ChoiceConverter<E>(choices.associateBy { it.readableName }) where E : Enum<E>, E : ChoiceEnum {
+    override val signatureTypeString: String = typeName
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        this.parsed = arg
+        try {
+            parsed = getter.invoke(arg) ?: return false
+        } catch (e: IllegalArgumentException) {
+            return false
+        }
 
         return true
     }
@@ -28,6 +38,6 @@ public class StringChoiceConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply {
             required = true
 
-            this@StringChoiceConverter.choices.forEach { choice(it.key, it.value) }
+            this@EnumChoiceConverter.choices.forEach { choice(it.key, it.value.name) }
         }
 }
