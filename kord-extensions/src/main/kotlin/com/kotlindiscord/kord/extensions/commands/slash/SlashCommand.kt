@@ -390,7 +390,7 @@ public open class SlashCommand<T : Arguments>(
 
             commandObj.body(context)
         } catch (e: CommandException) {
-            respondText(commandObj, context, e.reason)
+            respondText(context, e.reason)
         } catch (t: Throwable) {
             if (sentry.enabled) {
                 logger.debug { "Submitting error to sentry." }
@@ -437,31 +437,28 @@ public open class SlashCommand<T : Arguments>(
                         "Please let a staff member know."
                 }
 
-                respondText(commandObj, context, errorMessage)
+                respondText(context, errorMessage)
             } else {
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 
                 val errorMessage = "Unfortunately, **an error occurred** during command processing. " +
                     "Please let a staff member know."
 
-                respondText(commandObj, context, errorMessage)
+                respondText(context, errorMessage)
             }
         }
     }
 
     private suspend fun respondText(
-        commandObj: SlashCommand<*>,
         context: SlashCommandContext<*>,
         text: String
-    ): KordObject = when (commandObj.autoAck) {
-        AutoAckType.EPHEMERAL -> context.ephemeralFollowUp(text)
-        AutoAckType.PUBLIC -> context.publicFollowUp { content = text }
-
-        AutoAckType.NONE -> when (context.isEphemeral) {
-            null -> context.createEphemeralResponse(text)
-
-            true -> context.ephemeralFollowUp(text)
-            false -> context.publicFollowUp { content = text }
+    ): KordObject = when (context.isEphemeral) {
+        null -> {
+            context.ack(true)
+            context.ephemeralFollowUp(text)
         }
+
+        true -> context.ephemeralFollowUp(text)
+        false -> context.publicFollowUp { content = text }
     }
 }
