@@ -3,7 +3,6 @@ package com.kotlindiscord.kord.extensions.extensions.impl
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.converters.coalescedString
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.sentryId
 import com.kotlindiscord.kord.extensions.utils.respond
@@ -26,11 +25,9 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
                 name = "feedback"
                 description = "Provide feedback on what you were doing when an error occurred."
 
-                autoAck = AutoAckType.EPHEMERAL
-
                 action {
                     if (!bot.sentry.hasEventId(arguments.id)) {
-                        createEphemeralResponse(
+                        ephemeralFollowUp(
                             "The Sentry event ID you supplied either doesn't exist, or is not awaiting " +
                                 "feedback."
                         )
@@ -48,7 +45,7 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
                     Sentry.captureUserFeedback(feedback)
                     bot.sentry.removeEventId(arguments.id)
 
-                    createEphemeralResponse(
+                    ephemeralFollowUp(
                         "Thanks for your feedback - we'll use it to improve our bot and fix " +
                             "the error you encountered!"
                     )
