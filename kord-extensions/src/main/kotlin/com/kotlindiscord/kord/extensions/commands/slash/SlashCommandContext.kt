@@ -12,7 +12,9 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.interaction.EphemeralInteractionAcknowledgementBehavior
 import dev.kord.core.behavior.interaction.InteractionResponseBehavior
+import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.InteractionFollowup
@@ -127,7 +129,7 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried send an ephemeral follow-up for a public interaction.")
         }
 
-        return (interactionResponse as EphemeralInteractionResponseBehavior).followUp(content, builder)
+        return (interactionResponse as EphemeralInteractionAcknowledgementBehavior).followUp(content, builder)
     }
 
     /**
