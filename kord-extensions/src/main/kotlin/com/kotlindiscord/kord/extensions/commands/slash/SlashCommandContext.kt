@@ -117,7 +117,7 @@ public open class SlashCommandContext<T : Arguments>(
      *
      * Note that ephemeral follow-ups require a content string, and may not contain embeds or files.
      */
-    public suspend fun ephemeralFollowUp(
+    public suspend inline fun ephemeralFollowUp(
         content: String,
         builder: EphemeralFollowupMessageCreateBuilder.() -> Unit = {}
     ): InteractionFollowup {
@@ -138,7 +138,7 @@ public open class SlashCommandContext<T : Arguments>(
      * This function will throw an exception if no acknowledgement or response has been sent yet, or this interaction
      * has already been interacted with in an ephemeral manner.
      */
-    public suspend fun publicFollowUp(
+    public suspend inline fun publicFollowUp(
         builder: PublicFollowupMessageCreateBuilder.() -> Unit
     ): PublicFollowupMessage {
         if (interactionResponse == null) {
