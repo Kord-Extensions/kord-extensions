@@ -210,8 +210,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                     slashCommands.syncAll()
                 } else {
                     logger.info {
-                        "Slash command support is disabled - set `handleSlashCommands` to `true` if " +
-                            "you want to use them."
+                        "Slash command support is disabled - set `enabled` to `true` in the `slashCommands` builder" +
+                            " if you want to use them."
                     }
                 }
             }
