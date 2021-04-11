@@ -9,7 +9,9 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 
 @OptIn(KordPreview::class)
@@ -226,6 +228,17 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                         }
                     }
                 }
+            }
+        }
+
+        command {
+            name = "requires-perms"
+            description = "A command that requires some permissions"
+
+            requirePermissions(Permission.Administrator)
+
+            action {
+                message.respond("Looks like I'm an admin. Nice!")
             }
         }
 

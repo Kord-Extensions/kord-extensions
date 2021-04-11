@@ -8,7 +8,10 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.respond
+import com.kotlindiscord.kord.extensions.utils.toHumanReadable
+import dev.kord.common.entity.Permission
 import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import io.sentry.Sentry
@@ -79,10 +82,13 @@ public open class MessageCommand<T : Arguments>(
      * The command signature, specifying how the command's arguments should be structured.
      *
      * You may leave this as it is if your command doesn't take any arguments or you're happy with the generated
-     * signature,or you can specify this in the [Extension.command] builder function if you'd like to provide
+     * signature, or you can specify this in the [Extension.command] builder function if you'd like to provide
      * something a bit more specific.
      */
     public open var signature: String = if (arguments != null) parser.signature(arguments!!) else ""
+
+    /** Permissions required to be able to run this command. **/
+    public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present.
@@ -96,6 +102,11 @@ public open class MessageCommand<T : Arguments>(
         if (!::body.isInitialized) {
             throw InvalidCommandException(name, "No command action given.")
         }
+    }
+
+    /** If your bot requires permissions to be able to execute the command, add them using this function. **/
+    public fun requirePermissions(vararg perms: Permission) {
+        perms.forEach { requiredPerms.add(it) }
     }
 
     // region: DSL functions
@@ -223,6 +234,21 @@ public open class MessageCommand<T : Arguments>(
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
+            if (context.guild != null) {
+                val perms = (context.channel.asChannel() as GuildChannel)
+                    .getEffectivePermissions(extension.bot.kord.selfId)
+
+                val missingPerms = requiredPerms.filter { !perms.contains(it) }
+
+                if (missingPerms.isNotEmpty()) {
+                    throw CommandException(
+                        "I don't have the permissions I need to run that command!\n\n" +
+                            "**Missing permissions:** " +
+                            missingPerms.joinToString(", ") { "`${it.toHumanReadable()}`" }
+                    )
+                }
+            }
+
             if (this.arguments != null) {
                 val args = this.parser.parse(this.arguments!!, context)
                 context.populateArgs(args)

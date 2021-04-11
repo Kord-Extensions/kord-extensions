@@ -48,16 +48,16 @@ Name          | Type             | Description
 `description` | `String`         | A long description used by the help extension to describe the command - the first line of which should be a short summary
 `enabled`     | `Boolean`        | Defaulting to `true`, this can be set programmatically in order to entirely disable or re-enable the command
 `hidden`      | `Boolean`        | Default to `false`, this can be set to `true` to completely hide the command from the help extension's command listings
-`signature`   | `String`         | A string representing the arguments for the command - you can have this automatically generated using the `signature()` function as described later on in this document
+`signature`   | `String`         | A string representing the arguments for the command, automatically-generated from the command's arguments by default
 
 Additionally, the following functions are available - please note that functions marked with :warning: are  required 
 and must be called in order to properly register a command.
 
-Name        | Description
-:---------- | :----------
-`action`    | :warning: A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
-`check`     | A function allowing you to define one or more checks for this command - see [the Checks page](/concepts/checks) for more information
-`signature` | A function that will generate the command signature for you, when passed a function or constructor reference that returns an Arguments object, which will be described later on in this document
+Name                 | Description
+:------------------- | :----------
+`action`             | :warning: A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
+`check`              | A function allowing you to define one or more checks for this command - see [the Checks page](/concepts/checks) for more information
+`requirePermissions` | If your command requires the bot to have some permissions, specify them here and an error will be returned then the command is run when the bot doesn't have all of those permissions
 
 ### Command context
 

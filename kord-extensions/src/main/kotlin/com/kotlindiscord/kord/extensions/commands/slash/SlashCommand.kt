@@ -11,11 +11,14 @@ import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParse
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.utils.toHumanReadable
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.KordObject
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.SubCommand
@@ -73,6 +76,9 @@ public open class SlashCommand<T : Arguments>(
 
     public override val parser: SlashCommandParser = SlashCommandParser(extension.bot)
 
+    /** Permissions required to be able to run this command. **/
+    public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
+
     /**
      * An internal function used to ensure that all of a command's required properties are present.
      *
@@ -107,6 +113,11 @@ public open class SlashCommand<T : Arguments>(
                     "instead."
             )
         }
+    }
+
+    /** If your bot requires permissions to be able to execute the command, add them using this function. **/
+    public fun requirePermissions(vararg perms: Permission) {
+        perms.forEach { requiredPerms.add(it) }
     }
 
     // region: DSL functions
@@ -383,6 +394,21 @@ public open class SlashCommand<T : Arguments>(
 
         @Suppress("TooGenericExceptionCaught")
         try {
+            if (context.guild != null) {
+                val perms = (context.channel.asChannel() as GuildChannel)
+                    .getEffectivePermissions(extension.bot.kord.selfId)
+
+                val missingPerms = requiredPerms.filter { !perms.contains(it) }
+
+                if (missingPerms.isNotEmpty()) {
+                    throw CommandException(
+                        "I don't have the permissions I need to run that command!\n\n" +
+                            "**Missing permissions:** " +
+                            missingPerms.joinToString(", ") { "`${it.toHumanReadable()}`" }
+                    )
+                }
+            }
+
             if (commandObj.arguments != null) {
                 val args = commandObj.parser.parse(commandObj.arguments!!, context)
                 context.populateArgs(args)

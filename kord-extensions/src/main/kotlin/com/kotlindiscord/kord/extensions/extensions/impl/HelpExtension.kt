@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.utils.toHumanReadable
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 
@@ -71,7 +72,8 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
                 COMMANDS_GROUP,
 
                 Page(
-                    description = page.joinToString("\n\n") { it.first + it.second },
+                    description = page.joinToString("\n\n") { "${it.first}\n${it.second}" },
+//                    description = page.joinToString("\n\n") { it.first + it.second },
                     title = "Commands",
                     footer = "$totalCommands commands available"
                 )
@@ -81,7 +83,7 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
                 ARGUMENTS_GROUP,
 
                 Page(
-                    description = page.joinToString("\n\n") { it.first + it.third },
+                    description = page.joinToString("\n\n") { "${it.first}\n${it.third}" },
                     title = "Command Arguments",
                     footer = "$totalCommands commands available"
                 )
@@ -146,7 +148,8 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
                 COMMANDS_GROUP,
 
                 Page(
-                    description = openingLine + desc + arguments,
+                    description = "$openingLine\n$desc\n\n$arguments",
+//                    description = openingLine + desc + arguments,
                     title = "Command: ${command.name}"
                 )
             )
@@ -191,7 +194,12 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
             }
         }
 
-        var arguments = "\n"
+        if (command.requiredPerms.isNotEmpty()) {
+            description += "\n**Required permissions:** " +
+                command.requiredPerms.joinToString(", ") { "`${it.toHumanReadable()}`" }
+        }
+
+        var arguments = "\n\n"
 
         if (command.arguments == null) {
             arguments += "No arguments."
@@ -218,7 +226,7 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
             }
         }
 
-        return Triple(openingLine, description, arguments)
+        return Triple(openingLine.trim('\n'), description.trim('\n'), arguments.trim('\n'))
     }
 
     override suspend fun getCommand(event: MessageCreateEvent, args: List<String>): MessageCommand<out Arguments>? {
