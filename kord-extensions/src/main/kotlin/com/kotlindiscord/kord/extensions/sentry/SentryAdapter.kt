@@ -65,12 +65,12 @@ public open class SentryAdapter {
 
             it.isAttachStacktrace = attachStacktrace
             it.isAttachThreads = attachThreads
-            it.isDebug = debug
+            it.setDebug(debug)
             it.isEnableExternalConfiguration = enableExternalConfiguration
             it.isEnableNdk = enableNdk
             it.isEnableScopeSync = enableScopeSync
             it.isEnableSessionTracking = enableSessionTracking
-            it.isEnableUncaughtExceptionHandler = enableUncaughtExceptionHandler
+            it.enableUncaughtExceptionHandler = enableUncaughtExceptionHandler
             it.isSendDefaultPii = sendDefaultPii
 
             inAppExcludes.forEach { exclude -> it.addInAppExclude(exclude) }

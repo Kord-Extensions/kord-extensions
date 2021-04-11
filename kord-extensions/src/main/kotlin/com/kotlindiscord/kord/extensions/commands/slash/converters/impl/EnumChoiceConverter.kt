@@ -20,7 +20,6 @@ public class EnumChoiceConverter<E>(
     private val getter: suspend (String) -> E?,
     choices: Array<E>,
     override var validator: (suspend (E) -> Unit)? = null
-
 ) : ChoiceConverter<E>(choices.associateBy { it.readableName }) where E : Enum<E>, E : ChoiceEnum {
     override val signatureTypeString: String = typeName
 

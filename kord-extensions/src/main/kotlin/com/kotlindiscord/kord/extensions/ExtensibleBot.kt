@@ -34,6 +34,8 @@ import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.dsl.bind
 import org.koin.dsl.koinApplication
+import org.koin.environmentProperties
+import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
 import java.util.*

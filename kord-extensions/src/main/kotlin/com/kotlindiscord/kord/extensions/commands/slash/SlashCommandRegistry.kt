@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 
 private val logger: KLogger = KotlinLogging.logger {}
@@ -29,7 +28,7 @@ private val logger: KLogger = KotlinLogging.logger {}
  *
  * @property bot Current instance of the bot.
  */
-@OptIn(KoinApiExtension::class, KordPreview::class)
+@OptIn(KordPreview::class)
 public open class SlashCommandRegistry(
     public open val bot: ExtensibleBot,
     koinAccessor: KoinComponent = KoinAccessor(bot)

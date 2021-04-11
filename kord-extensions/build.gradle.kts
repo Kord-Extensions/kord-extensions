@@ -72,27 +72,27 @@ dependencies {
 
     api("dev.kord:kord-core:interaction-message-flags-SNAPSHOT")
 
-    api("net.time4j:time4j-base:5.7")
-    api("net.time4j:time4j-tzdata:5.0-2020a")
+    api("net.time4j:time4j-base:5.8")
+    api("net.time4j:time4j-tzdata:5.0-2021a")
 
-    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
-    api("org.koin:koin-core:2.2.2")
-    api("org.koin:koin-logger-slf4j:2.2.2")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
 
-    api("io.sentry:sentry:3.2.0")  // Needs to be transitive or bots will start breaking
+    api("io.insert-koin:koin-core:3.0.1-beta-2")
+    api("io.insert-koin:koin-logger-slf4j:3.0.1-beta-2")
 
-    implementation("io.github.microutils:kotlin-logging:2.0.3")
-    implementation("org.apache.commons:commons-text:1.8")
+    api("io.sentry:sentry:4.3.0")  // Needs to be transitive or bots will start breaking
+
+    implementation("io.github.microutils:kotlin-logging:2.0.6")
+    implementation("org.apache.commons:commons-text:1.9")
     implementation("commons-validator:commons-validator:1.7")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    testImplementation("org.koin:koin-test:2.2.2")
+    testImplementation("io.insert-koin:koin-test:3.0.1-beta-2")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
     testImplementation("ch.qos.logback:logback-classic:1.2.3")
-    testImplementation("io.github.microutils:kotlin-logging:2.0.3")
     testImplementation("org.codehaus.groovy:groovy:3.0.4")  // For logback config
 }
 

@@ -12,7 +12,6 @@ import dev.kord.core.event.message.MessageCreateEvent
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.invoke
-import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.Executors
@@ -22,7 +21,7 @@ import java.util.concurrent.Executors
  *
  * @param bot Current instance of the bot.
  */
-@OptIn(KoinApiExtension::class, KordPreview::class)
+@OptIn(KordPreview::class)
 public open class MessageCommandRegistry(
     public open val bot: ExtensibleBot,
     koinAccessor: KoinComponent = KoinAccessor(bot)
