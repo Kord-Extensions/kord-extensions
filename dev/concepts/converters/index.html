@@ -871,7 +871,8 @@ especially if you've written custom converters, or you're making use of third-pa
 </details>
 <h3 id="validators">Validators<a class="headerlink" href="#validators" title="Permanent link">&para;</a></h3>
 <p>All converters support validators. Validators allow you to specify a simple lambda that acts on the parsed result, and
-throws a <code>CommandException</code> if something is wrong - which will be sent to the user. For example...</p>
+throws a <code>CommandException</code> if something is wrong - which will be sent to the user. Validators are receiver functions
+for <code>Argument&lt;*&gt;</code> objects, so both <code>displayName</code> and <code>description</code> are available. For example...</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -886,7 +887,7 @@ throws a <code>CommandException</code> if something is wrong - which will be sen
 <span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">PostArguments</span> <span class="p">:</span> <span class="n">Arguments</span><span class="p">()</span> <span class="p">{</span>
     <span class="c1">// Single required string argument</span>
     <span class="kd">val</span> <span class="nv">title</span> <span class="k">by</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;Post title&quot;</span><span class="p">)</span> <span class="p">{</span> 
-        <span class="k">if</span> <span class="p">(</span><span class="nb">it</span><span class="p">.</span><span class="na">length</span> <span class="o">&gt;</span> <span class="m">30</span><span class="p">)</span> <span class="k">throw</span> <span class="n">CommandError</span><span class="p">(</span><span class="s">&quot;Post title must be 30 characters at most&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">it</span><span class="p">.</span><span class="na">length</span> <span class="o">&gt;</span> <span class="m">30</span><span class="p">)</span> <span class="k">throw</span> <span class="n">CommandError</span><span class="p">(</span><span class="s">&quot;`</span><span class="si">$</span><span class="n">displayName</span><span class="s">` must be 30 characters at most&quot;</span><span class="p">)</span>
     <span class="p">}</span>
 
     <span class="c1">// Single required Discord user argument</span>
@@ -966,7 +967,7 @@ may cause all kinds of strange issues</strong> - provide wrapping extension func
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-08
+      Last update: 2021-04-12
     
   </small>
 </div>

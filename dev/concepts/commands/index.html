@@ -843,7 +843,7 @@ be set in order to properly register a command.</p>
 <tr>
 <td align="left"><code>signature</code></td>
 <td align="center"><code>String</code></td>
-<td align="left">A string representing the arguments for the command - you can have this automatically generated using the <code>signature()</code> function as described later on in this document</td>
+<td align="left">A string representing the arguments for the command, automatically-generated from the command's arguments by default</td>
 </tr>
 </tbody>
 </table>
@@ -866,8 +866,8 @@ and must be called in order to properly register a command.</p>
 <td align="left">A function allowing you to define one or more checks for this command - see <a href="/concepts/checks">the Checks page</a> for more information</td>
 </tr>
 <tr>
-<td align="left"><code>signature</code></td>
-<td align="left">A function that will generate the command signature for you, when passed a function or constructor reference that returns an Arguments object, which will be described later on in this document</td>
+<td align="left"><code>requirePermissions</code></td>
+<td align="left">If your command requires the bot to have some permissions, specify them here and an error will be returned then the command is run when the bot doesn't have all of those permissions</td>
 </tr>
 </tbody>
 </table>
@@ -1398,7 +1398,7 @@ exposed on the <code>event</code> object directly.</p>
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-09
+      Last update: 2021-04-11
     
   </small>
 </div>
