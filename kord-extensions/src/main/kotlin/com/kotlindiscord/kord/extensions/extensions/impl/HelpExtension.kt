@@ -195,7 +195,7 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
         }
 
         if (command.requiredPerms.isNotEmpty()) {
-            description += "\n**Required permissions:** " +
+            description += "\n**Required bot permissions:** " +
                 command.requiredPerms.joinToString(", ") { "`${it.toHumanReadable()}`" }
         }
 
