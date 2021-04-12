@@ -1,6 +1,9 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.commands.parser
 
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import dev.kord.common.annotation.KordPreview
 
 /**
  * Abstract base class for a class containing a set of command arguments.

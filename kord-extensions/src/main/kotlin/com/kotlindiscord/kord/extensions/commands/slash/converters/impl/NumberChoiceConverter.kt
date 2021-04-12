@@ -20,7 +20,7 @@ private const val DEFAULT_RADIX = 10
 public class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
     choices: Map<String, Int>,
-    override var validator: (suspend (Int) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Int) -> Unit)? = null
 ) : ChoiceConverter<Int>(choices) {
     override val signatureTypeString: String = "number"
 

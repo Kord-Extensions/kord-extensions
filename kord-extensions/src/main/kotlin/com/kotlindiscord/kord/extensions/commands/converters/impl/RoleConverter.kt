@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.firstOrNull
 @OptIn(KordPreview::class)
 public class RoleConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
-    override var validator: (suspend (Role) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Role) -> Unit)? = null
 ) : SingleConverter<Role>() {
     override val signatureTypeString: String = "role"
 

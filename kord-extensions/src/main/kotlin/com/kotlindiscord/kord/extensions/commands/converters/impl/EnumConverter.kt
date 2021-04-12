@@ -24,7 +24,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 public class EnumConverter<E : Enum<E>>(
     typeName: String,
     private val getter: suspend (String) -> E?,
-    override var validator: (suspend (E) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(E) -> Unit)? = null
 ) : SingleConverter<E>() {
     override val signatureTypeString: String = typeName
 

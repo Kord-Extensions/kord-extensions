@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import kotlin.reflect.KProperty
 
@@ -27,7 +28,7 @@ import kotlin.reflect.KProperty
  */
 public abstract class CoalescingConverter<T : Any>(
     public open val shouldThrow: Boolean = false,
-    public open var validator: (suspend (T) -> Unit)? = null
+    public open var validator: (suspend Argument<*>.(result: T) -> Unit)? = null
 ) : Converter<List<T>>(true), SlashCommandConverter {
     /**
      * The parsed value.
@@ -61,7 +62,7 @@ public abstract class CoalescingConverter<T : Any>(
 
     /** Call the validator lambda, if one was provided. **/
     public open suspend fun validate() {
-        validator?.let { it(parsed) }
+        validator?.let { it(this.argumentObj, parsed) }
     }
 
     /**
@@ -105,7 +106,7 @@ public abstract class CoalescingConverter<T : Any>(
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
         outputError: Boolean = false,
-        nestedValidator: (suspend (T?) -> Unit)? = null
+        nestedValidator: (suspend Argument<*>.(T?) -> Unit)? = null
     ): OptionalCoalescingConverter<T?> = CoalescingToOptionalConverter(
         this,
         signatureTypeString,
@@ -141,7 +142,7 @@ public abstract class CoalescingConverter<T : Any>(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
-        nestedValidator: (suspend (T) -> Unit)? = null
+        nestedValidator: (suspend Argument<*>.(T) -> Unit)? = null
     ): DefaultingCoalescingConverter<T> = CoalescingToDefaultingConverter(
         this,
         defaultValue,

@@ -14,7 +14,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @OptIn(KordPreview::class)
 public class StringChoiceConverter(
     choices: Map<String, String>,
-    override var validator: (suspend (String) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(String) -> Unit)? = null
 ) : ChoiceConverter<String>(choices) {
     override val signatureTypeString: String = "text"
 

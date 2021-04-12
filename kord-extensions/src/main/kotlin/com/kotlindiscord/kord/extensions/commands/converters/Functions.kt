@@ -10,6 +10,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
@@ -34,7 +35,7 @@ public fun Arguments.union(
     typeName: String? = null,
     shouldThrow: Boolean = false,
     vararg converters: Converter<*>,
-    validator: (suspend (Any) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Any) -> Unit)? = null,
 ): UnionConverter {
     val converter = UnionConverter(converters.toList(), typeName, shouldThrow, validator)
 
@@ -66,7 +67,7 @@ public fun Arguments.optionalUnion(
     typeName: String? = null,
     shouldThrow: Boolean = false,
     vararg converters: Converter<*>,
-    validator: (suspend (Any?) -> Unit)? = null
+    validator: (suspend Argument<*>.(Any?) -> Unit)? = null
 ): OptionalCoalescingConverter<Any?> {
     val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
 
@@ -97,7 +98,7 @@ public fun Arguments.optionalUnion(
 public fun Arguments.boolean(
     displayName: String,
     description: String,
-    validator: (suspend (Boolean) -> Unit)? = null
+    validator: (suspend Argument<*>.(Boolean) -> Unit)? = null
 ): SingleConverter<Boolean> =
     arg(displayName, description, BooleanConverter(validator))
 
@@ -111,7 +112,7 @@ public fun Arguments.channel(
     description: String,
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend (Channel) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Channel) -> Unit)? = null,
 ): SingleConverter<Channel> = arg(
     displayName,
     description,
@@ -126,7 +127,7 @@ public fun Arguments.channel(
 public fun Arguments.decimal(
     displayName: String,
     description: String,
-    validator: (suspend (Double) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Double) -> Unit)? = null,
 ): SingleConverter<Double> =
     arg(displayName, description, DecimalConverter(validator))
 
@@ -139,7 +140,7 @@ public fun Arguments.duration(
     displayName: String,
     description: String,
     longHelp: Boolean = true,
-    validator: (suspend (Duration) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
 ): SingleConverter<Duration> =
     arg(displayName, description, DurationConverter(longHelp = longHelp, validator = validator))
 
@@ -151,7 +152,7 @@ public fun Arguments.duration(
 public fun Arguments.email(
     displayName: String,
     description: String,
-    validator: (suspend (String) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String) -> Unit)? = null,
 ): SingleConverter<String> =
     arg(displayName, description, EmailConverter(validator))
 
@@ -163,7 +164,7 @@ public fun Arguments.email(
 public fun Arguments.emoji(
     displayName: String,
     description: String,
-    validator: (suspend (GuildEmoji) -> Unit)? = null,
+    validator: (suspend Argument<*>.(GuildEmoji) -> Unit)? = null,
 ): SingleConverter<GuildEmoji> =
     arg(displayName, description, EmojiConverter(validator))
 
@@ -175,7 +176,7 @@ public fun Arguments.emoji(
 public fun Arguments.guild(
     displayName: String,
     description: String,
-    validator: (suspend (Guild) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Guild) -> Unit)? = null,
 ): SingleConverter<Guild> =
     arg(displayName, description, GuildConverter(validator))
 
@@ -188,7 +189,7 @@ public fun Arguments.int(
     displayName: String,
     description: String,
     radix: Int = 10,
-    validator: (suspend (Int) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Int) -> Unit)? = null,
 ): SingleConverter<Int> =
     arg(displayName, description, IntConverter(radix, validator))
 
@@ -201,7 +202,7 @@ public fun Arguments.long(
     displayName: String,
     description: String,
     radix: Int = 10,
-    validator: (suspend (Long) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Long) -> Unit)? = null,
 ): SingleConverter<Long> =
     arg(displayName, description, LongConverter(radix, validator))
 
@@ -214,7 +215,7 @@ public fun Arguments.member(
     displayName: String,
     description: String,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend (Member) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Member) -> Unit)? = null,
 ): SingleConverter<Member> =
     arg(displayName, description, MemberConverter(requiredGuild, validator))
 
@@ -228,7 +229,7 @@ public fun Arguments.message(
     description: String,
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend (Message) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Message) -> Unit)? = null,
 ): SingleConverter<Message> = arg(displayName, description, MessageConverter(requireGuild, requiredGuild, validator))
 
 /**
@@ -248,7 +249,7 @@ public fun Arguments.number(
     displayName: String,
     description: String,
     radix: Int = 10,
-    validator: (suspend (Long) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Long) -> Unit)? = null,
 ): SingleConverter<Long> =
     arg(displayName, description, NumberConverter(radix, validator))
 
@@ -261,7 +262,7 @@ public fun Arguments.regex(
     displayName: String,
     description: String,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend (Regex) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
 ): SingleConverter<Regex> =
     arg(displayName, description, RegexConverter(options, validator))
 
@@ -274,7 +275,7 @@ public fun Arguments.role(
     displayName: String,
     description: String,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend (Role) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Role) -> Unit)? = null,
 ): SingleConverter<Role> =
     arg(displayName, description, RoleConverter(requiredGuild, validator))
 
@@ -286,7 +287,7 @@ public fun Arguments.role(
 public fun Arguments.snowflake(
     displayName: String,
     description: String,
-    validator: (suspend (Snowflake) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Snowflake) -> Unit)? = null,
 ): SingleConverter<Snowflake> =
     arg(displayName, description, SnowflakeConverter(validator))
 
@@ -298,7 +299,7 @@ public fun Arguments.snowflake(
 public fun Arguments.string(
     displayName: String,
     description: String,
-    validator: (suspend (String) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String) -> Unit)? = null,
 ): SingleConverter<String> =
     arg(displayName, description, StringConverter(validator))
 
@@ -311,7 +312,7 @@ public fun Arguments.t4jDuration(
     displayName: String,
     description: String,
     longHelp: Boolean = true,
-    validator: (suspend (net.time4j.Duration<IsoUnit>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
 ): SingleConverter<net.time4j.Duration<IsoUnit>> =
     arg(displayName, description, T4JDurationConverter(longHelp = longHelp, validator = validator))
 
@@ -323,7 +324,7 @@ public fun Arguments.t4jDuration(
 public fun Arguments.user(
     displayName: String,
     description: String,
-    validator: (suspend (User) -> Unit)? = null,
+    validator: (suspend Argument<*>.(User) -> Unit)? = null,
 ): SingleConverter<User> =
     arg(displayName, description, UserConverter(validator))
 
@@ -340,13 +341,13 @@ public fun Arguments.optionalBoolean(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend (Boolean?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Boolean?) -> Unit)? = null,
 ): OptionalConverter<Boolean?> =
     arg(
         displayName,
         description,
         BooleanConverter()
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -360,13 +361,13 @@ public fun Arguments.optionalChannel(
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false,
-    validator: (suspend (Channel?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Channel?) -> Unit)? = null,
 ): OptionalConverter<Channel?> =
     arg(
         displayName,
         description,
         ChannelConverter(requireSameGuild, requiredGuild)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -378,13 +379,13 @@ public fun Arguments.optionalDecimal(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend (Double?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Double?) -> Unit)? = null,
 ): OptionalConverter<Double?> =
     arg(
         displayName,
         description,
         DecimalConverter()
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -397,13 +398,13 @@ public fun Arguments.optionalDuration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend (Duration?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Duration?) -> Unit)? = null,
 ): OptionalConverter<Duration?> =
     arg(
         displayName,
         description,
         DurationConverter(longHelp = longHelp)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -415,13 +416,13 @@ public fun Arguments.optionalEmail(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend (String?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String?) -> Unit)? = null,
 ): OptionalConverter<String?> =
     arg(
         displayName,
         description,
         EmailConverter()
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -433,13 +434,13 @@ public fun Arguments.optionalEmoji(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend (GuildEmoji?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(GuildEmoji?) -> Unit)? = null,
 ): OptionalConverter<GuildEmoji?> =
     arg(
         displayName,
         description,
         EmojiConverter()
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -451,13 +452,13 @@ public fun Arguments.optionalGuild(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend (Guild?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Guild?) -> Unit)? = null,
 ): OptionalConverter<Guild?> =
     arg(
         displayName,
         description,
         GuildConverter()
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -470,13 +471,13 @@ public fun Arguments.optionalInt(
     description: String,
     outputError: Boolean = false,
     radix: Int = 10,
-    validator: (suspend (Int?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Int?) -> Unit)? = null,
 ): OptionalConverter<Int?> =
     arg(
         displayName,
         description,
         IntConverter(radix)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -489,13 +490,13 @@ public fun Arguments.optionalLong(
     description: String,
     outputError: Boolean = false,
     radix: Int = 10,
-    validator: (suspend (Long?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Long?) -> Unit)? = null,
 ): OptionalConverter<Long?> =
     arg(
         displayName,
         description,
         LongConverter(radix)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -508,13 +509,13 @@ public fun Arguments.optionalMember(
     description: String,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false,
-    validator: (suspend (Member?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Member?) -> Unit)? = null,
 ): OptionalConverter<Member?> =
     arg(
         displayName,
         description,
         MemberConverter(requiredGuild)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -528,13 +529,13 @@ public fun Arguments.optionalMessage(
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false,
-    validator: (suspend (Message?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Message?) -> Unit)? = null,
 ): OptionalConverter<Message?> =
     arg(
         displayName,
         description,
         MessageConverter(requireGuild, requiredGuild)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -555,13 +556,13 @@ public fun Arguments.optionalNumber(
     description: String,
     outputError: Boolean = false,
     radix: Int = 10,
-    validator: (suspend (Long?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Long?) -> Unit)? = null,
 ): OptionalConverter<Long?> =
     arg(
         displayName,
         description,
         NumberConverter(radix)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -574,13 +575,13 @@ public fun Arguments.optionalRegex(
     description: String,
     options: Set<RegexOption> = setOf(),
     outputError: Boolean = false,
-    validator: (suspend (Regex?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Regex?) -> Unit)? = null,
 ): OptionalConverter<Regex?> =
     arg(
         displayName,
         description,
         RegexConverter(options)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -593,13 +594,13 @@ public fun Arguments.optionalRole(
     description: String,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false,
-    validator: (suspend (Role?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Role?) -> Unit)? = null,
 ): OptionalConverter<Role?> =
     arg(
         displayName,
         description,
         RoleConverter(requiredGuild)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -611,13 +612,13 @@ public fun Arguments.optionalSnowflake(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend (Snowflake?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Snowflake?) -> Unit)? = null,
 ): OptionalConverter<Snowflake?> =
     arg(
         displayName,
         description,
         SnowflakeConverter()
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -629,13 +630,13 @@ public fun Arguments.optionalString(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend (String?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String?) -> Unit)? = null,
 ): OptionalConverter<String?> =
     arg(
         displayName,
         description,
         StringConverter()
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -648,13 +649,13 @@ public fun Arguments.optionalT4jDuration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend (net.time4j.Duration<IsoUnit>?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>?) -> Unit)? = null,
 ): OptionalConverter<net.time4j.Duration<IsoUnit>?> =
     arg(
         displayName,
         description,
         T4JDurationConverter(longHelp = longHelp)
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 /**
@@ -666,13 +667,13 @@ public fun Arguments.optionalUser(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend (User?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(User?) -> Unit)? = null,
 ): OptionalConverter<User?> =
     arg(
         displayName,
         description,
         UserConverter()
-                    .toOptional(outputError = outputError, nestedValidator = validator)
+            .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
 // endregion
@@ -688,13 +689,13 @@ public fun Arguments.defaultingBoolean(
     displayName: String,
     description: String,
     defaultValue: Boolean,
-    validator: (suspend (Boolean) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Boolean) -> Unit)? = null,
 ): DefaultingConverter<Boolean> =
     arg(
         displayName,
         description,
         BooleanConverter()
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -706,13 +707,13 @@ public fun Arguments.defaultingDecimal(
     displayName: String,
     description: String,
     defaultValue: Double,
-    validator: (suspend (Double) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Double) -> Unit)? = null,
 ): DefaultingConverter<Double> =
     arg(
         displayName,
         description,
         DecimalConverter()
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -725,13 +726,13 @@ public fun Arguments.defaultingDuration(
     description: String,
     longHelp: Boolean = true,
     defaultValue: Duration,
-    validator: (suspend (Duration) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
 ): DefaultingConverter<Duration> =
     arg(
         displayName,
         description,
         DurationConverter(longHelp = longHelp)
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -743,13 +744,13 @@ public fun Arguments.defaultingEmail(
     displayName: String,
     description: String,
     defaultValue: String,
-    validator: (suspend (String) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String) -> Unit)? = null,
 ): DefaultingConverter<String> =
     arg(
         displayName,
         description,
         EmailConverter()
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -762,13 +763,13 @@ public fun Arguments.defaultingInt(
     description: String,
     defaultValue: Int,
     radix: Int = 10,
-    validator: (suspend (Int) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Int) -> Unit)? = null,
 ): DefaultingConverter<Int> =
     arg(
         displayName,
         description,
         IntConverter(radix)
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -781,13 +782,13 @@ public fun Arguments.defaultingLong(
     description: String,
     defaultValue: Long,
     radix: Int = 10,
-    validator: (suspend (Long) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Long) -> Unit)? = null,
 ): DefaultingConverter<Long> =
     arg(
         displayName,
         description,
         LongConverter(radix)
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -808,13 +809,13 @@ public fun Arguments.defaultingNumber(
     description: String,
     defaultValue: Long,
     radix: Int = 10,
-    validator: (suspend (Long) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Long) -> Unit)? = null,
 ): DefaultingConverter<Long> =
     arg(
         displayName,
         description,
         NumberConverter(radix)
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -827,13 +828,13 @@ public fun Arguments.defaultingRegex(
     description: String,
     defaultValue: Regex,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend (Regex) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
 ): DefaultingConverter<Regex> =
     arg(
         displayName,
         description,
         RegexConverter(options)
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -845,13 +846,13 @@ public fun Arguments.defaultingString(
     displayName: String,
     description: String,
     defaultValue: Snowflake,
-    validator: (suspend (Snowflake) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Snowflake) -> Unit)? = null,
 ): DefaultingConverter<Snowflake> =
     arg(
         displayName,
         description,
         SnowflakeConverter()
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -863,13 +864,13 @@ public fun Arguments.defaultingString(
     displayName: String,
     description: String,
     defaultValue: String,
-    validator: (suspend (String) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String) -> Unit)? = null,
 ): DefaultingConverter<String> =
     arg(
         displayName,
         description,
         StringConverter()
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -882,13 +883,13 @@ public fun Arguments.defaultingT4jDuration(
     description: String,
     longHelp: Boolean = true,
     defaultValue: net.time4j.Duration<IsoUnit>,
-    validator: (suspend (net.time4j.Duration<IsoUnit>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
 ): DefaultingConverter<net.time4j.Duration<IsoUnit>> =
     arg(
         displayName,
         description,
         T4JDurationConverter(longHelp = longHelp)
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 // endregion
@@ -905,7 +906,7 @@ public fun Arguments.coalescedDuration(
     description: String,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend (Duration) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
 ): CoalescingConverter<Duration> =
     arg(
         displayName,
@@ -922,7 +923,7 @@ public fun Arguments.coalescedRegex(
     displayName: String,
     description: String,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend (Regex) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
 ): CoalescingConverter<Regex> =
     arg(displayName, description, RegexCoalescingConverter(options, validator = validator))
 
@@ -935,7 +936,7 @@ public fun Arguments.coalescedString(
     displayName:
     String,
     description: String,
-    validator: (suspend (String) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String) -> Unit)? = null,
 ): CoalescingConverter<String> =
     arg(displayName, description, StringCoalescingConverter(validator = validator))
 
@@ -949,7 +950,7 @@ public fun Arguments.coalescedT4jDuration(
     description: String,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend (net.time4j.Duration<IsoUnit>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
 ): CoalescingConverter<net.time4j.Duration<IsoUnit>> =
     arg(
         displayName,
@@ -971,7 +972,7 @@ public fun Arguments.optionalCoalescedDuration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend (Duration?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Duration?) -> Unit)? = null,
 ): OptionalCoalescingConverter<Duration?> =
     arg(
         displayName,
@@ -990,7 +991,7 @@ public fun Arguments.optionalCoalescedRegex(
     displayName: String,
     description: String,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend (Regex?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Regex?) -> Unit)? = null,
 ): OptionalCoalescingConverter<Regex?> =
     arg(
         displayName,
@@ -1007,7 +1008,7 @@ public fun Arguments.optionalCoalescedRegex(
 public fun Arguments.optionalCoalescedString(
     displayName: String,
     description: String,
-    validator: (suspend (String?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String?) -> Unit)? = null,
 ): OptionalCoalescingConverter<String?> =
     arg(
         displayName,
@@ -1026,7 +1027,7 @@ public fun Arguments.optionalCoalescedT4jDuration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend (net.time4j.Duration<IsoUnit>?) -> Unit)? = null,
+    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>?) -> Unit)? = null,
 ): OptionalCoalescingConverter<net.time4j.Duration<IsoUnit>?> =
     arg(
         displayName,
@@ -1051,7 +1052,7 @@ public fun Arguments.defaultingCoalescedDuration(
     defaultValue: Duration,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend (Duration) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
 ): DefaultingCoalescingConverter<Duration> =
     arg(
         displayName,
@@ -1070,13 +1071,13 @@ public fun Arguments.defaultingCoalescedRegex(
     description: String,
     defaultValue: Regex,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend (Regex) -> Unit)? = null,
+    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
 ): DefaultingCoalescingConverter<Regex> =
     arg(
         displayName,
         description,
         RegexCoalescingConverter(options)
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -1088,13 +1089,13 @@ public fun Arguments.defaultingCoalescedString(
     displayName: String,
     description: String,
     defaultValue: String,
-    validator: (suspend (String) -> Unit)? = null,
+    validator: (suspend Argument<*>.(String) -> Unit)? = null,
 ): DefaultingCoalescingConverter<String> =
     arg(
         displayName,
         description,
         StringCoalescingConverter()
-                    .toDefaulting(defaultValue, nestedValidator = validator)
+            .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
 /**
@@ -1108,7 +1109,7 @@ public fun Arguments.defaultingCoalescedT4jDuration(
     defaultValue: net.time4j.Duration<IsoUnit>,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend (net.time4j.Duration<IsoUnit>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
 ): DefaultingCoalescingConverter<net.time4j.Duration<IsoUnit>> =
     arg(
         displayName,
@@ -1132,13 +1133,13 @@ public fun Arguments.booleanList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend (List<Boolean>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Boolean>) -> Unit)? = null,
 ): MultiConverter<Boolean> =
     arg(
         displayName,
         description,
         BooleanConverter()
-                    .toMulti(required, errorTypeString = "multiple `yes` or `no` values", nestedValidator = validator)
+            .toMulti(required, errorTypeString = "multiple `yes` or `no` values", nestedValidator = validator)
     )
 
 /**
@@ -1154,12 +1155,12 @@ public fun Arguments.channelList(
     required: Boolean = true,
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend (List<Channel>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Channel>) -> Unit)? = null,
 ): MultiConverter<Channel> = arg(
     displayName,
     description,
     ChannelConverter(requireSameGuild, requiredGuild)
-            .toMulti(required, signatureTypeString = "channels", nestedValidator = validator)
+        .toMulti(required, signatureTypeString = "channels", nestedValidator = validator)
 )
 
 /**
@@ -1173,7 +1174,7 @@ public fun Arguments.decimalList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend (List<Double>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Double>) -> Unit)? = null,
 ): MultiConverter<Double> =
     arg(
         displayName,
@@ -1193,13 +1194,13 @@ public fun Arguments.durationList(
     description: String,
     longHelp: Boolean = true,
     required: Boolean = true,
-    validator: (suspend (List<Duration>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Duration>) -> Unit)? = null,
 ): MultiConverter<Duration> =
     arg(
         displayName,
         description,
         DurationConverter(longHelp = longHelp)
-                    .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
     )
 
 /**
@@ -1213,13 +1214,13 @@ public fun Arguments.emailList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend (List<String>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<String>) -> Unit)? = null,
 ): MultiConverter<String> =
     arg(
         displayName,
         description,
         EmailConverter()
-                    .toMulti(required, nestedValidator = validator)
+            .toMulti(required, nestedValidator = validator)
     )
 
 /**
@@ -1233,13 +1234,13 @@ public fun Arguments.emojiList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend (List<GuildEmoji>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<GuildEmoji>) -> Unit)? = null,
 ): MultiConverter<GuildEmoji> =
     arg(
         displayName,
         description,
         EmojiConverter()
-                    .toMulti(required, signatureTypeString = "server emojis", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "server emojis", nestedValidator = validator)
     )
 
 /**
@@ -1253,13 +1254,13 @@ public fun Arguments.guildList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend (List<Guild>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Guild>) -> Unit)? = null,
 ): MultiConverter<Guild> =
     arg(
         displayName,
         description,
         GuildConverter()
-                    .toMulti(required, signatureTypeString = "servers", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "servers", nestedValidator = validator)
     )
 
 /**
@@ -1274,13 +1275,13 @@ public fun Arguments.intList(
     description: String,
     required: Boolean = true,
     radix: Int = 10,
-    validator: (suspend (List<Int>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Int>) -> Unit)? = null,
 ): MultiConverter<Int> =
     arg(
         displayName,
         description,
         IntConverter(radix)
-                    .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
     )
 
 /**
@@ -1295,13 +1296,13 @@ public fun Arguments.longList(
     description: String,
     required: Boolean = true,
     radix: Int = 10,
-    validator: (suspend (List<Long>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Long>) -> Unit)? = null,
 ): MultiConverter<Long> =
     arg(
         displayName,
         description,
         LongConverter(radix)
-                    .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
     )
 
 /**
@@ -1316,13 +1317,13 @@ public fun Arguments.memberList(
     description: String,
     required: Boolean,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend (List<Member>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Member>) -> Unit)? = null,
 ): MultiConverter<Member> =
     arg(
         displayName,
         description,
         MemberConverter(requiredGuild)
-                    .toMulti(required, signatureTypeString = "members", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "members", nestedValidator = validator)
     )
 
 /**
@@ -1338,13 +1339,13 @@ public fun Arguments.messageList(
     required: Boolean = true,
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend (List<Message>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Message>) -> Unit)? = null,
 ): MultiConverter<Message> =
     arg(
         displayName,
         description,
         MessageConverter(requireGuild, requiredGuild)
-                    .toMulti(required, signatureTypeString = "messages", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "messages", nestedValidator = validator)
     )
 
 /**
@@ -1367,13 +1368,13 @@ public fun Arguments.numberList(
     description: String,
     required: Boolean = true,
     radix: Int = 10,
-    validator: (suspend (List<Long>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Long>) -> Unit)? = null,
 ): MultiConverter<Long> =
     arg(
         displayName,
         description,
         NumberConverter(radix)
-                    .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
     )
 
 /**
@@ -1388,13 +1389,13 @@ public fun Arguments.regexList(
     description: String,
     required: Boolean = true,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend (List<Regex>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Regex>) -> Unit)? = null,
 ): MultiConverter<Regex> =
     arg(
         displayName,
         description,
         RegexConverter(options)
-                    .toMulti(required, signatureTypeString = "regexes", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "regexes", nestedValidator = validator)
     )
 
 /**
@@ -1409,13 +1410,13 @@ public fun Arguments.roleList(
     description: String,
     required: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend (List<Role>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Role>) -> Unit)? = null,
 ): MultiConverter<Role> =
     arg(
         displayName,
         description,
         RoleConverter(requiredGuild)
-                    .toMulti(required, signatureTypeString = "roles", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "roles", nestedValidator = validator)
     )
 
 /**
@@ -1429,13 +1430,13 @@ public fun Arguments.snowflakeList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend (List<Snowflake>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<Snowflake>) -> Unit)? = null,
 ): MultiConverter<Snowflake> =
     arg(
         displayName,
         description,
         SnowflakeConverter()
-                    .toMulti(required, nestedValidator = validator)
+            .toMulti(required, nestedValidator = validator)
     )
 
 /**
@@ -1449,13 +1450,13 @@ public fun Arguments.stringList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend (List<String>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<String>) -> Unit)? = null,
 ): MultiConverter<String> =
     arg(
         displayName,
         description,
         StringConverter()
-                    .toMulti(required, nestedValidator = validator)
+            .toMulti(required, nestedValidator = validator)
     )
 
 /**
@@ -1470,13 +1471,13 @@ public fun Arguments.t4jDurationList(
     description: String,
     longHelp: Boolean = true,
     required: Boolean = true,
-    validator: (suspend (List<net.time4j.Duration<IsoUnit>>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<net.time4j.Duration<IsoUnit>>) -> Unit)? = null,
 ): MultiConverter<net.time4j.Duration<IsoUnit>> =
     arg(
         displayName,
         description,
         T4JDurationConverter(longHelp = longHelp)
-                    .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
     )
 
 /**
@@ -1490,13 +1491,13 @@ public fun Arguments.userList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend (List<User>) -> Unit)? = null,
+    validator: (suspend Argument<*>.(List<User>) -> Unit)? = null,
 ): MultiConverter<User> =
     arg(
         displayName,
         description,
         UserConverter()
-                    .toMulti(required, signatureTypeString = "users", nestedValidator = validator)
+            .toMulti(required, signatureTypeString = "users", nestedValidator = validator)
     )
 
 // endregion
@@ -1513,7 +1514,7 @@ public inline fun <reified T : Enum<T>> Arguments.enum(
     description: String,
     typeName: String,
     noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend (T) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
 ): SingleConverter<T> = arg(displayName, description, EnumConverter(typeName, getter, validator))
 
 /**
@@ -1525,7 +1526,7 @@ public inline fun <reified T : Enum<T>> Arguments.enum(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend (T) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
 ): SingleConverter<T> =
     enum(displayName, description, typeName, ::getEnum, validator)
 
@@ -1540,12 +1541,12 @@ public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
     typeName: String,
     defaultValue: T,
     noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend (T) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
 ): DefaultingConverter<T> = arg(
     displayName,
     description,
     EnumConverter(typeName, getter)
-            .toDefaulting(defaultValue, nestedValidator = validator)
+        .toDefaulting(defaultValue, nestedValidator = validator)
 )
 
 /**
@@ -1558,7 +1559,7 @@ public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
     description: String,
     typeName: String,
     defaultValue: T,
-    noinline validator: (suspend (T) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
 ): DefaultingConverter<T> =
     defaultingEnum(displayName, description, typeName, defaultValue, ::getEnum, validator)
 
@@ -1572,12 +1573,12 @@ public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
     description: String,
     typeName: String,
     noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend (T?) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
 ): OptionalConverter<T?> = arg(
     displayName,
     description,
     EnumConverter(typeName, getter)
-            .toOptional(nestedValidator = validator)
+        .toOptional(nestedValidator = validator)
 )
 
 /**
@@ -1589,7 +1590,7 @@ public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend (T?) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
 ): OptionalConverter<T?> =
     optionalEnum<T>(displayName, description, typeName, ::getEnum, validator)
 
@@ -1606,12 +1607,12 @@ public inline fun <reified T : Enum<T>> Arguments.enumList(
     typeName: String,
     required: Boolean = true,
     noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend (List<T>) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(List<T>) -> Unit)? = null,
 ): MultiConverter<T> = arg(
     displayName,
     description,
     EnumConverter(typeName, getter)
-            .toMulti(required, nestedValidator = validator)
+        .toMulti(required, nestedValidator = validator)
 )
 
 /**
@@ -1626,7 +1627,7 @@ public inline fun <reified T : Enum<T>> Arguments.enumList(
     description: String,
     typeName: String,
     required: Boolean = true,
-    noinline validator: (suspend (List<T>) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(List<T>) -> Unit)? = null,
 ): MultiConverter<T> =
     enumList<T>(displayName, description, typeName, required, ::getEnum, validator)
 

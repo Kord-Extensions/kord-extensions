@@ -42,7 +42,7 @@ private const val HELP_MESSAGE = "__How to use durations__\n\n" +
 @OptIn(KordPreview::class)
 public class DurationConverter(
     public val longHelp: Boolean = true,
-    override var validator: (suspend (Duration) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Duration) -> Unit)? = null
 ) : SingleConverter<Duration>() {
     override val signatureTypeString: String = "duration"
 

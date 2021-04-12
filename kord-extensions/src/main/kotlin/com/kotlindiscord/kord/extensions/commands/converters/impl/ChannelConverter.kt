@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.toList
 public class ChannelConverter(
     private val requireSameGuild: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null,
-    override var validator: (suspend (Channel) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Channel) -> Unit)? = null
 ) : SingleConverter<Channel>() {
     override val signatureTypeString: String = "channel"
 

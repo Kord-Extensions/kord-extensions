@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.utils.startsWithVowel
 
 /**
@@ -30,6 +31,9 @@ public abstract class Converter<T : Any?>(
      * messages.
      */
     public open val errorTypeString: String? = null
+
+    /** Argument object containing this converter and its metadata. **/
+    public open lateinit var argumentObj: Argument<*>
 
     /**
      * Return a formatted error string.

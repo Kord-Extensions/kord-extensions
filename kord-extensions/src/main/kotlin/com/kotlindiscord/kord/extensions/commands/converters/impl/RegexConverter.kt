@@ -27,7 +27,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @OptIn(KordPreview::class)
 public class RegexConverter(
     private val options: Set<RegexOption> = setOf(),
-    override var validator: (suspend (Regex) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Regex) -> Unit)? = null
 ) : SingleConverter<Regex>() {
     override val signatureTypeString: String = "regex"
 

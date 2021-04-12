@@ -40,7 +40,7 @@ private const val HELP_MESSAGE = "__How to use durations__\n\n" +
 public class T4JDurationCoalescingConverter(
     public val longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    override var validator: (suspend (Duration<IsoUnit>) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null
 ) : CoalescingConverter<Duration<IsoUnit>>(shouldThrow) {
     override val signatureTypeString: String = "duration"
 

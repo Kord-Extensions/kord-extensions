@@ -20,7 +20,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 @OptIn(KordPreview::class)
 public class SnowflakeConverter(
-    override var validator: (suspend (Snowflake) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Snowflake) -> Unit)? = null
 ) : SingleConverter<Snowflake>() {
     override val signatureTypeString: String = "ID"
 

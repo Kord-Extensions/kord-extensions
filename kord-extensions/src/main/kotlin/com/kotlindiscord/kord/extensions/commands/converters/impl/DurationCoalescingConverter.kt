@@ -39,7 +39,7 @@ private const val HELP_MESSAGE = "__How to use durations__\n\n" +
 public class DurationCoalescingConverter(
     public val longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    override var validator: (suspend (Duration) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Duration) -> Unit)? = null
 ) : CoalescingConverter<Duration>(shouldThrow) {
     override val signatureTypeString: String = "duration"
 

@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 
 /**
@@ -26,7 +27,7 @@ public class SingleToMultiConverter<T : Any>(
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
 
-    override var validator: (suspend (List<T>) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(List<T>) -> Unit)? = null
 ) : MultiConverter<T>(required) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature

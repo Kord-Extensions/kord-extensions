@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import kotlin.reflect.KProperty
@@ -20,7 +21,7 @@ import kotlin.reflect.KProperty
 @KordPreview
 public abstract class DefaultingConverter<T : Any>(
     defaultValue: T,
-    public open var validator: (suspend (T) -> Unit)? = null
+    public open var validator: (suspend Argument<*>.(result: T) -> Unit)? = null
 ) : Converter<T>(false), SlashCommandConverter {
     /**
      * The parsed value.
@@ -53,7 +54,7 @@ public abstract class DefaultingConverter<T : Any>(
 
     /** Call the validator lambda, if one was provided. **/
     public open suspend fun validate() {
-        validator?.let { it(parsed) }
+        validator?.let { it(this.argumentObj, parsed) }
     }
 
     /**

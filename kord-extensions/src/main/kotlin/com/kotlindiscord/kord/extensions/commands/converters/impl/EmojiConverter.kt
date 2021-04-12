@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.mapNotNull
  */
 @OptIn(KordPreview::class)
 public class EmojiConverter(
-    override var validator: (suspend (GuildEmoji) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(GuildEmoji) -> Unit)? = null
 ) : SingleConverter<GuildEmoji>() {
     override val signatureTypeString: String = "server emoji"
 

@@ -20,7 +20,7 @@ import org.apache.commons.validator.routines.EmailValidator
  */
 @OptIn(KordPreview::class)
 public class EmailConverter(
-    override var validator: (suspend (String) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(String) -> Unit)? = null
 ) : SingleConverter<String>() {
     override val signatureTypeString: String = "email"
 

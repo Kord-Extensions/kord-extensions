@@ -21,7 +21,7 @@ public class UnionConverter(
     typeName: String? = null,
     shouldThrow: Boolean = false,
 
-    override var validator: (suspend (Any) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Any) -> Unit)? = null
 ) : CoalescingConverter<Any>(shouldThrow) {
     override val signatureTypeString: String = typeName
         ?: converters.joinToString(" | ") { it.signatureTypeString }

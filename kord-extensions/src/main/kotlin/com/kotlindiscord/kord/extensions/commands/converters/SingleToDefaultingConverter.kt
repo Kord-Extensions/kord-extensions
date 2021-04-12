@@ -26,7 +26,7 @@ public class SingleToDefaultingConverter<T : Any>(
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
 
-    override var validator: (suspend (T) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(T) -> Unit)? = null
 ) : DefaultingConverter<T>(defaultValue) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature

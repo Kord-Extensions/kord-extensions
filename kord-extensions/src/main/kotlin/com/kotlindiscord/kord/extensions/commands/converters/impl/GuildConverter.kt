@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.firstOrNull
  */
 @OptIn(KordPreview::class)
 public class GuildConverter(
-    override var validator: (suspend (Guild) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Guild) -> Unit)? = null
 ) : SingleConverter<Guild>() {
     override val signatureTypeString: String = "server"
 

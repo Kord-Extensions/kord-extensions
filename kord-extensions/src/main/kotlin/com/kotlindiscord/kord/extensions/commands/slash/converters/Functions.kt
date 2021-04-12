@@ -8,6 +8,7 @@
 package com.kotlindiscord.kord.extensions.commands.slash.converters
 
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.EnumChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.NumberChoiceConverter
@@ -25,7 +26,7 @@ public inline fun <reified T> Arguments.enumChoice(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend (T) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
 ): SingleConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
@@ -42,7 +43,7 @@ public fun Arguments.numberChoice(
     description: String,
     choices: Map<String, Int>,
     radix: Int = 10,
-    validator: (suspend (Int) -> Unit)? = null
+    validator: (suspend Argument<*>.(Int) -> Unit)? = null
 ): SingleConverter<Int> = arg(displayName, description, NumberChoiceConverter(radix, choices, validator))
 
 /**
@@ -54,7 +55,7 @@ public fun Arguments.stringChoice(
     displayName: String,
     description: String,
     choices: Map<String, String>,
-    validator: (suspend (String) -> Unit)? = null
+    validator: (suspend Argument<*>.(String) -> Unit)? = null
 ): SingleConverter<String> = arg(displayName, description, StringChoiceConverter(choices, validator))
 
 // endregion
@@ -70,12 +71,12 @@ public inline fun <reified T> Arguments.optionalEnumChoice(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend (T?) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
 ): OptionalConverter<T?> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
     EnumChoiceConverter<T>(typeName, ::getEnum, enumValues())
-            .toOptional(nestedValidator = validator)
+        .toOptional(nestedValidator = validator)
 )
 
 /**
@@ -88,12 +89,12 @@ public fun Arguments.optionalNumberChoice(
     description: String,
     choices: Map<String, Int>,
     radix: Int = 10,
-    validator: (suspend (Int?) -> Unit)? = null
+    validator: (suspend Argument<*>.(Int?) -> Unit)? = null
 ): OptionalConverter<Int?> = arg(
     displayName,
     description,
     NumberChoiceConverter(radix, choices)
-            .toOptional(nestedValidator = validator)
+        .toOptional(nestedValidator = validator)
 )
 
 /**
@@ -105,12 +106,12 @@ public fun Arguments.optionalStringChoice(
     displayName: String,
     description: String,
     choices: Map<String, String>,
-    validator: (suspend (String?) -> Unit)? = null
+    validator: (suspend Argument<*>.(String?) -> Unit)? = null
 ): OptionalConverter<String?> = arg(
     displayName,
     description,
     StringChoiceConverter(choices)
-            .toOptional(nestedValidator = validator)
+        .toOptional(nestedValidator = validator)
 )
 
 // endregion
@@ -127,12 +128,12 @@ public inline fun <reified T> Arguments.defaultingEnumChoice(
     description: String,
     typeName: String,
     defaultValue: T,
-    noinline validator: (suspend (T) -> Unit)? = null,
+    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
 ): DefaultingConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
     EnumChoiceConverter<T>(typeName, ::getEnum, enumValues())
-            .toDefaulting(defaultValue, nestedValidator = validator)
+        .toDefaulting(defaultValue, nestedValidator = validator)
 )
 
 /**
@@ -146,12 +147,12 @@ public fun Arguments.defaultingNumberChoice(
     defaultValue: Int,
     choices: Map<String, Int>,
     radix: Int = 10,
-    validator: (suspend (Int) -> Unit)? = null
+    validator: (suspend Argument<*>.(Int) -> Unit)? = null
 ): DefaultingConverter<Int> = arg(
     displayName,
     description,
     NumberChoiceConverter(radix, choices)
-            .toDefaulting(defaultValue, nestedValidator = validator)
+        .toDefaulting(defaultValue, nestedValidator = validator)
 )
 
 /**
@@ -164,12 +165,12 @@ public fun Arguments.defaultingStringChoice(
     description: String,
     defaultValue: String,
     choices: Map<String, String>,
-    validator: (suspend (String) -> Unit)? = null
+    validator: (suspend Argument<*>.(String) -> Unit)? = null
 ): DefaultingConverter<String> = arg(
     displayName,
     description,
     StringChoiceConverter(choices)
-            .toDefaulting(defaultValue, nestedValidator = validator)
+        .toDefaulting(defaultValue, nestedValidator = validator)
 )
 
 // endregion

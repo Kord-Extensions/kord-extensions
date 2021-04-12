@@ -21,7 +21,7 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  */
 @OptIn(KordPreview::class)
 public class BooleanConverter(
-    override var validator: (suspend (Boolean) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Boolean) -> Unit)? = null
 ) : SingleConverter<Boolean>() {
     public override val signatureTypeString: String = "yes/no"
     public override val errorTypeString: String = "`yes` or `no`"

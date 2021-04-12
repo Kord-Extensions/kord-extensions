@@ -10,24 +10,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import mu.KotlinLogging
-import kotlin.collections.MutableList
-import kotlin.collections.count
-import kotlin.collections.filter
-import kotlin.collections.first
-import kotlin.collections.forEach
-import kotlin.collections.joinToString
-import kotlin.collections.last
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.plus
-import kotlin.collections.removeFirst
-import kotlin.collections.removeFirstOrNull
 import kotlin.collections.set
-import kotlin.collections.toList
-import kotlin.collections.toMap
-import kotlin.collections.toMutableList
 
 private val logger = KotlinLogging.logger {}
 

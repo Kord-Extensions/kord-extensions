@@ -103,14 +103,14 @@ a default value and instead will return `null` by default.
 ### Validators
 
 All converters support validators. Validators allow you to specify a simple lambda that acts on the parsed result, and
-throws a `CommandException` if something is wrong - which will be sent to the user. For example...
+throws a `CommandException` if something is wrong - which will be sent to the user. Validators are receiver functions
+for `Argument<*>` objects, so both `displayName` and `description` are available. For example...
 
 ```kotlin
-
 class PostArguments : Arguments() {
     // Single required string argument
     val title by string("title", "Post title") { 
-        if (it.length > 30) throw CommandError("Post title must be 30 characters at most")
+        if (it.length > 30) throw CommandError("`$displayName` must be 30 characters at most")
     }
 
     // Single required Discord user argument

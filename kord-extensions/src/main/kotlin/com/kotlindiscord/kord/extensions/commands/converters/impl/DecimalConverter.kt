@@ -19,7 +19,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 @OptIn(KordPreview::class)
 public class DecimalConverter(
-    override var validator: (suspend (Double) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Double) -> Unit)? = null
 ) : SingleConverter<Double>() {
     override val signatureTypeString: String = "decimal"
 

@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 
 /**
  * A special [OptionalConverter] that wraps a [SingleConverter], effectively turning it into an optional
@@ -24,7 +25,7 @@ public class CoalescingToDefaultingConverter<T : Any>(
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
 
-    override var validator: (suspend (T) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(T) -> Unit)? = null
 ) : DefaultingCoalescingConverter<T>(defaultValue) {
     override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature

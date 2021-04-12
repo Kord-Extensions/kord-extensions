@@ -9,4 +9,8 @@ import com.kotlindiscord.kord.extensions.commands.converters.Converter
  * @param description Short description explaining what the argument does.
  * @param converter Argument converter to use for this argument.
  */
-public data class Argument<T : Any?>(val displayName: String, val description: String, val converter: Converter<T>)
+public data class Argument<T : Any?>(val displayName: String, val description: String, val converter: Converter<T>) {
+    init {
+        converter.argumentObj = this
+    }
+}

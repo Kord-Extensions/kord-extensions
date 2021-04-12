@@ -43,7 +43,7 @@ private const val HELP_MESSAGE = "__How to use durations__\n\n" +
 @OptIn(KordPreview::class)
 public class T4JDurationConverter(
     public val longHelp: Boolean = true,
-    override var validator: (suspend (Duration<IsoUnit>) -> Unit)? = null
+    override var validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null
 ) : SingleConverter<Duration<IsoUnit>>() {
     override val signatureTypeString: String = "duration"
 
