@@ -144,7 +144,12 @@ public class UnionConverter(
                     if (shouldThrow) throw t
                 }
 
-                else -> throw CommandException("Unknown converter type provided: $converter")
+                else -> throw CommandException(
+                    context.translate(
+                        "converters.union.error.unknownConverterType",
+                        replacements = arrayOf(converter)
+                    )
+                )
             }
         }
 

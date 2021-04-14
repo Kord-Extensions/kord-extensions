@@ -74,8 +74,7 @@ public open class MessageCommandContext<T : Arguments>(
      */
     public suspend fun sendHelp(): Boolean {
         val helpExtension = this.command.extension.bot.findExtension<HelpProvider>() ?: return false
-        val prefix = this.command.extension.bot.messageCommands.getPrefix(event)
-        val paginator = helpExtension.getCommandHelpPaginator(event, prefix, messageCommand)
+        val paginator = helpExtension.getCommandHelpPaginator(this, messageCommand)
 
         paginator.send()
 

@@ -16,13 +16,15 @@ import io.sentry.protocol.SentryId
  * @see sentryIdList
  */
 public class SentryIdConverter : SingleConverter<SentryId>() {
-    override val signatureTypeString: String = "uuid"
+    override val signatureTypeString: String = "extensions.sentry.converter.sentryId.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         try {
             this.parsed = SentryId(arg)
         } catch (e: IllegalArgumentException) {
-            throw CommandException("Invalid Sentry event ID specified: `$arg`")
+            throw CommandException(
+                context.translate("extensions.sentry.converter.error.invalid", replacements = arrayOf(arg))
+            )
         }
 
         return true

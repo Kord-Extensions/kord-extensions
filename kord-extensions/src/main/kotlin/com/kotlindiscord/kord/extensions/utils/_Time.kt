@@ -1,8 +1,11 @@
 package com.kotlindiscord.kord.extensions.utils
 
+import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.commands.CommandContext
 import net.time4j.Duration
 import net.time4j.IsoUnit
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 /**
  * Convert a Time4J Duration object to seconds.
@@ -33,7 +36,7 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
 @Suppress("MagicNumber")  // These are all time units!
-public fun java.time.Duration.toHuman(): String? {
+public fun java.time.Duration.toHuman(bot: ExtensibleBot, locale: Locale): String? {
     val parts = mutableListOf<String>()
 
     val seconds = this.seconds % 60
@@ -47,30 +50,42 @@ public fun java.time.Duration.toHuman(): String? {
 
     if (days > 0) {
         parts.add(
-            "$days " + if (days > 1) "days" else "day"
+            bot.translationsProvider.translate("utils.time.days", locale, replacements = arrayOf(days))
         )
     }
 
     if (hours > 0) {
         parts.add(
-            "$hours " + if (hours > 1) "hours" else "hour"
+            bot.translationsProvider.translate("utils.time.hours", locale, replacements = arrayOf(hours))
         )
     }
 
     if (minutes > 0) {
         parts.add(
-            "$minutes " + if (minutes > 1) "minutes" else "minute"
+            bot.translationsProvider.translate("utils.time.minutes", locale, replacements = arrayOf(minutes))
         )
     }
 
     if (seconds > 0) {
         parts.add(
-            "$seconds " + if (seconds > 1) "seconds" else "second"
+            bot.translationsProvider.translate("utils.time.seconds", locale, replacements = arrayOf(seconds))
         )
     }
 
     if (parts.isEmpty()) return null
 
     // I have no idea how I should _actually_ do this...
-    return parts.joinToString(", ").reversed().replaceFirst(",", "dna ").reversed()
+    val andJoiner = bot.translationsProvider.translate("utils.time.andJoiner", locale).reversed() + " "
+    return parts.joinToString(", ").reversed().replaceFirst(",", andJoiner).reversed()
 }
+
+/**
+ * Given a Duration, this function will return a String (or null if it represents less than 1 second).
+ *
+ * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
+ */
+@Suppress("MagicNumber")  // These are all time units!
+public suspend fun java.time.Duration.toHuman(context: CommandContext): String? = toHuman(
+    context.command.extension.bot,
+    context.getLocale()
+)

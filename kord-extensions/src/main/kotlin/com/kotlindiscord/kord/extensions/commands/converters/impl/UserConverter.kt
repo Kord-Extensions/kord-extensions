@@ -30,24 +30,28 @@ import kotlinx.coroutines.flow.firstOrNull
 public class UserConverter(
     override var validator: (suspend Argument<*>.(User) -> Unit)? = null
 ) : SingleConverter<User>() {
-    override val signatureTypeString: String = "user"
+    override val signatureTypeString: String = "converters.user.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val user = findUser(arg, bot)
-            ?: throw CommandException("Unable to find user: $arg")
+        val user = findUser(arg, context, bot)
+            ?: throw CommandException(
+                context.translate("converters.user.error.missing", replacements = arrayOf(arg))
+            )
 
         parsed = user
         return true
     }
 
-    private suspend fun findUser(arg: String, bot: ExtensibleBot): User? =
+    private suspend fun findUser(arg: String, context: CommandContext, bot: ExtensibleBot): User? =
         if (arg.startsWith("<@") && arg.endsWith(">")) { // It's a mention
             val id = arg.substring(2, arg.length - 1).replace("!", "")
 
             try {
                 bot.kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw CommandException("Value '$id' is not a valid user ID.")
+                throw CommandException(
+                    context.translate("converters.user.error.invalid", replacements = arrayOf(id))
+                )
             }
         } else {
             try { // Try for a user ID first

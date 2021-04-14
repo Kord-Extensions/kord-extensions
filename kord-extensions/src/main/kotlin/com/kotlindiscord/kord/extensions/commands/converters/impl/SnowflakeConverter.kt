@@ -22,14 +22,14 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 public class SnowflakeConverter(
     override var validator: (suspend Argument<*>.(Snowflake) -> Unit)? = null
 ) : SingleConverter<Snowflake>() {
-    override val signatureTypeString: String = "ID"
+    override val signatureTypeString: String = "converters.snowflake.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         try {
             this.parsed = Snowflake(arg)
         } catch (e: NumberFormatException) {
             throw CommandException(
-                "Value '$arg' is not a valid Discord ID."
+                context.translate("converters.snowflake.error.invalid", replacements = arrayOf(arg))
             )
         }
 

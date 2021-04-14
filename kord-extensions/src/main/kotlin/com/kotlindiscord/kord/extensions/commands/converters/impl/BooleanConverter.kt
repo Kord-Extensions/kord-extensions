@@ -23,11 +23,11 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 public class BooleanConverter(
     override var validator: (suspend Argument<*>.(Boolean) -> Unit)? = null
 ) : SingleConverter<Boolean>() {
-    public override val signatureTypeString: String = "yes/no"
-    public override val errorTypeString: String = "`yes` or `no`"
+    public override val signatureTypeString: String = "converters.boolean.signatureType"
+    public override val errorTypeString: String = "converters.boolean.errorType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val bool = arg.parseBoolean() ?: return false
+        val bool = arg.parseBoolean(context) ?: return false
 
         this.parsed = bool
 

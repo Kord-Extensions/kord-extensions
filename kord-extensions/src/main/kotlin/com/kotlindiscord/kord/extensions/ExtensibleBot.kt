@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.module
 import dev.kord.core.Kord
@@ -23,10 +24,12 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import mu.KLogger
 import mu.KotlinLogging
 import net.time4j.tz.repo.TZDATA
@@ -38,7 +41,6 @@ import org.koin.environmentProperties
 import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
-import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -64,6 +66,11 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * Sentry adapter, for working with Sentry.
      */
     public open val sentry: SentryAdapter = SentryAdapter()
+
+    /**
+     * Translations provider, for retrieving translations.
+     */
+    public open val translationsProvider: TranslationsProvider = settings.i18nBuilder.translationsProvider
 
     /**
      * A list of all registered commands.
@@ -134,8 +141,9 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         settings.hooksBuilder.runAfterKoinCreated(this)
 
         koin.module { single { this@ExtensibleBot } }
-        koin.module { single { settings } }
-        koin.module { single { sentry } }
+        koin.module { single { settings } bind ExtensibleBotBuilder::class }
+        koin.module { single { sentry } bind SentryAdapter::class }
+        koin.module { single { translationsProvider } bind TranslationsProvider::class }
 
         koin.module {
             single {

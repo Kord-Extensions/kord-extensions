@@ -1,7 +1,9 @@
 package com.kotlindiscord.kord.extensions.pagination.pages
 
+import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import java.util.*
 
 /**
  * Representation of a single paginator page. You can subclass this to customize it if you wish!
@@ -39,6 +41,8 @@ public open class Page(
 
     /** Create an embed builder for this page. **/
     public open fun build(
+        bot: ExtensibleBot,
+        locale: Locale,
         pageNum: Int,
         pages: Int,
         group: String?,
@@ -63,7 +67,11 @@ public open class Page(
             text = ""
 
             if (pages > 1) {
-                text += "Page ${pageNum + 1}/$pages"
+                text += bot.translationsProvider.translate(
+                    "paginator.footer.page",
+                    locale,
+                    replacements = arrayOf(pageNum + 1, pages)
+                )
             }
 
             if (group != null && group.isNotBlank() || groups > 2) {
@@ -72,7 +80,11 @@ public open class Page(
                 }
 
                 text += if (group.isNullOrBlank()) {
-                    "Group ${groupIndex + 1}/$groups"
+                    bot.translationsProvider.translate(
+                        "paginator.footer.group",
+                        locale,
+                        replacements = arrayOf(groupIndex + 1, groups)
+                    )
                 } else {
                     "$group (${groupIndex + 1}/$groups)"
                 }

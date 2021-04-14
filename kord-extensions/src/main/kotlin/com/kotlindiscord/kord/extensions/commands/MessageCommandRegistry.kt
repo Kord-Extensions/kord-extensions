@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.KoinAccessor
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.parse
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.event.message.MessageCreateEvent
@@ -213,11 +214,18 @@ public open class MessageCommandRegistry(
 
         commandName = commandName.toLowerCase()
 
-        val command = commands.firstOrNull { it.name == commandName }
-            ?: commands.firstOrNull { it.aliases.contains(commandName) }
+        val command = getCommand(commandName, event)
 
         commandThreadPool.invoke {
             command?.call(event, commandName, parts, argString)
         }
+    }
+
+    /** Given a command name and [MessageCreateEvent], try to find a matching command. **/
+    public open suspend fun getCommand(name: String, event: MessageCreateEvent): MessageCommand<out Arguments>? {
+        val locale = event.getLocale(bot)
+
+        return commands.firstOrNull { it.getTranslatedName(locale) == name }
+            ?: commands.firstOrNull { it.getTranslatedAliases(locale).contains(name) }
     }
 }

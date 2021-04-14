@@ -33,17 +33,19 @@ import kotlinx.coroutines.flow.mapNotNull
 public class EmojiConverter(
     override var validator: (suspend Argument<*>.(GuildEmoji) -> Unit)? = null
 ) : SingleConverter<GuildEmoji>() {
-    override val signatureTypeString: String = "server emoji"
+    override val signatureTypeString: String = "converters.emoji.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val emoji = findEmoji(arg, bot)
-            ?: throw CommandException("Unable to find emoji: $arg")
+        val emoji = findEmoji(arg, context, bot)
+            ?: throw CommandException(
+                context.translate("converters.emoji.error.missing", replacements = arrayOf(arg))
+            )
 
         parsed = emoji
         return true
     }
 
-    private suspend fun findEmoji(arg: String, bot: ExtensibleBot): GuildEmoji? =
+    private suspend fun findEmoji(arg: String, context: CommandContext, bot: ExtensibleBot): GuildEmoji? =
         if (arg.startsWith("<a:") || arg.startsWith("<:") && arg.endsWith('>')) { // Emoji mention
             val id = arg.substring(0, arg.length - 1).split(":").last()
 
@@ -54,7 +56,9 @@ public class EmojiConverter(
                     it.getEmojiOrNull(snowflake)
                 }.firstOrNull()
             } catch (e: NumberFormatException) {
-                throw CommandException("Value '$id' is not a valid emoji ID.")
+                throw CommandException(
+                    context.translate("converters.emoji.error.invalid", replacements = arrayOf(id))
+                )
             }
         } else { // ID or name
             val name = if (arg.startsWith(":") && arg.endsWith(":")) arg.substring(1, arg.length - 1) else arg

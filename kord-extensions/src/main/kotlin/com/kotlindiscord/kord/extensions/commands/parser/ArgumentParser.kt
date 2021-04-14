@@ -1,3 +1,5 @@
+@file:OptIn(KordPreview::class)
+
 @file:Suppress(
     "TooGenericExceptionCaught",
     "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
@@ -9,7 +11,9 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import dev.kord.common.annotation.KordPreview
 import mu.KotlinLogging
+import java.util.*
 import kotlin.collections.set
 
 private val logger = KotlinLogging.logger {}
@@ -120,8 +124,10 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
                             throw CommandException(
-                                "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
-                                    "${kwValue.size} were provided."
+                                context.translate(
+                                    "argumentParser.error.requiresOneValue",
+                                    replacements = arrayOf(currentArg.displayName, kwValue.size)
+                                )
                             )
                         }
 
@@ -132,8 +138,14 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                     if ((converter.required || hasKwargs) && !parsed) {
                         throw CommandException(
-                            "Invalid value for argument `${currentArg.displayName}` " +
-                                "(which accepts ${converter.getErrorString()}): $currentValue"
+                            context.translate(
+                                "argumentParser.error.invalidValue",
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+                                    converter.getErrorString(context),
+                                    currentValue
+                                )
+                            )
                         )
                     }
 
@@ -162,9 +174,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                 is DefaultingConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
-                            throw CommandException(
-                                "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
-                                    "${kwValue.size} were provided."
+                            context.translate(
+                                "argumentParser.error.requiresOneValue",
+                                replacements = arrayOf(currentArg.displayName, kwValue.size)
                             )
                         }
 
@@ -189,8 +201,10 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
                             throw CommandException(
-                                "Argument `${currentArg.displayName}` requires exactly 1 value, but " +
-                                    "${kwValue.size} were provided."
+                                context.translate(
+                                    "argumentParser.error.requiresOneValue",
+                                    replacements = arrayOf(currentArg.displayName, kwValue.size)
+                                )
                             )
                         }
 
@@ -230,21 +244,29 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
                         throw CommandException(
-                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                                "${converter.getErrorString()}): $currentValue"
+                            context.translate(
+                                "argumentParser.error.invalidValue",
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+                                    converter.getErrorString(context),
+                                    currentValue
+                                )
+                            )
                         )
                     }
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
                             throw CommandException(
-                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
-                                    "value${if (kwValue.size > 1) "d" else ""}, but " +
-                                    if (parsedCount >= 1) {
-                                        "only $parsedCount of them were valid ${converter.signatureTypeString}."
-                                    } else {
-                                        "none were valid ${converter.signatureTypeString}."
-                                    }
+                                context.translate(
+                                    "argumentParser.error.notAllValid",
+                                    replacements = arrayOf(
+                                        currentArg.displayName,
+                                        kwValue.size,
+                                        parsedCount,
+                                        context.translate(converter.signatureTypeString)
+                                    )
+                                )
                             )
                         }
 
@@ -280,22 +302,28 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw CommandException(
-                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                                "${converter.getErrorString()}): $currentValue"
+                        context.translate(
+                            "argumentParser.error.invalidValue",
+                            replacements = arrayOf(
+                                currentArg.displayName,
+                                converter.getErrorString(context),
+                                currentValue
+                            )
                         )
                     }
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
                             throw CommandException(
-                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
-                                    "value${if (kwValue.size > 1) "d" else ""}, but " +
-                                    if (parsedCount >= 1) {
-                                        "only $parsedCount of them were valid ${converter.signatureTypeString}."
-                                    } else {
-                                        "none were valid ${converter.signatureTypeString}."
-                                    }
+                                context.translate(
+                                    "argumentParser.error.notAllValid",
+                                    replacements = arrayOf(
+                                        currentArg.displayName,
+                                        kwValue.size,
+                                        parsedCount,
+                                        context.translate(converter.signatureTypeString)
+                                    )
+                                )
                             )
                         }
 
@@ -332,21 +360,29 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
                         throw CommandException(
-                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                                "${converter.getErrorString()}): $currentValue"
+                            context.translate(
+                                "argumentParser.error.invalidValue",
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+                                    converter.getErrorString(context),
+                                    currentValue
+                                )
+                            )
                         )
                     }
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
                             throw CommandException(
-                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
-                                    "value${if (kwValue.size > 1) "d" else ""}, but " +
-                                    if (parsedCount >= 1) {
-                                        "only $parsedCount of them were valid ${converter.signatureTypeString}."
-                                    } else {
-                                        "none were valid ${converter.signatureTypeString}."
-                                    }
+                                context.translate(
+                                    "argumentParser.error.notAllValid",
+                                    replacements = arrayOf(
+                                        currentArg.displayName,
+                                        kwValue.size,
+                                        parsedCount,
+                                        context.translate(converter.signatureTypeString)
+                                    )
+                                )
                             )
                         }
 
@@ -385,21 +421,29 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
                         throw CommandException(
-                            "Invalid value for argument `${currentArg.displayName}` (which accepts " +
-                                "${converter.getErrorString()}): $currentValue"
+                            context.translate(
+                                "argumentParser.error.invalidValue",
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+                                    converter.getErrorString(context),
+                                    currentValue
+                                )
+                            )
                         )
                     }
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
                             throw CommandException(
-                                "Argument `${currentArg.displayName}` was provided with ${kwValue.size} " +
-                                    "value${if (kwValue.size > 1) "d" else ""}, but " +
-                                    if (parsedCount >= 1) {
-                                        "only $parsedCount of them were valid ${converter.signatureTypeString}."
-                                    } else {
-                                        "none were valid ${converter.signatureTypeString}."
-                                    }
+                                context.translate(
+                                    "argumentParser.error.notAllValid",
+                                    replacements = arrayOf(
+                                        currentArg.displayName,
+                                        kwValue.size,
+                                        parsedCount,
+                                        context.translate(converter.signatureTypeString)
+                                    )
+                                )
                             )
                         }
 
@@ -427,7 +471,12 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
                 }
 
-                else -> throw CommandException("Unknown converter type provided: ${currentArg.converter}")
+                else -> throw CommandException(
+                    context.translate(
+                        "argumentParser.error.unknownConverterType",
+                        replacements = arrayOf(currentArg.converter)
+                    )
+                )
             }
         }
 
@@ -439,12 +488,22 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
         if (filledRequiredArgs < allRequiredArgs) {
             if (filledRequiredArgs < 1) {
                 throw CommandException(
-                    "This command has $allRequiredArgs required argument${if (allRequiredArgs > 1) "s" else ""}."
+                    context.translate(
+                        "argumentParser.error.noFilledArguments",
+                        replacements = arrayOf(
+                            allRequiredArgs
+                        )
+                    )
                 )
             } else {
                 throw CommandException(
-                    "This command has $allRequiredArgs required argument${if (allRequiredArgs > 1) "s" else ""}, " +
-                        "but only $filledRequiredArgs could be filled."
+                    context.translate(
+                        "argumentParser.error.someFilledArguments",
+                        replacements = arrayOf(
+                            allRequiredArgs,
+                            filledRequiredArgs
+                        )
+                    )
                 )
             }
         }
@@ -460,7 +519,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
      * @param builder Builder returning an [Arguments] subclass - usually the constructor.
      * @return MessageCommand arguments signature for display.
      */
-    public open fun signature(builder: () -> Arguments): String {
+    public open fun signature(builder: () -> Arguments, locale: Locale): String {
         val argumentsObj = builder.invoke()
         val parts = mutableListOf<String>()
 
@@ -476,10 +535,17 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
             signature += it.displayName
 
             if (it.converter.showTypeInSignature) {
-                signature += ": ${it.converter.signatureTypeString}"
+                signature += ": "
+
+                signature += bot.translationsProvider.translate(
+                    it.converter.signatureTypeString,
+                    it.converter.bundle,
+                    locale
+                )
 
                 if (it.converter is DefaultingConverter<*>) {
-                    signature += "=${it.converter.parsed}"
+                    signature += "="
+                    signature += it.converter.parsed
                 }
             }
 

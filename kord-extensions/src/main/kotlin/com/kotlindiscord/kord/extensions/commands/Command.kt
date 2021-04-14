@@ -5,7 +5,7 @@ import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.extensions.Extension
 
 /**
- * Abstract base class representing the few thins that command objects can have in common.
+ * Abstract base class representing the few things that command objects can have in common.
  *
  * This should be used as a base class only for command types that aren't related to the other command types.
  *

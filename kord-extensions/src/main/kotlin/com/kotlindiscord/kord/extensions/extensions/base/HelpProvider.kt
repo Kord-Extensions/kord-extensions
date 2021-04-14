@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.extensions.base
 
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import dev.kord.core.event.message.MessageCreateEvent
@@ -36,6 +37,28 @@ public interface HelpProvider {
     ): Triple<String, String, String>
 
     /**
+     * Given a command object and command context, return a triple representing the formatted command name and
+     * signature, formatted command description and formatted argument list.
+     *
+     * @param context MessageCommandContext object that triggered this help invocation.
+     * @param command Command object to format the help for.
+     * @param longDescription Whether to include more than the first line of the command description, `false` by
+     *        default.
+     *
+     * @return Tripe containing three formatted elements - the command's name and signature with prefix, the command's
+     *         description, and the command's argument list.
+     */
+    public suspend fun formatCommandHelp(
+        context: MessageCommandContext<*>,
+        command: MessageCommand<out Arguments>,
+        longDescription: Boolean = false
+    ): Triple<String, String, String> {
+        val prefix = context.command.extension.bot.messageCommands.getPrefix(context.event)
+
+        return formatCommandHelp(prefix, context.event, command, longDescription)
+    }
+
+    /**
      * Gather all available commands (with passing checks) from the bot, and return them.
      */
     public suspend fun gatherCommands(event: MessageCreateEvent): List<MessageCommand<out Arguments>>
@@ -64,6 +87,26 @@ public interface HelpProvider {
     ): Paginator
 
     /**
+     * Given a command context and argument list, attempt to find the command represented by the arguments and
+     * return a [Paginator], ready to be sent.
+     *
+     * The [Paginator] will contain an error message if the command can't be found, or the command's checks fail.
+     *
+     * @param context MessageCommandContext object that triggered this help invocation.
+     * @param args List of arguments to use to find the command.
+     *
+     * @return Paginator containing the command's help, or an error message.
+     */
+    public suspend fun getCommandHelpPaginator(
+        context: MessageCommandContext<*>,
+        args: List<String>
+    ): Paginator {
+        val prefix = context.command.extension.bot.messageCommands.getPrefix(context.event)
+
+        return getCommandHelpPaginator(context.event, prefix, args)
+    }
+
+    /**
      * Given an event, prefix and argument list, attempt to find the command represented by the arguments and return
      * a [Paginator], ready to be sent.
      *
@@ -85,6 +128,29 @@ public interface HelpProvider {
     ): Paginator
 
     /**
+     * Given an command context and argument list, attempt to find the command represented by the arguments and return
+     * a [Paginator], ready to be sent.
+     *
+     * The [Paginator] will contain an error message if the command passed was `null`, or the command's checks fail.
+     *
+     * Please be mindful of using this with subcommands, as the extension's design intends for users to be unable to
+     * retrieve help for subcommands when any parent command's checks fail, and this function does not run those checks.
+     *
+     * @param context MessageCommandContext object that triggered this help invocation.
+     * @param command Command object to format the help for.
+     *
+     * @return Paginator containing the command's help, or an error message.
+     */
+    public suspend fun getCommandHelpPaginator(
+        context: MessageCommandContext<*>,
+        command: MessageCommand<out Arguments>?
+    ): Paginator {
+        val prefix = context.command.extension.bot.messageCommands.getPrefix(context.event)
+
+        return getCommandHelpPaginator(context.event, prefix, command)
+    }
+
+    /**
      * Given an event and prefix, return a [Paginator] containing help information for all loaded commands with passing
      * checks.
      *
@@ -100,4 +166,24 @@ public interface HelpProvider {
      * @return Paginator containing help information for all loaded commands with passing checks.
      */
     public suspend fun getMainHelpPaginator(event: MessageCreateEvent, prefix: String): Paginator
+
+    /**
+     * Given an command context, return a [Paginator] containing help information for all loaded commands with passing
+     * checks.
+     *
+     * While it shouldn't really be possible, this will also handle the case where there are no commands registered
+     * at all, for all you weirdos out there breaking everything intentionally.
+     *
+     * This will only return help information for commands with checks that pass. If a command's checks fail, it will
+     * not be listed. Similarly, a command will only show subcommands with passing checks.
+     *
+     * @param context MessageCommandContext object that triggered this help invocation..
+     *
+     * @return Paginator containing help information for all loaded commands with passing checks.
+     */
+    public suspend fun getMainHelpPaginator(context: MessageCommandContext<*>): Paginator {
+        val prefix = context.command.extension.bot.messageCommands.getPrefix(context.event)
+
+        return getMainHelpPaginator(context.event, prefix)
+    }
 }

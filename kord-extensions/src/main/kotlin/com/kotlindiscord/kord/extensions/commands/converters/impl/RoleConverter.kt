@@ -33,11 +33,13 @@ public class RoleConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
     override var validator: (suspend Argument<*>.(Role) -> Unit)? = null
 ) : SingleConverter<Role>() {
-    override val signatureTypeString: String = "role"
+    override val signatureTypeString: String = "converters.role.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val role = findRole(arg, context, bot)
-            ?: throw CommandException("Unable to find role: $arg")
+            ?: throw CommandException(
+                context.translate("converters.role.error.missing", replacements = arrayOf(arg))
+            )
 
         parsed = role
         return true
@@ -54,7 +56,9 @@ public class RoleConverter(
             try {
                 guild.getRole(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw CommandException("Value '$id' is not a valid role ID.")
+                throw CommandException(
+                    context.translate("converters.role.error.invalid", replacements = arrayOf(id))
+                )
             }
         } else {
             try { // Try for a role ID first

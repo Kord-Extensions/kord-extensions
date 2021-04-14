@@ -42,7 +42,7 @@ public open class UserDelta(
          */
         public fun from(old: User?, new: User): UserDelta? {
             contract {
-                returns(null) implies(old == null)
+                returns(null) implies (old == null)
             }
 
             old ?: return null

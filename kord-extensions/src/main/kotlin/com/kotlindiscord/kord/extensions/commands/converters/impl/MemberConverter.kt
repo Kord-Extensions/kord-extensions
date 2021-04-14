@@ -34,11 +34,13 @@ public class MemberConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
     override var validator: (suspend Argument<*>.(Member) -> Unit)? = null
 ) : SingleConverter<Member>() {
-    override val signatureTypeString: String = "member"
+    override val signatureTypeString: String = "converters.member.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val member = findMember(arg, context, bot)
-            ?: throw CommandException("Unable to find member: $arg")
+            ?: throw CommandException(
+                context.translate("converters.member.error.missing", replacements = arrayOf(arg))
+            )
 
         parsed = member
         return true
@@ -51,7 +53,9 @@ public class MemberConverter(
             try {
                 bot.kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw CommandException("Value '$id' is not a valid member ID.")
+                throw CommandException(
+                    context.translate("converters.member.error.invalid", replacements = arrayOf(id))
+                )
             }
         } else {
             try { // Try for a user ID first

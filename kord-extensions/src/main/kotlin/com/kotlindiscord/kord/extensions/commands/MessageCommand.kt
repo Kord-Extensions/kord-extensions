@@ -8,7 +8,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.respond
-import com.kotlindiscord.kord.extensions.utils.toHumanReadable
+import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
@@ -17,6 +17,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KotlinLogging
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -44,7 +45,7 @@ public open class MessageCommand<T : Arguments>(
      *
      * This is intended to be made use of by help commands.
      */
-    public open var description: String = "No description provided."
+    public open var description: String = "commands.defaultDescription"
 
     /**
      * Whether this command is enabled and can be invoked.
@@ -71,6 +72,9 @@ public open class MessageCommand<T : Arguments>(
      */
     public open var aliases: Array<String> = arrayOf()
 
+    /** String representing the bundle to get translations from for command names/descriptions. **/
+    public open var bundle: String? = null
+
     /**
      * @suppress
      */
@@ -78,17 +82,67 @@ public open class MessageCommand<T : Arguments>(
 
     override val parser: ArgumentParser = ArgumentParser(extension.bot)
 
-    /**
-     * The command signature, specifying how the command's arguments should be structured.
-     *
-     * You may leave this as it is if your command doesn't take any arguments or you're happy with the generated
-     * signature, or you can specify this in the [Extension.command] builder function if you'd like to provide
-     * something a bit more specific.
-     */
-    public open var signature: String = if (arguments != null) parser.signature(arguments!!) else ""
-
     /** Permissions required to be able to run this command. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
+
+    /** Translation cache, so we don't have to look up translations every time. **/
+    public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
+
+    /** Translation cache, so we don't have to look up translations every time. **/
+    public open val aliasTranslationCache: MutableMap<Locale, Set<String>> = mutableMapOf()
+
+    /** Provide a translation key here to replace the auto-generated signature string. **/
+    public open var signature: String? = null
+
+    /** Locale-based cache of generated signature strings. **/
+    public open var signatureCache: MutableMap<Locale, String> = mutableMapOf()
+
+    /**
+     * Retrieve the command signature for a locale, which specifies how the command's arguments should be structured.
+     *
+     * Command signatures are generated automatically by the [ArgumentParser].
+     */
+    public open suspend fun getSignature(locale: Locale): String {
+        if (this.arguments == null) {
+            return ""
+        }
+
+        if (!signatureCache.containsKey(locale)) {
+            if (signature != null) {
+                signatureCache[locale] = extension.bot.translationsProvider.translate(signature!!, bundle, locale)
+            } else {
+                signatureCache[locale] = parser.signature(arguments!!, locale)
+            }
+        }
+
+        return signatureCache[locale]!!
+    }
+
+    /** Return this command's name translated for the given locale, cached as required. **/
+    public open fun getTranslatedName(locale: Locale): String {
+        if (!nameTranslationCache.containsKey(locale)) {
+            nameTranslationCache[locale] = extension.bot.translationsProvider.translate(
+                this.name,
+                this.bundle,
+                locale
+            ).toLowerCase()
+        }
+
+        return nameTranslationCache[locale]!!
+    }
+
+    /** Return this command's aliases translated for the given locale, cached as required. **/
+    public open fun getTranslatedAliases(locale: Locale): Set<String> {
+        if (!aliasTranslationCache.containsKey(locale)) {
+            val translations = this.aliases.map {
+                extension.bot.translationsProvider.translate(it, bundle, locale).toLowerCase()
+            }.toSortedSet()
+
+            aliasTranslationCache[locale] = translations
+        }
+
+        return aliasTranslationCache[locale]!!
+    }
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present.
@@ -242,9 +296,12 @@ public open class MessageCommand<T : Arguments>(
 
                 if (missingPerms.isNotEmpty()) {
                     throw CommandException(
-                        "I don't have the permissions I need to run that command!\n\n" +
-                            "**Missing permissions:** " +
-                            missingPerms.joinToString(", ") { "`${it.toHumanReadable()}`" }
+                        context.translate(
+                            "commands.error.missingBotPermissions",
+                            replacements = arrayOf(
+                                missingPerms.map { it.translate(context) }.joinToString(", ")
+                            )
+                        )
                     )
                 }
             }
@@ -264,6 +321,13 @@ public open class MessageCommand<T : Arguments>(
                 lateinit var sentryId: SentryId
                 val channel = event.message.getChannelOrNull()
 
+                val translatedName = when (this) {
+                    is MessageSubCommand -> this.getFullTranslatedName(context.getLocale())
+                    is GroupCommand -> this.getFullTranslatedName(context.getLocale())
+
+                    else -> this.getTranslatedName(context.getLocale())
+                }
+
                 Sentry.withScope {
                     val author = event.message.author
 
@@ -277,17 +341,7 @@ public open class MessageCommand<T : Arguments>(
                         it.tag("private", "true")
                     }
 
-                    it.tag(
-                        "command",
-
-                        when (this) {
-                            is MessageSubCommand -> this.getFullName()
-                            is GroupCommand -> this.getFullName()
-
-                            else -> name
-                        }
-                    )
-
+                    it.tag("command", translatedName)
                     it.tag("extension", extension.name)
 
                     it.addBreadcrumb(firstBreadcrumb!!)
@@ -307,22 +361,24 @@ public open class MessageCommand<T : Arguments>(
                     val prefix = extension.bot.messageCommands.getPrefix(event)
 
                     event.message.respond(
-                        "Unfortunately, **an error occurred** during command processing. If you'd like to submit " +
-                            "information on what you were doing when this error happened, please use the following " +
-                            "command: ```${prefix}feedback $sentryId <message>```"
+                        context.translate(
+                            "commands.error.user.sentry.message",
+                            replacements = arrayOf(
+                                prefix,
+                                sentryId
+                            )
+                        )
                     )
                 } else {
                     event.message.respond(
-                        "Unfortunately, **an error occurred** during command processing. " +
-                            "Please let a staff member know."
+                        context.translate("commands.error.user")
                     )
                 }
             } else {
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
                 event.message.respond(
-                    "Unfortunately, **an error occurred** during command processing. " +
-                        "Please let a staff member know."
+                    context.translate("commands.error.user")
                 )
             }
         }

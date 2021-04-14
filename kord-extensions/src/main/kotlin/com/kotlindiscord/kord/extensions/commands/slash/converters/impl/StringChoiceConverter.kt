@@ -16,7 +16,7 @@ public class StringChoiceConverter(
     choices: Map<String, String>,
     override var validator: (suspend Argument<*>.(String) -> Unit)? = null
 ) : ChoiceConverter<String>(choices) {
-    override val signatureTypeString: String = "text"
+    override val signatureTypeString: String = "converters.string.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         this.parsed = arg

@@ -25,7 +25,7 @@ public class RegexCoalescingConverter(
     shouldThrow: Boolean = false,
     override var validator: (suspend Argument<*>.(Regex) -> Unit)? = null
 ) : CoalescingConverter<Regex>(shouldThrow) {
-    override val signatureTypeString: String = "regexes"
+    override val signatureTypeString: String = "converters.regex.signatureType.plural"
     override val showTypeInSignature: Boolean = false
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {

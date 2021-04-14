@@ -22,7 +22,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 public class StringConverter(
     override var validator: (suspend Argument<*>.(String) -> Unit)? = null
 ) : SingleConverter<String>() {
-    override val signatureTypeString: String = "text"
+    override val signatureTypeString: String = "converters.string.signatureType"
     override val showTypeInSignature: Boolean = false
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {

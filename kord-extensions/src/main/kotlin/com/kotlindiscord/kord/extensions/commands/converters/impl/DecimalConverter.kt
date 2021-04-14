@@ -21,14 +21,14 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 public class DecimalConverter(
     override var validator: (suspend Argument<*>.(Double) -> Unit)? = null
 ) : SingleConverter<Double>() {
-    override val signatureTypeString: String = "decimal"
+    override val signatureTypeString: String = "converters.decimal.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         try {
             this.parsed = arg.toDouble()
         } catch (e: NumberFormatException) {
             throw CommandException(
-                "Value '$arg' is not a valid decimal number."
+                context.translate("converters.decimal.error.invalid", replacements = arrayOf(arg))
             )
         }
 

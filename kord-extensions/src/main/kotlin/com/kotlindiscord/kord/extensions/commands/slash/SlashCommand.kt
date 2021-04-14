@@ -11,7 +11,7 @@ import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParse
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
-import com.kotlindiscord.kord.extensions.utils.toHumanReadable
+import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
@@ -27,6 +27,7 @@ import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KLogger
 import mu.KotlinLogging
+import java.util.*
 
 private val logger: KLogger = KotlinLogging.logger {}
 private const val DISCORD_LIMIT: Int = 25
@@ -68,6 +69,9 @@ public open class SlashCommand<T : Arguments>(
     /** Map of group names to slash command groups, if any. **/
     public open val groups: MutableMap<String, SlashGroup> = mutableMapOf()
 
+    /** String representing the bundle to get translations from for command names/descriptions. **/
+    public open var bundle: String? = null
+
     /** List of subcommands, if any. **/
     public open val subCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
 
@@ -78,6 +82,22 @@ public open class SlashCommand<T : Arguments>(
 
     /** Permissions required to be able to run this command. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
+
+    /** Translation cache, so we don't have to look up translations every time. **/
+    public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
+
+    /** Return this command's name translated for the given locale, cached as required. **/
+    public open fun getTranslatedName(locale: Locale): String {
+        if (!nameTranslationCache.containsKey(locale)) {
+            nameTranslationCache[locale] = extension.bot.translationsProvider.translate(
+                this.name,
+                this.bundle,
+                locale
+            ).toLowerCase()
+        }
+
+        return nameTranslationCache[locale]!!
+    }
 
     /**
      * An internal function used to ensure that all of a command's required properties are present.
@@ -402,9 +422,12 @@ public open class SlashCommand<T : Arguments>(
 
                 if (missingPerms.isNotEmpty()) {
                     throw CommandException(
-                        "I don't have the permissions I need to run that command!\n\n" +
-                            "**Missing permissions:** " +
-                            missingPerms.joinToString(", ") { "`${it.toHumanReadable()}`" }
+                        context.translate(
+                            "commands.error.missingBotPermissions",
+                            replacements = arrayOf(
+                                missingPerms.map { it.translate(context) }.joinToString(", ")
+                            )
+                        )
                     )
                 }
             }
@@ -444,7 +467,7 @@ public open class SlashCommand<T : Arguments>(
 
                     context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
 
-                    sentryId = Sentry.captureException(t, "MessageCommand execution failed.")
+                    sentryId = Sentry.captureException(t, "SlashCommand execution failed.")
 
                     logger.debug { "Error submitted to Sentry: $sentryId" }
                 }
@@ -454,23 +477,16 @@ public open class SlashCommand<T : Arguments>(
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 
                 val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
-                    "Unfortunately, **an error occurred** during command processing. If you'd " +
-                        "like to submit information on what you were doing when this error happened, " +
-                        "please use the following command: " +
-                        "```/feedback $sentryId <message>```"
+                    context.translate("commands.error.user.sentry.slash", replacements = arrayOf(sentryId))
                 } else {
-                    "Unfortunately, **an error occurred** during command processing. " +
-                        "Please let a staff member know."
+                    context.translate("commands.error.user")
                 }
 
                 respondText(context, errorMessage)
             } else {
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 
-                val errorMessage = "Unfortunately, **an error occurred** during command processing. " +
-                    "Please let a staff member know."
-
-                respondText(context, errorMessage)
+                respondText(context, context.translate("commands.error.user"))
             }
         }
     }

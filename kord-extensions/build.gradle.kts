@@ -25,7 +25,7 @@ group = "com.kotlindiscord.kord.extensions"
 version = rootProject.version
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "9"
 
     kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.contracts.ExperimentalContracts"
@@ -34,8 +34,8 @@ tasks.withType<KotlinCompile> {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_1_9
+    targetCompatibility = JavaVersion.VERSION_1_9
 }
 
 kotlin {
@@ -68,7 +68,7 @@ val printVersion = task("printVersion") {
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
 
-    api("com.kotlindiscord.pluralkot:PluralKot:1.0.0")
+//    api("com.kotlindiscord.pluralkot:PluralKot:1.0.0")
 
     api("dev.kord:kord-core:interaction-message-flags-SNAPSHOT")
 
@@ -81,6 +81,8 @@ dependencies {
     api("io.insert-koin:koin-logger-slf4j:3.0.1-beta-2")
 
     api("io.sentry:sentry:4.3.0")  // Needs to be transitive or bots will start breaking
+
+    implementation("com.ibm.icu:icu4j:69.1")  // For translations
 
     implementation("io.github.microutils:kotlin-logging:2.0.6")
     implementation("org.apache.commons:commons-text:1.9")

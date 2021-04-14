@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.utils
 
+import com.kotlindiscord.kord.extensions.commands.CommandContext
 import dev.kord.common.entity.MessageFlag
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MessageBehavior
@@ -21,7 +22,7 @@ import org.apache.commons.text.matcher.StringMatcherFactory
 private val logger = KotlinLogging.logger {}
 
 private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
-private const val DISCORD_CHANNEL_URI = "https://discordapp.com/channels"
+private const val DISCORD_CHANNEL_URI = "https://discord.com/channels"
 
 /**
  * Deletes a message, catching and ignoring a HTTP 404 (Not Found) exception.
@@ -244,6 +245,7 @@ public suspend fun Message.getUrl(): String {
  * @return true if the message was posted in an appropriate context, false otherwise
  */
 public suspend fun Message.requireChannel(
+    context: CommandContext,
     channel: GuildMessageChannel,
     role: Role? = null,
     delay: Long = DELETE_DELAY,
@@ -266,7 +268,9 @@ public suspend fun Message.requireChannel(
         channelId == channel.id
     ) return true
 
-    val response = respond("Please use ${channel.mention} for this command.")
+    val response = respond(
+        context.translate("utils.message.useThisChannel", replacements = arrayOf(channel.mention))
+    )
 
     if (deleteResponse) response.delete(delay)
     if (deleteOriginal && messageChannel !is DmChannel) this.delete(delay)
@@ -284,7 +288,10 @@ public suspend fun Message.requireChannel(
  *
  * @return true if the message was posted in an appropriate context, false otherwise
  */
-public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
+public suspend fun Message.requireGuildChannel(
+    context: CommandContext,
+    role: Role? = null
+): Boolean {
     val author = this.author
     val guild = getGuildOrNull()
 
@@ -300,7 +307,7 @@ public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
         getChannelOrNull() !is DmChannel
     ) return true
 
-    respond("This command is not available via private message.")
+    respond(context.translate("utils.message.commandNotAvailableInDm"))
     return false
 }
 
@@ -318,7 +325,11 @@ public suspend fun Message.requireGuildChannel(role: Role? = null): Boolean {
  *
  * @return true if the message was posted in an appropriate context, false otherwise
  */
-public suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild? = null): Boolean {
+public suspend fun Message.requireGuildChannel(
+    context: CommandContext,
+    role: Role? = null,
+    guild: Guild? = null
+): Boolean {
     val author = this.author
     val topRole = if (author != null) {
         guild?.getMember(author.id)?.getTopRole()
@@ -332,30 +343,36 @@ public suspend fun Message.requireGuildChannel(role: Role? = null, guild: Guild?
         getChannelOrNull() !is DmChannel
     ) return true
 
-    respond("This command is not available via private message.")
+    respond(context.translate("utils.message.commandNotAvailableInDm"))
     return false
 }
 
 /** Whether this message was published to the guilds that are following its channel. **/
-public val Message.isPublished: Boolean get() =
-    data.flags.value?.contains(MessageFlag.CrossPosted) == true
+public val Message.isPublished: Boolean
+    get() =
+        data.flags.value?.contains(MessageFlag.CrossPosted) == true
 
 /** Whether this message was sent from a different guild's followed announcement channel. **/
-public val Message.isCrossPost: Boolean get() =
-    data.flags.value?.contains(MessageFlag.IsCrossPost) == true
+public val Message.isCrossPost: Boolean
+    get() =
+        data.flags.value?.contains(MessageFlag.IsCrossPost) == true
 
 /** Whether this message's embeds should be serialized. **/
-public val Message.suppressEmbeds: Boolean get() =
-    data.flags.value?.contains(MessageFlag.SuppressEmbeds) == true
+public val Message.suppressEmbeds: Boolean
+    get() =
+        data.flags.value?.contains(MessageFlag.SuppressEmbeds) == true
 
 /** When [isCrossPost], whether the source message has been deleted from the original guild. **/
-public val Message.originalMessageDeleted: Boolean get() =
-    data.flags.value?.contains(MessageFlag.SourceMessageDeleted) == true
+public val Message.originalMessageDeleted: Boolean
+    get() =
+        data.flags.value?.contains(MessageFlag.SourceMessageDeleted) == true
 
 /** Whether this message came from Discord's urgent message system. **/
-public val Message.isUrgent: Boolean get() =
-    data.flags.value?.contains(MessageFlag.Urgent) == true
+public val Message.isUrgent: Boolean
+    get() =
+        data.flags.value?.contains(MessageFlag.Urgent) == true
 
 /** Whether this is an ephemeral message from the Interactions system. **/
-public val Message.isEphemeral: Boolean get() =
-    data.flags.value?.contains(MessageFlag.Ephemeral) == true
+public val Message.isEphemeral: Boolean
+    get() =
+        data.flags.value?.contains(MessageFlag.Ephemeral) == true

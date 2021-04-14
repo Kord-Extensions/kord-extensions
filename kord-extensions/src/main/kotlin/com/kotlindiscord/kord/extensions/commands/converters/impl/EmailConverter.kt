@@ -22,11 +22,13 @@ import org.apache.commons.validator.routines.EmailValidator
 public class EmailConverter(
     override var validator: (suspend Argument<*>.(String) -> Unit)? = null
 ) : SingleConverter<String>() {
-    override val signatureTypeString: String = "email"
+    override val signatureTypeString: String = "converters.email.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         if (!EmailValidator.getInstance().isValid(arg)) {
-            throw CommandException("Invalid email address specified: `$arg`")
+            throw CommandException(
+                context.translate("converters.email.error.invalid", replacements = arrayOf(arg))
+            )
         }
 
         this.parsed = arg

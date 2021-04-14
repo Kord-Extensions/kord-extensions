@@ -19,6 +19,7 @@ import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.core.event.message.ReactionRemoveEvent
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
+import java.util.*
 
 private const val WRONG_TYPE = "Wrong event type!"
 
@@ -60,6 +61,7 @@ private val logger = KotlinLogging.logger {}
  * @param timeout Optional timeout, after which the paginator will be destroyed
  * @param keepEmbed Whether to keep the embed after the paginator is destroyed, `false` by default
  * @param switchEmoji If you have multiple groups, this is the emoji used to switch between them
+ * @param locale Locale to use for translations
  */
 public open class Paginator(
     public val bot: ExtensibleBot,
@@ -69,7 +71,8 @@ public open class Paginator(
     public val owner: User? = null,
     public val timeout: Long? = null,
     public val keepEmbed: Boolean = false,
-    public val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI
+    public val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+    public val locale: Locale = bot.settings.i18nBuilder.defaultLocale
 ) {
     init {
         if (targetChannel == null && targetMessage == null) {
@@ -112,6 +115,8 @@ public open class Paginator(
         }
 
         val builder = currentPage.build(
+            bot,
+            locale,
             currentPageNum,
             pages.size,
             groupEmoji,

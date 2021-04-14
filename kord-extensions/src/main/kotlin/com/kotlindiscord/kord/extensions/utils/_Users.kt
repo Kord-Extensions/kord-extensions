@@ -11,7 +11,7 @@ import io.ktor.http.*
 import java.time.Instant
 import kotlin.contracts.contract
 
-private const val DISCORD_USERS_URI = "https://discordapp.com/users"
+private const val DISCORD_USERS_URI = "https://discord.com/users"
 
 /**
  * The user's Discord profile URL.

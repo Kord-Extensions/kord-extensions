@@ -37,11 +37,16 @@ public class ChannelConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
     override var validator: (suspend Argument<*>.(Channel) -> Unit)? = null
 ) : SingleConverter<Channel>() {
-    override val signatureTypeString: String = "channel"
+    override val signatureTypeString: String = "converters.channel.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val channel = findChannel(arg, context, bot)
-            ?: throw CommandException("Unable to find channel: $arg")
+            ?: throw CommandException(
+                context.translate(
+                    "converters.channel.error.missing",
+                    replacements = arrayOf(arg)
+                )
+            )
 
         parsed = channel
         return true
@@ -54,7 +59,12 @@ public class ChannelConverter(
             try {
                 bot.kord.getChannel(Snowflake(id.toLong()))
             } catch (e: NumberFormatException) {
-                throw CommandException("Value '$id' is not a valid channel ID.")
+                throw CommandException(
+                    context.translate(
+                        "converters.channel.error.invalid",
+                        replacements = arrayOf(id)
+                    )
+                )
             }
         } else {
             val string = if (arg.startsWith("#")) arg.substring(1) else arg

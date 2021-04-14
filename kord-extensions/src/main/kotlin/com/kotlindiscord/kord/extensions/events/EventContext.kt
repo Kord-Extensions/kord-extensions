@@ -1,7 +1,12 @@
 package com.kotlindiscord.kord.extensions.events
 
+import com.kotlindiscord.kord.extensions.checks.channelFor
+import com.kotlindiscord.kord.extensions.checks.guildFor
+import com.kotlindiscord.kord.extensions.checks.userFor
+import dev.kord.core.event.Event
 import io.sentry.Breadcrumb
 import io.sentry.SentryLevel
+import java.util.*
 
 /**
  * Light wrapper representing the context for an event handler's action.
@@ -17,6 +22,42 @@ public open class EventContext<T : Any>(
 ) {
     /** A list of Sentry breadcrumbs created during event processing. **/
     public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
+
+    /**
+     * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
+     * configured locale resolvers.
+     */
+    public suspend fun translate(
+        key: String,
+        bundleName: String? = null,
+        replacements: Array<Any?> = arrayOf()
+    ): String {
+        if (event !is Event) {
+            return eventHandler.extension.bot.translationsProvider.get(key, bundleName)
+        }
+
+        val eventObj = event as Event
+        var locale: Locale? = null
+
+        val guild = guildFor(eventObj)
+        val channel = channelFor(eventObj)
+        val user = userFor(eventObj)
+
+        for (resolver in eventHandler.extension.bot.settings.i18nBuilder.localeResolvers) {
+            val result = resolver(guild, channel, user)
+
+            if (result != null) {
+                locale = result
+                break
+            }
+        }
+
+        return if (locale != null) {
+            eventHandler.extension.bot.translationsProvider.translate(key, locale, bundleName, replacements)
+        } else {
+            eventHandler.extension.bot.translationsProvider.translate(key, bundleName, replacements)
+        }
+    }
 
     /**
      * Add a Sentry breadcrumb to this event context.

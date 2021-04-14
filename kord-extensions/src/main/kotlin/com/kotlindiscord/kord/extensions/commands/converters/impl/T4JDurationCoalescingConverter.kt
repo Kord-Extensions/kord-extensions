@@ -13,19 +13,6 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import net.time4j.Duration
 import net.time4j.IsoUnit
 
-private const val HELP_MESSAGE = "__How to use durations__\n\n" +
-    "Durations are specified in pairs of amounts and units - for example, `12d` would be 12 days. " +
-    "Compound durations are supported - for example, `2d 12h` would be 2 days and 12 hours.\n\n" +
-    "The following units are supported:\n\n" +
-
-    "**Seconds:** `s`, `sec`, `second`, `seconds`\n" +
-    "**Minutes:** `m`, `mi`, `min`, `minute`, `minutes`\n" +
-    "**Hours:** `h`, `hour`, `hours`\n" +
-    "**Days:** `d`, `day`, `days`\n" +
-    "**Weeks:** `w`, `week`, `weeks`\n" +
-    "**Months:** `mo`, `month`, `months`\n" +
-    "**Years:** `y`, `year`, `years`"
-
 /**
  * Coalescing argument converter for Time4J [Duration] arguments.
  *
@@ -42,7 +29,7 @@ public class T4JDurationCoalescingConverter(
     shouldThrow: Boolean = false,
     override var validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null
 ) : CoalescingConverter<Duration<IsoUnit>>(shouldThrow) {
-    override val signatureTypeString: String = "duration"
+    override val signatureTypeString: String = "converters.duration.error.signatureType"
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
         val durations = mutableListOf<String>()
@@ -55,11 +42,11 @@ public class T4JDurationCoalescingConverter(
             } catch (e: InvalidTimeUnitException) {
                 if (this.shouldThrow) {
                     val message = if (e.unit.isEmpty()) {
-                        "Please specify a unit - bare numbers are not supported."
+                        context.translate("converters.duration.error.missingUnit")
                     } else {
-                        "Invalid duration unit specified: `${e.unit}`"
+                        context.translate("converters.duration.error.invalidUnit", replacements = arrayOf(e.unit))
                     } + if (longHelp) {
-                        "\n\n$HELP_MESSAGE"
+                        "\n\n" + context.translate("converters.duration.help")
                     } else {
                         ""
                     }

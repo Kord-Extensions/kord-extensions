@@ -60,7 +60,8 @@ public abstract class SingleConverter<T : Any>(
     }
 
     /**
-     * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
+     * Given a Throwable encountered during the [parse] function, return a human-readable string to display on
+     * Discord - preferably, translated via [CommandContext.translate].
      *
      * This will always be called if an unhandled exception is thrown, unless it's a [CommandException] - those will be
      * displayed as an error message on Discord. If appropriate for your converter, you can use this function to

@@ -1,8 +1,5 @@
 package com.kotlindiscord.kord.extensions.pagination.pages
 
-import java.util.*
-import kotlin.NoSuchElementException
-
 /**
  * Class representing a set of pages in a paginator. You can subclass this to customize it if you wish!
  *

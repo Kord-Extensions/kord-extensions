@@ -4,17 +4,29 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.cache.api.DataCache
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
 import dev.kord.core.Kord
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
 import org.koin.core.logger.Level
+import java.util.*
+
+internal typealias LocaleResolver = suspend (
+    guild: GuildBehavior?,
+    channel: ChannelBehavior?,
+    user: UserBehavior?
+) -> Locale?
 
 /**
  * Builder class used for configuring and creating an [ExtensibleBot].
@@ -27,13 +39,13 @@ public open class ExtensibleBotBuilder {
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val messageCommandsBuilder: MessageCommandsBuilder = MessageCommandsBuilder()
-
-    /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
-
-    /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val hooksBuilder: HooksBuilder = HooksBuilder()
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val i18nBuilder: I18nBuilder = I18nBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = null
@@ -42,10 +54,13 @@ public open class ExtensibleBotBuilder {
     public val membersBuilder: MembersBuilder = MembersBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val hooksBuilder: HooksBuilder = HooksBuilder()
+    public val messageCommandsBuilder: MessageCommandsBuilder = MessageCommandsBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var presenceBuilder: PresenceBuilder.() -> Unit = { status = PresenceStatus.Online }
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
 
     /** Logging level Koin should use, defaulting to ERROR. **/
     public var koinLogLevel: Level = Level.ERROR
@@ -176,126 +191,6 @@ public open class ExtensibleBotBuilder {
         }
     }
 
-    /** Builder used for configuring the bot's slash command options. **/
-    public class SlashCommandsBuilder {
-        /** Whether to register and process slash commands. Defaults to `false`. **/
-        public var enabled: Boolean = false
-
-        /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var slashRegistryBuilder: (ExtensibleBot) -> SlashCommandRegistry = { SlashCommandRegistry(it) }
-
-        /**
-         * List of slash command checks.
-         *
-         * These checks will be checked against all slash commands.
-         */
-        public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
-
-        /**
-         * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
-         * use of a subclass.
-         */
-        public fun slashRegistry(builder: (ExtensibleBot) -> SlashCommandRegistry) {
-            slashRegistryBuilder = builder
-        }
-
-        /**
-         * Define a check which must pass for a command to be executed. This check will be applied to all
-         * slash commands.
-         *
-         * A command may have multiple checks - all checks must pass for the command to be executed.
-         * Checks will be run in the order that they're defined.
-         *
-         * This function can be used DSL-style with a given body, or it can be passed one or more
-         * predefined functions. See the samples for more information.
-         *
-         * @param checks Checks to apply to all slash commands.
-         */
-        public fun check(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
-            checks.forEach { checkList.add(it) }
-        }
-
-        /**
-         * Overloaded check function to allow for DSL syntax.
-         *
-         * @param check Check to apply to all slash commands.
-         */
-        public fun check(check: suspend (InteractionCreateEvent) -> Boolean) {
-            checkList.add(check)
-        }
-    }
-
-    /** Builder used for configuring the bot's message command options. **/
-    public class MessageCommandsBuilder {
-        /** Whether to invoke commands on bot mentions, in addition to using message prefixes. Defaults to `true`. **/
-        public var invokeOnMention: Boolean = true
-
-        /** Prefix to require for command invocations on Discord. Defaults to `"!"`. **/
-        public var defaultPrefix: String = "!"
-
-        /** Whether to register and process message commands. Defaults to `true`. **/
-        public var enabled: Boolean = true
-
-        /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
-        public var threads: Int = Runtime.getRuntime().availableProcessors() * 2
-
-        /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
-
-        /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var messageRegistryBuilder: (ExtensibleBot) -> MessageCommandRegistry = { MessageCommandRegistry(it) }
-
-        /**
-         * List of command checks.
-         *
-         * These checks will be checked against all commands.
-         */
-        public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
-
-        /**
-         * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
-         * command prefix to be made use of for that message event.
-         *
-         * This is intended to allow for different message command prefixes in different contexts - for example,
-         * guild-specific prefixes.
-         */
-        public fun prefix(builder: suspend (MessageCreateEvent).(String) -> String) {
-            prefixCallback = builder
-        }
-
-        /**
-         * Register the builder used to create the [MessageCommandRegistry]. You can change this if you need to make
-         * use of a subclass.
-         */
-        public fun messageRegistry(builder: (ExtensibleBot) -> MessageCommandRegistry) {
-            messageRegistryBuilder = builder
-        }
-
-        /**
-         * Define a check which must pass for the command to be executed. This check will be applied to all commands.
-         *
-         * A command may have multiple checks - all checks must pass for the command to be executed.
-         * Checks will be run in the order that they're defined.
-         *
-         * This function can be used DSL-style with a given body, or it can be passed one or more
-         * predefined functions. See the samples for more information.
-         *
-         * @param checks Checks to apply to all commands.
-         */
-        public fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
-            checks.forEach { checkList.add(it) }
-        }
-
-        /**
-         * Overloaded check function to allow for DSL syntax.
-         *
-         * @param check Checks to apply to all commands.
-         */
-        public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
-            checkList.add(check)
-        }
-    }
-
     /** Builder used for configuring the bot's extension options, and registering custom extensions. **/
     public open class ExtensionsBuilder {
         /** @suppress Internal list that shouldn't be modified by the user directly. **/
@@ -310,87 +205,6 @@ public open class ExtensibleBotBuilder {
         /** Add a custom extension to the bot via a builder - probably the extension constructor. **/
         public open fun add(builder: (ExtensibleBot) -> Extension) {
             extensions.add(builder)
-        }
-    }
-
-    /** Builder used for configuring the bot's member-related options. **/
-    public class MembersBuilder {
-        /** @suppress Internal list that shouldn't be modified by the user directly. **/
-        public var guildsToFill: MutableList<Snowflake>? = mutableListOf()
-
-        /**
-         * Whether to request the presences for the members that are requested from the guilds specified using the
-         * functions in this class.
-         *
-         * Requires the `GUILD_PRESENCES` privileged intent. Make sure you've enabled it for your bot!
-         */
-        public var fillPresences: Boolean? = null
-
-        /**
-         * Add a list of guild IDs to request members for.
-         *
-         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
-         */
-        @JvmName("fillSnowflakes")  // These are the same for the JVM
-        public fun fill(ids: Collection<Snowflake>): Boolean? =
-            guildsToFill?.addAll(ids)
-
-        /**
-         * Add a list of guild IDs to request members for.
-         *
-         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
-         */
-        @JvmName("fillLongs")  // These are the same for the JVM
-        public fun fill(ids: Collection<Long>): Boolean? =
-            guildsToFill?.addAll(ids.map { Snowflake(it) })
-
-        /**
-         * Add a list of guild IDs to request members for.
-         *
-         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
-         */
-        @JvmName("fillStrings")  // These are the same for the JVM
-        public fun fill(ids: Collection<String>): Boolean? =
-            guildsToFill?.addAll(ids.map { Snowflake(it) })
-
-        /**
-         * Add a guild ID to request members for.
-         *
-         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
-         */
-        public fun fill(id: Snowflake): Boolean? =
-            guildsToFill?.add(id)
-
-        /**
-         * Add a guild ID to request members for.
-         *
-         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
-         */
-        public fun fill(id: Long): Boolean? =
-            guildsToFill?.add(Snowflake(id))
-
-        /**
-         * Add a guild ID to request members for.
-         *
-         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
-         */
-        public fun fill(id: String): Boolean? =
-            guildsToFill?.add(Snowflake(id))
-
-        /**
-         * Request members for all guilds the bot is on.
-         *
-         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
-         */
-        public fun all() {
-            guildsToFill = null
-        }
-
-        /**
-         * Request no members from guilds at all. This is the default behaviour.
-         */
-        public fun none() {
-            guildsToFill = mutableListOf()
         }
     }
 
@@ -559,5 +373,232 @@ public open class ExtensibleBotBuilder {
             }
 
         // endregion
+    }
+
+    /** Builder used to configure i18n options. **/
+    public class I18nBuilder {
+        /** Locale that should be used by default. **/
+        public var defaultLocale: Locale = Locale("en")
+
+        /**
+         * Callables used to resolve a Locale object for the given guild, channel and user.
+         *
+         * Resolves to [defaultLocale] by default.
+         */
+        public var localeResolvers: MutableList<LocaleResolver> = mutableListOf()
+
+        /** Object responsible for retrieving translations. Users should get this via Koin or other methods. **/
+        internal var translationsProvider: TranslationsProvider = ResourceBundleTranslations { defaultLocale }
+
+        /** Call this with a builder (usually the class constructor) to set the translations provider. **/
+        public fun translationsProvider(builder: (() -> Locale) -> TranslationsProvider) {
+            translationsProvider = builder { defaultLocale }
+        }
+
+        /** Register a locale resolver, returning the required [Locale] object or `null`. **/
+        public fun localeResolver(body: LocaleResolver) {
+            localeResolvers.add(body)
+        }
+    }
+
+    /** Builder used for configuring the bot's member-related options. **/
+    public class MembersBuilder {
+        /** @suppress Internal list that shouldn't be modified by the user directly. **/
+        public var guildsToFill: MutableList<Snowflake>? = mutableListOf()
+
+        /**
+         * Whether to request the presences for the members that are requested from the guilds specified using the
+         * functions in this class.
+         *
+         * Requires the `GUILD_PRESENCES` privileged intent. Make sure you've enabled it for your bot!
+         */
+        public var fillPresences: Boolean? = null
+
+        /**
+         * Add a list of guild IDs to request members for.
+         *
+         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
+         */
+        @JvmName("fillSnowflakes")  // These are the same for the JVM
+        public fun fill(ids: Collection<Snowflake>): Boolean? =
+            guildsToFill?.addAll(ids)
+
+        /**
+         * Add a list of guild IDs to request members for.
+         *
+         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
+         */
+        @JvmName("fillLongs")  // These are the same for the JVM
+        public fun fill(ids: Collection<Long>): Boolean? =
+            guildsToFill?.addAll(ids.map { Snowflake(it) })
+
+        /**
+         * Add a list of guild IDs to request members for.
+         *
+         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
+         */
+        @JvmName("fillStrings")  // These are the same for the JVM
+        public fun fill(ids: Collection<String>): Boolean? =
+            guildsToFill?.addAll(ids.map { Snowflake(it) })
+
+        /**
+         * Add a guild ID to request members for.
+         *
+         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
+         */
+        public fun fill(id: Snowflake): Boolean? =
+            guildsToFill?.add(id)
+
+        /**
+         * Add a guild ID to request members for.
+         *
+         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
+         */
+        public fun fill(id: Long): Boolean? =
+            guildsToFill?.add(Snowflake(id))
+
+        /**
+         * Add a guild ID to request members for.
+         *
+         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
+         */
+        public fun fill(id: String): Boolean? =
+            guildsToFill?.add(Snowflake(id))
+
+        /**
+         * Request members for all guilds the bot is on.
+         *
+         * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
+         */
+        public fun all() {
+            guildsToFill = null
+        }
+
+        /**
+         * Request no members from guilds at all. This is the default behaviour.
+         */
+        public fun none() {
+            guildsToFill = mutableListOf()
+        }
+    }
+
+    /** Builder used for configuring the bot's message command options. **/
+    public class MessageCommandsBuilder {
+        /** Whether to invoke commands on bot mentions, in addition to using message prefixes. Defaults to `true`. **/
+        public var invokeOnMention: Boolean = true
+
+        /** Prefix to require for command invocations on Discord. Defaults to `"!"`. **/
+        public var defaultPrefix: String = "!"
+
+        /** Whether to register and process message commands. Defaults to `true`. **/
+        public var enabled: Boolean = true
+
+        /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
+        public var threads: Int = Runtime.getRuntime().availableProcessors() * 2
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var messageRegistryBuilder: (ExtensibleBot) -> MessageCommandRegistry = { MessageCommandRegistry(it) }
+
+        /**
+         * List of command checks.
+         *
+         * These checks will be checked against all commands.
+         */
+        public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+
+        /**
+         * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
+         * command prefix to be made use of for that message event.
+         *
+         * This is intended to allow for different message command prefixes in different contexts - for example,
+         * guild-specific prefixes.
+         */
+        public fun prefix(builder: suspend (MessageCreateEvent).(String) -> String) {
+            prefixCallback = builder
+        }
+
+        /**
+         * Register the builder used to create the [MessageCommandRegistry]. You can change this if you need to make
+         * use of a subclass.
+         */
+        public fun messageRegistry(builder: (ExtensibleBot) -> MessageCommandRegistry) {
+            messageRegistryBuilder = builder
+        }
+
+        /**
+         * Define a check which must pass for the command to be executed. This check will be applied to all commands.
+         *
+         * A command may have multiple checks - all checks must pass for the command to be executed.
+         * Checks will be run in the order that they're defined.
+         *
+         * This function can be used DSL-style with a given body, or it can be passed one or more
+         * predefined functions. See the samples for more information.
+         *
+         * @param checks Checks to apply to all commands.
+         */
+        public fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+            checks.forEach { checkList.add(it) }
+        }
+
+        /**
+         * Overloaded check function to allow for DSL syntax.
+         *
+         * @param check Checks to apply to all commands.
+         */
+        public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+            checkList.add(check)
+        }
+    }
+
+    /** Builder used for configuring the bot's slash command options. **/
+    public class SlashCommandsBuilder {
+        /** Whether to register and process slash commands. Defaults to `false`. **/
+        public var enabled: Boolean = false
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var slashRegistryBuilder: (ExtensibleBot) -> SlashCommandRegistry = { SlashCommandRegistry(it) }
+
+        /**
+         * List of slash command checks.
+         *
+         * These checks will be checked against all slash commands.
+         */
+        public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
+
+        /**
+         * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
+         * use of a subclass.
+         */
+        public fun slashRegistry(builder: (ExtensibleBot) -> SlashCommandRegistry) {
+            slashRegistryBuilder = builder
+        }
+
+        /**
+         * Define a check which must pass for a command to be executed. This check will be applied to all
+         * slash commands.
+         *
+         * A command may have multiple checks - all checks must pass for the command to be executed.
+         * Checks will be run in the order that they're defined.
+         *
+         * This function can be used DSL-style with a given body, or it can be passed one or more
+         * predefined functions. See the samples for more information.
+         *
+         * @param checks Checks to apply to all slash commands.
+         */
+        public fun check(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+            checks.forEach { checkList.add(it) }
+        }
+
+        /**
+         * Overloaded check function to allow for DSL syntax.
+         *
+         * @param check Check to apply to all slash commands.
+         */
+        public fun check(check: suspend (InteractionCreateEvent) -> Boolean) {
+            checkList.add(check)
+        }
     }
 }

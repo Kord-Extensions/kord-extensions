@@ -6,7 +6,6 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.KoinAccessor
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.SlashCommands
@@ -44,10 +43,12 @@ public open class SlashCommandRegistry(
     /** @suppress **/
     public open val api: SlashCommands get() = bot.kord.slashCommands
 
-    private val sentry: SentryAdapter by bot.koin.inject()
+//    private val sentry: SentryAdapter by bot.koin.inject()
 
     /** Register a slash command here, before they're synced to Discord. **/
     public open fun register(command: SlashCommand<out Arguments>, guild: Snowflake? = null): Boolean {
+        val locale = bot.settings.i18nBuilder.defaultLocale
+
         commands.putIfAbsent(guild, mutableListOf())
 
         val args = command.arguments?.invoke()
@@ -65,7 +66,7 @@ public open class SlashCommandRegistry(
             lastArgRequired = arg.converter.required
         }
 
-        val exists = commands[guild]!!.any { it.name == command.name }
+        val exists = commands[guild]!!.any { it.name == command.getTranslatedName(locale) }
 
         if (exists) {
             return false
@@ -103,6 +104,8 @@ public open class SlashCommandRegistry(
 
     /** @suppress **/
     public open suspend fun sync(guild: Snowflake?) {
+        val locale = bot.settings.i18nBuilder.defaultLocale
+
         val guildObj = if (guild != null) {
             val guildObj = bot.kord.getGuild(guild)
 
@@ -124,9 +127,9 @@ public open class SlashCommandRegistry(
             api.getGuildApplicationCommands(guild).map { Pair(it.name, it.id) }.toList()
         }
 
-        val toAdd = registered.filter { r -> existing.all { it.first != r.name } }
-        val toUpdate = registered.filter { r -> existing.any { it.first == r.name } }
-        val toRemove = existing.filter { e -> registered.all { it.name != e.first } }
+        val toAdd = registered.filter { r -> existing.all { it.first != r.getTranslatedName(locale) } }
+        val toUpdate = registered.filter { r -> existing.any { it.first == r.getTranslatedName(locale) } }
+        val toRemove = existing.filter { e -> registered.all { it.getTranslatedName(locale) != e.first } }
 
         logger.info {
             if (guild == null) {
@@ -142,14 +145,19 @@ public open class SlashCommandRegistry(
         if (guild == null) {
             val response = api.createGlobalApplicationCommands {
                 toCreate.forEach {
-                    logger.debug { "Adding/updating global slash command ${it.name}" }
+                    val translatedName = it.getTranslatedName(locale)
 
-                    command(it.name, it.description) { register(it) }
+                    logger.debug { "Adding/updating global slash command $translatedName" }
+
+                    command(
+                        translatedName,
+                        bot.translationsProvider.translate(it.description, it.bundle)
+                    ) { register(it) }
                 }
             }.toList().associate { it.name to it.id }
 
             toCreate.forEach {
-                commandMap[response[it.name]!!] = it
+                commandMap[response[it.getTranslatedName(locale)]!!] = it
             }
 
             api.getGlobalApplicationCommands().filter { e -> toRemove.any { it.second == e.id } }
@@ -162,14 +170,19 @@ public open class SlashCommandRegistry(
             toCreate.groupBy { it.guild!! }.forEach { (snowflake, commands) ->
                 val response = api.createGuildApplicationCommands(snowflake) {
                     commands.forEach {
-                        logger.debug { "Adding/updating global slash command ${it.name}" }
+                        val translatedName = it.getTranslatedName(locale)
 
-                        command(it.name, it.description) { register(it) }
+                        logger.debug { "Adding/updating global slash command $translatedName" }
+
+                        command(
+                            translatedName,
+                            bot.translationsProvider.translate(it.description, it.bundle)
+                        ) { register(it) }
                     }
                 }.toList().associate { it.name to it.id }
 
                 commands.forEach {
-                    commandMap[response[it.name]!!] = it
+                    commandMap[response[it.getTranslatedName(locale)]!!] = it
                 }
             }
 
@@ -191,6 +204,8 @@ public open class SlashCommandRegistry(
     }
 
     internal open suspend fun ApplicationCommandCreateBuilder.register(command: SlashCommand<out Arguments>) {
+//        val locale = bot.settings.i18nBuilder.defaultLocale
+
         if (command.hasBody) {
             val args = command.arguments?.invoke()
 
@@ -204,6 +219,7 @@ public open class SlashCommandRegistry(
 
                     if (this.options == null) this.options = mutableListOf()
 
+                    // TODO: It's impossible to translate these right now
                     this.options!! += converter.toSlashOption(arg)
                 }
             }
@@ -216,6 +232,7 @@ public open class SlashCommandRegistry(
                         error("Argument ${arg.displayName} does not support slash commands.")
                     }
 
+                    // TODO: It's impossible to translate these right now
                     converter.toSlashOption(arg)
                 }
 
@@ -238,6 +255,7 @@ public open class SlashCommandRegistry(
                                 error("Argument ${arg.displayName} does not support slash commands.")
                             }
 
+                            // TODO: It's impossible to translate these right now
                             converter.toSlashOption(arg)
                         }
 

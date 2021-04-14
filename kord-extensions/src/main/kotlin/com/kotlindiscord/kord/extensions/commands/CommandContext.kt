@@ -1,5 +1,8 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.kotlindiscord.kord.extensions.checks.channelFor
+import com.kotlindiscord.kord.extensions.checks.guildFor
+import com.kotlindiscord.kord.extensions.checks.userFor
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
@@ -8,6 +11,7 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.event.Event
 import io.sentry.Breadcrumb
 import io.sentry.SentryLevel
+import java.util.*
 
 /**
  * Light wrapper class representing the context for a command's action.
@@ -67,5 +71,39 @@ public abstract class CommandContext(
         breadcrumbs.add(crumb)
 
         return crumb
+    }
+
+    /** Resolve the locale for this command context. **/
+    public suspend fun getLocale(): Locale {
+        var locale: Locale? = null
+
+        val guild = guildFor(eventObj)
+        val channel = channelFor(eventObj)
+        val user = userFor(eventObj)
+
+        for (resolver in command.extension.bot.settings.i18nBuilder.localeResolvers) {
+            val result = resolver(guild, channel, user)
+
+            if (result != null) {
+                locale = result
+                break
+            }
+        }
+
+        return locale ?: command.extension.bot.settings.i18nBuilder.defaultLocale
+    }
+
+    /**
+     * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
+     * configured locale resolvers.
+     */
+    public suspend fun translate(
+        key: String,
+        bundleName: String? = null,
+        replacements: Array<Any?> = arrayOf()
+    ): String {
+        val locale = getLocale()
+
+        return command.extension.bot.translationsProvider.translate(key, locale, bundleName, replacements)
     }
 }

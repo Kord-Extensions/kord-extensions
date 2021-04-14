@@ -52,7 +52,7 @@ public class MemberDelta(
          */
         public suspend fun from(old: Member?, new: Member): MemberDelta? {
             contract {
-                returns(null) implies(old == null)
+                returns(null) implies (old == null)
             }
 
             old ?: return null

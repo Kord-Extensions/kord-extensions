@@ -29,7 +29,7 @@ public class RegexConverter(
     private val options: Set<RegexOption> = setOf(),
     override var validator: (suspend Argument<*>.(Regex) -> Unit)? = null
 ) : SingleConverter<Regex>() {
-    override val signatureTypeString: String = "regex"
+    override val signatureTypeString: String = "converters.regex.signatureType.singular"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         this.parsed = arg.toRegex(options)

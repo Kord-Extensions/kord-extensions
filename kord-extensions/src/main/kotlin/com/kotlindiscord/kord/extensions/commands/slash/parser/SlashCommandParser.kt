@@ -82,8 +82,14 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                     if (converter.required && !parsed) {
                         throw CommandException(
-                            "Invalid value for argument `${currentArg.displayName}` " +
-                                "(which accepts ${converter.getErrorString()}): $currentValue"
+                            context.translate(
+                                "argumentParser.error.invalidValue",
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+                                    converter.getErrorString(context),
+                                    currentValue
+                                )
+                            )
                         )
                     }
 
@@ -116,8 +122,14 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                     if (converter.required && !parsed) {
                         throw CommandException(
-                            "Invalid value for argument `${currentArg.displayName}` " +
-                                "(which accepts ${converter.getErrorString()}): $currentValue"
+                            context.translate(
+                                "argumentParser.error.invalidValue",
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+                                    converter.getErrorString(context),
+                                    currentValue
+                                )
+                            )
                         )
                     }
 

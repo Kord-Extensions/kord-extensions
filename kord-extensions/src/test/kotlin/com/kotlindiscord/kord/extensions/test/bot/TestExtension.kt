@@ -143,7 +143,7 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
             }
         }
 
-        slashCommand() {
+        slashCommand {
             name = "guild-embed"
             description = "Test command, please ignore"
 
@@ -228,6 +228,16 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                         }
                     }
                 }
+            }
+        }
+
+        command {
+            name = "translation-test"
+            description = "Let's test translations."
+
+            action {
+                message.respond("Key `test` -> " + translate("test"))
+                message.respond("Key `nope` -> " + translate("nope"))
             }
         }
 
@@ -337,7 +347,8 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                     bot,
                     targetMessage = event.message,
                     pages = pages,
-                    keepEmbed = true
+                    keepEmbed = true,
+                    locale = getLocale()
                 ).send()
             }
         }

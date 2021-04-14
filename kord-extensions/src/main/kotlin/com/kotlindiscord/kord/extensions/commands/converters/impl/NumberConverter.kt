@@ -22,15 +22,25 @@ public class NumberConverter(
     private val radix: Int = DEFAULT_RADIX,
     override var validator: (suspend Argument<*>.(Long) -> Unit)? = null
 ) : SingleConverter<Long>() {
-    override val signatureTypeString: String = "number"
+    override val signatureTypeString: String = "converters.number.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         try {
             this.parsed = arg.toLong(radix)
         } catch (e: NumberFormatException) {
-            throw CommandException(
-                "Value '$arg' is not a valid whole number" + if (radix != DEFAULT_RADIX) " in base-$radix." else "."
-            )
+            val endChar = context.translate("converters.number.error.invalid.endCharacter")
+            var errorString = context.translate("converters.number.error.invalid", replacements = arrayOf(arg))
+
+            if (radix != DEFAULT_RADIX) {
+                errorString += " " + context.translate(
+                    "converters.number.error.invalid.withBase",
+                    replacements = arrayOf(radix)
+                )
+            }
+
+            errorString += endChar
+
+            throw CommandException(errorString)
         }
 
         return true

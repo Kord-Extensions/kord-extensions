@@ -19,7 +19,7 @@ public class StringCoalescingConverter(
     shouldThrow: Boolean = false,
     override var validator: (suspend Argument<*>.(String) -> Unit)? = null
 ) : CoalescingConverter<String>(shouldThrow) {
-    override val signatureTypeString: String = "text"
+    override val signatureTypeString: String = "converters.string.signatureType"
     override val showTypeInSignature: Boolean = false
 
     override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {

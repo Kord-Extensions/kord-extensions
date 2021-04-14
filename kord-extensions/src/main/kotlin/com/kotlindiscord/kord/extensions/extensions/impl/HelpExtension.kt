@@ -1,8 +1,11 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.stringList
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -10,7 +13,9 @@ import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
-import com.kotlindiscord.kord.extensions.utils.toHumanReadable
+import com.kotlindiscord.kord.extensions.utils.getLocale
+import com.kotlindiscord.kord.extensions.utils.translate
+import dev.kord.common.annotation.KordPreview
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 
@@ -29,25 +34,21 @@ private const val ARGUMENTS_GROUP = "Arguments"
  * This extension provides a `!help` command listing the available commands,
  * along with a `!help <command>` to get more info about a specific command.
  */
+@Suppress("StringLiteralDuplication")
 public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
     override val name: String = "help"
 
     override suspend fun setup() {
         command(::HelpArguments) {
-            name = "help"
-            aliases = arrayOf("h")
-            description = "Get command help.\n\n" +
-
-                "Specify the name of a command to get help for that specific command. Subcommands may also be " +
-                "specified, using the same form you'd use to run them."
+            name = "extensions.help.commandName"
+            aliases = arrayOf("extensions.help.commandAlias.h")
+            description = "extensions.help.commandDescription"
 
             action {
-                val prefix = bot.messageCommands.getPrefix(event)
-
                 if (arguments.command.isEmpty()) {
-                    getMainHelpPaginator(event, prefix).send()
+                    getMainHelpPaginator(this).send()
                 } else {
-                    getCommandHelpPaginator(event, prefix, arguments.command).send()
+                    getCommandHelpPaginator(this, arguments.command).send()
                 }
             }
         }
@@ -55,6 +56,7 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
 
     override suspend fun getMainHelpPaginator(event: MessageCreateEvent, prefix: String): Paginator {
         var totalCommands = 0
+        val locale = event.getLocale(bot)
 
         val pages = Pages(COMMANDS_GROUP)
         val commandPages = gatherCommands(event)
@@ -73,9 +75,12 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
 
                 Page(
                     description = page.joinToString("\n\n") { "${it.first}\n${it.second}" },
-//                    description = page.joinToString("\n\n") { it.first + it.second },
-                    title = "Commands",
-                    footer = "$totalCommands commands available"
+                    title = bot.translationsProvider.translate("extensions.help.paginator.title.commands", locale),
+                    footer = bot.translationsProvider.translate(
+                        "extensions.help.paginator.footer",
+                        locale,
+                        replacements = arrayOf(totalCommands)
+                    )
                 )
             )
 
@@ -84,8 +89,12 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
 
                 Page(
                     description = page.joinToString("\n\n") { "${it.first}\n${it.third}" },
-                    title = "Command Arguments",
-                    footer = "$totalCommands commands available"
+                    title = bot.translationsProvider.translate("extensions.help.paginator.title.arguments", locale),
+                    footer = bot.translationsProvider.translate(
+                        "extensions.help.paginator.footer",
+                        locale,
+                        replacements = arrayOf(totalCommands)
+                    )
                 )
             )
         }
@@ -96,9 +105,13 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
             pages.addPage(
                 COMMANDS_GROUP,
                 Page(
-                    description = "No commands found.",
-                    title = "No commands found",
-                    footer = "0 commands available"
+                    description = bot.translationsProvider.translate("extensions.help.paginator.noCommands", locale),
+                    title = bot.translationsProvider.translate("extensions.help.paginator.noCommands", locale),
+                    footer = bot.translationsProvider.translate(
+                        "extensions.help.paginator.footer",
+                        locale,
+                        replacements = arrayOf(0)
+                    )
                 )
             )
         }
@@ -109,7 +122,8 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
             pages = pages,
             owner = event.message.author,
             timeout = PAGE_TIMEOUT,
-            keepEmbed = true
+            keepEmbed = true,
+            locale = locale
         )
     }
 
@@ -119,26 +133,31 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
         args: List<String>
     ): Paginator = getCommandHelpPaginator(event, prefix, getCommand(event, args))
 
+    override suspend fun getCommandHelpPaginator(context: MessageCommandContext<*>, args: List<String>): Paginator =
+        getCommandHelpPaginator(context, getCommand(context.event, args))
+
     override suspend fun getCommandHelpPaginator(
         event: MessageCreateEvent,
         prefix: String,
         command: MessageCommand<out Arguments>?
     ): Paginator {
         val pages = Pages(COMMANDS_GROUP)
+        val locale = event.getLocale(bot)
 
         if (command == null || !command.runChecks(event)) {
             pages.addPage(
                 COMMANDS_GROUP,
 
                 Page(
-                    description = "Unable to find that command. This may be for one of several possible reasons:\n\n" +
+                    description = bot.translationsProvider.translate(
+                        "extensions.help.error.missingCommandDescription",
+                        locale
+                    ),
 
-                        "**»** The command doesn't exist or failed to load\n" +
-                        "**»** The command isn't available in this context\n" +
-                        "**»** You don't have access to the command\n\n" +
-
-                        "If you feel that this is incorrect, please contact a member of staff.",
-                    title = "Command not found"
+                    title = bot.translationsProvider.translate(
+                        "extensions.help.error.missingCommandTitle",
+                        locale
+                    )
                 )
             )
         } else {
@@ -149,8 +168,12 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
 
                 Page(
                     description = "$openingLine\n$desc\n\n$arguments",
-//                    description = openingLine + desc + arguments,
-                    title = "Command: ${command.name}"
+
+                    title = bot.translationsProvider.translate(
+                        "extensions.help.paginator.title.command",
+                        locale,
+                        replacements = arrayOf(command.getTranslatedName(locale))
+                    )
                 )
             )
         }
@@ -161,7 +184,8 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
             pages = pages,
             owner = event.message.author,
             timeout = PAGE_TIMEOUT,
-            keepEmbed = true
+            keepEmbed = true,
+            locale = locale
         )
     }
 
@@ -174,35 +198,66 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
         command: MessageCommand<out Arguments>,
         longDescription: Boolean
     ): Triple<String, String, String> {
-        val openingLine = "**$prefix${command.name} ${command.signature}**\n"
+        val locale = event.getLocale(bot)
+        val openingLine = "**$prefix${command.getTranslatedName(locale)} ${command.getSignature(locale)}**\n"
 
         var description = if (longDescription) {
-            command.description
+            bot.translationsProvider.translate(command.description, command.bundle, locale)
         } else {
-            command.description.takeWhile { it != '\n' }
+            bot.translationsProvider.translate(command.description, command.bundle, locale).takeWhile { it != '\n' }
         } + "\n"
 
         if (command.aliases.isNotEmpty()) {
-            description += "\n**Aliases:** " + command.aliases.joinToString(", ") { "`$it`" }
+            description += "\n"
+
+            description += bot.translationsProvider.translate(
+                "extensions.help.commandDescription.aliases",
+                locale
+            )
+
+            description += " "
+            description += command.getTranslatedAliases(locale).joinToString(", ") {
+                "`$it`"
+            }
         }
 
         if (command is GroupCommand) {
             val subCommands = command.commands.filter { it.runChecks(event) }
 
             if (subCommands.isNotEmpty()) {
-                description += "\n**Subcommands:** " + subCommands.joinToString(", ") { "`${it.name}`" }
+                description += "\n"
+
+                description += bot.translationsProvider.translate(
+                    "extensions.help.commandDescription.subCommands",
+                    locale
+                )
+
+                description += " "
+                description += subCommands.map { it.getTranslatedName(locale) }.joinToString(", ") {
+                    "`$it`"
+                }
             }
         }
 
         if (command.requiredPerms.isNotEmpty()) {
-            description += "\n**Required bot permissions:** " +
-                command.requiredPerms.joinToString(", ") { "`${it.toHumanReadable()}`" }
+            description += "\n"
+
+            description += bot.translationsProvider.translate(
+                "extensions.help.commandDescription.requiredBotPermissions",
+                locale
+            )
+
+            description += " "
+            description += command.requiredPerms.map { it.translate(locale, bot) }.joinToString(", ")
         }
 
         var arguments = "\n\n"
 
         if (command.arguments == null) {
-            arguments += "No arguments."
+            arguments += bot.translationsProvider.translate(
+                "extensions.help.commandDescription.noArguments",
+                locale
+            )
         } else {
             @Suppress("TooGenericExceptionCaught")  // Hard to say really
             arguments += try {
@@ -212,17 +267,26 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
                     var desc = "**»** `${it.displayName}"
 
                     if (it.converter.showTypeInSignature) {
-                        desc += " (${it.converter.signatureTypeString})"
+                        desc += " ("
+
+                        desc += bot.translationsProvider.translate(
+                            it.converter.signatureTypeString,
+                            it.converter.bundle,
+                            locale
+                        )
+
+                        desc += ")"
                     }
 
-                    desc += "`: ${it.description}"
+                    desc += "`: "
+                    desc += bot.translationsProvider.translate(it.description, command.bundle, locale)
 
                     desc
                 }
             } catch (t: Throwable) {
                 logger.error(t) { "Failed to retrieve argument list for command: $name" }
 
-                "Failed to retrieve argument list due to an error."
+                bot.translationsProvider.translate("extensions.help.commandDescription.error.argumentList", locale)
             }
         }
 
@@ -230,10 +294,12 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
     }
 
     override suspend fun getCommand(event: MessageCreateEvent, args: List<String>): MessageCommand<out Arguments>? {
+        val locale = event.getLocale(bot)
         val firstArg = args.first()
 
         var command: MessageCommand<out Arguments>? = bot.messageCommands.commands.firstOrNull {
-            (it.name == firstArg || it.aliases.contains(firstArg)) && it.runChecks(event)
+            (it.getTranslatedName(locale) == firstArg || it.getTranslatedAliases(locale).contains(firstArg)) &&
+                it.runChecks(event)
         }
 
         args.drop(1).forEach {
@@ -241,7 +307,7 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
                 val gc = command as GroupCommand<out Arguments>
 
                 command = if (gc.runChecks(event)) {
-                    gc.getCommand(it)
+                    gc.getCommand(it, event)
                 } else {
                     null
                 }
@@ -256,7 +322,7 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
         /** Command to get help for. **/
         public val command: List<String> by stringList(
             "command",
-            "Command to get help for",
+            "extensions.help.commandArguments.command",
             false
         )
     }

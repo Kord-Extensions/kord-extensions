@@ -28,11 +28,13 @@ import kotlinx.coroutines.flow.firstOrNull
 public class GuildConverter(
     override var validator: (suspend Argument<*>.(Guild) -> Unit)? = null
 ) : SingleConverter<Guild>() {
-    override val signatureTypeString: String = "server"
+    override val signatureTypeString: String = "converters.guild.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
         val guild = findGuild(arg, bot)
-            ?: throw CommandException("Unable to find server: $arg")
+            ?: throw CommandException(
+                context.translate("converters.guild.error.missing", replacements = arrayOf(arg))
+            )
 
         parsed = guild
         return true

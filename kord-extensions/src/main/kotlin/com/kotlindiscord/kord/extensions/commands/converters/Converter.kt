@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.utils.startsWithVowel
 
@@ -23,12 +24,22 @@ public abstract class Converter<T : Any?>(
     /** For commands with generated signatures, set whether the type string should be shown in the signature. **/
     public open val showTypeInSignature: Boolean = true
 
-    /** A short string describing the type of data this converter handles. Should be very short. **/
+    /**
+     * Translation key pointing to a short string describing the type of data this converter handles. Should be very
+     * short.
+     */
     public abstract val signatureTypeString: String
 
     /**
-     * If the [signatureTypeString] isn't sufficient, you can optionally provide a longer type string to use for error
-     * messages.
+     * String referring to the translation bundle name required to resolve translations for this converter.
+     *
+     * For more information, see the i18n page of the documentation.
+     */
+    public open val bundle: String? = null
+
+    /**
+     * If the [signatureTypeString] isn't sufficient, you can optionally provide a translation key pointing to a
+     * longer type string to use for error messages.
      */
     public open val errorTypeString: String? = null
 
@@ -36,20 +47,30 @@ public abstract class Converter<T : Any?>(
     public open lateinit var argumentObj: Argument<*>
 
     /**
-     * Return a formatted error string.
+     * Return a translated, formatted error string.
      *
      * This will attempt to use the [errorTypeString], falling back to [signatureTypeString]. If this is a
      * [SingleConverter], it will add "an" or "a" to it, depending on whether the given type string starts with a
      * vowel.
      */
-    public open fun getErrorString(): String = when (this) {
-        is MultiConverter<*> -> errorTypeString ?: signatureTypeString
-        is CoalescingConverter<*> -> errorTypeString ?: signatureTypeString
+    public open suspend fun getErrorString(context: CommandContext): String = when (this) {
+        is MultiConverter<*> -> context.translate(errorTypeString ?: signatureTypeString)
+        is CoalescingConverter<*> -> context.translate(errorTypeString ?: signatureTypeString)
 
-        else -> errorTypeString ?: if (signatureTypeString.startsWithVowel()) {
-            "an "
+        else -> if (errorTypeString != null) {
+            context.translate(errorTypeString!!)
         } else {
-            "a "
-        } + signatureTypeString
+            if (signatureTypeString.startsWithVowel()) {
+                context.translate(
+                    "converters.indefinite.beforeVowel",
+                    replacements = arrayOf(context.translate(signatureTypeString))
+                )
+            } else {
+                context.translate(
+                    "converters.indefinite.beforeConsonant",
+                    replacements = arrayOf(context.translate(signatureTypeString))
+                )
+            }
+        }
     }
 }

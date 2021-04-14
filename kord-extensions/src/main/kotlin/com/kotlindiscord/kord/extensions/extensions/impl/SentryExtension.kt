@@ -21,15 +21,14 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
     @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
         if (bot.sentry.enabled) {
-            slashCommand(SentryExtension::FeedbackArgs) {
-                name = "feedback"
-                description = "Provide feedback on what you were doing when an error occurred."
+            slashCommand(::FeedbackSlashArgs) {
+                name = "extensions.sentry.commandName"
+                description = "extensions.sentry.commandDescription.short"
 
                 action {
                     if (!bot.sentry.hasEventId(arguments.id)) {
                         ephemeralFollowUp(
-                            "The Sentry event ID you supplied either doesn't exist, or is not awaiting " +
-                                "feedback."
+                            translate("extensions.sentry.error.invalidId")
                         )
 
                         return@action
@@ -46,30 +45,21 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
                     bot.sentry.removeEventId(arguments.id)
 
                     ephemeralFollowUp(
-                        "Thanks for your feedback - we'll use it to improve our bot and fix " +
-                            "the error you encountered!"
+                        translate("extensions.sentry.thanks")
                     )
                 }
             }
 
-            command(SentryExtension::FeedbackArgs) {
-                name = "feedback"
-                description = "If you've been given a Sentry ID by the bot, you can submit feedback on what you were" +
-                    "doing using this command.\n\n" +
+            command(::FeedbackMessageArgs) {
+                name = "extensions.sentry.commandName"
+                description = "extensions.sentry.commandDescription.long"
 
-                    "Your feedback should ideally include a description of what you were doing when the error " +
-                    "occurred and what you expected to happen, but the text of your feedback is up to you.\n\n" +
-
-                    "**Note:** Feedback is entirely optional, and you shouldn't feel obliged to submit feedback if " +
-                    "you don't wish to - if you've been given an event ID, the error has already been submitted!"
-
-                aliases = arrayOf("sentry-feedback")
+                aliases = arrayOf("extensions.sentry.commandAlias")
 
                 action {
                     if (!bot.sentry.hasEventId(arguments.id)) {
                         message.respond(
-                            "The Sentry event ID you supplied either doesn't exist, or is not awaiting " +
-                                "feedback."
+                            translate("extensions.sentry.error.invalidId")
                         )
 
                         return@action
@@ -87,8 +77,7 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
                     bot.sentry.removeEventId(arguments.id)
 
                     message.respond(
-                        "Thanks for your feedback - we'll use it to improve our bot and fix " +
-                            "the error you encountered!"
+                        translate("extensions.sentry.thanks")
                     )
                 }
             }
@@ -96,14 +85,28 @@ public class SentryExtension(bot: ExtensibleBot) : Extension(bot) {
     }
 
     /** Arguments for the feedback command. **/
-    public class FeedbackArgs : Arguments() {
+    public class FeedbackMessageArgs : Arguments() {
+        /** Sentry event ID. **/
+        public val id: SentryId by sentryId("id", "extensions.sentry.arguments.id")
+
+        /** Feedback message to submit to Sentry. **/
+        public val feedback: String by coalescedString(
+            "feedback",
+            "extensions.sentry.arguments.feedback"
+        )
+    }
+
+    /** Arguments for the feedback command. **/
+    public class FeedbackSlashArgs : Arguments() {
+        // TODO: It's impossible to translate these right now
+
         /** Sentry event ID. **/
         public val id: SentryId by sentryId("id", "Sentry event ID")
 
         /** Feedback message to submit to Sentry. **/
         public val feedback: String by coalescedString(
             "feedback",
-            "Feedback to send to the developers."
+            "Feedback to send to the developers"
         )
     }
 }

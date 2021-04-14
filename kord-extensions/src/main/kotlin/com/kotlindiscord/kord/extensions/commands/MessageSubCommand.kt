@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import java.util.*
 
 /**
  * Class representing a subcommand.
@@ -16,8 +17,7 @@ public open class MessageSubCommand<T : Arguments>(
     arguments: (() -> T)? = null,
     public open val parent: GroupCommand<out Arguments>
 ) : MessageCommand<T>(extension, arguments) {
-    /**
-     * Get the name of this command, prefixed with the name of its parent (separated by spaces).
-     */
-    public open fun getFullName(): String = parent.getFullName() + " " + this.name
+    /** Get the full command name, translated, with parent commands taken into account. **/
+    public open suspend fun getFullTranslatedName(locale: Locale): String =
+        parent.getFullTranslatedName(locale) + " " + this.getTranslatedName(locale)
 }

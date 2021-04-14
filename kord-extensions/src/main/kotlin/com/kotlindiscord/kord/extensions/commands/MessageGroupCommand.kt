@@ -4,8 +4,10 @@ import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -31,15 +33,7 @@ public open class GroupCommand<T : Arguments>(
 
     /** @suppress **/
     override var body: suspend MessageCommandContext<out T>.() -> Unit = {
-        val mention = message.author!!.mention
-
-        val error = if (argsList.isNotEmpty()) {
-            "$mention Unknown subcommand: `${argsList.first()}`"
-        } else {
-            "$mention Subcommands: " + commands.joinToString(", ") { "`${it.name}`" }
-        }
-
-        message.channel.createMessage(error)
+        sendHelp()
     }
 
     /**
@@ -151,8 +145,14 @@ public open class GroupCommand<T : Arguments>(
     }
 
     /** @suppress **/
-    public open fun getCommand(commandName: String?): MessageCommand<out Arguments>? =
-        commands.firstOrNull { it.name == commandName } ?: commands.firstOrNull { it.aliases.contains(commandName) }
+    public open suspend fun getCommand(name: String?, event: MessageCreateEvent): MessageCommand<out Arguments>? {
+        name ?: return null
+
+        val locale = event.getLocale(extension.bot)
+
+        return commands.firstOrNull { it.getTranslatedName(locale) == name }
+            ?: commands.firstOrNull { it.getTranslatedAliases(locale).contains(name) }
+    }
 
     /**
      * Execute this grouped command, given a [MessageCreateEvent].
@@ -181,7 +181,7 @@ public open class GroupCommand<T : Arguments>(
 
         val command = args.firstOrNull()?.toLowerCase()
         val remainingArgs = args.drop(1).toTypedArray()
-        val subCommand = getCommand(command)
+        val subCommand = getCommand(command, event)
 
         if (subCommand == null) {
             super.call(event, commandName, args, argString, true)
@@ -190,13 +190,10 @@ public open class GroupCommand<T : Arguments>(
         }
     }
 
-    /**
-     * Get the name of this command, prefixed with the name of its parent (separated by spaces),
-     * or just the command's name if there is no parent.
-     */
-    public open fun getFullName(): String {
-        parent ?: return this.name
+    /** Get the full command name, translated, with parent commands taken into account. **/
+    public open suspend fun getFullTranslatedName(locale: Locale): String {
+        parent ?: return this.getTranslatedName(locale)
 
-        return parent!!.getFullName() + " " + this.name
+        return parent!!.getFullTranslatedName(locale) + " " + this.getTranslatedName(locale)
     }
 }

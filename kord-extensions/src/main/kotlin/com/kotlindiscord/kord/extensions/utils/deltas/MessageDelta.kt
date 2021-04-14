@@ -57,7 +57,7 @@ public open class MessageDelta(
          */
         public fun from(old: Message?, new: Message): MessageDelta? {
             contract {
-                returns(null) implies(old == null)
+                returns(null) implies (old == null)
             }
 
             old ?: return null
