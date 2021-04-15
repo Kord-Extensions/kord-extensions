@@ -120,6 +120,15 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
+     * DSL function used to configure the bot's i18n settings.
+     *
+     * @see I18nBuilder
+     */
+    public fun i18n(builder: I18nBuilder.() -> Unit) {
+        builder(i18nBuilder)
+    }
+
+    /**
      * DSL function used to configure the bot's member-related options.
      *
      * @see MembersBuilder
@@ -378,7 +387,7 @@ public open class ExtensibleBotBuilder {
     /** Builder used to configure i18n options. **/
     public class I18nBuilder {
         /** Locale that should be used by default. **/
-        public var defaultLocale: Locale = Locale("en")
+        public var defaultLocale: Locale = Locale("en", "gb")
 
         /**
          * Callables used to resolve a Locale object for the given guild, channel and user.
