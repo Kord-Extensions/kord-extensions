@@ -7,7 +7,6 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.Path
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.readLines
-import kotlin.system.exitProcess
 
 private var firstLoad: Boolean = true
 private var logger = KotlinLogging.logger {}
