@@ -7,6 +7,7 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.Path
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.readLines
+import kotlin.system.exitProcess
 
 private var firstLoad: Boolean = true
 private var logger = KotlinLogging.logger {}
@@ -34,21 +35,29 @@ public fun env(name: String): String? {
             val lines = dotenvFile.readLines()
 
             for (line in lines) {
-                if (!line.contains('=')) {
+                if (line.startsWith("#"))
+                    continue
+
+                var effectiveLine = line
+                if (line.contains("#")) {
+                    effectiveLine = effectiveLine.substring(0, line.indexOf("#"))
+                }
+
+                if (!effectiveLine.contains('=')) {
                     logger.warn {
                         "Invalid line in dotenv file: \"=\" not found\n" +
-                            "    $line"
+                            "    $effectiveLine"
                     }
 
                     continue
                 }
 
-                val split = line.split("=", limit = 2)
+                val split = effectiveLine.split("=", limit = 2)
 
                 if (split.size != 2) {
                     logger.warn {
                         "Invalid line in dotenv file: variables must be of the form \"name=value\"\n" +
-                            " -> $line"
+                            " -> $effectiveLine"
                     }
 
                     continue
