@@ -35,10 +35,10 @@ public fun env(name: String): String? {
             val lines = dotenvFile.readLines()
 
             for (line in lines) {
-                if (line.startsWith("#"))
+                var effectiveLine = line.trimStart()
+                if (effectiveLine.startsWith("#"))
                     continue
 
-                var effectiveLine = line
                 if (line.contains("#")) {
                     effectiveLine = effectiveLine.substring(0, line.indexOf("#"))
                 }
