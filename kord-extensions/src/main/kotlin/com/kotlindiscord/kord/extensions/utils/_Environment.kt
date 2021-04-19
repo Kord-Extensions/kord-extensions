@@ -38,7 +38,7 @@ public fun env(name: String): String? {
                 if (effectiveLine.startsWith("#"))
                     continue
 
-                if (line.contains("#")) {
+                if (effectiveLine.contains("#")) {
                     effectiveLine = effectiveLine.substring(0, line.indexOf("#"))
                 }
 
