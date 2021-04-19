@@ -39,7 +39,7 @@ public fun env(name: String): String? {
                     continue
 
                 if (effectiveLine.contains("#")) {
-                    effectiveLine = effectiveLine.substring(0, line.indexOf("#"))
+                    effectiveLine = effectiveLine.substring(0, effectiveLine.indexOf("#"))
                 }
 
                 if (!effectiveLine.contains('=')) {
