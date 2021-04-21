@@ -35,6 +35,7 @@ public fun env(name: String): String? {
 
             for (line in lines) {
                 var effectiveLine = line.trimStart()
+
                 if (effectiveLine.startsWith("#")) {
                     continue
                 }
