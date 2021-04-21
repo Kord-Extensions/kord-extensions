@@ -10,7 +10,7 @@ went wrong.
     Slack requires current integrations to use OAuth, Sentry has hidden their legacy integration - but it can still be
     used. To find it, head to the settings for your project and append `/plugins/slack/` to the URL - for example,
     `https://sentry.io/settings/my-org/projects/bot/plugins/slack/`. The webhook URL should also have `/slack` appended,
-    so it looks like this: `https://discordapp.com/api/webhooks/{ID}/{TOKEN}/slack`
+    so it looks like this: `https://discord.com/api/webhooks/{ID}/{TOKEN}/slack`
 
 ## Setting up
 
