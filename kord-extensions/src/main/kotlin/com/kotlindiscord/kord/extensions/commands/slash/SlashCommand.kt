@@ -69,9 +69,6 @@ public open class SlashCommand<T : Arguments>(
     /** Map of group names to slash command groups, if any. **/
     public open val groups: MutableMap<String, SlashGroup> = mutableMapOf()
 
-    /** String representing the bundle to get translations from for command names/descriptions. **/
-    public open var bundle: String? = null
-
     /** List of subcommands, if any. **/
     public open val subCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
 
@@ -91,7 +88,7 @@ public open class SlashCommand<T : Arguments>(
         if (!nameTranslationCache.containsKey(locale)) {
             nameTranslationCache[locale] = extension.bot.translationsProvider.translate(
                 this.name,
-                this.bundle,
+                this.extension.bundle,
                 locale
             ).toLowerCase()
         }
@@ -424,6 +421,7 @@ public open class SlashCommand<T : Arguments>(
                     throw CommandException(
                         context.translate(
                             "commands.error.missingBotPermissions",
+                            null,
                             replacements = arrayOf(
                                 missingPerms.map { it.translate(context) }.joinToString(", ")
                             )
@@ -477,16 +475,16 @@ public open class SlashCommand<T : Arguments>(
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 
                 val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
-                    context.translate("commands.error.user.sentry.slash", replacements = arrayOf(sentryId))
+                    context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
                 } else {
-                    context.translate("commands.error.user")
+                    context.translate("commands.error.user", null)
                 }
 
                 respondText(context, errorMessage)
             } else {
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 
-                respondText(context, context.translate("commands.error.user"))
+                respondText(context, context.translate("commands.error.user", null))
             }
         }
     }

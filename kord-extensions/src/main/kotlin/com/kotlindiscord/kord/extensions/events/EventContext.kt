@@ -29,7 +29,7 @@ public open class EventContext<T : Any>(
      */
     public suspend fun translate(
         key: String,
-        bundleName: String? = null,
+        bundleName: String?,
         replacements: Array<Any?> = arrayOf()
     ): String {
         if (event !is Event) {
@@ -58,6 +58,15 @@ public open class EventContext<T : Any>(
             eventHandler.extension.bot.translationsProvider.translate(key, bundleName, replacements)
         }
     }
+
+    /**
+     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
+     */
+    public suspend fun translate(
+        key: String,
+        replacements: Array<Any?> = arrayOf()
+    ): String = translate(key, eventHandler.extension.bundle, replacements)
 
     /**
      * Add a Sentry breadcrumb to this event context.

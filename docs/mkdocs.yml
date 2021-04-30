@@ -17,6 +17,7 @@ nav:
       - concepts/checks.md
       - concepts/commands.md
       - concepts/converters.md
+      - concepts/i18n.md
 
   - Utilities:
       - utilities/general.md

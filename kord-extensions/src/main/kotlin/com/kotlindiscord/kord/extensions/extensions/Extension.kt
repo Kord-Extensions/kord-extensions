@@ -76,6 +76,9 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
      */
     public open val slashCommandChecks: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
 
+    /** String representing the bundle to get translations from for command names/descriptions. **/
+    public open val bundle: String? = null
+
     /**
      * Override this in your subclass and use it to register your commands and event
      * handlers.
