@@ -72,9 +72,6 @@ public open class MessageCommand<T : Arguments>(
      */
     public open var aliases: Array<String> = arrayOf()
 
-    /** String representing the bundle to get translations from for command names/descriptions. **/
-    public open var bundle: String? = null
-
     /**
      * @suppress
      */
@@ -109,7 +106,11 @@ public open class MessageCommand<T : Arguments>(
 
         if (!signatureCache.containsKey(locale)) {
             if (signature != null) {
-                signatureCache[locale] = extension.bot.translationsProvider.translate(signature!!, bundle, locale)
+                signatureCache[locale] = extension.bot.translationsProvider.translate(
+                    signature!!,
+                    extension.bundle,
+                    locale
+                )
             } else {
                 signatureCache[locale] = parser.signature(arguments!!, locale)
             }
@@ -123,7 +124,7 @@ public open class MessageCommand<T : Arguments>(
         if (!nameTranslationCache.containsKey(locale)) {
             nameTranslationCache[locale] = extension.bot.translationsProvider.translate(
                 this.name,
-                this.bundle,
+                this.extension.bundle,
                 locale
             ).toLowerCase()
         }
@@ -135,7 +136,7 @@ public open class MessageCommand<T : Arguments>(
     public open fun getTranslatedAliases(locale: Locale): Set<String> {
         if (!aliasTranslationCache.containsKey(locale)) {
             val translations = this.aliases.map {
-                extension.bot.translationsProvider.translate(it, bundle, locale).toLowerCase()
+                extension.bot.translationsProvider.translate(it, extension.bundle, locale).toLowerCase()
             }.toSortedSet()
 
             aliasTranslationCache[locale] = translations
@@ -298,6 +299,7 @@ public open class MessageCommand<T : Arguments>(
                     throw CommandException(
                         context.translate(
                             "commands.error.missingBotPermissions",
+                            null,
                             replacements = arrayOf(
                                 missingPerms.map { it.translate(context) }.joinToString(", ")
                             )
@@ -307,8 +309,8 @@ public open class MessageCommand<T : Arguments>(
             }
 
             if (this.arguments != null) {
-                val args = this.parser.parse(this.arguments!!, context)
-                context.populateArgs(args)
+                val parsedArgs = this.parser.parse(this.arguments!!, context)
+                context.populateArgs(parsedArgs)
             }
 
             this.body(context)
@@ -363,6 +365,7 @@ public open class MessageCommand<T : Arguments>(
                     event.message.respond(
                         context.translate(
                             "commands.error.user.sentry.message",
+                            null,
                             replacements = arrayOf(
                                 prefix,
                                 sentryId
@@ -371,14 +374,14 @@ public open class MessageCommand<T : Arguments>(
                     )
                 } else {
                     event.message.respond(
-                        context.translate("commands.error.user")
+                        context.translate("commands.error.user", null)
                     )
                 }
             } else {
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
                 event.message.respond(
-                    context.translate("commands.error.user")
+                    context.translate("commands.error.user", null)
                 )
             }
         }

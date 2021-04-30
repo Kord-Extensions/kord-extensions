@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
+import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Guild
@@ -80,4 +81,13 @@ public open class MessageCommandContext<T : Arguments>(
 
         return true
     }
+
+    /**
+     * Convenience function allowing for message responses with translated content.
+     */
+    public suspend fun Message.respondTranslated(
+        key: String,
+        replacements: Array<Any?> = arrayOf(),
+        useReply: Boolean = true
+    ): Message = respond(translate(key, replacements), useReply)
 }

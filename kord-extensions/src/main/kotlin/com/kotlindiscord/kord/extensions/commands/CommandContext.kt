@@ -94,16 +94,26 @@ public abstract class CommandContext(
     }
 
     /**
-     * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
-     * configured locale resolvers.
+     * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+     * locale resolvers.
      */
     public suspend fun translate(
         key: String,
-        bundleName: String? = null,
+        bundleName: String?,
         replacements: Array<Any?> = arrayOf()
     ): String {
         val locale = getLocale()
 
         return command.extension.bot.translationsProvider.translate(key, locale, bundleName, replacements)
     }
+
+    /**
+     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
+     */
+    public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
+        key,
+        command.extension.bundle,
+        replacements
+    )
 }

@@ -202,9 +202,10 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
         val openingLine = "**$prefix${command.getTranslatedName(locale)} ${command.getSignature(locale)}**\n"
 
         var description = if (longDescription) {
-            bot.translationsProvider.translate(command.description, command.bundle, locale)
+            bot.translationsProvider.translate(command.description, command.extension.bundle, locale)
         } else {
-            bot.translationsProvider.translate(command.description, command.bundle, locale).takeWhile { it != '\n' }
+            bot.translationsProvider.translate(command.description, command.extension.bundle, locale)
+                .takeWhile { it != '\n' }
         } + "\n"
 
         if (command.aliases.isNotEmpty()) {
@@ -279,7 +280,7 @@ public class HelpExtension(bot: ExtensibleBot) : HelpProvider, Extension(bot) {
                     }
 
                     desc += "`: "
-                    desc += bot.translationsProvider.translate(it.description, command.bundle, locale)
+                    desc += bot.translationsProvider.translate(it.description, command.extension.bundle, locale)
 
                     desc
                 }

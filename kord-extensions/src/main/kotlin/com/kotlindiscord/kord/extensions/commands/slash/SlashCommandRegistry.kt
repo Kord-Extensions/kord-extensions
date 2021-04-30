@@ -151,7 +151,7 @@ public open class SlashCommandRegistry(
 
                     command(
                         translatedName,
-                        bot.translationsProvider.translate(it.description, it.bundle)
+                        bot.translationsProvider.translate(it.description, it.extension.bundle)
                     ) { register(it) }
                 }
             }.toList().associate { it.name to it.id }
@@ -176,7 +176,7 @@ public open class SlashCommandRegistry(
 
                         command(
                             translatedName,
-                            bot.translationsProvider.translate(it.description, it.bundle)
+                            bot.translationsProvider.translate(it.description, it.extension.bundle)
                         ) { register(it) }
                     }
                 }.toList().associate { it.name to it.id }
