@@ -9,14 +9,14 @@
       
       
       
-        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/integrations/sentry/">
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/concepts/i18n/">
       
       <link rel="icon" href="../../assets/icon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.3">
     
     
       
-        <title>Sentry - Kord Extensions</title>
+        <title>Internationalisation - Kord Extensions</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sentry" class="md-skip">
+        <a href="#internationalisation" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sentry
+              Internationalisation
             
           </span>
         </div>
@@ -210,13 +210,15 @@
         
   
   
+    
+  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../concepts/bot/" class="md-tabs__link">
+      <a href="../bot/" class="md-tabs__link md-tabs__link--active">
         Concepts
       </a>
     </li>
@@ -242,15 +244,13 @@
         
   
   
-    
-  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../koin/" class="md-tabs__link md-tabs__link--active">
+      <a href="../../integrations/koin/" class="md-tabs__link">
         Integrations
       </a>
     </li>
@@ -370,12 +370,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
       <label class="md-nav__link" for="__nav_3">
         Concepts
@@ -393,7 +395,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/bot/" class="md-nav__link">
+      <a href="../bot/" class="md-nav__link">
         The Bot Object
       </a>
     </li>
@@ -405,7 +407,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/extensions/" class="md-nav__link">
+      <a href="../extensions/" class="md-nav__link">
         Extensions
       </a>
     </li>
@@ -417,7 +419,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/events/" class="md-nav__link">
+      <a href="../events/" class="md-nav__link">
         Events
       </a>
     </li>
@@ -429,7 +431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/checks/" class="md-nav__link">
+      <a href="../checks/" class="md-nav__link">
         Checks
       </a>
     </li>
@@ -441,7 +443,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/commands/" class="md-nav__link">
+      <a href="../commands/" class="md-nav__link">
         Commands
       </a>
     </li>
@@ -453,7 +455,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/converters/" class="md-nav__link">
+      <a href="../converters/" class="md-nav__link">
         Converters
       </a>
     </li>
@@ -463,11 +465,127 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../concepts/i18n/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Internationalisation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Internationalisation
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#accessing-translations" class="md-nav__link">
+    Accessing Translations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-translations" class="md-nav__link">
+    Working With Translations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#translation-bundles" class="md-nav__link">
+    Translation Bundles
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formatting-and-replacements" class="md-nav__link">
+    Formatting and Replacements
+  </a>
+  
+    <nav class="md-nav" aria-label="Formatting and Replacements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#number-formatting" class="md-nav__link">
+    Number Formatting
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date-formatting" class="md-nav__link">
+    Date Formatting
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-formatting" class="md-nav__link">
+    Time Formatting
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-numeric-formatting" class="md-nav__link">
+    Advanced Numeric Formatting
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selections" class="md-nav__link">
+    Selections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pluralisation" class="md-nav__link">
+    Pluralisation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-nesting" class="md-nav__link">
+    Advanced Nesting
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -538,14 +656,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
       
       <label class="md-nav__link" for="__nav_5">
         Integrations
@@ -563,7 +679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../koin/" class="md-nav__link">
+      <a href="../../integrations/koin/" class="md-nav__link">
         Koin
       </a>
     </li>
@@ -573,72 +689,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Sentry
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../integrations/sentry/" class="md-nav__link">
         Sentry
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#setting-up" class="md-nav__link">
-    Setting up
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-context-to-errors" class="md-nav__link">
-    Adding context to errors
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#collecting-user-feedback" class="md-nav__link">
-    Collecting user feedback
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#manual-usage" class="md-nav__link">
-    Manual usage
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -746,100 +801,196 @@
               
                 
                 
-                <h1 id="sentry">Sentry<a class="headerlink" href="#sentry" title="Permanent link">&para;</a></h1>
-<p><a href="https://sentry.io/">Sentry</a> is a web-based tool used for keeping track of errors in your applications. Kord Extensions
-provides a first-party build-in integration for anyone that uses Sentry to keep track of errors in their production
-bots, with full support for breadcrumbs in your commands and event handlers so you can tell Sentry exactly what
-went wrong.</p>
-<details class="tip"><summary>Discord webhooks?</summary><p>Sentry does not support Discord webhooks out of the box - however, Discord does support Slack-format webhooks. As
-Slack requires current integrations to use OAuth, Sentry has hidden their legacy integration - but it can still be
-used. To find it, head to the settings for your project and append <code>/plugins/slack/</code> to the URL - for example,
-<code>https://sentry.io/settings/my-org/projects/bot/plugins/slack/</code>. The webhook URL should also have <code>/slack</code> appended,
-so it looks like this: <code>https://discord.com/api/webhooks/{ID}/{TOKEN}/slack</code></p>
+                <h1 id="internationalisation">Internationalisation<a class="headerlink" href="#internationalisation" title="Permanent link">&para;</a></h1>
+<p>Internationalisation (hereafter i18n) is an important consideration for many applications. If you're catering to a
+global audience, then it's important to think about how you might provide translated messages for your users - and
+to format things like dates in the format they expect.</p>
+<p>As there's nothing comparable in the Kotlin multi-platform ecosystem, KordEx makes use of Java tooling when working
+with translations. Specifically, translations are collected into <code>.properties</code>-based resource bundles, and parsed
+using the <a href="https://unicode-org.github.io/icu/userguide/format_parse/messages/">ICU Message Format</a>. Messages are
+referenced using a <strong>translation key</strong>, usually a string containing alphanumeric identifiers separated with dots (<code>.</code>).</p>
+<h2 id="accessing-translations">Accessing Translations<a class="headerlink" href="#accessing-translations" title="Permanent link">&para;</a></h2>
+<p>You can make use of translation keys in the following contexts, and they'll be translated automatically:</p>
+<ul>
+<li>Command names and descriptions</li>
+<li>Command argument descriptions (but not names)</li>
+<li><code>Message.respondTranslated()</code> extension function provided by <code>MessageCommandContext</code></li>
+</ul>
+<p>Additionally, shortcuts for translating strings yourself exist:</p>
+<ul>
+<li>In <code>CommandContext</code> and <code>EventContext</code>, which have a <code>translate</code> function</li>
+</ul>
+<p>You can also make use of the bot's translations provider, at <code>ExtensibleBot.translationsProvider</code> - or via Koin, using
+the <code>TranslationsProvider</code> interface.</p>
+<details class="important"><summary>Translations are optional</summary><p>In some situations - for example, during initial testing or if you're working on a bespoke bot - it may not be
+necessary (or even desirable) to include translations. In these cases, you can ignore that translations exist and
+just type the text you want instead.</p>
 </details>
-<h2 id="setting-up">Setting up<a class="headerlink" href="#setting-up" title="Permanent link">&para;</a></h2>
-<p>Kord Extensions ships with the Sentry library by default, but no logging integration - we recommend matching the
-version of your logging integration with the Sentry library shipped with Kord, but of course you can treat it just
-like any other transitive dependency.</p>
-<p>The <code>ExtensibleBot</code> object contains a <code>sentry</code> property referring to a <code>SentryAdapter</code> instance - to enable the
-Sentry integration, you'll need to set this object up using its <code>init</code> function. For example:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">TOKEN</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">commands</span> <span class="p">{</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="s">&quot;!&quot;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">if</span> <span class="p">(</span><span class="n">env</span><span class="p">(</span><span class="s">&quot;SENTRY_DSN&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">bot</span><span class="p">.</span><span class="na">sentry</span><span class="p">.</span><span class="na">init</span> <span class="p">{</span>
-        <span class="n">dsn</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s">&quot;SENTRY_DSN&quot;</span><span class="p">)</span>
-        <span class="n">environment</span> <span class="o">=</span> <span class="n">env</span><span class="p">(</span><span class="s">&quot;ENVIRONMENT&quot;</span><span class="p">)</span> <span class="o">?:</span> <span class="s">&quot;production&quot;</span>
-        <span class="n">release</span> <span class="o">=</span> <span class="s">&quot;...&quot;</span>  <span class="c1">// However you get your Sentry release info</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<p><strong>Note:</strong> If a translation key is missing from your translations bundle, it will be used verbatim instead. Make sure
+you test your bots after you've set up translations!</p>
+<h2 id="working-with-translations">Working With Translations<a class="headerlink" href="#working-with-translations" title="Permanent link">&para;</a></h2>
+<p>There are multiple approaches you can use when writing translation-friendly code:</p>
+<ul>
+<li>Write the code without thinking about translations, and move the strings into your translations after everything is
+  working</li>
+<li>Write the code with translations in mind by using translation keys from the start, and create translations for them
+  as you go, or after everything else works</li>
+</ul>
+<p>Whichever approach you take, you'll need to come up with a set of translation keys. These should be descriptive string
+identifiers, which help you understand where they're used and what they're used for.</p>
+<ul>
+<li><strong>Good:</strong> <code>extensions.posts.create.embed.title</code></li>
+<li><strong>Bad:</strong> <code>title</code></li>
+</ul>
+<p>You'll also need to create a translation bundle.</p>
+<h2 id="translation-bundles">Translation Bundles<a class="headerlink" href="#translation-bundles" title="Permanent link">&para;</a></h2>
+<p>Translation bundles are sets of <code>.properties</code> files with a matching prefix, stored within a common directory in your
+bot's resources - specifically, the <code>translations</code> directory. Bundles are represented by a string name, and they should
+always contain at least two parts, split with a dot (<code>.</code>). If you're writing an extension, override the <code>bundle</code>
+property with the name of your bundle and the <code>Context</code>-based convenience functions will make use of it automatically.</p>
+<p>For simple bots and extensions, we recommend using the project name and <code>strings</code> - so if your project is named 
+"posts", you could use <code>posts.strings</code>. This will correspond with <code>.properties</code> files starting with <code>strings</code>, in
+<code>translations/posts</code> in your bot's resources.</p>
+<p>Translations files include the locale they contain translations for in their name, split by underscores. In our
+example, a translations file containing French (France) would be named <code>strings_fr_FR.properties</code>. A more general
+French translations file may be named <code>strings_fr.properties</code> instead.</p>
+<p>These names directly correspond with Java <code>Locale</code> objects - a Locale object created via <code>Locale("en", "gb")</code> would 
+correspond with a file named <code>strings_en_GB</code>, for example. Ultimately, it's up to the bot developer to decide what
+Locale objects to use - you should document which locales you support, and provide a way for your users to contribute
+translations.</p>
+<p><strong>Note:</strong> Default translations should always be in English, as this is the locale the bot will use if no other locale 
+is specified. You should place your default translations in a file that doesn't include a locale code - in our example,
+this would simply be <code>strings.properties</code>.</p>
+<h2 id="formatting-and-replacements">Formatting and Replacements<a class="headerlink" href="#formatting-and-replacements" title="Permanent link">&para;</a></h2>
+<p>As mentioned earlier, translations should use the 
+<a href="https://unicode-org.github.io/icu/userguide/format_parse/messages/">ICU Message Format</a>. This allows for very
+flexible message formatting, allowing for locale-aware insertion of variables, among other things. While we suggest
+you read the linked document for a deep dive into the format, we'll cover the basics below.</p>
+<p>The first thing to be aware of is the <code>.properties</code> file format. Properties files contain simple key-value pairs, like 
+the following:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="na">permission.addReactions</span> <span class="o">=</span> <span class="s">Add Reactions</span>
+<span class="na">permission.administrator</span> <span class="o">=</span> <span class="s">Administrator</span>
+<span class="na">permission.all</span> <span class="o">=</span> <span class="s">All Permissions</span>
 </code></pre></div>
 </td></tr></table>
-<p>There's an alternative version of the <code>init</code> function that you can pass parameters to instead, but we highly recommend
-the use of the lambda-based function since it directly maps to Sentry's own <code>init</code> method.</p>
-<h2 id="adding-context-to-errors">Adding context to errors<a class="headerlink" href="#adding-context-to-errors" title="Permanent link">&para;</a></h2>
-<p>Sentry's main method of collecting error context is to add breadcrumbs. Breadcrumbs essentially record the steps that
-were taken to reach your problem, including extra data that can provide additional context.</p>
-<p>Commands and event handlers both have built-in Sentry reporting, and include a mechanism for keeping track of
-breadcrumbs that you add as your command or event is processing. You can do this in one of two ways:</p>
-<ol>
-<li>Use the <code>breadcrumb</code> function on the <code>CommandContext</code> or <code>EventContext</code> object to add a breadcrumb</li>
-<li>Use the <code>breadcrumbs</code> mutable list on the <code>CommandContext</code> or <code>EventContext</code> object, and use the
-   <code>bot.sentry.createBreadcrumb</code> function to create breadcrumbs to add to it - this is particularly useful if you need
-   to pass the list around to different functions to collect breadcrumbs from them</li>
-</ol>
-<p>When an error occurs, the bot will create a Sentry scope configured with information about the command or event that
-caused the error, and it'll create an initial breadcrumb corresponding to the start of processing. It'll then take
-all the breadcrumbs you created, add them to the scope, and submit the scope directly to Sentry.</p>
-<p>There's nothing more that you need to do - you'll see the issue appear in Sentry with all of its breadcrumbs and
-associated context!</p>
-<figure>
-    <a href="../../assets/sentry-breadcrumbs.png">
-        <img src="../../assets/sentry-breadcrumbs.png" width="100%" alt="Sentry breadcrumbs" /> 
-    </a>
-    <a href="../../assets/sentry-data.png">
-        <img src="../../assets/sentry-data.png" width="100%" alt="Sentry data" /> 
-    </a>
-</figure>
-
-<p>For a list of supported breadcrumb types, please see
-<a href="https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/#breadcrumb-types">the Sentry documentation</a>.</p>
-<h2 id="collecting-user-feedback">Collecting user feedback<a class="headerlink" href="#collecting-user-feedback" title="Permanent link">&para;</a></h2>
-<p>If an error occurs during command processing, and you have the Sentry extension enabled (which it is by default),
-the returned error message will contain a Sentry ID and information on how to submit a piece of user feedback. This
-includes a <code>feedback</code> command, which will be automatically registered by the Sentry extension.</p>
-<p>If you wish to disable this, pass <code>false</code> for the <code>addSentryExtension</code> constructor param for your <code>ExtensibleBot</code>
-instance, and both the Sentry ID in the error and the <code>feedback</code> command will be disabled.</p>
-<p><a href="../../assets/sentry-feedback.png">
-    <figure>
-        <img src="../../assets/sentry-feedback.png" width="100%" alt="Sentry feedback" /> 
-    </figure>
-</a></p>
-<h2 id="manual-usage">Manual usage<a class="headerlink" href="#manual-usage" title="Permanent link">&para;</a></h2>
-<p>You can, of course, make use of Sentry <a href="https://docs.sentry.io/platforms/java/">as per its documentation</a>. However,
-bear in mind that both Kord and Kord Extensions are coroutine-based, and that means that a lot of the things you do
-will be asynchronous.</p>
-<p>Because of this, you'll want to collect breadcrumbs and other context yourself instead of creating a scope early -
-the best way of doing this is with a simple list of <code>Breadcrumb</code> objects. When an error happens, you can create the
-Sentry scope, add the breadcrumbs and other context, and submit it all at once. Failure to do this will result in
-issues, as Sentry uses a simple stack that it pushes and pops scopes onto without regard for any context - so you
-may end up adding breadcrumbs to the wrong scope, or submitting a scope from another part of the application too
-early if you don't watch out for this!</p>
+<p>String values may be split among multiple lines, by ending the line with a backslash (<code>\</code>) character and moving to the
+next line. Spaces will be trimmed from either side of each line, and the line breaks will not be preserved in the 
+string - you can use a normal line break sequence (<code>\n</code>) to include one. It's common to see the newline-with-line-break
+pattern (<code>\n\</code>) in some translation files for this reason.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="na">extensions.help.error.missingCommandTitle</span> <span class="o">=</span> <span class="s">Command not found</span>
+<span class="na">extensions.help.error.missingCommandDescription</span> <span class="o">=</span> <span class="s">Unable to find that command. This may be for one of several possible reasons: \n\</span>
+<span class="s">  \n\</span>
+<span class="s">  **»** The command doesn&#39;t exist or failed to load\n\</span>
+<span class="s">  **»** The command isn&#39;t available in this context\n\</span>
+<span class="s">  **»** You don&#39;t have access to the command\n\</span>
+<span class="s">  \n\</span>
+<span class="s">  If you feel that this is incorrect, please contact a member of staff.</span>
+</code></pre></div>
+</td></tr></table>
+<p>Additionally, messages may contain tokens to be replaced. Tokens reference the items in the<code>replacements</code> array that
+can be passed into all translation functions, by their index - starting a <code>0</code>. A simple variable insertion looks like
+the following:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="na">paginator.footer.page</span> <span class="o">=</span> <span class="s">Page {0}/{1}</span>
+<span class="na">paginator.footer.group</span> <span class="o">=</span> <span class="s">Group {0}/{1}</span>
+</code></pre></div>
+</td></tr></table>
+<p>Given an array like that returned by <code>arrayOf(1, 3)</code>, this would result in a string like <code>"Page 1/3"</code>. However, there
+are several more advanced ways to format the given replacements.</p>
+<h3 id="number-formatting">Number Formatting<a class="headerlink" href="#number-formatting" title="Permanent link">&para;</a></h3>
+<p><strong>Note:</strong> Custom formats are usually not necessary - the appropriate format for the locale should be used 
+automatically.</p>
+<ul>
+<li><strong>Auto:</strong> <code>{0, number}</code></li>
+<li><strong>Integer:</strong> <code>{0, number, integer}</code></li>
+<li><strong>Currency:</strong> <code>$ {0, number, currency}</code></li>
+<li><strong>Percent:</strong> <code>{0, number, percent}%</code></li>
+<li><strong>Custom format:</strong> <code>{0, number, ###,###.###}</code> (this uses <a href="https://docs.oracle.com/javase/7/docs/api/java/text/DecimalFormat.html">Java's DecimalFormat</a>)</li>
+</ul>
+<h3 id="date-formatting">Date Formatting<a class="headerlink" href="#date-formatting" title="Permanent link">&para;</a></h3>
+<p><strong>Note:</strong> Custom formats are usually not necessary - the appropriate format for the locale should be used
+automatically.</p>
+<ul>
+<li><strong>Auto:</strong> <code>{0, date}</code></li>
+<li><strong>Short:</strong> <code>{0, date, short}</code></li>
+<li><strong>Medium:</strong> <code>{0, date, medium}</code></li>
+<li><strong>Long:</strong> <code>{0, date, long}</code></li>
+<li><strong>Full:</strong> <code>{0, date, full}</code></li>
+<li><strong>Custom format:</strong> <code>{0, date, dd/MM/yyyy}</code> (this uses <a href="https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">Java's SimpleDateFormat</a>)</li>
+</ul>
+<h3 id="time-formatting">Time Formatting<a class="headerlink" href="#time-formatting" title="Permanent link">&para;</a></h3>
+<p><strong>Note:</strong> Custom formats are usually not necessary - the appropriate format for the locale should be used
+automatically.</p>
+<ul>
+<li><strong>Auto:</strong> <code>{0, time}</code></li>
+<li><strong>Short:</strong> <code>{0, time, short}</code></li>
+<li><strong>Medium:</strong> <code>{0, time, medium}</code></li>
+<li><strong>Long:</strong> <code>{0, time, long}</code></li>
+<li><strong>Full:</strong> <code>{0, time, full}</code></li>
+<li><strong>Custom format:</strong> <code>{0, time, kk:mm:ss}</code> (this uses <a href="https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">Java's SimpleDateFormat</a>)</li>
+</ul>
+<h3 id="advanced-numeric-formatting">Advanced Numeric Formatting<a class="headerlink" href="#advanced-numeric-formatting" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Duration:</strong> <code>{0, duration}</code> - Used when you want to format a number as a simple duration - for example, <code>123</code>
+  becomes <code>2:03</code> in English (123 seconds is 2 minutes and 3 seconds)</li>
+<li><strong>Ordinal:</strong> <code>{0, ordinal}</code> - Used when you want to append an ordinal suffix to a number - for example, <code>3</code> becomes
+  "<code>3rd</code>" in English</li>
+<li><strong>Spellout:</strong> <code>{0, spellout}</code> - Used when you want to format a numeric value as text - for example, <code>100</code> 
+  becomes <code>"one hundred"</code> in English</li>
+</ul>
+<p><strong>Note:</strong> Just like the other formats, you can include a custom format string by adding a comma (<code>,</code>) and the string.
+This makes use of <a href="https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/RuleBasedNumberFormat.html">the ICU RuleBasedNumberFormat class</a>.</p>
+<h3 id="selections">Selections<a class="headerlink" href="#selections" title="Permanent link">&para;</a></h3>
+<p>Selections can be used to specify a different translation based on a string provided in the <code>replacements</code> array. THis
+can be useful when dealing with languages that have different words based on the gender of a person - assuming you have
+access to that information. For example:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="na">actions.chop.tree</span> <span class="o">=</span> <span class="s">{0, select,\</span>
+<span class="s">  female { She }\</span>
+<span class="s">  male { He }\</span>
+<span class="s">  other { They }\</span>
+<span class="s">  } chopped down the tree.</span>
+</code></pre></div>
+</td></tr></table>
+<h3 id="pluralisation">Pluralisation<a class="headerlink" href="#pluralisation" title="Permanent link">&para;</a></h3>
+<p>When you have a variable number of something, you should pluralize only when necessary. For example:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="na">actions.chop.tree</span> <span class="o">=</span> <span class="s">They chopped down {0} {0, plural,\</span>
+<span class="s">  =1 { tree }\</span>
+<span class="s">  other { trees }\</span>
+<span class="s">  }.</span>
+</code></pre></div>
+</td></tr></table>
+<h3 id="advanced-nesting">Advanced Nesting<a class="headerlink" href="#advanced-nesting" title="Permanent link">&para;</a></h3>
+<p>When working with selections and pluralisation, you can also nest other replacement tokens inside their content. For
+example:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="na">actions.chop.tree</span> <span class="o">=</span> <span class="s">{0, select,\</span>
+<span class="s">  female { She chopped down {1} {1, plural, =1 { tree } other { trees }} }\</span>
+<span class="s">  male { He chopped down {1} {1, plural, =1 { tree } other { trees }} }\</span>
+<span class="s">  other { They chopped down {1} {1, plural, =1 { tree } other { trees }} }\</span>
+<span class="s">  }</span>
+</code></pre></div>
+</td></tr></table>
+<p>The above example isn't the best way to structure the given string - it's just a contrived example. See if you can
+figure out a better way to format it - you should be able to do it without nesting tokens!</p>
                 
                   
                     
@@ -848,7 +999,7 @@ early if you don't watch out for this!</p>
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-21
+      Last update: 2021-04-30
     
   </small>
 </div>
@@ -875,7 +1026,7 @@ early if you don't watch out for this!</p>
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../koin/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../converters/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -884,19 +1035,19 @@ early if you don't watch out for this!</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Koin
+              Converters
             </div>
           </div>
         </a>
       
       
-        <a href="../../modules/common/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../../utilities/general/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Common
+              General
             </div>
           </div>
           <div class="md-footer__button md-icon">
