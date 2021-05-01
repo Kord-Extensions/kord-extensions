@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.cooldown.BucketType
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.converters.enumChoice
@@ -301,6 +302,23 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
 
             action {
                 sendHelp()
+            }
+        }
+
+        command {
+            name = "cooldown-test"
+            description = "Tests the cooldown functionality"
+
+            cooldown { type ->
+                when(type) {
+                    BucketType.Channel -> 10
+
+                    else -> null
+                }
+            }
+
+            action {
+                message.respond("I do not have a cooldown")
             }
         }
 

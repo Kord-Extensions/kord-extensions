@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.commands.cooldown.BucketType
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -17,6 +18,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KotlinLogging
+import java.time.Instant
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -39,6 +41,16 @@ public open class MessageCommand<T : Arguments>(
      * @suppress
      */
     public open lateinit var body: suspend MessageCommandContext<out T>.() -> Unit
+
+    /**
+     * @suppress
+     */
+    public open lateinit var cooldownBody: suspend MessageCommandContext<out T>.(BucketType) -> Int?
+
+    /**
+     * @suppress
+     */
+    public open val cooldownMap: MutableMap<String, Instant> = mutableMapOf()
 
     /**
      * A description of what this function and how it's intended to be used.
@@ -175,6 +187,10 @@ public open class MessageCommand<T : Arguments>(
         this.body = action
     }
 
+    public open fun cooldown(cooldown: suspend MessageCommandContext<out T>.(BucketType) -> Int?) {
+        this.cooldownBody = cooldown
+    }
+
     /**
      * Define a check which must pass for the command to be executed.
      *
@@ -289,6 +305,40 @@ public open class MessageCommand<T : Arguments>(
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
+            if(::cooldownBody.isInitialized) {
+
+                // map these in order of importance
+                val types = mapOf(
+                    BucketType.User to context.user?.let { BucketType.User.genKey(it) },
+                    BucketType.Member to context.member?.let { BucketType.Member.genKey(it) },
+                    BucketType.Channel to BucketType.Channel.genKey(context.getChannel()),
+                    BucketType.Guild to context.guild?.let { BucketType.Guild.genKey(it) }
+                )
+
+                for((bucketType, key) in types) {
+                    if(key == null) continue
+
+                    val cooldown = cooldownBody.invoke(context, bucketType)
+
+                    if(cooldown != null) {
+                        val timeExecuted = cooldownMap[key]
+                        val now = Instant.now()
+
+                        if(timeExecuted == null) {
+                            cooldownMap[key] = now
+                        } else {
+                            val difference = now.epochSecond-timeExecuted.epochSecond
+                            if(difference < cooldown) {
+                                // TODO: translations
+                                throw CommandException("${bucketType::class.simpleName} cooldown: ${cooldown-difference} seconds")
+                            } else {
+                                cooldownMap[key] = now
+                            }
+                        }
+                    }
+                }
+            }
+
             if (context.guild != null) {
                 val perms = (context.channel.asChannel() as GuildChannel)
                     .getEffectivePermissions(extension.bot.kord.selfId)
