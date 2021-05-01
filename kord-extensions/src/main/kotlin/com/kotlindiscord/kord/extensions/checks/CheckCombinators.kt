@@ -12,7 +12,7 @@ import mu.KotlinLogging
  * @param checks Two or more checks to combine.
  * @return Whether any of the checks passed.
  */
-public fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
+public fun or(vararg checks: CheckFun): CheckFun {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.or")
 
     suspend fun inner(event: Event): Boolean {
@@ -28,6 +28,9 @@ public fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boo
     return ::inner
 }
 
+/** Infix-function version of [or]. **/
+public infix fun (CheckFun).or(other: CheckFun): CheckFun = or(this, other)
+
 /**
  * Special check that passes if all of the given checks pass.
  *
@@ -40,7 +43,7 @@ public fun or(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boo
  * @param checks Two or more checks to combine.
  * @return Whether all of the checks passed.
  */
-public fun and(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Boolean {
+public fun and(vararg checks: CheckFun): CheckFun {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.and")
 
     suspend fun inner(event: Event): Boolean {
@@ -55,3 +58,6 @@ public fun and(vararg checks: suspend (Event) -> Boolean): suspend (Event) -> Bo
 
     return ::inner
 }
+
+/** Infix-function version of [and]. **/
+public infix fun (CheckFun).and(other: CheckFun): CheckFun = and(this, other)

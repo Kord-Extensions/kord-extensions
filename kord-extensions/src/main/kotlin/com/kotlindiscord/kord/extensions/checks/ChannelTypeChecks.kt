@@ -14,7 +14,7 @@ import mu.KotlinLogging
  *
  * @param channelTypes The channel types to compare to.
  */
-public fun channelType(vararg channelTypes: ChannelType): suspend (Event) -> Boolean {
+public fun channelType(vararg channelTypes: ChannelType): CheckFun {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelType")
 
     suspend fun inner(event: Event): Boolean {
@@ -47,7 +47,7 @@ public fun channelType(vararg channelTypes: ChannelType): suspend (Event) -> Boo
  *
  * @param channelTypes The channel types to compare to.
  */
-public fun notChannelType(vararg channelTypes: ChannelType): suspend (Event) -> Boolean {
+public fun notChannelType(vararg channelTypes: ChannelType): CheckFun {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notChannelType")
 
     suspend fun inner(event: Event): Boolean {

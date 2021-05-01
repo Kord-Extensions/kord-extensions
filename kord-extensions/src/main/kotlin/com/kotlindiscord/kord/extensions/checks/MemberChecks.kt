@@ -16,7 +16,7 @@ import mu.KotlinLogging
  *
  * @param perm The permission to check for.
  */
-public fun hasPermission(perm: Permission): suspend (Event) -> Boolean {
+public fun hasPermission(perm: Permission): CheckFun {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasPermission")
 
     suspend fun inner(event: Event): Boolean {
@@ -58,7 +58,7 @@ public fun hasPermission(perm: Permission): suspend (Event) -> Boolean {
  *
  * @param perm The permission to check for.
  */
-public fun notHasPermission(perm: Permission): suspend (Event) -> Boolean {
+public fun notHasPermission(perm: Permission): CheckFun {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasPermission")
 
     suspend fun inner(event: Event): Boolean {
