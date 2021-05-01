@@ -60,7 +60,7 @@ public abstract class Converter<T : Any?>(
         else -> if (errorTypeString != null) {
             context.translate(errorTypeString!!)
         } else {
-            if (signatureTypeString.startsWithVowel()) {
+            if (signatureTypeString.startsWithVowel(context)) {
                 context.translate(
                     "converters.indefinite.beforeVowel",
                     replacements = arrayOf(context.translate(signatureTypeString))

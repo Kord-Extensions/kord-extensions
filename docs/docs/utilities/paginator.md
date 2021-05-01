@@ -63,9 +63,10 @@ Name            | Type                     | Description
 `targetChannel` | `MessageChannelBehavior` | Channel to send the paginator within
 `targetMessage` | `Message`                | Message to send the paginator in response to
 `pages`         | `Pages`                  | Collection of pages to paginate
+`pingInReply`   | `Boolean`                | When `targetMessage` is provided, whether to ping the message author in the reply, `true` by default
 `owner`         | `User?`                  | If desired, provide a user here and no other users will be able to interact with the paginator
 `timeout`       | `Long?`                  | If desired, amount of time with no reactions to wait before destroying the paginator
-`keepEmbed`     | `Boolean`                | Whether to keep the embed when destroying the paginator, `false` by default
+`keepEmbed`     | `Boolean`                | Whether to keep the embed when destroying the paginator, `true` by default
 `switchEmoji`   | `ReactionEmoji`          | The emoji to use to cycle between page groups, :information_source: by default for two groups or :arrows_counterclockwise: for more than two
 
 Once you've created your paginator, all you need to do is call the `send` function, and it'll be sent to the channel!

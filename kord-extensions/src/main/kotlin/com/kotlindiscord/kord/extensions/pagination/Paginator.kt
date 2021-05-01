@@ -57,6 +57,7 @@ private val logger = KotlinLogging.logger {}
  * @param targetChannel The channel this paginator should be created within
  * @param targetMessage The message this paginator should be created in response to
  * @param pages Set of pages this paginator should paginate
+ * @param pingInReply When [targetMessage] is provided, whether to ping the message author in the reply
  * @param owner Optional paginator owner, if you want to prevent other users from using the reactions
  * @param timeout Optional timeout, after which the paginator will be destroyed
  * @param keepEmbed Whether to keep the embed after the paginator is destroyed, `false` by default
@@ -65,12 +66,13 @@ private val logger = KotlinLogging.logger {}
  */
 public open class Paginator(
     public val bot: ExtensibleBot,
+    public val pages: Pages,
     public val targetChannel: MessageChannelBehavior? = null,
     public val targetMessage: Message? = null,
-    public val pages: Pages,
     public val owner: User? = null,
     public val timeout: Long? = null,
-    public val keepEmbed: Boolean = false,
+    public val keepEmbed: Boolean = true,
+    public val pingInReply: Boolean = true,
     public val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
     public val locale: Locale = bot.settings.i18nBuilder.defaultLocale
 ) {
@@ -129,7 +131,13 @@ public open class Paginator(
         } else if (targetChannel != null) {
             targetChannel.createEmbed(builder)
         } else if (targetMessage != null) {
-            targetMessage.respond { embed(builder) }
+            targetMessage.respond {
+                embed(builder)
+
+                if (!pingInReply) {
+                    allowedMentions {}
+                }
+            }
         } else {
             throw IllegalArgumentException("Must provide either a target channel or target message")
         }
