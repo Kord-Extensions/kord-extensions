@@ -46,7 +46,15 @@ public class ResourceBundleTranslations(
 
     override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Array<Any?>): String {
         return try {
-            val string = get(key, locale, bundleName)
+            var string = get(key, locale, bundleName)
+
+            if (string == key && bundleName != null) {
+                // Fall through to the default bundle if the key isn't found
+                logger.debug { "$key not found in bundle $bundleName - falling through to $KORDEX_KEY" }
+
+                string = get(key, locale, KORDEX_KEY)
+            }
+
             val formatter = MessageFormat(string, locale)
 
             formatter.format(replacements)
