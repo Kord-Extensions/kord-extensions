@@ -135,9 +135,8 @@ Function    | Description
 
 Function                 | Description
 :----------------------- | :----------
-`String.parseBoolean`    | Parses a String into a Boolean based on its starting character -`0`, `n` or `f` for `false` or `1`, `y` or `t` for `true`, otherwise `null`
+`String.parseBoolean`    | Parses a String into a Boolean based on its starting character and the locale for the given context (or a given locale)
 `String.splitOn`         | Splits a string into a Pair containing the characters matching the predicate up until its first failure, and the rest of the string
-`String.startsWithVowel` | Checks whether the string starts with a vowel
 
 ## Time
 

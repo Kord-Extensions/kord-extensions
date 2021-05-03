@@ -2,7 +2,6 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.utils.startsWithVowel
 
 /**
  * Base class for an argument converter.
@@ -60,17 +59,7 @@ public abstract class Converter<T : Any?>(
         else -> if (errorTypeString != null) {
             context.translate(errorTypeString!!)
         } else {
-            if (signatureTypeString.startsWithVowel(context)) {
-                context.translate(
-                    "converters.indefinite.beforeVowel",
-                    replacements = arrayOf(context.translate(signatureTypeString))
-                )
-            } else {
-                context.translate(
-                    "converters.indefinite.beforeConsonant",
-                    replacements = arrayOf(context.translate(signatureTypeString))
-                )
-            }
+            context.translate(signatureTypeString)
         }
     }
 }

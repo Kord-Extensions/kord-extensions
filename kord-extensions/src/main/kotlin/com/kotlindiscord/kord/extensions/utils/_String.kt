@@ -23,54 +23,6 @@ public fun String.splitOn(separator: (Char) -> Boolean): Pair<String, String> {
 }
 
 /**
- * Check whether a string starts with a vowel, ignoring case.
- *
- * @return `true` if the string starts with an English vowel, `false` otherwise.
- */
-public fun String.startsWithVowel(): Boolean = "aeiou".any { startsWith(it, true) }
-
-/**
- * Check whether a string starts with a vowel, ignoring case, using the context's detected locale.
- *
- * This uses the `utils.string.vowels` translation key, which should contain all vowels for that translation with
- * no delimiters.
- *
- * @return `true` if the string starts with a vowel, `false` otherwise.
- */
-public suspend fun String.startsWithVowel(context: CommandContext): Boolean =
-    context.translate("utils.string.vowels")
-        .any { startsWith(it, true) }
-
-/**
- * Check whether a string starts with a vowel, ignoring case, using the given locale.
- *
- * This uses the `utils.string.vowels` translation key, which should contain all vowels for that translation with
- * no delimiters.
- *
- * @return `true` if the string starts with a vowel, `false` otherwise.
- */
-public fun String.startsWithVowel(locale: Locale, bot: ExtensibleBot): Boolean =
-    bot.translationsProvider.translate("utils.string.vowels", locale)
-        .any { startsWith(it, true) }
-
-/**
- * Parse a string into a boolean, based on English characters.
- *
- * This function operates based on the first character of the string, following these rules:
- *
- * * `0`, `n`, `f` -> `false`
- * * `1`, `y`, `t` -> `true`
- * * Anything else -> null
- */
-public fun String.parseBoolean(): Boolean? = when (firstOrNull()?.toLowerCase()) {
-    '0', 'n', 'f' -> false
-
-    '1', 'y', 't' -> true
-
-    else -> null
-}
-
-/**
  * Parse a string into a boolean, based on the context's detected locale.
  *
  * This function uses a full match based on whatever is specified in the translations, lower-cased.

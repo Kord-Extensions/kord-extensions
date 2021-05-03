@@ -30,17 +30,11 @@ public class LongConverter(
         try {
             this.parsed = arg.toLong(radix)
         } catch (e: NumberFormatException) {
-            val endChar = context.translate("converters.number.error.invalid.endCharacter")
-            var errorString = context.translate("converters.number.error.invalid", replacements = arrayOf(arg))
-
-            if (radix != DEFAULT_RADIX) {
-                errorString += " " + context.translate(
-                    "converters.number.error.invalid.withBase",
-                    replacements = arrayOf(radix)
-                )
+            val errorString = if (radix == DEFAULT_RADIX) {
+                context.translate("converters.number.error.invalid.defaultBase", replacements = arrayOf(arg))
+            } else {
+                context.translate("converters.number.error.invalid.otherBase", replacements = arrayOf(arg, radix))
             }
-
-            errorString += endChar
 
             throw CommandException(errorString)
         }
