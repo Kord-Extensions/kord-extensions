@@ -131,6 +131,9 @@ public fun channelSnowflakeFor(event: Event): Snowflake? {
  */
 public suspend fun guildFor(event: Event): GuildBehavior? {
     return when (event) {
+        is BanAddEvent -> event.guild
+        is BanRemoveEvent -> event.guild
+
         is CategoryCreateEvent -> event.channel.guild
         is CategoryDeleteEvent -> event.channel.guild
         is CategoryUpdateEvent -> event.channel.guild
