@@ -131,12 +131,8 @@ public open class Paginator(
         } else if (targetChannel != null) {
             targetChannel.createEmbed(builder)
         } else if (targetMessage != null) {
-            targetMessage.respond {
+            targetMessage.respond(pingInReply = pingInReply) {
                 embed(builder)
-
-                if (!pingInReply) {
-                    allowedMentions {}
-                }
             }
         } else {
             throw IllegalArgumentException("Must provide either a target channel or target message")

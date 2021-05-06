@@ -168,23 +168,28 @@ public fun Message.parse(
  * Respond to a message in the channel it was sent to, mentioning the author.
  *
  * @param useReply Whether to use Discord's replies feature to respond, instead of a mention. Defaults to `true`.
+ * @param pingInReply When [useReply] is true, whether to also ping the user in the reply. Ignored if [useReply] is
+ * false.
  * @param content Message content.
  *
  * @return The newly-created response message.
  */
-public suspend fun Message.respond(content: String, useReply: Boolean = true): Message =
-    respond(useReply) { this.content = content }
+public suspend fun Message.respond(content: String, useReply: Boolean = true, pingInReply: Boolean = true): Message =
+    respond(useReply, pingInReply) { this.content = content }
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
  *
  * @param useReply Whether to use Discord's replies feature to respond, instead of a mention. Defaults to `true`.
+ * @param pingInReply When [useReply] is true, whether to also ping the user in the reply. Ignored if [useReply] is
+ * false.
  * @param builder Builder lambda for populating the message fields.
  *
  * @return The newly-created response message.
  */
 public suspend fun Message.respond(
     useReply: Boolean = true,
+    pingInReply: Boolean = true,
     builder: suspend MessageCreateBuilder.() -> Unit
 ): Message {
     val author = this.author
@@ -193,8 +198,8 @@ public suspend fun Message.respond(
 
         allowedMentions {
             when {
-                useReply -> repliedUser = true
-                author != null -> users.add(author.id)
+                useReply && pingInReply -> repliedUser = true
+                author != null && !pingInReply -> users.add(author.id)
             }
         }
 
