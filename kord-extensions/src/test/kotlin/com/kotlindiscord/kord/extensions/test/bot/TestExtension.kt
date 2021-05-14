@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
@@ -16,7 +15,7 @@ import dev.kord.core.behavior.channel.createEmbed
 
 @OptIn(KordPreview::class)
 @Suppress("UnderscoresInNumericLiterals")  // They're IDs
-class TestExtension(bot: ExtensibleBot) : Extension(bot) {
+class TestExtension : Extension() {
     override val name = "test"
 
     class TestArgs : Arguments() {
@@ -344,7 +343,6 @@ class TestExtension(bot: ExtensibleBot) : Extension(bot) {
                 }
 
                 Paginator(
-                    bot,
                     targetMessage = event.message,
                     pages = pages,
                     keepEmbed = true,

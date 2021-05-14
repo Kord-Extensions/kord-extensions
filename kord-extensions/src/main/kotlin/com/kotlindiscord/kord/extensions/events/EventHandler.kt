@@ -3,14 +3,18 @@ package com.kotlindiscord.kord.extensions.events
 import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
 import com.kotlindiscord.kord.extensions.checks.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.Event
 import io.sentry.Sentry
 import kotlinx.coroutines.Job
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.io.Serializable
 import kotlin.reflect.KClass
 
@@ -26,7 +30,13 @@ private val logger = KotlinLogging.logger {}
  * @param extension The [Extension] that registered this event handler.
  * @param type A [KClass] representing the event type this handler is subscribed to. This is for internal use.
  */
-public class EventHandler<T : Any>(public val extension: Extension, public val type: KClass<*>) {
+public class EventHandler<T : Any>(public val extension: Extension, public val type: KClass<*>) : KoinComponent {
+    /** Sentry adapter, for easy access to Sentry functions. **/
+    public val sentry: SentryAdapter by inject()
+
+    /** Kord instance, backing the ExtensibleBot. **/
+    public val kord: Kord by inject()
+
     /**
      * @suppress
      */
@@ -105,7 +115,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
         val context = EventContext(this, event)
         val eventName = event::class.simpleName
 
-        val firstBreadcrumb = if (extension.bot.sentry.enabled) {
+        val firstBreadcrumb = if (sentry.enabled) {
             if (event is Event) {
                 val data = mutableMapOf<String, Serializable>()
 
@@ -116,7 +126,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
                 val userBehavior = userFor(event)
 
                 if (channelId != null) {
-                    val channel = extension.bot.kord.getChannel(Snowflake(channelId))
+                    val channel = kord.getChannel(Snowflake(channelId))
 
                     if (channel != null) {
                         data["channel"] = when (channel) {
@@ -164,7 +174,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
                     }
                 }
 
-                extension.bot.sentry.createBreadcrumb(
+                sentry.createBreadcrumb(
                     category = "event",
                     type = "info",
                     message = "Event \"$eventName\" fired.",
@@ -181,7 +191,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
         try {
             this.body(context)
         } catch (t: Throwable) {
-            if (extension.bot.sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+            if (sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
                 logger.debug { "Submitting error to sentry." }
 
                 Sentry.withScope {

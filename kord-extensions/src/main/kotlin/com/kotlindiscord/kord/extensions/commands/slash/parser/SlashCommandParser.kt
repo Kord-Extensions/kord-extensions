@@ -6,7 +6,6 @@
 package com.kotlindiscord.kord.extensions.commands.slash.parser
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.DefaultingConverter
@@ -31,7 +30,7 @@ private val logger = KotlinLogging.logger {}
  * This parser does not support multi converters, as there's no good way to represent them with
  * Discord's API. Coalescing converters will act like single converters.
  */
-public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
+public open class SlashCommandParser : ArgumentParser() {
     public override suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
         if (context !is SlashCommandContext<out Arguments>) {
             error("This parser only supports slash commands.")
@@ -75,7 +74,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                 is SingleConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context, bot)
+                        converter.parse(currentValue, context)
                     } else {
                         false
                     }
@@ -103,7 +102,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
-                        throw CommandException(converter.handleError(e, currentValue, context, bot))
+                        throw CommandException(converter.handleError(e, currentValue, context))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -115,7 +114,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                 is CoalescingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(listOf(currentValue), context, bot) > 0
+                        converter.parse(listOf(currentValue), context) > 0
                     } else {
                         false
                     }
@@ -149,7 +148,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                             wrappedValues += currentValue
                         }
 
-                        throw CommandException(converter.handleError(e, wrappedValues, context, bot))
+                        throw CommandException(converter.handleError(e, wrappedValues, context))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -161,7 +160,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                 is OptionalConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context, bot)
+                        converter.parse(currentValue, context)
                     } else {
                         false
                     }
@@ -177,7 +176,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError) {
                         throw CommandException(
-                            converter.handleError(e, currentValue, context, bot)
+                            converter.handleError(e, currentValue, context)
                         )
                     }
                 } catch (t: Throwable) {
@@ -186,7 +185,7 @@ public open class SlashCommandParser(bot: ExtensibleBot) : ArgumentParser(bot) {
 
                 is DefaultingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context, bot)
+                        converter.parse(currentValue, context)
                     } else {
                         false
                     }

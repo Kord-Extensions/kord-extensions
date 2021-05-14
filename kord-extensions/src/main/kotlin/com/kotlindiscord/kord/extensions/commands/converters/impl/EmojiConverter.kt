@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.emoji
@@ -35,8 +34,8 @@ public class EmojiConverter(
 ) : SingleConverter<GuildEmoji>() {
     override val signatureTypeString: String = "converters.emoji.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val emoji = findEmoji(arg, context, bot)
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+        val emoji = findEmoji(arg, context)
             ?: throw CommandException(
                 context.translate("converters.emoji.error.missing", replacements = arrayOf(arg))
             )
@@ -45,14 +44,14 @@ public class EmojiConverter(
         return true
     }
 
-    private suspend fun findEmoji(arg: String, context: CommandContext, bot: ExtensibleBot): GuildEmoji? =
+    private suspend fun findEmoji(arg: String, context: CommandContext): GuildEmoji? =
         if (arg.startsWith("<a:") || arg.startsWith("<:") && arg.endsWith('>')) { // Emoji mention
             val id = arg.substring(0, arg.length - 1).split(":").last()
 
             try {
                 val snowflake = Snowflake(id)
 
-                bot.kord.guilds.mapNotNull {
+                kord.guilds.mapNotNull {
                     it.getEmojiOrNull(snowflake)
                 }.firstOrNull()
             } catch (e: NumberFormatException) {
@@ -66,11 +65,11 @@ public class EmojiConverter(
             try {
                 val snowflake = Snowflake(name)
 
-                bot.kord.guilds.mapNotNull {
+                kord.guilds.mapNotNull {
                     it.getEmojiOrNull(snowflake)
                 }.firstOrNull()
             } catch (e: NumberFormatException) {  // Not an ID, let's check names
-                bot.kord.guilds.mapNotNull {
+                kord.guilds.mapNotNull {
                     it.emojis.first { emojiObj -> emojiObj.name?.toLowerCase().equals(name, true) }
                 }.firstOrNull()
             }

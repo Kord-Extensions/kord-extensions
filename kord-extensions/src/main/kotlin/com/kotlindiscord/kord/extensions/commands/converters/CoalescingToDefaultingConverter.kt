@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 
@@ -31,8 +30,8 @@ public class CoalescingToDefaultingConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
 
-    override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
-        val result = coalescingConverter.parse(args, context, bot)
+    override suspend fun parse(args: List<String>, context: CommandContext): Int {
+        val result = coalescingConverter.parse(args, context)
 
         if (result > 0) {
             this.parsed = coalescingConverter.parsed
@@ -44,7 +43,6 @@ public class CoalescingToDefaultingConverter<T : Any>(
     override suspend fun handleError(
         t: Throwable,
         values: List<String>,
-        context: CommandContext,
-        bot: ExtensibleBot
-    ): String = coalescingConverter.handleError(t, values, context, bot)
+        context: CommandContext
+    ): String = coalescingConverter.handleError(t, values, context)
 }

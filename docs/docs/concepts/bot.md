@@ -33,6 +33,7 @@ koinLogLevel              | Level        | `ERROR` | Koin logger level
 cache                     | DSL function |         | Configure the bot's caching options using a builder
 commands                  | DSL function |         | Configure the bot's command options using a builder
 extensions                | DSL function |         | Configure the bot's extension options using a builder, and add custom extensions
+hooks                     | DSL function |         | Register lambdas that run at various stages in the bot's lifecycle
 intents                   | DSL function |         | Configure the bot's intents using a builder
 members                   | DSL function |         | Configure the bot's member-related options using a builder
 presence                  | DSL function |         | Configure the bot's initial presence using a builder
@@ -149,8 +150,9 @@ val bot = ExtensibleBot(token) {
 Lifecycle Function        | Description
 :------------------------ | :----------
 afterExtensionsAdded      | Lambdas registered here are called after all the extensions specified in the `extensions` builder above have been registered
-afterKoinCreated          | Lambdas registered here are called as part of the bot's initialisation process, after the Koin context has been created
+afterKoinSetup            | Lambdas registered here are called just after Koin has been set up - you can register overriding modules here via `loadModule {}`
 beforeExtensionsAdded     | Lambdas registered here are called before all the extensions specified in the `extensions` builder above have been registered
+beforeKoinSetup           | Lambdas registered here are called just before Koin is set up, right after the `startKoin` call - you can register modules early here via `loadModule {}`
 beforeStart               | Lambdas registered here are called just before the bot tries to connect to Discord
 created                   | Lambdas registered here are called just after the `ExtensibleBot` object has been created, before it's been set up
 extensionAdded            | Lambdas registered here are called every time an extension is added successfully, with the extension object as a parameter
@@ -246,14 +248,13 @@ things.
     There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most
     of the properties are `open` to facilitate niche use-cases that require extending the ExtensibleBot class.
 
+This object used to have many other useful properties here, but to keep things clean those properties have been moved
+and should now be accessed via Koin. For more information, see [the Koin integration page](/integrations/koin).
+
 Name            | Type                      | Description
 :-------------- | :-----------------------: | :----------
-`commands`      | `List <Command>`          | All currently-registered command objects
 `eventHandlers` | `List <EventHandler>`     | All currently-registered event handler objects
 `extensions`    | `Map <String, Extension>` | All currently-loaded extension objects
-`koin`          | `Koin`                    | Koin instance to be made use of instead of the global one
-`kord`          | `Kord`                    | Current connected Kord instance, if the bot has been started
-`slashCommands` | `SlashCommandRegistry`    | Slash command registry that keeps track of slash commands, and invokes them when the relevant events are received
 
 ## Functions
 

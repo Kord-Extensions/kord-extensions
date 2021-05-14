@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.int
@@ -26,7 +25,7 @@ public class IntConverter(
 ) : SingleConverter<Int>() {
     override val signatureTypeString: String = "converters.number.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
         try {
             this.parsed = arg.toInt(radix)
         } catch (e: NumberFormatException) {

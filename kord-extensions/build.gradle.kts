@@ -77,8 +77,8 @@ dependencies {
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
 
-    api("io.insert-koin:koin-core:3.0.1-beta-2")
-    api("io.insert-koin:koin-logger-slf4j:3.0.1-beta-2")
+    api("io.insert-koin:koin-core:3.0.1")
+    api("io.insert-koin:koin-logger-slf4j:3.0.1")
 
     api("io.sentry:sentry:4.3.0")  // Needs to be transitive or bots will start breaking
 
@@ -91,7 +91,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    testImplementation("io.insert-koin:koin-test:3.0.1-beta-2")
+    testImplementation("io.insert-koin:koin-test:3.0.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
     testImplementation("ch.qos.logback:logback-classic:1.2.3")

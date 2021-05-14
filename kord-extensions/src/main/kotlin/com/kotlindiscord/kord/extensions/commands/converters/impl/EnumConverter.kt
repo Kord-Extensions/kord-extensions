@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.enum
@@ -28,7 +27,7 @@ public class EnumConverter<E : Enum<E>>(
 ) : SingleConverter<E>() {
     override val signatureTypeString: String = typeName
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
         try {
             parsed = getter.invoke(arg) ?: return false
         } catch (e: IllegalArgumentException) {

@@ -11,8 +11,11 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.annotation.KordPreview
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 import kotlin.collections.set
 
@@ -31,10 +34,15 @@ private val logger = KotlinLogging.logger {}
  *
  * We recommend reading over the source code if you'd like to get to grips with how this all works.
  *
- * @param bot Current instance of the bot
  * @param splitChar The character to use for splitting keyword arguments
  */
-public open class ArgumentParser(public val bot: ExtensibleBot, private val splitChar: Char = '=') {
+public open class ArgumentParser(private val splitChar: Char = '=') : KoinComponent {
+    /** Current instance of the bot. **/
+    public open val bot: ExtensibleBot by inject()
+
+    /** Translations provider, for retrieving translations. **/
+    public val translationsProvider: TranslationsProvider by inject()
+
     /**
      * Given a builder returning an [Arguments] subclass and [CommandContext], parse the command's arguments into
      * the [Arguments] subclass and return it.
@@ -131,9 +139,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                             )
                         }
 
-                        converter.parse(kwValue.first(), context, bot)
+                        converter.parse(kwValue.first(), context)
                     } else {
-                        converter.parse(currentValue, context, bot)
+                        converter.parse(currentValue, context)
                     }
 
                     if ((converter.required || hasKwargs) && !parsed) {
@@ -160,7 +168,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                 } catch (e: CommandException) {
                     if (converter.required || hasKwargs) {
                         throw CommandException(
-                            converter.handleError(e, currentValue, context, bot)
+                            converter.handleError(e, currentValue, context)
                         )
                     }
                 } catch (t: Throwable) {
@@ -180,9 +188,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                             )
                         }
 
-                        converter.parse(kwValue.first(), context, bot)
+                        converter.parse(kwValue.first(), context)
                     } else {
-                        converter.parse(currentValue, context, bot)
+                        converter.parse(currentValue, context)
                     }
 
                     if (parsed) {
@@ -208,9 +216,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                             )
                         }
 
-                        converter.parse(kwValue.first(), context, bot)
+                        converter.parse(kwValue.first(), context)
                     } else {
-                        converter.parse(currentValue, context, bot)
+                        converter.parse(currentValue, context)
                     }
 
                     if (parsed) {
@@ -224,7 +232,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw CommandException(
-                            converter.handleError(e, currentValue, context, bot)
+                            converter.handleError(e, currentValue, context)
                         )
                     }
                 } catch (t: Throwable) {
@@ -237,9 +245,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                 is MultiConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
-                        converter.parse(kwValue!!, context, bot)
+                        converter.parse(kwValue!!, context)
                     } else {
-                        converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                        converter.parse(listOf(currentValue) + values.toList(), context)
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
@@ -285,7 +293,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
-                    if (converter.required) throw CommandException(converter.handleError(e, values, context, bot))
+                    if (converter.required) throw CommandException(converter.handleError(e, values, context))
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -296,9 +304,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                 is CoalescingConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
-                        converter.parse(kwValue!!, context, bot)
+                        converter.parse(kwValue!!, context)
                     } else {
-                        converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                        converter.parse(listOf(currentValue) + values.toList(), context)
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
@@ -342,7 +350,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
-                    if (converter.required) throw CommandException(converter.handleError(e, values, context, bot))
+                    if (converter.required) throw CommandException(converter.handleError(e, values, context))
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -353,9 +361,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                 is OptionalCoalescingConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
-                        converter.parse(kwValue!!, context, bot)
+                        converter.parse(kwValue!!, context)
                     } else {
-                        converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                        converter.parse(listOf(currentValue) + values.toList(), context)
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
@@ -402,7 +410,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                     }
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
-                        throw CommandException(converter.handleError(e, values, context, bot))
+                        throw CommandException(converter.handleError(e, values, context))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -414,9 +422,9 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
 
                 is DefaultingCoalescingConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
-                        converter.parse(kwValue!!, context, bot)
+                        converter.parse(kwValue!!, context)
                     } else {
-                        converter.parse(listOf(currentValue) + values.toList(), context, bot)
+                        converter.parse(listOf(currentValue) + values.toList(), context)
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
@@ -462,7 +470,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
-                    if (converter.required) throw CommandException(converter.handleError(e, values, context, bot))
+                    if (converter.required) throw CommandException(converter.handleError(e, values, context))
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -537,7 +545,7 @@ public open class ArgumentParser(public val bot: ExtensibleBot, private val spli
             if (it.converter.showTypeInSignature) {
                 signature += ": "
 
-                signature += bot.translationsProvider.translate(
+                signature += translationsProvider.translate(
                     it.converter.signatureTypeString,
                     it.converter.bundle,
                     locale

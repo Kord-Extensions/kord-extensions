@@ -9,12 +9,15 @@ import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.KordObject
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.entity.channel.DmChannel
@@ -27,6 +30,8 @@ import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 private val logger: KLogger = KotlinLogging.logger {}
@@ -50,7 +55,16 @@ public open class SlashCommand<T : Arguments>(
 
     public open val parentCommand: SlashCommand<out Arguments>? = null,
     public open val parentGroup: SlashGroup? = null
-) : Command(extension) {
+) : Command(extension), KoinComponent {
+    /** Translations provider, for retrieving translations. **/
+    public val translationsProvider: TranslationsProvider by inject()
+
+    /** Kord instance, backing the ExtensibleBot. **/
+    public val kord: Kord by inject()
+
+    /** Sentry adapter, for easy access to Sentry functions. **/
+    public val sentry: SentryAdapter by inject()
+
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
 
@@ -75,7 +89,7 @@ public open class SlashCommand<T : Arguments>(
     /** @suppress **/
     public open val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
 
-    public override val parser: SlashCommandParser = SlashCommandParser(extension.bot)
+    public override val parser: SlashCommandParser = SlashCommandParser()
 
     /** Permissions required to be able to run this command. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
@@ -86,7 +100,7 @@ public open class SlashCommand<T : Arguments>(
     /** Return this command's name translated for the given locale, cached as required. **/
     public open fun getTranslatedName(locale: Locale): String {
         if (!nameTranslationCache.containsKey(locale)) {
-            nameTranslationCache[locale] = extension.bot.translationsProvider.translate(
+            nameTranslationCache[locale] = translationsProvider.translate(
                 this.name,
                 this.extension.bundle,
                 locale
@@ -338,8 +352,6 @@ public open class SlashCommand<T : Arguments>(
      * @param event The interaction creation event.
      */
     public open suspend fun call(event: InteractionCreateEvent) {
-        val sentry = extension.bot.sentry
-
         val eventCommand = event.interaction.command
 
         // We lie to the compiler thrice below to work around an issue with generics.
@@ -413,7 +425,7 @@ public open class SlashCommand<T : Arguments>(
         try {
             if (context.guild != null) {
                 val perms = (context.channel.asChannel() as GuildChannel)
-                    .getEffectivePermissions(extension.bot.kord.selfId)
+                    .getEffectivePermissions(kord.selfId)
 
                 val missingPerms = requiredPerms.filter { !perms.contains(it) }
 

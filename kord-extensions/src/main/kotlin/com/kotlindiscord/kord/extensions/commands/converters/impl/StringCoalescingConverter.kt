@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.coalescedString
@@ -22,7 +21,7 @@ public class StringCoalescingConverter(
     override val signatureTypeString: String = "converters.string.signatureType"
     override val showTypeInSignature: Boolean = false
 
-    override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
+    override suspend fun parse(args: List<String>, context: CommandContext): Int {
         this.parsed = args.joinToString(" ")
 
         return args.size

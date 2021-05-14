@@ -142,13 +142,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is GuildDeleteEvent -> event.guild
         is GuildUpdateEvent -> event.guild
         is IntegrationsUpdateEvent -> event.guild
-
-        is InteractionCreateEvent -> if (event.interaction is GuildInteraction) {
-            (event.interaction as GuildInteraction).guild
-        } else {
-            null
-        }
-
+        is InteractionCreateEvent -> (event.interaction as? GuildInteraction)?.guild
         is InviteCreateEvent -> event.guild
         is InviteDeleteEvent -> event.guild
         is MembersChunkEvent -> event.guild
@@ -193,11 +187,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
     return when {
-        event is InteractionCreateEvent -> if (event.interaction is GuildInteraction) {
-            (event.interaction as GuildInteraction).member
-        } else {
-            null
-        }
+        event is InteractionCreateEvent -> (event.interaction as? GuildInteraction)?.member
 
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member

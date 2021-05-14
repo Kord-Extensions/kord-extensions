@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.email
@@ -24,7 +23,7 @@ public class EmailConverter(
 ) : SingleConverter<String>() {
     override val signatureTypeString: String = "converters.email.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
         if (!EmailValidator.getInstance().isValid(arg)) {
             throw CommandException(
                 context.translate("converters.email.error.invalid", replacements = arrayOf(arg))

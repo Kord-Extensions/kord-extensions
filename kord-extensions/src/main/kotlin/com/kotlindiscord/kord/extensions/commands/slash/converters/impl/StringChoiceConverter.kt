@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands.slash.converters.impl
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
@@ -18,7 +17,7 @@ public class StringChoiceConverter(
 ) : ChoiceConverter<String>(choices) {
     override val signatureTypeString: String = "converters.string.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
         this.parsed = arg
 
         return true

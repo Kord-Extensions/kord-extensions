@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.coalescedRegex
@@ -28,7 +27,7 @@ public class RegexCoalescingConverter(
     override val signatureTypeString: String = "converters.regex.signatureType.plural"
     override val showTypeInSignature: Boolean = false
 
-    override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
+    override suspend fun parse(args: List<String>, context: CommandContext): Int {
         this.parsed = args.joinToString(" ").toRegex(options)
 
         return args.size

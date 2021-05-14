@@ -2,8 +2,10 @@ package com.kotlindiscord.kord.extensions.extensions.base
 
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
+import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.pagination.Paginator
+import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.core.event.message.MessageCreateEvent
 
 /**
@@ -53,7 +55,7 @@ public interface HelpProvider {
         command: MessageCommand<out Arguments>,
         longDescription: Boolean = false
     ): Triple<String, String, String> {
-        val prefix = context.command.extension.bot.messageCommands.getPrefix(context.event)
+        val prefix = getKoin().get<MessageCommandRegistry>().getPrefix(context.event)
 
         return formatCommandHelp(prefix, context.event, command, longDescription)
     }
@@ -101,7 +103,7 @@ public interface HelpProvider {
         context: MessageCommandContext<*>,
         args: List<String>
     ): Paginator {
-        val prefix = context.command.extension.bot.messageCommands.getPrefix(context.event)
+        val prefix = getKoin().get<MessageCommandRegistry>().getPrefix(context.event)
 
         return getCommandHelpPaginator(context.event, prefix, args)
     }
@@ -145,7 +147,7 @@ public interface HelpProvider {
         context: MessageCommandContext<*>,
         command: MessageCommand<out Arguments>?
     ): Paginator {
-        val prefix = context.command.extension.bot.messageCommands.getPrefix(context.event)
+        val prefix = getKoin().get<MessageCommandRegistry>().getPrefix(context.event)
 
         return getCommandHelpPaginator(context.event, prefix, command)
     }
@@ -182,7 +184,7 @@ public interface HelpProvider {
      * @return Paginator containing help information for all loaded commands with passing checks.
      */
     public suspend fun getMainHelpPaginator(context: MessageCommandContext<*>): Paginator {
-        val prefix = context.command.extension.bot.messageCommands.getPrefix(context.event)
+        val prefix = getKoin().get<MessageCommandRegistry>().getPrefix(context.event)
 
         return getMainHelpPaginator(context.event, prefix)
     }

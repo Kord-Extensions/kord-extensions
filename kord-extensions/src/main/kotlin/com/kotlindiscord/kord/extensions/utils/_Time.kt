@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import net.time4j.Duration
 import net.time4j.IsoUnit
 import java.time.temporal.ChronoUnit
@@ -36,7 +36,8 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
 @Suppress("MagicNumber")  // These are all time units!
-public fun java.time.Duration.toHuman(bot: ExtensibleBot, locale: Locale): String? {
+public fun java.time.Duration.toHuman(locale: Locale): String? {
+    val translationsProvider = getKoin().get<TranslationsProvider>()
     val parts = mutableListOf<String>()
 
     val seconds = this.seconds % 60
@@ -50,32 +51,32 @@ public fun java.time.Duration.toHuman(bot: ExtensibleBot, locale: Locale): Strin
 
     if (days > 0) {
         parts.add(
-            bot.translationsProvider.translate("utils.time.days", locale, replacements = arrayOf(days))
+            translationsProvider.translate("utils.time.days", locale, replacements = arrayOf(days))
         )
     }
 
     if (hours > 0) {
         parts.add(
-            bot.translationsProvider.translate("utils.time.hours", locale, replacements = arrayOf(hours))
+            translationsProvider.translate("utils.time.hours", locale, replacements = arrayOf(hours))
         )
     }
 
     if (minutes > 0) {
         parts.add(
-            bot.translationsProvider.translate("utils.time.minutes", locale, replacements = arrayOf(minutes))
+            translationsProvider.translate("utils.time.minutes", locale, replacements = arrayOf(minutes))
         )
     }
 
     if (seconds > 0) {
         parts.add(
-            bot.translationsProvider.translate("utils.time.seconds", locale, replacements = arrayOf(seconds))
+            translationsProvider.translate("utils.time.seconds", locale, replacements = arrayOf(seconds))
         )
     }
 
     if (parts.isEmpty()) return null
 
     // I have no idea how I should _actually_ do this...
-    val andJoiner = bot.translationsProvider.translate("utils.time.andJoiner", locale).reversed() + " "
+    val andJoiner = translationsProvider.translate("utils.time.andJoiner", locale).reversed() + " "
     return parts.joinToString(", ").reversed().replaceFirst(",", andJoiner).reversed()
 }
 
@@ -85,7 +86,4 @@ public fun java.time.Duration.toHuman(bot: ExtensibleBot, locale: Locale): Strin
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
 @Suppress("MagicNumber")  // These are all time units!
-public suspend fun java.time.Duration.toHuman(context: CommandContext): String? = toHuman(
-    context.command.extension.bot,
-    context.getLocale()
-)
+public suspend fun java.time.Duration.toHuman(context: CommandContext): String? = toHuman(context.getLocale())

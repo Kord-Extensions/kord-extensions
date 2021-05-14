@@ -3,6 +3,8 @@ package com.kotlindiscord.kord.extensions.commands
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
@@ -11,6 +13,8 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.event.Event
 import io.sentry.Breadcrumb
 import io.sentry.SentryLevel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -29,7 +33,13 @@ public abstract class CommandContext(
     public open val eventObj: Event,
     public open val commandName: String,
     public open val argsList: Array<String>
-) {
+) : KoinComponent {
+    /** Translations provider, for retrieving translations. **/
+    public val translationsProvider: TranslationsProvider by inject()
+
+    /** Sentry adapter, for easy access to Sentry functions. **/
+    public val sentry: SentryAdapter by inject()
+
     /** A list of Sentry breadcrumbs created during command execution. **/
     public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
 
@@ -66,7 +76,7 @@ public abstract class CommandContext(
 
         data: Map<String, Any> = mapOf()
     ): Breadcrumb {
-        val crumb = command.extension.bot.sentry.createBreadcrumb(category, level, message, type, data)
+        val crumb = sentry.createBreadcrumb(category, level, message, type, data)
 
         breadcrumbs.add(crumb)
 
@@ -104,7 +114,7 @@ public abstract class CommandContext(
     ): String {
         val locale = getLocale()
 
-        return command.extension.bot.translationsProvider.translate(key, locale, bundleName, replacements)
+        return translationsProvider.translate(key, locale, bundleName, replacements)
     }
 
     /**

@@ -1,7 +1,11 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import dev.kord.core.Kord
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * Base class for an argument converter.
@@ -16,7 +20,13 @@ import com.kotlindiscord.kord.extensions.commands.parser.Argument
  */
 public abstract class Converter<T : Any?>(
     public open val required: Boolean = true,
-) {
+) : KoinComponent {
+    /** Current instance of the bot. **/
+    public open val bot: ExtensibleBot by inject()
+
+    /** Kord instance, backing the ExtensibleBot. **/
+    public val kord: Kord by inject()
+
     /** This will be set to true by the argument parser if the conversion succeeded. **/
     public var parseSuccess: Boolean = false
 

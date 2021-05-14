@@ -12,7 +12,7 @@ import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
-import com.kotlindiscord.kord.extensions.utils.module
+import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
@@ -33,14 +33,9 @@ import kotlinx.coroutines.launch
 import mu.KLogger
 import mu.KotlinLogging
 import net.time4j.tz.repo.TZDATA
-import org.koin.core.Koin
-import org.koin.core.KoinApplication
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.dsl.bind
-import org.koin.dsl.koinApplication
-import org.koin.environmentProperties
-import org.koin.fileProperties
-import org.koin.logger.slf4jLogger
-import java.io.File
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -56,32 +51,75 @@ import kotlin.reflect.full.primaryConstructor
  * @param settings Bot builder object containing the bot's settings.
  * @param token Token for connecting to Discord.
  */
-public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, private val token: String) {
+public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, private val token: String) : KoinComponent {
     /**
      * @suppress
      */
-    public open lateinit var kord: Kord  // Kord doesn't allow us to inherit the class, let's wrap it instead
+    @Deprecated(
+        "Use Koin to get this instead. This will be private in future.",
+        ReplaceWith(
+            "getKoin().get<Kord>()",
+
+            "com.kotlindiscord.kord.extensions.utils.getKoin",
+            "dev.kord.core.Kord"
+        ),
+        level = DeprecationLevel.WARNING
+    )
+    public val kord: Kord by inject()
 
     /**
      * Sentry adapter, for working with Sentry.
      */
-    public open val sentry: SentryAdapter = SentryAdapter()
-
-    /**
-     * Translations provider, for retrieving translations.
-     */
-    public open val translationsProvider: TranslationsProvider = settings.i18nBuilder.translationsProvider
-
-    /**
-     * A list of all registered commands.
-     */
     @Deprecated(
-        "Use the equivalent variable in `messageCommands` instead.",
-        ReplaceWith("messageCommands.commands"),
+        "Use Koin to get this instead. This will be removed in future.",
+        ReplaceWith(
+            "getKoin().get<SentryAdapter>()",
+
+            "com.kotlindiscord.kord.extensions.utils.getKoin",
+            "com.kotlindiscord.kord.extensions.sentry.SentryAdapter"
+        ),
         level = DeprecationLevel.ERROR
     )
-    public open val commands: MutableList<MessageCommand<out Arguments>>
-        get() = messageCommands.commands
+    public open val sentry: SentryAdapter by inject()
+
+    /** Translations provider, for retrieving translations. **/
+    @Deprecated(
+        "Use Koin to get this instead. This will be removed in future.",
+        ReplaceWith(
+            "getKoin().get<TranslationsProvider>()",
+
+            "com.kotlindiscord.kord.extensions.utils.getKoin",
+            "com.kotlindiscord.kord.extensions.i18n.TranslationsProvider"
+        ),
+        level = DeprecationLevel.ERROR
+    )
+    public val translationsProvider: TranslationsProvider by inject()
+
+    /** Message command registry, keeps track of and executes message commands. **/
+    @Deprecated(
+        "Use Koin to get this instead. This will be made private in future.",
+        ReplaceWith(
+            "getKoin().get<MessageCommandRegistry>()",
+
+            "com.kotlindiscord.kord.extensions.utils.getKoin",
+            "com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry"
+        ),
+        level = DeprecationLevel.WARNING
+    )
+    public open val messageCommands: MessageCommandRegistry by inject()
+
+    /** Slash command registry, keeps track of and executes slash commands. **/
+    @Deprecated(
+        "Use Koin to get this instead. This will be made private in future.",
+        ReplaceWith(
+            "getKoin().get<SlashCommandRegistry>()",
+
+            "com.kotlindiscord.kord.extensions.utils.getKoin",
+            "com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry"
+        ),
+        level = DeprecationLevel.WARNING
+    )
+    public open val slashCommands: SlashCommandRegistry by inject()
 
     /**
      * A list of all registered event handlers.
@@ -105,62 +143,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     /** @suppress **/
     public open val logger: KLogger = KotlinLogging.logger {}
 
-    /** Configured Koin application. **/
-    public open val koinApp: KoinApplication = koinApplication {
-        slf4jLogger(settings.koinLogLevel)
-        environmentProperties()
-
-        if (File("koin.properties").exists()) {
-            fileProperties("koin.properties")
-        }
-
-        modules()
-    }
-
-    /** Quick access to the bot's configured default command prefix. **/
-    @Deprecated(
-        "Use the getter function in `messageCommands`, or get the default prefix from `settings`.",
-        ReplaceWith("messageCommands.getPrefix(event)"),
-        level = DeprecationLevel.ERROR
-    )
-    public open val prefix: String
-        get() = settings.messageCommandsBuilder.defaultPrefix
-
-    /** Koin context, specific to this bot. Make use of it instead of a global Koin context, if you need Koin. **/
-    public val koin: Koin = koinApp.koin
-
-    /** Message command registry, keeps track of and executes message commands. **/
-    public open val messageCommands: MessageCommandRegistry by koin.inject()
-
-    /** Slash command registry, keeps track of and executes slash commands. **/
-    public open val slashCommands: SlashCommandRegistry by koin.inject()
-
     init {
         TZDATA.init()  // Set up time4j
-
-        settings.hooksBuilder.runAfterKoinCreated(this)
-
-        koin.module { single { this@ExtensibleBot } }
-        koin.module { single { settings } bind ExtensibleBotBuilder::class }
-        koin.module { single { sentry } bind SentryAdapter::class }
-        koin.module { single { translationsProvider } bind TranslationsProvider::class }
-
-        koin.module {
-            single {
-                settings.messageCommandsBuilder.messageRegistryBuilder(this@ExtensibleBot)
-            } bind MessageCommandRegistry::class
-        }
-
-        koin.module {
-            single {
-                settings.slashCommandsBuilder.slashRegistryBuilder(this@ExtensibleBot)
-            } bind SlashCommandRegistry::class
-        }
     }
 
     /** @suppress Function that sets up the bot early on, called by the builder. **/
     public open suspend fun setup() {
-        kord = Kord(token) {
+        val kord = Kord(token) {
             cache {
                 settings.cacheBuilder.builder.invoke(this, it)
             }
@@ -170,9 +159,9 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             }
         }
 
-        settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
+        loadModule { single { kord } bind Kord::class }
 
-        koin.module { single { kord } }
+        settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
         registerListeners()
         addDefaultExtensions()
@@ -188,7 +177,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     public open suspend fun start() {
         settings.hooksBuilder.runBeforeStart(this)
 
-        kord.login(settings.presenceBuilder)
+        getKoin().get<Kord>().login(settings.presenceBuilder)
     }
 
     /** This function sets up all of the bot's default event listeners. **/
@@ -217,7 +206,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                 initialized = true
 
                 if (settings.slashCommandsBuilder.enabled) {
-                    slashCommands.syncAll()
+                    getKoin().get<SlashCommandRegistry>().syncAll()
                 } else {
                     logger.info {
                         "Slash command support is disabled - set `enabled` to `true` in the `slashCommands` builder" +
@@ -231,13 +220,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         if (settings.messageCommandsBuilder.enabled) {
             on<MessageCreateEvent> {
-                messageCommands.handleEvent(this)
+                getKoin().get<MessageCommandRegistry>().handleEvent(this)
             }
         }
 
         if (settings.slashCommandsBuilder.enabled) {
             on<InteractionCreateEvent> {
-                slashCommands.handle(this)
+                getKoin().get<SlashCommandRegistry>().handle(this)
             }
         }
     }
@@ -265,10 +254,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      */
     public inline fun <reified T : Any> on(
         launch: Boolean = true,
-        scope: CoroutineScope = this.kord,
+        scope: CoroutineScope = this.getKoin().get<Kord>(),
         noinline consumer: suspend T.() -> Unit
     ): Job = events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
-        runCatching { if (launch) kord.launch { consumer(it) } else consumer(it) }
+        runCatching { if (launch) getKoin().get<Kord>().launch { consumer(it) } else consumer(it) }
             .onFailure { logger.catching(it) }
     }.catch { logger.catching(it) }.launchIn(scope)
 
@@ -319,8 +308,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * returns an [Extension].
      */
     @Throws(InvalidExtensionException::class)
-    public open suspend fun addExtension(builder: (ExtensibleBot) -> Extension) {
-        val extensionObj = builder.invoke(this)
+    public open suspend fun addExtension(builder: () -> Extension) {
+        val extensionObj = builder.invoke()
 
         extensions[extensionObj.name] = extensionObj
         loadExtension(extensionObj.name)
@@ -406,12 +395,20 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @throws CommandRegistrationException Thrown if the command could not be registered.
      */
     @Deprecated(
-        "Use the equivalent function within `messageCommands` instead.",
-        ReplaceWith("messageCommands.add(command)"),
+        "Use the equivalent function within `MessageCommandRegistry` instead.",
+
+        ReplaceWith(
+            "getKoin().get<MessageCommandRegistry>().add(command)",
+
+            "org.koin.core.component.KoinComponent.getKoin",
+            "com.kotlindiscord.kord.extensions.commands.MessageCommand"
+        ),
         level = DeprecationLevel.ERROR
     )
     @Throws(CommandRegistrationException::class)
-    public open fun addCommand(command: MessageCommand<out Arguments>): Unit = messageCommands.add(command)
+    public open fun addCommand(command: MessageCommand<out Arguments>): Unit = getKoin()
+        .get<MessageCommandRegistry>()
+        .add(command)
 
     /**
      * Directly remove a registered [MessageCommand] from this bot.
@@ -422,11 +419,19 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @param command The command to be removed.
      */
     @Deprecated(
-        "Use the equivalent function within `messageCommands` instead.",
-        ReplaceWith("messageCommands.remove(command)"),
+        "Use the equivalent function within `MessageCommandRegistry` instead.",
+
+        ReplaceWith(
+            "getKoin().get<MessageCommandRegistry>().remove(command)",
+
+            "org.koin.core.component.KoinComponent.getKoin",
+            "com.kotlindiscord.kord.extensions.commands.MessageCommand"
+        ),
         level = DeprecationLevel.ERROR
     )
-    public open fun removeCommand(command: MessageCommand<out Arguments>): Boolean = messageCommands.remove(command)
+    public open fun removeCommand(command: MessageCommand<out Arguments>): Boolean = getKoin()
+        .get<MessageCommandRegistry>()
+        .remove(command)
 
     /**
      * Directly register an [EventHandler] to this bot.
@@ -463,21 +468,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @param handler The event handler to be removed.
      */
     public open fun removeEventHandler(handler: EventHandler<out Any>): Boolean = eventHandlers.remove(handler)
-
-    public companion object {
-        /**
-         * DSL function for creating a bot instance. Use the bot class like a builder!
-         *
-         * `ExtensibleBot(token) { extensions { add(::MyExtension) } }`
-         */
-        public suspend operator fun invoke(token: String, builder: ExtensibleBotBuilder.() -> Unit): ExtensibleBot =
-            ExtensibleBotBuilder().apply(builder).build(token)
-
-        /**
-         * DSL function for creating a bot instance. Token only. This is provided for completeness, but you probably
-         * want to configure your bot using the other version of this function.
-         */
-        public suspend operator fun invoke(token: String): ExtensibleBot =
-            this(token) {}
-    }
 }
+
+/**
+ * DSL function for creating a bot instance. This is the Kord Extensions entrypoint.
+ *
+ * `ExtensibleBot(token) { extensions { add(::MyExtension) } }`
+ */
+@Suppress("FunctionNaming")  // This is a factory function
+public suspend fun ExtensibleBot(token: String, builder: ExtensibleBotBuilder.() -> Unit): ExtensibleBot =
+    ExtensibleBotBuilder().apply(builder).build(token)

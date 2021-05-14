@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -41,14 +40,13 @@ public abstract class MultiConverter<T : Any>(
      *
      * @param args List of [String] arguments, provided by the user running the current command
      * @param context MessageCommand context object, containing the event, message, and other command-related things
-     * @param bot Current instance of [ExtensibleBot], representing the currently-connected bot
      *
      * @return The number of arguments this converter consumed to produce its resulting value. Return 0 if you didn't
      * consume any (eg, you failed to convert anything).
      *
      * @see Converter
      */
-    public abstract suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int
+    public abstract suspend fun parse(args: List<String>, context: CommandContext): Int
 
     /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
     public operator fun getValue(thisRef: Arguments, property: KProperty<*>): List<T> = parsed
@@ -67,7 +65,6 @@ public abstract class MultiConverter<T : Any>(
     public open suspend fun handleError(
         t: Throwable,
         values: List<String>,
-        context: CommandContext,
-        bot: ExtensibleBot
+        context: CommandContext
     ): String = throw t
 }

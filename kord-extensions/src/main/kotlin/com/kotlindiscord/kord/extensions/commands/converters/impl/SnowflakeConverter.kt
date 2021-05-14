@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.long
@@ -24,7 +23,7 @@ public class SnowflakeConverter(
 ) : SingleConverter<Snowflake>() {
     override val signatureTypeString: String = "converters.snowflake.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
         try {
             this.parsed = Snowflake(arg)
         } catch (e: NumberFormatException) {

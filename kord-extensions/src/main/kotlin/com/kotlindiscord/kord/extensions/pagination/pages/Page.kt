@@ -1,8 +1,11 @@
 package com.kotlindiscord.kord.extensions.pagination.pages
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -32,7 +35,13 @@ public open class Page(
     public open val image: String? = null,
     public open val thumbnail: String? = null,
     public open val url: String? = null,
-) {
+) : KoinComponent {
+    /** Current instance of the bot. **/
+    public open val bot: ExtensibleBot by inject()
+
+    /** Translations provider, for retrieving translations. **/
+    public val translationsProvider: TranslationsProvider by inject()
+
     /** Whether to try to fill the author property. **/
     public open val anyAuthor: Boolean = listOf(author, authorIcon, authorUrl).any { it != null }
 
@@ -41,7 +50,6 @@ public open class Page(
 
     /** Create an embed builder for this page. **/
     public open fun build(
-        bot: ExtensibleBot,
         locale: Locale,
         pageNum: Int,
         pages: Int,
@@ -67,7 +75,7 @@ public open class Page(
             text = ""
 
             if (pages > 1) {
-                text += bot.translationsProvider.translate(
+                text += translationsProvider.translate(
                     "paginator.footer.page",
                     locale,
                     replacements = arrayOf(pageNum + 1, pages)
@@ -80,7 +88,7 @@ public open class Page(
                 }
 
                 text += if (group.isNullOrBlank()) {
-                    bot.translationsProvider.translate(
+                    translationsProvider.translate(
                         "paginator.footer.group",
                         locale,
                         replacements = arrayOf(groupIndex + 1, groups)

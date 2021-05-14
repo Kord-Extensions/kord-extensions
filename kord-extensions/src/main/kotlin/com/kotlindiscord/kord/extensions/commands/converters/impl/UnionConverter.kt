@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
@@ -49,12 +48,12 @@ public class UnionConverter(
         }
     }
 
-    override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
+    override suspend fun parse(args: List<String>, context: CommandContext): Int {
         for (converter in converters) {
             @Suppress("TooGenericExceptionCaught")
             when (converter) {
                 is SingleConverter<*> -> try {
-                    val result = converter.parse(args.first(), context, bot)
+                    val result = converter.parse(args.first(), context)
 
                     if (result) {
                         converter.parseSuccess = true
@@ -67,7 +66,7 @@ public class UnionConverter(
                 }
 
                 is DefaultingConverter<*> -> try {
-                    val result = converter.parse(args.first(), context, bot)
+                    val result = converter.parse(args.first(), context)
 
                     if (result) {
                         converter.parseSuccess = true
@@ -80,7 +79,7 @@ public class UnionConverter(
                 }
 
                 is OptionalConverter<*> -> try {
-                    val result = converter.parse(args.first(), context, bot)
+                    val result = converter.parse(args.first(), context)
 
                     if (result && converter.parsed != null) {
                         converter.parseSuccess = true
@@ -93,7 +92,7 @@ public class UnionConverter(
                 }
 
                 is MultiConverter<*> -> try {
-                    val result = converter.parse(args, context, bot)
+                    val result = converter.parse(args, context)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -106,7 +105,7 @@ public class UnionConverter(
                 }
 
                 is CoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context, bot)
+                    val result = converter.parse(args, context)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -119,7 +118,7 @@ public class UnionConverter(
                 }
 
                 is DefaultingCoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context, bot)
+                    val result = converter.parse(args, context)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -132,7 +131,7 @@ public class UnionConverter(
                 }
 
                 is OptionalCoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context, bot)
+                    val result = converter.parse(args, context)
 
                     if (result > 0 && converter.parsed != null) {
                         converter.parseSuccess = true

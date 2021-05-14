@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.guild
@@ -30,8 +29,8 @@ public class GuildConverter(
 ) : SingleConverter<Guild>() {
     override val signatureTypeString: String = "converters.guild.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val guild = findGuild(arg, bot)
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+        val guild = findGuild(arg)
             ?: throw CommandException(
                 context.translate("converters.guild.error.missing", replacements = arrayOf(arg))
             )
@@ -40,13 +39,13 @@ public class GuildConverter(
         return true
     }
 
-    private suspend fun findGuild(arg: String, bot: ExtensibleBot): Guild? =
+    private suspend fun findGuild(arg: String): Guild? =
         try { // Try for a guild ID first
             val id = Snowflake(arg)
 
-            bot.kord.getGuild(id)
+            kord.getGuild(id)
         } catch (e: NumberFormatException) { // It's not an ID, let's try the name
-            bot.kord.guilds.firstOrNull { it.name.equals(arg, true) }
+            kord.guilds.firstOrNull { it.name.equals(arg, true) }
         }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =

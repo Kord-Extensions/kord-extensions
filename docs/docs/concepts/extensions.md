@@ -200,6 +200,7 @@ probably don't need with a :wrench:.
 Name   | Type     | Description
 :----- | :------: | :----------
 `name` | `String` | The name of the extension, which is how it'll be referred to throughout the bot.
+`bundle` | `String` | The name of the translation bundle this extension should use, if any.
 `eventHandlers` | `MutableList <EventHandler>` | :wrench:{: title="Intended for internal use." } List of event handlers registered to this extension.
 `commands` | `MutableList <Command>` | :wrench:{: title="Intended for internal use." } List of commands registered to this extension.
 `loaded` | `Boolean` | :wrench:{: title="Intended for internal use." } Whether the extension is currently loaded - this is set automatically.
@@ -208,10 +209,11 @@ Name   | Type     | Description
 
 Name | Description
 :--- | :----------
-`command` | Create a new command for this extension.
+`command` | Create a new message command for this extension.
 `event` | Create a new event handler for this extension.
-`group` | Create a new grouped command for this extension (a command that can have subcommands).
+`group` | Create a new grouped message command for this extension (a message command that can have subcommands).
 `setup` | Override this and add all of your setup logic for the extension.
+`slashCommand` | Create a new slash command for this extension.
 `unload` | Override this if you need to clean up when your extension is unloaded.
 `doSetup` | :wrench:{: title="Intended for internal use." } Called by the bot when setting up the extension, firing events and handling extra setup tasks.
 `doUnload` | :wrench:{: title="Intended for internal use." } Called by the bot when unloading the extension, firing events, unregistering event handlers and commands and handling extra cleanup.

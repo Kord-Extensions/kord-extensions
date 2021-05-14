@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import java.util.*
 
 /**
@@ -56,12 +56,14 @@ public suspend fun String.parseBoolean(context: CommandContext): Boolean? {
  *
  * Translations may contain commas, in which case any of the given values will be suitable.
  */
-public fun String.parseBoolean(bot: ExtensibleBot, locale: Locale): Boolean? {
-    val trueValues = bot.translationsProvider.translate("utils.string.true", locale)
+public fun String.parseBoolean(locale: Locale): Boolean? {
+    val translationsProvider = getKoin().get<TranslationsProvider>()
+
+    val trueValues = translationsProvider.translate("utils.string.true", locale)
         .split(',')
         .map { it.trim() }
 
-    val falseValues = bot.translationsProvider.translate("utils.string.false", locale)
+    val falseValues = translationsProvider.translate("utils.string.false", locale)
         .split(',')
         .map { it.trim() }
 

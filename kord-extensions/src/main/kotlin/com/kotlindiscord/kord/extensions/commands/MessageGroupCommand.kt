@@ -148,7 +148,7 @@ public open class GroupCommand<T : Arguments>(
     public open suspend fun getCommand(name: String?, event: MessageCreateEvent): MessageCommand<out Arguments>? {
         name ?: return null
 
-        val locale = event.getLocale(extension.bot)
+        val locale = event.getLocale()
 
         return commands.firstOrNull { it.getTranslatedName(locale) == name }
             ?: commands.firstOrNull { it.getTranslatedAliases(locale).contains(name) }

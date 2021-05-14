@@ -3,9 +3,13 @@ package com.kotlindiscord.kord.extensions.events
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import dev.kord.core.event.Event
 import io.sentry.Breadcrumb
 import io.sentry.SentryLevel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -19,7 +23,13 @@ import java.util.*
 public open class EventContext<T : Any>(
     public open val eventHandler: EventHandler<T>,
     public open val event: T
-) {
+) : KoinComponent {
+    /** Translations provider, for retrieving translations. **/
+    public val translationsProvider: TranslationsProvider by inject()
+
+    /** Sentry adapter, for easy access to Sentry functions. **/
+    public val sentry: SentryAdapter by inject()
+
     /** A list of Sentry breadcrumbs created during event processing. **/
     public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
 
@@ -33,7 +43,7 @@ public open class EventContext<T : Any>(
         replacements: Array<Any?> = arrayOf()
     ): String {
         if (event !is Event) {
-            return eventHandler.extension.bot.translationsProvider.get(key, bundleName)
+            return translationsProvider.get(key, bundleName)
         }
 
         val eventObj = event as Event
@@ -53,9 +63,9 @@ public open class EventContext<T : Any>(
         }
 
         return if (locale != null) {
-            eventHandler.extension.bot.translationsProvider.translate(key, locale, bundleName, replacements)
+            translationsProvider.translate(key, locale, bundleName, replacements)
         } else {
-            eventHandler.extension.bot.translationsProvider.translate(key, bundleName, replacements)
+            translationsProvider.translate(key, bundleName, replacements)
         }
     }
 
@@ -83,7 +93,7 @@ public open class EventContext<T : Any>(
 
         data: Map<String, Any> = mapOf()
     ): Breadcrumb {
-        val crumb = eventHandler.extension.bot.sentry.createBreadcrumb(category, level, message, type, data)
+        val crumb = sentry.createBreadcrumb(category, level, message, type, data)
 
         breadcrumbs.add(crumb)
 

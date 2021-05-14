@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands.slash.converters.impl
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
@@ -23,7 +22,7 @@ public class EnumChoiceConverter<E>(
 ) : ChoiceConverter<E>(choices.associateBy { it.readableName }) where E : Enum<E>, E : ChoiceEnum {
     override val signatureTypeString: String = typeName
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
         try {
             parsed = getter.invoke(arg) ?: return false
         } catch (e: IllegalArgumentException) {

@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.entity.Permission
 import java.util.*
 
@@ -46,5 +46,5 @@ public suspend fun Permission.translate(context: CommandContext): String =
     context.translate(toTranslationKey())
 
 /** Given a locale, translate the permission to a human-readable string based on the context's locale. **/
-public suspend fun Permission.translate(locale: Locale, bot: ExtensibleBot): String =
-    bot.translationsProvider.translate(toTranslationKey(), locale)
+public suspend fun Permission.translate(locale: Locale): String =
+    getKoin().get<TranslationsProvider>().translate(toTranslationKey(), locale)

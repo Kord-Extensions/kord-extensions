@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import com.kotlindiscord.kord.extensions.utils.waitFor
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.Kord
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createEmbed
@@ -19,6 +20,8 @@ import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.core.event.message.ReactionRemoveEvent
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 private const val WRONG_TYPE = "Wrong event type!"
@@ -65,7 +68,6 @@ private val logger = KotlinLogging.logger {}
  * @param locale Locale to use for translations
  */
 public open class Paginator(
-    public val bot: ExtensibleBot,
     public val pages: Pages,
     public val targetChannel: MessageChannelBehavior? = null,
     public val targetMessage: Message? = null,
@@ -74,8 +76,18 @@ public open class Paginator(
     public val keepEmbed: Boolean = true,
     public val pingInReply: Boolean = true,
     public val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
-    public val locale: Locale = bot.settings.i18nBuilder.defaultLocale
-) {
+
+    locale: Locale? = null
+) : KoinComponent {
+    /** Current instance of the bot. **/
+    public open val bot: ExtensibleBot by inject()
+
+    /** Kord instance, backing the ExtensibleBot. **/
+    public val kord: Kord by inject()
+
+    /** Locale to use for translations. **/
+    public val locale: Locale = locale ?: bot.settings.i18nBuilder.defaultLocale
+
     init {
         if (targetChannel == null && targetMessage == null) {
             throw IllegalArgumentException("Must provide either a target channel or target message")
@@ -117,7 +129,6 @@ public open class Paginator(
         }
 
         val builder = currentPage.build(
-            bot,
             locale,
             currentPageNum,
             pages.size,
@@ -168,7 +179,7 @@ public open class Paginator(
             val guildCondition: suspend Event.() -> Boolean = {
                 this is ReactionAddEvent &&
                     message.id == this.messageId &&
-                    this.userId != bot.kord.selfId &&
+                    this.userId != kord.selfId &&
                     (owner == null || owner.id == this.userId) &&
                     active
             }
@@ -176,12 +187,12 @@ public open class Paginator(
             val dmCondition: suspend Event.() -> Boolean = {
                 when (this) {
                     is ReactionAddEvent -> message.id == this.messageId &&
-                        this.userId != bot.kord.selfId &&
+                        this.userId != kord.selfId &&
                         (owner == null || owner.id == this.userId) &&
                         active
 
                     is ReactionRemoveEvent -> message.id == this.messageId &&
-                        this.userId != bot.kord.selfId &&
+                        this.userId != kord.selfId &&
                         (owner == null || owner.id == this.userId) &&
                         active
 
@@ -197,9 +208,9 @@ public open class Paginator(
                 }
 
                 val event = if (timeout != null) {
-                    bot.kord.waitFor(timeout = timeout, condition = condition)
+                    kord.waitFor(timeout = timeout, condition = condition)
                 } else {
-                    bot.kord.waitFor(condition = condition)
+                    kord.waitFor(condition = condition)
                 } ?: break
 
                 processEvent(event)

@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.regex
@@ -31,7 +30,7 @@ public class RegexConverter(
 ) : SingleConverter<Regex>() {
     override val signatureTypeString: String = "converters.regex.signatureType.singular"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
         this.parsed = arg.toRegex(options)
 
         return true

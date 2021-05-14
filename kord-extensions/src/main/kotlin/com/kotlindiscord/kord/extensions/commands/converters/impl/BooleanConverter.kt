@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.boolean
@@ -26,7 +25,7 @@ public class BooleanConverter(
     public override val signatureTypeString: String = "converters.boolean.signatureType"
     public override val errorTypeString: String = "converters.boolean.errorType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
         val bool = arg.parseBoolean(context) ?: return false
 
         this.parsed = bool

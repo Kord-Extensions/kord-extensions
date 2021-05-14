@@ -3,13 +3,17 @@ package com.kotlindiscord.kord.extensions.extensions
 import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 private val logger = KotlinLogging.logger {}
 
@@ -19,10 +23,17 @@ private val logger = KotlinLogging.logger {}
  * Override this and create your own extensions with their own event handlers and commands.
  * This will allow you to keep distinct blocks of functionality separate, keeping the codebase
  * clean and configurable.
- *
- * @param bot The [ExtensibleBot] instance that this extension is installed to.
  */
-public abstract class Extension(public open val bot: ExtensibleBot) {
+public abstract class Extension : KoinComponent {
+    /** The [ExtensibleBot] instance that this extension is installed to. **/
+    public open val bot: ExtensibleBot by inject()
+
+    /** Message command registry. **/
+    private val messageCommandsRegistry: MessageCommandRegistry by inject()
+
+    /** Slash command registry. **/
+    private val slashCommandsRegistry: SlashCommandRegistry by inject()
+
     /**
      * The name of this extension.
      *
@@ -159,7 +170,7 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
     public open suspend fun <T : Arguments> command(commandObj: MessageCommand<T>): MessageCommand<T> {
         try {
             commandObj.validate()
-            bot.messageCommands.add(commandObj)
+            messageCommandsRegistry.add(commandObj)
             commands.add(commandObj)
         } catch (e: CommandRegistrationException) {
             logger.error(e) { "Failed to register command - $e" }
@@ -217,7 +228,7 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
         try {
             commandObj.validate()
             slashCommands.add(commandObj)
-            bot.slashCommands.register(commandObj, commandObj.guild)
+            slashCommandsRegistry.register(commandObj, commandObj.guild)
         } catch (e: CommandRegistrationException) {
             logger.error(e) { "Failed to register slash command - $e" }
         } catch (e: InvalidCommandException) {
@@ -303,7 +314,7 @@ public abstract class Extension(public open val bot: ExtensibleBot) {
         }
 
         for (command in commands) {
-            bot.messageCommands.remove(command)
+            messageCommandsRegistry.remove(command)
         }
 
         eventHandlers.clear()

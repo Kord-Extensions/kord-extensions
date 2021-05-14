@@ -2,13 +2,13 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.KoinAccessor
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.parse
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.Kord
 import dev.kord.core.event.message.MessageCreateEvent
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -19,26 +19,27 @@ import java.util.concurrent.Executors
 
 /**
  * A class for the registration and dispatching of message-based commands.
- *
- * @param bot Current instance of the bot.
  */
 @OptIn(KordPreview::class)
-public open class MessageCommandRegistry(
-    public open val bot: ExtensibleBot,
-    koinAccessor: KoinComponent = KoinAccessor(bot)
-) : KoinComponent by koinAccessor {
+public open class MessageCommandRegistry : KoinComponent {
+    /** Current instance of the bot. **/
+    public val bot: ExtensibleBot by inject()
+
+    /** Kord instance, backing the ExtensibleBot. **/
+    public val kord: Kord by inject()
+
     /**
      * A list of all registered commands.
      */
     public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
 
     /** @suppress **/
-    public val settings: ExtensibleBotBuilder by inject()
+    public val botSettings: ExtensibleBotBuilder by inject()
 
     /** @suppress **/
     public open val commandThreadPool: ExecutorCoroutineDispatcher by lazy {
         Executors
-            .newFixedThreadPool(settings.messageCommandsBuilder.threads)
+            .newFixedThreadPool(botSettings.messageCommandsBuilder.threads)
             .asCoroutineDispatcher()
     }
 
@@ -103,15 +104,15 @@ public open class MessageCommandRegistry(
      * needed.
      */
     public open suspend fun getPrefix(event: MessageCreateEvent): String =
-        settings.messageCommandsBuilder.prefixCallback(event, settings.messageCommandsBuilder.defaultPrefix)
+        botSettings.messageCommandsBuilder.prefixCallback(event, botSettings.messageCommandsBuilder.defaultPrefix)
 
     /**
      * Check whether the given string starts with a mention referring to the bot. If so, the matching mention string
      * is returned, otherwise `null`.
      */
     public open fun String.startsWithSelfMention(): String? {
-        val mention = "<@${bot.kord.selfId.value}>"
-        val nickMention = "<@!${bot.kord.selfId.value}>"
+        val mention = "<@${kord.selfId.value}>"
+        val nickMention = "<@!${kord.selfId.value}>"
 
         return when {
             startsWith(mention) -> mention
@@ -160,7 +161,7 @@ public open class MessageCommandRegistry(
                         .trim()
                 }
 
-                settings.messageCommandsBuilder.invokeOnMention &&
+                botSettings.messageCommandsBuilder.invokeOnMention &&
                     matchedMention != null && parts[0] == matchedMention -> {
                     // MessageCommand with a mention; first part is exactly the mention
 
@@ -176,7 +177,7 @@ public open class MessageCommandRegistry(
                         .trim()
                 }
 
-                settings.messageCommandsBuilder.invokeOnMention &&
+                botSettings.messageCommandsBuilder.invokeOnMention &&
                     matchedMention != null && parts[0].startsWith(matchedMention) -> {
                     // MessageCommand with a mention; no space between mention and command
 
@@ -223,7 +224,7 @@ public open class MessageCommandRegistry(
 
     /** Given a command name and [MessageCreateEvent], try to find a matching command. **/
     public open suspend fun getCommand(name: String, event: MessageCreateEvent): MessageCommand<out Arguments>? {
-        val locale = event.getLocale(bot)
+        val locale = event.getLocale()
 
         return commands.firstOrNull { it.getTranslatedName(locale) == name }
             ?: commands.firstOrNull { it.getTranslatedAliases(locale).contains(name) }

@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.coalescedDuration
@@ -30,7 +29,7 @@ public class DurationCoalescingConverter(
 ) : CoalescingConverter<Duration>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
 
-    override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
+    override suspend fun parse(args: List<String>, context: CommandContext): Int {
         val durations = mutableListOf<String>()
 
         for (arg in args) {

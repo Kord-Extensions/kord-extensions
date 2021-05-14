@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.user
@@ -32,8 +31,8 @@ public class UserConverter(
 ) : SingleConverter<User>() {
     override val signatureTypeString: String = "converters.user.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val user = findUser(arg, context, bot)
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+        val user = findUser(arg, context)
             ?: throw CommandException(
                 context.translate("converters.user.error.missing", replacements = arrayOf(arg))
             )
@@ -42,12 +41,12 @@ public class UserConverter(
         return true
     }
 
-    private suspend fun findUser(arg: String, context: CommandContext, bot: ExtensibleBot): User? =
+    private suspend fun findUser(arg: String, context: CommandContext): User? =
         if (arg.startsWith("<@") && arg.endsWith(">")) { // It's a mention
             val id = arg.substring(2, arg.length - 1).replace("!", "")
 
             try {
-                bot.kord.getUser(Snowflake(id))
+                kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
                 throw CommandException(
                     context.translate("converters.user.error.invalid", replacements = arrayOf(id))
@@ -55,12 +54,12 @@ public class UserConverter(
             }
         } else {
             try { // Try for a user ID first
-                bot.kord.getUser(Snowflake(arg))
+                kord.getUser(Snowflake(arg))
             } catch (e: NumberFormatException) { // It's not an ID, let's try the tag
                 if (!arg.contains("#")) {
                     null
                 } else {
-                    bot.kord.users.firstOrNull { user ->
+                    kord.users.firstOrNull { user ->
                         user.tag.equals(arg, true)
                     }
                 }

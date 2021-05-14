@@ -5,11 +5,14 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.respond
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
+import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
@@ -17,6 +20,8 @@ import dev.kord.core.event.message.MessageCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -34,7 +39,19 @@ private val logger = KotlinLogging.logger {}
 public open class MessageCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null
-) : Command(extension) {
+) : Command(extension), KoinComponent {
+    /** Translations provider, for retrieving translations. **/
+    public val translationsProvider: TranslationsProvider by inject()
+
+    /** Message command registry. **/
+    public val messageCommandsRegistry: MessageCommandRegistry by inject()
+
+    /** Sentry adapter, for easy access to Sentry functions. **/
+    public val sentry: SentryAdapter by inject()
+
+    /** Kord instance, backing the ExtensibleBot. **/
+    public val kord: Kord by inject()
+
     /**
      * @suppress
      */
@@ -77,7 +94,7 @@ public open class MessageCommand<T : Arguments>(
      */
     public open val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
-    override val parser: ArgumentParser = ArgumentParser(extension.bot)
+    override val parser: ArgumentParser = ArgumentParser()
 
     /** Permissions required to be able to run this command. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
@@ -106,7 +123,7 @@ public open class MessageCommand<T : Arguments>(
 
         if (!signatureCache.containsKey(locale)) {
             if (signature != null) {
-                signatureCache[locale] = extension.bot.translationsProvider.translate(
+                signatureCache[locale] = translationsProvider.translate(
                     signature!!,
                     extension.bundle,
                     locale
@@ -122,7 +139,7 @@ public open class MessageCommand<T : Arguments>(
     /** Return this command's name translated for the given locale, cached as required. **/
     public open fun getTranslatedName(locale: Locale): String {
         if (!nameTranslationCache.containsKey(locale)) {
-            nameTranslationCache[locale] = extension.bot.translationsProvider.translate(
+            nameTranslationCache[locale] = translationsProvider.translate(
                 this.name,
                 this.extension.bundle,
                 locale
@@ -136,7 +153,7 @@ public open class MessageCommand<T : Arguments>(
     public open fun getTranslatedAliases(locale: Locale): Set<String> {
         if (!aliasTranslationCache.containsKey(locale)) {
             val translations = this.aliases.map {
-                extension.bot.translationsProvider.translate(it, extension.bundle, locale).toLowerCase()
+                translationsProvider.translate(it, extension.bundle, locale).toLowerCase()
             }.toSortedSet()
 
             aliasTranslationCache[locale] = translations
@@ -255,7 +272,7 @@ public open class MessageCommand<T : Arguments>(
 
         context.populate()
 
-        val firstBreadcrumb = if (extension.bot.sentry.enabled) {
+        val firstBreadcrumb = if (sentry.enabled) {
             val channel = event.message.getChannelOrNull()
             val guild = event.message.getGuildOrNull()
 
@@ -277,7 +294,7 @@ public open class MessageCommand<T : Arguments>(
                 data["guild"] = "${guild.name} (${guild.id.asString})"
             }
 
-            extension.bot.sentry.createBreadcrumb(
+            sentry.createBreadcrumb(
                 category = "command",
                 type = "user",
                 message = "Command \"$name\" called.",
@@ -291,7 +308,7 @@ public open class MessageCommand<T : Arguments>(
         try {
             if (context.guild != null) {
                 val perms = (context.channel.asChannel() as GuildChannel)
-                    .getEffectivePermissions(extension.bot.kord.selfId)
+                    .getEffectivePermissions(kord.selfId)
 
                 val missingPerms = requiredPerms.filter { !perms.contains(it) }
 
@@ -317,7 +334,7 @@ public open class MessageCommand<T : Arguments>(
         } catch (e: CommandException) {
             event.message.respond(e.toString())
         } catch (t: Throwable) {
-            if (extension.bot.sentry.enabled) {
+            if (sentry.enabled) {
                 logger.debug { "Submitting error to sentry." }
 
                 lateinit var sentryId: SentryId
@@ -355,12 +372,12 @@ public open class MessageCommand<T : Arguments>(
                     logger.debug { "Error submitted to Sentry: $sentryId" }
                 }
 
-                extension.bot.sentry.addEventId(sentryId)
+                sentry.addEventId(sentryId)
 
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
                 if (extension.bot.extensions.containsKey("sentry")) {
-                    val prefix = extension.bot.messageCommands.getPrefix(event)
+                    val prefix = messageCommandsRegistry.getPrefix(event)
 
                     event.message.respond(
                         context.translate(

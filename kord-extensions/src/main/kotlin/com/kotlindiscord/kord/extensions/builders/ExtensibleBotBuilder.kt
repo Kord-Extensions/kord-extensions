@@ -6,6 +6,8 @@ import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
@@ -19,7 +21,15 @@ import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
+import mu.KLogger
+import mu.KotlinLogging
+import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import org.koin.dsl.bind
+import org.koin.environmentProperties
+import org.koin.fileProperties
+import org.koin.logger.slf4jLogger
+import java.io.File
 import java.util.*
 
 internal typealias LocaleResolver = suspend (
@@ -146,9 +156,37 @@ public open class ExtensibleBotBuilder {
         this.presenceBuilder = builder
     }
 
+    /** @suppress Internal function used to initially set up Koin. **/
+    public open fun setupKoin() {
+        startKoin {
+            slf4jLogger(koinLogLevel)
+            environmentProperties()
+
+            if (File("koin.properties").exists()) {
+                fileProperties("koin.properties")
+            }
+
+            modules()
+        }
+
+        hooksBuilder.runBeforeKoinSetup()
+
+        loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
+        loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
+        loadModule { single { messageCommandsBuilder.messageRegistryBuilder() } bind MessageCommandRegistry::class }
+        loadModule { single { SentryAdapter() } bind SentryAdapter::class }
+        loadModule { single { slashCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
+
+        hooksBuilder.runAfterKoinSetup()
+    }
+
     /** @suppress Internal function used to build a bot instance. **/
     public open suspend fun build(token: String): ExtensibleBot {
+        setupKoin()
+
         val bot = ExtensibleBot(this, token)
+
+        loadModule { single { bot } bind ExtensibleBot::class }
 
         hooksBuilder.runCreated(bot)
         bot.setup()
@@ -203,7 +241,7 @@ public open class ExtensibleBotBuilder {
     /** Builder used for configuring the bot's extension options, and registering custom extensions. **/
     public open class ExtensionsBuilder {
         /** @suppress Internal list that shouldn't be modified by the user directly. **/
-        public open val extensions: MutableList<(ExtensibleBot) -> Extension> = mutableListOf()
+        public open val extensions: MutableList<() -> Extension> = mutableListOf()
 
         /** Whether to enable the bundled help extension. Defaults to `true`. **/
         public var help: Boolean = true
@@ -212,7 +250,7 @@ public open class ExtensibleBotBuilder {
         public var sentry: Boolean = true
 
         /** Add a custom extension to the bot via a builder - probably the extension constructor. **/
-        public open fun add(builder: (ExtensibleBot) -> Extension) {
+        public open fun add(builder: () -> Extension) {
             extensions.add(builder)
         }
     }
@@ -226,7 +264,10 @@ public open class ExtensibleBotBuilder {
         public val afterExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
 
         /** @suppress Internal list of hooks. **/
-        public val afterKoinCreatedList: MutableList<ExtensibleBot.() -> Unit> = mutableListOf()
+        public val afterKoinSetupList: MutableList<() -> Unit> = mutableListOf()
+
+        /** @suppress Internal list of hooks. **/
+        public val beforeKoinSetupList: MutableList<() -> Unit> = mutableListOf()
 
         /** @suppress Internal list of hooks. **/
         public val beforeExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
@@ -256,11 +297,18 @@ public open class ExtensibleBotBuilder {
             afterExtensionsAddedList.add(body)
 
         /**
-         * Register a lambda to be called after the bot's Koin context has been set up. You can use this to register
-         * Koin modules early.
+         * Register a lambda to be called after Koin has been set up. You can use this to register overriding modules
+         * via `loadModule` before the modules are actually accessed.
          */
-        public fun afterKoinCreated(body: ExtensibleBot.() -> Unit): Boolean =
-            afterKoinCreatedList.add(body)
+        public fun afterKoinSetup(body: () -> Unit): Boolean =
+            beforeKoinSetupList.add(body)
+
+        /**
+         * Register a lambda to be called before Koin has been set up. You can use this to register Koin modules
+         * early, if needed.
+         */
+        public fun beforeKoinSetup(body: () -> Unit): Boolean =
+            beforeKoinSetupList.add(body)
 
         /**
          * Register a lambda to be called before all the extensions in the [ExtensionsBuilder] have been added.
@@ -310,16 +358,34 @@ public open class ExtensibleBotBuilder {
             }
 
         /** @suppress Internal hook execution function. **/
-        public fun runAfterKoinCreated(bot: ExtensibleBot): Unit =
-            afterKoinCreatedList.forEach {
+        public fun runAfterKoinSetup() {
+            val logger: KLogger = KotlinLogging.logger {}
+
+            afterKoinSetupList.forEach {
                 try {
-                    it.invoke(bot)
+                    it.invoke()
                 } catch (t: Throwable) {
-                    bot.logger.error(t) {
-                        "Failed to run afterKoinCreated hook $it"
+                    logger.error(t) {
+                        "Failed to run beforeKoinSetup hook $it"
                     }
                 }
             }
+        }
+
+        /** @suppress Internal hook execution function. **/
+        public fun runBeforeKoinSetup() {
+            val logger: KLogger = KotlinLogging.logger {}
+
+            beforeKoinSetupList.forEach {
+                try {
+                    it.invoke()
+                } catch (t: Throwable) {
+                    logger.error(t) {
+                        "Failed to run beforeKoinSetup hook $it"
+                    }
+                }
+            }
+        }
 
         /** @suppress Internal hook execution function. **/
         public suspend fun runBeforeExtensionsAdded(bot: ExtensibleBot): Unit =
@@ -509,7 +575,7 @@ public open class ExtensibleBotBuilder {
         public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var messageRegistryBuilder: (ExtensibleBot) -> MessageCommandRegistry = { MessageCommandRegistry(it) }
+        public var messageRegistryBuilder: () -> MessageCommandRegistry = { MessageCommandRegistry() }
 
         /**
          * List of command checks.
@@ -533,7 +599,7 @@ public open class ExtensibleBotBuilder {
          * Register the builder used to create the [MessageCommandRegistry]. You can change this if you need to make
          * use of a subclass.
          */
-        public fun messageRegistry(builder: (ExtensibleBot) -> MessageCommandRegistry) {
+        public fun messageRegistry(builder: () -> MessageCommandRegistry) {
             messageRegistryBuilder = builder
         }
 
@@ -568,7 +634,7 @@ public open class ExtensibleBotBuilder {
         public var enabled: Boolean = false
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var slashRegistryBuilder: (ExtensibleBot) -> SlashCommandRegistry = { SlashCommandRegistry(it) }
+        public var slashRegistryBuilder: () -> SlashCommandRegistry = { SlashCommandRegistry() }
 
         /**
          * List of slash command checks.
@@ -581,7 +647,7 @@ public open class ExtensibleBotBuilder {
          * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
          * use of a subclass.
          */
-        public fun slashRegistry(builder: (ExtensibleBot) -> SlashCommandRegistry) {
+        public fun slashRegistry(builder: () -> SlashCommandRegistry) {
             slashRegistryBuilder = builder
         }
 

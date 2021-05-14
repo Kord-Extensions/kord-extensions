@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -38,14 +37,13 @@ public abstract class OptionalConverter<T : Any?>(
      *
      * @param arg [String] argument, provided by the user running the current command
      * @param context MessageCommand context object, containing the event, message, and other command-related things
-     * @param bot Current instance of [ExtensibleBot], representing the currently-connected bot
      *
      * @return Whether you managed to convert the argument. If you don't want to provide extra context to the user,
      * simply return `false` - the commands system will generate an error message for you.
      *
      * @see Converter
      */
-    public abstract suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean
+    public abstract suspend fun parse(arg: String, context: CommandContext): Boolean
 
     /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
@@ -65,8 +63,7 @@ public abstract class OptionalConverter<T : Any?>(
     public open suspend fun handleError(
         t: Throwable,
         value: String?,
-        context: CommandContext,
-        bot: ExtensibleBot
+        context: CommandContext
     ): String {
         throw t
     }

@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.role
@@ -35,8 +34,8 @@ public class RoleConverter(
 ) : SingleConverter<Role>() {
     override val signatureTypeString: String = "converters.role.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val role = findRole(arg, context, bot)
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+        val role = findRole(arg, context)
             ?: throw CommandException(
                 context.translate("converters.role.error.missing", replacements = arrayOf(arg))
             )
@@ -45,9 +44,9 @@ public class RoleConverter(
         return true
     }
 
-    private suspend fun findRole(arg: String, context: CommandContext, bot: ExtensibleBot): Role? {
+    private suspend fun findRole(arg: String, context: CommandContext): Role? {
         val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id ?: return null
-        val guild = bot.kord.getGuild(guildId) ?: return null
+        val guild = kord.getGuild(guildId) ?: return null
 
         @Suppress("MagicNumber")
         return if (arg.startsWith("<@&") && arg.endsWith(">")) { // It's a mention

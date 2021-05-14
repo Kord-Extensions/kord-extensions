@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.channel
@@ -39,8 +38,8 @@ public class ChannelConverter(
 ) : SingleConverter<Channel>() {
     override val signatureTypeString: String = "converters.channel.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val channel = findChannel(arg, context, bot)
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+        val channel = findChannel(arg, context)
             ?: throw CommandException(
                 context.translate(
                     "converters.channel.error.missing",
@@ -52,12 +51,12 @@ public class ChannelConverter(
         return true
     }
 
-    private suspend fun findChannel(arg: String, context: CommandContext, bot: ExtensibleBot): Channel? {
+    private suspend fun findChannel(arg: String, context: CommandContext): Channel? {
         val channel: Channel? = if (arg.startsWith("<#") && arg.endsWith(">")) { // Channel mention
             val id = arg.substring(2, arg.length - 1)
 
             try {
-                bot.kord.getChannel(Snowflake(id.toLong()))
+                kord.getChannel(Snowflake(id.toLong()))
             } catch (e: NumberFormatException) {
                 throw CommandException(
                     context.translate(
@@ -72,9 +71,9 @@ public class ChannelConverter(
             var foundChannel: Channel? = null
 
             try {
-                foundChannel = bot.kord.getChannel(Snowflake(string.toLong()))
+                foundChannel = kord.getChannel(Snowflake(string.toLong()))
             } catch (e: NumberFormatException) { // It's not a numeric ID, so let's try a channel name
-                for (channelObject in bot.kord.guilds.flatMapConcat { it.channels }.toList()) {
+                for (channelObject in kord.guilds.flatMapConcat { it.channels }.toList()) {
                     if (channelObject.name.equals(string, false)) {
                         foundChannel = channelObject
                     }

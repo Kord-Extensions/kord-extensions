@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -33,13 +32,13 @@ public class SingleToMultiConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(args: List<String>, context: CommandContext, bot: ExtensibleBot): Int {
+    override suspend fun parse(args: List<String>, context: CommandContext): Int {
         val values = mutableListOf<T>()
         val dummyArgs = Arguments()
 
         for (arg in args) {
             try {
-                val result = singleConverter.parse(arg, context, bot)
+                val result = singleConverter.parse(arg, context)
 
                 if (!result) {
                     break
@@ -61,7 +60,6 @@ public class SingleToMultiConverter<T : Any>(
     override suspend fun handleError(
         t: Throwable,
         values: List<String>,
-        context: CommandContext,
-        bot: ExtensibleBot
-    ): String = singleConverter.handleError(t, null, context, bot)
+        context: CommandContext
+    ): String = singleConverter.handleError(t, null, context)
 }

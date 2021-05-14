@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.member
@@ -36,8 +35,8 @@ public class MemberConverter(
 ) : SingleConverter<Member>() {
     override val signatureTypeString: String = "converters.member.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val member = findMember(arg, context, bot)
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+        val member = findMember(arg, context)
             ?: throw CommandException(
                 context.translate("converters.member.error.missing", replacements = arrayOf(arg))
             )
@@ -46,12 +45,12 @@ public class MemberConverter(
         return true
     }
 
-    private suspend fun findMember(arg: String, context: CommandContext, bot: ExtensibleBot): Member? {
+    private suspend fun findMember(arg: String, context: CommandContext): Member? {
         val user: User? = if (arg.startsWith("<@") && arg.endsWith(">")) { // It's a mention
             val id = arg.substring(2, arg.length - 1).replace("!", "")
 
             try {
-                bot.kord.getUser(Snowflake(id))
+                kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
                 throw CommandException(
                     context.translate("converters.member.error.invalid", replacements = arrayOf(id))
@@ -59,12 +58,12 @@ public class MemberConverter(
             }
         } else {
             try { // Try for a user ID first
-                bot.kord.getUser(Snowflake(arg))
+                kord.getUser(Snowflake(arg))
             } catch (e: NumberFormatException) { // It's not an ID, let's try the tag
                 if (!arg.contains("#")) {
                     null
                 } else {
-                    bot.kord.users.firstOrNull { user ->
+                    kord.users.firstOrNull { user ->
                         user.tag.equals(arg, true)
                     }
                 }

@@ -38,26 +38,11 @@ suspend fun main() {
 
 ## Using Koin
 
-If you'd like to make use of Koin in your extensions, you can extend `KoinExtension` instead of `Extension`. This class
-is functionally the same as `Extension`, but it implements the `KoinComponent` interface via the included
-`KoinAccessor` class. This means that all relevant Koin functions will be present within the extension, but they will
-delegate to the `koin` property on your `ExtensibleBot` instead of a global Koin context. You can also get direct access
-to the relevant Koin instance via the newly-exposed `k` property.
+All extensions inherit `KoinComponent`, which means that all relevant Koin functions will be present within the 
+extension. You can make use of these directly - Kord Extensions makes use of the global Koin instance.
 
 ```kotlin
 class MyExtension(bot: ExtensibleBot) : KoinExtension(bot) {
-    val sentry: SentryAdapter by inject()
-}
-```
-
-If you need to make use of Koin in your other classes, you can extend `KoinAccessor` using composition. You can always
-extend the class directly as well, but composition is useful when your class already extends another class.
-
-```kotlin
-class MyClass(
-    bot: ExtensibleBot,
-    koinAccessor: KoinComponent = KoinAccessor(bot)
-) : KoinComponent by koinAccessor {
     val sentry: SentryAdapter by inject()
 }
 ```
@@ -68,10 +53,14 @@ The following modules are registered automatically. They do not have any qualifi
 multiple instances registered at once in most cases), but you can supply your own alternatives as necessary by
 passing `override = true` to the `module` function when you create your module.
 
-Type            | Notes
-:-------------- | :----
-`ExtensibleBot` | The current instance of the bot
-`Kord`          | Current Kord instance, **registered after `bot.start()` is called**
-`SentryAdapter` | Sentry adapter created for [the Sentry integration](/integrations/sentry)
+Type                     | Notes
+:----------------------- | :----
+`ExtensibleBot`          | The current instance of the bot
+`ExtensibleBotBuilder`   | The current extensible bot settings object
+`Kord`                   | Current Kord instance, **registered after `bot.start()` is called**
+`MessageCommandRegistry` | Class that keeps track of message commands, and is in charge of executing them and finding the right prefixes
+`SentryAdapter`          | Sentry adapter created for [the Sentry integration](/integrations/sentry)
+`SlashCommandRegistry`   | Class that keeps track of slash commands, and is in charge of executing and registering them
+`TranslationsProvider`   | Class providing access to [translations](/concepts/i18n)
 
 We'll be updating this list further as parts of Kord Extensions are modularized.

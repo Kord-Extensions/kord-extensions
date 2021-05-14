@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.message
@@ -42,14 +41,14 @@ public class MessageConverter(
 ) : SingleConverter<Message>() {
     override val signatureTypeString: String = "converters.message.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext, bot: ExtensibleBot): Boolean {
-        val message = findMessage(arg, context, bot)
+    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+        val message = findMessage(arg, context)
 
         parsed = message
         return true
     }
 
-    private suspend fun findMessage(arg: String, context: CommandContext, bot: ExtensibleBot): Message {
+    private suspend fun findMessage(arg: String, context: CommandContext): Message {
         val requiredGid = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id
 
         return if (arg.startsWith("https://")) { // It's a message URL
@@ -90,7 +89,7 @@ public class MessageConverter(
                 )
             }
 
-            val channel = bot.kord.getGuild(gid)?.getChannel(cid)
+            val channel = kord.getGuild(gid)?.getChannel(cid)
 
             if (channel == null) {
                 logger.debug { "Unable to find channel ($cid) for guild ($gid)." }

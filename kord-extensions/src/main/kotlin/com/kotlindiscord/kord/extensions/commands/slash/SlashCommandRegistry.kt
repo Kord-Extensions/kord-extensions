@@ -3,11 +3,12 @@
 package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.KoinAccessor
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.SlashCommands
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.rest.builder.interaction.ApplicationCommandCreateBuilder
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.toList
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 private val logger: KLogger = KotlinLogging.logger {}
 
@@ -24,14 +26,18 @@ private val logger: KLogger = KotlinLogging.logger {}
  * Class responsible for keeping track of slash commands, registering and executing them.
  *
  * Currently only single-level commands are supported, no command groups or subcommands.
- *
- * @property bot Current instance of the bot.
  */
 @OptIn(KordPreview::class)
-public open class SlashCommandRegistry(
-    public open val bot: ExtensibleBot,
-    koinAccessor: KoinComponent = KoinAccessor(bot)
-) : KoinComponent by koinAccessor {
+public open class SlashCommandRegistry : KoinComponent {
+    /** Current instance of the bot. **/
+    public open val bot: ExtensibleBot by inject()
+
+    /** Kord instance, backing the ExtensibleBot. **/
+    public val kord: Kord by inject()
+
+    /** Translations provider, for retrieving translations. **/
+    public val translationsProvider: TranslationsProvider by inject()
+
     /** @suppress **/
     public open val commands: MutableMap<Snowflake?, MutableList<SlashCommand<out Arguments>>> = mutableMapOf(
         null to mutableListOf()  // So that global commands always have a list here
@@ -41,8 +47,9 @@ public open class SlashCommandRegistry(
     public open val commandMap: MutableMap<Snowflake, SlashCommand<out Arguments>> = mutableMapOf()
 
     /** @suppress **/
-    public open val api: SlashCommands get() = bot.kord.slashCommands
+    public open val api: SlashCommands get() = kord.slashCommands
 
+//    TODO: Sentry?
 //    private val sentry: SentryAdapter by bot.koin.inject()
 
     /** Register a slash command here, before they're synced to Discord. **/
@@ -107,7 +114,7 @@ public open class SlashCommandRegistry(
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guildObj = if (guild != null) {
-            val guildObj = bot.kord.getGuild(guild)
+            val guildObj = kord.getGuild(guild)
 
             if (guildObj == null) {
                 logger.warn { "Cannot register slash commands for guild ID $guild, as it seems to be missing." }
@@ -151,7 +158,7 @@ public open class SlashCommandRegistry(
 
                     command(
                         translatedName,
-                        bot.translationsProvider.translate(it.description, it.extension.bundle)
+                        translationsProvider.translate(it.description, it.extension.bundle)
                     ) { register(it) }
                 }
             }.toList().associate { it.name to it.id }
@@ -176,7 +183,7 @@ public open class SlashCommandRegistry(
 
                         command(
                             translatedName,
-                            bot.translationsProvider.translate(it.description, it.extension.bundle)
+                            translationsProvider.translate(it.description, it.extension.bundle)
                         ) { register(it) }
                     }
                 }.toList().associate { it.name to it.id }

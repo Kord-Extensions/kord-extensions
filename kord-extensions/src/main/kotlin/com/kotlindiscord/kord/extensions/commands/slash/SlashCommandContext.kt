@@ -9,7 +9,10 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.interaction.*
+import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.InteractionResponseBehavior
+import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.InteractionFollowup
