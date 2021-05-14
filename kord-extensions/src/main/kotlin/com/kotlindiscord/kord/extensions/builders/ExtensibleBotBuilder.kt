@@ -2,6 +2,10 @@ package com.kotlindiscord.kord.extensions.builders
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.CooldownImpl
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
@@ -71,6 +75,9 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val cooldownsBuilder: CooldownsBuilder = CooldownsBuilder()
 
     /** Logging level Koin should use, defaulting to ERROR. **/
     public var koinLogLevel: Level = Level.ERROR
@@ -197,6 +204,34 @@ public open class ExtensibleBotBuilder {
         hooksBuilder.runAfterExtensionsAdded(bot)
 
         return bot
+    }
+
+    /** Builder used for configuring the bot's cooldowns options. **/
+    public class CooldownsBuilder {
+
+        /** @suppress **/
+        public var implementation: () -> Cooldown = { CooldownImpl() }
+
+        /** @suppress **/
+        public var priority: () -> List<CooldownType> = {
+            listOf(
+                UserCooldown()
+            )
+        }
+
+        /**
+         * Sets the implementation to use for the command's cooldown object.
+         */
+        public fun implementation(builder: () -> Cooldown) {
+            this.implementation = builder
+        }
+
+        /**
+         * Defines the priority for which cooldowns to check and set.
+         */
+        public fun priority(builder: () -> List<CooldownType>) {
+            this.priority = builder
+        }
     }
 
     /** Builder used for configuring the bot's caching options. **/

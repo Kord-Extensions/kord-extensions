@@ -2,6 +2,8 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -23,6 +25,8 @@ import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 private val logger = KotlinLogging.logger {}
 
@@ -36,6 +40,7 @@ private val logger = KotlinLogging.logger {}
  * @param extension The [Extension] that registered this command.
  * @param arguments Arguments object builder for this command, if it has arguments.
  */
+@OptIn(ExperimentalTime::class)
 public open class MessageCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null
@@ -51,6 +56,12 @@ public open class MessageCommand<T : Arguments>(
 
     /** Kord instance, backing the ExtensibleBot. **/
     public val kord: Kord by inject()
+
+    /** Cooldown object that keeps track of the cooldowns for this command. **/
+    public val cooldowns: Cooldown = extension.bot.settings.cooldownsBuilder.implementation.invoke()
+
+    /** Cooldown body that defines the duration for the different cooldown types. **/
+    public var cooldownBody: suspend (CooldownType) -> Duration? = { null }
 
     /**
      * @suppress
@@ -216,6 +227,13 @@ public open class MessageCommand<T : Arguments>(
         checkList.add(check)
     }
 
+    /**
+     * Defines the durations for the different cooldown types.
+     */
+    public open fun cooldowns(cooldown: suspend (CooldownType) -> Duration?) {
+        this.cooldownBody = cooldown
+    }
+
     // endregion
 
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
@@ -322,6 +340,23 @@ public open class MessageCommand<T : Arguments>(
                             )
                         )
                     )
+                }
+            }
+
+            for (cooldownType in extension.bot.settings.cooldownsBuilder.priority.invoke()) {
+                val key = cooldownType.getCooldownKey(event) ?: continue
+
+                val timeLeft = cooldowns.getCooldown(key)
+                val cooldownDuration = cooldownBody.invoke(cooldownType)
+
+                when {
+                    cooldownDuration == null -> continue
+                    timeLeft == null -> cooldowns.setCooldown(key, cooldownDuration)
+                    else -> if (timeLeft < cooldownDuration) {
+                        throw CommandException("You must wait another ${timeLeft.inSeconds} seconds")
+                    } else {
+                        cooldowns.setCooldown(key, cooldownDuration)
+                    }
                 }
             }
 

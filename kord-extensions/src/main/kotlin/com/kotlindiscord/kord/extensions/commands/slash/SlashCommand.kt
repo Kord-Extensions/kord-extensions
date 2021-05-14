@@ -6,6 +6,8 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -33,6 +35,8 @@ import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 private val logger: KLogger = KotlinLogging.logger {}
 private const val DISCORD_LIMIT: Int = 25
@@ -49,6 +53,7 @@ private const val DISCORD_LIMIT: Int = 25
  * @param parentCommand If this is a subcommand, the root command this command belongs to.
  * @param parentGroup If this is a grouped subcommand, the group this command belongs to.
  */
+@OptIn(ExperimentalTime::class)
 public open class SlashCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null,
@@ -96,6 +101,12 @@ public open class SlashCommand<T : Arguments>(
 
     /** Translation cache, so we don't have to look up translations every time. **/
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
+
+    /** Cooldown object that keeps track of the cooldowns for this command. **/
+    public val cooldowns: Cooldown = extension.bot.settings.cooldownsBuilder.implementation.invoke()
+
+    /** Cooldown body that defines the duration for the different cooldown types. **/
+    public var cooldownBody: suspend (CooldownType) -> Duration? = { null }
 
     /** Return this command's name translated for the given locale, cached as required. **/
     public open fun getTranslatedName(locale: Locale): String {
@@ -439,6 +450,23 @@ public open class SlashCommand<T : Arguments>(
                             )
                         )
                     )
+                }
+            }
+
+            for (cooldownType in extension.bot.settings.cooldownsBuilder.priority.invoke()) {
+                val key = cooldownType.getSlashCooldownKey(event) ?: continue
+
+                val timeLeft = cooldowns.getSlashCooldown(key)
+                val cooldownDuration = cooldownBody.invoke(cooldownType)
+
+                when {
+                    cooldownDuration == null -> continue
+                    timeLeft == null -> cooldowns.setSlashCooldown(key, cooldownDuration)
+                    else -> if (timeLeft < cooldownDuration) {
+                        throw CommandException("You must wait another ${timeLeft.inSeconds} seconds")
+                    } else {
+                        cooldowns.setSlashCooldown(key, cooldownDuration)
+                    }
                 }
             }
 

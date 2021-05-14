@@ -1,6 +1,8 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.converters.enumChoice
@@ -12,6 +14,8 @@ import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 @OptIn(KordPreview::class)
 @Suppress("UnderscoresInNumericLiterals")  // They're IDs
@@ -49,6 +53,7 @@ class TestExtension : Extension() {
         val arg by enumChoice<TestChoiceEnum>("choice", "Enum Choice", "test")
     }
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun setup() {
         slashCommand {
             name = "test-noack"
@@ -300,6 +305,22 @@ class TestExtension : Extension() {
 
             action {
                 sendHelp()
+            }
+        }
+
+        command {
+            name = "cooldown-test"
+            description = "Cooldown test"
+
+            cooldowns {
+                when(it) {
+                    is UserCooldown -> 5.seconds
+                    else -> null
+                }
+            }
+
+            action {
+                message.respond("There is no cooldown!")
             }
         }
 
