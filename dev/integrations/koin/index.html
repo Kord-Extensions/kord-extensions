@@ -782,29 +782,11 @@ access it on the <code>ExtensibleBot#koin</code> property.</p>
 </code></pre></div>
 </td></tr></table>
 <h2 id="using-koin">Using Koin<a class="headerlink" href="#using-koin" title="Permanent link">&para;</a></h2>
-<p>If you'd like to make use of Koin in your extensions, you can extend <code>KoinExtension</code> instead of <code>Extension</code>. This class
-is functionally the same as <code>Extension</code>, but it implements the <code>KoinComponent</code> interface via the included
-<code>KoinAccessor</code> class. This means that all relevant Koin functions will be present within the extension, but they will
-delegate to the <code>koin</code> property on your <code>ExtensibleBot</code> instead of a global Koin context. You can also get direct access
-to the relevant Koin instance via the newly-exposed <code>k</code> property.</p>
+<p>All extensions inherit <code>KoinComponent</code>, which means that all relevant Koin functions will be present within the 
+extension. You can make use of these directly - Kord Extensions makes use of the global Koin instance.</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">MyExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">:</span> <span class="n">ExtensibleBot</span><span class="p">)</span> <span class="p">:</span> <span class="n">KoinExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="nv">sentry</span><span class="p">:</span> <span class="n">SentryAdapter</span> <span class="k">by</span> <span class="n">inject</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div>
-</td></tr></table>
-<p>If you need to make use of Koin in your other classes, you can extend <code>KoinAccessor</code> using composition. You can always
-extend the class directly as well, but composition is useful when your class already extends another class.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">MyClass</span><span class="p">(</span>
-    <span class="n">bot</span><span class="p">:</span> <span class="n">ExtensibleBot</span><span class="p">,</span>
-    <span class="n">koinAccessor</span><span class="p">:</span> <span class="n">KoinComponent</span> <span class="o">=</span> <span class="n">KoinAccessor</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span>
-<span class="p">)</span> <span class="p">:</span> <span class="n">KoinComponent</span> <span class="k">by</span> <span class="n">koinAccessor</span> <span class="p">{</span>
     <span class="kd">val</span> <span class="nv">sentry</span><span class="p">:</span> <span class="n">SentryAdapter</span> <span class="k">by</span> <span class="n">inject</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -826,12 +808,28 @@ passing <code>override = true</code> to the <code>module</code> function when yo
 <td align="left">The current instance of the bot</td>
 </tr>
 <tr>
+<td align="left"><code>ExtensibleBotBuilder</code></td>
+<td align="left">The current extensible bot settings object</td>
+</tr>
+<tr>
 <td align="left"><code>Kord</code></td>
 <td align="left">Current Kord instance, <strong>registered after <code>bot.start()</code> is called</strong></td>
 </tr>
 <tr>
+<td align="left"><code>MessageCommandRegistry</code></td>
+<td align="left">Class that keeps track of message commands, and is in charge of executing them and finding the right prefixes</td>
+</tr>
+<tr>
 <td align="left"><code>SentryAdapter</code></td>
 <td align="left">Sentry adapter created for <a href="/integrations/sentry">the Sentry integration</a></td>
+</tr>
+<tr>
+<td align="left"><code>SlashCommandRegistry</code></td>
+<td align="left">Class that keeps track of slash commands, and is in charge of executing and registering them</td>
+</tr>
+<tr>
+<td align="left"><code>TranslationsProvider</code></td>
+<td align="left">Class providing access to <a href="/concepts/i18n">translations</a></td>
 </tr>
 </tbody>
 </table>
@@ -844,7 +842,7 @@ passing <code>override = true</code> to the <code>module</code> function when yo
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-28
+      Last update: 2021-05-14
     
   </small>
 </div>

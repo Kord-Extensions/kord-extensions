@@ -1035,6 +1035,11 @@ probably don't need with a <img alt="🔧" class="twemoji" src="https://twemoji.
 <td align="left">The name of the extension, which is how it'll be referred to throughout the bot.</td>
 </tr>
 <tr>
+<td align="left"><code>bundle</code></td>
+<td align="center"><code>String</code></td>
+<td align="left">The name of the translation bundle this extension should use, if any.</td>
+</tr>
+<tr>
 <td align="left"><code>eventHandlers</code></td>
 <td align="center"><code>MutableList &lt;EventHandler&gt;</code></td>
 <td align="left"><img alt="🔧" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f527.svg" title="Intended for internal use." /> List of event handlers registered to this extension.</td>
@@ -1062,7 +1067,7 @@ probably don't need with a <img alt="🔧" class="twemoji" src="https://twemoji.
 <tbody>
 <tr>
 <td align="left"><code>command</code></td>
-<td align="left">Create a new command for this extension.</td>
+<td align="left">Create a new message command for this extension.</td>
 </tr>
 <tr>
 <td align="left"><code>event</code></td>
@@ -1070,11 +1075,15 @@ probably don't need with a <img alt="🔧" class="twemoji" src="https://twemoji.
 </tr>
 <tr>
 <td align="left"><code>group</code></td>
-<td align="left">Create a new grouped command for this extension (a command that can have subcommands).</td>
+<td align="left">Create a new grouped message command for this extension (a message command that can have subcommands).</td>
 </tr>
 <tr>
 <td align="left"><code>setup</code></td>
 <td align="left">Override this and add all of your setup logic for the extension.</td>
+</tr>
+<tr>
+<td align="left"><code>slashCommand</code></td>
+<td align="left">Create a new slash command for this extension.</td>
 </tr>
 <tr>
 <td align="left"><code>unload</code></td>
@@ -1098,7 +1107,7 @@ probably don't need with a <img alt="🔧" class="twemoji" src="https://twemoji.
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-01-28
+      Last update: 2021-05-14
     
   </small>
 </div>

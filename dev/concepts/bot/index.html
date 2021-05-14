@@ -885,6 +885,12 @@ that you can make use of to configure your bot.</p>
 <td align="left">Configure the bot's extension options using a builder, and add custom extensions</td>
 </tr>
 <tr>
+<td align="left">hooks</td>
+<td align="center">DSL function</td>
+<td align="center"></td>
+<td align="left">Register lambdas that run at various stages in the bot's lifecycle</td>
+</tr>
+<tr>
 <td align="left">intents</td>
 <td align="center">DSL function</td>
 <td align="center"></td>
@@ -1162,12 +1168,16 @@ to similarly call the corresponding hook functions yourself.</p>
 <td align="left">Lambdas registered here are called after all the extensions specified in the <code>extensions</code> builder above have been registered</td>
 </tr>
 <tr>
-<td align="left">afterKoinCreated</td>
-<td align="left">Lambdas registered here are called as part of the bot's initialisation process, after the Koin context has been created</td>
+<td align="left">afterKoinSetup</td>
+<td align="left">Lambdas registered here are called just after Koin has been set up - you can register overriding modules here via <code>loadModule {}</code></td>
 </tr>
 <tr>
 <td align="left">beforeExtensionsAdded</td>
 <td align="left">Lambdas registered here are called before all the extensions specified in the <code>extensions</code> builder above have been registered</td>
+</tr>
+<tr>
+<td align="left">beforeKoinSetup</td>
+<td align="left">Lambdas registered here are called just before Koin is set up, right after the <code>startKoin</code> call - you can register modules early here via <code>loadModule {}</code></td>
 </tr>
 <tr>
 <td align="left">beforeStart</td>
@@ -1363,6 +1373,8 @@ things.</p>
 <details class="info"><summary>Further properties</summary><p>There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most
 of the properties are <code>open</code> to facilitate niche use-cases that require extending the ExtensibleBot class.</p>
 </details>
+<p>This object used to have many other useful properties here, but to keep things clean those properties have been moved
+and should now be accessed via Koin. For more information, see <a href="/integrations/koin">the Koin integration page</a>.</p>
 <table>
 <thead>
 <tr>
@@ -1373,11 +1385,6 @@ of the properties are <code>open</code> to facilitate niche use-cases that requi
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>commands</code></td>
-<td align="center"><code>List &lt;Command&gt;</code></td>
-<td align="left">All currently-registered command objects</td>
-</tr>
-<tr>
 <td align="left"><code>eventHandlers</code></td>
 <td align="center"><code>List &lt;EventHandler&gt;</code></td>
 <td align="left">All currently-registered event handler objects</td>
@@ -1386,21 +1393,6 @@ of the properties are <code>open</code> to facilitate niche use-cases that requi
 <td align="left"><code>extensions</code></td>
 <td align="center"><code>Map &lt;String, Extension&gt;</code></td>
 <td align="left">All currently-loaded extension objects</td>
-</tr>
-<tr>
-<td align="left"><code>koin</code></td>
-<td align="center"><code>Koin</code></td>
-<td align="left">Koin instance to be made use of instead of the global one</td>
-</tr>
-<tr>
-<td align="left"><code>kord</code></td>
-<td align="center"><code>Kord</code></td>
-<td align="left">Current connected Kord instance, if the bot has been started</td>
-</tr>
-<tr>
-<td align="left"><code>slashCommands</code></td>
-<td align="center"><code>SlashCommandRegistry</code></td>
-<td align="left">Slash command registry that keeps track of slash commands, and invokes them when the relevant events are received</td>
 </tr>
 </tbody>
 </table>
@@ -1452,7 +1444,7 @@ handful are <code>inline</code> for the sake of avoiding function call overhead.
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-17
+      Last update: 2021-05-14
     
   </small>
 </div>
