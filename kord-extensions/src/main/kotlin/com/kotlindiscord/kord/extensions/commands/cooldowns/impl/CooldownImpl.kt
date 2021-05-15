@@ -2,10 +2,7 @@ package com.kotlindiscord.kord.extensions.commands.cooldowns.impl
 
 import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
 import java.time.Instant
-import kotlin.time.Duration
-import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
+import kotlin.time.*
 
 /**
  * The default implementation for the cooldown object.
@@ -13,38 +10,38 @@ import kotlin.time.seconds
 @OptIn(ExperimentalTime::class)
 public class CooldownImpl : Cooldown() {
 
-    private val cooldownsMap: MutableMap<String, Instant> = mutableMapOf()
-    private val slashCooldownsMap: MutableMap<String, Instant> = mutableMapOf()
+    private val cooldownsMap: MutableMap<String, Long> = mutableMapOf()
+    private val slashCooldownsMap: MutableMap<String, Long> = mutableMapOf()
 
     override fun setSlashCooldown(key: String, duration: Duration) {
-        slashCooldownsMap[key] = Instant.now().plusSeconds(duration.toLong(DurationUnit.SECONDS))
+        slashCooldownsMap[key] = System.currentTimeMillis()+duration.toLong(DurationUnit.MILLISECONDS)
     }
 
     override fun setCooldown(key: String, duration: Duration) {
-        cooldownsMap[key] = Instant.now().plusSeconds(duration.toLong(DurationUnit.SECONDS))
+        cooldownsMap[key] = System.currentTimeMillis()+duration.toLong(DurationUnit.MILLISECONDS)
     }
 
     override fun getCooldown(key: String): Duration? {
         val due = cooldownsMap[key] ?: return null
-        val now = Instant.now()
+        val now = System.currentTimeMillis()
 
         return if (due < now) {
             clearCooldown(key)
             null
         } else {
-            (due.epochSecond - now.epochSecond).seconds
+            (due-now).milliseconds
         }
     }
 
     override fun getSlashCooldown(key: String): Duration? {
         val due = cooldownsMap[key] ?: return null
-        val now = Instant.now()
+        val now = System.currentTimeMillis()
 
         return if (due < now) {
             clearCooldown(key)
             null
         } else {
-            (due.epochSecond - now.epochSecond).seconds
+            (due - now).milliseconds
         }
     }
 
