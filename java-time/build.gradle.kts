@@ -29,10 +29,6 @@ val javadocJar = task("javadocJar",Jar::class) {
     from(tasks.javadoc)
 }
 
-val printVersion = task("printVersion") {
-    print(version.toString())
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_1_9
     targetCompatibility = JavaVersion.VERSION_1_9

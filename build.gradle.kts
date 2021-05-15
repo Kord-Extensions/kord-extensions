@@ -14,6 +14,10 @@ val projectVersion: String by project
 group = "com.kotlindiscord.kord.extensions"
 version = projectVersion
 
+val printVersion = task("printVersion") {
+    print(version.toString())
+}
+
 repositories {
     mavenCentral()
 

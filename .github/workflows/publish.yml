@@ -25,10 +25,10 @@ jobs:
           echo -e "\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
 
       - name: Gradle (Build)
-        run: sh gradlew kord-extensions:build
+        run: sh gradlew kord-extensions:build java-time:build
 
       - name: Gradle (Publish)
-        run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} kord-extensions:publish
+        run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} kord-extensions:publish java-time:publish
 
       - name: Upload artifact (JARs)
         uses: actions/upload-artifact@v2
@@ -36,3 +36,10 @@ jobs:
         with:
           name: JARs
           path: kord-extensions/build/libs/kord-extensions-*.jar
+
+      - name: Upload artifact (Java Time JARs)
+        uses: actions/upload-artifact@v2
+
+        with:
+          name: JARs
+          path: java-time/build/libs/java-time-*.jar
