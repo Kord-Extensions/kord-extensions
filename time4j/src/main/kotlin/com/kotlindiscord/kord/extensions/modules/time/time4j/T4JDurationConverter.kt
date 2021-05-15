@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.modules.time.java
+package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
@@ -8,30 +8,30 @@ import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
-import java.time.Duration
+import net.time4j.Duration
+import net.time4j.IsoUnit
 
 /**
- * Argument converter for Java 8 [Duration] arguments.
+ * Argument converter for Time4J [Duration] arguments.
  *
- * For a coalescing version of this converter, see [J8DurationCoalescingConverter].
- * If you're using Time4J instead, see [T4JDurationConverter].
+ * For a coalescing version of this converter, see [T4JDurationCoalescingConverter].
  *
  * @param longHelp Whether to send the user a long help message with specific information on how to specify durations.
  *
- * @see duration
- * @see durationList
- * @see parseDurationJ8
+ * @see t4jDuration
+ * @see t4jDurationList
+ * @see parseT4JDuration
  */
 @OptIn(KordPreview::class)
-public class J8DurationConverter(
+public class T4JDurationConverter(
     public val longHelp: Boolean = true,
-    override var validator: (suspend Argument<*>.(Duration) -> Unit)? = null
-) : SingleConverter<Duration>() {
+    override var validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null
+) : SingleConverter<Duration<IsoUnit>>() {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext): Boolean {
         try {
-            this.parsed = parseDurationJ8(arg)
+            this.parsed = parseT4JDuration(arg)
         } catch (e: InvalidTimeUnitException) {
             val message = if (e.unit.isEmpty()) {
                 context.translate("converters.duration.error.missingUnit")

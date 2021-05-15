@@ -16,8 +16,6 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.*
 import dev.kord.core.entity.channel.Channel
-import net.time4j.IsoUnit
-import java.time.Duration
 
 // region: Novelty converters
 
@@ -289,19 +287,6 @@ public fun Arguments.string(
     validator: (suspend Argument<*>.(String) -> Unit)? = null,
 ): SingleConverter<String> =
     arg(displayName, description, StringConverter(validator))
-
-/**
- * Create a Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.t4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
-): SingleConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationConverter(longHelp = longHelp, validator = validator))
 
 /**
  * Create a user converter, for single arguments.
@@ -608,25 +593,6 @@ public fun Arguments.optionalString(
     )
 
 /**
- * Create an optional Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.optionalT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>?) -> Unit)? = null,
-): OptionalConverter<net.time4j.Duration<IsoUnit>?> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
  * Create an optional user converter, for single arguments.
  *
  * @see UserConverter
@@ -822,25 +788,6 @@ public fun Arguments.defaultingString(
             .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
-/**
- * Create a defaulting Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.defaultingT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    defaultValue: net.time4j.Duration<IsoUnit>,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
-): DefaultingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
 // endregion
 
 // region: Coalescing converters
@@ -869,24 +816,6 @@ public fun Arguments.coalescedString(
     validator: (suspend Argument<*>.(String) -> Unit)? = null,
 ): CoalescingConverter<String> =
     arg(displayName, description, StringCoalescingConverter(validator = validator))
-
-/**
- * Create a coalescing Time4J Duration converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.coalescedT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
-): CoalescingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow, validator = validator)
-    )
 
 // endregion
 
@@ -927,26 +856,6 @@ public fun Arguments.optionalCoalescedString(
         StringCoalescingConverter().toOptional(nestedValidator = validator)
     )
 
-/**
- * Create an optional coalescing Time4J Duration converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.optionalCoalescedT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>?) -> Unit)? = null,
-): OptionalCoalescingConverter<net.time4j.Duration<IsoUnit>?> =
-    arg(
-        displayName,
-        description,
-
-        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
 // endregion
 
 // region: Defaulting coalescing converters
@@ -985,26 +894,6 @@ public fun Arguments.defaultingCoalescedString(
         displayName,
         description,
         StringCoalescingConverter()
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting coalescing Time4J Duration converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.defaultingCoalescedT4jDuration(
-    displayName: String,
-    description: String,
-    defaultValue: net.time4j.Duration<IsoUnit>,
-    longHelp: Boolean = true,
-    shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
-): DefaultingCoalescingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow)
             .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
@@ -1326,27 +1215,6 @@ public fun Arguments.stringList(
         description,
         StringConverter()
             .toMulti(required, nestedValidator = validator)
-    )
-
-/**
- * Create a Time4J Duration converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.t4jDurationList(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    required: Boolean = true,
-    validator: (suspend Argument<*>.(List<net.time4j.Duration<IsoUnit>>) -> Unit)? = null,
-): MultiConverter<net.time4j.Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
     )
 
 /**

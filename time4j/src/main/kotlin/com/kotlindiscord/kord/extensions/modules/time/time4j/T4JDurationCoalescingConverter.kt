@@ -1,12 +1,10 @@
-package com.kotlindiscord.kord.extensions.commands.converters.impl
+package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.coalescedT4jDuration
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
-import com.kotlindiscord.kord.extensions.parsers.parseDuration
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import net.time4j.Duration
@@ -21,7 +19,7 @@ import net.time4j.IsoUnit
  * @param longHelp Whether to send the user a long help message with specific information on how to specify durations.
  *
  * @see coalescedT4jDuration
- * @see parseDuration
+ * @see parseT4JDuration
  */
 public class T4JDurationCoalescingConverter(
     public val longHelp: Boolean = true,
@@ -36,7 +34,7 @@ public class T4JDurationCoalescingConverter(
         for (arg in args) {
             try {
                 // We do it this way so that we stop parsing as soon as an invalid string is found
-                parseDuration(arg)
+                parseT4JDuration(arg)
                 durations.add(arg)
             } catch (e: InvalidTimeUnitException) {
                 if (this.shouldThrow) {
@@ -57,7 +55,7 @@ public class T4JDurationCoalescingConverter(
             }
         }
 
-        parsed = parseDuration(
+        parsed = parseT4JDuration(
             durations.joinToString()
         )
 

@@ -7,7 +7,7 @@
 
 @file:Suppress("StringLiteralDuplication")
 
-package com.kotlindiscord.kord.extensions.modules.time.java
+package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument

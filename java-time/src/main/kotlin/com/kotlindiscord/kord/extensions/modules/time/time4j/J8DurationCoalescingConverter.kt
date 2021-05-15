@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.modules.time.java
+package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
@@ -33,7 +33,7 @@ public class J8DurationCoalescingConverter(
         for (arg in args) {
             try {
                 // We do it this way so that we stop parsing as soon as an invalid string is found
-                com.kotlindiscord.kord.extensions.parsers.parseDurationJ8(arg)
+                parseDurationJ8(arg)
                 durations.add(arg)
             } catch (e: InvalidTimeUnitException) {
                 if (this.shouldThrow) {
@@ -54,7 +54,7 @@ public class J8DurationCoalescingConverter(
             }
         }
 
-        parsed = com.kotlindiscord.kord.extensions.parsers.parseDurationJ8(
+        parsed = parseDurationJ8(
             durations.joinToString()
         )
 

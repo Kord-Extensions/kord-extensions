@@ -29,7 +29,9 @@ nav:
 
   - Modules:
       - modules/index.md
+
       - modules/java-time.md
+      - modules/time4j.md
 
       - modules/common.md
 #      - modules/mappings.md

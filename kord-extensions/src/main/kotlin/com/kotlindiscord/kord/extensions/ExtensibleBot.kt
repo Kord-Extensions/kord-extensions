@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import mu.KLogger
 import mu.KotlinLogging
-import net.time4j.tz.repo.TZDATA
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.bind
@@ -140,10 +139,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
     /** @suppress **/
     public open val logger: KLogger = KotlinLogging.logger {}
-
-    init {
-        TZDATA.init()  // Set up time4j
-    }
 
     /** @suppress Function that sets up the bot early on, called by the builder. **/
     public open suspend fun setup() {

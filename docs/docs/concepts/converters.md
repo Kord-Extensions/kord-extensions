@@ -43,7 +43,6 @@ Converters are provided that support the following type conversions, out of the 
 * `Boolean`
 * `Channel`
 * `Decimal` (Doubles only)
-* `Duration` (Time4J) with special-casing for coalescing conversion
 * `Email`
 * `Emoji` (Server emoji on Discord)
 * `Enum` (Any enums you like, including those you define yourself)
@@ -61,6 +60,9 @@ Additional modules are available that add more converters:
 
 * [Java Time](/modules/java-time):
     * `Duration` (Java Time) with special-casing for coalescing conversion
+
+* [Time4J](/modules/time4j):
+    * `Duration` (Time4J) with special-casing for coalescing conversion
 
 ## Usage
 
