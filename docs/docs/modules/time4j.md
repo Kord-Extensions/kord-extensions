@@ -37,3 +37,9 @@ These can be added to your `Arguments` objects using the following functions:
 * `t4jDuration`
 * `optionalCoalescedT4jDuration`
 * `optionalT4jDuration`
+
+## Utilities
+
+Function             | Description
+:------------------- | :----------
+`Duration.toSeconds` | For a Time4J Duration, return the total number of seconds it contains

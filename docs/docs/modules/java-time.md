@@ -20,7 +20,7 @@ dependencies {
 }
 ```
 
-## Bundled Converters
+## Converters
 
 The following converters are included:
 
@@ -36,3 +36,9 @@ These can be added to your `Arguments` objects using the following functions:
 * `j8Duration`
 * `optionalCoalescedJ8Duration`
 * `optionalJ8Duration`
+
+## Utilities
+
+Function             | Description
+:------------------- | :----------
+`Duration.toHuman`   | For a Java Time Duration, return a human-readable string in the form `a days, b hours, c minutes and d seconds` (omitting zero-values)
