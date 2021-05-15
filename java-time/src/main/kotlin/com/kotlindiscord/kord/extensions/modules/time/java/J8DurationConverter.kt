@@ -1,13 +1,10 @@
-package com.kotlindiscord.kord.extensions.commands.converters.impl
+package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.duration
-import com.kotlindiscord.kord.extensions.commands.converters.durationList
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
-import com.kotlindiscord.kord.extensions.parsers.parseDurationJ8
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -16,7 +13,7 @@ import java.time.Duration
 /**
  * Argument converter for Java 8 [Duration] arguments.
  *
- * For a coalescing version of this converter, see [DurationCoalescingConverter].
+ * For a coalescing version of this converter, see [J8DurationCoalescingConverter].
  * If you're using Time4J instead, see [T4JDurationConverter].
  *
  * @param longHelp Whether to send the user a long help message with specific information on how to specify durations.
@@ -26,7 +23,7 @@ import java.time.Duration
  * @see parseDurationJ8
  */
 @OptIn(KordPreview::class)
-public class DurationConverter(
+public class J8DurationConverter(
     public val longHelp: Boolean = true,
     override var validator: (suspend Argument<*>.(Duration) -> Unit)? = null
 ) : SingleConverter<Duration>() {

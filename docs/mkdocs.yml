@@ -28,6 +28,9 @@ nav:
       - integrations/sentry.md
 
   - Modules:
+      - modules/index.md
+      - modules/java-time.md
+
       - modules/common.md
 #      - modules/mappings.md
 

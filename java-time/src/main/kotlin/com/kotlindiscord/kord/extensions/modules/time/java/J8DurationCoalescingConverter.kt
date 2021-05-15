@@ -1,12 +1,10 @@
-package com.kotlindiscord.kord.extensions.commands.converters.impl
+package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.coalescedDuration
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
-import com.kotlindiscord.kord.extensions.parsers.parseDurationJ8
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import java.time.Duration
@@ -22,7 +20,7 @@ import java.time.Duration
  * @see coalescedDuration
  * @see parseDurationJ8
  */
-public class DurationCoalescingConverter(
+public class J8DurationCoalescingConverter(
     public val longHelp: Boolean = true,
     shouldThrow: Boolean = false,
     override var validator: (suspend Argument<*>.(Duration) -> Unit)? = null
@@ -35,7 +33,7 @@ public class DurationCoalescingConverter(
         for (arg in args) {
             try {
                 // We do it this way so that we stop parsing as soon as an invalid string is found
-                parseDurationJ8(arg)
+                com.kotlindiscord.kord.extensions.parsers.parseDurationJ8(arg)
                 durations.add(arg)
             } catch (e: InvalidTimeUnitException) {
                 if (this.shouldThrow) {
@@ -56,7 +54,7 @@ public class DurationCoalescingConverter(
             }
         }
 
-        parsed = parseDurationJ8(
+        parsed = com.kotlindiscord.kord.extensions.parsers.parseDurationJ8(
             durations.joinToString()
         )
 
