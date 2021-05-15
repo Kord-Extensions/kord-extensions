@@ -87,7 +87,8 @@ Name                    | Expected Type   | Description
 
 ### Combinators
 
-Combinator checks operate on a variable number of other checks, transforming their results as appropriate.
+Combinator checks operate on a variable number of other checks, transforming their results as appropriate. They are
+also available as infix variants, if you prefer that syntax: `::noGuild or hasRole(ADMIN_ROLE)`
 
 Name  | Argument | Description
 :---- | :------: | :-----------------------------------------------------------------

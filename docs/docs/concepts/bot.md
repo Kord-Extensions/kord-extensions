@@ -126,6 +126,10 @@ add                       | Function     |            | Use this function to add
 help                      | Boolean      | `true`     | Whether to enabled the bundled help extension
 sentry                    | Boolean      | `true`     | Whether to enabled the bundled [Sentry extension](/integrations/sentry)
 
+External modules that add extensions are free to add extension functions to this class, which gives users a convenient
+way to configure them. If you're using an external module, we recommend reading the documentation for any modules you
+may be using.
+
 ### Hooks
 
 Hooks allow you to set up lambdas that are to be run at various points in the bot's lifecycle, allowing you to set up
@@ -194,20 +198,6 @@ fill                      | Function     | Use this function to specify guild ID
 fillPresences             | Boolean?     | Set this to `true` to state that you'd like to receive user presences
 none                      | Function     | State that you would not like to cache any member info - this is the default behaviour
 
-Name   |   Type   |   Default   | Description
-:----- | :------: | :---------: | :------------
-`token` | `String` | | The Discord bot token to login with
-`prefix` | `String` | | The prefix required before all command invocations
-`addHelpExtension` | `Boolean` | `true` | Whether to add the bundled help extension automatically
-`addSentryExtension` | `Boolean` | `true` | Whether to add the bundled [Sentry integration](/integrations/sentry) extension automatically
-`invokeCommandOnMention` | `Boolean` | `true` | Whether commands may also be invoked by mentioning the bot
-`messageCacheSize` | `Int` | `10_000` | How many messages to keep in the messages cache by default
-`commandThreads` | `Int` | CPUs * 2 | How many threads to use for the command execution threadpool
-`guildsToFill` | `List <Snowflake>` | `[ ]` | A list of guilds to request all members for during the connection phase. This requires the `GuildMembers` intent, specified in the `start` function
-`fillPresences` | `Boolean?` | `null` | Whether to request presences for the above members (`true`/`false`, or `null` for the default). This requires the `GuildPresences` intent, specified in the `start` function
-`koinLogLevel` | `Level` | `ERROR` | The default logging level that Koin should use
-`handleSlashCommands` | `Boolean` | `false` | Whether to support registration and invocation of slash commands. Setting this to fault will not raise errors for extensions that register slash commands, however - they just won't work
-
 ### Presence configuration
 
 This matches Kord's initial presence API. For more information,
@@ -241,8 +231,7 @@ bot.start()
 
 ## Properties
 
-A few properties are available to you, for getting access to Kord, querying some of the bot's state, and some other 
-things.
+A few properties are available to you, for getting access to a few internals.
 
 ??? info "Further properties"
     There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most
@@ -263,7 +252,7 @@ A number of functions are available to you as well.
 ??? info "Further functions"
     There are other non-private functions available, but they aren't necessarily something you'll need to touch. Most
     of the functions are `open` to facilitate niche use-cases that require extending the ExtensibleBot class, but a
-    handful are `inline` for the sake of avoiding function call overhead.
+    handful are `inline` for the sake of avoiding function call overhead or making use of reified types.
 
 Name              | Description
 :---------------- | :----------

@@ -63,6 +63,8 @@ public abstract class CommandContext(
     /** Extract user information from event data, if that context is available. **/
     public abstract suspend fun getUser(): UserBehavior?
 
+    private var resolvedLocale: Locale? = null
+
     /**
      * Add a Sentry breadcrumb to this command context.
      *
@@ -87,7 +89,11 @@ public abstract class CommandContext(
 
     /** Resolve the locale for this command context. **/
     public suspend fun getLocale(): Locale {
-        var locale: Locale? = null
+        var locale: Locale? = resolvedLocale
+
+        if (locale != null) {
+            return locale
+        }
 
         val guild = guildFor(eventObj)
         val channel = channelFor(eventObj)
@@ -102,7 +108,9 @@ public abstract class CommandContext(
             }
         }
 
-        return locale ?: command.extension.bot.settings.i18nBuilder.defaultLocale
+        resolvedLocale = locale ?: command.extension.bot.settings.i18nBuilder.defaultLocale
+
+        return resolvedLocale!!
     }
 
     /**

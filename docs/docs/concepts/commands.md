@@ -16,9 +16,9 @@ your extension's `setup` function.
 
 ```kotlin
 command {  // this: Command
-    name = "ping"  // Command name
-    aliases = arrayOf("pong")  // Alternate command names
-    description = "Returns 'Pong!'"  // Help text for the help command
+    name = "ping"  // Command name (can be a translation key)
+    aliases = arrayOf("pong")  // Alternate command names (can be translation keys)
+    description = "Returns 'Pong!'"  // Help text for the help command (can be a translation key)
 
     check { event -> true }  // Return `false` to prevent the action
     check(::returnTrue)  // You can also pass it a function
@@ -30,7 +30,7 @@ command {  // this: Command
 ```
 
 Use the `check` function to define a set of predicates that must all return `true` in order for the command's action to
-be run - you can read more about checks on [the Checks page](/concepts/checks). Once all the checks pass, the `action`
+be run - you can read more about checks on [the Checks page](/concepts/checks). If all the checks pass, the `action`
 lambda will be called.
 
 Note that the `action` lambda above is a receiver function, where `this` is bound to a `MessageCommandContext` object.
@@ -50,14 +50,14 @@ Name          | Type             | Description
 `hidden`      | `Boolean`        | Default to `false`, this can be set to `true` to completely hide the command from the help extension's command listings
 `signature`   | `String`         | A string representing the arguments for the command, automatically-generated from the command's arguments by default
 
-Additionally, the following functions are available - please note that functions marked with :warning: are  required 
+Additionally, the following functions are available - please note that functions marked with :warning: are required 
 and must be called in order to properly register a command.
 
-Name                 | Description
-:------------------- | :----------
-`action`             | :warning: A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
-`check`              | A function allowing you to define one or more checks for this command - see [the Checks page](/concepts/checks) for more information
-`requirePermissions` | If your command requires the bot to have some permissions, specify them here and an error will be returned then the command is run when the bot doesn't have all of those permissions
+Name                        | Description
+:-------------------------- | :----------
+`action`                    | :warning: A DSL function allowing you to define the code that will be run when the command is invoked, either as a lambda or by passing a function reference
+`check`                     | Define one or more checks for this command - see [the Checks page](/concepts/checks) for more information
+`requirePermissions`        | If your command requires the bot to have some permissions, specify them here and an error will be returned then the command is run when the bot doesn't have all of those permissions
 
 ### Command context
 
@@ -83,10 +83,13 @@ Name          | Type                       | Description
 
 Additionally, `MessageCommandContext` objects expose the following functions.
 
-Name         | Description
-:----------- | :----------
-`breadcrumb` | Convenience function to create and add a Sentry breadcrumb, for the [Sentry intgration](/integrations/sentry).
-`sendHelp`   | Attempts to respond with command help using the loaded help extension, returning `false` if no such extension is loaded. Help extensions implement the `HelpProvider` interface.
+Name                        | Description
+:-------------------------- | :----------
+`breadcrumb`                | Convenience function to create and add a Sentry breadcrumb, for the [Sentry intgration](/integrations/sentry).
+`getLocale`                 | Resolve and return the locale for this command context
+`sendHelp`                  | Attempts to respond with command help using the loaded help extension, returning `false` if no such extension is loaded. Help extensions implement the `HelpProvider` interface.
+`Message.respondTranslated` | Given a translation key, replies using  `Message.respond` with the translated string, according to the resolved locale and the extension's translation bundle
+`translate`                 | Given a translation key, returns the translated string, according to the resolved locale and the extension's translation bundle
 
 ### Command arguments
 
