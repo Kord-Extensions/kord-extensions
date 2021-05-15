@@ -9,14 +9,14 @@
       
       
       
-        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/modules/java-time/">
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/modules/time4j/">
       
       <link rel="icon" href="../../assets/icon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.4">
     
     
       
-        <title>Java Time - Kord Extensions</title>
+        <title>Time4J - Kord Extensions</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#java-time" class="md-skip">
+        <a href="#time4j" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Java Time
+              Time4J
             
           </span>
         </div>
@@ -627,6 +627,18 @@
             
   
   
+  
+    <li class="md-nav__item">
+      <a href="../java-time/" class="md-nav__link">
+        Java Time
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
     
   
   
@@ -639,12 +651,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Java Time
+          Time4J
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Java Time
+        Time4J
       </a>
       
         
@@ -679,18 +691,6 @@
   
 </nav>
       
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../time4j/" class="md-nav__link">
-        Time4J
-      </a>
     </li>
   
 
@@ -768,15 +768,14 @@
               
                 
                 
-                <h1 id="java-time">Java Time<a class="headerlink" href="#java-time" title="Permanent link">&para;</a></h1>
+                <h1 id="time4j">Time4J<a class="headerlink" href="#time4j" title="Permanent link">&para;</a></h1>
 <p><a href="https://discord.gg/gjXqqCS"><img alt="Discord: Click here" src="https://img.shields.io/static/v1?label=Discord&amp;message=Click%20here&amp;color=7289DA&amp;style=for-the-badge&amp;logo=discord" /></a>
-<a href="https://maven.kotlindiscord.com/#browse/browse:maven-releases:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fjava-time"><img alt="Release" src="https://img.shields.io/nexus/r/com.kotlindiscord.kord.extensions/java-time?nexusVersion=3&amp;logo=gradle&amp;color=blue&amp;label=Release&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a> <a href="https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fjava-time"><img alt="Snapshot" src="https://img.shields.io/nexus/s/com.kotlindiscord.kord.extensions/java-time?logo=gradle&amp;color=orange&amp;label=Snapshot&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a></p>
-<p>The Java Time module provides converters and parsers that allow you to work with Java 8 Durations in your commands.
-This used to be the standard Duration converter, but was split out into a module as some users didn't need it.</p>
+<a href="https://maven.kotlindiscord.com/#browse/browse:maven-releases:com%2Fkotlindiscord%2Fkord%2Fextensions%2Ftime4j"><img alt="Release" src="https://img.shields.io/nexus/r/com.kotlindiscord.kord.extensions/time4j?nexusVersion=3&amp;logo=gradle&amp;color=blue&amp;label=Release&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a> <a href="https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Ftime4j"><img alt="Snapshot" src="https://img.shields.io/nexus/s/com.kotlindiscord.kord.extensions/time4j?logo=gradle&amp;color=orange&amp;label=Snapshot&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a></p>
+<p>The Time4J module provides converters and parsers that allow you to work with Time4J Durations in your commands.</p>
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Maven repo:</strong> <code>https://maven.kotlindiscord.com/repository/maven-public/</code></li>
-<li><strong>Maven coordinates:</strong> <code>com.kotlindiscord.kord.extensions:java-time:VERSION</code></li>
+<li><strong>Maven coordinates:</strong> <code>com.kotlindiscord.kord.extensions:time4j:VERSION</code></li>
 </ul>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
@@ -787,25 +786,26 @@ This used to be the standard Duration converter, but was split out into a module
 
 <span class="n">dependencies</span> <span class="p">{</span>
     <span class="n">implementation</span><span class="p">(</span><span class="s">&quot;com.kotlindiscord.kord.extensions:kord-extensions:</span><span class="si">$</span><span class="n">kordExVersion</span><span class="s">&quot;</span><span class="p">)</span>
-    <span class="n">implementation</span><span class="p">(</span><span class="s">&quot;com.kotlindiscord.kord.extensions:java-time:</span><span class="si">$</span><span class="n">kordExVersion</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">implementation</span><span class="p">(</span><span class="s">&quot;com.kotlindiscord.kord.extensions:time4j:</span><span class="si">$</span><span class="n">kordExVersion</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
 </td></tr></table>
+<p><strong>Note:</strong> Be sure to call <code>TZDATA.init()</code> before your bot starts up, or you'll get lots of errors!</p>
 <h2 id="bundled-converters">Bundled Converters<a class="headerlink" href="#bundled-converters" title="Permanent link">&para;</a></h2>
 <p>The following converters are included:</p>
 <ul>
-<li><code>J8DurationCoalescingConverter</code></li>
-<li><code>J8DurationConverter</code></li>
+<li><code>T4JDurationCoalescingConverter</code></li>
+<li><code>T4JDurationConverter</code></li>
 </ul>
 <p>These can be added to your <code>Arguments</code> objects using the following functions:</p>
 <ul>
-<li><code>coalescedJ8Duration</code></li>
-<li><code>defaultingCoalescedJ8Duration</code></li>
-<li><code>defaultingJ8Duration</code></li>
-<li><code>j8DurationList</code></li>
-<li><code>j8Duration</code></li>
-<li><code>optionalCoalescedJ8Duration</code></li>
-<li><code>optionalJ8Duration</code></li>
+<li><code>coalescedT4jDuration</code></li>
+<li><code>defaultingCoalescedT4jDuration</code></li>
+<li><code>defaultingT4jDuration</code></li>
+<li><code>t4jDurationList</code></li>
+<li><code>t4jDuration</code></li>
+<li><code>optionalCoalescedT4jDuration</code></li>
+<li><code>optionalT4jDuration</code></li>
 </ul>
                 
                   
@@ -842,7 +842,7 @@ This used to be the standard Duration converter, but was split out into a module
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../java-time/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -851,19 +851,19 @@ This used to be the standard Duration converter, but was split out into a module
               <span class="md-footer__direction">
                 Previous
               </span>
-              About
+              Java Time
             </div>
           </div>
         </a>
       
       
-        <a href="../time4j/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../common/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Time4J
+              Extra: Common
             </div>
           </div>
           <div class="md-footer__button md-icon">
