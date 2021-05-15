@@ -1,4 +1,4 @@
-val build = task("build", Exec::class) {
+val build = task("build-docs", Exec::class) {
     commandLine("mkdocs", "build", "-c", "-d", "build/mkdocs")
 }
 
