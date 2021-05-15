@@ -21,7 +21,7 @@ dependencies {
 
 **Note:** Be sure to call `TZDATA.init()` before your bot starts up, or you'll get lots of errors!
 
-## Bundled Converters
+## Converters
 
 The following converters are included:
 
@@ -42,4 +42,4 @@ These can be added to your `Arguments` objects using the following functions:
 
 Function             | Description
 :------------------- | :----------
-`Duration.toSeconds` | For a Time4J Duration, return the total number of seconds it contains
+`Duration .toSeconds` | For a Time4J Duration, return the total number of seconds it contains
