@@ -45,6 +45,9 @@ public abstract class CommandContext(
     /** A list of Sentry breadcrumbs created during command execution. **/
     public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
 
+    /** Cached locale variable, stored and retrieved by [getLocale]. **/
+    public open var resolvedLocale: Locale? = null
+
     /** Called before command processing, used to populate any extra variables from event data. **/
     public abstract suspend fun populate()
 
@@ -62,8 +65,6 @@ public abstract class CommandContext(
 
     /** Extract user information from event data, if that context is available. **/
     public abstract suspend fun getUser(): UserBehavior?
-
-    private var resolvedLocale: Locale? = null
 
     /**
      * Add a Sentry breadcrumb to this command context.
