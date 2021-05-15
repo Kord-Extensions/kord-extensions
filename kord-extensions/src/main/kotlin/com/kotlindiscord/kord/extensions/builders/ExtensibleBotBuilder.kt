@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.builders
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -44,6 +45,7 @@ internal typealias LocaleResolver = suspend (
  * This is a one-stop-shop for pretty much everything you could possibly need to change to configure your bot, via
  * properties and a bunch of DSL functions.
  */
+@BotBuilderDSL
 public open class ExtensibleBotBuilder {
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val cacheBuilder: CacheBuilder = CacheBuilder()
@@ -80,6 +82,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see CacheBuilder
      */
+    @BotBuilderDSL
     public fun cache(builder: CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
     }
@@ -89,6 +92,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see HooksBuilder
      */
+    @BotBuilderDSL
     public fun hooks(builder: HooksBuilder.() -> Unit) {
         builder(hooksBuilder)
     }
@@ -98,6 +102,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see MessageCommandsBuilder
      */
+    @BotBuilderDSL
     public fun messageCommands(builder: MessageCommandsBuilder.() -> Unit) {
         builder(messageCommandsBuilder)
     }
@@ -107,6 +112,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see SlashCommandsBuilder
      */
+    @BotBuilderDSL
     public fun slashCommands(builder: SlashCommandsBuilder.() -> Unit) {
         builder(slashCommandsBuilder)
     }
@@ -116,6 +122,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see ExtensionsBuilder
      */
+    @BotBuilderDSL
     public open fun extensions(builder: ExtensionsBuilder.() -> Unit) {
         builder(extensionsBuilder)
     }
@@ -125,6 +132,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see Intents.IntentsBuilder
      */
+    @BotBuilderDSL
     public fun intents(builder: Intents.IntentsBuilder.() -> Unit) {
         this.intentsBuilder = builder
     }
@@ -134,6 +142,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see I18nBuilder
      */
+    @BotBuilderDSL
     public fun i18n(builder: I18nBuilder.() -> Unit) {
         builder(i18nBuilder)
     }
@@ -143,6 +152,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see MembersBuilder
      */
+    @BotBuilderDSL
     public fun members(builder: MembersBuilder.() -> Unit) {
         builder(membersBuilder)
     }
@@ -152,6 +162,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see PresenceBuilder
      */
+    @BotBuilderDSL
     public fun presence(builder: PresenceBuilder.() -> Unit) {
         this.presenceBuilder = builder
     }
@@ -200,6 +211,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used for configuring the bot's caching options. **/
+    @BotBuilderDSL
     public class CacheBuilder {
         /**
          * Number of messages to keep in the cache. Defaults to 10,000.
@@ -239,6 +251,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used for configuring the bot's extension options, and registering custom extensions. **/
+    @BotBuilderDSL
     public open class ExtensionsBuilder {
         /** @suppress Internal list that shouldn't be modified by the user directly. **/
         public open val extensions: MutableList<() -> Extension> = mutableListOf()
@@ -256,7 +269,9 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used to insert code at various points in the bot's lifecycle. **/
-    @Suppress("TooGenericExceptionCaught")  // We need to catch literally everything in here
+    @Suppress("TooGenericExceptionCaught")
+    // We need to catch literally everything in here
+    @BotBuilderDSL
     public class HooksBuilder {
         // region: Hook lists
 
@@ -451,6 +466,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used to configure i18n options. **/
+    @BotBuilderDSL
     public class I18nBuilder {
         /** Locale that should be used by default. **/
         public var defaultLocale: Locale = Locale("en", "gb")
@@ -477,6 +493,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used for configuring the bot's member-related options. **/
+    @BotBuilderDSL
     public class MembersBuilder {
         /** @suppress Internal list that shouldn't be modified by the user directly. **/
         public var guildsToFill: MutableList<Snowflake>? = mutableListOf()
@@ -558,6 +575,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used for configuring the bot's message command options. **/
+    @BotBuilderDSL
     public class MessageCommandsBuilder {
         /** Whether to invoke commands on bot mentions, in addition to using message prefixes. Defaults to `true`. **/
         public var invokeOnMention: Boolean = true
@@ -629,6 +647,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used for configuring the bot's slash command options. **/
+    @BotBuilderDSL
     public class SlashCommandsBuilder {
         /** Whether to register and process slash commands. Defaults to `false`. **/
         public var enabled: Boolean = false

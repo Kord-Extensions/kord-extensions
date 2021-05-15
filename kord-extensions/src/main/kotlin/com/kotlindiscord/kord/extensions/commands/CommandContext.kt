@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
@@ -28,6 +29,7 @@ import java.util.*
  * @param commandName MessageCommand name given by the user to invoke the command - lower-cased.
  * @param argsList Array of string arguments for this command.
  */
+@ExtensionDSL
 public abstract class CommandContext(
     public open val command: Command,
     public open val eventObj: Event,

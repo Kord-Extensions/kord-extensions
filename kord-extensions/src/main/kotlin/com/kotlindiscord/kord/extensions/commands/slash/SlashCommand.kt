@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.commands.slash
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
@@ -49,6 +50,7 @@ private const val DISCORD_LIMIT: Int = 25
  * @param parentCommand If this is a subcommand, the root command this command belongs to.
  * @param parentGroup If this is a grouped subcommand, the group this command belongs to.
  */
+@ExtensionDSL
 public open class SlashCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null,

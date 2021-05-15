@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.*
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
@@ -134,6 +135,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param body Builder lambda used for setting up the command object.
      */
+    @ExtensionDSL
     public open suspend fun <T : Arguments> command(
         arguments: (() -> T)?,
         body: suspend MessageCommand<T>.() -> Unit
@@ -151,6 +153,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param body Builder lambda used for setting up the command object.
      */
+    @ExtensionDSL
     public open suspend fun command(
         body: suspend MessageCommand<Arguments>.() -> Unit
     ): MessageCommand<Arguments> {
@@ -189,6 +192,7 @@ public abstract class Extension : KoinComponent {
      * @param arguments Arguments builder (probably a reference to the class constructor).
      * @param body Builder lambda used for setting up the slash command object.
      */
+    @ExtensionDSL
     public open suspend fun <T : Arguments> slashCommand(
         arguments: (() -> T),
         body: suspend SlashCommand<T>.() -> Unit
@@ -206,6 +210,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param body Builder lambda used for setting up the slash command object.
      */
+    @ExtensionDSL
     public open suspend fun slashCommand(
         body: suspend SlashCommand<out Arguments>.() -> Unit
     ): SlashCommand<out Arguments> {
@@ -248,6 +253,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param body Builder lambda used for setting up the command object.
      */
+    @ExtensionDSL
     public open suspend fun <T : Arguments> group(
         arguments: (() -> T)?,
         body: suspend GroupCommand<T>.() -> Unit
@@ -268,6 +274,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param body Builder lambda used for setting up the command object.
      */
+    @ExtensionDSL
     public open suspend fun group(body: suspend GroupCommand<Arguments>.() -> Unit): GroupCommand<Arguments> {
         val commandObj = GroupCommand<Arguments>(this)
         body.invoke(commandObj)
@@ -377,6 +384,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param check Check to apply to all slash commands in this extension.
      */
+    @ExtensionDSL
     public open fun slashCheck(check: suspend (InteractionCreateEvent) -> Boolean) {
         slashCommandChecks.add(check)
     }
@@ -393,6 +401,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param checks Checks to apply to all commands in this extension.
      */
+    @ExtensionDSL
     public open fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
         checks.forEach { commandChecks.add(it) }
     }
@@ -402,6 +411,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param check Check to apply to all commands in this extension.
      */
+    @ExtensionDSL
     public open fun check(check: suspend (MessageCreateEvent) -> Boolean) {
         commandChecks.add(check)
     }
