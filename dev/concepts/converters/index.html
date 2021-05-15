@@ -266,7 +266,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../modules/common/" class="md-tabs__link">
+      <a href="../../modules/" class="md-tabs__link">
         Modules
       </a>
     </li>
@@ -698,8 +698,32 @@
   
   
     <li class="md-nav__item">
+      <a href="../../modules/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modules/java-time/" class="md-nav__link">
+        Java Time
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../modules/common/" class="md-nav__link">
-        Common
+        Extra: Common
       </a>
     </li>
   
@@ -829,7 +853,7 @@ to.</p>
 <li><code>Boolean</code></li>
 <li><code>Channel</code></li>
 <li><code>Decimal</code> (Doubles only)</li>
-<li><code>Duration</code> (Java Time and Time4J) with special-casing for coalescing conversion</li>
+<li><code>Duration</code> (Time4J) with special-casing for coalescing conversion</li>
 <li><code>Email</code></li>
 <li><code>Emoji</code> (Server emoji on Discord)</li>
 <li><code>Enum</code> (Any enums you like, including those you define yourself)</li>
@@ -842,6 +866,11 @@ to.</p>
 <li><code>String</code> with special-casing for coalescing conversion</li>
 <li><code>Snowflake</code></li>
 <li><code>User</code></li>
+</ul>
+<p>Additional modules are available that add more converters:</p>
+<ul>
+<li><a href="/modules/java-time">Java Time</a>:
+    * <code>Duration</code> (Java Time) with special-casing for coalescing conversion</li>
 </ul>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>Converters are intended to be used as part of your commands setup, via the <code>Arguments</code> object. <code>Arguments</code> is a special
@@ -985,7 +1014,7 @@ may cause all kinds of strange issues</strong> - provide wrapping extension func
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-12
+      Last update: 2021-05-15
     
   </small>
 </div>
