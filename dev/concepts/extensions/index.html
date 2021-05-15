@@ -796,7 +796,7 @@ abstract members - the <code>name</code> property and <code>setup</code> functio
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">TextExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">:</span> <span class="n">ExtensibleBot</span><span class="p">)</span> <span class="p">:</span> <span class="n">Extension</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span> <span class="p">{</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">TextExtension</span> <span class="p">:</span> <span class="n">Extension</span><span class="p">()</span> <span class="p">{</span>
     <span class="c1">// The name this extension will be referred to by</span>
     <span class="kd">override</span> <span class="kd">val</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">&quot;test&quot;</span>
 
@@ -972,7 +972,7 @@ extension that polls something every 30 seconds, and sends a message to a channe
 <span class="c1">// guild members (for example) to be populated.</span>
 <span class="kd">private</span> <span class="kd">const</span> <span class="kd">val</span> <span class="nv">SETUP_DELAY</span> <span class="o">=</span> <span class="m">1000L</span> <span class="o">*</span> <span class="m">10L</span>
 
-<span class="kd">class</span> <span class="nc">CheckExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">:</span> <span class="n">ExtensibleBot</span><span class="p">)</span> <span class="p">:</span> <span class="n">Extension</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">CheckExtension</span> <span class="p">:</span> <span class="n">Extension</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">override</span> <span class="kd">val</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">&quot;check&quot;</span>
 
     <span class="kd">private</span> <span class="kd">var</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>  <span class="c1">// ...or whatever</span>
@@ -1107,7 +1107,7 @@ probably don't need with a <img alt="🔧" class="twemoji" src="https://twemoji.
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-14
+      Last update: 2021-05-15
     
   </small>
 </div>

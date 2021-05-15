@@ -803,9 +803,9 @@ your extension's <code>setup</code> function.</p>
 <span class="normal">10</span>
 <span class="normal">11</span>
 <span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">command</span> <span class="p">{</span>  <span class="c1">// this: Command</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;ping&quot;</span>  <span class="c1">// Command name</span>
-    <span class="n">aliases</span> <span class="o">=</span> <span class="n">arrayOf</span><span class="p">(</span><span class="s">&quot;pong&quot;</span><span class="p">)</span>  <span class="c1">// Alternate command names</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Returns &#39;Pong!&#39;&quot;</span>  <span class="c1">// Help text for the help command</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;ping&quot;</span>  <span class="c1">// Command name (can be a translation key)</span>
+    <span class="n">aliases</span> <span class="o">=</span> <span class="n">arrayOf</span><span class="p">(</span><span class="s">&quot;pong&quot;</span><span class="p">)</span>  <span class="c1">// Alternate command names (can be translation keys)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&quot;Returns &#39;Pong!&#39;&quot;</span>  <span class="c1">// Help text for the help command (can be a translation key)</span>
 
     <span class="n">check</span> <span class="p">{</span> <span class="n">event</span> <span class="o">-&gt;</span> <span class="kc">true</span> <span class="p">}</span>  <span class="c1">// Return `false` to prevent the action</span>
     <span class="n">check</span><span class="p">(</span><span class="o">::</span><span class="n">returnTrue</span><span class="p">)</span>  <span class="c1">// You can also pass it a function</span>
@@ -817,7 +817,7 @@ your extension's <code>setup</code> function.</p>
 </code></pre></div>
 </td></tr></table>
 <p>Use the <code>check</code> function to define a set of predicates that must all return <code>true</code> in order for the command's action to
-be run - you can read more about checks on <a href="/concepts/checks">the Checks page</a>. Once all the checks pass, the <code>action</code>
+be run - you can read more about checks on <a href="/concepts/checks">the Checks page</a>. If all the checks pass, the <code>action</code>
 lambda will be called.</p>
 <p>Note that the <code>action</code> lambda above is a receiver function, where <code>this</code> is bound to a <code>MessageCommandContext</code> object.</p>
 <h3 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h3>
@@ -865,7 +865,7 @@ be set in order to properly register a command.</p>
 </tr>
 </tbody>
 </table>
-<p>Additionally, the following functions are available - please note that functions marked with <img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> are  required 
+<p>Additionally, the following functions are available - please note that functions marked with <img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> are required 
 and must be called in order to properly register a command.</p>
 <table>
 <thead>
@@ -881,7 +881,7 @@ and must be called in order to properly register a command.</p>
 </tr>
 <tr>
 <td align="left"><code>check</code></td>
-<td align="left">A function allowing you to define one or more checks for this command - see <a href="/concepts/checks">the Checks page</a> for more information</td>
+<td align="left">Define one or more checks for this command - see <a href="/concepts/checks">the Checks page</a> for more information</td>
 </tr>
 <tr>
 <td align="left"><code>requirePermissions</code></td>
@@ -978,8 +978,20 @@ of your command's <code>action</code>. It exists to provide a little extra conte
 <td align="left">Convenience function to create and add a Sentry breadcrumb, for the <a href="/integrations/sentry">Sentry intgration</a>.</td>
 </tr>
 <tr>
+<td align="left"><code>getLocale</code></td>
+<td align="left">Resolve and return the locale for this command context</td>
+</tr>
+<tr>
 <td align="left"><code>sendHelp</code></td>
 <td align="left">Attempts to respond with command help using the loaded help extension, returning <code>false</code> if no such extension is loaded. Help extensions implement the <code>HelpProvider</code> interface.</td>
+</tr>
+<tr>
+<td align="left"><code>Message.respondTranslated</code></td>
+<td align="left">Given a translation key, replies using  <code>Message.respond</code> with the translated string, according to the resolved locale and the extension's translation bundle</td>
+</tr>
+<tr>
+<td align="left"><code>translate</code></td>
+<td align="left">Given a translation key, returns the translated string, according to the resolved locale and the extension's translation bundle</td>
 </tr>
 </tbody>
 </table>
@@ -1416,7 +1428,7 @@ exposed on the <code>event</code> object directly.</p>
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-04-11
+      Last update: 2021-05-15
     
   </small>
 </div>

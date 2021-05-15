@@ -811,11 +811,6 @@ change once Discord provides better mechanisms for dealing with this kind of thi
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>bot</code></td>
-<td align="center"><code>ExtensibleBot</code></td>
-<td align="left">Current bot instance being worked with</td>
-</tr>
-<tr>
 <td align="left"><code>targetChannel</code></td>
 <td align="center"><code>MessageChannelBehavior</code></td>
 <td align="left">Channel to send the paginator within</td>
@@ -855,6 +850,11 @@ change once Discord provides better mechanisms for dealing with this kind of thi
 <td align="center"><code>ReactionEmoji</code></td>
 <td align="left">The emoji to use to cycle between page groups, <img alt="ℹ" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/2139.svg" title=":information_source:" /> by default for two groups or <img alt="🔄" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f504.svg" title=":arrows_counterclockwise:" /> for more than two</td>
 </tr>
+<tr>
+<td align="left"><code>locale</code></td>
+<td align="center"><code>Locale?</code></td>
+<td align="left">The Locale object to use for strings, which should be passed in from the <code>getLocale()</code> function in your command's context object</td>
+</tr>
 </tbody>
 </table>
 <p>Once you've created your paginator, all you need to do is call the <code>send</code> function, and it'll be sent to the channel!</p>
@@ -866,7 +866,7 @@ change once Discord provides better mechanisms for dealing with this kind of thi
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-01
+      Last update: 2021-05-15
     
   </small>
 </div>

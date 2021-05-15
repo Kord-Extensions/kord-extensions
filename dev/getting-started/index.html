@@ -827,7 +827,7 @@ create an extension containing a command, and we'll create a bot with that exten
 <span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
-<span class="normal">39</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">TestExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">:</span> <span class="n">ExtensibleBot</span><span class="p">)</span> <span class="p">:</span> <span class="n">Extension</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span> <span class="p">{</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">TestExtension</span> <span class="p">:</span> <span class="n">Extension</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">override</span> <span class="kd">val</span> <span class="nv">name</span> <span class="o">=</span> <span class="s">&quot;test&quot;</span>  <span class="c1">// The registered name for our extension</span>
 
     <span class="kd">class</span> <span class="nc">TestArgs</span> <span class="p">:</span> <span class="n">Arguments</span><span class="p">()</span> <span class="p">{</span>  <span class="c1">// The arguments our command takes</span>
@@ -912,7 +912,7 @@ create an extension containing a command, and we'll create a bot with that exten
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-28
+      Last update: 2021-05-15
     
   </small>
 </div>

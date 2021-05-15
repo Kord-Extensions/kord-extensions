@@ -877,7 +877,11 @@ they'll contain the <strong>newly changed</strong> value.</p>
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>Koin.module</code></td>
+<td align="left"><code>getKoin</code></td>
+<td align="left">For situations where you can't inherit the <code>KoinComponent</code> interface (for example, in a top-level function), you can use this function to get the current Koin instance.</td>
+</tr>
+<tr>
+<td align="left"><code>loadModule</code></td>
 <td align="left">Wrapper around Koin's <code>module</code> DSL function that immediately registers the module against the current Koin instance.</td>
 </tr>
 </tbody>
@@ -1226,7 +1230,7 @@ to cancel the <code>Job</code> early if required. The following instance functio
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-03
+      Last update: 2021-05-15
     
   </small>
 </div>

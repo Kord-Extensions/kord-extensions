@@ -1133,6 +1133,9 @@ that you can make use of to configure your bot.</p>
 </tr>
 </tbody>
 </table>
+<p>External modules that add extensions are free to add extension functions to this class, which gives users a convenient
+way to configure them. If you're using an external module, we recommend reading the documentation for any modules you
+may be using.</p>
 <h3 id="hooks">Hooks<a class="headerlink" href="#hooks" title="Permanent link">&para;</a></h3>
 <p>Hooks allow you to set up lambdas that are to be run at various points in the bot's lifecycle, allowing you to set up
 the bot precisely how you need it.</p>
@@ -1261,84 +1264,6 @@ note that you will need the <code>GUILD_MEMBERS</code> privileged intent to fill
 </tr>
 </tbody>
 </table>
-<table>
-<thead>
-<tr>
-<th align="left">Name</th>
-<th align="center">Type</th>
-<th align="center">Default</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><code>token</code></td>
-<td align="center"><code>String</code></td>
-<td align="center"></td>
-<td align="left">The Discord bot token to login with</td>
-</tr>
-<tr>
-<td align="left"><code>prefix</code></td>
-<td align="center"><code>String</code></td>
-<td align="center"></td>
-<td align="left">The prefix required before all command invocations</td>
-</tr>
-<tr>
-<td align="left"><code>addHelpExtension</code></td>
-<td align="center"><code>Boolean</code></td>
-<td align="center"><code>true</code></td>
-<td align="left">Whether to add the bundled help extension automatically</td>
-</tr>
-<tr>
-<td align="left"><code>addSentryExtension</code></td>
-<td align="center"><code>Boolean</code></td>
-<td align="center"><code>true</code></td>
-<td align="left">Whether to add the bundled <a href="/integrations/sentry">Sentry integration</a> extension automatically</td>
-</tr>
-<tr>
-<td align="left"><code>invokeCommandOnMention</code></td>
-<td align="center"><code>Boolean</code></td>
-<td align="center"><code>true</code></td>
-<td align="left">Whether commands may also be invoked by mentioning the bot</td>
-</tr>
-<tr>
-<td align="left"><code>messageCacheSize</code></td>
-<td align="center"><code>Int</code></td>
-<td align="center"><code>10_000</code></td>
-<td align="left">How many messages to keep in the messages cache by default</td>
-</tr>
-<tr>
-<td align="left"><code>commandThreads</code></td>
-<td align="center"><code>Int</code></td>
-<td align="center">CPUs * 2</td>
-<td align="left">How many threads to use for the command execution threadpool</td>
-</tr>
-<tr>
-<td align="left"><code>guildsToFill</code></td>
-<td align="center"><code>List &lt;Snowflake&gt;</code></td>
-<td align="center"><code>[ ]</code></td>
-<td align="left">A list of guilds to request all members for during the connection phase. This requires the <code>GuildMembers</code> intent, specified in the <code>start</code> function</td>
-</tr>
-<tr>
-<td align="left"><code>fillPresences</code></td>
-<td align="center"><code>Boolean?</code></td>
-<td align="center"><code>null</code></td>
-<td align="left">Whether to request presences for the above members (<code>true</code>/<code>false</code>, or <code>null</code> for the default). This requires the <code>GuildPresences</code> intent, specified in the <code>start</code> function</td>
-</tr>
-<tr>
-<td align="left"><code>koinLogLevel</code></td>
-<td align="center"><code>Level</code></td>
-<td align="center"><code>ERROR</code></td>
-<td align="left">The default logging level that Koin should use</td>
-</tr>
-<tr>
-<td align="left"><code>handleSlashCommands</code></td>
-<td align="center"><code>Boolean</code></td>
-<td align="center"><code>false</code></td>
-<td align="left">Whether to support registration and invocation of slash commands. Setting this to fault will not raise errors for extensions that register slash commands, however - they just won't work</td>
-</tr>
-</tbody>
-</table>
 <h3 id="presence-configuration">Presence configuration<a class="headerlink" href="#presence-configuration" title="Permanent link">&para;</a></h3>
 <p>This matches Kord's initial presence API. For more information,
 <a href="https://kordlib.github.io/kord/gateway/gateway/dev.kord.gateway.builder/-presence-builder/index.html">see the Kord documentation</a>.</p>
@@ -1368,8 +1293,7 @@ currently working on bots that require sharding.</p>
 <p>If you need sharding, please contact us and we can work out the details.</p>
 </details>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
-<p>A few properties are available to you, for getting access to Kord, querying some of the bot's state, and some other 
-things.</p>
+<p>A few properties are available to you, for getting access to a few internals.</p>
 <details class="info"><summary>Further properties</summary><p>There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most
 of the properties are <code>open</code> to facilitate niche use-cases that require extending the ExtensibleBot class.</p>
 </details>
@@ -1400,7 +1324,7 @@ and should now be accessed via Koin. For more information, see <a href="/integra
 <p>A number of functions are available to you as well.</p>
 <details class="info"><summary>Further functions</summary><p>There are other non-private functions available, but they aren't necessarily something you'll need to touch. Most
 of the functions are <code>open</code> to facilitate niche use-cases that require extending the ExtensibleBot class, but a
-handful are <code>inline</code> for the sake of avoiding function call overhead.</p>
+handful are <code>inline</code> for the sake of avoiding function call overhead or making use of reified types.</p>
 </details>
 <table>
 <thead>
@@ -1444,7 +1368,7 @@ handful are <code>inline</code> for the sake of avoiding function call overhead.
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-14
+      Last update: 2021-05-15
     
   </small>
 </div>
