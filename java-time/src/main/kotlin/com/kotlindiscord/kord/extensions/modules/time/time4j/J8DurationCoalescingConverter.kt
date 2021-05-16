@@ -55,7 +55,7 @@ public class J8DurationCoalescingConverter(
         }
 
         parsed = parseDurationJ8(
-            durations.joinToString()
+            durations.joinToString("")
         )
 
         return durations.size

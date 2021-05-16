@@ -41,4 +41,4 @@ These can be added to your `Arguments` objects using the following functions:
 
 Function             | Description
 :------------------- | :----------
-`Duration .toHuman`  | For a Java Time Duration, return a human-readable string in the form `a days, b hours, c minutes and d seconds` (omitting zero-values)
+`Duration .toHuman`  | For a Java Time Duration, return a human-readable string formatted for the given locale

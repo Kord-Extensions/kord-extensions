@@ -40,6 +40,7 @@ These can be added to your `Arguments` objects using the following functions:
 
 ## Utilities
 
-Function             | Description
-:------------------- | :----------
+Function              | Description
+:-------------------- | :----------
+`Duration .toHuman`   | For a Time4J Duration, return a human-readable string formatted for the given locale
 `Duration .toSeconds` | For a Time4J Duration, return the total number of seconds it contains

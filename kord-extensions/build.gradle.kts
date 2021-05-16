@@ -33,8 +33,7 @@ dependencies {
     api("io.insert-koin:koin-logger-slf4j:3.0.1")
 
     api("io.sentry:sentry:4.3.0")  // Needs to be transitive or bots will start breaking
-
-    implementation("com.ibm.icu:icu4j:69.1")  // For translations
+    api("com.ibm.icu:icu4j:69.1")  // For translations
 
     implementation("io.github.microutils:kotlin-logging:2.0.6")
     implementation("org.apache.commons:commons-text:1.9")

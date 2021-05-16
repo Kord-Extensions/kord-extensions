@@ -48,7 +48,7 @@ public val unitMapJ8: Map<String, ChronoUnit> = mapOf(
  */
 @Suppress("MagicNumber")
 internal fun parseDurationJ8(s: String): java.time.Duration {
-    var buffer = s
+    var buffer = s.replace(",", "")
     var duration = java.time.Duration.ZERO
 
     while (buffer.isNotEmpty()) {

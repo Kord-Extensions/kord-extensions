@@ -1,8 +1,11 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
+import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.modules.time.time4j.formatters.T4JDurationFormatter
 import net.time4j.Duration
 import net.time4j.IsoUnit
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 /**
  * Convert a Time4J Duration object to seconds.
@@ -26,3 +29,17 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
 
     return seconds
 }
+
+/**
+ * Given a Duration, this function will return a String (or null if it represents less than 1 second).
+ *
+ * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
+ */
+public fun Duration<IsoUnit>.toHuman(locale: Locale): String? = T4JDurationFormatter.format(this, locale)
+
+/**
+ * Given a Duration, this function will return a String (or null if it represents less than 1 second).
+ *
+ * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
+ */
+public suspend fun Duration<IsoUnit>.toHuman(context: CommandContext): String? = toHuman(context.getLocale())

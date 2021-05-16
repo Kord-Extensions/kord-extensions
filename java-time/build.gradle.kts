@@ -14,7 +14,13 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+
     implementation(project(":kord-extensions"))
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+    testImplementation("ch.qos.logback:logback-classic:1.2.3")
+    testImplementation("org.codehaus.groovy:groovy:3.0.4")  // For logback config
 }
 
 val sourceJar = task("sourceJar", Jar::class) {

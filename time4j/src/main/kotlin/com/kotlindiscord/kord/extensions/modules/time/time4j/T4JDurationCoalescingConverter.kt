@@ -56,7 +56,7 @@ public class T4JDurationCoalescingConverter(
         }
 
         parsed = parseT4JDuration(
-            durations.joinToString()
+            durations.joinToString("")
         )
 
         return durations.size

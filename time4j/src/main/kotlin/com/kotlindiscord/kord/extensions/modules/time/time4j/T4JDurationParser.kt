@@ -51,7 +51,7 @@ public val unitMap: Map<String, IsoUnit> = mapOf(
  */
 @Suppress("MagicNumber")
 public fun parseT4JDuration(s: String): Duration<IsoUnit> {
-    var buffer = s
+    var buffer = s.replace(",", "")
     var duration = Duration.ofZero<IsoUnit>()
 
     while (buffer.isNotEmpty()) {

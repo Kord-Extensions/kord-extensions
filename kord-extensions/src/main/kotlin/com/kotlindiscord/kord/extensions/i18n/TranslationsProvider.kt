@@ -17,6 +17,9 @@ public abstract class TranslationsProvider(
      */
     public open val defaultLocale: Locale by lazy { defaultLocaleBuilder() }
 
+    /** Check whether a translation key exists in the given bundle and locale. **/
+    public abstract fun hasKey(key: String, locale: Locale, bundleName: String?): Boolean
+
     /** Get a translation by key from the given bundle name (`kordex.strings` by default). **/
     public open fun get(key: String, bundleName: String? = null): String =
         get(key, defaultLocale, bundleName)
