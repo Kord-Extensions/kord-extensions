@@ -4,6 +4,7 @@ import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
 import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.utils.component6
 import net.time4j.*
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -51,14 +52,8 @@ public fun formatT4JDuration(duration: Duration<IsoUnit>, locale: Locale): Strin
         ClockUnit.SECONDS
     ).between(now, offsetTime).toTemporalAmount()
 
-    val times = formatter.format(newDuration).split("::").toMutableList()
-
-    val years = times.removeFirst().toLong()
-    val months = times.removeFirst().toLong()
-    val days = times.removeFirst().toLong()
-    val hours = times.removeFirst().toLong()
-    val minutes = times.removeFirst().toLong()
-    val seconds = times.removeFirst().toLong()
+    val times = formatter.format(newDuration).split("::")
+    val (years, months, days, hours, minutes, seconds) = times.map { it.toLong() }
 
     val fmt = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.WIDE)
     val measures: MutableList<Measure> = mutableListOf()

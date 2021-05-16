@@ -4,6 +4,7 @@ import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
 import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.utils.component6
 import org.apache.commons.lang3.time.DurationFormatUtils
 import java.time.Duration
 import java.time.Instant
@@ -19,14 +20,9 @@ public fun formatJ8Duration(duration: Duration, locale: Locale): String? {
         Instant.now().toEpochMilli(),
         Instant.now().toEpochMilli() + duration.toMillis(),
         "y::M::d::H::m::s"
-    ).split("::").toMutableList()
+    ).split("::")
 
-    val years = times.removeFirst().toLong()
-    val months = times.removeFirst().toLong()
-    val days = times.removeFirst().toLong()
-    val hours = times.removeFirst().toLong()
-    val minutes = times.removeFirst().toLong()
-    val seconds = times.removeFirst().toLong()
+    val (years, months, days, hours, minutes, seconds) = times.map { it.toLong() }
 
     val fmt = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.WIDE)
     val measures: MutableList<Measure> = mutableListOf()
