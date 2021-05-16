@@ -1,9 +1,10 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
+import com.ibm.icu.text.MeasureFormat
+import com.ibm.icu.util.Measure
+import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.modules.time.time4j.formatters.T4JDurationFormatter
-import net.time4j.Duration
-import net.time4j.IsoUnit
+import net.time4j.*
 import java.time.temporal.ChronoUnit
 import java.util.*
 
@@ -31,11 +32,56 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
 }
 
 /**
+ * Function in charge of formatting Time4J duration objects into human-readable form, taking locales and translations
+ * into account.
+ */
+public fun formatT4JDuration(duration: Duration<IsoUnit>, locale: Locale): String? {
+    // This function is pretty cursed, but then again, Time4J is pretty cursed.
+    val formatter = Duration.Formatter.ofPattern("#################Y::#M::#D::#h::#m::#s")
+
+    val now = PlainTimestamp.nowInSystemTime()
+    val offsetTime = duration.addTo(PlainTimestamp.nowInSystemTime())
+
+    val newDuration = Duration.`in`(
+        CalendarUnit.YEARS,
+        CalendarUnit.MONTHS,
+        CalendarUnit.DAYS,
+        ClockUnit.HOURS,
+        ClockUnit.MINUTES,
+        ClockUnit.SECONDS
+    ).between(now, offsetTime).toTemporalAmount()
+
+    val times = formatter.format(newDuration).split("::").toMutableList()
+
+    val years = times.removeFirst().toLong()
+    val months = times.removeFirst().toLong()
+    val days = times.removeFirst().toLong()
+    val hours = times.removeFirst().toLong()
+    val minutes = times.removeFirst().toLong()
+    val seconds = times.removeFirst().toLong()
+
+    val fmt = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.WIDE)
+    val measures: MutableList<Measure> = mutableListOf()
+
+    if (years > 0) measures.add(Measure(years, MeasureUnit.YEAR))
+    if (months > 0) measures.add(Measure(months, MeasureUnit.MONTH))
+    if (days > 0) measures.add(Measure(days, MeasureUnit.DAY))
+    if (hours > 0) measures.add(Measure(hours, MeasureUnit.HOUR))
+    if (minutes > 0) measures.add(Measure(minutes, MeasureUnit.MINUTE))
+    if (seconds > 0) measures.add(Measure(seconds, MeasureUnit.SECOND))
+
+    if (measures.isEmpty()) return null
+
+    @Suppress("SpreadOperator")  // There's no other way, really
+    return fmt.formatMeasures(*measures.toTypedArray())
+}
+
+/**
  * Given a Duration, this function will return a String (or null if it represents less than 1 second).
  *
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
-public fun Duration<IsoUnit>.toHuman(locale: Locale): String? = T4JDurationFormatter.format(this, locale)
+public fun Duration<IsoUnit>.toHuman(locale: Locale): String? = formatT4JDuration(this, locale)
 
 /**
  * Given a Duration, this function will return a String (or null if it represents less than 1 second).

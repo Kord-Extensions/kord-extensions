@@ -3,7 +3,6 @@ package com.kotlindiscord.kord.extensions.test.bot
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.time.time4j.coalescedJ8Duration
-import com.kotlindiscord.kord.extensions.modules.time.time4j.formatters.J8DurationFormatter
 import com.kotlindiscord.kord.extensions.modules.time.time4j.toHuman
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview

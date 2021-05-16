@@ -48,4 +48,4 @@ jobs:
       - name: Deploy Docs
         run: |
           cd docs
-          mike deploy --push --update-aliases latest ${{ steps.get_tag.outputs.VERSION }}
+          mike deploy --push --update-aliases latest ${{ steps.get_version.outputs.VERSION }}
