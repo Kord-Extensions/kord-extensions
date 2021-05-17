@@ -484,6 +484,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#i18n-configuration" class="md-nav__link">
+    I18n configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#intent-configuration" class="md-nav__link">
     Intent configuration
   </a>
@@ -1236,6 +1243,63 @@ to similarly call the corresponding hook functions yourself.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="i18n-configuration">I18n configuration<a class="headerlink" href="#i18n-configuration" title="Permanent link">&para;</a></h3>
+<p>The i18n builder allows you to configure the default locale, and register locale resolvers and a translations 
+provider. The default locale is <code>SupportedLocales.ENGLISH</code>, if you don't change it.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">i18n</span> <span class="p">{</span>
+        <span class="n">defaultLocale</span> <span class="o">=</span> <span class="n">SupportedLocales</span><span class="p">.</span><span class="na">ENGLISH</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<table>
+<thead>
+<tr>
+<th align="left">Property</th>
+<th align="center">Type</th>
+<th align="center">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">defaultLocale</td>
+<td align="center">Locale</td>
+<td align="center"><code>ENGLISH</code></td>
+<td align="left">The default locale to use, when your locale resolvers don't return a different one</td>
+</tr>
+<tr>
+<td align="left">translationsProvider</td>
+<td align="center">TranslationsProvider</td>
+<td align="center"><code>ResourceBundleTranslations</code></td>
+<td align="left">Implementation of <code>TranslationsProvider</code> responsible for transforming translation keys into strings, replacing placeholders as necessary</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="left">Function</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">localeResolver</td>
+<td align="left">Call this to register a lambda (or callable) that takes a <code>Guild?</code>, <code>Channel</code> and <code>User?</code> argument and returns a <code>Locale</code> object, or <code>null</code> to move on to the next resolver - you can use this to set up, for example, guild-specific locales</td>
+</tr>
+<tr>
+<td align="left">translationsProvider</td>
+<td align="left">Call this to register a builder (usually a constructor) returning a TranslationsProvider instance - this is called immediately, you can't conditionally dispatch to multiple providers with this</td>
+</tr>
+</tbody>
+</table>
+<p>For more information on i18n and translations, see <a href="/concepts/i18n">the i18n page</a>.</p>
 <h3 id="intent-configuration">Intent configuration<a class="headerlink" href="#intent-configuration" title="Permanent link">&para;</a></h3>
 <p>This matches Kord's intents API. For a list of available intents, 
 <a href="https://kordlib.github.io/kord/gateway/gateway/dev.kord.gateway/-intent/index.html">see the Kord documentation</a>.</p>
@@ -1404,7 +1468,7 @@ handful are <code>inline</code> for the sake of avoiding function call overhead 
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-15
+      Last update: 2021-05-17
     
   </small>
 </div>
