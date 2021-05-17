@@ -53,19 +53,27 @@ internal fun parseDurationJ8(s: String): java.time.Duration {
 
     while (buffer.isNotEmpty()) {
         val r1 = buffer.splitOn { it.isLetter() } // Thanks Kotlin : https://youtrack.jetbrains.com/issue/KT-11362
-        val num = r1.first
+        val num = r1.first.toLong()
         buffer = r1.second
 
-        val r2 = buffer.splitOn { it.isDigit() }
+        val r2 = buffer.splitOn { it.isDigit() || it == '-' }
         val unit = r2.first
         buffer = r2.second
 
         val chronoUnit = unitMapJ8[unit.toLowerCase()] ?: throw InvalidTimeUnitException(unit.toLowerCase())
 
         duration = if (chronoUnit.duration.seconds > ChronoUnit.SECONDS.duration.seconds) {
-            duration.plus(num.toLong() * chronoUnit.duration.seconds, ChronoUnit.SECONDS)
+            if (num >= 0) {
+                duration.plus(num * chronoUnit.duration.seconds, ChronoUnit.SECONDS)
+            } else {
+                duration.plus(num * chronoUnit.duration.seconds, ChronoUnit.SECONDS)
+            }
         } else {
-            duration.plus(num.toLong(), chronoUnit)
+            if (num >= 0) {
+                duration.plus(num, chronoUnit)
+            } else {
+                duration.minus(num, chronoUnit)
+            }
         }
     }
 

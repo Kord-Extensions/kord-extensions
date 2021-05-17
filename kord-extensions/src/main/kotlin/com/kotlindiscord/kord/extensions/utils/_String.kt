@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.parsers.BooleanParser
 import java.util.*
 
 /**
@@ -32,19 +32,7 @@ public fun String.splitOn(separator: (Char) -> Boolean): Pair<String, String> {
  *
  * Translations may contain commas, in which case any of the given values will be suitable.
  */
-public suspend fun String.parseBoolean(context: CommandContext): Boolean? {
-    val trueValues = context.translate("utils.string.true").split(',').map { it.trim() }
-    val falseValues = context.translate("utils.string.false").split(',').map { it.trim() }
-
-    val lower = toLowerCase()
-
-    return when {
-        falseValues.contains(lower) -> false
-        trueValues.contains(lower) -> true
-
-        else -> null
-    }
-}
+public suspend fun String.parseBoolean(context: CommandContext): Boolean? = parseBoolean(context.getLocale())
 
 /**
  * Parse a string into a boolean, based on the provided locale object.
@@ -56,23 +44,4 @@ public suspend fun String.parseBoolean(context: CommandContext): Boolean? {
  *
  * Translations may contain commas, in which case any of the given values will be suitable.
  */
-public fun String.parseBoolean(locale: Locale): Boolean? {
-    val translationsProvider = getKoin().get<TranslationsProvider>()
-
-    val trueValues = translationsProvider.translate("utils.string.true", locale)
-        .split(',')
-        .map { it.trim() }
-
-    val falseValues = translationsProvider.translate("utils.string.false", locale)
-        .split(',')
-        .map { it.trim() }
-
-    val lower = toLowerCase()
-
-    return when {
-        falseValues.contains(lower) -> false
-        trueValues.contains(lower) -> true
-
-        else -> null
-    }
-}
+public fun String.parseBoolean(locale: Locale): Boolean? = BooleanParser.parse(this, locale)

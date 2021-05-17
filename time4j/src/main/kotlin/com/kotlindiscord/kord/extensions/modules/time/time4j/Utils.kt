@@ -6,8 +6,10 @@ import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.utils.component6
 import net.time4j.*
+import java.lang.IllegalStateException
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.jvm.Throws
 
 /**
  * Convert a Time4J Duration object to seconds.
@@ -36,6 +38,7 @@ public fun Duration<IsoUnit>.toSeconds(): Long {
  * Function in charge of formatting Time4J duration objects into human-readable form, taking locales and translations
  * into account.
  */
+@Throws(IllegalStateException::class)
 public fun formatT4JDuration(duration: Duration<IsoUnit>, locale: Locale): String? {
     // This function is pretty cursed, but then again, Time4J is pretty cursed.
     val formatter = Duration.Formatter.ofPattern("#################Y::#M::#D::#h::#m::#s")

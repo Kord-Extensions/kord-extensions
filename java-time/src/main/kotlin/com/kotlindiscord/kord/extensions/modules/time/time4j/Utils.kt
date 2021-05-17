@@ -9,11 +9,13 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import java.time.Duration
 import java.time.Instant
 import java.util.*
+import kotlin.jvm.Throws
 
 /**
  * Function in charge of formatting Java Time duration objects into human-readable form, taking locales and
  * translations into account.
  */
+@Throws(IllegalArgumentException::class)
 public fun formatJ8Duration(duration: Duration, locale: Locale): String? {
     // This is only slightly less cursed than Time4J.
     val times = DurationFormatUtils.formatPeriod(

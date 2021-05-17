@@ -59,7 +59,7 @@ public fun parseT4JDuration(s: String): Duration<IsoUnit> {
         val num = r1.first
         buffer = r1.second
 
-        val r2 = buffer.splitOn { it.isDigit() }
+        val r2 = buffer.splitOn { it.isDigit() || it == '-' }
         val unit = r2.first
         buffer = r2.second
 
