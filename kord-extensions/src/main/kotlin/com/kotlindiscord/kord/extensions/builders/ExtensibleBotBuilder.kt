@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
+import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.loadModule
@@ -469,7 +470,7 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public class I18nBuilder {
         /** Locale that should be used by default. **/
-        public var defaultLocale: Locale = Locale("en", "gb")
+        public var defaultLocale: Locale = SupportedLocales.ENGLISH
 
         /**
          * Callables used to resolve a Locale object for the given guild, channel and user.

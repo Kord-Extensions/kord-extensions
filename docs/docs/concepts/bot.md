@@ -162,6 +162,31 @@ created                   | Lambdas registered here are called just after the `E
 extensionAdded            | Lambdas registered here are called every time an extension is added successfully, with the extension object as a parameter
 setup                     | Lambdas registered here are called after the `ExtensibleBot` object has been created and set up
 
+### I18n configuration
+
+The i18n builder allows you to configure the default locale, and register locale resolvers and a translations 
+provider. The default locale is `SupportedLocales.ENGLISH`, if you don't change it.
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    i18n {
+        defaultLocale = SupportedLocales.ENGLISH
+    }
+}
+```
+
+Property                  | Type                 | Default                      | Description
+:------------------------ | :------------------: | :--------------------------: | :----------
+defaultLocale             | Locale               | `ENGLISH`                    | The default locale to use, when your locale resolvers don't return a different one
+translationsProvider      | TranslationsProvider | `ResourceBundleTranslations` | Implementation of `TranslationsProvider` responsible for transforming translation keys into strings, replacing placeholders as necessary
+
+Function             | Description
+:------------------- | :----------
+localeResolver       | Call this to register a lambda (or callable) that takes a `Guild?`, `Channel` and `User?` argument and returns a `Locale` object, or `null` to move on to the next resolver - you can use this to set up, for example, guild-specific locales
+translationsProvider | Call this to register a builder (usually a constructor) returning a TranslationsProvider instance - this is called immediately, you can't conditionally dispatch to multiple providers with this
+
+For more information on i18n and translations, see [the i18n page](/concepts/i18n).
+
 ### Intent configuration
 
 This matches Kord's intents API. For a list of available intents, 
