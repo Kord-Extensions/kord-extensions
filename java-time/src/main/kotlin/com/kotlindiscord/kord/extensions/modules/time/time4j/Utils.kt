@@ -4,37 +4,38 @@ import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
 import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.utils.component6
-import org.apache.commons.lang3.time.DurationFormatUtils
-import java.time.Duration
-import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.jvm.Throws
+
+private const val DAYS_PER_WEEK = 7L
 
 /**
- * Function in charge of formatting Java Time duration objects into human-readable form, taking locales and
+ * Function in charge of formatting [ChronoContainer] duration objects into human-readable form, taking locales and
  * translations into account.
  */
 @Throws(IllegalArgumentException::class)
-public fun formatJ8Duration(duration: Duration, locale: Locale): String? {
-    // This is only slightly less cursed than Time4J.
-    val times = DurationFormatUtils.formatPeriod(
-        Instant.now().toEpochMilli(),
-        Instant.now().toEpochMilli() + duration.toMillis(),
-        "y::M::d::H::m::s"
-    ).split("::")
+public fun formatChronoContainer(container: ChronoContainer, locale: Locale): String? {
+    container.normalize()
 
-    val (years, months, days, hours, minutes, seconds) = times.map { it.toLong() }
+    val years = container.get(ChronoUnit.YEARS)
+    val months = container.get(ChronoUnit.MONTHS)
+    val days = container.get(ChronoUnit.DAYS) % DAYS_PER_WEEK
+    val weeks = container.get(ChronoUnit.DAYS) / DAYS_PER_WEEK
+
+    val hours = container.get(ChronoUnit.HOURS)
+    val minutes = container.get(ChronoUnit.MINUTES)
+    val seconds = container.get(ChronoUnit.SECONDS)
 
     val fmt = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.WIDE)
     val measures: MutableList<Measure> = mutableListOf()
 
-    if (years > 0) measures.add(Measure(years, MeasureUnit.YEAR))
-    if (months > 0) measures.add(Measure(months, MeasureUnit.MONTH))
-    if (days > 0) measures.add(Measure(days, MeasureUnit.DAY))
-    if (hours > 0) measures.add(Measure(hours, MeasureUnit.HOUR))
-    if (minutes > 0) measures.add(Measure(minutes, MeasureUnit.MINUTE))
-    if (seconds > 0) measures.add(Measure(seconds, MeasureUnit.SECOND))
+    if (years != 0L) measures.add(Measure(years, MeasureUnit.YEAR))
+    if (months != 0L) measures.add(Measure(months, MeasureUnit.MONTH))
+    if (weeks != 0L) measures.add(Measure(weeks, MeasureUnit.WEEK))
+    if (days != 0L) measures.add(Measure(days, MeasureUnit.DAY))
+    if (hours != 0L) measures.add(Measure(hours, MeasureUnit.HOUR))
+    if (minutes != 0L) measures.add(Measure(minutes, MeasureUnit.MINUTE))
+    if (seconds != 0L) measures.add(Measure(seconds, MeasureUnit.SECOND))
 
     if (measures.isEmpty()) return null
 
@@ -48,7 +49,7 @@ public fun formatJ8Duration(duration: Duration, locale: Locale): String? {
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
 @Suppress("MagicNumber")  // These are all time units!
-public fun Duration.toHuman(locale: Locale): String? = formatJ8Duration(this, locale)
+public fun ChronoContainer.toHuman(locale: Locale): String? = formatChronoContainer(this, locale)
 
 /**
  * Given a Duration, this function will return a String (or null if it represents less than 1 second).
@@ -56,4 +57,4 @@ public fun Duration.toHuman(locale: Locale): String? = formatJ8Duration(this, lo
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
 @Suppress("MagicNumber")  // These are all time units!
-public suspend fun Duration.toHuman(context: CommandContext): String? = toHuman(context.getLocale())
+public suspend fun ChronoContainer.toHuman(context: CommandContext): String? = toHuman(context.getLocale())

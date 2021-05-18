@@ -23,8 +23,8 @@ import java.time.Duration
 public class J8DurationCoalescingConverter(
     public val longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    override var validator: (suspend Argument<*>.(Duration) -> Unit)? = null
-) : CoalescingConverter<Duration>(shouldThrow) {
+    override var validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null
+) : CoalescingConverter<ChronoContainer>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
 
     override suspend fun parse(args: List<String>, context: CommandContext): Int {
@@ -33,7 +33,7 @@ public class J8DurationCoalescingConverter(
         for (arg in args) {
             try {
                 // We do it this way so that we stop parsing as soon as an invalid string is found
-                parseDurationJ8(arg)
+                J8DurationParser.parse(arg, context.getLocale())
                 durations.add(arg)
             } catch (e: InvalidTimeUnitException) {
                 if (this.shouldThrow) {
@@ -54,8 +54,9 @@ public class J8DurationCoalescingConverter(
             }
         }
 
-        parsed = parseDurationJ8(
-            durations.joinToString("")
+        parsed = J8DurationParser.parse(
+            durations.joinToString(""),
+            context.getLocale()
         )
 
         return durations.size

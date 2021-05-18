@@ -13,7 +13,6 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
-import java.time.Duration
 
 /**
  * Create a Java 8 Duration converter, for single arguments.
@@ -24,8 +23,8 @@ public fun Arguments.j8Duration(
     displayName: String,
     description: String,
     longHelp: Boolean = true,
-    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
-): SingleConverter<Duration> =
+    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+): SingleConverter<ChronoContainer> =
     arg(displayName, description, J8DurationConverter(longHelp = longHelp, validator = validator))
 
 /**
@@ -38,8 +37,8 @@ public fun Arguments.optionalJ8Duration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Duration?) -> Unit)? = null,
-): OptionalConverter<Duration?> =
+    validator: (suspend Argument<*>.(ChronoContainer?) -> Unit)? = null,
+): OptionalConverter<ChronoContainer?> =
     arg(
         displayName,
         description,
@@ -56,9 +55,9 @@ public fun Arguments.defaultingJ8Duration(
     displayName: String,
     description: String,
     longHelp: Boolean = true,
-    defaultValue: Duration,
-    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
-): DefaultingConverter<Duration> =
+    defaultValue: ChronoContainer,
+    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+): DefaultingConverter<ChronoContainer> =
     arg(
         displayName,
         description,
@@ -78,8 +77,8 @@ public fun Arguments.j8DurationList(
     description: String,
     longHelp: Boolean = true,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<Duration>) -> Unit)? = null,
-): MultiConverter<Duration> =
+    validator: (suspend Argument<*>.(List<ChronoContainer>) -> Unit)? = null,
+): MultiConverter<ChronoContainer> =
     arg(
         displayName,
         description,
@@ -97,8 +96,8 @@ public fun Arguments.coalescedJ8Duration(
     description: String,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
-): CoalescingConverter<Duration> =
+    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+): CoalescingConverter<ChronoContainer> =
     arg(
         displayName,
         description,
@@ -115,8 +114,8 @@ public fun Arguments.optionalCoalescedJ8Duration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Duration?) -> Unit)? = null,
-): OptionalCoalescingConverter<Duration?> =
+    validator: (suspend Argument<*>.(ChronoContainer?) -> Unit)? = null,
+): OptionalCoalescingConverter<ChronoContainer?> =
     arg(
         displayName,
         description,
@@ -133,11 +132,11 @@ public fun Arguments.optionalCoalescedJ8Duration(
 public fun Arguments.defaultingCoalescedJ8Duration(
     displayName: String,
     description: String,
-    defaultValue: Duration,
+    defaultValue: ChronoContainer,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
-): DefaultingCoalescingConverter<Duration> =
+    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+): DefaultingCoalescingConverter<ChronoContainer> =
     arg(
         displayName,
         description,

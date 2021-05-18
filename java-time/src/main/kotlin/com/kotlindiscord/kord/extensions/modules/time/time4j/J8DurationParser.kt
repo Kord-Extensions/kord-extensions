@@ -1,81 +1,43 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
+import com.kotlindiscord.kord.extensions.i18n.caches.TimeUnitCache
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.utils.splitOn
-import java.time.temporal.ChronoUnit
+import org.koin.core.component.KoinComponent
+import java.util.*
 
 /**
- * Mapping character to its actual unit.
+ * Object in charge of parsing strings into [ChronoContainer]s, using translated locale-aware units.
  */
-public val unitMapJ8: Map<String, ChronoUnit> = mapOf(
-    "s" to ChronoUnit.SECONDS,
-    "sec" to ChronoUnit.SECONDS,
-    "second" to ChronoUnit.SECONDS,
-    "seconds" to ChronoUnit.SECONDS,
+public object J8DurationParser : KoinComponent {
+    /**
+     * Parse the provided string to a [ChronoContainer] object, using the strings provided by the given [Locale].
+     */
+    public fun parse(input: String, locale: Locale): ChronoContainer {
+        val unitMap = TimeUnitCache.getUnits(locale)
 
-    "m" to ChronoUnit.MINUTES,  // It's what everyone expects
-    "mi" to ChronoUnit.MINUTES,
-    "min" to ChronoUnit.MINUTES,
-    "minute" to ChronoUnit.MINUTES,
-    "minutes" to ChronoUnit.MINUTES,
+        var buffer = input.replace(",", "").replace(" ", "")
+        val container = ChronoContainer()
 
-    "h" to ChronoUnit.HOURS,
-    "hour" to ChronoUnit.HOURS,
-    "hours" to ChronoUnit.HOURS,
+        while (buffer.isNotEmpty()) {
+            val numberPair = buffer.splitOn(::isNotValueChar)
+            val value = numberPair.first.toLong()
 
-    "d" to ChronoUnit.DAYS,
-    "day" to ChronoUnit.DAYS,
-    "days" to ChronoUnit.DAYS,
+            buffer = numberPair.second
 
-    "w" to ChronoUnit.WEEKS,
-    "week" to ChronoUnit.WEEKS,
-    "weeks" to ChronoUnit.WEEKS,
+            val unitPair = buffer.splitOn(::isValueChar)
+            val unit = unitPair.first
 
-    "mo" to ChronoUnit.MONTHS,
-    "month" to ChronoUnit.MONTHS,
-    "months" to ChronoUnit.MONTHS,
+            buffer = unitPair.second
 
-    "y" to ChronoUnit.YEARS,
-    "year" to ChronoUnit.YEARS,
-    "years" to ChronoUnit.YEARS
-)
+            val timeUnit = unitMap[unit.toLowerCase()] ?: throw InvalidTimeUnitException(unit)
 
-/**
- * Parse the provided string to a [java.time.Duration] object.
- * Units are determined as in [unitMapJ8].
- *
- * @param s the string to parse.
- */
-@Suppress("MagicNumber")
-internal fun parseDurationJ8(s: String): java.time.Duration {
-    var buffer = s.replace(",", "")
-    var duration = java.time.Duration.ZERO
-
-    while (buffer.isNotEmpty()) {
-        val r1 = buffer.splitOn { it.isLetter() } // Thanks Kotlin : https://youtrack.jetbrains.com/issue/KT-11362
-        val num = r1.first.toLong()
-        buffer = r1.second
-
-        val r2 = buffer.splitOn { it.isDigit() || it == '-' }
-        val unit = r2.first
-        buffer = r2.second
-
-        val chronoUnit = unitMapJ8[unit.toLowerCase()] ?: throw InvalidTimeUnitException(unit.toLowerCase())
-
-        duration = if (chronoUnit.duration.seconds > ChronoUnit.SECONDS.duration.seconds) {
-            if (num >= 0) {
-                duration.plus(num * chronoUnit.duration.seconds, ChronoUnit.SECONDS)
-            } else {
-                duration.plus(num * chronoUnit.duration.seconds, ChronoUnit.SECONDS)
-            }
-        } else {
-            if (num >= 0) {
-                duration.plus(num, chronoUnit)
-            } else {
-                duration.minus(num, chronoUnit)
-            }
+            container.plus(value, timeUnit)
         }
+
+        return container
     }
 
-    return duration
+    private fun isValueChar(char: Char) = char.isDigit() || char == '-'
+    private fun isNotValueChar(char: Char) = !isValueChar(char)
 }

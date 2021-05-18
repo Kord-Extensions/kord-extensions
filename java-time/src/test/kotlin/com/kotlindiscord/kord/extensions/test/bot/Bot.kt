@@ -11,8 +11,9 @@ suspend fun main() {
 
         i18n {
             localeResolver { guild, channel, user ->
-                when(user?.id?.value) {
+                when (user?.id?.value) {
                     242043299022635020 -> Locale.FRANCE
+                    407110650217627658 -> Locale.FRANCE
                     667552017434017794 -> Locale.SIMPLIFIED_CHINESE
                     185461862878543872 -> Locale.GERMAN
 
