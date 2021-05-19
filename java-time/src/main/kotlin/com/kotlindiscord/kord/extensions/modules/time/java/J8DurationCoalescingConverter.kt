@@ -10,6 +10,7 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import mu.KotlinLogging
 import java.time.Duration
+import java.time.LocalDateTime
 
 /**
  * Coalescing argument converter for Java 8 [Duration] arguments.
@@ -18,12 +19,14 @@ import java.time.Duration
  * combine them into a single [Duration].
  *
  * @param longHelp Whether to send the user a long help message with specific information on how to specify durations.
+ * @param positiveOnly Whether a positive duration is required - `true` by default.
  *
  * @see coalescedDuration
  * @see parseDurationJ8
  */
 public class J8DurationCoalescingConverter(
     public val longHelp: Boolean = true,
+    public val positiveOnly: Boolean = true,
     shouldThrow: Boolean = false,
     override var validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null
 ) : CoalescingConverter<ChronoContainer>(shouldThrow) {
@@ -32,30 +35,73 @@ public class J8DurationCoalescingConverter(
 
     override suspend fun parse(args: List<String>, context: CommandContext): Int {
         val durations = mutableListOf<String>()
+        val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
 
-        for (arg in args) {
+        var skipNext = false
+
+        @Suppress("LoopWithTooManyJumpStatements")  // Well you rewrite it then, detekt
+        for (index in 0 until args.size) {
+            if (skipNext) {
+                skipNext = false
+
+                continue
+            }
+
+            val arg = args[index]
+
+            if (arg in ignoredWords) continue
+
             try {
                 // We do it this way so that we stop parsing as soon as an invalid string is found
                 J8DurationParser.parse(arg, context.getLocale())
                 J8DurationParser.parse(durations.joinToString("") + arg, context.getLocale())
 
                 durations.add(arg)
-            } catch (e: InvalidTimeUnitException) {
-                throwIfNecessary(e, context)
-
-                break
             } catch (e: DurationParserException) {
-                throwIfNecessary(e, context)
+                try {
+                    val nextIndex = index + 1
 
-                break
+                    if (nextIndex >= args.size) {
+                        throw e
+                    }
+
+                    val nextArg = args[nextIndex]
+                    val combined = arg + nextArg
+
+                    J8DurationParser.parse(combined, context.getLocale())
+                    J8DurationParser.parse(durations.joinToString("") + combined, context.getLocale())
+
+                    durations.add(combined)
+                    skipNext = true
+                } catch (t: InvalidTimeUnitException) {
+                    throwIfNecessary(t, context)
+
+                    break
+                } catch (t: DurationParserException) {
+                    throwIfNecessary(t, context)
+
+                    break
+                }
             }
         }
 
         try {
-            parsed = J8DurationParser.parse(
+            val result = J8DurationParser.parse(
                 durations.joinToString(""),
                 context.getLocale()
             )
+
+            if (positiveOnly) {
+                val normalized = result.clone()
+
+                normalized.normalize(LocalDateTime.now())
+
+                if (!normalized.isPositive()) {
+                    throw CommandException(context.translate("converters.duration.error.positiveOnly"))
+                }
+            }
+
+            parsed = result
         } catch (e: InvalidTimeUnitException) {
             throwIfNecessary(e, context, true)
         } catch (e: DurationParserException) {

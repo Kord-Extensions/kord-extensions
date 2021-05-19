@@ -22,10 +22,19 @@ import dev.kord.common.annotation.KordPreview
 public fun Arguments.j8Duration(
     displayName: String,
     description: String,
+    requirePositive: Boolean = true,
     longHelp: Boolean = true,
     validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
 ): SingleConverter<ChronoContainer> =
-    arg(displayName, description, J8DurationConverter(longHelp = longHelp, validator = validator))
+    arg(
+        displayName,
+        description,
+        J8DurationConverter(
+            longHelp = longHelp,
+            positiveOnly = requirePositive,
+            validator = validator
+        )
+    )
 
 /**
  * Create an optional Java 8 Duration converter, for single arguments.
@@ -35,6 +44,7 @@ public fun Arguments.j8Duration(
 public fun Arguments.optionalJ8Duration(
     displayName: String,
     description: String,
+    requirePositive: Boolean = true,
     longHelp: Boolean = true,
     outputError: Boolean = false,
     validator: (suspend Argument<*>.(ChronoContainer?) -> Unit)? = null,
@@ -42,7 +52,7 @@ public fun Arguments.optionalJ8Duration(
     arg(
         displayName,
         description,
-        J8DurationConverter(longHelp = longHelp)
+        J8DurationConverter(longHelp = longHelp, positiveOnly = requirePositive)
             .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
@@ -54,6 +64,7 @@ public fun Arguments.optionalJ8Duration(
 public fun Arguments.defaultingJ8Duration(
     displayName: String,
     description: String,
+    requirePositive: Boolean = true,
     longHelp: Boolean = true,
     defaultValue: ChronoContainer,
     validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
@@ -61,7 +72,7 @@ public fun Arguments.defaultingJ8Duration(
     arg(
         displayName,
         description,
-        J8DurationConverter(longHelp = longHelp)
+        J8DurationConverter(longHelp = longHelp, positiveOnly = requirePositive)
             .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
@@ -75,6 +86,7 @@ public fun Arguments.defaultingJ8Duration(
 public fun Arguments.j8DurationList(
     displayName: String,
     description: String,
+    requirePositive: Boolean = true,
     longHelp: Boolean = true,
     required: Boolean = true,
     validator: (suspend Argument<*>.(List<ChronoContainer>) -> Unit)? = null,
@@ -82,7 +94,7 @@ public fun Arguments.j8DurationList(
     arg(
         displayName,
         description,
-        J8DurationConverter(longHelp = longHelp)
+        J8DurationConverter(longHelp = longHelp, positiveOnly = requirePositive)
             .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
     )
 
@@ -94,6 +106,7 @@ public fun Arguments.j8DurationList(
 public fun Arguments.coalescedJ8Duration(
     displayName: String,
     description: String,
+    requirePositive: Boolean = true,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
     validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
@@ -101,7 +114,12 @@ public fun Arguments.coalescedJ8Duration(
     arg(
         displayName,
         description,
-        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow, validator = validator)
+        J8DurationCoalescingConverter(
+            longHelp = longHelp,
+            shouldThrow = shouldThrow,
+            positiveOnly = requirePositive,
+            validator = validator
+        )
     )
 
 /**
@@ -112,6 +130,7 @@ public fun Arguments.coalescedJ8Duration(
 public fun Arguments.optionalCoalescedJ8Duration(
     displayName: String,
     description: String,
+    requirePositive: Boolean = true,
     longHelp: Boolean = true,
     outputError: Boolean = false,
     validator: (suspend Argument<*>.(ChronoContainer?) -> Unit)? = null,
@@ -120,7 +139,7 @@ public fun Arguments.optionalCoalescedJ8Duration(
         displayName,
         description,
 
-        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError)
+        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError, positiveOnly = requirePositive)
             .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
@@ -133,6 +152,7 @@ public fun Arguments.defaultingCoalescedJ8Duration(
     displayName: String,
     description: String,
     defaultValue: ChronoContainer,
+    requirePositive: Boolean = true,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
     validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
@@ -140,6 +160,6 @@ public fun Arguments.defaultingCoalescedJ8Duration(
     arg(
         displayName,
         description,
-        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow)
+        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow, positiveOnly = requirePositive)
             .toDefaulting(defaultValue, nestedValidator = validator)
     )

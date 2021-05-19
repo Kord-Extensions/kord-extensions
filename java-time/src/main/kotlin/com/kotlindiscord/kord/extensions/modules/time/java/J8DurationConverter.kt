@@ -10,6 +10,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import java.time.Duration
+import java.time.LocalDateTime
 
 /**
  * Argument converter for Java 8 [Duration] arguments.
@@ -18,6 +19,7 @@ import java.time.Duration
  * If you're using Time4J instead, see [T4JDurationConverter].
  *
  * @param longHelp Whether to send the user a long help message with specific information on how to specify durations.
+ * @param positiveOnly Whether a positive duration is required - `true` by default.
  *
  * @see duration
  * @see durationList
@@ -26,13 +28,26 @@ import java.time.Duration
 @OptIn(KordPreview::class)
 public class J8DurationConverter(
     public val longHelp: Boolean = true,
+    public val positiveOnly: Boolean = true,
     override var validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null
 ) : SingleConverter<ChronoContainer>() {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext): Boolean {
         try {
-            this.parsed = J8DurationParser.parse(arg, context.getLocale())
+            val result = J8DurationParser.parse(arg, context.getLocale())
+
+            if (positiveOnly) {
+                val normalized = result.clone()
+
+                normalized.normalize(LocalDateTime.now())
+
+                if (!normalized.isPositive()) {
+                    throw CommandException(context.translate("converters.duration.error.positiveOnly"))
+                }
+            }
+
+            parsed = result
         } catch (e: InvalidTimeUnitException) {
             val message = context.translate(
                 "converters.duration.error.invalidUnit",

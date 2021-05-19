@@ -20,7 +20,13 @@ public object T4JDurationParser : KoinComponent {
     /**
      * Parse the provided string to a [Duration] object, using the strings provided by the given [Locale].
      */
-    public fun parseT4JDuration(input: String, locale: Locale): Duration<IsoUnit> {
+    public fun parse(input: String, locale: Locale): Duration<IsoUnit> {
+        if ("-" in input) {
+            throw DurationParserException(
+                translations.translate("converters.duration.error.negativeUnsupported", locale)
+            )
+        }
+
         val unitMap = T4JTimeUnitCache1.getUnits(locale)
 
         val units: MutableList<String> = mutableListOf()

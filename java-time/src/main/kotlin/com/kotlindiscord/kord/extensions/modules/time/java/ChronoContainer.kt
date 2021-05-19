@@ -50,6 +50,29 @@ public class ChronoContainer {
     public fun isConverted(unit: ChronoUnit): Boolean = unit in CONVERTED_UNITS
 
     /**
+     * Check whether this container contains a positive set of values.
+     *
+     * Will most likely be inaccurate if the container wasn't normalized first.
+     */
+    public fun isPositive(): Boolean = values[
+        values.filter { (unit, value) -> value != 0L }
+            .keys
+            .sortedByDescending { it.duration.seconds }
+            .first()
+    ]!! >= 0L
+
+    /**
+     * Create a new ChronoContainer using the values from this one.
+     */
+    public fun clone(): ChronoContainer {
+        val new = ChronoContainer()
+
+        new.values.putAll(values)
+
+        return new
+    }
+
+    /**
      * Given a value and [ChronoUnit], add it to this container's collection of values.
      *
      * This does not transform the value via abs(), so negative values are supported.

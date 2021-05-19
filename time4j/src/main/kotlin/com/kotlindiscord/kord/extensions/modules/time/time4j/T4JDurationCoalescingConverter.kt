@@ -33,25 +33,58 @@ public class T4JDurationCoalescingConverter(
 
     override suspend fun parse(args: List<String>, context: CommandContext): Int {
         val durations = mutableListOf<String>()
+        val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
 
-        for (arg in args) {
+        var skipNext = false
+
+        @Suppress("LoopWithTooManyJumpStatements")  // Well you rewrite it then, detekt
+        for (index in 0 until args.size) {
+            if (skipNext) {
+                skipNext = false
+
+                continue
+            }
+
+            val arg = args[index]
+
+            if (arg in ignoredWords) continue
+
             try {
                 // We do it this way so that we stop parsing as soon as an invalid string is found
-                T4JDurationParser.parseT4JDuration(arg, context.getLocale())
+                T4JDurationParser.parse(arg, context.getLocale())
+                T4JDurationParser.parse(durations.joinToString("") + arg, context.getLocale())
+
                 durations.add(arg)
-            } catch (e: InvalidTimeUnitException) {
-                throwIfNecessary(e, context)
-
-                break
             } catch (e: DurationParserException) {
-                throwIfNecessary(e, context)
+                try {
+                    val nextIndex = index + 1
 
-                break
+                    if (nextIndex >= args.size) {
+                        throw e
+                    }
+
+                    val nextArg = args[nextIndex]
+                    val combined = arg + nextArg
+
+                    T4JDurationParser.parse(combined, context.getLocale())
+                    T4JDurationParser.parse(durations.joinToString("") + combined, context.getLocale())
+
+                    durations.add(combined)
+                    skipNext = true
+                } catch (t: InvalidTimeUnitException) {
+                    throwIfNecessary(t, context)
+
+                    break
+                } catch (t: DurationParserException) {
+                    throwIfNecessary(t, context)
+
+                    break
+                }
             }
         }
 
         try {
-            parsed = T4JDurationParser.parseT4JDuration(
+            parsed = T4JDurationParser.parse(
                 durations.joinToString(""),
                 context.getLocale()
             )

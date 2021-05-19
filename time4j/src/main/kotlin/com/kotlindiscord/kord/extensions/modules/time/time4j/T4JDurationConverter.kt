@@ -32,7 +32,7 @@ public class T4JDurationConverter(
 
     override suspend fun parse(arg: String, context: CommandContext): Boolean {
         try {
-            this.parsed = T4JDurationParser.parseT4JDuration(arg, context.getLocale())
+            this.parsed = T4JDurationParser.parse(arg, context.getLocale())
         } catch (e: InvalidTimeUnitException) {
             val message = context.translate(
                 "converters.duration.error.invalidUnit",
