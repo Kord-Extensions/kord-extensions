@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.modules.time.time4j
+package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext

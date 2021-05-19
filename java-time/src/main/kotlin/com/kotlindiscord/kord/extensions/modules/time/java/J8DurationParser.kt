@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.modules.time.time4j
+package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
@@ -31,12 +31,12 @@ public object J8DurationParser : KoinComponent {
 
         while (buffer.isNotEmpty()) {
             if (isValueChar(buffer.first())) {
-                val (value, remaining) = buffer.splitOn(::isNotValueChar)
+                val (value, remaining) = buffer.splitOn(J8DurationParser::isNotValueChar)
 
                 values.add(value)
                 buffer = remaining
             } else {
-                val (unit, remaining) = buffer.splitOn(::isValueChar)
+                val (unit, remaining) = buffer.splitOn(J8DurationParser::isValueChar)
 
                 units.add(unit)
                 buffer = remaining

@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.modules.time.time4j
+package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
