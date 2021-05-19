@@ -4,6 +4,7 @@ import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
 import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
@@ -14,8 +15,12 @@ private const val DAYS_PER_WEEK = 7L
  * translations into account.
  */
 @Throws(IllegalArgumentException::class)
-public fun formatChronoContainer(container: ChronoContainer, locale: Locale): String? {
-    container.normalize()
+public fun formatChronoContainer(
+    container: ChronoContainer,
+    locale: Locale,
+    relativeTo: LocalDateTime = LocalDateTime.now()
+): String? {
+    container.normalize(relativeTo)
 
     val years = container.get(ChronoUnit.YEARS)
     val months = container.get(ChronoUnit.MONTHS)
@@ -48,13 +53,17 @@ public fun formatChronoContainer(container: ChronoContainer, locale: Locale): St
  *
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
-@Suppress("MagicNumber")  // These are all time units!
-public fun ChronoContainer.toHuman(locale: Locale): String? = formatChronoContainer(this, locale)
+public fun ChronoContainer.toHuman(
+    locale: Locale,
+    relativeTo: LocalDateTime = LocalDateTime.now()
+): String? = formatChronoContainer(this, locale, relativeTo)
 
 /**
  * Given a Duration, this function will return a String (or null if it represents less than 1 second).
  *
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
-@Suppress("MagicNumber")  // These are all time units!
-public suspend fun ChronoContainer.toHuman(context: CommandContext): String? = toHuman(context.getLocale())
+public suspend fun ChronoContainer.toHuman(
+    context: CommandContext,
+    relativeTo: LocalDateTime = LocalDateTime.now()
+): String? = toHuman(context.getLocale(), relativeTo)

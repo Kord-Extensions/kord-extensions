@@ -5,6 +5,7 @@ plugins {
     `maven-publish`
 
     kotlin("jvm")
+    kotlin("plugin.serialization")
 
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
@@ -14,7 +15,7 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
 
     implementation(project(":kord-extensions"))
 

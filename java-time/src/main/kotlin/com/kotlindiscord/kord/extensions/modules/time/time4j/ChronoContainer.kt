@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
+import kotlinx.serialization.Serializable
 import java.time.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.Temporal
@@ -38,8 +39,9 @@ private const val SECONDS_PER_MINUTE = 60L
  * be applying it to. This is more accurate than straight up returning Java [java.time.Duration] objects, which can
  * only store a count of seconds.
  */
+@Serializable(with = ChronoContainerSerializer::class)
 public class ChronoContainer {
-    private val values: MutableMap<ChronoUnit, Long> = mutableMapOf()
+    internal val values: MutableMap<ChronoUnit, Long> = mutableMapOf()
 
     /** Check whether a given [ChronoUnit] is fully supported. **/
     public fun isSupported(unit: ChronoUnit): Boolean = unit in SUPPORTED_UNITS

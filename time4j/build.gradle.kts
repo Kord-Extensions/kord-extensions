@@ -14,7 +14,6 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.apache.commons:commons-lang3:3.12.0")
 
     implementation(project(":kord-extensions"))
 

@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
-import com.kotlindiscord.kord.extensions.i18n.caches.TimeUnitCache
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.utils.splitOn
 import org.koin.core.component.KoinComponent
