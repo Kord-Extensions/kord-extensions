@@ -1,37 +1,57 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.utils.splitOn
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 /**
  * Object in charge of parsing strings into [ChronoContainer]s, using translated locale-aware units.
  */
 public object J8DurationParser : KoinComponent {
+    private val translations: TranslationsProvider by inject()
+
     /**
      * Parse the provided string to a [ChronoContainer] object, using the strings provided by the given [Locale].
      */
     public fun parse(input: String, locale: Locale): ChronoContainer {
-        val unitMap = TimeUnitCache.getUnits(locale)
+        val unitMap = J8TimeUnitCache.getUnits(locale)
 
-        var buffer = input.replace(",", "").replace(" ", "")
+        val units: MutableList<String> = mutableListOf()
+        val values: MutableList<String> = mutableListOf()
+
+        var buffer = input.replace(",", "")
+            .replace("+", "")
+            .replace(" ", "")
+
         val container = ChronoContainer()
 
         while (buffer.isNotEmpty()) {
-            val numberPair = buffer.splitOn(::isNotValueChar)
-            val value = numberPair.first.toLong()
+            if (isValueChar(buffer.first())) {
+                val (value, remaining) = buffer.splitOn(::isNotValueChar)
 
-            buffer = numberPair.second
+                values.add(value)
+                buffer = remaining
+            } else {
+                val (unit, remaining) = buffer.splitOn(::isValueChar)
 
-            val unitPair = buffer.splitOn(::isValueChar)
-            val unit = unitPair.first
+                units.add(unit)
+                buffer = remaining
+            }
+        }
 
-            buffer = unitPair.second
+        if (values.size != units.size) {
+            throw DurationParserException(translations.translate("converters.duration.error.badUnitPairs", locale))
+        }
 
-            val timeUnit = unitMap[unit.toLowerCase()] ?: throw InvalidTimeUnitException(unit)
+        while (units.isNotEmpty()) {
+            val (unitString, valueString) = units.removeFirst() to values.removeFirst()
+            val timeUnit = unitMap[unitString.toLowerCase()] ?: throw InvalidTimeUnitException(unitString)
 
-            container.plus(value, timeUnit)
+            container.plus(valueString.toLong(), timeUnit)
         }
 
         return container

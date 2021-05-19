@@ -32,10 +32,10 @@ dependencies {
     api("io.insert-koin:koin-core:3.0.1")
     api("io.insert-koin:koin-logger-slf4j:3.0.1")
 
+    api("io.github.microutils:kotlin-logging:2.0.6") // Basic logging setup
     api("io.sentry:sentry:4.3.0")  // Needs to be transitive or bots will start breaking
     api("com.ibm.icu:icu4j:69.1")  // For translations
 
-    implementation("io.github.microutils:kotlin-logging:2.0.6")
     implementation("org.apache.commons:commons-text:1.9")
     implementation("commons-validator:commons-validator:1.7")
 

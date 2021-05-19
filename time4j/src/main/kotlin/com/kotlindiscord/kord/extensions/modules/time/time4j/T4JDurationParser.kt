@@ -1,72 +1,65 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.utils.splitOn
-import net.time4j.CalendarUnit
-import net.time4j.ClockUnit
 import net.time4j.Duration
 import net.time4j.IsoUnit
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import java.util.*
+import com.kotlindiscord.kord.extensions.modules.time.time4j.T4JTimeUnitCache as T4JTimeUnitCache1
 
 /**
- * Mapping character to its actual unit.
+ * Object in charge of parsing strings into [Duration]s, using translated locale-aware units.
  */
-public val unitMap: Map<String, IsoUnit> = mapOf(
-    "s" to ClockUnit.SECONDS,
-    "sec" to ClockUnit.SECONDS,
-    "second" to ClockUnit.SECONDS,
-    "seconds" to ClockUnit.SECONDS,
+public object T4JDurationParser : KoinComponent {
+    private val translations: TranslationsProvider by inject()
 
-    "m" to ClockUnit.MINUTES,  // It's what everyone expects
-    "mi" to ClockUnit.MINUTES,
-    "min" to ClockUnit.MINUTES,
-    "minute" to ClockUnit.MINUTES,
-    "minutes" to ClockUnit.MINUTES,
+    /**
+     * Parse the provided string to a [Duration] object, using the strings provided by the given [Locale].
+     */
+    public fun parseT4JDuration(input: String, locale: Locale): Duration<IsoUnit> {
+        val unitMap = T4JTimeUnitCache1.getUnits(locale)
 
-    "h" to ClockUnit.HOURS,
-    "hour" to ClockUnit.HOURS,
-    "hours" to ClockUnit.HOURS,
+        val units: MutableList<String> = mutableListOf()
+        val values: MutableList<String> = mutableListOf()
 
-    "d" to CalendarUnit.DAYS,
-    "day" to CalendarUnit.DAYS,
-    "days" to CalendarUnit.DAYS,
+        var buffer = input.replace(",", "")
+            .replace("+", "")
+            .replace(" ", "")
 
-    "w" to CalendarUnit.WEEKS,
-    "week" to CalendarUnit.WEEKS,
-    "weeks" to CalendarUnit.WEEKS,
+        var duration = Duration.ofZero<IsoUnit>()
 
-    "mo" to CalendarUnit.MONTHS,
-    "month" to CalendarUnit.MONTHS,
-    "months" to CalendarUnit.MONTHS,
+        while (buffer.isNotEmpty()) {
+            if (isValueChar(buffer.first())) {
+                val (value, remaining) = buffer.splitOn(::isNotValueChar)
 
-    "y" to CalendarUnit.YEARS,
-    "year" to CalendarUnit.YEARS,
-    "years" to CalendarUnit.YEARS
-)
+                values.add(value)
+                buffer = remaining
+            } else {
+                val (unit, remaining) = buffer.splitOn(::isValueChar)
 
-/**
- * Parse the provided string to a Time4J [Duration] object.
- * Units are determined as in [unitMap].
- *
- * @param s the string to parse.
- */
-@Suppress("MagicNumber")
-public fun parseT4JDuration(s: String): Duration<IsoUnit> {
-    var buffer = s.replace(",", "")
-    var duration = Duration.ofZero<IsoUnit>()
+                units.add(unit)
+                buffer = remaining
+            }
+        }
 
-    while (buffer.isNotEmpty()) {
-        val r1 = buffer.splitOn { it.isLetter() } // Thanks Kotlin : https://youtrack.jetbrains.com/issue/KT-11362
-        val num = r1.first
-        buffer = r1.second
+        if (values.size != units.size) {
+            throw DurationParserException(translations.translate("converters.duration.error.badUnitPairs", locale))
+        }
 
-        val r2 = buffer.splitOn { it.isDigit() || it == '-' }
-        val unit = r2.first
-        buffer = r2.second
+        while (units.isNotEmpty()) {
+            val (unitString, valueString) = units.removeFirst() to values.removeFirst()
+            val timeUnit = unitMap[unitString.toLowerCase()] ?: throw InvalidTimeUnitException(unitString)
 
-        val chronoUnit = unitMap[unit.toLowerCase()] ?: throw InvalidTimeUnitException(unit.toLowerCase())
+            duration = duration.plus(valueString.toLong(), timeUnit)
+        }
 
-        duration = duration.plus(num.toLong(), chronoUnit)
+        return duration
     }
 
-    return duration
+    private fun isValueChar(char: Char) = char.isDigit() || char == '-'
+    private fun isNotValueChar(char: Char) = !isValueChar(char)
 }

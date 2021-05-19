@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
@@ -33,17 +34,14 @@ public class J8DurationConverter(
         try {
             this.parsed = J8DurationParser.parse(arg, context.getLocale())
         } catch (e: InvalidTimeUnitException) {
-            val message = if (e.unit.isEmpty()) {
-                context.translate("converters.duration.error.missingUnit")
-            } else {
-                context.translate("converters.duration.error.invalidUnit", replacements = arrayOf(e.unit))
-            } + if (longHelp) {
-                "\n\n" + context.translate("converters.duration.help")
-            } else {
-                ""
-            }
+            val message = context.translate(
+                "converters.duration.error.invalidUnit",
+                replacements = arrayOf(e.unit)
+            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
             throw CommandException(message)
+        } catch (e: DurationParserException) {
+            throw CommandException(e.error)
         }
 
         return true

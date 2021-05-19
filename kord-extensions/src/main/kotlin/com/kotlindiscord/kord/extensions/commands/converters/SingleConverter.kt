@@ -61,9 +61,11 @@ public abstract class SingleConverter<T : Any>(
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on
      * Discord - preferably, translated via [CommandContext.translate].
      *
-     * This will always be called if an unhandled exception is thrown, unless it's a [CommandException] - those will be
-     * displayed as an error message on Discord. If appropriate for your converter, you can use this function to
-     * transform a thrown exception into a nicer, human-readable format.
+     * This will always be called if an unhandled exception is thrown,. If appropriate for your converter, you can
+     * use this function to transform a thrown exception into a nicer, human-readable format.
+     *
+     * The default behaviour simply re-throws the Throwable (or returns the reason if it's a CommandException), so you
+     * only need to override this if you want to do something else.
      *
      * Please note: [value] will be set to `null` if this function is called when this converter has been wrapped
      * by a [SingleToMultiConverter] via the [toMulti] function.
@@ -72,9 +74,7 @@ public abstract class SingleConverter<T : Any>(
         t: Throwable,
         value: String?,
         context: CommandContext
-    ): String {
-        throw t
-    }
+    ): String = if (t is CommandException) t.reason else throw t
 
     /**
      * Wrap this single converter with a [SingleToMultiConverter], which is a special converter that will act like a

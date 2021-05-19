@@ -37,7 +37,7 @@ public fun formatT4JDuration(
     val (years, months, daysTotal, hours, minutes, seconds) = times.map { it.toLong() }
 
     val days = daysTotal % DAYS_PER_WEEK
-    val weeks = days / DAYS_PER_WEEK
+    val weeks = daysTotal / DAYS_PER_WEEK
 
     val fmt = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.WIDE)
     val measures: MutableList<Measure> = mutableListOf()

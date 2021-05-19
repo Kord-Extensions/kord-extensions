@@ -1,27 +1,29 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import net.time4j.CalendarUnit
+import net.time4j.ClockUnit
+import net.time4j.IsoUnit
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.time.temporal.ChronoUnit
 import java.util.*
 
-private typealias UnitMap = LinkedHashMap<String, ChronoUnit>
+private typealias UnitMap = LinkedHashMap<String, IsoUnit>
 
 private val keyMap: UnitMap = linkedMapOf(
-    "utils.units.second" to ChronoUnit.SECONDS,
-    "utils.units.minute" to ChronoUnit.MINUTES,
-    "utils.units.hour" to ChronoUnit.HOURS,
-    "utils.units.day" to ChronoUnit.DAYS,
-    "utils.units.week" to ChronoUnit.WEEKS,
-    "utils.units.month" to ChronoUnit.MONTHS,
-    "utils.units.year" to ChronoUnit.YEARS,
+    "utils.units.second" to ClockUnit.SECONDS,
+    "utils.units.minute" to ClockUnit.MINUTES,
+    "utils.units.hour" to ClockUnit.HOURS,
+    "utils.units.day" to CalendarUnit.DAYS,
+    "utils.units.week" to CalendarUnit.WEEKS,
+    "utils.units.month" to CalendarUnit.MONTHS,
+    "utils.units.year" to CalendarUnit.YEARS,
 )
 
 /**
  * Simple object that caches translated time units per locale.
  */
-public object J8TimeUnitCache : KoinComponent {
+public object T4JTimeUnitCache : KoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
 

@@ -4,9 +4,11 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import mu.KotlinLogging
 import net.time4j.Duration
 import net.time4j.IsoUnit
 
@@ -27,6 +29,7 @@ public class T4JDurationCoalescingConverter(
     override var validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null
 ) : CoalescingConverter<Duration<IsoUnit>>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
+    private val logger = KotlinLogging.logger {}
 
     override suspend fun parse(args: List<String>, context: CommandContext): Int {
         val durations = mutableListOf<String>()
@@ -34,34 +37,56 @@ public class T4JDurationCoalescingConverter(
         for (arg in args) {
             try {
                 // We do it this way so that we stop parsing as soon as an invalid string is found
-                parseT4JDuration(arg)
+                T4JDurationParser.parseT4JDuration(arg, context.getLocale())
                 durations.add(arg)
             } catch (e: InvalidTimeUnitException) {
-                if (this.shouldThrow) {
-                    val message = if (e.unit.isEmpty()) {
-                        context.translate("converters.duration.error.missingUnit")
-                    } else {
-                        context.translate("converters.duration.error.invalidUnit", replacements = arrayOf(e.unit))
-                    } + if (longHelp) {
-                        "\n\n" + context.translate("converters.duration.help")
-                    } else {
-                        ""
-                    }
+                throwIfNecessary(e, context)
 
-                    throw CommandException(message)
-                }
+                break
+            } catch (e: DurationParserException) {
+                throwIfNecessary(e, context)
 
                 break
             }
         }
 
-        parsed = parseT4JDuration(
-            durations.joinToString("")
-        )
+        try {
+            parsed = T4JDurationParser.parseT4JDuration(
+                durations.joinToString(""),
+                context.getLocale()
+            )
+        } catch (e: InvalidTimeUnitException) {
+            throwIfNecessary(e, context, true)
+        } catch (e: DurationParserException) {
+            throwIfNecessary(e, context, true)
+        }
 
         return durations.size
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    private suspend fun throwIfNecessary(
+        e: Exception,
+        context: CommandContext,
+        override: Boolean = false
+    ): Unit = if (shouldThrow || override) {
+        when (e) {
+            is InvalidTimeUnitException -> {
+                val message = context.translate(
+                    "converters.duration.error.invalidUnit",
+                    replacements = arrayOf(e.unit)
+                ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+
+                throw CommandException(message)
+            }
+
+            is DurationParserException -> throw CommandException(e.error)
+
+            else -> throw e
+        }
+    } else {
+        logger.debug(e) { "Error thrown during duration parsing" }
+    }
 }
