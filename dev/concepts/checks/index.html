@@ -500,6 +500,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#misc" class="md-nav__link">
+    Misc
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#roles" class="md-nav__link">
     Roles
   </a>
@@ -976,6 +983,28 @@ need checks for channel overwrites then please let us know, and we'll try to fig
 </tr>
 </tbody>
 </table>
+<h3 id="misc">Misc<a class="headerlink" href="#misc" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Expected Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>isBot</code></td>
+<td align="center"><code>User</code></td>
+<td align="left">Asserts that an event was fired by a user that is a bot</td>
+</tr>
+<tr>
+<td align="left"><code>isNotBot</code></td>
+<td align="center"><code>User</code></td>
+<td align="left">Asserts that an event was fired by a user that <strong>is not</strong> a bot</td>
+</tr>
+</tbody>
+</table>
 <h3 id="roles">Roles<a class="headerlink" href="#roles" title="Permanent link">&para;</a></h3>
 <p><strong>Note:</strong> All checks in this category take a DSL-style lambda argument that returns the type specified in the table
 below, or a <code>Snowflake</code> that should resolve to an entity of that type.</p>
@@ -1271,7 +1300,7 @@ way) then feel free to open an issue or pull request, and we'll look at getting 
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-15
+      Last update: 2021-05-20
     
   </small>
 </div>
