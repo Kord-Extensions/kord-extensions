@@ -45,6 +45,7 @@ Name          | Type             | Description
 :------------ | :--------------: | :----------
 `name`        | `String`         | :warning: The primary name of the command, which must be unique throughout the bot and is used for invocation
 `aliases`     | `Array <String>` | An array of secondary names to use for this command, which are also used for invocation and help commands
+`aliasKey`    | `String?`        | Instead of a list of aliases, you can provide a translation key here - this should refer to a comma-separated list of aliases in your translations
 `description` | `String`         | A long description used by the help extension to describe the command - the first line of which should be a short summary
 `enabled`     | `Boolean`        | Defaulting to `true`, this can be set programmatically in order to entirely disable or re-enable the command
 `hidden`      | `Boolean`        | Default to `false`, this can be set to `true` to completely hide the command from the help extension's command listings

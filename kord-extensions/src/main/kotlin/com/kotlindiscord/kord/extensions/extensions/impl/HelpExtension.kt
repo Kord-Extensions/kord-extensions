@@ -49,7 +49,7 @@ public class HelpExtension : HelpProvider, Extension() {
     override suspend fun setup() {
         command(::HelpArguments) {
             name = "extensions.help.commandName"
-            aliases = arrayOf("extensions.help.commandAlias.h")
+            aliasKey = "extensions.help.commandAliases"
             description = "extensions.help.commandDescription"
 
             action {

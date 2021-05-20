@@ -58,7 +58,7 @@ public class SentryExtension : Extension() {
                 name = "extensions.sentry.commandName"
                 description = "extensions.sentry.commandDescription.long"
 
-                aliases = arrayOf("extensions.sentry.commandAlias")
+                aliasKey = "extensions.sentry.commandAliases"
 
                 action {
                     if (!sentry.hasEventId(arguments.id)) {
