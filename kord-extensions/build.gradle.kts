@@ -1,6 +1,5 @@
 import java.io.ByteArrayOutputStream
 import java.net.URL
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -88,7 +87,9 @@ publishing {
             }
 
             credentials {
-                username = project.findProperty("kotdis.user") as String? ?: System.getenv("KOTLIN_DISCORD_USER")
+                username = project.findProperty("kotdis.user") as String?
+                    ?: System.getenv("KOTLIN_DISCORD_USER")
+
                 password = project.findProperty("kotdis.password") as String?
                     ?: System.getenv("KOTLIN_DISCORD_PASSWORD")
             }
