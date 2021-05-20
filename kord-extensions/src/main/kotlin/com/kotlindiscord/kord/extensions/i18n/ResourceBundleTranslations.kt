@@ -76,7 +76,7 @@ public class ResourceBundleTranslations(
 
             formatter.format(replacements)
         } catch (e: MissingResourceException) {
-            logger.warn(e) { "Unable to find translation for key '$key' in bundle '$bundleName'" }
+            logger.debug(e) { "Unable to find translation for key '$key' in bundle '$bundleName'" }
 
             key
         }
