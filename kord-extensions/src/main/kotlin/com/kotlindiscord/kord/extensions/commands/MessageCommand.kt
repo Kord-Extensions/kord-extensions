@@ -166,6 +166,7 @@ public open class MessageCommand<T : Arguments>(
                 translationsProvider.translate(aliasKey!!, extension.bundle, locale)
                     .toLowerCase()
                     .split(",")
+                    .map { it.trim() }
                     .toSortedSet()
             } else {
                 this.aliases.map {
