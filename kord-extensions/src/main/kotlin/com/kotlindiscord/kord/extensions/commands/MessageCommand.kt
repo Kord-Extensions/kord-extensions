@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -167,6 +168,7 @@ public open class MessageCommand<T : Arguments>(
                     .toLowerCase()
                     .split(",")
                     .map { it.trim() }
+                    .filter { it != EMPTY_VALUE_STRING }
                     .toSortedSet()
             } else {
                 this.aliases.map {
