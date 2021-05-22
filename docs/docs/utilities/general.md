@@ -40,9 +40,10 @@ Function  | Description
 
 ## Koin
 
-Function      | Description
-:------------ | :----------
-`Koin.module` | Wrapper around Koin's `module` DSL function that immediately registers the module against the current Koin instance.
+Function     | Description
+:----------- | :----------
+`getKoin`    | For situations where you can't inherit the `KoinComponent` interface (for example, in a top-level function), you can use this function to get the current Koin instance.
+`loadModule` | Wrapper around Koin's `module` DSL function that immediately registers the module against the current Koin instance.
 
 ## Kord
 
@@ -50,9 +51,9 @@ Property     | Description
 :----------- | :----------
 `Kord.users` | Quick access to a `Flow` containing all Kord `User` objects that are in the cache
 
-Function       | Description
-:------------- | :----------
-`Kord.waitFor` | Simple function for waiting for a specific Kord event, with a timeout
+Function                 | Description
+:----------------------- | :----------
+`Kord.waitFor`           | Simple function for waiting for a specific Kord event, with a timeout
 `KordLiveEntity.waitFor` | Simple function for waiting for a specific Kord event that refers to the given live entity, with a timeout
 
 ## Members
@@ -137,13 +138,6 @@ Function                 | Description
 :----------------------- | :----------
 `String.parseBoolean`    | Parses a String into a Boolean based on its starting character and the locale for the given context (or a given locale)
 `String.splitOn`         | Splits a string into a Pair containing the characters matching the predicate up until its first failure, and the rest of the string
-
-## Time
-
-Function             | Description
-:------------------- | :----------
-`Duration.toSeconds` | For **a Time4J Duration**, return the total number of seconds it contains
-`Duration.toHuman`   | For **a Java Time Duration**, return a human-readable string in the form `a days, b hours, c minutes and d seconds` (omitting zero-values)
 
 ## Users
 

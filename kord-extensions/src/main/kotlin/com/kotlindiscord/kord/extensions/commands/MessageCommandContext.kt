@@ -2,6 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.commands
 
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.utils.respond
@@ -19,6 +20,7 @@ import dev.kord.core.event.message.MessageCreateEvent
  * @property messageCommand Message command object, typed as [MessageCommand] rather than [Command]
  * @property argString String containing the command's unparsed arguments, raw, fresh from Discord itself.
  */
+@ExtensionDSL
 public open class MessageCommandContext<T : Arguments>(
     public val messageCommand: MessageCommand<out T>,
     eventObj: MessageCreateEvent,

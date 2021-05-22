@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
@@ -28,6 +29,7 @@ import java.util.*
  * @param commandName MessageCommand name given by the user to invoke the command - lower-cased.
  * @param argsList Array of string arguments for this command.
  */
+@ExtensionDSL
 public abstract class CommandContext(
     public open val command: Command,
     public open val eventObj: Event,
@@ -42,6 +44,9 @@ public abstract class CommandContext(
 
     /** A list of Sentry breadcrumbs created during command execution. **/
     public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
+
+    /** Cached locale variable, stored and retrieved by [getLocale]. **/
+    public open var resolvedLocale: Locale? = null
 
     /** Called before command processing, used to populate any extra variables from event data. **/
     public abstract suspend fun populate()
@@ -85,7 +90,11 @@ public abstract class CommandContext(
 
     /** Resolve the locale for this command context. **/
     public suspend fun getLocale(): Locale {
-        var locale: Locale? = null
+        var locale: Locale? = resolvedLocale
+
+        if (locale != null) {
+            return locale
+        }
 
         val guild = guildFor(eventObj)
         val channel = channelFor(eventObj)
@@ -100,7 +109,9 @@ public abstract class CommandContext(
             }
         }
 
-        return locale ?: command.extension.bot.settings.i18nBuilder.defaultLocale
+        resolvedLocale = locale ?: command.extension.bot.settings.i18nBuilder.defaultLocale
+
+        return resolvedLocale!!
     }
 
     /**

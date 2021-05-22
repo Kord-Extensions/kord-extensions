@@ -69,6 +69,13 @@ Name               | Argument     | Description
 `hasPermission`    | `Permission` | Asserts that an event was fired by a user with the given permission
 `notHasPermission` | `Permission` | Asserts that an event was fired by a user **without** the given permission
 
+### Misc
+
+Name       | Expected Type | Description
+:--------- | :-----------: | :-------------------------------------------------------------------------------------
+`isBot`    | `User`        | Asserts that an event was fired by a user that is a bot
+`isNotBot` | `User`        | Asserts that an event was fired by a user that **is not** a bot
+
 ### Roles
 
 **Note:** All checks in this category take a DSL-style lambda argument that returns the type specified in the table
@@ -87,7 +94,8 @@ Name                    | Expected Type   | Description
 
 ### Combinators
 
-Combinator checks operate on a variable number of other checks, transforming their results as appropriate.
+Combinator checks operate on a variable number of other checks, transforming their results as appropriate. They are
+also available as infix variants, if you prefer that syntax: `::noGuild or hasRole(ADMIN_ROLE)`
 
 Name  | Argument | Description
 :---- | :------: | :-----------------------------------------------------------------

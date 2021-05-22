@@ -74,7 +74,7 @@ Create an extension by extending the `Extension` class.
 ### TestExtension.kt
 
 ```kotlin
-class TestExtension(bot: ExtensibleBot) : Extension(bot) {
+class TestExtension : Extension() {
     override val name = "test"  // The registered name for our extension
 
     class TestArgs : Arguments() {  // The arguments our command takes

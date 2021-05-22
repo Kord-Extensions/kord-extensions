@@ -126,6 +126,10 @@ add                       | Function     |            | Use this function to add
 help                      | Boolean      | `true`     | Whether to enabled the bundled help extension
 sentry                    | Boolean      | `true`     | Whether to enabled the bundled [Sentry extension](/integrations/sentry)
 
+External modules that add extensions are free to add extension functions to this class, which gives users a convenient
+way to configure them. If you're using an external module, we recommend reading the documentation for any modules you
+may be using.
+
 ### Hooks
 
 Hooks allow you to set up lambdas that are to be run at various points in the bot's lifecycle, allowing you to set up
@@ -157,6 +161,31 @@ beforeStart               | Lambdas registered here are called just before the b
 created                   | Lambdas registered here are called just after the `ExtensibleBot` object has been created, before it's been set up
 extensionAdded            | Lambdas registered here are called every time an extension is added successfully, with the extension object as a parameter
 setup                     | Lambdas registered here are called after the `ExtensibleBot` object has been created and set up
+
+### I18n configuration
+
+The i18n builder allows you to configure the default locale, and register locale resolvers and a translations 
+provider. The default locale is `SupportedLocales.ENGLISH`, if you don't change it.
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    i18n {
+        defaultLocale = SupportedLocales.ENGLISH
+    }
+}
+```
+
+Property                  | Type                 | Default                      | Description
+:------------------------ | :------------------: | :--------------------------: | :----------
+defaultLocale             | Locale               | `ENGLISH`                    | The default locale to use, when your locale resolvers don't return a different one
+translationsProvider      | TranslationsProvider | `ResourceBundleTranslations` | Implementation of `TranslationsProvider` responsible for transforming translation keys into strings, replacing placeholders as necessary
+
+Function             | Description
+:------------------- | :----------
+localeResolver       | Call this to register a lambda (or callable) that takes a `Guild?`, `Channel` and `User?` argument and returns a `Locale` object, or `null` to move on to the next resolver - you can use this to set up, for example, guild-specific locales
+translationsProvider | Call this to register a builder (usually a constructor) returning a TranslationsProvider instance - this is called immediately, you can't conditionally dispatch to multiple providers with this
+
+For more information on i18n and translations, see [the i18n page](/concepts/i18n).
 
 ### Intent configuration
 
@@ -194,20 +223,6 @@ fill                      | Function     | Use this function to specify guild ID
 fillPresences             | Boolean?     | Set this to `true` to state that you'd like to receive user presences
 none                      | Function     | State that you would not like to cache any member info - this is the default behaviour
 
-Name   |   Type   |   Default   | Description
-:----- | :------: | :---------: | :------------
-`token` | `String` | | The Discord bot token to login with
-`prefix` | `String` | | The prefix required before all command invocations
-`addHelpExtension` | `Boolean` | `true` | Whether to add the bundled help extension automatically
-`addSentryExtension` | `Boolean` | `true` | Whether to add the bundled [Sentry integration](/integrations/sentry) extension automatically
-`invokeCommandOnMention` | `Boolean` | `true` | Whether commands may also be invoked by mentioning the bot
-`messageCacheSize` | `Int` | `10_000` | How many messages to keep in the messages cache by default
-`commandThreads` | `Int` | CPUs * 2 | How many threads to use for the command execution threadpool
-`guildsToFill` | `List <Snowflake>` | `[ ]` | A list of guilds to request all members for during the connection phase. This requires the `GuildMembers` intent, specified in the `start` function
-`fillPresences` | `Boolean?` | `null` | Whether to request presences for the above members (`true`/`false`, or `null` for the default). This requires the `GuildPresences` intent, specified in the `start` function
-`koinLogLevel` | `Level` | `ERROR` | The default logging level that Koin should use
-`handleSlashCommands` | `Boolean` | `false` | Whether to support registration and invocation of slash commands. Setting this to fault will not raise errors for extensions that register slash commands, however - they just won't work
-
 ### Presence configuration
 
 This matches Kord's initial presence API. For more information,
@@ -241,8 +256,7 @@ bot.start()
 
 ## Properties
 
-A few properties are available to you, for getting access to Kord, querying some of the bot's state, and some other 
-things.
+A few properties are available to you, for getting access to a few internals.
 
 ??? info "Further properties"
     There are other non-private properties available, but they aren't necessarily something you'll need to touch. Most
@@ -263,7 +277,7 @@ A number of functions are available to you as well.
 ??? info "Further functions"
     There are other non-private functions available, but they aren't necessarily something you'll need to touch. Most
     of the functions are `open` to facilitate niche use-cases that require extending the ExtensibleBot class, but a
-    handful are `inline` for the sake of avoiding function call overhead.
+    handful are `inline` for the sake of avoiding function call overhead or making use of reified types.
 
 Name              | Description
 :---------------- | :----------

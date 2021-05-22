@@ -148,6 +148,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         throw CommandException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
+
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
@@ -168,7 +169,15 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                 } catch (e: CommandException) {
                     if (converter.required || hasKwargs) {
                         throw CommandException(
-                            converter.handleError(e, currentValue, context)
+                            context.translate(
+                                "argumentParser.error.errorInArgument",
+
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+
+                                    converter.handleError(e, currentValue, context)
+                                )
+                            )
                         )
                     }
                 } catch (t: Throwable) {
@@ -182,9 +191,11 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                 is DefaultingConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
-                            context.translate(
-                                "argumentParser.error.requiresOneValue",
-                                replacements = arrayOf(currentArg.displayName, kwValue.size)
+                            throw CommandException(
+                                context.translate(
+                                    "argumentParser.error.requiresOneValue",
+                                    replacements = arrayOf(currentArg.displayName, kwValue.size)
+                                )
                             )
                         }
 
@@ -232,7 +243,15 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw CommandException(
-                            converter.handleError(e, currentValue, context)
+                            context.translate(
+                                "argumentParser.error.errorInArgument",
+
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+
+                                    converter.handleError(e, currentValue, context)
+                                )
+                            )
                         )
                     }
                 } catch (t: Throwable) {
@@ -254,6 +273,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         throw CommandException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
+
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
@@ -268,6 +288,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             throw CommandException(
                                 context.translate(
                                     "argumentParser.error.notAllValid",
+
                                     replacements = arrayOf(
                                         currentArg.displayName,
                                         kwValue.size,
@@ -293,7 +314,19 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
-                    if (converter.required) throw CommandException(converter.handleError(e, values, context))
+                    if (converter.required) {
+                        throw CommandException(
+                            context.translate(
+                                "argumentParser.error.errorInArgument",
+
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+
+                                    converter.handleError(e, values, context)
+                                )
+                            )
+                        )
+                    }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -310,12 +343,15 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        context.translate(
-                            "argumentParser.error.invalidValue",
-                            replacements = arrayOf(
-                                currentArg.displayName,
-                                converter.getErrorString(context),
-                                currentValue
+                        throw CommandException(
+                            context.translate(
+                                "argumentParser.error.invalidValue",
+
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+                                    converter.getErrorString(context),
+                                    currentValue
+                                )
                             )
                         )
                     }
@@ -325,6 +361,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             throw CommandException(
                                 context.translate(
                                     "argumentParser.error.notAllValid",
+
                                     replacements = arrayOf(
                                         currentArg.displayName,
                                         kwValue.size,
@@ -350,7 +387,19 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
-                    if (converter.required) throw CommandException(converter.handleError(e, values, context))
+                    if (converter.required) {
+                        throw CommandException(
+                            context.translate(
+                                "argumentParser.error.errorInArgument",
+
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+
+                                    converter.handleError(e, values, context)
+                                )
+                            )
+                        )
+                    }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -370,6 +419,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         throw CommandException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
+
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
@@ -384,6 +434,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             throw CommandException(
                                 context.translate(
                                     "argumentParser.error.notAllValid",
+
                                     replacements = arrayOf(
                                         currentArg.displayName,
                                         kwValue.size,
@@ -410,7 +461,17 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                     }
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
-                        throw CommandException(converter.handleError(e, values, context))
+                        throw CommandException(
+                            context.translate(
+                                "argumentParser.error.errorInArgument",
+
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+
+                                    converter.handleError(e, values, context)
+                                )
+                            )
+                        )
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -431,6 +492,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         throw CommandException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
+
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
@@ -445,6 +507,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             throw CommandException(
                                 context.translate(
                                     "argumentParser.error.notAllValid",
+
                                     replacements = arrayOf(
                                         currentArg.displayName,
                                         kwValue.size,
@@ -470,7 +533,19 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
-                    if (converter.required) throw CommandException(converter.handleError(e, values, context))
+                    if (converter.required) {
+                        throw CommandException(
+                            context.translate(
+                                "argumentParser.error.errorInArgument",
+
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+
+                                    converter.handleError(e, values, context)
+                                )
+                            )
+                        )
+                    }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
@@ -481,8 +556,16 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
 
                 else -> throw CommandException(
                     context.translate(
-                        "argumentParser.error.unknownConverterType",
-                        replacements = arrayOf(currentArg.converter)
+                        "argumentParser.error.errorInArgument",
+
+                        replacements = arrayOf(
+                            currentArg.displayName,
+
+                            context.translate(
+                                "argumentParser.error.unknownConverterType",
+                                replacements = arrayOf(currentArg.converter)
+                            )
+                        )
                     )
                 )
             }
@@ -498,6 +581,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                 throw CommandException(
                     context.translate(
                         "argumentParser.error.noFilledArguments",
+
                         replacements = arrayOf(
                             allRequiredArgs
                         )
@@ -507,6 +591,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                 throw CommandException(
                     context.translate(
                         "argumentParser.error.someFilledArguments",
+
                         replacements = arrayOf(
                             allRequiredArgs,
                             filledRequiredArgs

@@ -32,12 +32,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import mu.KLogger
 import mu.KotlinLogging
-import net.time4j.tz.repo.TZDATA
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.bind
-import kotlin.reflect.KClass
-import kotlin.reflect.full.primaryConstructor
 
 /**
  * An extensible bot, wrapping a Kord instance.
@@ -142,10 +139,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
     /** @suppress **/
     public open val logger: KLogger = KotlinLogging.logger {}
-
-    init {
-        TZDATA.init()  // Set up time4j
-    }
 
     /** @suppress Function that sets up the bot early on, called by the builder. **/
     public open suspend fun setup() {
@@ -273,29 +266,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      */
     public suspend inline fun send(event: ExtensionEvent) {
         eventPublisher.send(event)
-    }
-
-    /**
-     * Install an [Extension] to this bot.
-     *
-     * This function will instantiate the given extension classand store the resulting extension object, ready to be
-     * set up when the next [ReadyEvent] happens.
-     *
-     * @param extension The [Extension] class to install.
-     * @throws InvalidExtensionException Thrown if the extension has no primary constructor.
-     */
-    @Throws(InvalidExtensionException::class)
-    @Deprecated(
-        "Use the newer addExtension(builder) function instead. It's shorter and more flexible.",
-        ReplaceWith("this.addExtension(builder)", "com.kotlindiscord.kord.extensions.ExtensibleBot"),
-        DeprecationLevel.ERROR
-    )
-    public open suspend fun addExtension(extension: KClass<out Extension>) {
-        val ctor = extension.primaryConstructor ?: throw InvalidExtensionException(extension, "No primary constructor")
-
-        val extensionObj = ctor.call(this)
-
-        addExtension { extensionObj }
     }
 
     /**

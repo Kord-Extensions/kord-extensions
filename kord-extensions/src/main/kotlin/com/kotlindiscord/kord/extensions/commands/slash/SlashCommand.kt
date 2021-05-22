@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.commands.slash
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
@@ -54,6 +55,7 @@ private const val DISCORD_LIMIT: Int = 25
  * @param parentGroup If this is a grouped subcommand, the group this command belongs to.
  */
 @OptIn(ExperimentalTime::class)
+@ExtensionDSL
 public open class SlashCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null,

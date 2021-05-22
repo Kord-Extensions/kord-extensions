@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.slash
 
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.memberFor
@@ -27,6 +28,7 @@ import dev.kord.rest.builder.interaction.PublicFollowupMessageCreateBuilder
  * @property interactionResponse Interaction response object, for following up
  */
 @OptIn(KordPreview::class)
+@ExtensionDSL
 public open class SlashCommandContext<T : Arguments>(
     private val slashCommand: SlashCommand<out T>,
     event: InteractionCreateEvent,

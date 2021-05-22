@@ -16,8 +16,6 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.*
 import dev.kord.core.entity.channel.Channel
-import net.time4j.IsoUnit
-import java.time.Duration
 
 // region: Novelty converters
 
@@ -130,19 +128,6 @@ public fun Arguments.decimal(
     validator: (suspend Argument<*>.(Double) -> Unit)? = null,
 ): SingleConverter<Double> =
     arg(displayName, description, DecimalConverter(validator))
-
-/**
- * Create a Java 8 Duration converter, for single arguments.
- *
- * @see DurationConverter
- */
-public fun Arguments.duration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
-): SingleConverter<Duration> =
-    arg(displayName, description, DurationConverter(longHelp = longHelp, validator = validator))
 
 /**
  * Create an email converter, for single arguments.
@@ -304,19 +289,6 @@ public fun Arguments.string(
     arg(displayName, description, StringConverter(validator))
 
 /**
- * Create a Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.t4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
-): SingleConverter<net.time4j.Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationConverter(longHelp = longHelp, validator = validator))
-
-/**
  * Create a user converter, for single arguments.
  *
  * @see UserConverter
@@ -385,25 +357,6 @@ public fun Arguments.optionalDecimal(
         displayName,
         description,
         DecimalConverter()
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create an optional Java 8 Duration converter, for single arguments.
- *
- * @see DurationConverter
- */
-public fun Arguments.optionalDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Duration?) -> Unit)? = null,
-): OptionalConverter<Duration?> =
-    arg(
-        displayName,
-        description,
-        DurationConverter(longHelp = longHelp)
             .toOptional(outputError = outputError, nestedValidator = validator)
     )
 
@@ -640,25 +593,6 @@ public fun Arguments.optionalString(
     )
 
 /**
- * Create an optional Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.optionalT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>?) -> Unit)? = null,
-): OptionalConverter<net.time4j.Duration<IsoUnit>?> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
  * Create an optional user converter, for single arguments.
  *
  * @see UserConverter
@@ -713,25 +647,6 @@ public fun Arguments.defaultingDecimal(
         displayName,
         description,
         DecimalConverter()
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting Java 8 Duration converter, for single arguments.
- *
- * @see DurationConverter
- */
-public fun Arguments.defaultingDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    defaultValue: Duration,
-    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
-): DefaultingConverter<Duration> =
-    arg(
-        displayName,
-        description,
-        DurationConverter(longHelp = longHelp)
             .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
@@ -873,47 +788,9 @@ public fun Arguments.defaultingString(
             .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
-/**
- * Create a defaulting Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.defaultingT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    defaultValue: net.time4j.Duration<IsoUnit>,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
-): DefaultingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
 // endregion
 
 // region: Coalescing converters
-
-/**
- * Create a coalescing Java 8 Duration converter.
- *
- * @see DurationCoalescingConverter
- */
-public fun Arguments.coalescedDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
-): CoalescingConverter<Duration> =
-    arg(
-        displayName,
-        description,
-        DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow, validator = validator)
-    )
-
 /**
  * Create a coalescing regex converter.
  *
@@ -940,47 +817,9 @@ public fun Arguments.coalescedString(
 ): CoalescingConverter<String> =
     arg(displayName, description, StringCoalescingConverter(validator = validator))
 
-/**
- * Create a coalescing Time4J Duration converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.coalescedT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
-): CoalescingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow, validator = validator)
-    )
-
 // endregion
 
 // region: Optional coalescing converters
-
-/**
- * Create an optional coalescing Java 8 Duration converter.
- *
- * @see DurationCoalescingConverter
- */
-public fun Arguments.optionalCoalescedDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Duration?) -> Unit)? = null,
-): OptionalCoalescingConverter<Duration?> =
-    arg(
-        displayName,
-        description,
-
-        DurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
 
 /**
  * Create an optional coalescing regex converter.
@@ -1017,49 +856,9 @@ public fun Arguments.optionalCoalescedString(
         StringCoalescingConverter().toOptional(nestedValidator = validator)
     )
 
-/**
- * Create an optional coalescing Time4J Duration converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.optionalCoalescedT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>?) -> Unit)? = null,
-): OptionalCoalescingConverter<net.time4j.Duration<IsoUnit>?> =
-    arg(
-        displayName,
-        description,
-
-        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
 // endregion
 
 // region: Defaulting coalescing converters
-
-/**
- * Create a defaulting coalescing Java 8 Duration converter.
- *
- * @see DurationCoalescingConverter
- */
-public fun Arguments.defaultingCoalescedDuration(
-    displayName: String,
-    description: String,
-    defaultValue: Duration,
-    longHelp: Boolean = true,
-    shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(Duration) -> Unit)? = null,
-): DefaultingCoalescingConverter<Duration> =
-    arg(
-        displayName,
-        description,
-        DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow)
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
 
 /**
  * Create a defaulting coalescing regex converter.
@@ -1095,26 +894,6 @@ public fun Arguments.defaultingCoalescedString(
         displayName,
         description,
         StringCoalescingConverter()
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting coalescing Time4J Duration converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.defaultingCoalescedT4jDuration(
-    displayName: String,
-    description: String,
-    defaultValue: net.time4j.Duration<IsoUnit>,
-    longHelp: Boolean = true,
-    shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(net.time4j.Duration<IsoUnit>) -> Unit)? = null,
-): DefaultingCoalescingConverter<net.time4j.Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow)
             .toDefaulting(defaultValue, nestedValidator = validator)
     )
 
@@ -1180,27 +959,6 @@ public fun Arguments.decimalList(
         displayName,
         description,
         DecimalConverter().toMulti(required, signatureTypeString = "decimals", nestedValidator = validator)
-    )
-
-/**
- * Create a Java 8 Duration converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see DurationConverter
- */
-public fun Arguments.durationList(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    required: Boolean = true,
-    validator: (suspend Argument<*>.(List<Duration>) -> Unit)? = null,
-): MultiConverter<Duration> =
-    arg(
-        displayName,
-        description,
-        DurationConverter(longHelp = longHelp)
-            .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
     )
 
 /**
@@ -1457,27 +1215,6 @@ public fun Arguments.stringList(
         description,
         StringConverter()
             .toMulti(required, nestedValidator = validator)
-    )
-
-/**
- * Create a Time4J Duration converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.t4jDurationList(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    required: Boolean = true,
-    validator: (suspend Argument<*>.(List<net.time4j.Duration<IsoUnit>>) -> Unit)? = null,
-): MultiConverter<net.time4j.Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
     )
 
 /**

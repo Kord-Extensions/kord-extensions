@@ -20,7 +20,7 @@ When writing an extension, the first thing you'll need to do is extend the `Exte
 abstract members - the `name` property and `setup` function.
 
 ```kotlin
-class TextExtension(bot: ExtensibleBot) : Extension(bot) {
+class TextExtension : Extension() {
     // The name this extension will be referred to by
     override val name: String = "test"
     
@@ -144,7 +144,7 @@ private const val INTERVAL = 1000L * 30L
 // guild members (for example) to be populated.
 private const val SETUP_DELAY = 1000L * 10L
 
-class CheckExtension(bot: ExtensibleBot) : Extension(bot) {
+class CheckExtension : Extension() {
     override val name: String = "check"
 
     private var data: String = ""  // ...or whatever

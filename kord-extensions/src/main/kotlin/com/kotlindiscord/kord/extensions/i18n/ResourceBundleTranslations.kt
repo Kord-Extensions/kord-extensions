@@ -24,8 +24,20 @@ public class ResourceBundleTranslations(
     private val logger: KLogger = KotlinLogging.logger {}
     private val bundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 
+    public override fun hasKey(key: String, locale: Locale, bundleName: String?): Boolean {
+        return try {
+            val bundleObj = getBundle(locale, bundleName)
+
+            bundleObj.keys.toList().contains(key)
+        } catch (e: MissingResourceException) {
+            logger.warn(e) { "Failed to get bundle $bundleName for locale $locale" }
+
+            false
+        }
+    }
+
     @Throws(MissingResourceException::class)
-    public override fun get(key: String, locale: Locale, bundleName: String?): String {
+    private fun getBundle(locale: Locale, bundleName: String?): ResourceBundle {
         var bundle = "translations." + (bundleName ?: KORDEX_KEY)
 
         if (bundle.count { it == '.' } < 2) {
@@ -37,7 +49,12 @@ public class ResourceBundleTranslations(
         logger.debug { "Getting bundle $bundleKey for locale $locale" }
         bundles[bundleKey] = bundles[bundleKey] ?: ResourceBundle.getBundle(bundle, locale, Control)
 
-        val result = bundles[bundleKey]!!.getString(key)
+        return bundles[bundleKey]!!
+    }
+
+    @Throws(MissingResourceException::class)
+    public override fun get(key: String, locale: Locale, bundleName: String?): String {
+        val result = getBundle(locale, bundleName).getString(key)
 
         logger.debug { "Result: $key -> $result" }
 
@@ -59,7 +76,7 @@ public class ResourceBundleTranslations(
 
             formatter.format(replacements)
         } catch (e: MissingResourceException) {
-            logger.debug { "Unable to find translation for key '$key' in bundle '$bundleName'" }
+            logger.debug(e) { "Unable to find translation for key '$key' in bundle '$bundleName'" }
 
             key
         }

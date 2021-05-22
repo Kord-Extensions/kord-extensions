@@ -64,11 +64,12 @@ public abstract class DefaultingCoalescingConverter<T : Any>(
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
      *
      * For coalescing converters, this is only called when the converter is required. The default behaviour simply
-     * re-throws the Throwable, so you only need to override this if you want to do something else.
+     * re-throws the Throwable (or returns the reason if it's a CommandException), so you only need to override this
+     * if you want to do something else.
      */
     public open suspend fun handleError(
         t: Throwable,
         values: List<String>,
         context: CommandContext
-    ): String = throw t
+    ): String = if (t is CommandException) t.reason else throw t
 }

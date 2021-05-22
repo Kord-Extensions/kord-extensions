@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.parsers
 
 import com.kotlindiscord.kord.extensions.ExtensionsException
+import java.util.*
 
 /**
  * A base exception class for parsers.
@@ -8,10 +9,18 @@ import com.kotlindiscord.kord.extensions.ExtensionsException
 public open class BaseParserException : ExtensionsException()
 
 /**
- * Throws when invalid time unit given to duration parser.
+ * Generic duration parser exception.
+ *
+ * @param error Human-readable error text.
+ */
+public open class DurationParserException(public open var error: String) : BaseParserException() {
+    override val message: String? = error
+    override fun toString(): String = error
+}
+
+/**
+ * Thrown when invalid time unit given to duration parser.
  *
  * @param unit Invalid unit.
  */
-public class InvalidTimeUnitException(public var unit: String) : BaseParserException() {
-    override fun toString(): String = "Invalid time unit provided: $unit"
-}
+public class InvalidTimeUnitException(public val unit: String) : DurationParserException(unit)

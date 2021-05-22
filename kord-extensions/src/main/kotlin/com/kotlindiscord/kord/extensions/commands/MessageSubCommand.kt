@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands
 
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import java.util.*
@@ -12,6 +13,7 @@ import java.util.*
  * @param extension The [Extension] that registered this command.
  * @param parent The [GroupCommand] this command exists under.
  */
+@ExtensionDSL
 public open class MessageSubCommand<T : Arguments>(
     extension: Extension,
     arguments: (() -> T)? = null,

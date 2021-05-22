@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.extensions.Extension
 
@@ -11,6 +12,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
  *
  * @property extension The extension object this command belongs to.
  */
+@ExtensionDSL
 public abstract class Command(public val extension: Extension) {
     /**
      * The name of this command, for invocation and help commands.

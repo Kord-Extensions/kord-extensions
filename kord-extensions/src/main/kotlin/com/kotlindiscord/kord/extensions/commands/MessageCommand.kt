@@ -4,9 +4,11 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -41,6 +43,7 @@ private val logger = KotlinLogging.logger {}
  * @param arguments Arguments object builder for this command, if it has arguments.
  */
 @OptIn(ExperimentalTime::class)
+@ExtensionDSL
 public open class MessageCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null
@@ -99,6 +102,14 @@ public open class MessageCommand<T : Arguments>(
      * the [name] of a registered command, the command with the [name] takes priority.
      */
     public open var aliases: Array<String> = arrayOf()
+
+    /**
+     * Translation key referencing a comma-separated list of command aliases.
+     *
+     * If this is set, the [aliases] list is ignored. This is also slightly more efficient during the first
+     * translation pass, as only one key will ever need to be translated.
+     */
+    public open var aliasKey: String? = null
 
     /**
      * @suppress
@@ -163,9 +174,18 @@ public open class MessageCommand<T : Arguments>(
     /** Return this command's aliases translated for the given locale, cached as required. **/
     public open fun getTranslatedAliases(locale: Locale): Set<String> {
         if (!aliasTranslationCache.containsKey(locale)) {
-            val translations = this.aliases.map {
-                translationsProvider.translate(it, extension.bundle, locale).toLowerCase()
-            }.toSortedSet()
+            val translations = if (aliasKey != null) {
+                translationsProvider.translate(aliasKey!!, extension.bundle, locale)
+                    .toLowerCase()
+                    .split(",")
+                    .map { it.trim() }
+                    .filter { it != EMPTY_VALUE_STRING }
+                    .toSortedSet()
+            } else {
+                this.aliases.map {
+                    translationsProvider.translate(it, extension.bundle, locale).toLowerCase()
+                }.toSortedSet()
+            }
 
             aliasTranslationCache[locale] = translations
         }

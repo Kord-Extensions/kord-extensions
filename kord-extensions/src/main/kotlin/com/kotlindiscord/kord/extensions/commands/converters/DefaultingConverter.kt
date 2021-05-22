@@ -58,15 +58,15 @@ public abstract class DefaultingConverter<T : Any>(
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
      *
-     * This will always be called if an unhandled exception is thrown, unless it's a [CommandException] - those will be
-     * displayed as an error message on Discord. If appropriate for your converter, you can use this function to
-     * transform a thrown exception into a nicer, human-readable format..
+     * This will always be called if an unhandled exception is thrown. If appropriate for your converter, you can use
+     * this function to transform a thrown exception into a nicer, human-readable format.
+     *
+     * The default behaviour simply re-throws the Throwable (or returns the reason if it's a CommandException), so you
+     * only need to override this if you want to do something else.
      */
     public open suspend fun handleError(
         t: Throwable,
         value: String?,
         context: CommandContext
-    ): String {
-        throw t
-    }
+    ): String = if (t is CommandException) t.reason else throw t
 }

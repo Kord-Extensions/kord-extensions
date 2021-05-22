@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import mu.KLogger
 import mu.KotlinLogging
@@ -15,6 +16,7 @@ private const val DISCORD_LIMIT: Int = 10
  * @param name Name of this command group, shown on Discord.
  * @param parent Root/top-level command that owns this group.
  */
+@ExtensionDSL
 public open class SlashGroup(
     public val name: String,
     public val parent: SlashCommand<out Arguments>

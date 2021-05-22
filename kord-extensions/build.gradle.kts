@@ -1,6 +1,5 @@
 import java.io.ByteArrayOutputStream
 import java.net.URL
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -14,39 +13,38 @@ buildscript {
 plugins {
     `maven-publish`
 
-    kotlin("jvm") version "1.4.31"
+    kotlin("jvm")
 
-    id("com.github.jakemarsden.git-hooks") version "0.0.1"
-    id("io.gitlab.arturbosch.detekt") version "1.15.0"
-    id("org.jetbrains.dokka") version "1.4.10.2"
+    id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
 }
 
-group = "com.kotlindiscord.kord.extensions"
-version = rootProject.version
+dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "9"
+//    api("com.kotlindiscord.pluralkot:PluralKot:1.0.0")
 
-    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.contracts.ExperimentalContracts"
+    api("dev.kord:kord-core:0.7.0-RC3")
 
-    kotlinOptions.useIR = true
-}
+    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_9
-    targetCompatibility = JavaVersion.VERSION_1_9
-}
+    api("io.insert-koin:koin-core:3.0.1")
+    api("io.insert-koin:koin-logger-slf4j:3.0.1")
 
-kotlin {
-    explicitApi()
-}
+    api("io.github.microutils:kotlin-logging:2.0.6") // Basic logging setup
+    api("io.sentry:sentry:4.3.0")  // Needs to be transitive or bots will start breaking
+    api("com.ibm.icu:icu4j:69.1")  // For translations
 
-repositories {
-    maven {
-        name = "KotDis"
-        url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
-    }
+    implementation("org.apache.commons:commons-text:1.9")
+    implementation("commons-validator:commons-validator:1.7")
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+    testImplementation("io.insert-koin:koin-test:3.0.1")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+    testImplementation("ch.qos.logback:logback-classic:1.2.3")
+    testImplementation("org.codehaus.groovy:groovy:3.0.4")  // For logback config
 }
 
 val sourceJar = task("sourceJar", Jar::class) {
@@ -61,41 +59,53 @@ val javadocJar = task("javadocJar",Jar::class) {
     from(tasks.javadoc)
 }
 
-val printVersion = task("printVersion") {
-    print(version.toString())
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_9
+    targetCompatibility = JavaVersion.VERSION_1_9
 }
 
-dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+kotlin {
+    explicitApi()
+}
 
-//    api("com.kotlindiscord.pluralkot:PluralKot:1.0.0")
+detekt {
+    buildUponDefaultConfig = true
+    config = files("../detekt.yml")
 
-    api("dev.kord:kord-core:0.7.0-RC3")
+    autoCorrect = true
+}
 
-    api("net.time4j:time4j-base:5.8")
-    api("net.time4j:time4j-tzdata:5.0-2021a")
+publishing {
+    repositories {
+        maven {
+            name = "KotDis"
 
-    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
+            url = if (project.version.toString().contains("SNAPSHOT")) {
+                uri("https://maven.kotlindiscord.com/repository/maven-snapshots/")
+            } else {
+                uri("https://maven.kotlindiscord.com/repository/maven-releases/")
+            }
 
-    api("io.insert-koin:koin-core:3.0.1")
-    api("io.insert-koin:koin-logger-slf4j:3.0.1")
+            credentials {
+                username = project.findProperty("kotdis.user") as String?
+                    ?: System.getenv("KOTLIN_DISCORD_USER")
 
-    api("io.sentry:sentry:4.3.0")  // Needs to be transitive or bots will start breaking
+                password = project.findProperty("kotdis.password") as String?
+                    ?: System.getenv("KOTLIN_DISCORD_PASSWORD")
+            }
 
-    implementation("com.ibm.icu:icu4j:69.1")  // For translations
+            version = project.version
+        }
+    }
 
-    implementation("io.github.microutils:kotlin-logging:2.0.6")
-    implementation("org.apache.commons:commons-text:1.9")
-    implementation("commons-validator:commons-validator:1.7")
+    publications {
+        create<MavenPublication>("maven") {
+            from(components.getByName("java"))
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    testImplementation("io.insert-koin:koin-test:3.0.1")
-
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
-    testImplementation("ch.qos.logback:logback-classic:1.2.3")
-    testImplementation("org.codehaus.groovy:groovy:3.0.4")  // For logback config
+            artifact(sourceJar)
+            artifact(javadocJar)
+        }
+    }
 }
 
 fun runCommand(command: String): String {
@@ -119,13 +129,6 @@ fun getCurrentGitBranch(): String {  // https://gist.github.com/lordcodes/15b2a4
     }
 
     return gitBranch
-}
-
-detekt {
-    buildUponDefaultConfig = true
-    config = files("detekt.yml")
-
-    autoCorrect = true
 }
 
 tasks.dokkaHtml.configure {
@@ -160,43 +163,6 @@ tasks.dokkaHtml.configure {
             externalDocumentationLink {
                 url.set(URL("http://kordlib.github.io/kord/core/core/"))
             }
-        }
-    }
-}
-
-gitHooks {
-    setHooks(
-        mapOf("pre-commit" to "kord-extensions:detekt")
-    )
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "KotDis"
-
-            url = if (project.version.toString().contains("SNAPSHOT")) {
-                uri("https://maven.kotlindiscord.com/repository/maven-snapshots/")
-            } else {
-                uri("https://maven.kotlindiscord.com/repository/maven-releases/")
-            }
-
-            credentials {
-                username = project.findProperty("kotdis.user") as String? ?: System.getenv("KOTLIN_DISCORD_USER")
-                password = project.findProperty("kotdis.password") as String?
-                    ?: System.getenv("KOTLIN_DISCORD_PASSWORD")
-            }
-
-            version = project.version
-        }
-    }
-
-    publications {
-        create<MavenPublication>("maven") {
-            from(components.getByName("java"))
-
-            artifact(sourceJar)
-            artifact(javadocJar)
         }
     }
 }

@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.utils.getLocale
@@ -20,7 +21,9 @@ private val logger = KotlinLogging.logger {}
  * @param extension The extension that registered this grouped command.
  * @param parent The [GroupCommand] this group exists under, if any.
  */
-@Suppress("LateinitVarOverridesLateinitVar")  // This is intentional
+@Suppress("LateinitVarOverridesLateinitVar")
+// This is intentional
+@ExtensionDSL
 public open class GroupCommand<T : Arguments>(
     extension: Extension,
     arguments: (() -> T)? = null,
