@@ -1,8 +1,6 @@
 # Extra: Common
 
-[![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/gjXqqCS)
-[![Release](https://img.shields.io/nexus/r/com.kotlindiscord.kordex.ext.common/ext-common?nexusVersion=3&logo=gradle&color=blue&label=Release&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-releases:com.kotlindiscord.kordex.ext.common%2Fext-common)
-[![Snapshot](https://img.shields.io/nexus/s/com.kotlindiscord.kordex.ext.common/ext-common?logo=gradle&color=orange&label=Snapshot&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com.kotlindiscord.kordex.ext.common%2Fext-common)
+[![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/gjXqqCS) [![Release](https://img.shields.io/nexus/r/com.kotlindiscord.kord.extensions/extra-common?nexusVersion=3&logo=gradle&color=blue&label=Release&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-releases:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fextra-common) [![Snapshot](https://img.shields.io/nexus/s/com.kotlindiscord.kord.extensions/extra-common?logo=gradle&color=orange&label=Snapshot&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fextra-common)
 
 The Common module provides shared code that is intended for use by other extensions, and extra extensions that provide
 additional services for other extensions to use. While this does make it largely a developer tool and library, users
@@ -16,7 +14,7 @@ may also want to configure the bundled extensions.
 ### Getting Started
 
 * **Maven repo:** `https://maven.kotlindiscord.com/repository/maven-public/`
-* **Maven coordinates:** `com.kotlindiscord.kordex.ext.common:ext-common:VERSION`
+* **Maven coordinates:** `com.kotlindiscord.kord.extensions:extra-common:VERSION`
 
 This module doesn't contain much that a user may need to interact with directly, but if you're using another module
 that makes use of one of the extensions in this one, you may need to configure them as explained below. As of this

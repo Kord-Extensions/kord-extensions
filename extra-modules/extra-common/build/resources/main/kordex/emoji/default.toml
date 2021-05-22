@@ -1,0 +1,16 @@
+[emoji]
+guilds = [
+    # A list of guilds to index the emojis from, in order of importance.
+    # Leave this empty and guilds will be indexed in the order the bot joined them.
+
+    # For example:
+    # 123456789012345678,
+    # 123456789012345678,
+    # 123456789012345678
+]
+
+[emoji.overrides]
+# A mapping of emoji names to guild IDs, if you need to get a specific emoji from a specific guild
+
+# For example:
+# my_custom_emoji = 123456789012345678
