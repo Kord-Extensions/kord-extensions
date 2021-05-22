@@ -855,7 +855,8 @@ referenced using a <strong>translation key</strong>, usually a string containing
 </ul>
 <p>Additionally, shortcuts for translating strings yourself exist:</p>
 <ul>
-<li>In <code>CommandContext</code> and <code>EventContext</code>, which have a <code>translate</code> function</li>
+<li>In <code>CommandContext</code>, which has a <code>translate</code> function</li>
+<li>In <code>EventContext</code>, which provides a <code>translate</code> extension method for <code>Event</code> objects</li>
 </ul>
 <p>You can also make use of the bot's translations provider via Koin, using the <code>TranslationsProvider</code> interface.</p>
 <details class="important"><summary>Translations are optional</summary><p>In some situations - for example, during initial testing or if you're working on a bespoke bot - it may not be
@@ -1035,7 +1036,7 @@ figure out a better way to format it - you should be able to do it without nesti
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-17
+      Last update: 2021-05-22
     
   </small>
 </div>
