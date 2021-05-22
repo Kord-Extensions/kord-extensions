@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.cooldowns.impl
 
 import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
-import java.time.Instant
 import kotlin.time.*
 
 /**
@@ -14,11 +13,11 @@ public class CooldownImpl : Cooldown() {
     private val slashCooldownsMap: MutableMap<String, Long> = mutableMapOf()
 
     override fun setSlashCooldown(key: String, duration: Duration) {
-        slashCooldownsMap[key] = System.currentTimeMillis()+duration.toLong(DurationUnit.MILLISECONDS)
+        slashCooldownsMap[key] = System.currentTimeMillis() + duration.toLong(DurationUnit.MILLISECONDS)
     }
 
     override fun setCooldown(key: String, duration: Duration) {
-        cooldownsMap[key] = System.currentTimeMillis()+duration.toLong(DurationUnit.MILLISECONDS)
+        cooldownsMap[key] = System.currentTimeMillis() + duration.toLong(DurationUnit.MILLISECONDS)
     }
 
     override fun getCooldown(key: String): Duration? {
@@ -29,7 +28,7 @@ public class CooldownImpl : Cooldown() {
             clearCooldown(key)
             null
         } else {
-            (due-now).milliseconds
+            (due - now).milliseconds
         }
     }
 
