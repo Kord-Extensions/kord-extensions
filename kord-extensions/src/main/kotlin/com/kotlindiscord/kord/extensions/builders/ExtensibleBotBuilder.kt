@@ -5,7 +5,9 @@ import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.CooldownImpl
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -227,7 +229,9 @@ public open class ExtensibleBotBuilder {
         /** @suppress **/
         public var priority: () -> List<CooldownType> = {
             listOf(
-                UserCooldown()
+                UserCooldown(),
+                ChannelCooldown(),
+                GuildCooldown()
             )
         }
 
