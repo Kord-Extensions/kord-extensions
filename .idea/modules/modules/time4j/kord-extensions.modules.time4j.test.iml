@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output-test url="file://$MODULE_DIR$/../../../../modules/time4j/build/classes/java/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../modules/time4j/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/time4j/src/test/kotlin" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../modules/time4j/src/test/resources" type="java-test-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="kord-extensions.modules.time4j.main" />
+    <orderEntry type="library" name="Gradle: net.time4j:time4j-base:5.8" level="project" />
+    <orderEntry type="library" name="Gradle: net.time4j:time4j-tzdata:5.0-2021a" level="project" />
+    <orderEntry type="module" module-name="kord-extensions.kord-extensions.main" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter:5.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.2.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy:3.0.4" level="project" />
+    <orderEntry type="library" name="Gradle: dev.kord:kord-core:0.7.0-RC3" level="project" />
+    <orderEntry type="library" name="Gradle: io.insert-koin:koin-logger-slf4j:3.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.sentry:sentry:4.3.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.ibm.icu:icu4j:69.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.4.32" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-params:5.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-api:5.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: ch.qos.logback:logback-core:1.2.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.30" level="project" />
+    <orderEntry type="library" name="Gradle: dev.kord:kord-rest:0.7.0-RC3" level="project" />
+    <orderEntry type="library" name="Gradle: dev.kord:kord-gateway:0.7.0-RC3" level="project" />
+    <orderEntry type="library" name="Gradle: dev.kord:kord-common:0.7.0-RC3" level="project" />
+    <orderEntry type="library" name="Gradle: dev.kord.cache:cache-map:0.3.0" level="project" />
+    <orderEntry type="library" name="Gradle: dev.kord.cache:cache-api:0.3.0" level="project" />
+    <orderEntry type="library" name="Gradle: io.insert-koin:koin-core-jvm:3.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: io.github.microutils:kotlin-logging-jvm:2.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apiguardian:apiguardian-api:1.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.platform:junit-platform-commons:1.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.opentest4j:opentest4j:1.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-client-serialization-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-client-json-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.4.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-client-cio-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-client-websockets-jvm:1.5.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-client-core-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-network-tls-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-http-cio-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-http-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-network-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-utils-jvm:1.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: io.ktor:ktor-io-jvm:1.5.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.apache.commons:commons-text:1.9" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-validator:commons-validator:1.7" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.6.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.jetbrains.kotlinx:atomicfu-jvm:0.15.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.code.gson:gson:2.8.5" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.apache.commons:commons-lang3:3.11" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-beanutils:commons-beanutils:1.9.4" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-digester:commons-digester:2.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-collections:commons-collections:3.2.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.platform:junit-platform-engine:1.6.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.1.0" level="project" />
+  </component>
+  <component name="TestModuleProperties" production-module="kord-extensions.modules.time4j.main" />
+</module>

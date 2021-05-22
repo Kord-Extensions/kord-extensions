@@ -28,17 +28,23 @@ jobs:
       - name: Gradle (Build)
         run: sh gradlew build
 
-      - name: Upload artifact (JARs)
+      - name: Upload artifact (Extra Module JARs)
         uses: actions/upload-artifact@v2
 
         with:
-          name: JARs
-          path: kord-extensions/build/libs/kord-extensions-*.jar
+          name: JARs (Extra Modules)
+          path: extra/*/build/libs/*.jar
 
-
-      - name: Upload artifact (JARs)
+      - name: Upload artifact (Main JARs)
         uses: actions/upload-artifact@v2
 
         with:
-          name: JARs
-          path: java-time/build/libs/java-time-*.jar
+          name: JARs (Main)
+          path: kord-extensions/build/libs/*.jar
+
+      - name: Upload artifact (Module JARs)
+        uses: actions/upload-artifact@v2
+
+        with:
+          name: JARs (Modules)
+          path: modules/*/build/libs/*.jar

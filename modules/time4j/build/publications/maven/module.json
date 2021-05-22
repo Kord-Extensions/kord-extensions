@@ -1,0 +1,81 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.kotlindiscord.kord.extensions",
+    "module": "java-time",
+    "version": "1.4.0-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.7",
+      "buildId": "jsll267rjvehblkeq4y7k45igq"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 9,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.localToProject": "public",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "java-time-1.4.0-SNAPSHOT.jar",
+          "url": "java-time-1.4.0-SNAPSHOT.jar",
+          "size": 18583,
+          "sha512": "ee5f5bf029ce1c3faf88f224bc59c0204b423b37d369b21d9a45fdc601ef8fa36c587f1a5ac9524f45c8fa8dbe70bdc9451d765351fa32e4cb492f77f9bd0ecb",
+          "sha256": "00587d4b9a6b1af1069889577e140efee2ad80a13c81e2a63fefcd65c798c5a4",
+          "sha1": "b501b1b9b8769d031a6c1018522a51c06f837957",
+          "md5": "b0253fd188f6db1c5bded1ef9daaa3b1"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 9,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.localToProject": "public",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.4.31"
+          }
+        },
+        {
+          "group": "com.kotlindiscord.kord.extensions",
+          "module": "kord-extensions",
+          "version": {
+            "requires": "1.4.0-SNAPSHOT"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "java-time-1.4.0-SNAPSHOT.jar",
+          "url": "java-time-1.4.0-SNAPSHOT.jar",
+          "size": 18583,
+          "sha512": "ee5f5bf029ce1c3faf88f224bc59c0204b423b37d369b21d9a45fdc601ef8fa36c587f1a5ac9524f45c8fa8dbe70bdc9451d765351fa32e4cb492f77f9bd0ecb",
+          "sha256": "00587d4b9a6b1af1069889577e140efee2ad80a13c81e2a63fefcd65c798c5a4",
+          "sha1": "b501b1b9b8769d031a6c1018522a51c06f837957",
+          "md5": "b0253fd188f6db1c5bded1ef9daaa3b1"
+        }
+      ]
+    }
+  ]
+}

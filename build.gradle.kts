@@ -1,5 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    repositories {
+        maven {
+            name = "KotDis"
+            url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+        }
+    }
+}
+
 plugins {
     `maven-publish`
 
@@ -8,6 +17,8 @@ plugins {
 
     id("io.gitlab.arturbosch.detekt") version "1.15.0"
     id("org.jetbrains.dokka") version "1.4.10.2"
+
+    id("de.undercouch.download") version "4.1.1"
 }
 
 val projectVersion: String by project

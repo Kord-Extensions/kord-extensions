@@ -1,0 +1,5 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:com.kotlindiscord.kord.extensions.modules.time.java/ChronoContainer.Companion///PointingToDeclaration/com/kotlindiscord/kord/extensions/modules/time/java/ChronoContainer.Companion.html
+com.kotlindiscord.kord.extensions.modules.time.java
+

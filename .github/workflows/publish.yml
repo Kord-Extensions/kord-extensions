@@ -30,16 +30,24 @@ jobs:
       - name: Gradle (Publish)
         run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} publish
 
-      - name: Upload artifact (JARs)
+      - name: Upload artifact (Extra Module JARs)
         uses: actions/upload-artifact@v2
 
         with:
-          name: JARs
-          path: kord-extensions/build/libs/kord-extensions-*.jar
+          name: JARs (Extra Modules)
+          path: extra-modules/*/build/libs/*.jar
 
-      - name: Upload artifact (Java Time JARs)
+      - name: Upload artifact (Main JARs)
         uses: actions/upload-artifact@v2
 
         with:
-          name: JARs
-          path: java-time/build/libs/java-time-*.jar
+          name: JARs (Main)
+          path: kord-extensions/build/libs/*.jar
+
+      - name: Upload artifact (Module JARs)
+        uses: actions/upload-artifact@v2
+
+        with:
+          name: JARs (Modules)
+          path: modules/*/build/libs/*.jar
+

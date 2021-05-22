@@ -1,0 +1,32 @@
+[categories]
+# Category IDs to explicitly allow mappings commands within - leave empty for all.
+allowed = []
+
+# Category IDs to explicitly disallow mappings commands within - leave empty for none.
+banned = []
+
+[channels]
+# Channel IDs to explicitly allow mappings commands within - leave empty for all.
+allowed = []
+
+# Channel IDs to explicitly disallow mappings commands within - leave empty for none.
+banned = []
+
+[guilds]
+# Guild IDs to explicitly allow mappings commands within - leave empty for all.
+allowed = []
+
+# Guild IDs to explicitly disallow mappings commands within - leave empty for none.
+banned = []
+
+[settings]
+# Which namespaces to allow lookups for - "legacy-yarn", "plasma", "mcp", "mojang", "yarn" or "yarrn"
+namespaces = ["legacy-yarn", "plasma", "mcp", "mojang", "yarn", "yarrn"]
+
+# How long to wait before closing mappings paginators (in seconds), defaults to 5 minutes
+# timeout = 300
+
+[yarn]
+# Extra yarn channels - official and snapshot are always enabled, but you can add or remove "PATCHWORK"
+# here to enable or disable it
+channels = ["PATCHWORK"]
