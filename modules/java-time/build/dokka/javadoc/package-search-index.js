@@ -1,1 +1,0 @@
-var packageSearchIndex = [{"l":"com.kotlindiscord.kord.extensions.modules.time.java","url":"com/kotlindiscord/kord/extensions/modules/time/java/package-summary.html"}, {"l":"All packages","url":"index.html"}]

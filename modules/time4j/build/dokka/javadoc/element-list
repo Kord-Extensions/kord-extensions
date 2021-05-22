@@ -1,5 +1,0 @@
-$dokka.format:javadoc-v1
-$dokka.linkExtension:html
-
-com.kotlindiscord.kord.extensions.modules.time.time4j
-
