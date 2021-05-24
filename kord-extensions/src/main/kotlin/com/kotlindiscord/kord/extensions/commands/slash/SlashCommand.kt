@@ -353,6 +353,13 @@ public open class SlashCommand<T : Arguments>(
     }
 
     /**
+     * Defines the durations for the different cooldown types.
+     */
+    public open fun cooldowns(cooldown: suspend (CooldownType) -> Duration?) {
+        this.cooldownBody = cooldown
+    }
+
+    /**
      * Execute this command, given an [InteractionCreateEvent].
      *
      * This function takes a [InteractionCreateEvent] (generated when a slash command is executed), and

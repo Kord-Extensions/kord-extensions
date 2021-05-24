@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -233,6 +234,27 @@ class TestExtension : Extension() {
                     }
                 }
             }
+        }
+
+        slashCommand {
+            name = "cooldown-test"
+            description = "Cooldown test"
+            autoAck = AutoAckType.PUBLIC
+            guild(787452339908116521) // Our test server
+
+            cooldowns {
+                when(it) {
+                    is ChannelCooldown -> 8.seconds
+                    else -> null
+                }
+            }
+
+            action {
+                publicFollowUp {
+                    content = "There is no cooldown!"
+                }
+            }
+
         }
 
         command {
