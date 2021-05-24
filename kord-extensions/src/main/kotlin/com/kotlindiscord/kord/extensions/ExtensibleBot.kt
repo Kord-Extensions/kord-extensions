@@ -28,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import mu.KLogger
@@ -174,7 +175,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /** This function sets up all of the bot's default event listeners. **/
-    @OptIn(PrivilegedIntent::class)
+    @OptIn(PrivilegedIntent::class, kotlin.time.ExperimentalTime::class)
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
             if (
@@ -220,6 +221,33 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         if (settings.slashCommandsBuilder.enabled) {
             on<InteractionCreateEvent> {
                 getKoin().get<SlashCommandRegistry>().handle(this)
+            }
+        }
+
+        if (settings.cooldownsBuilder.autoClearCooldowns) {
+            var shardsReady = 0
+            val shardCount = kord.gateway.gateways.count()
+            on<ReadyEvent> {
+                shardsReady++
+
+                // wait until all shards are ready to start the cooldown timer
+                if (shardsReady == shardCount) {
+                    kord.launch {
+                        while (true) {
+                            delay(settings.cooldownsBuilder.autoClearTime)
+
+                            getKoin().get<MessageCommandRegistry>().commands.forEach {
+                                it.cooldowns.clearCooldowns()
+                            }
+
+                            getKoin().get<SlashCommandRegistry>().commandMap.forEach { (_, command) ->
+                                command.cooldowns.clearSlashCooldowns()
+                            }
+
+                            logger.debug { "Test" }
+                        }
+                    }
+                }
             }
         }
     }

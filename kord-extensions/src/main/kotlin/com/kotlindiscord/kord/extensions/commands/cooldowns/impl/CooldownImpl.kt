@@ -51,4 +51,22 @@ public class CooldownImpl : Cooldown() {
     override fun clearSlashCooldown(key: String) {
         slashCooldownsMap.remove(key)
     }
+
+    override fun clearCooldowns() {
+        val now = System.currentTimeMillis()
+        for ((key, value) in cooldownsMap) {
+            if (value < now) {
+                clearCooldown(key)
+            }
+        }
+    }
+
+    override fun clearSlashCooldowns() {
+        val now = System.currentTimeMillis()
+        for ((key, value) in slashCooldownsMap) {
+            if (value < now) {
+                clearSlashCooldown(key)
+            }
+        }
+    }
 }

@@ -39,6 +39,7 @@ import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
 import java.util.*
+import kotlin.time.*
 
 internal typealias LocaleResolver = suspend (
     guild: GuildBehavior?,
@@ -234,6 +235,18 @@ public open class ExtensibleBotBuilder {
                 GuildCooldown()
             )
         }
+
+        /**
+         * Defines whether we should automatically clear expired cooldowns in the background.
+         */
+        public var autoClearCooldowns: Boolean = true
+
+        /**
+         * Specifies how often we should clear expired cooldowns.
+         */
+        @OptIn(ExperimentalTime::class)
+        @Suppress("MagicNumber")
+        public var autoClearTime: Duration = 5.minutes
 
         /**
          * Sets the implementation to use for the command's cooldown object.

@@ -62,4 +62,14 @@ public abstract class Cooldown : KoinComponent {
      * @param key the key representing what type of cooldown it is
      */
     public abstract fun clearSlashCooldown(key: String)
+
+    /**
+     * Removes expired cooldowns for message commands.
+     */
+    public abstract fun clearCooldowns()
+
+    /**
+     * Removes expired cooldowns for slash commands.
+     */
+    public abstract fun clearSlashCooldowns()
 }
