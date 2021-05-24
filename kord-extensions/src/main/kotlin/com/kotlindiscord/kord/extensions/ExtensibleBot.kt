@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
+import com.kotlindiscord.kord.extensions.events.DiscordReadyEvent
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -195,7 +196,11 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.warn { "Disconnected: $closeCode" }
         }
 
+        var shardsReady = 0
+        val shardCount = getKoin().get<Kord>().gateway.gateways.count()
         on<ReadyEvent> {
+            shardsReady++
+
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
                 initialized = true
 
@@ -207,6 +212,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                             " if you want to use them."
                     }
                 }
+            }
+
+            if (shardsReady == shardCount) {
+                send(DiscordReadyEvent(this@ExtensibleBot))
             }
 
             logger.info { "Ready!" }
@@ -224,27 +233,26 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             }
         }
 
-        if (settings.cooldownsBuilder.autoClearCooldowns) {
-            var shardsReady = 0
-            val shardCount = kord.gateway.gateways.count()
-            on<ReadyEvent> {
-                shardsReady++
+        on<DiscordReadyEvent> {
+            if (settings.messageCommandsBuilder.cooldownsBuilder.autoClearCooldowns) {
+                getKoin().get<Kord>().launch {
+                    while (true) {
+                        delay(settings.messageCommandsBuilder.cooldownsBuilder.autoClearTime)
 
-                // wait until all shards are ready to start the cooldown timer
-                if (shardsReady == shardCount) {
-                    kord.launch {
-                        while (true) {
-                            delay(settings.cooldownsBuilder.autoClearTime)
+                        getKoin().get<MessageCommandRegistry>().commands.forEach { cmd ->
+                            cmd.cooldown.clearCooldowns()
+                        }
+                    }
+                }
+            }
 
-                            getKoin().get<MessageCommandRegistry>().commands.forEach {
-                                it.cooldowns.clearCooldowns()
-                            }
+            if (settings.slashCommandsBuilder.cooldownsBuilder.autoClearCooldowns) {
+                getKoin().get<Kord>().launch {
+                    while (true) {
+                        delay(settings.slashCommandsBuilder.cooldownsBuilder.autoClearTime)
 
-                            getKoin().get<SlashCommandRegistry>().commandMap.forEach { (_, command) ->
-                                command.cooldowns.clearSlashCooldowns()
-                            }
-
-                            logger.debug { "Test" }
+                        getKoin().get<SlashCommandRegistry>().commandMap.forEach { (_, cmd) ->
+                            cmd.cooldown.clearCooldowns()
                         }
                     }
                 }

@@ -82,9 +82,6 @@ public open class ExtensibleBotBuilder {
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
 
-    /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val cooldownsBuilder: CooldownsBuilder = CooldownsBuilder()
-
     /** Logging level Koin should use, defaulting to ERROR. **/
     public var koinLogLevel: Level = Level.ERROR
 
@@ -655,6 +652,9 @@ public open class ExtensibleBotBuilder {
          */
         public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public val cooldownsBuilder: CooldownsBuilder = CooldownsBuilder()
+
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
          * command prefix to be made use of for that message event.
@@ -697,6 +697,13 @@ public open class ExtensibleBotBuilder {
         public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
             checkList.add(check)
         }
+
+        /**
+         * Allows for configuring cooldown settings for commands.
+         */
+        public fun cooldowns(builder: CooldownsBuilder.() -> Unit) {
+            cooldownsBuilder.apply(builder)
+        }
     }
 
     /** Builder used for configuring the bot's slash command options. **/
@@ -714,6 +721,9 @@ public open class ExtensibleBotBuilder {
          * These checks will be checked against all slash commands.
          */
         public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public val cooldownsBuilder: CooldownsBuilder = CooldownsBuilder()
 
         /**
          * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
@@ -746,6 +756,13 @@ public open class ExtensibleBotBuilder {
          */
         public fun check(check: suspend (InteractionCreateEvent) -> Boolean) {
             checkList.add(check)
+        }
+
+        /**
+         * Allows for configuring cooldown settings for slash commands.
+         */
+        public fun cooldowns(builder: CooldownsBuilder.() -> Unit) {
+            cooldownsBuilder.apply(builder)
         }
     }
 }

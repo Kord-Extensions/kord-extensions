@@ -105,7 +105,7 @@ public open class SlashCommand<T : Arguments>(
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /** Cooldown object that keeps track of the cooldowns for this command. **/
-    public val cooldowns: Cooldown = extension.bot.settings.cooldownsBuilder.implementation.invoke()
+    public val cooldown: Cooldown = extension.bot.settings.slashCommandsBuilder.cooldownsBuilder.implementation.invoke()
 
     /** Cooldown body that defines the duration for the different cooldown types. **/
     public var cooldownBody: suspend (CooldownType) -> Duration? = { null }
@@ -455,19 +455,19 @@ public open class SlashCommand<T : Arguments>(
                 }
             }
 
-            for (cooldownType in extension.bot.settings.cooldownsBuilder.priority.invoke()) {
+            for (cooldownType in extension.bot.settings.slashCommandsBuilder.cooldownsBuilder.priority.invoke()) {
                 val key = cooldownType.getSlashCooldownKey(event) ?: continue
 
-                val timeLeft = cooldowns.getSlashCooldown(key)
+                val timeLeft = cooldown.getCooldown(key)
                 val cooldownDuration = cooldownBody.invoke(cooldownType)
 
                 when {
                     cooldownDuration == null -> continue
-                    timeLeft == null -> cooldowns.setSlashCooldown(key, cooldownDuration)
+                    timeLeft == null -> cooldown.setCooldown(key, cooldownDuration)
                     else -> if (timeLeft < cooldownDuration) {
                         throw CommandException("You must wait another ${timeLeft.inSeconds} seconds")
                     } else {
-                        cooldowns.setSlashCooldown(key, cooldownDuration)
+                        cooldown.setCooldown(key, cooldownDuration)
                     }
                 }
             }
