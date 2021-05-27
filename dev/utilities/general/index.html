@@ -875,12 +875,14 @@ you can use to find the difference between certain objects.</p>
 <ul>
 <li><code>UserDelta</code> for comparing two base <code>User</code> objects</li>
 <li><code>MemberDelta</code> for comparing two guild <code>Member</code> objects</li>
-<li><code>MessageDelta</code> for comparing two guild <code>Message</code> objects</li>
+<li><code>MessageDelta</code> for comparing two <code>Message</code> objects</li>
+<li><code>RoleDelta</code> for comparing the roles between two guild <code>Member</code> objects</li>
 </ul>
 <p>In all cases, you should use the static <code>from</code> function to create a delta object. All properties on delta objects are
 Kord <code>Optional</code>s - they'll be set to <code>Optional.Missing</code> if there was no change between the two objects, otherwise
 they'll contain the <strong>newly changed</strong> value.</p>
-<p>If the <code>from</code> function returns <code>null</code>, then the <code>old</code> object you passed as the first parameter is also <code>null</code>.</p>
+<p>If the <code>from</code> function returns <code>null</code>, then the <code>old</code> object you passed as the first parameter is also <code>null</code>. You'll
+also get <code>null</code> from <code>RoleDelta.from()</code> if there were no changes.</p>
 <h2 id="environment">Environment<a class="headerlink" href="#environment" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1240,7 +1242,7 @@ to cancel the <code>Job</code> early if required. The following instance functio
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-15
+      Last update: 2021-05-27
     
   </small>
 </div>
