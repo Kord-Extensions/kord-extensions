@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.cooldowns.impl
 
 import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.*
 
 /**
@@ -9,7 +10,7 @@ import kotlin.time.*
 @OptIn(ExperimentalTime::class)
 public class CooldownImpl : Cooldown() {
 
-    private val cooldownsMap: MutableMap<String, Long> = mutableMapOf()
+    private val cooldownsMap: MutableMap<String, Long> = ConcurrentHashMap()
 
     override fun setCooldown(key: String, duration: Duration) {
         cooldownsMap[key] = System.currentTimeMillis() + duration.toLong(DurationUnit.MILLISECONDS)
