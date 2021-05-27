@@ -24,13 +24,15 @@ you can use to find the difference between certain objects.
 
 * `UserDelta` for comparing two base `User` objects
 * `MemberDelta` for comparing two guild `Member` objects
-* `MessageDelta` for comparing two guild `Message` objects
+* `MessageDelta` for comparing two `Message` objects
+* `RoleDelta` for comparing the roles between two guild `Member` objects
 
 In all cases, you should use the static `from` function to create a delta object. All properties on delta objects are
 Kord `Optional`s - they'll be set to `Optional.Missing` if there was no change between the two objects, otherwise
 they'll contain the **newly changed** value.
 
-If the `from` function returns `null`, then the `old` object you passed as the first parameter is also `null`.
+If the `from` function returns `null`, then the `old` object you passed as the first parameter is also `null`. You'll
+also get `null` from `RoleDelta.from()` if there were no changes.
 
 ## Environment
 
