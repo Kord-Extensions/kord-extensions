@@ -276,6 +276,11 @@ public open class ExtensibleBotBuilder {
     public class HooksBuilder {
         // region: Hook lists
 
+        /**
+         * Whether Kord's shutdown hook should be registered. When enabled, Kord logs out of the gateway on shutdown.
+         */
+        public var kordShutdownHook: Boolean = true
+
         /** @suppress Internal list of hooks. **/
         public val afterExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
 

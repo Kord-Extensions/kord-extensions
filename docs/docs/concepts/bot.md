@@ -151,6 +151,10 @@ val bot = ExtensibleBot(token) {
     Please note that some hooks are called by the `build` function - if you override this function, you need to remember
     to similarly call the corresponding hook functions yourself.
 
+Property         | Default | Description
+:--------------- | :-----: | :--------
+kordShutdownHook | `true`  | Whether Kord should register a hook that logs out of the gateway as part of the application shutdown process
+
 Lifecycle Function        | Description
 :------------------------ | :----------
 afterExtensionsAdded      | Lambdas registered here are called after all the extensions specified in the `extensions` builder above have been registered
