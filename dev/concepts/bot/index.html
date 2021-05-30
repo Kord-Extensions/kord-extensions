@@ -1100,27 +1100,27 @@ that you can make use of to configure your bot.</p>
 <tbody>
 <tr>
 <td align="left">check</td>
-<td align="center">DSL function</td>
+<td align="center">DSL Function</td>
 <td align="center"></td>
 <td align="left">Register a <a href="/concepets/checks">check</a> that will be applied to all message commands.</td>
+</tr>
+<tr>
+<td align="left">defaultGuild</td>
+<td align="center">DSL Function</td>
+<td align="center"><code>null</code></td>
+<td align="left">For testing, specify a guild ID to use for all slash commands that would normally be global. You can still override this by using the <code>guild()</code> function provided when defining your slash commands.</td>
 </tr>
 <tr>
 <td align="left">enabled</td>
 <td align="center">Boolean</td>
 <td align="center"><code>false</code></td>
-<td align="left">Whether to support registration and invocation of slash commands</td>
+<td align="left">Whether to support registration and invocation of slash commands.</td>
 </tr>
 <tr>
 <td align="left">slashRegistry</td>
-<td align="center">DSL Functon</td>
+<td align="center">DSL Function</td>
 <td align="center"></td>
 <td align="left">If you'd like to use a <code>SlashCommandRegistry</code> subclass, then you can register a builder that returns it here.</td>
-</tr>
-<tr>
-<td align="left">threads</td>
-<td align="center">Int</td>
-<td align="center"><code>CPus * 2</code></td>
-<td align="left">How many threads to use for the command execution threadpool</td>
 </tr>
 </tbody>
 </table>
@@ -1484,7 +1484,7 @@ handful are <code>inline</code> for the sake of avoiding function call overhead 
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-29
+      Last update: 2021-05-30
     
   </small>
 </div>
