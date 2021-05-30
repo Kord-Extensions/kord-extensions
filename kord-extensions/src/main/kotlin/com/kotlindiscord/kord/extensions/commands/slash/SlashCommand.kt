@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
@@ -61,6 +62,8 @@ public open class SlashCommand<T : Arguments>(
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 
+    private val settings: ExtensibleBotBuilder by inject()
+
     /** Kord instance, backing the ExtensibleBot. **/
     public val kord: Kord by inject()
 
@@ -77,7 +80,7 @@ public open class SlashCommand<T : Arguments>(
     public open val hasBody: Boolean get() = ::body.isInitialized
 
     /** Guild ID this slash command is to be registered for, if any. **/
-    public open var guild: Snowflake? = null
+    public open var guild: Snowflake? = settings.slashCommandsBuilder.defaultGuild
 
     /** Type of automatic ack to use, if any. **/
     public open var autoAck: AutoAckType = AutoAckType.EPHEMERAL

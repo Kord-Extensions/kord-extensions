@@ -658,6 +658,9 @@ public open class ExtensibleBotBuilder {
         /** Whether to register and process slash commands. Defaults to `false`. **/
         public var enabled: Boolean = false
 
+        /** The guild ID to use for all global slash commands. Intended for testing. **/
+        public var defaultGuild: Snowflake? = null
+
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var slashRegistryBuilder: () -> SlashCommandRegistry = { SlashCommandRegistry() }
 
@@ -667,6 +670,21 @@ public open class ExtensibleBotBuilder {
          * These checks will be checked against all slash commands.
          */
         public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
+
+        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        public fun defaultGuild(id: Snowflake) {
+            defaultGuild = id
+        }
+
+        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        public fun defaultGuild(id: Long) {
+            defaultGuild = Snowflake(id)
+        }
+
+        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        public fun defaultGuild(id: String) {
+            defaultGuild = Snowflake(id)
+        }
 
         /**
          * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
