@@ -98,10 +98,10 @@ val bot = ExtensibleBot(token) {
 
 Name                      | Type         | Default    | Description
 :------------------------ | :----------: | :--------: | :----------
-check                     | DSL Function |            | Register a [check](/concepets/checks) that will be applied to all message commands.
+check                     | DSL Function |            | Register a [check](/concepets/checks) that will be applied to all slash commands.
 defaultGuild              | DSL Function | `null`     | For testing, specify a guild ID to use for all slash commands that would normally be global. You can still override this by using the `guild()` function provided when defining your slash commands.
 enabled                   | Boolean      | `false`    | Whether to support registration and invocation of slash commands.
-slashRegistry             | DSL Function |            | If you'd like to use a `SlashCommandRegistry` subclass, then you can register a builder that returns it here.
+slashRegistry             | DSL Function |            | If you'd like to use a `SlashCommandRegistry` subclass, then you can register a builder that returns it here - most likely the constructor.
 
 ### Extensions configuration
 
