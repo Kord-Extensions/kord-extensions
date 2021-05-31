@@ -230,10 +230,10 @@ public suspend fun Message.respond(
  * @return A clickable URL to jump to this message.
  */
 @Deprecated(
-    "Use the variable 'jumpUrl' instead.",
+    "This method has been renamed to 'getJumpUrl'.",
 
     ReplaceWith(
-        "jumpUrl",
+        "getJumpUrl()",
     ),
     level = DeprecationLevel.ERROR
 )
@@ -244,16 +244,20 @@ public suspend fun Message.getUrl(): String {
 }
 
 /**
- * A clickable URL to jump to this message.
+ * Generate the jump URL for this message.
+ *
+ * @return A clickable URL to jump to this message.
  */
-public val Message.jumpUrl: String
-    get() = "$DISCORD_CHANNEL_URI/${data.guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
+public fun Message.getJumpUrl(): String =
+    "$DISCORD_CHANNEL_URI/${data.guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
 
 /**
- * A clickable URL to jump to this message.
+ * Generate the jump URL for this message.
+ *
+ * @return A clickable URL to jump to this message.
  */
-public val DiscordPartialMessage.jumpUrl: String
-    get() = "$DISCORD_CHANNEL_URI/${guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
+public fun DiscordPartialMessage.getJumpUrl(): String =
+    "$DISCORD_CHANNEL_URI/${guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
 
 /**
  * Check that this message happened in either the given channel or a DM, or that the author is at least a given role.
