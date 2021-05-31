@@ -325,6 +325,11 @@ public open class ExtensibleBotBuilder {
     public class HooksBuilder {
         // region: Hook lists
 
+        /**
+         * Whether Kord's shutdown hook should be registered. When enabled, Kord logs out of the gateway on shutdown.
+         */
+        public var kordShutdownHook: Boolean = true
+
         /** @suppress Internal list of hooks. **/
         public val afterExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
 
@@ -712,6 +717,9 @@ public open class ExtensibleBotBuilder {
         /** Whether to register and process slash commands. Defaults to `false`. **/
         public var enabled: Boolean = false
 
+        /** The guild ID to use for all global slash commands. Intended for testing. **/
+        public var defaultGuild: Snowflake? = null
+
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var slashRegistryBuilder: () -> SlashCommandRegistry = { SlashCommandRegistry() }
 
@@ -724,6 +732,21 @@ public open class ExtensibleBotBuilder {
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public val cooldownsBuilder: CooldownsBuilder = CooldownsBuilder()
+        
+        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        public fun defaultGuild(id: Snowflake) {
+            defaultGuild = id
+        }
+
+        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        public fun defaultGuild(id: Long) {
+            defaultGuild = Snowflake(id)
+        }
+
+        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        public fun defaultGuild(id: String) {
+            defaultGuild = Snowflake(id)
+        }
 
         /**
          * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make

@@ -116,6 +116,8 @@ fabric.properties
 ### Custom ignores
 
 */build
+*/*/build
+
 *.hprof
 .env
 docs/site

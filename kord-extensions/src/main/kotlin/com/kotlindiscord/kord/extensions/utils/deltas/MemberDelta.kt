@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.utils.deltas
 
-import dev.kord.common.entity.Snowflake
 import dev.kord.common.entity.UserFlags
 import dev.kord.common.entity.optional.Optional
 import dev.kord.core.entity.Member
@@ -26,7 +25,7 @@ public class MemberDelta(
 
     public val nickname: Optional<String?>,
     public val boosting: Optional<Instant?>,
-    public val roles: Optional<Set<Snowflake>>,
+    public val roles: Optional<RoleDelta>,
     public val owner: Optional<Boolean>,
     public val pending: Optional<Boolean>
 ) : UserDelta(avatar, username, discriminator, flags) {
@@ -58,6 +57,7 @@ public class MemberDelta(
             old ?: return null
 
             val user = UserDelta.from(old, new) ?: return null
+            val roleDelta = RoleDelta.from(old, new)
 
             return MemberDelta(
                 user.avatar,
@@ -67,7 +67,7 @@ public class MemberDelta(
 
                 if (old.nickname != new.nickname) Optional(new.nickname) else Optional.Missing(),
                 if (old.premiumSince != new.premiumSince) Optional(new.premiumSince) else Optional.Missing(),
-                if (old.roleIds != new.roleIds) Optional(new.roleIds) else Optional.Missing(),
+                if (roleDelta != null) Optional(roleDelta) else Optional.Missing(),
                 if (old.isOwner() != new.isOwner()) Optional(new.isOwner()) else Optional.Missing(),
                 if (old.isPending != new.isPending) Optional(new.isPending) else Optional.Missing()
             )

@@ -152,6 +152,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             if (settings.intentsBuilder != null) {
                 this.intents = Intents(settings.intentsBuilder!!)
             }
+
+            enableShutdownHook = settings.hooksBuilder.kordShutdownHook
         }
 
         loadModule { single { kord } bind Kord::class }

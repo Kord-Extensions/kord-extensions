@@ -98,10 +98,10 @@ val bot = ExtensibleBot(token) {
 
 Name                      | Type         | Default    | Description
 :------------------------ | :----------: | :--------: | :----------
-check                     | DSL function |            | Register a [check](/concepets/checks) that will be applied to all message commands.
-enabled                   | Boolean      | `false`    | Whether to support registration and invocation of slash commands
-slashRegistry             | DSL Functon  |            | If you'd like to use a `SlashCommandRegistry` subclass, then you can register a builder that returns it here.
-threads                   | Int          | `CPus * 2` | How many threads to use for the command execution threadpool
+check                     | DSL Function |            | Register a [check](/concepets/checks) that will be applied to all slash commands.
+defaultGuild              | DSL Function | `null`     | For testing, specify a guild ID to use for all slash commands that would normally be global. You can still override this by using the `guild()` function provided when defining your slash commands.
+enabled                   | Boolean      | `false`    | Whether to support registration and invocation of slash commands.
+slashRegistry             | DSL Function |            | If you'd like to use a `SlashCommandRegistry` subclass, then you can register a builder that returns it here - most likely the constructor.
 
 ### Extensions configuration
 
@@ -150,6 +150,10 @@ val bot = ExtensibleBot(token) {
 ??? important "ExtensibleBotBuilder subclasses"
     Please note that some hooks are called by the `build` function - if you override this function, you need to remember
     to similarly call the corresponding hook functions yourself.
+
+Property         | Default | Description
+:--------------- | :-----: | :--------
+kordShutdownHook | `true`  | Whether Kord should register a hook that logs out of the gateway as part of the application shutdown process
 
 Lifecycle Function        | Description
 :------------------------ | :----------
