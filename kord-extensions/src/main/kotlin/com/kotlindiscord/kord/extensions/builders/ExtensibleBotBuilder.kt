@@ -732,7 +732,7 @@ public open class ExtensibleBotBuilder {
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public val cooldownsBuilder: CooldownsBuilder = CooldownsBuilder()
-        
+
         /** Set a guild ID to use for all global slash commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake) {
             defaultGuild = id
