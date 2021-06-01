@@ -320,12 +320,11 @@ public class HelpExtension : HelpProvider, Extension() {
     }
 
     override suspend fun getCommand(event: MessageCreateEvent, args: List<String>): MessageCommand<out Arguments>? {
-        val locale = event.getLocale()
         val firstArg = args.first()
+        var command = messageCommandsRegistry.getCommand(firstArg, event)
 
-        var command: MessageCommand<out Arguments>? = messageCommandsRegistry.commands.firstOrNull {
-            (it.getTranslatedName(locale) == firstArg || it.getTranslatedAliases(locale).contains(firstArg)) &&
-                it.runChecks(event)
+        if (command?.runChecks(event) == false) {
+            return null
         }
 
         args.drop(1).forEach {
