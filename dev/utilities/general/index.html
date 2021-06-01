@@ -12,7 +12,7 @@
         <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/utilities/general/">
       
       <link rel="icon" href="../../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.5">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.6">
     
     
       
@@ -20,10 +20,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.bde7dde4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.875de78c.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f1a3b89f.min.css">
         
       
     
@@ -542,6 +542,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#attachments" class="md-nav__link">
+    Attachments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#channels" class="md-nav__link">
     Channels
   </a>
@@ -854,6 +861,29 @@ within Kord.</p>
 <p>If you feel like that's not the way things should be, please have a chat with the Kord team - we're always working
 with them and we'll happily share whatever utilities they feel should be upstream!</p>
 </details>
+<h2 id="attachments">Attachments<a class="headerlink" href="#attachments" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="left">Function</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>Attachment.download</code></td>
+<td align="left">Downloads the attachment to a <code>ByteBuffer</code> and returns it - note that this will load the entire file into memory, so you should use one of the other functions if you just want to write it to a file</td>
+</tr>
+<tr>
+<td align="left"><code>Attachment.downloadToFile</code></td>
+<td align="left">Downloads the attachment to the given file, returning the corresponding [Path] object</td>
+</tr>
+<tr>
+<td align="left"><code>Attachment.downloadToFolder</code></td>
+<td align="left">Downloads the attachment to a file within the given directory, returning the corresponding [Path] object</td>
+</tr>
+</tbody>
+</table>
 <h2 id="channels">Channels<a class="headerlink" href="#channels" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1242,7 +1272,7 @@ to cancel the <code>Job</code> early if required. The following instance functio
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-27
+      Last update: 2021-06-01
     
   </small>
 </div>
@@ -1322,7 +1352,7 @@ to cancel the <code>Job</code> early if required. The following instance functio
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.d351de03.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a1609d9a.min.js"></script>
+      <script src="../../assets/javascripts/bundle.34eae1b6.min.js"></script>
       
     
   </body>
