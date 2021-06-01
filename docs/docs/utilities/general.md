@@ -11,6 +11,14 @@ type, to make things easier to find.
     If you feel like that's not the way things should be, please have a chat with the Kord team - we're always working
     with them and we'll happily share whatever utilities they feel should be upstream!
 
+## Attachments
+
+Function                      | Description
+:---------------------------- | :----------
+`Attachment.download`         | Downloads the attachment to a `ByteBuffer` and returns it - note that this will load the entire file into memory, so you should use one of the other functions if you just want to write it to a file
+`Attachment.downloadToFile`   | Downloads the attachment to the given file, returning the corresponding [Path] object
+`Attachment.downloadToFolder` | Downloads the attachment to a file within the given directory, returning the corresponding [Path] object
+
 ## Channels
 
 Function        | Description
