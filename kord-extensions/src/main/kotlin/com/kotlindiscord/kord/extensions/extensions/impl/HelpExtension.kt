@@ -2,6 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.extensions.impl
 
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
@@ -46,11 +47,16 @@ public class HelpExtension : HelpProvider, Extension() {
     /** Message command registry. **/
     public val messageCommandsRegistry: MessageCommandRegistry by inject()
 
+    /** Bot settings. **/
+    public val botSettings: ExtensibleBotBuilder by inject()
+
     override suspend fun setup() {
         command(::HelpArguments) {
             name = "extensions.help.commandName"
             aliasKey = "extensions.help.commandAliases"
             description = "extensions.help.commandDescription"
+
+            localeFallback = true
 
             action {
                 if (arguments.command.isEmpty()) {
@@ -205,6 +211,8 @@ public class HelpExtension : HelpProvider, Extension() {
         longDescription: Boolean
     ): Triple<String, String, String> {
         val locale = event.getLocale()
+        val defaultLocale = botSettings.i18nBuilder.defaultLocale
+
         val openingLine = "**$prefix${command.getTranslatedName(locale)} ${command.getSignature(locale)}**\n"
 
         var description = if (longDescription) {
@@ -214,7 +222,18 @@ public class HelpExtension : HelpProvider, Extension() {
                 .takeWhile { it != '\n' }
         } + "\n"
 
-        if (command.aliases.isNotEmpty()) {
+        val aliases: MutableSet<String> = mutableSetOf()
+
+        aliases.addAll(command.getTranslatedAliases(locale))
+
+        if (command.localeFallback && locale != defaultLocale) {
+            aliases.add(command.getTranslatedName(defaultLocale))
+            aliases.addAll(command.getTranslatedAliases(defaultLocale))
+
+            aliases.remove(command.getTranslatedName(locale))
+        }
+
+        if (aliases.isNotEmpty()) {
             description += "\n"
 
             description += translationsProvider.translate(
@@ -223,7 +242,7 @@ public class HelpExtension : HelpProvider, Extension() {
             )
 
             description += " "
-            description += command.getTranslatedAliases(locale).joinToString(", ") {
+            description += aliases.sorted().joinToString(", ") {
                 "`$it`"
             }
         }

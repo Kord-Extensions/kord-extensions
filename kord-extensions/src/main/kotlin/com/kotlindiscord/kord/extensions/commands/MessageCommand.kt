@@ -85,6 +85,15 @@ public open class MessageCommand<T : Arguments>(
     public open var hidden: Boolean = false
 
     /**
+     * When translated, whether this command supports locale fallback when a user is trying to resolve a command by
+     * name in a locale other than the bot's configured default locale.
+     *
+     * If you'd like your command to be accessible in English along with the other languages the locale resolvers may
+     * have set up, turn this on.
+     */
+    public open var localeFallback: Boolean = false
+
+    /**
      * Alternative names that can be used to invoke your command.
      *
      * There's no limit on the number of aliases a command may have, but in the event of an alias matching
