@@ -1,11 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.message
-import com.kotlindiscord.kord.extensions.commands.converters.messageList
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Message
@@ -157,3 +163,58 @@ public class MessageConverter(
         throw CommandException(context.translate("converters.message.error.missing", replacements = arrayOf(arg)))
     }
 }
+
+/**
+ * Create a message converter, for single arguments.
+ *
+ * @see MessageConverter
+ */
+public fun Arguments.message(
+    displayName: String,
+    description: String,
+    requireGuild: Boolean = false,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    validator: (suspend Argument<*>.(Message) -> Unit)? = null,
+): SingleConverter<Message> = arg(displayName, description, MessageConverter(requireGuild, requiredGuild, validator))
+
+/**
+ * Create an optional message converter, for single arguments.
+ *
+ * @see MessageConverter
+ */
+public fun Arguments.optionalMessage(
+    displayName: String,
+    description: String,
+    requireGuild: Boolean = false,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(Message?) -> Unit)? = null,
+): OptionalConverter<Message?> =
+    arg(
+        displayName,
+        description,
+        MessageConverter(requireGuild, requiredGuild)
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a message converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see MessageConverter
+ */
+public fun Arguments.messageList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    requireGuild: Boolean = false,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    validator: (suspend Argument<*>.(List<Message>) -> Unit)? = null,
+): MultiConverter<Message> =
+    arg(
+        displayName,
+        description,
+        MessageConverter(requireGuild, requiredGuild)
+            .toMulti(required, signatureTypeString = "messages", nestedValidator = validator)
+    )

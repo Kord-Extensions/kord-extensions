@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.converters.stringList
+import com.kotlindiscord.kord.extensions.commands.converters.impl.stringList
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider

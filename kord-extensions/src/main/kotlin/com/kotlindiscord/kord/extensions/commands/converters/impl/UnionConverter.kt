@@ -1,9 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -157,4 +165,69 @@ public class UnionConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+}
+
+/**
+ * Create a union converter, for combining other converters into a single argument - with the caveat of type erasure.
+ *
+ * This function will automatically remove converters if they were previously registered, so you can use pass it the
+ * results of the usual extension functions.
+ *
+ * @see UnionConverter
+ */
+public fun Arguments.union(
+    displayName: String,
+    description: String,
+    typeName: String? = null,
+    shouldThrow: Boolean = false,
+    vararg converters: Converter<*>,
+    validator: (suspend Argument<*>.(Any) -> Unit)? = null,
+): UnionConverter {
+    val converter = UnionConverter(converters.toList(), typeName, shouldThrow, validator)
+
+    converter.validateUnion()
+
+    this.args.toList().forEach {
+        if (it.converter in converters) {
+            this.args.remove(it)
+        }
+    }
+
+    arg(displayName, description, converter)
+
+    return converter
+}
+
+/**
+ * Create an optional union converter, for combining other converters into a single argument - with the caveat of
+ * type erasure.
+ *
+ * This function will automatically remove converters if they were previously registered, so you can use pass it the
+ * results of the usual extension functions.
+ *
+ * @see UnionConverter
+ */
+public fun Arguments.optionalUnion(
+    displayName: String,
+    description: String,
+    typeName: String? = null,
+    shouldThrow: Boolean = false,
+    vararg converters: Converter<*>,
+    validator: (suspend Argument<*>.(Any?) -> Unit)? = null
+): OptionalCoalescingConverter<Any?> {
+    val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
+
+    converter.validateUnion()
+
+    this.args.toList().forEach {
+        if (it.converter in converters) {
+            this.args.remove(it)
+        }
+    }
+
+    val optionalConverter = converter.toOptional(nestedValidator = validator)
+
+    arg(displayName, description, optionalConverter)
+
+    return optionalConverter
 }

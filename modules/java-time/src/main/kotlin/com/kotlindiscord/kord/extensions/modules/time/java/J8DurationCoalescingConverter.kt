@@ -1,11 +1,20 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
+import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import mu.KotlinLogging
@@ -137,3 +146,69 @@ public class J8DurationCoalescingConverter(
         logger.debug(e) { "Error thrown during duration parsing" }
     }
 }
+
+/**
+ * Create a coalescing Java 8 Duration converter.
+ *
+ * @see J8DurationCoalescingConverter
+ */
+public fun Arguments.coalescedJ8Duration(
+    displayName: String,
+    description: String,
+    requirePositive: Boolean = true,
+    longHelp: Boolean = true,
+    shouldThrow: Boolean = false,
+    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+): CoalescingConverter<ChronoContainer> =
+    arg(
+        displayName,
+        description,
+        J8DurationCoalescingConverter(
+            longHelp = longHelp,
+            shouldThrow = shouldThrow,
+            positiveOnly = requirePositive,
+            validator = validator
+        )
+    )
+
+/**
+ * Create an optional coalescing Java 8 Duration converter.
+ *
+ * @see J8DurationCoalescingConverter
+ */
+public fun Arguments.optionalCoalescedJ8Duration(
+    displayName: String,
+    description: String,
+    requirePositive: Boolean = true,
+    longHelp: Boolean = true,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(ChronoContainer?) -> Unit)? = null,
+): OptionalCoalescingConverter<ChronoContainer?> =
+    arg(
+        displayName,
+        description,
+
+        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError, positiveOnly = requirePositive)
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a defaulting coalescing Java 8 Duration converter.
+ *
+ * @see J8DurationCoalescingConverter
+ */
+public fun Arguments.defaultingCoalescedJ8Duration(
+    displayName: String,
+    description: String,
+    defaultValue: ChronoContainer,
+    requirePositive: Boolean = true,
+    longHelp: Boolean = true,
+    shouldThrow: Boolean = false,
+    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+): DefaultingCoalescingConverter<ChronoContainer> =
+    arg(
+        displayName,
+        description,
+        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow, positiveOnly = requirePositive)
+            .toDefaulting(defaultValue, nestedValidator = validator)
+    )

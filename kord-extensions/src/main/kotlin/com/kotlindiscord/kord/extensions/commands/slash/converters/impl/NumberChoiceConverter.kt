@@ -1,8 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.slash.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.IntChoiceBuilder
@@ -46,3 +55,53 @@ public class NumberChoiceConverter(
             this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
         }
 }
+
+/**
+ * Create a number choice argument converter, for a defined set of single arguments.
+ *
+ * @see NumberChoiceConverter
+ */
+public fun Arguments.numberChoice(
+    displayName: String,
+    description: String,
+    choices: Map<String, Int>,
+    radix: Int = 10,
+    validator: (suspend Argument<*>.(Int) -> Unit)? = null
+): SingleConverter<Int> = arg(displayName, description, NumberChoiceConverter(radix, choices, validator))
+
+/**
+ * Create an optional number choice argument converter, for a defined set of single arguments.
+ *
+ * @see NumberChoiceConverter
+ */
+public fun Arguments.optionalNumberChoice(
+    displayName: String,
+    description: String,
+    choices: Map<String, Int>,
+    radix: Int = 10,
+    validator: (suspend Argument<*>.(Int?) -> Unit)? = null
+): OptionalConverter<Int?> = arg(
+    displayName,
+    description,
+    NumberChoiceConverter(radix, choices)
+        .toOptional(nestedValidator = validator)
+)
+
+/**
+ * Create a defaulting number choice argument converter, for a defined set of single arguments.
+ *
+ * @see NumberChoiceConverter
+ */
+public fun Arguments.defaultingNumberChoice(
+    displayName: String,
+    description: String,
+    defaultValue: Int,
+    choices: Map<String, Int>,
+    radix: Int = 10,
+    validator: (suspend Argument<*>.(Int) -> Unit)? = null
+): DefaultingConverter<Int> = arg(
+    displayName,
+    description,
+    NumberChoiceConverter(radix, choices)
+        .toDefaulting(defaultValue, nestedValidator = validator)
+)

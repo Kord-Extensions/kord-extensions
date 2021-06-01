@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.extensions.impl
 
-import com.kotlindiscord.kord.extensions.commands.converters.coalescedString
+import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescedString
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
@@ -108,7 +109,7 @@ public class SentryExtension : Extension() {
         public val id: SentryId by sentryId("id", "Sentry event ID")
 
         /** Feedback message to submit to Sentry. **/
-        public val feedback: String by coalescedString(
+        public val feedback: String by string(
             "feedback",
             "Feedback to send to the developers"
         )

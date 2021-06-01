@@ -1,9 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
@@ -50,3 +58,75 @@ public class T4JDurationConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
+
+/**
+ * Create a Time4J Duration converter, for single arguments.
+ *
+ * @see T4JDurationConverter
+ */
+public fun Arguments.t4jDuration(
+    displayName: String,
+    description: String,
+    longHelp: Boolean = true,
+    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+): SingleConverter<Duration<IsoUnit>> =
+    arg(displayName, description, T4JDurationConverter(longHelp = longHelp, validator = validator))
+
+/**
+ * Create an optional Time4J Duration converter, for single arguments.
+ *
+ * @see T4JDurationConverter
+ */
+public fun Arguments.optionalT4jDuration(
+    displayName: String,
+    description: String,
+    longHelp: Boolean = true,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(Duration<IsoUnit>?) -> Unit)? = null,
+): OptionalConverter<Duration<IsoUnit>?> =
+    arg(
+        displayName,
+        description,
+        T4JDurationConverter(longHelp = longHelp)
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a defaulting Time4J Duration converter, for single arguments.
+ *
+ * @see T4JDurationConverter
+ */
+public fun Arguments.defaultingT4jDuration(
+    displayName: String,
+    description: String,
+    longHelp: Boolean = true,
+    defaultValue: Duration<IsoUnit>,
+    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+): DefaultingConverter<Duration<IsoUnit>> =
+    arg(
+        displayName,
+        description,
+        T4JDurationConverter(longHelp = longHelp)
+            .toDefaulting(defaultValue, nestedValidator = validator)
+    )
+
+/**
+ * Create a Time4J Duration converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see T4JDurationConverter
+ */
+public fun Arguments.t4jDurationList(
+    displayName: String,
+    description: String,
+    longHelp: Boolean = true,
+    required: Boolean = true,
+    validator: (suspend Argument<*>.(List<Duration<IsoUnit>>) -> Unit)? = null,
+): MultiConverter<Duration<IsoUnit>> =
+    arg(
+        displayName,
+        description,
+        T4JDurationConverter(longHelp = longHelp)
+            .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
+    )

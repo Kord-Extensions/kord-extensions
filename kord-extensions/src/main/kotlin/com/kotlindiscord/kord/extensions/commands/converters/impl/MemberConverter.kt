@@ -1,11 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.member
-import com.kotlindiscord.kord.extensions.commands.converters.memberList
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.utils.users
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
@@ -78,3 +84,56 @@ public class MemberConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         UserBuilder(arg.displayName, arg.description).apply { required = true }
 }
+
+/**
+ * Create a member converter, for single arguments.
+ *
+ * @see MemberConverter
+ */
+public fun Arguments.member(
+    displayName: String,
+    description: String,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    validator: (suspend Argument<*>.(Member) -> Unit)? = null,
+): SingleConverter<Member> =
+    arg(displayName, description, MemberConverter(requiredGuild, validator))
+
+/**
+ * Create a member converter, for single arguments.
+ *
+ * @see MemberConverter
+ */
+public fun Arguments.optionalMember(
+    displayName: String,
+    description: String,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(Member?) -> Unit)? = null,
+): OptionalConverter<Member?> =
+    arg(
+        displayName,
+        description,
+        MemberConverter(requiredGuild)
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a member converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see MemberConverter
+ */
+public fun Arguments.memberList(
+    displayName: String,
+    description: String,
+    required: Boolean,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    validator: (suspend Argument<*>.(List<Member>) -> Unit)? = null,
+): MultiConverter<Member> =
+    arg(
+        displayName,
+        description,
+        MemberConverter(requiredGuild)
+            .toMulti(required, signatureTypeString = "members", nestedValidator = validator)
+    )

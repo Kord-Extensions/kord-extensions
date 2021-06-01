@@ -1,11 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.emoji
-import com.kotlindiscord.kord.extensions.commands.converters.emojiList
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.GuildEmoji
@@ -78,3 +84,53 @@ public class EmojiConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
+
+/**
+ * Create an emoji converter, for single arguments.
+ *
+ * @see EmojiConverter
+ */
+public fun Arguments.emoji(
+    displayName: String,
+    description: String,
+    validator: (suspend Argument<*>.(GuildEmoji) -> Unit)? = null,
+): SingleConverter<GuildEmoji> =
+    arg(displayName, description, EmojiConverter(validator))
+
+/**
+ * Create an optional emoji converter, for single arguments.
+ *
+ * @see EmojiConverter
+ */
+public fun Arguments.optionalEmoji(
+    displayName: String,
+    description: String,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(GuildEmoji?) -> Unit)? = null,
+): OptionalConverter<GuildEmoji?> =
+    arg(
+        displayName,
+        description,
+        EmojiConverter()
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create an emoji converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see EmojiConverter
+ */
+public fun Arguments.emojiList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    validator: (suspend Argument<*>.(List<GuildEmoji>) -> Unit)? = null,
+): MultiConverter<GuildEmoji> =
+    arg(
+        displayName,
+        description,
+        EmojiConverter()
+            .toMulti(required, signatureTypeString = "server emojis", nestedValidator = validator)
+    )

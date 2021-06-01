@@ -1,10 +1,16 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.regex
-import com.kotlindiscord.kord.extensions.commands.converters.regexList
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -39,3 +45,75 @@ public class RegexConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
+
+/**
+ * Create a regex converter, for single arguments.
+ *
+ * @see RegexConverter
+ */
+public fun Arguments.regex(
+    displayName: String,
+    description: String,
+    options: Set<RegexOption> = setOf(),
+    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
+): SingleConverter<Regex> =
+    arg(displayName, description, RegexConverter(options, validator))
+
+/**
+ * Create an optional regex converter, for single arguments.
+ *
+ * @see RegexConverter
+ */
+public fun Arguments.optionalRegex(
+    displayName: String,
+    description: String,
+    options: Set<RegexOption> = setOf(),
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(Regex?) -> Unit)? = null,
+): OptionalConverter<Regex?> =
+    arg(
+        displayName,
+        description,
+        RegexConverter(options)
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a defaulting regex converter, for single arguments.
+ *
+ * @see RegexConverter
+ */
+public fun Arguments.defaultingRegex(
+    displayName: String,
+    description: String,
+    defaultValue: Regex,
+    options: Set<RegexOption> = setOf(),
+    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
+): DefaultingConverter<Regex> =
+    arg(
+        displayName,
+        description,
+        RegexConverter(options)
+            .toDefaulting(defaultValue, nestedValidator = validator)
+    )
+
+/**
+ * Create a regex converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see RegexConverter
+ */
+public fun Arguments.regexList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    options: Set<RegexOption> = setOf(),
+    validator: (suspend Argument<*>.(List<Regex>) -> Unit)? = null,
+): MultiConverter<Regex> =
+    arg(
+        displayName,
+        description,
+        RegexConverter(options)
+            .toMulti(required, signatureTypeString = "regexes", nestedValidator = validator)
+    )

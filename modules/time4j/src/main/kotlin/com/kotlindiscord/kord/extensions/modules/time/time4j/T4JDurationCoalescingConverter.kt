@@ -1,11 +1,21 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
+import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.impl.RegexCoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
+import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import mu.KotlinLogging
@@ -123,3 +133,61 @@ public class T4JDurationCoalescingConverter(
         logger.debug(e) { "Error thrown during duration parsing" }
     }
 }
+
+/**
+ * Create a coalescing Time4J Duration converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+public fun Arguments.coalescedT4jDuration(
+    displayName: String,
+    description: String,
+    longHelp: Boolean = true,
+    shouldThrow: Boolean = false,
+    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+): CoalescingConverter<Duration<IsoUnit>> =
+    arg(
+        displayName,
+        description,
+        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow, validator = validator)
+    )
+
+/**
+ * Create an optional coalescing Time4J Duration converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+public fun Arguments.optionalCoalescedT4jDuration(
+    displayName: String,
+    description: String,
+    longHelp: Boolean = true,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(Duration<IsoUnit>?) -> Unit)? = null,
+): OptionalCoalescingConverter<Duration<IsoUnit>?> =
+    arg(
+        displayName,
+        description,
+
+        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError)
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a defaulting coalescing Time4J Duration converter.
+ *
+ * @see RegexCoalescingConverter
+ */
+public fun Arguments.defaultingCoalescedT4jDuration(
+    displayName: String,
+    description: String,
+    defaultValue: Duration<IsoUnit>,
+    longHelp: Boolean = true,
+    shouldThrow: Boolean = false,
+    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+): DefaultingCoalescingConverter<Duration<IsoUnit>> =
+    arg(
+        displayName,
+        description,
+        T4JDurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow)
+            .toDefaulting(defaultValue, nestedValidator = validator)
+    )
