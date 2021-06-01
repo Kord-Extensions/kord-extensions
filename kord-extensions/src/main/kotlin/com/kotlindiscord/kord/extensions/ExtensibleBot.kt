@@ -448,5 +448,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
  * `ExtensibleBot(token) { extensions { add(::MyExtension) } }`
  */
 @Suppress("FunctionNaming")  // This is a factory function
-public suspend fun ExtensibleBot(token: String, builder: ExtensibleBotBuilder.() -> Unit): ExtensibleBot =
-    ExtensibleBotBuilder().apply(builder).build(token)
+public suspend fun ExtensibleBot(token: String, builder: suspend ExtensibleBotBuilder.() -> Unit): ExtensibleBot {
+    val settings = ExtensibleBotBuilder()
+
+    builder(settings)
+
+    return settings.build(token)
+}

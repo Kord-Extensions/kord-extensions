@@ -84,7 +84,7 @@ public open class ExtensibleBotBuilder {
      * @see CacheBuilder
      */
     @BotBuilderDSL
-    public fun cache(builder: CacheBuilder.() -> Unit) {
+    public suspend fun cache(builder: suspend CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
     }
 
@@ -94,7 +94,7 @@ public open class ExtensibleBotBuilder {
      * @see HooksBuilder
      */
     @BotBuilderDSL
-    public fun hooks(builder: HooksBuilder.() -> Unit) {
+    public suspend fun hooks(builder: suspend HooksBuilder.() -> Unit) {
         builder(hooksBuilder)
     }
 
@@ -104,7 +104,7 @@ public open class ExtensibleBotBuilder {
      * @see MessageCommandsBuilder
      */
     @BotBuilderDSL
-    public fun messageCommands(builder: MessageCommandsBuilder.() -> Unit) {
+    public suspend fun messageCommands(builder: suspend MessageCommandsBuilder.() -> Unit) {
         builder(messageCommandsBuilder)
     }
 
@@ -114,7 +114,7 @@ public open class ExtensibleBotBuilder {
      * @see SlashCommandsBuilder
      */
     @BotBuilderDSL
-    public fun slashCommands(builder: SlashCommandsBuilder.() -> Unit) {
+    public suspend fun slashCommands(builder: suspend SlashCommandsBuilder.() -> Unit) {
         builder(slashCommandsBuilder)
     }
 
@@ -124,7 +124,7 @@ public open class ExtensibleBotBuilder {
      * @see ExtensionsBuilder
      */
     @BotBuilderDSL
-    public open fun extensions(builder: ExtensionsBuilder.() -> Unit) {
+    public open suspend fun extensions(builder: suspend ExtensionsBuilder.() -> Unit) {
         builder(extensionsBuilder)
     }
 
@@ -144,7 +144,7 @@ public open class ExtensibleBotBuilder {
      * @see I18nBuilder
      */
     @BotBuilderDSL
-    public fun i18n(builder: I18nBuilder.() -> Unit) {
+    public suspend fun i18n(builder: suspend I18nBuilder.() -> Unit) {
         builder(i18nBuilder)
     }
 
@@ -154,7 +154,7 @@ public open class ExtensibleBotBuilder {
      * @see MembersBuilder
      */
     @BotBuilderDSL
-    public fun members(builder: MembersBuilder.() -> Unit) {
+    public suspend fun members(builder: suspend MembersBuilder.() -> Unit) {
         builder(membersBuilder)
     }
 
