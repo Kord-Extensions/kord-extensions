@@ -3,11 +3,13 @@ package com.kotlindiscord.kord.extensions.commands
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -29,6 +31,9 @@ public open class GroupCommand<T : Arguments>(
     arguments: (() -> T)? = null,
     public open val parent: GroupCommand<out Arguments>? = null
 ) : MessageCommand<T>(extension, arguments) {
+    /** @suppress **/
+    public val botSettings: ExtensibleBotBuilder by inject()
+
     /** @suppress **/
     public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
 
@@ -151,10 +156,13 @@ public open class GroupCommand<T : Arguments>(
     public open suspend fun getCommand(name: String?, event: MessageCreateEvent): MessageCommand<out Arguments>? {
         name ?: return null
 
+        val defaultLocale = botSettings.i18nBuilder.defaultLocale
         val locale = event.getLocale()
 
         return commands.firstOrNull { it.getTranslatedName(locale) == name }
             ?: commands.firstOrNull { it.getTranslatedAliases(locale).contains(name) }
+            ?: commands.firstOrNull { it.localeFallback && it.getTranslatedName(defaultLocale) == name }
+            ?: commands.firstOrNull { it.localeFallback && it.getTranslatedAliases(defaultLocale).contains(name) }
     }
 
     /**
