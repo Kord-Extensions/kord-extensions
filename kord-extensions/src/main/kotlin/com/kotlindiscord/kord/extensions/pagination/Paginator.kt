@@ -88,6 +88,9 @@ public open class Paginator(
     /** Locale to use for translations. **/
     public val locale: Locale = locale ?: bot.settings.i18nBuilder.defaultLocale
 
+    /** What to do after the paginator times out. **/
+    public val timeoutCallbacks: MutableList<suspend () -> Unit> = mutableListOf()
+
     init {
         if (targetChannel == null && targetMessage == null) {
             throw IllegalArgumentException("Must provide either a target channel or target message")
@@ -218,11 +221,13 @@ public open class Paginator(
 
             if (timeout != null) {
                 destroy(message)
+                runTimeoutCallbacks()
             }
         } else {
             if (timeout != null && !keepEmbed) {
                 delay(timeout)
                 destroy(message)
+                runTimeoutCallbacks()
             }
         }
     }
@@ -332,5 +337,28 @@ public open class Paginator(
         }
 
         active = false
+    }
+
+    /**
+     * Register a callback that is called after the paginator times out.
+     *
+     * If there is no [timeout] set, your callbacks will never be called!
+     */
+    public open fun onTimeout(body: suspend () -> Unit): Paginator {
+        timeoutCallbacks.add(body)
+
+        return this
+    }
+
+    /** @suppress Call the timeout callbacks. **/
+    @Suppress("TooGenericExceptionCaught")  // Come on, now.
+    public open suspend fun runTimeoutCallbacks() {
+        timeoutCallbacks.forEach {
+            try {
+                it.invoke()
+            } catch (t: Throwable) {
+                logger.error(t) { "Error thrown by timeout callback: $it" }
+            }
+        }
     }
 }

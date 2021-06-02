@@ -268,6 +268,7 @@ public open class MessageCommand<T : Arguments>(
                 return false
             }
         }
+
         return true
     }
 

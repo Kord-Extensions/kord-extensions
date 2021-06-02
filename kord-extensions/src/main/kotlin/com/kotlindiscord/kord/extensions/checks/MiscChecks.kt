@@ -45,7 +45,7 @@ public suspend fun isNotBot(event: Event): Boolean {
     } else if (!user.isBot) {
         logger.passed()
 
-        false
+        true
     } else {
         logger.failed("User is a bot.")
 

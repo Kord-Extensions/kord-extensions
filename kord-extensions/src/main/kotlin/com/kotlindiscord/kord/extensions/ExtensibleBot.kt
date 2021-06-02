@@ -228,7 +228,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
     /** This function adds all of the default extensions when the bot is being set up. **/
     public open suspend fun addDefaultExtensions() {
-        if (settings.extensionsBuilder.help) {
+        if (settings.extensionsBuilder.helpExtensionBuilder.enableBundledExtension) {
             this.addExtension(::HelpExtension)
         }
 

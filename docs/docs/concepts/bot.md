@@ -111,7 +111,6 @@ For more information on what extensions are and how they work, please
 ```kotlin
 val bot = ExtensibleBot(token) {
     extensions {
-        help = true
         sentry = false
 
         add(::LogsExtension)
@@ -123,12 +122,37 @@ val bot = ExtensibleBot(token) {
 Name                      | Type         | Default    | Description
 :------------------------ | :----------: | :--------: | :----------
 add                       | Function     |            | Use this function to add your own custom extensions to the bot
-help                      | Boolean      | `true`     | Whether to enabled the bundled help extension
+help                      | DSL Function |            | Used to configure the bundled help extension
 sentry                    | Boolean      | `true`     | Whether to enabled the bundled [Sentry extension](/integrations/sentry)
 
 External modules that add extensions are free to add extension functions to this class, which gives users a convenient
 way to configure them. If you're using an external module, we recommend reading the documentation for any modules you
 may be using.
+
+#### Help Extension
+
+
+```kotlin
+val bot = ExtensibleBot(token) {
+    extensions {
+        help {
+            colour { DISCORD_GREEN }
+            
+            deletePaginatorOnTimeout = true
+            deleteInvocationOnPaginatorTimeout = true
+        }
+    }
+}
+```
+
+Name                               | Type         | Default    | Description
+:--------------------------------- | :----------: | :--------: | :----------
+check                              | DSL Function |            | Register a [check](/concepets/checks) that will be applied to all help extension commands
+colour                             | DSL Function |            | Register a callback returning a Kord `Color` object to use it for the help command pages - this is called for every page generated, so feel free to return randomized colours if you'd like to
+deleteInvocationOnPaginatorTimeout | Boolean      | `false`    | Whether to try to delete the user's `!help` command when the paginator times out
+deletePaginatorOnTimeout           | Boolean      | `false`    | Whether to delete the help command's output paginator when it times out
+enableBundledExtension             | Boolean      | `true`     | Whether to enable the bundled help extension
+paginatorTimeout                   | Long         | `60_000`   | How long to wait until a paginator times out and becomes unusable - defaults to 60 seconds
 
 ### Hooks
 

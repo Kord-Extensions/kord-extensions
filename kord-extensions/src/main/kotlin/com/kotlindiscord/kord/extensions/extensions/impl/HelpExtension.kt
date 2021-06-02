@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.utils.deleteIgnoringNotFound
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.annotation.KordPreview
@@ -27,7 +28,6 @@ private val logger = KotlinLogging.logger {}
 /** Number of commands to show per page. */
 public const val HELP_PER_PAGE: Int = 4
 
-private const val PAGE_TIMEOUT = 60_000L  // 60 seconds
 private const val COMMANDS_GROUP = ""
 private const val ARGUMENTS_GROUP = "Arguments"
 
@@ -50,6 +50,10 @@ public class HelpExtension : HelpProvider, Extension() {
     /** Bot settings. **/
     public val botSettings: ExtensibleBotBuilder by inject()
 
+    /** Help extension settings, from the bot builder. **/
+    public val settings: ExtensibleBotBuilder.ExtensionsBuilder.HelpExtensionBuilder =
+        botSettings.extensionsBuilder.helpExtensionBuilder
+
     override suspend fun setup() {
         command(::HelpArguments) {
             name = "extensions.help.commandName"
@@ -57,6 +61,8 @@ public class HelpExtension : HelpProvider, Extension() {
             description = "extensions.help.commandDescription"
 
             localeFallback = true
+
+            check(checks = botSettings.extensionsBuilder.helpExtensionBuilder.checkList.toTypedArray())
 
             action {
                 if (arguments.command.isEmpty()) {
@@ -94,7 +100,8 @@ public class HelpExtension : HelpProvider, Extension() {
                         "extensions.help.paginator.footer",
                         locale,
                         replacements = arrayOf(totalCommands)
-                    )
+                    ),
+                    color = settings.colourGetter()
                 )
             )
 
@@ -108,7 +115,8 @@ public class HelpExtension : HelpProvider, Extension() {
                         "extensions.help.paginator.footer",
                         locale,
                         replacements = arrayOf(totalCommands)
-                    )
+                    ),
+                    color = settings.colourGetter()
                 )
             )
         }
@@ -125,7 +133,8 @@ public class HelpExtension : HelpProvider, Extension() {
                         "extensions.help.paginator.footer",
                         locale,
                         replacements = arrayOf(0)
-                    )
+                    ),
+                    color = settings.colourGetter()
                 )
             )
         }
@@ -134,10 +143,14 @@ public class HelpExtension : HelpProvider, Extension() {
             targetMessage = event.message,
             pages = pages,
             owner = event.message.author,
-            timeout = PAGE_TIMEOUT,
-            keepEmbed = true,
+            timeout = settings.paginatorTimeout,
+            keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale
-        )
+        ).onTimeout {
+            if (settings.deleteInvocationOnPaginatorTimeout) {
+                event.message.deleteIgnoringNotFound()
+            }
+        }
     }
 
     override suspend fun getCommandHelpPaginator(
@@ -162,6 +175,8 @@ public class HelpExtension : HelpProvider, Extension() {
                 COMMANDS_GROUP,
 
                 Page(
+                    color = settings.colourGetter(),
+
                     description = translationsProvider.translate(
                         "extensions.help.error.missingCommandDescription",
                         locale
@@ -180,6 +195,7 @@ public class HelpExtension : HelpProvider, Extension() {
                 COMMANDS_GROUP,
 
                 Page(
+                    color = settings.colourGetter(),
                     description = "$openingLine\n$desc\n\n$arguments",
 
                     title = translationsProvider.translate(
@@ -195,10 +211,14 @@ public class HelpExtension : HelpProvider, Extension() {
             targetMessage = event.message,
             pages = pages,
             owner = event.message.author,
-            timeout = PAGE_TIMEOUT,
-            keepEmbed = true,
+            timeout = settings.paginatorTimeout,
+            keepEmbed =  settings.deletePaginatorOnTimeout.not(),
             locale = locale
-        )
+        ).onTimeout {
+            if (settings.deleteInvocationOnPaginatorTimeout) {
+                event.message.deleteIgnoringNotFound()
+            }
+        }
     }
 
     override suspend fun gatherCommands(event: MessageCreateEvent): List<MessageCommand<out Arguments>> =
