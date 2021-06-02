@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import dev.kord.common.entity.DiscordPartialMessage
 import dev.kord.common.entity.MessageFlag
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.MessageBehavior
@@ -228,11 +229,35 @@ public suspend fun Message.respond(
  *
  * @return A clickable URL to jump to this message.
  */
+@Deprecated(
+    "This method has been renamed to 'getJumpUrl'.",
+
+    ReplaceWith(
+        "getJumpUrl()",
+    ),
+    level = DeprecationLevel.ERROR
+)
 public suspend fun Message.getUrl(): String {
     val guild = getGuildOrNull()?.id?.asString ?: "@me"
 
     return "$DISCORD_CHANNEL_URI/$guild/${channelId.value}/${id.value}"
 }
+
+/**
+ * Generate the jump URL for this message.
+ *
+ * @return A clickable URL to jump to this message.
+ */
+public fun Message.getJumpUrl(): String =
+    "$DISCORD_CHANNEL_URI/${data.guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
+
+/**
+ * Generate the jump URL for this message.
+ *
+ * @return A clickable URL to jump to this message.
+ */
+public fun DiscordPartialMessage.getJumpUrl(): String =
+    "$DISCORD_CHANNEL_URI/${guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
 
 /**
  * Check that this message happened in either the given channel or a DM, or that the author is at least a given role.
