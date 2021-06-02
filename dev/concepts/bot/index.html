@@ -474,6 +474,19 @@
     Extensions configuration
   </a>
   
+    <nav class="md-nav" aria-label="Extensions configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#help-extension" class="md-nav__link">
+    Help Extension
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1134,10 +1147,8 @@ that you can make use of to configure your bot.</p>
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span>
-<span class="normal">9</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="p">{</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">extensions</span> <span class="p">{</span>
-        <span class="n">help</span> <span class="o">=</span> <span class="kc">true</span>
         <span class="n">sentry</span> <span class="o">=</span> <span class="kc">false</span>
 
         <span class="n">add</span><span class="p">(</span><span class="o">::</span><span class="n">LogsExtension</span><span class="p">)</span>
@@ -1164,9 +1175,9 @@ that you can make use of to configure your bot.</p>
 </tr>
 <tr>
 <td align="left">help</td>
-<td align="center">Boolean</td>
-<td align="center"><code>true</code></td>
-<td align="left">Whether to enabled the bundled help extension</td>
+<td align="center">DSL Function</td>
+<td align="center"></td>
+<td align="left">Used to configure the bundled help extension</td>
 </tr>
 <tr>
 <td align="left">sentry</td>
@@ -1179,6 +1190,76 @@ that you can make use of to configure your bot.</p>
 <p>External modules that add extensions are free to add extension functions to this class, which gives users a convenient
 way to configure them. If you're using an external module, we recommend reading the documentation for any modules you
 may be using.</p>
+<h4 id="help-extension">Help Extension<a class="headerlink" href="#help-extension" title="Permanent link">&para;</a></h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">extensions</span> <span class="p">{</span>
+        <span class="n">help</span> <span class="p">{</span>
+            <span class="n">colour</span> <span class="p">{</span> <span class="n">DISCORD_GREEN</span> <span class="p">}</span>
+
+            <span class="n">deletePaginatorOnTimeout</span> <span class="o">=</span> <span class="kc">true</span>
+            <span class="n">deleteInvocationOnPaginatorTimeout</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="center">Type</th>
+<th align="center">Default</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">check</td>
+<td align="center">DSL Function</td>
+<td align="center"></td>
+<td align="left">Register a <a href="/concepets/checks">check</a> that will be applied to all help extension commands</td>
+</tr>
+<tr>
+<td align="left">colour</td>
+<td align="center">DSL Function</td>
+<td align="center"></td>
+<td align="left">Register a callback returning a Kord <code>Color</code> object to use it for the help command pages - this is called for every page generated, so feel free to return randomized colours if you'd like to</td>
+</tr>
+<tr>
+<td align="left">deleteInvocationOnPaginatorTimeout</td>
+<td align="center">Boolean</td>
+<td align="center"><code>false</code></td>
+<td align="left">Whether to try to delete the user's <code>!help</code> command when the paginator times out</td>
+</tr>
+<tr>
+<td align="left">deletePaginatorOnTimeout</td>
+<td align="center">Boolean</td>
+<td align="center"><code>false</code></td>
+<td align="left">Whether to delete the help command's output paginator when it times out</td>
+</tr>
+<tr>
+<td align="left">enableBundledExtension</td>
+<td align="center">Boolean</td>
+<td align="center"><code>true</code></td>
+<td align="left">Whether to enable the bundled help extension</td>
+</tr>
+<tr>
+<td align="left">paginatorTimeout</td>
+<td align="center">Long</td>
+<td align="center"><code>60_000</code></td>
+<td align="left">How long to wait until a paginator times out and becomes unusable - defaults to 60 seconds</td>
+</tr>
+</tbody>
+</table>
 <h3 id="hooks">Hooks<a class="headerlink" href="#hooks" title="Permanent link">&para;</a></h3>
 <p>Hooks allow you to set up lambdas that are to be run at various points in the bot's lifecycle, allowing you to set up
 the bot precisely how you need it.</p>
@@ -1484,7 +1565,7 @@ handful are <code>inline</code> for the sake of avoiding function call overhead 
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-30
+      Last update: 2021-06-02
     
   </small>
 </div>
