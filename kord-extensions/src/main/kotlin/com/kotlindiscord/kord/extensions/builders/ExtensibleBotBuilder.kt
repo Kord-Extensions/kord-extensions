@@ -30,7 +30,6 @@ import mu.KotlinLogging
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
-import org.koin.environmentProperties
 import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
@@ -174,7 +173,7 @@ public open class ExtensibleBotBuilder {
     public open fun setupKoin() {
         startKoin {
             slf4jLogger(koinLogLevel)
-            environmentProperties()
+//            environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
 
             if (File("koin.properties").exists()) {
                 fileProperties("koin.properties")
