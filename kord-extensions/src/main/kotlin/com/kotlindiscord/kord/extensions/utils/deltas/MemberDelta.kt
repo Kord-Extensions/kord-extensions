@@ -4,7 +4,7 @@ import dev.kord.common.entity.UserFlags
 import dev.kord.common.entity.optional.Optional
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
-import java.time.Instant
+import kotlinx.datetime.Instant
 import kotlin.contracts.contract
 
 /**

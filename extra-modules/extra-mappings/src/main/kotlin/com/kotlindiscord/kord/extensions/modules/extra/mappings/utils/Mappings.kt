@@ -15,7 +15,7 @@ private const val PAGE_SIZE = 3
 /** Given a set of result classes, format them into a list of pages for the paginator. **/
 fun classesToPages(
     namespace: Namespace,
-    queryResult: QueryResult<MappingsContainer, ClassResultSequence>
+    queryResult: QueryResult<MappingsContainer, ClassResultList>
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
     val classes = queryResult.map { it.map { inner -> inner.value }.toList() }.value
@@ -36,9 +36,9 @@ fun classesToPages(
                 }
 
                 text += "`${clazz.intermediaryName}`" +
-                        (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             if (serverName != null) {
@@ -49,9 +49,9 @@ fun classesToPages(
                 text += "**Server:** `$serverName` -> "
 
                 text += "`${clazz.intermediaryName}`" +
-                        (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             text.trimEnd('\n')
@@ -72,9 +72,9 @@ fun classesToPages(
                 }
 
                 text += "`${clazz.intermediaryName}`" +
-                        (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             if (serverName != null) {
@@ -85,20 +85,20 @@ fun classesToPages(
                 text += "**Server:** `$serverName` -> "
 
                 text += "`${clazz.intermediaryName}`" +
-                        (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             text += "\n"
 
             if (namespace.supportsAT()) {
                 text += "**Access Transformer:** `public " +
-                        clazz.intermediaryName.replace('/', '.') +
-                        "`"
+                    clazz.intermediaryName.replace('/', '.') +
+                    "`"
             } else if (namespace.supportsAW()) {
                 text += "\n" +
-                        "**Access Widener:** `accessible class ${clazz.optimumName}`"
+                    "**Access Widener:** `accessible class ${clazz.optimumName}`"
             }
 
             text.trimEnd('\n')
@@ -114,7 +114,7 @@ fun classesToPages(
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    queryResult: QueryResult<MappingsContainer, FieldResultSequence>
+    queryResult: QueryResult<MappingsContainer, FieldResultList>
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
     val fields = queryResult.map { it.map { inner -> inner.value }.toList() }.value
@@ -138,9 +138,9 @@ fun fieldsToPages(
                 }
 
                 text += "`${field.intermediaryName}`" +
-                        (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             if (serverName != null) {
@@ -151,9 +151,9 @@ fun fieldsToPages(
                 text += "**Server:** `$serverName` -> "
 
                 text += "`${field.intermediaryName}`" +
-                        (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             if (namespace.supportsFieldDescription()) {
@@ -182,9 +182,9 @@ fun fieldsToPages(
                 }
 
                 text += "`${field.intermediaryName}`" +
-                        (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             if (serverName != null) {
@@ -195,9 +195,9 @@ fun fieldsToPages(
                 text += "**Server:** `$serverName` -> "
 
                 text += "`${field.intermediaryName}`" +
-                        (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             if (namespace.supportsFieldDescription()) {
@@ -211,11 +211,11 @@ fun fieldsToPages(
                 text += "\n"
 
                 text += "**Mixin Target:** `" +
-                        "L${clazz.optimumName};" +
-                        field.optimumName +
-                        ":" +
-                        mappedDesc +
-                        "`"
+                    "L${clazz.optimumName};" +
+                    field.optimumName +
+                    ":" +
+                    mappedDesc +
+                    "`"
             }
 
             if (namespace.supportsAT()) {
@@ -241,7 +241,7 @@ fun fieldsToPages(
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    queryResult: QueryResult<MappingsContainer, MethodResultSequence>
+    queryResult: QueryResult<MappingsContainer, MethodResultList>
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
     val methods = queryResult.map { it.map { inner -> inner.value }.toList() }.value
@@ -263,9 +263,9 @@ fun methodsToPages(
                 }
 
                 text += "`${method.intermediaryName}`" +
-                        (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             if (serverName != null) {
@@ -276,9 +276,9 @@ fun methodsToPages(
                 text += "**Server:** `$serverName` -> "
 
                 text += "`${method.intermediaryName}`" +
-                        (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             text.trimEnd('\n')
@@ -302,9 +302,9 @@ fun methodsToPages(
                 }
 
                 text += "`${method.intermediaryName}`" +
-                        (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             if (serverName != null) {
@@ -315,9 +315,9 @@ fun methodsToPages(
                 text += "**Server:** `$serverName` -> "
 
                 text += "`${method.intermediaryName}`" +
-                        (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                            " -> `$name`"
-                        } ?: "")
+                    (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                        " -> `$name`"
+                    } ?: "")
             }
 
             text += "\n"
@@ -326,19 +326,19 @@ fun methodsToPages(
                 text += "\n"
 
                 text += "**Mixin Target** `" +
-                        "L${clazz.optimumName}" +
-                        method.optimumName +
-                        mappedDesc +
-                        "`"
+                    "L${clazz.optimumName}" +
+                    method.optimumName +
+                    mappedDesc +
+                    "`"
             }
 
             if (namespace.supportsAT()) {
                 text += "\n"
 
                 text += "**Access Transformer** `public" + clazz.optimumName.replace('/', '.') +
-                        method.intermediaryName +
-                        mappedDesc +
-                        " # ${method.optimumName}`"
+                    method.intermediaryName +
+                    mappedDesc +
+                    " # ${method.optimumName}`"
             } else if (namespace.supportsAW()) {
                 text += "\n"
 

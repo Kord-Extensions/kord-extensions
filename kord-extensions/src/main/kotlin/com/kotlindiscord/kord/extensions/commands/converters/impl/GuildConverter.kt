@@ -1,11 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.guild
-import com.kotlindiscord.kord.extensions.commands.converters.guildList
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
@@ -51,3 +57,53 @@ public class GuildConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
+
+/**
+ * Create a guild converter, for single arguments.
+ *
+ * @see GuildConverter
+ */
+public fun Arguments.guild(
+    displayName: String,
+    description: String,
+    validator: (suspend Argument<*>.(Guild) -> Unit)? = null,
+): SingleConverter<Guild> =
+    arg(displayName, description, GuildConverter(validator))
+
+/**
+ * Create an optional guild converter, for single arguments.
+ *
+ * @see GuildConverter
+ */
+public fun Arguments.optionalGuild(
+    displayName: String,
+    description: String,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(Guild?) -> Unit)? = null,
+): OptionalConverter<Guild?> =
+    arg(
+        displayName,
+        description,
+        GuildConverter()
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a guild converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see GuildConverter
+ */
+public fun Arguments.guildList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    validator: (suspend Argument<*>.(List<Guild>) -> Unit)? = null,
+): MultiConverter<Guild> =
+    arg(
+        displayName,
+        description,
+        GuildConverter()
+            .toMulti(required, signatureTypeString = "servers", nestedValidator = validator)
+    )

@@ -8,7 +8,7 @@ import dev.kord.core.entity.User
 import dev.kord.rest.builder.message.MessageCreateBuilder
 import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
-import java.time.Instant
+import kotlinx.datetime.Instant
 import kotlin.contracts.contract
 
 private const val DISCORD_USERS_URI = "https://discord.com/users"

@@ -97,6 +97,15 @@ public open class MessageCommand<T : Arguments>(
     public open var hidden: Boolean = false
 
     /**
+     * When translated, whether this command supports locale fallback when a user is trying to resolve a command by
+     * name in a locale other than the bot's configured default locale.
+     *
+     * If you'd like your command to be accessible in English along with the other languages the locale resolvers may
+     * have set up, turn this on.
+     */
+    public open var localeFallback: Boolean = false
+
+    /**
      * Alternative names that can be used to invoke your command.
      *
      * There's no limit on the number of aliases a command may have, but in the event of an alias matching
@@ -166,7 +175,7 @@ public open class MessageCommand<T : Arguments>(
                 this.name,
                 this.extension.bundle,
                 locale
-            ).toLowerCase()
+            ).lowercase()
         }
 
         return nameTranslationCache[locale]!!
@@ -177,14 +186,14 @@ public open class MessageCommand<T : Arguments>(
         if (!aliasTranslationCache.containsKey(locale)) {
             val translations = if (aliasKey != null) {
                 translationsProvider.translate(aliasKey!!, extension.bundle, locale)
-                    .toLowerCase()
+                    .lowercase()
                     .split(",")
                     .map { it.trim() }
                     .filter { it != EMPTY_VALUE_STRING }
                     .toSortedSet()
             } else {
                 this.aliases.map {
-                    translationsProvider.translate(it, extension.bundle, locale).toLowerCase()
+                    translationsProvider.translate(it, extension.bundle, locale).lowercase()
                 }.toSortedSet()
             }
 
@@ -278,6 +287,7 @@ public open class MessageCommand<T : Arguments>(
                 return false
             }
         }
+
         return true
     }
 

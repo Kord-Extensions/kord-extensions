@@ -1,7 +1,16 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.slash.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceEnum
 import dev.kord.common.annotation.KordPreview
@@ -39,3 +48,62 @@ public class EnumChoiceConverter<E>(
             this@EnumChoiceConverter.choices.forEach { choice(it.key, it.value.name) }
         }
 }
+
+/**
+ * Create an enum choice argument converter, for a defined set of single arguments.
+ *
+ * @see EnumChoiceConverter
+ */
+public inline fun <reified T> Arguments.enumChoice(
+    displayName: String,
+    description: String,
+    typeName: String,
+    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+): SingleConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
+    displayName,
+    description,
+    EnumChoiceConverter(typeName, ::getEnum, enumValues(), validator)
+)
+
+/**
+ * Create an optional enum choice argument converter, for a defined set of single arguments.
+ *
+ * @see EnumChoiceConverter
+ */
+public inline fun <reified T> Arguments.optionalEnumChoice(
+    displayName: String,
+    description: String,
+    typeName: String,
+    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
+): OptionalConverter<T?> where T : Enum<T>, T : ChoiceEnum = arg(
+    displayName,
+    description,
+    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues())
+        .toOptional(nestedValidator = validator)
+)
+
+/**
+ * Create a defaulting enum choice argument converter, for a defined set of single arguments.
+ *
+ * @see EnumChoiceConverter
+ */
+public inline fun <reified T> Arguments.defaultingEnumChoice(
+    displayName: String,
+    description: String,
+    typeName: String,
+    defaultValue: T,
+    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+): DefaultingConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
+    displayName,
+    description,
+    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues())
+        .toDefaulting(defaultValue, nestedValidator = validator)
+)
+
+/**
+ * The default enum value getter - matches enums based on a case-insensitive string comparison with the name.
+ */
+public inline fun <reified T : Enum<T>> getEnum(arg: String): T? =
+    enumValues<T>().firstOrNull {
+        it.name.equals(arg, true)
+    }

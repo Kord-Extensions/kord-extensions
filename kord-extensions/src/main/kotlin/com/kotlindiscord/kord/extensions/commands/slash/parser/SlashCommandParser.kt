@@ -54,7 +54,7 @@ public open class SlashCommandParser : ArgumentParser() {
         }
 
         var currentArg: Argument<*>?
-        var currentValue: String? = null
+        var currentValue: String?
 
         @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
         while (true) {
@@ -63,7 +63,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
             logger.debug { "Current argument: ${currentArg.displayName}" }
 
-            currentValue = values[currentArg.displayName.toLowerCase()]
+            currentValue = values[currentArg.displayName.lowercase()]
 
             logger.debug { "Current value: $currentValue" }
 

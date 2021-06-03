@@ -2,11 +2,12 @@
 
 package com.kotlindiscord.kord.extensions.extensions.impl
 
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.converters.stringList
+import com.kotlindiscord.kord.extensions.commands.converters.impl.stringList
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
@@ -14,6 +15,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.utils.deleteIgnoringNotFound
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.annotation.KordPreview
@@ -26,7 +28,6 @@ private val logger = KotlinLogging.logger {}
 /** Number of commands to show per page. */
 public const val HELP_PER_PAGE: Int = 4
 
-private const val PAGE_TIMEOUT = 60_000L  // 60 seconds
 private const val COMMANDS_GROUP = ""
 private const val ARGUMENTS_GROUP = "Arguments"
 
@@ -46,11 +47,22 @@ public class HelpExtension : HelpProvider, Extension() {
     /** Message command registry. **/
     public val messageCommandsRegistry: MessageCommandRegistry by inject()
 
+    /** Bot settings. **/
+    public val botSettings: ExtensibleBotBuilder by inject()
+
+    /** Help extension settings, from the bot builder. **/
+    public val settings: ExtensibleBotBuilder.ExtensionsBuilder.HelpExtensionBuilder =
+        botSettings.extensionsBuilder.helpExtensionBuilder
+
     override suspend fun setup() {
         command(::HelpArguments) {
             name = "extensions.help.commandName"
             aliasKey = "extensions.help.commandAliases"
             description = "extensions.help.commandDescription"
+
+            localeFallback = true
+
+            check(checks = botSettings.extensionsBuilder.helpExtensionBuilder.checkList.toTypedArray())
 
             action {
                 if (arguments.command.isEmpty()) {
@@ -88,7 +100,8 @@ public class HelpExtension : HelpProvider, Extension() {
                         "extensions.help.paginator.footer",
                         locale,
                         replacements = arrayOf(totalCommands)
-                    )
+                    ),
+                    color = settings.colourGetter()
                 )
             )
 
@@ -102,7 +115,8 @@ public class HelpExtension : HelpProvider, Extension() {
                         "extensions.help.paginator.footer",
                         locale,
                         replacements = arrayOf(totalCommands)
-                    )
+                    ),
+                    color = settings.colourGetter()
                 )
             )
         }
@@ -119,7 +133,8 @@ public class HelpExtension : HelpProvider, Extension() {
                         "extensions.help.paginator.footer",
                         locale,
                         replacements = arrayOf(0)
-                    )
+                    ),
+                    color = settings.colourGetter()
                 )
             )
         }
@@ -128,10 +143,14 @@ public class HelpExtension : HelpProvider, Extension() {
             targetMessage = event.message,
             pages = pages,
             owner = event.message.author,
-            timeout = PAGE_TIMEOUT,
-            keepEmbed = true,
+            timeout = settings.paginatorTimeout,
+            keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale
-        )
+        ).onTimeout {
+            if (settings.deleteInvocationOnPaginatorTimeout) {
+                event.message.deleteIgnoringNotFound()
+            }
+        }
     }
 
     override suspend fun getCommandHelpPaginator(
@@ -156,6 +175,8 @@ public class HelpExtension : HelpProvider, Extension() {
                 COMMANDS_GROUP,
 
                 Page(
+                    color = settings.colourGetter(),
+
                     description = translationsProvider.translate(
                         "extensions.help.error.missingCommandDescription",
                         locale
@@ -174,6 +195,7 @@ public class HelpExtension : HelpProvider, Extension() {
                 COMMANDS_GROUP,
 
                 Page(
+                    color = settings.colourGetter(),
                     description = "$openingLine\n$desc\n\n$arguments",
 
                     title = translationsProvider.translate(
@@ -189,10 +211,14 @@ public class HelpExtension : HelpProvider, Extension() {
             targetMessage = event.message,
             pages = pages,
             owner = event.message.author,
-            timeout = PAGE_TIMEOUT,
-            keepEmbed = true,
+            timeout = settings.paginatorTimeout,
+            keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale
-        )
+        ).onTimeout {
+            if (settings.deleteInvocationOnPaginatorTimeout) {
+                event.message.deleteIgnoringNotFound()
+            }
+        }
     }
 
     override suspend fun gatherCommands(event: MessageCreateEvent): List<MessageCommand<out Arguments>> =
@@ -205,6 +231,8 @@ public class HelpExtension : HelpProvider, Extension() {
         longDescription: Boolean
     ): Triple<String, String, String> {
         val locale = event.getLocale()
+        val defaultLocale = botSettings.i18nBuilder.defaultLocale
+
         val openingLine = "**$prefix${command.getTranslatedName(locale)} ${command.getSignature(locale)}**\n"
 
         var description = if (longDescription) {
@@ -214,7 +242,18 @@ public class HelpExtension : HelpProvider, Extension() {
                 .takeWhile { it != '\n' }
         } + "\n"
 
-        if (command.aliases.isNotEmpty()) {
+        val aliases: MutableSet<String> = mutableSetOf()
+
+        aliases.addAll(command.getTranslatedAliases(locale))
+
+        if (command.localeFallback && locale != defaultLocale) {
+            aliases.add(command.getTranslatedName(defaultLocale))
+            aliases.addAll(command.getTranslatedAliases(defaultLocale))
+
+            aliases.remove(command.getTranslatedName(locale))
+        }
+
+        if (aliases.isNotEmpty()) {
             description += "\n"
 
             description += translationsProvider.translate(
@@ -223,7 +262,7 @@ public class HelpExtension : HelpProvider, Extension() {
             )
 
             description += " "
-            description += command.getTranslatedAliases(locale).joinToString(", ") {
+            description += aliases.sorted().joinToString(", ") {
                 "`$it`"
             }
         }
@@ -301,12 +340,11 @@ public class HelpExtension : HelpProvider, Extension() {
     }
 
     override suspend fun getCommand(event: MessageCreateEvent, args: List<String>): MessageCommand<out Arguments>? {
-        val locale = event.getLocale()
         val firstArg = args.first()
+        var command = messageCommandsRegistry.getCommand(firstArg, event)
 
-        var command: MessageCommand<out Arguments>? = messageCommandsRegistry.commands.firstOrNull {
-            (it.getTranslatedName(locale) == firstArg || it.getTranslatedAliases(locale).contains(firstArg)) &&
-                it.runChecks(event)
+        if (command?.runChecks(event) == false) {
+            return null
         }
 
         args.drop(1).forEach {

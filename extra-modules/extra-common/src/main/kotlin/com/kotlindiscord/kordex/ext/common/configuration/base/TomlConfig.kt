@@ -58,7 +58,7 @@ abstract class TomlConfig(
         }
 
         config = config
-            .from.prefixed("${resourcePrefix.toUpperCase()}_${baseName.toUpperCase()}").env()
+            .from.prefixed("${resourcePrefix.uppercase()}_${baseName.uppercase()}").env()
             .from.prefixed("$resourcePrefix.$baseName").systemProperties()
     }
 }

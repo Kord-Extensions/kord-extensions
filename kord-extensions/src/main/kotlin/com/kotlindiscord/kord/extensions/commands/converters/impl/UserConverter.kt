@@ -1,11 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.user
-import com.kotlindiscord.kord.extensions.commands.converters.userList
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.utils.users
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
@@ -69,3 +75,53 @@ public class UserConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         UserBuilder(arg.displayName, arg.description).apply { required = true }
 }
+
+/**
+ * Create a user converter, for single arguments.
+ *
+ * @see UserConverter
+ */
+public fun Arguments.user(
+    displayName: String,
+    description: String,
+    validator: (suspend Argument<*>.(User) -> Unit)? = null,
+): SingleConverter<User> =
+    arg(displayName, description, UserConverter(validator))
+
+/**
+ * Create an optional user converter, for single arguments.
+ *
+ * @see UserConverter
+ */
+public fun Arguments.optionalUser(
+    displayName: String,
+    description: String,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(User?) -> Unit)? = null,
+): OptionalConverter<User?> =
+    arg(
+        displayName,
+        description,
+        UserConverter()
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a user converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see UserConverter
+ */
+public fun Arguments.userList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    validator: (suspend Argument<*>.(List<User>) -> Unit)? = null,
+): MultiConverter<User> =
+    arg(
+        displayName,
+        description,
+        UserConverter()
+            .toMulti(required, signatureTypeString = "users", nestedValidator = validator)
+    )

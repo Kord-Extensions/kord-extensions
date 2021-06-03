@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.parsers
 
 import com.kotlindiscord.kord.extensions.ExtensionsException
-import java.util.*
 
 /**
  * A base exception class for parsers.

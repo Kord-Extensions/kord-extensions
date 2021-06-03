@@ -1,6 +1,8 @@
 # Module kord-extensions
 
-Kord Extensions is a command and plugin library for [Kord](https://kordlib.github.io/kord/). It provides a ton of useful tools for writing Discord bots with Kord, including an extensions framework, filterable event handling, and an extensible commands system with advanced parsing features.
+Kord Extensions is a command and plugin library for [Kord](https://kordlib.github.io/kord/). It provides a ton of useful
+tools for writing Discord bots with Kord, including an extensions framework, filterable event handling, and an
+extensible commands system with advanced parsing features.
 
 # Package com.kotlindiscord.kord.extensions
 

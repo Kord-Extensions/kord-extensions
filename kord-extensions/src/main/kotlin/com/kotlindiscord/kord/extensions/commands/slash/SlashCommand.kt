@@ -120,7 +120,7 @@ public open class SlashCommand<T : Arguments>(
                 this.name,
                 this.extension.bundle,
                 locale
-            ).toLowerCase()
+            ).lowercase()
         }
 
         return nameTranslationCache[locale]!!

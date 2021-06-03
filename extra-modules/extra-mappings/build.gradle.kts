@@ -29,22 +29,16 @@ repositories {
 }
 
 dependencies {
-    // Linkie
-    api("me.shedaniel:linkie-core:1.0.58")
+    api(libs.linkie)
 
-    // Linting
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+    detektPlugins(libs.detekt)
 
-    // Configuration
-    implementation("com.uchuhimo:konf:0.23.0")
-    implementation("com.uchuhimo:konf-toml:0.23.0")
+    implementation(libs.konf.core)
+    implementation(libs.konf.toml)
+    implementation(libs.logging)
+    implementation(libs.kotlin.stdlib)
 
-    // KordEx
     implementation(project(":kord-extensions"))
-
-    // Kotlin libs
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 }
 
 group = "com.kotlindiscord.kord.extensions"

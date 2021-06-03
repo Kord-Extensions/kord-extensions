@@ -12,13 +12,7 @@ buildscript {
 plugins {
     `maven-publish`
 
-    kotlin("jvm") version "1.4.31"
-    kotlin("plugin.serialization") version "1.4.31"
-
-    id("io.gitlab.arturbosch.detekt") version "1.15.0"
-    id("org.jetbrains.dokka") version "1.4.10.2"
-
-    id("de.undercouch.download") version "4.1.1"
+    kotlin("jvm")
 }
 
 val projectVersion: String by project
@@ -44,12 +38,8 @@ subprojects {
     version = projectVersion
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "9"
-
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.contracts.ExperimentalContracts"
-
-        kotlinOptions.useIR = true
     }
 
     repositories {

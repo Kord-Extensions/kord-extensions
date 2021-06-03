@@ -213,7 +213,7 @@ public open class MessageCommandRegistry : KoinComponent {
             }
         }
 
-        commandName = commandName.toLowerCase()
+        commandName = commandName.lowercase()
 
         val command = getCommand(commandName, event)
 
@@ -222,11 +222,18 @@ public open class MessageCommandRegistry : KoinComponent {
         }
     }
 
-    /** Given a command name and [MessageCreateEvent], try to find a matching command. **/
+    /**
+     * Given a command name and [MessageCreateEvent], try to find a matching command.
+     *
+     * If a command supports locale fallback, this will also attempt to resolve names via the bot's default locale.
+     */
     public open suspend fun getCommand(name: String, event: MessageCreateEvent): MessageCommand<out Arguments>? {
+        val defaultLocale = botSettings.i18nBuilder.defaultLocale
         val locale = event.getLocale()
 
         return commands.firstOrNull { it.getTranslatedName(locale) == name }
             ?: commands.firstOrNull { it.getTranslatedAliases(locale).contains(name) }
+            ?: commands.firstOrNull { it.localeFallback && it.getTranslatedName(defaultLocale) == name }
+            ?: commands.firstOrNull { it.localeFallback && it.getTranslatedAliases(defaultLocale).contains(name) }
     }
 }

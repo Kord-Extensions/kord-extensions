@@ -12,16 +12,14 @@ plugins {
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
-
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
-
+    implementation(libs.kotlin.stdlib)
     implementation(project(":kord-extensions"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
-    testImplementation("ch.qos.logback:logback-classic:1.2.3")
-    testImplementation("org.codehaus.groovy:groovy:3.0.4")  // For logback config
+    detektPlugins(libs.detekt)
+
+    testImplementation(libs.groovy)  // For logback config
+    testImplementation(libs.junit)
+    testImplementation(libs.logback)
 }
 
 val sourceJar = task("sourceJar", Jar::class) {
@@ -30,7 +28,7 @@ val sourceJar = task("sourceJar", Jar::class) {
     from(sourceSets.main.get().allSource)
 }
 
-val javadocJar = task("javadocJar",Jar::class) {
+val javadocJar = task("javadocJar", Jar::class) {
     dependsOn("dokkaJavadoc")
     archiveClassifier.set("javadoc")
     from(tasks.javadoc)

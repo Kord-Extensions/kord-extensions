@@ -1,11 +1,17 @@
+@file:OptIn(
+    KordPreview::class,
+    ConverterToDefaulting::class,
+    ConverterToMulti::class,
+    ConverterToOptional::class
+)
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import com.kotlindiscord.kord.extensions.commands.converters.role
-import com.kotlindiscord.kord.extensions.commands.converters.roleList
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Role
@@ -73,3 +79,56 @@ public class RoleConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         RoleBuilder(arg.displayName, arg.description).apply { required = true }
 }
+
+/**
+ * Create a role converter, for single arguments.
+ *
+ * @see RoleConverter
+ */
+public fun Arguments.role(
+    displayName: String,
+    description: String,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    validator: (suspend Argument<*>.(Role) -> Unit)? = null,
+): SingleConverter<Role> =
+    arg(displayName, description, RoleConverter(requiredGuild, validator))
+
+/**
+ * Create an optional role converter, for single arguments.
+ *
+ * @see RoleConverter
+ */
+public fun Arguments.optionalRole(
+    displayName: String,
+    description: String,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    outputError: Boolean = false,
+    validator: (suspend Argument<*>.(Role?) -> Unit)? = null,
+): OptionalConverter<Role?> =
+    arg(
+        displayName,
+        description,
+        RoleConverter(requiredGuild)
+            .toOptional(outputError = outputError, nestedValidator = validator)
+    )
+
+/**
+ * Create a role converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see RoleConverter
+ */
+public fun Arguments.roleList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    requiredGuild: (suspend () -> Snowflake)? = null,
+    validator: (suspend Argument<*>.(List<Role>) -> Unit)? = null,
+): MultiConverter<Role> =
+    arg(
+        displayName,
+        description,
+        RoleConverter(requiredGuild)
+            .toMulti(required, signatureTypeString = "roles", nestedValidator = validator)
+    )

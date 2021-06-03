@@ -41,7 +41,7 @@ public object BooleanParser : KoinComponent {
         }
 
         val (trueValues, falseValues) = valueCache[locale]!!
-        val lowerInput = input.toLowerCase()
+        val lowerInput = input.lowercase()
 
         val result = when {
             trueValues.contains(lowerInput) -> true

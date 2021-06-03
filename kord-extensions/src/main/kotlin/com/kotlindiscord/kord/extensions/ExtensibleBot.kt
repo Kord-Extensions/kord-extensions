@@ -133,6 +133,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     /** @suppress **/
     public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel(1)
 
+    // TODO: Move away from BroadcastChannel
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
     public open val events: Flow<Any> get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
 
@@ -264,7 +265,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
     /** This function adds all of the default extensions when the bot is being set up. **/
     public open suspend fun addDefaultExtensions() {
-        if (settings.extensionsBuilder.help) {
+        if (settings.extensionsBuilder.helpExtensionBuilder.enableBundledExtension) {
             this.addExtension(::HelpExtension)
         }
 
@@ -484,5 +485,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
  * `ExtensibleBot(token) { extensions { add(::MyExtension) } }`
  */
 @Suppress("FunctionNaming")  // This is a factory function
-public suspend fun ExtensibleBot(token: String, builder: ExtensibleBotBuilder.() -> Unit): ExtensibleBot =
-    ExtensibleBotBuilder().apply(builder).build(token)
+public suspend fun ExtensibleBot(token: String, builder: suspend ExtensibleBotBuilder.() -> Unit): ExtensibleBot {
+    val settings = ExtensibleBotBuilder()
+
+    builder(settings)
+
+    return settings.build(token)
+}

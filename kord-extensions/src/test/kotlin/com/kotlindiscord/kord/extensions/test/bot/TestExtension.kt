@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
-import com.kotlindiscord.kord.extensions.commands.slash.converters.enumChoice
+import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.enumChoice
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
@@ -18,8 +18,9 @@ import dev.kord.core.behavior.channel.createEmbed
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
+// They're IDs
 @OptIn(KordPreview::class)
-@Suppress("UnderscoresInNumericLiterals")  // They're IDs
+@Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
     override val name = "test"
 

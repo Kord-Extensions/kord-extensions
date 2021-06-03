@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.builders
 
+import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
@@ -17,6 +18,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
+import dev.kord.common.Color
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
@@ -34,7 +36,6 @@ import mu.KotlinLogging
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
-import org.koin.environmentProperties
 import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
@@ -91,7 +92,7 @@ public open class ExtensibleBotBuilder {
      * @see CacheBuilder
      */
     @BotBuilderDSL
-    public fun cache(builder: CacheBuilder.() -> Unit) {
+    public suspend fun cache(builder: suspend CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
     }
 
@@ -101,7 +102,7 @@ public open class ExtensibleBotBuilder {
      * @see HooksBuilder
      */
     @BotBuilderDSL
-    public fun hooks(builder: HooksBuilder.() -> Unit) {
+    public suspend fun hooks(builder: suspend HooksBuilder.() -> Unit) {
         builder(hooksBuilder)
     }
 
@@ -111,7 +112,7 @@ public open class ExtensibleBotBuilder {
      * @see MessageCommandsBuilder
      */
     @BotBuilderDSL
-    public fun messageCommands(builder: MessageCommandsBuilder.() -> Unit) {
+    public suspend fun messageCommands(builder: suspend MessageCommandsBuilder.() -> Unit) {
         builder(messageCommandsBuilder)
     }
 
@@ -121,7 +122,7 @@ public open class ExtensibleBotBuilder {
      * @see SlashCommandsBuilder
      */
     @BotBuilderDSL
-    public fun slashCommands(builder: SlashCommandsBuilder.() -> Unit) {
+    public suspend fun slashCommands(builder: suspend SlashCommandsBuilder.() -> Unit) {
         builder(slashCommandsBuilder)
     }
 
@@ -131,7 +132,7 @@ public open class ExtensibleBotBuilder {
      * @see ExtensionsBuilder
      */
     @BotBuilderDSL
-    public open fun extensions(builder: ExtensionsBuilder.() -> Unit) {
+    public open suspend fun extensions(builder: suspend ExtensionsBuilder.() -> Unit) {
         builder(extensionsBuilder)
     }
 
@@ -151,7 +152,7 @@ public open class ExtensibleBotBuilder {
      * @see I18nBuilder
      */
     @BotBuilderDSL
-    public fun i18n(builder: I18nBuilder.() -> Unit) {
+    public suspend fun i18n(builder: suspend I18nBuilder.() -> Unit) {
         builder(i18nBuilder)
     }
 
@@ -161,7 +162,7 @@ public open class ExtensibleBotBuilder {
      * @see MembersBuilder
      */
     @BotBuilderDSL
-    public fun members(builder: MembersBuilder.() -> Unit) {
+    public suspend fun members(builder: suspend MembersBuilder.() -> Unit) {
         builder(membersBuilder)
     }
 
@@ -179,7 +180,7 @@ public open class ExtensibleBotBuilder {
     public open fun setupKoin() {
         startKoin {
             slf4jLogger(koinLogLevel)
-            environmentProperties()
+//            environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
 
             if (File("koin.properties").exists()) {
                 fileProperties("koin.properties")
@@ -306,8 +307,8 @@ public open class ExtensibleBotBuilder {
         /** @suppress Internal list that shouldn't be modified by the user directly. **/
         public open val extensions: MutableList<() -> Extension> = mutableListOf()
 
-        /** Whether to enable the bundled help extension. Defaults to `true`. **/
-        public var help: Boolean = true
+        /** @suppress Help extension builder. **/
+        public open val helpExtensionBuilder: HelpExtensionBuilder = HelpExtensionBuilder()
 
         /** Whether to enable the bundled Sentry extension. Defaults to `true`. **/
         public var sentry: Boolean = true
@@ -315,6 +316,67 @@ public open class ExtensibleBotBuilder {
         /** Add a custom extension to the bot via a builder - probably the extension constructor. **/
         public open fun add(builder: () -> Extension) {
             extensions.add(builder)
+        }
+
+        /** Configure the built-in help extension, or disable it so you can use your own. **/
+        public open suspend fun help(builder: HelpExtensionBuilder.() -> Unit) {
+            builder(helpExtensionBuilder)
+        }
+
+        /** Builder used for configuring options, specifically related to the help extension. **/
+        @BotBuilderDSL
+        public open class HelpExtensionBuilder {
+            /** Whether to enable the bundled help extension. Defaults to `true`. **/
+            public var enableBundledExtension: Boolean = true
+
+            /** Time to wait before the help paginator times out and can't be used. Defaults to 60 seconds. **/
+            @Suppress("MagicNumber")
+            public var paginatorTimeout: Long = 60_000L  // 60 seconds
+
+            /** Whether to delete the help paginator after the timeout ends. **/
+            public var deletePaginatorOnTimeout: Boolean = false
+
+            /** Whether to delete the help command invocation after the paginator timeout ends. **/
+            public var deleteInvocationOnPaginatorTimeout: Boolean = false
+
+            /** List of command checks. These checks will be checked against all commands in the help extension. **/
+            public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+
+            /** For custom help embed colours. Only one may be defined. **/
+            public var colourGetter: suspend () -> Color = { DISCORD_BLURPLE }
+
+            /** Define a callback that returns a [Color] to use for help embed colours. Feel free to mix it up! **/
+            public fun colour(builder: suspend () -> Color) {
+                colourGetter = builder
+            }
+
+            /** Like [colour], but American. **/
+            public fun color(builder: suspend () -> Color): Unit = colour(builder)
+
+            /**
+             * Define a check which must pass for help commands to be executed. This check will be applied to all
+             * commands in the extension.
+             *
+             * A command may have multiple checks - all checks must pass for the command to be executed.
+             * Checks will be run in the order that they're defined.
+             *
+             * This function can be used DSL-style with a given body, or it can be passed one or more
+             * predefined functions. See the samples for more information.
+             *
+             * @param checks Checks to apply to all help commands.
+             */
+            public fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+                checks.forEach { checkList.add(it) }
+            }
+
+            /**
+             * Overloaded check function to allow for DSL syntax.
+             *
+             * @param check Check to apply to all help commands.
+             */
+            public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+                checkList.add(check)
+            }
         }
     }
 

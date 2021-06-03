@@ -7,8 +7,9 @@ import com.kotlindiscord.kord.extensions.modules.time.time4j.toHuman
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
 
+// They're IDs
 @OptIn(KordPreview::class)
-@Suppress("UnderscoresInNumericLiterals")  // They're IDs
+@Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
     override val name = "test"
 

@@ -49,7 +49,7 @@ public object J8DurationParser : KoinComponent {
 
         while (units.isNotEmpty()) {
             val (unitString, valueString) = units.removeFirst() to values.removeFirst()
-            val timeUnit = unitMap[unitString.toLowerCase()] ?: throw InvalidTimeUnitException(unitString)
+            val timeUnit = unitMap[unitString.lowercase()] ?: throw InvalidTimeUnitException(unitString)
 
             container.plus(valueString.toLong(), timeUnit)
         }
