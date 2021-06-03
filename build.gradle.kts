@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -37,7 +37,7 @@ subprojects {
     group = "com.kotlindiscord.kord.extensions"
     version = projectVersion
 
-    tasks.withType<KotlinCompile<*>> {
+    tasks.withType<KotlinCompile> {
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.contracts.ExperimentalContracts"
     }
