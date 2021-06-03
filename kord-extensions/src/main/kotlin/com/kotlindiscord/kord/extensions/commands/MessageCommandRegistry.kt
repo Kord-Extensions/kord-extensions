@@ -213,7 +213,7 @@ public open class MessageCommandRegistry : KoinComponent {
             }
         }
 
-        commandName = commandName.toLowerCase()
+        commandName = commandName.lowercase()
 
         val command = getCommand(commandName, event)
 

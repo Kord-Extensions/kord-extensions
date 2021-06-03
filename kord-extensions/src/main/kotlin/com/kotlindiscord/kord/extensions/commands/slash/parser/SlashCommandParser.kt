@@ -54,7 +54,7 @@ public open class SlashCommandParser : ArgumentParser() {
         }
 
         var currentArg: Argument<*>?
-        var currentValue: String? = null
+        var currentValue: String?
 
         @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
         while (true) {

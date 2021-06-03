@@ -76,7 +76,7 @@ public class EmojiConverter(
                 }.firstOrNull()
             } catch (e: NumberFormatException) {  // Not an ID, let's check names
                 kord.guilds.mapNotNull {
-                    it.emojis.first { emojiObj -> emojiObj.name?.toLowerCase().equals(name, true) }
+                    it.emojis.first { emojiObj -> emojiObj.name?.lowercase().equals(name, true) }
                 }.firstOrNull()
             }
         }

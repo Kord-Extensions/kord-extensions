@@ -190,7 +190,7 @@ public open class GroupCommand<T : Arguments>(
             return
         }
 
-        val command = args.firstOrNull()?.toLowerCase()
+        val command = args.firstOrNull()?.lowercase()
         val remainingArgs = args.drop(1).toTypedArray()
         val subCommand = getCommand(command, event)
 

@@ -42,7 +42,6 @@ public open class SentryAdapter {
         enableExternalConfiguration: Boolean = true,
         enableNdk: Boolean = true,
         enableScopeSync: Boolean = false,
-        enableSessionTracking: Boolean = true,
         enableUncaughtExceptionHandler: Boolean = true,
         sendDefaultPii: Boolean = false,
 
@@ -69,7 +68,6 @@ public open class SentryAdapter {
             it.isEnableExternalConfiguration = enableExternalConfiguration
             it.isEnableNdk = enableNdk
             it.isEnableScopeSync = enableScopeSync
-            it.isEnableSessionTracking = enableSessionTracking
             it.enableUncaughtExceptionHandler = enableUncaughtExceptionHandler
             it.isSendDefaultPii = sendDefaultPii
 

@@ -58,7 +58,7 @@ public object T4JDurationParser : KoinComponent {
 
         while (units.isNotEmpty()) {
             val (unitString, valueString) = units.removeFirst() to values.removeFirst()
-            val timeUnit = unitMap[unitString.toLowerCase()] ?: throw InvalidTimeUnitException(unitString)
+            val timeUnit = unitMap[unitString.lowercase()] ?: throw InvalidTimeUnitException(unitString)
 
             duration = duration.plus(valueString.toLong(), timeUnit)
         }

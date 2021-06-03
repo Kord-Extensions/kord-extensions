@@ -131,6 +131,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     /** @suppress **/
     public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel(1)
 
+    // TODO: Move away from BroadcastChannel
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
     public open val events: Flow<Any> get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
 
