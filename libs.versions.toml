@@ -1,0 +1,45 @@
+[versions]
+detekt = "1.17.1"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+dokka = "1.4.10.2"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+kotlin = "1.5.10"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+
+commons-text = "1.9"
+commons-validator = "1.7"
+groovy = "3.0.4"
+icu4j = "69.1"
+junit = "5.6.2"
+koin = "3.0.1"
+konf = "0.23.0"
+kord = "0.7.x-SNAPSHOT"
+logging = "2.0.6"
+kx-ser = "1.2.1"
+linkie = "1.0.76"
+logback = "1.2.3"
+sentry = "5.0.0"
+time4j-base = "5.8"
+time4j-tzdata = "5.0-2021a"
+
+[libraries]
+commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons-text" }
+commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator" }
+detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
+icu4j = { module = "com.ibm.icu:icu4j", version.ref = "icu4j" }
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-logger = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+konf-core = { module = "com.uchuhimo:konf", version.ref = "konf" }
+konf-toml = { module = "com.uchuhimo:konf-toml", version.ref = "konf" }
+kord = { module = "dev.kord:kord-core", version.ref = "kord" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
+kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
+linkie = { module = "me.shedaniel:linkie-core", version.ref = "linkie" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logging = { module = "io.github.microutils:kotlin-logging", version.ref = "logging" }
+sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
+time4j-base = { module = "net.time4j:time4j-base", version.ref = "time4j-base" }
+time4j-tzdata = { module = "net.time4j:time4j-tzdata", version.ref = "time4j-tzdata" }
+
+[bundles]
+commons = [ "commons-text", "commons-validator" ]

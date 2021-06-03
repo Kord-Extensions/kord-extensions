@@ -163,7 +163,7 @@ public open class MessageCommand<T : Arguments>(
                 this.name,
                 this.extension.bundle,
                 locale
-            ).toLowerCase()
+            ).lowercase()
         }
 
         return nameTranslationCache[locale]!!
@@ -174,14 +174,14 @@ public open class MessageCommand<T : Arguments>(
         if (!aliasTranslationCache.containsKey(locale)) {
             val translations = if (aliasKey != null) {
                 translationsProvider.translate(aliasKey!!, extension.bundle, locale)
-                    .toLowerCase()
+                    .lowercase()
                     .split(",")
                     .map { it.trim() }
                     .filter { it != EMPTY_VALUE_STRING }
                     .toSortedSet()
             } else {
                 this.aliases.map {
-                    translationsProvider.translate(it, extension.bundle, locale).toLowerCase()
+                    translationsProvider.translate(it, extension.bundle, locale).lowercase()
                 }.toSortedSet()
             }
 

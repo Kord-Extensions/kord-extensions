@@ -63,7 +63,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
             logger.debug { "Current argument: ${currentArg.displayName}" }
 
-            currentValue = values[currentArg.displayName.toLowerCase()]
+            currentValue = values[currentArg.displayName.lowercase()]
 
             logger.debug { "Current value: $currentValue" }
 

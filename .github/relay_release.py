@@ -1,6 +1,5 @@
 import json
 import os
-from http.client import HTTPResponse
 from typing import Dict, Any
 from urllib import request
 

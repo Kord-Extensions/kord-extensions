@@ -34,4 +34,6 @@ private var extCommonAddedProp: Boolean = false
 /** Whether the common extensions have already been added. **/
 var ExtensibleBotBuilder.ExtensionsBuilder.extCommonAdded: Boolean
     get() = extCommonAddedProp
-    set(value) { extCommonAddedProp = value }
+    set(value) {
+        extCommonAddedProp = value
+    }

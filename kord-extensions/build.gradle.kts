@@ -20,31 +20,23 @@ plugins {
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+    api(libs.icu4j)  // For translations
+    api(libs.koin.core)
+    api(libs.koin.logger)
+    api(libs.kord)
+    api(libs.logging) // Basic logging setup
+    api(libs.kx.ser)
+    api(libs.sentry)  // Needs to be transitive or bots will start breaking
 
-//    api("com.kotlindiscord.pluralkot:PluralKot:1.0.0")
+    detektPlugins(libs.detekt)
 
-    api("dev.kord:kord-core:0.7.0-RC3")
+    implementation(libs.bundles.commons)
+    implementation(libs.kotlin.stdlib)
 
-    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
-
-    api("io.insert-koin:koin-core:3.0.1")
-    api("io.insert-koin:koin-logger-slf4j:3.0.1")
-
-    api("io.github.microutils:kotlin-logging:2.0.6") // Basic logging setup
-    api("io.sentry:sentry:4.3.0")  // Needs to be transitive or bots will start breaking
-    api("com.ibm.icu:icu4j:69.1")  // For translations
-
-    implementation("org.apache.commons:commons-text:1.9")
-    implementation("commons-validator:commons-validator:1.7")
-
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    testImplementation("io.insert-koin:koin-test:3.0.1")
-
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
-    testImplementation("ch.qos.logback:logback-classic:1.2.3")
-    testImplementation("org.codehaus.groovy:groovy:3.0.4")  // For logback config
+    testImplementation(libs.groovy)  // For logback config
+    testImplementation(libs.junit)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.logback)
 }
 
 val sourceJar = task("sourceJar", Jar::class) {
@@ -53,7 +45,7 @@ val sourceJar = task("sourceJar", Jar::class) {
     from(sourceSets.main.get().allSource)
 }
 
-val javadocJar = task("javadocJar",Jar::class) {
+val javadocJar = task("javadocJar", Jar::class) {
     dependsOn("dokkaJavadoc")
     archiveClassifier.set("javadoc")
     from(tasks.javadoc)

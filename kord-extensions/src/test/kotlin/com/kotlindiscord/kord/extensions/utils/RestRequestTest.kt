@@ -40,7 +40,9 @@ class RestRequestTest {
         createMockAndHasStatus(
             HttpStatusCode.Forbidden,
             true,
-            HttpStatusCode.BadRequest, HttpStatusCode.Forbidden, HttpStatusCode.Accepted
+            HttpStatusCode.BadRequest,
+            HttpStatusCode.Forbidden,
+            HttpStatusCode.Accepted
         )
     }
 
@@ -68,7 +70,9 @@ class RestRequestTest {
         createMockAndHasNotStatus(
             HttpStatusCode.Forbidden,
             false,
-            HttpStatusCode.BadRequest, HttpStatusCode.Forbidden, HttpStatusCode.Accepted
+            HttpStatusCode.BadRequest,
+            HttpStatusCode.Forbidden,
+            HttpStatusCode.Accepted
         )
     }
 

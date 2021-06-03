@@ -13,8 +13,9 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 
+// They're IDs
 @OptIn(KordPreview::class)
-@Suppress("UnderscoresInNumericLiterals")  // They're IDs
+@Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
     override val name = "test"
 

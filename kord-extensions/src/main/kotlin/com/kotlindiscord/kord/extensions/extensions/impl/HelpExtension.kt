@@ -212,7 +212,7 @@ public class HelpExtension : HelpProvider, Extension() {
             pages = pages,
             owner = event.message.author,
             timeout = settings.paginatorTimeout,
-            keepEmbed =  settings.deletePaginatorOnTimeout.not(),
+            keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale
         ).onTimeout {
             if (settings.deleteInvocationOnPaginatorTimeout) {

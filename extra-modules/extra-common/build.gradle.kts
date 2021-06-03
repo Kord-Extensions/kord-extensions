@@ -15,24 +15,14 @@ repositories {
 }
 
 dependencies {
-    // Linting
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+    detektPlugins(libs.detekt)
 
-    // Configuration
-    implementation("com.uchuhimo:konf:0.23.0")
-    implementation("com.uchuhimo:konf-toml:0.23.0")
+    implementation(libs.konf.core)
+    implementation(libs.konf.toml)
+    implementation(libs.logging)
+    implementation(libs.kotlin.stdlib)
 
-    // KordEx
     implementation(project(":kord-extensions"))
-
-    // Logging
-    implementation("io.github.microutils:kotlin-logging:2.0.3")
-
-    // Kotlin libs
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 }
 
 /**

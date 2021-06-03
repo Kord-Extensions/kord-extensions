@@ -71,7 +71,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
-        val argsMap = args.map { Pair(it.displayName.toLowerCase(), it) }.toMap()
+        val argsMap = args.map { Pair(it.displayName.lowercase(), it) }.toMap()
         val keywordArgs = mutableMapOf<String, MutableList<String>>()
 
         logger.debug { "Args map: $argsMap" }
@@ -81,7 +81,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                 logger.debug { "Potential keyword argument: $v" }
 
                 val split = v.split(splitChar, limit = 2)
-                val key = split.first().toLowerCase()
+                val key = split.first().lowercase()
                 val value = split.last()
 
                 logger.debug { "Split value: $key -> $value" }
@@ -111,7 +111,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
             currentArg = args.removeFirstOrNull()
             currentArg ?: break  // If it's null, we're out of arguments
 
-            val kwValue = keywordArgs[currentArg.displayName.toLowerCase()]
+            val kwValue = keywordArgs[currentArg.displayName.lowercase()]
             val hasKwargs = kwValue != null
 
             logger.debug { "Current argument: ${currentArg.displayName}" }

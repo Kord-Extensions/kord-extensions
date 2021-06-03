@@ -3,7 +3,7 @@ package com.kotlindiscord.kord.extensions.utils.deltas
 import dev.kord.common.entity.Snowflake
 import dev.kord.common.entity.optional.Optional
 import dev.kord.core.entity.*
-import java.time.Instant
+import kotlinx.datetime.Instant
 import kotlin.contracts.contract
 
 /**

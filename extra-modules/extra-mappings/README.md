@@ -42,7 +42,8 @@ they're detailed below.
 
 This extension provides a number of commands for use on Discord.
 
-* Commands for retrieving information about mappings namespaces: `legacy-yarn`, `mcp`, `mojang`, `plasma`, `yarn` and `yarrn`
+* Commands for retrieving information about mappings namespaces: `legacy-yarn`, `mcp`, `mojang`, `plasma`, `yarn`
+  and `yarrn`
 * Legacy Yarn-specific lookup commands: `lyc`, `lyf` and `lym`
 * MCP-specific lookup commands: `mcpc`, `mcpf` and `mcpm`
 * Mojang-specific lookup commands: `mmc`, `mmf` and `mmm`
@@ -81,7 +82,9 @@ following configuration keys are available:
   run within the given guilds.
 * `settings.namespaces`: List of enabled namespaces. Currently, `legacy-yarn`, `mcp`, `mojang`, `plasma`, `yarn`
   and `yarrn` are supported, and they will all be enabled by default.
-* `settings.timeout`: Time (in seconds) to wait before destroying mappings paginators, defaulting to 5 minutes (300 seconds). Be careful when setting this value to something high - a busy bot may end up running out of memory if paginators aren't destroyed quickly enough. This setting only accepts whole numbers.
+* `settings.timeout`: Time (in seconds) to wait before destroying mappings paginators, defaulting to 5 minutes (300
+  seconds). Be careful when setting this value to something high - a busy bot may end up running out of memory if
+  paginators aren't destroyed quickly enough. This setting only accepts whole numbers.
 * `yarn.channels`: List of extra Yarn channels to enable. Currently, only `PATCHWORK` is supported, and it will be
   enabled by default.
 
@@ -177,8 +180,8 @@ The approach you take is up to you!
 ## Replacing the Config Adapter
 
 If you need some other form of configuration - for example, from a database - you can implement the
-`MappingsConfigAdapater` interface in your own classes and store an instance of it in the `config` variable in the 
-builder. While going into detail on each function is a little out of scope for this document, you can find more 
+`MappingsConfigAdapater` interface in your own classes and store an instance of it in the `config` variable in the
+builder. While going into detail on each function is a little out of scope for this document, you can find more
 information in the following places:
 
 * [MappingsConfigAdapter interface](./src/main/kotlin/com/kotlindiscord/kord/extensions/modules/extra/mappings/configuration/MappingsConfigAdapter.kt)
