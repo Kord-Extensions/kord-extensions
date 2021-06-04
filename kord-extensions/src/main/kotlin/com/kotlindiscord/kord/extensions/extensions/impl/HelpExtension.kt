@@ -101,7 +101,7 @@ public class HelpExtension : HelpProvider, Extension() {
                         locale,
                         replacements = arrayOf(totalCommands)
                     ),
-                    color = settings.colourGetter()
+                    color = settings.colourGetter(event)
                 )
             )
 
@@ -116,7 +116,7 @@ public class HelpExtension : HelpProvider, Extension() {
                         locale,
                         replacements = arrayOf(totalCommands)
                     ),
-                    color = settings.colourGetter()
+                    color = settings.colourGetter(event)
                 )
             )
         }
@@ -134,7 +134,7 @@ public class HelpExtension : HelpProvider, Extension() {
                         locale,
                         replacements = arrayOf(0)
                     ),
-                    color = settings.colourGetter()
+                    color = settings.colourGetter(event)
                 )
             )
         }
@@ -148,7 +148,12 @@ public class HelpExtension : HelpProvider, Extension() {
             locale = locale
         ).onTimeout {
             if (settings.deleteInvocationOnPaginatorTimeout) {
-                event.message.deleteIgnoringNotFound()
+                @Suppress("TooGenericExceptionCaught")
+                try {
+                    event.message.deleteIgnoringNotFound()
+                } catch (t: Throwable) {
+                    logger.warn(t) { "Failed to delete command invocation." }
+                }
             }
         }
     }
@@ -175,7 +180,7 @@ public class HelpExtension : HelpProvider, Extension() {
                 COMMANDS_GROUP,
 
                 Page(
-                    color = settings.colourGetter(),
+                    color = settings.colourGetter(event),
 
                     description = translationsProvider.translate(
                         "extensions.help.error.missingCommandDescription",
@@ -195,7 +200,7 @@ public class HelpExtension : HelpProvider, Extension() {
                 COMMANDS_GROUP,
 
                 Page(
-                    color = settings.colourGetter(),
+                    color = settings.colourGetter(event),
                     description = "$openingLine\n$desc\n\n$arguments",
 
                     title = translationsProvider.translate(
@@ -216,7 +221,12 @@ public class HelpExtension : HelpProvider, Extension() {
             locale = locale
         ).onTimeout {
             if (settings.deleteInvocationOnPaginatorTimeout) {
-                event.message.deleteIgnoringNotFound()
+                @Suppress("TooGenericExceptionCaught")
+                try {
+                    event.message.deleteIgnoringNotFound()
+                } catch (t: Throwable) {
+                    logger.warn(t) { "Failed to delete command invocation." }
+                }
             }
         }
     }

@@ -43,6 +43,10 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.ViewGuildInsights -> "permission.viewGuildInsights"
 }
 
+/** Because "Stream" is a confusing name, people may look for "Video" instead. **/
+public val Permission.Video: Permission.Stream
+    inline get() = Permission.Stream
+
 /** Given a [CommandContext], translate the permission to a human-readable string based on the context's locale. **/
 public suspend fun Permission.translate(context: CommandContext): String =
     context.translate(toTranslationKey())

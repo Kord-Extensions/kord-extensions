@@ -294,15 +294,15 @@ public open class ExtensibleBotBuilder {
             public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
             /** For custom help embed colours. Only one may be defined. **/
-            public var colourGetter: suspend () -> Color = { DISCORD_BLURPLE }
+            public var colourGetter: suspend MessageCreateEvent.() -> Color = { DISCORD_BLURPLE }
 
             /** Define a callback that returns a [Color] to use for help embed colours. Feel free to mix it up! **/
-            public fun colour(builder: suspend () -> Color) {
+            public fun colour(builder: suspend MessageCreateEvent.() -> Color) {
                 colourGetter = builder
             }
 
             /** Like [colour], but American. **/
-            public fun color(builder: suspend () -> Color): Unit = colour(builder)
+            public fun color(builder: suspend MessageCreateEvent.() -> Color): Unit = colour(builder)
 
             /**
              * Define a check which must pass for help commands to be executed. This check will be applied to all

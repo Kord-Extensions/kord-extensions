@@ -224,9 +224,13 @@ public open class Paginator(
                 runTimeoutCallbacks()
             }
         } else {
-            if (timeout != null && !keepEmbed) {
+            if (timeout != null) {
                 delay(timeout)
-                destroy(message)
+
+                if (!keepEmbed) {
+                    destroy(message)
+                }
+
                 runTimeoutCallbacks()
             }
         }
