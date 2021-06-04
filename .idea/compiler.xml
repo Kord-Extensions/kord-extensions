@@ -14,6 +14,8 @@
       <module name="kord-extensions.extra-modules.mappings" target="14" />
       <module name="kord-extensions.extra-modules.mappings.main" target="14" />
       <module name="kord-extensions.extra-modules.mappings.test" target="14" />
+      <module name="kord-extensions.main" target="14" />
+      <module name="kord-extensions.test" target="14" />
     </bytecodeTargetLevel>
   </component>
 </project>

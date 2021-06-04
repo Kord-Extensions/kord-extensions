@@ -26,7 +26,6 @@ import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -129,11 +128,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     public open val extensions: MutableMap<String, Extension> = mutableMapOf()
 
     /** @suppress **/
-    public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel(1)
+    public open val eventPublisher: MutableSharedFlow<Any> = MutableSharedFlow()
 
-    // TODO: Move away from BroadcastChannel
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
-    public open val events: Flow<Any> get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
+    public open val events: SharedFlow<Any> = eventPublisher.asSharedFlow()
 
     /** @suppress **/
     public open var initialized: Boolean = false
@@ -252,23 +250,28 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         launch: Boolean = true,
         scope: CoroutineScope = this.getKoin().get<Kord>(),
         noinline consumer: suspend T.() -> Unit
-    ): Job = events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
-        runCatching { if (launch) getKoin().get<Kord>().launch { consumer(it) } else consumer(it) }
-            .onFailure { logger.catching(it) }
-    }.catch { logger.catching(it) }.launchIn(scope)
+    ): Job =
+        events.buffer(Channel.UNLIMITED)
+            .filterIsInstance<T>()
+            .onEach {
+                runCatching {
+                    if (launch) scope.launch { consumer(it) } else consumer(it)
+                }.onFailure { logger.catching(it) }
+            }.catch { logger.catching(it) }
+            .launchIn(scope)
 
     /**
      * @suppress
      */
     public suspend inline fun send(event: Event) {
-        eventPublisher.send(event)
+        eventPublisher.emit(event)
     }
 
     /**
      * @suppress
      */
     public suspend inline fun send(event: ExtensionEvent) {
-        eventPublisher.send(event)
+        eventPublisher.emit(event)
     }
 
     /**
