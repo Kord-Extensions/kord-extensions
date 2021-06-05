@@ -1,10 +1,10 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
-import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.booleanList
 import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingEnum
 import com.kotlindiscord.kord.extensions.commands.converters.impl.enum
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -20,7 +20,6 @@ import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
 
 // They're IDs
 @OptIn(KordPreview::class)
