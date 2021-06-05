@@ -168,15 +168,11 @@ public open class Paginator(
             reactions += switchEmoji
         }
 
-        if (message.getChannelOrNull() !is DmChannel) {
+        if (message.getChannelOrNull() !is DmChannel && reactions.isNotEmpty()) {
             reactions += DELETE_EMOJI
         }
 
         if (reactions.isNotEmpty()) {
-            if (reactions.size == 1 && reactions.first() == DELETE_EMOJI) {
-                return  // No point in paginating this
-            }
-
             reactions.forEach { message.addReaction(it) }
 
             val guildCondition: suspend Event.() -> Boolean = {

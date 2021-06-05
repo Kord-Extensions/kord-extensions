@@ -29,6 +29,13 @@ suspend fun main() {
 
         extensions {
             add(::TestExtension)
+
+            help {
+                deleteInvocationOnPaginatorTimeout = true
+                deletePaginatorOnTimeout = true
+
+                paginatorTimeout = 5_000L
+            }
         }
     }
 
