@@ -1,8 +1,11 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
+import com.kotlindiscord.kord.extensions.commands.converters.impl.booleanList
+import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingEnum
+import com.kotlindiscord.kord.extensions.commands.converters.impl.enum
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
-import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
@@ -15,6 +18,7 @@ import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
@@ -244,9 +248,10 @@ class TestExtension : Extension() {
             guild(787452339908116521) // Our test server
 
             cooldowns {
-                when(it) {
-                    is ChannelCooldown -> 8.seconds
-                    else -> null
+                if (it is ChannelCooldown) {
+                    Duration.seconds(8)
+                } else {
+                    null
                 }
             }
 
@@ -255,7 +260,6 @@ class TestExtension : Extension() {
                     content = "There is no cooldown!"
                 }
             }
-
         }
 
         command {
@@ -336,9 +340,10 @@ class TestExtension : Extension() {
             description = "Cooldown test"
 
             cooldowns {
-                when(it) {
-                    is UserCooldown -> 5.seconds
-                    else -> null
+                if (it is UserCooldown) {
+                    Duration.seconds(5)
+                } else {
+                    null
                 }
             }
 

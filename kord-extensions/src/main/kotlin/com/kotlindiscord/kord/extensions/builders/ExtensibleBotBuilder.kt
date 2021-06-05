@@ -249,7 +249,7 @@ public open class ExtensibleBotBuilder {
         /**
          * Sets the implementation to use for the command's cooldown object.
          */
-        public fun implementation(builder: () -> Cooldown) {
+        public fun defaultImplementation(builder: () -> Cooldown) {
             this.implementation = builder
         }
 

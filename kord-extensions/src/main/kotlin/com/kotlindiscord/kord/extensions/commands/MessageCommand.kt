@@ -61,7 +61,7 @@ public open class MessageCommand<T : Arguments>(
     public val kord: Kord by inject()
 
     /** Cooldown object that keeps track of the cooldowns for this command. **/
-    public val cooldown: Cooldown = extension.bot.settings.messageCommandsBuilder.cooldownsBuilder.implementation
+    public var cooldown: Cooldown = extension.bot.settings.messageCommandsBuilder.cooldownsBuilder.implementation
         .invoke()
 
     /** Cooldown body that defines the duration for the different cooldown types. **/

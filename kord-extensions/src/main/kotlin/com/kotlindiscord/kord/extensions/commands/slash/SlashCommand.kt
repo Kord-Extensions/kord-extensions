@@ -108,7 +108,7 @@ public open class SlashCommand<T : Arguments>(
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /** Cooldown object that keeps track of the cooldowns for this command. **/
-    public val cooldown: Cooldown = extension.bot.settings.slashCommandsBuilder.cooldownsBuilder.implementation.invoke()
+    public var cooldown: Cooldown = extension.bot.settings.slashCommandsBuilder.cooldownsBuilder.implementation.invoke()
 
     /** Cooldown body that defines the duration for the different cooldown types. **/
     public var cooldownBody: suspend (CooldownType) -> Duration? = { null }
