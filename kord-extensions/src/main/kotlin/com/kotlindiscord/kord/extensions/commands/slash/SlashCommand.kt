@@ -111,7 +111,7 @@ public open class SlashCommand<T : Arguments>(
     public var cooldown: Cooldown = extension.bot.settings.slashCommandsBuilder.cooldownsBuilder.implementation.invoke()
 
     /** Cooldown body that defines the duration for the different cooldown types. **/
-    public var cooldownBody: suspend (CooldownType) -> Duration? = { null }
+    public var cooldownBody: suspend (CooldownType, InteractionCreateEvent) -> Duration? = { _, _ -> null }
 
     /** Return this command's name translated for the given locale, cached as required. **/
     public open fun getTranslatedName(locale: Locale): String {
@@ -358,7 +358,7 @@ public open class SlashCommand<T : Arguments>(
     /**
      * Defines the durations for the different cooldown types.
      */
-    public open fun cooldowns(cooldown: suspend (CooldownType) -> Duration?) {
+    public open fun cooldowns(cooldown: suspend (CooldownType, InteractionCreateEvent) -> Duration?) {
         this.cooldownBody = cooldown
     }
 
@@ -469,7 +469,7 @@ public open class SlashCommand<T : Arguments>(
                 val key = cooldownType.getSlashCooldownKey(event) ?: continue
 
                 val timeLeft = cooldown.getCooldown(key)
-                val cooldownDuration = cooldownBody.invoke(cooldownType)
+                val cooldownDuration = cooldownBody.invoke(cooldownType, event)
 
                 when {
                     cooldownDuration == null -> continue

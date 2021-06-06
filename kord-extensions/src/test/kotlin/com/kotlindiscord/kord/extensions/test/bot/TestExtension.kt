@@ -246,8 +246,8 @@ class TestExtension : Extension() {
             autoAck = AutoAckType.PUBLIC
             guild(787452339908116521) // Our test server
 
-            cooldowns {
-                if (it is ChannelCooldown) {
+            cooldowns { cooldownType, event ->
+                if (cooldownType is ChannelCooldown) {
                     Duration.seconds(8)
                 } else {
                     null
@@ -338,8 +338,8 @@ class TestExtension : Extension() {
             name = "cooldown-test"
             description = "Cooldown test"
 
-            cooldowns {
-                if (it is UserCooldown) {
+            cooldowns { cooldownType, event ->
+                if (cooldownType is UserCooldown) {
                     Duration.seconds(5)
                 } else {
                     null

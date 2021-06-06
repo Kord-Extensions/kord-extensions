@@ -65,7 +65,7 @@ public open class MessageCommand<T : Arguments>(
         .invoke()
 
     /** Cooldown body that defines the duration for the different cooldown types. **/
-    public var cooldownBody: suspend (CooldownType) -> Duration? = { null }
+    public var cooldownBody: suspend (CooldownType, MessageCreateEvent) -> Duration? = { _, _ -> null }
 
     /**
      * @suppress
@@ -260,7 +260,7 @@ public open class MessageCommand<T : Arguments>(
     /**
      * Defines the durations for the different cooldown types.
      */
-    public open fun cooldowns(cooldown: suspend (CooldownType) -> Duration?) {
+    public open fun cooldowns(cooldown: suspend (CooldownType, MessageCreateEvent) -> Duration?) {
         this.cooldownBody = cooldown
     }
 
@@ -378,7 +378,7 @@ public open class MessageCommand<T : Arguments>(
                 val key = cooldownType.getCooldownKey(event) ?: continue
 
                 val timeLeft = cooldown.getCooldown(key)
-                val cooldownDuration = cooldownBody.invoke(cooldownType)
+                val cooldownDuration = cooldownBody.invoke(cooldownType, event)
 
                 when {
                     cooldownDuration == null -> continue
