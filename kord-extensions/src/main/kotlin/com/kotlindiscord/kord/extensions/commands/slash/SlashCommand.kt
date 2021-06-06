@@ -80,7 +80,11 @@ public open class SlashCommand<T : Arguments>(
     public open val hasBody: Boolean get() = ::body.isInitialized
 
     /** Guild ID this slash command is to be registered for, if any. **/
-    public open var guild: Snowflake? = settings.slashCommandsBuilder.defaultGuild
+    public open var guild: Snowflake? = if (parentCommand == null && parentGroup == null) {
+        settings.slashCommandsBuilder.defaultGuild
+    } else {
+        null
+    }
 
     /** Type of automatic ack to use, if any. **/
     public open var autoAck: AutoAckType = AutoAckType.EPHEMERAL
