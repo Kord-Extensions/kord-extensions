@@ -377,13 +377,12 @@ public open class MessageCommand<T : Arguments>(
 
             for (cooldownType in extension.bot.settings.messageCommandsBuilder.cooldownsBuilder.priority.invoke()) {
                 val key = cooldownType.getCooldownKey(event) ?: continue
-
                 val timeLeft = cooldown.getCooldown(key)
-                val cooldownDuration = cooldownBody.invoke(cooldownType, event) ?: continue
 
                 if (timeLeft != null && timeLeft > Duration.ZERO) {
                     throw CommandException("You must wait another ${timeLeft.toDouble(DurationUnit.SECONDS)}")
                 } else {
+                    val cooldownDuration = cooldownBody.invoke(cooldownType, event) ?: continue
                     cooldown.setCooldown(key, cooldownDuration)
                 }
             }
