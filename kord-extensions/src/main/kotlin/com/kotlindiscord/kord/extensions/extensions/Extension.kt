@@ -118,6 +118,14 @@ public abstract class Extension : KoinComponent {
             throw t
         }
 
+        for (command in commands) {
+            bot.settings.messageCommandsBuilder.cooldownsBuilder.importBuilder.invoke(command.cooldown, command)
+        }
+
+        for (command in slashCommands) {
+            bot.settings.slashCommandsBuilder.cooldownsBuilder.importBuilder.invoke(command.cooldown, command)
+        }
+
         this.setState(ExtensionState.LOADED)
     }
 
@@ -322,6 +330,12 @@ public abstract class Extension : KoinComponent {
 
         for (command in commands) {
             messageCommandsRegistry.remove(command)
+
+            bot.settings.messageCommandsBuilder.cooldownsBuilder.exportBuilder.invoke(command.cooldown, command)
+        }
+
+        for (command in slashCommands) {
+            bot.settings.slashCommandsBuilder.cooldownsBuilder.exportBuilder.invoke(command.cooldown, command)
         }
 
         eventHandlers.clear()

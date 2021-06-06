@@ -34,4 +34,12 @@ public interface CooldownProvider {
      * Removes expired cooldowns for commands.
      */
     public fun clearCooldowns()
+
+    /**
+     * Returns a copy of all the cooldowns this object is storing.
+     *
+     * String - The Cooldown Key
+     * Long - time in epochMillis of when this cooldown expires
+     */
+    public fun getCooldowns(): Map<String, Long>
 }

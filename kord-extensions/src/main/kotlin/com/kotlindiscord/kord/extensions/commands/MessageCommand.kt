@@ -28,6 +28,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 private val logger = KotlinLogging.logger {}
@@ -62,7 +63,7 @@ public open class MessageCommand<T : Arguments>(
 
     /** Cooldown object that keeps track of the cooldowns for this command. **/
     public var cooldown: CooldownProvider =
-        extension.bot.settings.messageCommandsBuilder.cooldownsBuilder.implementation.invoke()
+        extension.bot.settings.messageCommandsBuilder.cooldownsBuilder.provider.invoke()
 
     /** Cooldown body that defines the duration for the different cooldown types. **/
     public var cooldownBody: suspend (CooldownType, MessageCreateEvent) -> Duration? = { _, _ -> null }
@@ -378,16 +379,12 @@ public open class MessageCommand<T : Arguments>(
                 val key = cooldownType.getCooldownKey(event) ?: continue
 
                 val timeLeft = cooldown.getCooldown(key)
-                val cooldownDuration = cooldownBody.invoke(cooldownType, event)
+                val cooldownDuration = cooldownBody.invoke(cooldownType, event) ?: continue
 
-                when {
-                    cooldownDuration == null -> continue
-                    timeLeft == null -> cooldown.setCooldown(key, cooldownDuration)
-                    else -> if (timeLeft < cooldownDuration) {
-                        throw CommandException("You must wait another ${timeLeft.inSeconds} seconds")
-                    } else {
-                        cooldown.setCooldown(key, cooldownDuration)
-                    }
+                if (timeLeft != null && timeLeft > Duration.ZERO) {
+                    throw CommandException("You must wait another ${timeLeft.toDouble(DurationUnit.SECONDS)}")
+                } else {
+                    cooldown.setCooldown(key, cooldownDuration)
                 }
             }
 

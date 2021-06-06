@@ -3,6 +3,8 @@ package com.kotlindiscord.kord.extensions.builders
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
+import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
 import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownType
@@ -10,6 +12,8 @@ import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.Cooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
@@ -220,10 +224,10 @@ public open class ExtensibleBotBuilder {
     }
 
     /** Builder used for configuring the bot's cooldowns options. **/
-    public class CooldownsBuilder {
+    public class CooldownsBuilder<T : Command> {
 
         /** @suppress **/
-        public var implementation: () -> CooldownProvider = { Cooldown() }
+        public var provider: () -> CooldownProvider = { Cooldown() }
 
         /** @suppress **/
         public var priority: () -> List<CooldownType> = {
@@ -233,6 +237,12 @@ public open class ExtensibleBotBuilder {
                 GuildCooldown()
             )
         }
+
+        /** @suppress **/
+        public var importBuilder: CooldownProvider.(T) -> Unit = {}
+
+        /** @suppress **/
+        public var exportBuilder: CooldownProvider.(T) -> Unit = {}
 
         /**
          * Defines whether we should automatically clear expired cooldowns in the background.
@@ -244,13 +254,13 @@ public open class ExtensibleBotBuilder {
          */
         @OptIn(ExperimentalTime::class)
         @Suppress("MagicNumber")
-        public var autoClearTime: Duration = 5.minutes
+        public var autoClearTime: Duration = Duration.minutes(5)
 
         /**
          * Sets the implementation to use for the command's cooldown object.
          */
-        public fun defaultImplementation(builder: () -> CooldownProvider) {
-            this.implementation = builder
+        public fun defaultProvider(builder: () -> CooldownProvider) {
+            this.provider = builder
         }
 
         /**
@@ -258,6 +268,25 @@ public open class ExtensibleBotBuilder {
          */
         public fun priority(builder: () -> List<CooldownType>) {
             this.priority = builder
+        }
+
+        /**
+         * Allows cooldowns to be imported, giving you access to the command's [CooldownProvider] as well as the
+         * command itself. This is called when extensions are being setup.
+         */
+        public fun import(builder: CooldownProvider.(T) -> Unit) {
+            this.importBuilder = builder
+        }
+
+        /**
+         * Allows cooldowns to be exported, giving you access to the command's [CooldownProvider] as well as the
+         * command itself. This is called when extensions are being unloaded.
+         *
+         * You will need to make sure you unload extensions yourself, e.g. shutdown command that unloads extensions
+         * before disconnecting, as kord-ex does not unload extensions in its lifecycle.
+         */
+        public fun export(builder: CooldownProvider.(T) -> Unit) {
+            this.exportBuilder = builder
         }
     }
 
@@ -720,7 +749,7 @@ public open class ExtensibleBotBuilder {
         public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public val cooldownsBuilder: CooldownsBuilder = CooldownsBuilder()
+        public val cooldownsBuilder: CooldownsBuilder<MessageCommand<out Arguments>> = CooldownsBuilder()
 
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
@@ -768,7 +797,7 @@ public open class ExtensibleBotBuilder {
         /**
          * Allows for configuring cooldown settings for commands.
          */
-        public fun cooldowns(builder: CooldownsBuilder.() -> Unit) {
+        public fun cooldowns(builder: CooldownsBuilder<MessageCommand<out Arguments>>.() -> Unit) {
             cooldownsBuilder.apply(builder)
         }
     }
@@ -793,7 +822,7 @@ public open class ExtensibleBotBuilder {
         public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public val cooldownsBuilder: CooldownsBuilder = CooldownsBuilder()
+        public val cooldownsBuilder: CooldownsBuilder<SlashCommand<out Arguments>> = CooldownsBuilder()
 
         /** Set a guild ID to use for all global slash commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake) {
@@ -846,7 +875,7 @@ public open class ExtensibleBotBuilder {
         /**
          * Allows for configuring cooldown settings for slash commands.
          */
-        public fun cooldowns(builder: CooldownsBuilder.() -> Unit) {
+        public fun cooldowns(builder: CooldownsBuilder<SlashCommand<out Arguments>>.() -> Unit) {
             cooldownsBuilder.apply(builder)
         }
     }

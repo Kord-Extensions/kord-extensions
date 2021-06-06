@@ -24,7 +24,7 @@ public class Cooldown : CooldownProvider {
             clearCooldown(key)
             null
         } else {
-            (due - now).milliseconds
+            Duration.milliseconds(due - now)
         }
     }
 
@@ -40,4 +40,6 @@ public class Cooldown : CooldownProvider {
             }
         }
     }
+
+    override fun getCooldowns(): Map<String, Long> = cooldownsMap
 }
