@@ -6,6 +6,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 
 /**
  * User Cooldown Type.
+ * Key: U:{user_id}
  */
 public class UserCooldown : CooldownType {
     override suspend fun getCooldownKey(event: MessageCreateEvent): String? =

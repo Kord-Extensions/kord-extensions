@@ -17,21 +17,21 @@ public interface CooldownProvider {
     public fun setCooldown(key: String, duration: Duration)
 
     /**
-     * Gets the cooldown time remaining for a message command.
+     * Gets the cooldown time remaining for a command.
      *
      * @param key the key representing what type of cooldown it is
      */
     public fun getCooldown(key: String): Duration?
 
     /**
-     * Clears the cooldown time for a message command.
+     * Clears the cooldown time for a command.
      *
      * @param key the key representing what type of cooldown it is
      */
     public fun clearCooldown(key: String)
 
     /**
-     * Removes expired cooldowns for message commands.
+     * Removes expired cooldowns for commands.
      */
     public fun clearCooldowns()
 }

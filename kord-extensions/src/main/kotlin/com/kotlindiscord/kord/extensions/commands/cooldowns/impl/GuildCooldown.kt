@@ -7,6 +7,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 
 /**
  * Guild Cooldown Type.
+ * Key: G:{guild_id}
  */
 public class GuildCooldown : CooldownType {
     override suspend fun getCooldownKey(event: MessageCreateEvent): String? =

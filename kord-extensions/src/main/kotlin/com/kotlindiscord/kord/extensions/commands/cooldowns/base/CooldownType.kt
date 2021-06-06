@@ -4,7 +4,9 @@ import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 
 /**
- * @suppress
+ * Keys should be unique and contain information about the type of cooldown it is, and who the cooldown is for.
+ *
+ * E.g. GuildCooldown: G:{guild_id}
  */
 public interface CooldownType {
     /**

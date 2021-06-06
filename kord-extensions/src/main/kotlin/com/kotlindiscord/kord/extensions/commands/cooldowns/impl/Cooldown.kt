@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.*
 
 /**
- * The default implementation for the cooldown object.
+ * An implementation of [CooldownProvider] that will be used by default.
  */
 @OptIn(ExperimentalTime::class)
 public class Cooldown : CooldownProvider {

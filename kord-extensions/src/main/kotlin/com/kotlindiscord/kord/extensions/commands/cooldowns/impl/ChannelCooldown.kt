@@ -6,6 +6,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 
 /**
  * Channel Cooldown Type.
+ * Key: C:{channel_id}
  */
 public class ChannelCooldown : CooldownType {
     override suspend fun getCooldownKey(event: MessageCreateEvent): String? =
