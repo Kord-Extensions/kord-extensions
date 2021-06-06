@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.commands.cooldowns
+package com.kotlindiscord.kord.extensions.commands.cooldowns.base
 
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.cooldowns.impl
 
-import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownProvider
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.*
 

@@ -4,8 +4,8 @@ import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownProvider
-import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownType
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.Cooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown

@@ -8,8 +8,8 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.Command
-import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownProvider
-import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownType
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
 import com.kotlindiscord.kord.extensions.extensions.Extension
