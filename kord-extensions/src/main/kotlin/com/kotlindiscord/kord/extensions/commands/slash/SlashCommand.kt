@@ -8,7 +8,7 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.Command
-import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownProvider
 import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
@@ -108,7 +108,8 @@ public open class SlashCommand<T : Arguments>(
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /** Cooldown object that keeps track of the cooldowns for this command. **/
-    public var cooldown: Cooldown = extension.bot.settings.slashCommandsBuilder.cooldownsBuilder.implementation.invoke()
+    public var cooldown: CooldownProvider =
+        extension.bot.settings.slashCommandsBuilder.cooldownsBuilder.implementation.invoke()
 
     /** Cooldown body that defines the duration for the different cooldown types. **/
     public var cooldownBody: suspend (CooldownType, InteractionCreateEvent) -> Duration? = { _, _ -> null }

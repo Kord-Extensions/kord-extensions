@@ -4,10 +4,10 @@ import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.cooldowns.Cooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownProvider
 import com.kotlindiscord.kord.extensions.commands.cooldowns.CooldownType
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
-import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.CooldownImpl
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.Cooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
@@ -223,7 +223,7 @@ public open class ExtensibleBotBuilder {
     public class CooldownsBuilder {
 
         /** @suppress **/
-        public var implementation: () -> Cooldown = { CooldownImpl() }
+        public var implementation: () -> CooldownProvider = { Cooldown() }
 
         /** @suppress **/
         public var priority: () -> List<CooldownType> = {
@@ -249,7 +249,7 @@ public open class ExtensibleBotBuilder {
         /**
          * Sets the implementation to use for the command's cooldown object.
          */
-        public fun defaultImplementation(builder: () -> Cooldown) {
+        public fun defaultImplementation(builder: () -> CooldownProvider) {
             this.implementation = builder
         }
 
