@@ -25,7 +25,7 @@ import org.apache.commons.validator.routines.EmailValidator
  */
 @OptIn(KordPreview::class)
 public class EmailConverter(
-    override var validator: (suspend Argument<*>.(String) -> Unit)? = null
+    override var validator: Validator<String> = null
 ) : SingleConverter<String>() {
     override val signatureTypeString: String = "converters.email.signatureType"
 
@@ -53,7 +53,7 @@ public class EmailConverter(
 public fun Arguments.email(
     displayName: String,
     description: String,
-    validator: (suspend Argument<*>.(String) -> Unit)? = null,
+    validator: Validator<String> = null,
 ): SingleConverter<String> =
     arg(displayName, description, EmailConverter(validator))
 
@@ -66,7 +66,7 @@ public fun Arguments.optionalEmail(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(String?) -> Unit)? = null,
+    validator: Validator<String?> = null,
 ): OptionalConverter<String?> =
     arg(
         displayName,
@@ -84,7 +84,7 @@ public fun Arguments.defaultingEmail(
     displayName: String,
     description: String,
     defaultValue: String,
-    validator: (suspend Argument<*>.(String) -> Unit)? = null,
+    validator: Validator<String> = null,
 ): DefaultingConverter<String> =
     arg(
         displayName,
@@ -104,7 +104,7 @@ public fun Arguments.emailList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<String>) -> Unit)? = null,
+    validator: Validator<List<String>> = null,
 ): MultiConverter<String> =
     arg(
         displayName,

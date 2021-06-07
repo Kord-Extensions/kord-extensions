@@ -24,7 +24,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 public class StringCoalescingConverter(
     shouldThrow: Boolean = false,
-    override var validator: (suspend Argument<*>.(String) -> Unit)? = null
+    override var validator: Validator<String> = null
 ) : CoalescingConverter<String>(shouldThrow) {
     override val signatureTypeString: String = "converters.string.signatureType"
     override val showTypeInSignature: Boolean = false
@@ -48,7 +48,7 @@ public fun Arguments.coalescedString(
     displayName:
     String,
     description: String,
-    validator: (suspend Argument<*>.(String) -> Unit)? = null,
+    validator: Validator<String> = null,
 ): CoalescingConverter<String> =
     arg(displayName, description, StringCoalescingConverter(validator = validator))
 
@@ -60,7 +60,7 @@ public fun Arguments.coalescedString(
 public fun Arguments.optionalCoalescedString(
     displayName: String,
     description: String,
-    validator: (suspend Argument<*>.(String?) -> Unit)? = null,
+    validator: Validator<String?> = null,
 ): OptionalCoalescingConverter<String?> =
     arg(
         displayName,
@@ -78,7 +78,7 @@ public fun Arguments.defaultingCoalescedString(
     displayName: String,
     description: String,
     defaultValue: String,
-    validator: (suspend Argument<*>.(String) -> Unit)? = null,
+    validator: Validator<String> = null,
 ): DefaultingCoalescingConverter<String> =
     arg(
         displayName,

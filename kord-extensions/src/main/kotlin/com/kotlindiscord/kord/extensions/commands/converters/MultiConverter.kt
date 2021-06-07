@@ -2,7 +2,6 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import kotlin.reflect.KProperty
 
@@ -20,7 +19,7 @@ import kotlin.reflect.KProperty
  */
 public abstract class MultiConverter<T : Any>(
     required: Boolean = true,
-    public open var validator: (suspend Argument<*>.(result: List<T>) -> Unit)? = null
+    public open var validator: Validator<List<T>> = null
 ) : Converter<List<T>>(required) {
     /**
      * The parsed value.
@@ -52,8 +51,8 @@ public abstract class MultiConverter<T : Any>(
     public operator fun getValue(thisRef: Arguments, property: KProperty<*>): List<T> = parsed
 
     /** Call the validator lambda, if one was provided. **/
-    public open suspend fun validate() {
-        validator?.let { it(this.argumentObj, parsed) }
+    public open suspend fun validate(context: CommandContext) {
+        validator?.let { it(context, this.argumentObj, parsed) }
     }
 
     /**

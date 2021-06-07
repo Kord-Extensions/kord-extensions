@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.firstOrNull
  */
 @OptIn(KordPreview::class)
 public class UserConverter(
-    override var validator: (suspend Argument<*>.(User) -> Unit)? = null
+    override var validator: Validator<User> = null
 ) : SingleConverter<User>() {
     override val signatureTypeString: String = "converters.user.signatureType"
 
@@ -84,7 +84,7 @@ public class UserConverter(
 public fun Arguments.user(
     displayName: String,
     description: String,
-    validator: (suspend Argument<*>.(User) -> Unit)? = null,
+    validator: Validator<User> = null,
 ): SingleConverter<User> =
     arg(displayName, description, UserConverter(validator))
 
@@ -97,7 +97,7 @@ public fun Arguments.optionalUser(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(User?) -> Unit)? = null,
+    validator: Validator<User?> = null,
 ): OptionalConverter<User?> =
     arg(
         displayName,
@@ -117,7 +117,7 @@ public fun Arguments.userList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<User>) -> Unit)? = null,
+    validator: Validator<List<User>> = null,
 ): MultiConverter<User> =
     arg(
         displayName,

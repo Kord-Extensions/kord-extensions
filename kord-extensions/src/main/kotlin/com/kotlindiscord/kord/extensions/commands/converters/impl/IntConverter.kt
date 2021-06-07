@@ -27,7 +27,7 @@ private const val DEFAULT_RADIX = 10
 @OptIn(KordPreview::class)
 public class IntConverter(
     private val radix: Int = DEFAULT_RADIX,
-    override var validator: (suspend Argument<*>.(Int) -> Unit)? = null
+    override var validator: Validator<Int> = null
 ) : SingleConverter<Int>() {
     override val signatureTypeString: String = "converters.number.signatureType"
 
@@ -60,30 +60,9 @@ public fun Arguments.int(
     displayName: String,
     description: String,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Int) -> Unit)? = null,
+    validator: Validator<Int> = null,
 ): SingleConverter<Int> =
     arg(displayName, description, IntConverter(radix, validator))
-
-/**
- * Create an integer converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see IntConverter
- */
-public fun Arguments.intList(
-    displayName: String,
-    description: String,
-    required: Boolean = true,
-    radix: Int = 10,
-    validator: (suspend Argument<*>.(List<Int>) -> Unit)? = null,
-): MultiConverter<Int> =
-    arg(
-        displayName,
-        description,
-        IntConverter(radix)
-            .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
-    )
 
 /**
  * Create an optional integer converter, for single arguments.
@@ -95,7 +74,7 @@ public fun Arguments.optionalInt(
     description: String,
     outputError: Boolean = false,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Int?) -> Unit)? = null,
+    validator: Validator<Int?> = null,
 ): OptionalConverter<Int?> =
     arg(
         displayName,
@@ -114,11 +93,32 @@ public fun Arguments.defaultingInt(
     description: String,
     defaultValue: Int,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Int) -> Unit)? = null,
+    validator: Validator<Int> = null,
 ): DefaultingConverter<Int> =
     arg(
         displayName,
         description,
         IntConverter(radix)
             .toDefaulting(defaultValue, nestedValidator = validator)
+    )
+
+/**
+ * Create an integer converter, for lists of arguments.
+ *
+ * @param required Whether command parsing should fail if no arguments could be converted.
+ *
+ * @see IntConverter
+ */
+public fun Arguments.intList(
+    displayName: String,
+    description: String,
+    required: Boolean = true,
+    radix: Int = 10,
+    validator: Validator<List<Int>> = null,
+): MultiConverter<Int> =
+    arg(
+        displayName,
+        description,
+        IntConverter(radix)
+            .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
     )

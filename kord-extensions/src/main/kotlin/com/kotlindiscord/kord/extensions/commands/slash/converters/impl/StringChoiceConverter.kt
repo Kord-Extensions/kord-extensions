@@ -22,7 +22,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @OptIn(KordPreview::class)
 public class StringChoiceConverter(
     choices: Map<String, String>,
-    override var validator: (suspend Argument<*>.(String) -> Unit)? = null
+    override var validator: Validator<String> = null
 ) : ChoiceConverter<String>(choices) {
     override val signatureTypeString: String = "converters.string.signatureType"
 
@@ -49,7 +49,7 @@ public fun Arguments.stringChoice(
     displayName: String,
     description: String,
     choices: Map<String, String>,
-    validator: (suspend Argument<*>.(String) -> Unit)? = null
+    validator: Validator<String> = null
 ): SingleConverter<String> = arg(displayName, description, StringChoiceConverter(choices, validator))
 
 /**
@@ -61,7 +61,7 @@ public fun Arguments.optionalStringChoice(
     displayName: String,
     description: String,
     choices: Map<String, String>,
-    validator: (suspend Argument<*>.(String?) -> Unit)? = null
+    validator: Validator<String?> = null
 ): OptionalConverter<String?> = arg(
     displayName,
     description,
@@ -79,7 +79,7 @@ public fun Arguments.defaultingStringChoice(
     description: String,
     defaultValue: String,
     choices: Map<String, String>,
-    validator: (suspend Argument<*>.(String) -> Unit)? = null
+    validator: Validator<String> = null
 ): DefaultingConverter<String> = arg(
     displayName,
     description,

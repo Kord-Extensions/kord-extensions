@@ -26,7 +26,7 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  */
 @OptIn(KordPreview::class)
 public class BooleanConverter(
-    override var validator: (suspend Argument<*>.(Boolean) -> Unit)? = null
+    override var validator: Validator<Boolean> = null
 ) : SingleConverter<Boolean>() {
     public override val signatureTypeString: String = "converters.boolean.signatureType"
     public override val errorTypeString: String = "converters.boolean.errorType"
@@ -51,7 +51,7 @@ public class BooleanConverter(
 public fun Arguments.boolean(
     displayName: String,
     description: String,
-    validator: (suspend Argument<*>.(Boolean) -> Unit)? = null
+    validator: Validator<Boolean> = null
 ): SingleConverter<Boolean> =
     arg(displayName, description, BooleanConverter(validator))
 
@@ -64,7 +64,7 @@ public fun Arguments.optionalBoolean(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Boolean?) -> Unit)? = null,
+    validator: Validator<Boolean?> = null,
 ): OptionalConverter<Boolean?> =
     arg(
         displayName,
@@ -82,7 +82,7 @@ public fun Arguments.defaultingBoolean(
     displayName: String,
     description: String,
     defaultValue: Boolean,
-    validator: (suspend Argument<*>.(Boolean) -> Unit)? = null,
+    validator: Validator<Boolean> = null,
 ): DefaultingConverter<Boolean> =
     arg(
         displayName,
@@ -102,7 +102,7 @@ public fun Arguments.booleanList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<Boolean>) -> Unit)? = null,
+    validator: Validator<List<Boolean>> = null,
 ): MultiConverter<Boolean> =
     arg(
         displayName,

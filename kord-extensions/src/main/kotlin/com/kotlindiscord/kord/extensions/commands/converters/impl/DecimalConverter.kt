@@ -24,7 +24,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 @OptIn(KordPreview::class)
 public class DecimalConverter(
-    override var validator: (suspend Argument<*>.(Double) -> Unit)? = null
+    override var validator: Validator<Double> = null
 ) : SingleConverter<Double>() {
     override val signatureTypeString: String = "converters.decimal.signatureType"
 
@@ -52,7 +52,7 @@ public class DecimalConverter(
 public fun Arguments.decimal(
     displayName: String,
     description: String,
-    validator: (suspend Argument<*>.(Double) -> Unit)? = null,
+    validator: Validator<Double> = null,
 ): SingleConverter<Double> =
     arg(displayName, description, DecimalConverter(validator))
 
@@ -65,7 +65,7 @@ public fun Arguments.optionalDecimal(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Double?) -> Unit)? = null,
+    validator: Validator<Double?> = null,
 ): OptionalConverter<Double?> =
     arg(
         displayName,
@@ -83,7 +83,7 @@ public fun Arguments.defaultingDecimal(
     displayName: String,
     description: String,
     defaultValue: Double,
-    validator: (suspend Argument<*>.(Double) -> Unit)? = null,
+    validator: Validator<Double> = null,
 ): DefaultingConverter<Double> =
     arg(
         displayName,
@@ -103,7 +103,7 @@ public fun Arguments.decimalList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<Double>) -> Unit)? = null,
+    validator: Validator<List<Double>> = null,
 ): MultiConverter<Double> =
     arg(
         displayName,

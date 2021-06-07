@@ -164,7 +164,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         converter.parseSuccess = true
                         currentValue = null
 
-                        converter.validate()
+                        converter.validate(context)
                     }
                 } catch (e: CommandException) {
                     if (converter.required || hasKwargs) {
@@ -210,7 +210,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         converter.parseSuccess = true
                         currentValue = null
 
-                        converter.validate()
+                        converter.validate(context)
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -238,7 +238,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         converter.parseSuccess = true
                         currentValue = null
 
-                        converter.validate()
+                        converter.validate(context)
                     }
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
@@ -308,7 +308,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             currentValue = null
                             converter.parseSuccess = true
 
-                            converter.validate()
+                            converter.validate(context)
                         }
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
@@ -381,7 +381,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             currentValue = null
                             converter.parseSuccess = true
 
-                            converter.validate()
+                            converter.validate(context)
                         }
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
@@ -454,7 +454,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             currentValue = null
                             converter.parseSuccess = true
 
-                            converter.validate()
+                            converter.validate(context)
                         }
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
@@ -527,7 +527,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             currentValue = null
                             converter.parseSuccess = true
 
-                            converter.validate()
+                            converter.validate(context)
                         }
 
                         (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }

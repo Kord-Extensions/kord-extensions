@@ -25,7 +25,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 @OptIn(KordPreview::class)
 public class SnowflakeConverter(
-    override var validator: (suspend Argument<*>.(Snowflake) -> Unit)? = null
+    override var validator: Validator<Snowflake> = null
 ) : SingleConverter<Snowflake>() {
     override val signatureTypeString: String = "converters.snowflake.signatureType"
 
@@ -53,7 +53,7 @@ public class SnowflakeConverter(
 public fun Arguments.snowflake(
     displayName: String,
     description: String,
-    validator: (suspend Argument<*>.(Snowflake) -> Unit)? = null,
+    validator: Validator<Snowflake> = null,
 ): SingleConverter<Snowflake> =
     arg(displayName, description, SnowflakeConverter(validator))
 
@@ -66,7 +66,7 @@ public fun Arguments.optionalSnowflake(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Snowflake?) -> Unit)? = null,
+    validator: Validator<Snowflake?> = null,
 ): OptionalConverter<Snowflake?> =
     arg(
         displayName,
@@ -84,7 +84,7 @@ public fun Arguments.defaultingString(
     displayName: String,
     description: String,
     defaultValue: Snowflake,
-    validator: (suspend Argument<*>.(Snowflake) -> Unit)? = null,
+    validator: Validator<Snowflake> = null,
 ): DefaultingConverter<Snowflake> =
     arg(
         displayName,
@@ -104,7 +104,7 @@ public fun Arguments.snowflakeList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<Snowflake>) -> Unit)? = null,
+    validator: Validator<List<Snowflake>> = null,
 ): MultiConverter<Snowflake> =
     arg(
         displayName,

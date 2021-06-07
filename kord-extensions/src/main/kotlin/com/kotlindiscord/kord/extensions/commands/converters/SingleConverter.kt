@@ -2,7 +2,6 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import kotlin.reflect.KProperty
@@ -22,7 +21,7 @@ import kotlin.reflect.KProperty
  */
 @KordPreview
 public abstract class SingleConverter<T : Any>(
-    public open var validator: (suspend Argument<*>.(result: T) -> Unit)? = null
+    public open var validator: Validator<T> = null
 ) : Converter<T>(true), SlashCommandConverter {
     /**
      * The parsed value.
@@ -53,8 +52,8 @@ public abstract class SingleConverter<T : Any>(
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
 
     /** Call the validator lambda, if one was provided. **/
-    public open suspend fun validate() {
-        validator?.let { it(this.argumentObj, parsed) }
+    public open suspend fun validate(context: CommandContext) {
+        validator?.let { it(context, this.argumentObj, parsed) }
     }
 
     /**
@@ -102,7 +101,7 @@ public abstract class SingleConverter<T : Any>(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
-        nestedValidator: (suspend Argument<*>.(List<T>) -> Unit)? = null
+        nestedValidator: Validator<List<T>> = null
     ): MultiConverter<T> = SingleToMultiConverter(
         required,
         this,
@@ -139,7 +138,7 @@ public abstract class SingleConverter<T : Any>(
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
         outputError: Boolean = false,
-        nestedValidator: (suspend Argument<*>.(T?) -> Unit)? = null
+        nestedValidator: Validator<T?> = null
     ): OptionalConverter<T?> = SingleToOptionalConverter(
         this,
         signatureTypeString,
@@ -175,7 +174,7 @@ public abstract class SingleConverter<T : Any>(
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
-        nestedValidator: (suspend Argument<*>.(T) -> Unit)? = null
+        nestedValidator: Validator<T> = null
     ): DefaultingConverter<T> = SingleToDefaultingConverter(
         this,
         defaultValue,

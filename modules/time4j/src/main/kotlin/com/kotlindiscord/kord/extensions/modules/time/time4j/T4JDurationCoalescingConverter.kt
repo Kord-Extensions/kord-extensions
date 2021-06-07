@@ -36,7 +36,7 @@ import net.time4j.IsoUnit
 public class T4JDurationCoalescingConverter(
     public val longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    override var validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null
+    override var validator: Validator<Duration<IsoUnit>> = null
 ) : CoalescingConverter<Duration<IsoUnit>>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
     private val logger = KotlinLogging.logger {}
@@ -144,7 +144,7 @@ public fun Arguments.coalescedT4jDuration(
     description: String,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>> = null,
 ): CoalescingConverter<Duration<IsoUnit>> =
     arg(
         displayName,
@@ -162,7 +162,7 @@ public fun Arguments.optionalCoalescedT4jDuration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>?) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>?> = null,
 ): OptionalCoalescingConverter<Duration<IsoUnit>?> =
     arg(
         displayName,
@@ -183,7 +183,7 @@ public fun Arguments.defaultingCoalescedT4jDuration(
     defaultValue: Duration<IsoUnit>,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>> = null,
 ): DefaultingCoalescingConverter<Duration<IsoUnit>> =
     arg(
         displayName,

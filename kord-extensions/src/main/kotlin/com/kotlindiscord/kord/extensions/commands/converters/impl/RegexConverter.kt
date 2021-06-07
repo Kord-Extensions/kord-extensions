@@ -32,7 +32,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @OptIn(KordPreview::class)
 public class RegexConverter(
     private val options: Set<RegexOption> = setOf(),
-    override var validator: (suspend Argument<*>.(Regex) -> Unit)? = null
+    override var validator: Validator<Regex> = null
 ) : SingleConverter<Regex>() {
     override val signatureTypeString: String = "converters.regex.signatureType.singular"
 
@@ -55,7 +55,7 @@ public fun Arguments.regex(
     displayName: String,
     description: String,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
+    validator: Validator<Regex> = null,
 ): SingleConverter<Regex> =
     arg(displayName, description, RegexConverter(options, validator))
 
@@ -69,7 +69,7 @@ public fun Arguments.optionalRegex(
     description: String,
     options: Set<RegexOption> = setOf(),
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Regex?) -> Unit)? = null,
+    validator: Validator<Regex?> = null,
 ): OptionalConverter<Regex?> =
     arg(
         displayName,
@@ -88,7 +88,7 @@ public fun Arguments.defaultingRegex(
     description: String,
     defaultValue: Regex,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
+    validator: Validator<Regex> = null,
 ): DefaultingConverter<Regex> =
     arg(
         displayName,
@@ -109,7 +109,7 @@ public fun Arguments.regexList(
     description: String,
     required: Boolean = true,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(List<Regex>) -> Unit)? = null,
+    validator: Validator<List<Regex>> = null,
 ): MultiConverter<Regex> =
     arg(
         displayName,

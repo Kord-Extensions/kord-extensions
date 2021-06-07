@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.mapNotNull
  */
 @OptIn(KordPreview::class)
 public class EmojiConverter(
-    override var validator: (suspend Argument<*>.(GuildEmoji) -> Unit)? = null
+    override var validator: Validator<GuildEmoji> = null
 ) : SingleConverter<GuildEmoji>() {
     override val signatureTypeString: String = "converters.emoji.signatureType"
 
@@ -93,7 +93,7 @@ public class EmojiConverter(
 public fun Arguments.emoji(
     displayName: String,
     description: String,
-    validator: (suspend Argument<*>.(GuildEmoji) -> Unit)? = null,
+    validator: Validator<GuildEmoji> = null,
 ): SingleConverter<GuildEmoji> =
     arg(displayName, description, EmojiConverter(validator))
 
@@ -106,7 +106,7 @@ public fun Arguments.optionalEmoji(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(GuildEmoji?) -> Unit)? = null,
+    validator: Validator<GuildEmoji?> = null,
 ): OptionalConverter<GuildEmoji?> =
     arg(
         displayName,
@@ -126,7 +126,7 @@ public fun Arguments.emojiList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<GuildEmoji>) -> Unit)? = null,
+    validator: Validator<List<GuildEmoji>> = null,
 ): MultiConverter<GuildEmoji> =
     arg(
         displayName,

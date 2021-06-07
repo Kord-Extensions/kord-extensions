@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.toList
 public class ChannelConverter(
     private val requireSameGuild: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null,
-    override var validator: (suspend Argument<*>.(Channel) -> Unit)? = null
+    override var validator: Validator<Channel> = null
 ) : SingleConverter<Channel>() {
     override val signatureTypeString: String = "converters.channel.signatureType"
 
@@ -114,7 +114,7 @@ public fun Arguments.channel(
     description: String,
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend Argument<*>.(Channel) -> Unit)? = null,
+    validator: Validator<Channel> = null,
 ): SingleConverter<Channel> = arg(
     displayName,
     description,
@@ -132,7 +132,7 @@ public fun Arguments.optionalChannel(
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Channel?) -> Unit)? = null,
+    validator: Validator<Channel?> = null,
 ): OptionalConverter<Channel?> =
     arg(
         displayName,
@@ -154,7 +154,7 @@ public fun Arguments.channelList(
     required: Boolean = true,
     requireSameGuild: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend Argument<*>.(List<Channel>) -> Unit)? = null,
+    validator: Validator<List<Channel>> = null,
 ): MultiConverter<Channel> = arg(
     displayName,
     description,

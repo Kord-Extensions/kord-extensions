@@ -37,7 +37,7 @@ public class J8DurationCoalescingConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,
     shouldThrow: Boolean = false,
-    override var validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null
+    override var validator: Validator<ChronoContainer> = null
 ) : CoalescingConverter<ChronoContainer>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
     private val logger = KotlinLogging.logger {}
@@ -158,7 +158,7 @@ public fun Arguments.coalescedJ8Duration(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+    validator: Validator<ChronoContainer> = null,
 ): CoalescingConverter<ChronoContainer> =
     arg(
         displayName,
@@ -182,7 +182,7 @@ public fun Arguments.optionalCoalescedJ8Duration(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(ChronoContainer?) -> Unit)? = null,
+    validator: Validator<ChronoContainer?> = null,
 ): OptionalCoalescingConverter<ChronoContainer?> =
     arg(
         displayName,
@@ -204,7 +204,7 @@ public fun Arguments.defaultingCoalescedJ8Duration(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+    validator: Validator<ChronoContainer> = null,
 ): DefaultingCoalescingConverter<ChronoContainer> =
     arg(
         displayName,

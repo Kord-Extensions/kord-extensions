@@ -25,7 +25,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 @OptIn(KordPreview::class)
 public class StringConverter(
-    override var validator: (suspend Argument<*>.(String) -> Unit)? = null
+    override var validator: Validator<String> = null
 ) : SingleConverter<String>() {
     override val signatureTypeString: String = "converters.string.signatureType"
     override val showTypeInSignature: Boolean = false
@@ -48,7 +48,7 @@ public class StringConverter(
 public fun Arguments.string(
     displayName: String,
     description: String,
-    validator: (suspend Argument<*>.(String) -> Unit)? = null,
+    validator: Validator<String> = null,
 ): SingleConverter<String> =
     arg(displayName, description, StringConverter(validator))
 
@@ -61,7 +61,7 @@ public fun Arguments.optionalString(
     displayName: String,
     description: String,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(String?) -> Unit)? = null,
+    validator: Validator<String?> = null,
 ): OptionalConverter<String?> =
     arg(
         displayName,
@@ -79,7 +79,7 @@ public fun Arguments.defaultingString(
     displayName: String,
     description: String,
     defaultValue: String,
-    validator: (suspend Argument<*>.(String) -> Unit)? = null,
+    validator: Validator<String> = null,
 ): DefaultingConverter<String> =
     arg(
         displayName,
@@ -99,7 +99,7 @@ public fun Arguments.stringList(
     displayName: String,
     description: String,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<String>) -> Unit)? = null,
+    validator: Validator<List<String>> = null,
 ): MultiConverter<String> =
     arg(
         displayName,

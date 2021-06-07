@@ -37,7 +37,7 @@ import java.time.LocalDateTime
 public class J8DurationConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,
-    override var validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null
+    override var validator: Validator<ChronoContainer> = null
 ) : SingleConverter<ChronoContainer>() {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
 
@@ -84,7 +84,7 @@ public fun Arguments.j8Duration(
     description: String,
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
-    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+    validator: Validator<ChronoContainer> = null,
 ): SingleConverter<ChronoContainer> =
     arg(
         displayName,
@@ -107,7 +107,7 @@ public fun Arguments.optionalJ8Duration(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(ChronoContainer?) -> Unit)? = null,
+    validator: Validator<ChronoContainer?> = null,
 ): OptionalConverter<ChronoContainer?> =
     arg(
         displayName,
@@ -127,7 +127,7 @@ public fun Arguments.defaultingJ8Duration(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     defaultValue: ChronoContainer,
-    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+    validator: Validator<ChronoContainer> = null,
 ): DefaultingConverter<ChronoContainer> =
     arg(
         displayName,
@@ -149,7 +149,7 @@ public fun Arguments.j8DurationList(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<ChronoContainer>) -> Unit)? = null,
+    validator: Validator<List<ChronoContainer>> = null,
 ): MultiConverter<ChronoContainer> =
     arg(
         displayName,

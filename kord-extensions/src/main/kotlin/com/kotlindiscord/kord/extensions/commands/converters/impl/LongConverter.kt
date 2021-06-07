@@ -27,7 +27,7 @@ private const val DEFAULT_RADIX = 10
 @OptIn(KordPreview::class)
 public class LongConverter(
     private val radix: Int = DEFAULT_RADIX,
-    override var validator: (suspend Argument<*>.(Long) -> Unit)? = null
+    override var validator: Validator<Long> = null
 ) : SingleConverter<Long>() {
     override val signatureTypeString: String = "converters.number.signatureType"
 
@@ -60,7 +60,7 @@ public fun Arguments.long(
     displayName: String,
     description: String,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Long) -> Unit)? = null,
+    validator: Validator<Long> = null,
 ): SingleConverter<Long> =
     arg(displayName, description, LongConverter(radix, validator))
 
@@ -74,7 +74,7 @@ public fun Arguments.optionalLong(
     description: String,
     outputError: Boolean = false,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Long?) -> Unit)? = null,
+    validator: Validator<Long?> = null,
 ): OptionalConverter<Long?> =
     arg(
         displayName,
@@ -93,7 +93,7 @@ public fun Arguments.defaultingLong(
     description: String,
     defaultValue: Long,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Long) -> Unit)? = null,
+    validator: Validator<Long> = null,
 ): DefaultingConverter<Long> =
     arg(
         displayName,
@@ -114,7 +114,7 @@ public fun Arguments.longList(
     description: String,
     required: Boolean = true,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(List<Long>) -> Unit)? = null,
+    validator: Validator<List<Long>> = null,
 ): MultiConverter<Long> =
     arg(
         displayName,

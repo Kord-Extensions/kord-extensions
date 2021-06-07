@@ -28,7 +28,7 @@ private const val DEFAULT_RADIX = 10
 public class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
     choices: Map<String, Int>,
-    override var validator: (suspend Argument<*>.(Int) -> Unit)? = null
+    override var validator: Validator<Int> = null
 ) : ChoiceConverter<Int>(choices) {
     override val signatureTypeString: String = "converters.number.signatureType"
 
@@ -66,7 +66,7 @@ public fun Arguments.numberChoice(
     description: String,
     choices: Map<String, Int>,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Int) -> Unit)? = null
+    validator: Validator<Int> = null
 ): SingleConverter<Int> = arg(displayName, description, NumberChoiceConverter(radix, choices, validator))
 
 /**
@@ -79,7 +79,7 @@ public fun Arguments.optionalNumberChoice(
     description: String,
     choices: Map<String, Int>,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Int?) -> Unit)? = null
+    validator: Validator<Int?> = null
 ): OptionalConverter<Int?> = arg(
     displayName,
     description,
@@ -98,7 +98,7 @@ public fun Arguments.defaultingNumberChoice(
     defaultValue: Int,
     choices: Map<String, Int>,
     radix: Int = 10,
-    validator: (suspend Argument<*>.(Int) -> Unit)? = null
+    validator: Validator<Int> = null
 ): DefaultingConverter<Int> = arg(
     displayName,
     description,

@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.firstOrNull
 @OptIn(KordPreview::class)
 public class RoleConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
-    override var validator: (suspend Argument<*>.(Role) -> Unit)? = null
+    override var validator: Validator<Role> = null
 ) : SingleConverter<Role>() {
     override val signatureTypeString: String = "converters.role.signatureType"
 
@@ -89,7 +89,7 @@ public fun Arguments.role(
     displayName: String,
     description: String,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend Argument<*>.(Role) -> Unit)? = null,
+    validator: Validator<Role> = null,
 ): SingleConverter<Role> =
     arg(displayName, description, RoleConverter(requiredGuild, validator))
 
@@ -103,7 +103,7 @@ public fun Arguments.optionalRole(
     description: String,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Role?) -> Unit)? = null,
+    validator: Validator<Role?> = null,
 ): OptionalConverter<Role?> =
     arg(
         displayName,
@@ -124,7 +124,7 @@ public fun Arguments.roleList(
     description: String,
     required: Boolean = true,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend Argument<*>.(List<Role>) -> Unit)? = null,
+    validator: Validator<List<Role>> = null,
 ): MultiConverter<Role> =
     arg(
         displayName,

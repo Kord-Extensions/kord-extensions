@@ -30,7 +30,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 public class RegexCoalescingConverter(
     private val options: Set<RegexOption> = setOf(),
     shouldThrow: Boolean = false,
-    override var validator: (suspend Argument<*>.(Regex) -> Unit)? = null
+    override var validator: Validator<Regex> = null
 ) : CoalescingConverter<Regex>(shouldThrow) {
     override val signatureTypeString: String = "converters.regex.signatureType.plural"
     override val showTypeInSignature: Boolean = false
@@ -54,7 +54,7 @@ public fun Arguments.coalescedRegex(
     displayName: String,
     description: String,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
+    validator: Validator<Regex> = null,
 ): CoalescingConverter<Regex> =
     arg(displayName, description, RegexCoalescingConverter(options, validator = validator))
 
@@ -67,7 +67,7 @@ public fun Arguments.optionalCoalescedRegex(
     displayName: String,
     description: String,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(Regex?) -> Unit)? = null,
+    validator: Validator<Regex?> = null,
 ): OptionalCoalescingConverter<Regex?> =
     arg(
         displayName,
@@ -86,7 +86,7 @@ public fun Arguments.defaultingCoalescedRegex(
     description: String,
     defaultValue: Regex,
     options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
+    validator: Validator<Regex> = null,
 ): DefaultingCoalescingConverter<Regex> =
     arg(
         displayName,

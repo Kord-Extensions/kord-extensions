@@ -2,7 +2,6 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import kotlin.reflect.KProperty
 
@@ -22,7 +21,7 @@ import kotlin.reflect.KProperty
  */
 public abstract class DefaultingCoalescingConverter<T : Any>(
     defaultValue: T,
-    public open var validator: (suspend Argument<*>.(result: T) -> Unit)? = null
+    public open var validator: Validator<T> = null
 ) : Converter<List<T>>(
     false
 ) {
@@ -56,8 +55,8 @@ public abstract class DefaultingCoalescingConverter<T : Any>(
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
 
     /** Call the validator lambda, if one was provided. **/
-    public open suspend fun validate() {
-        validator?.let { it(this.argumentObj, parsed) }
+    public open suspend fun validate(context: CommandContext) {
+        validator?.let { it(context, this.argumentObj, parsed) }
     }
 
     /**

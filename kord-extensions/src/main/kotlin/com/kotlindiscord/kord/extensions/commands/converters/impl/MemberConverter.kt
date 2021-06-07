@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.firstOrNull
 @OptIn(KordPreview::class)
 public class MemberConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
-    override var validator: (suspend Argument<*>.(Member) -> Unit)? = null
+    override var validator: Validator<Member> = null
 ) : SingleConverter<Member>() {
     override val signatureTypeString: String = "converters.member.signatureType"
 
@@ -94,7 +94,7 @@ public fun Arguments.member(
     displayName: String,
     description: String,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend Argument<*>.(Member) -> Unit)? = null,
+    validator: Validator<Member> = null,
 ): SingleConverter<Member> =
     arg(displayName, description, MemberConverter(requiredGuild, validator))
 
@@ -108,7 +108,7 @@ public fun Arguments.optionalMember(
     description: String,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Member?) -> Unit)? = null,
+    validator: Validator<Member?> = null,
 ): OptionalConverter<Member?> =
     arg(
         displayName,
@@ -129,7 +129,7 @@ public fun Arguments.memberList(
     description: String,
     required: Boolean,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend Argument<*>.(List<Member>) -> Unit)? = null,
+    validator: Validator<List<Member>> = null,
 ): MultiConverter<Member> =
     arg(
         displayName,

@@ -27,7 +27,7 @@ public class EnumChoiceConverter<E>(
     typeName: String,
     private val getter: suspend (String) -> E?,
     choices: Array<E>,
-    override var validator: (suspend Argument<*>.(E) -> Unit)? = null
+    override var validator: Validator<E> = null
 ) : ChoiceConverter<E>(choices.associateBy { it.readableName }) where E : Enum<E>, E : ChoiceEnum {
     override val signatureTypeString: String = typeName
 
@@ -58,7 +58,7 @@ public inline fun <reified T> Arguments.enumChoice(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+    noinline validator: Validator<T> = null,
 ): SingleConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
@@ -74,7 +74,7 @@ public inline fun <reified T> Arguments.optionalEnumChoice(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
+    noinline validator: Validator<T?> = null,
 ): OptionalConverter<T?> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
@@ -92,7 +92,7 @@ public inline fun <reified T> Arguments.defaultingEnumChoice(
     description: String,
     typeName: String,
     defaultValue: T,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+    noinline validator: Validator<T> = null,
 ): DefaultingConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,

@@ -34,7 +34,7 @@ import net.time4j.IsoUnit
 @OptIn(KordPreview::class)
 public class T4JDurationConverter(
     public val longHelp: Boolean = true,
-    override var validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null
+    override var validator: Validator<Duration<IsoUnit>> = null
 ) : SingleConverter<Duration<IsoUnit>>() {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
 
@@ -68,7 +68,7 @@ public fun Arguments.t4jDuration(
     displayName: String,
     description: String,
     longHelp: Boolean = true,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>> = null,
 ): SingleConverter<Duration<IsoUnit>> =
     arg(displayName, description, T4JDurationConverter(longHelp = longHelp, validator = validator))
 
@@ -82,7 +82,7 @@ public fun Arguments.optionalT4jDuration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>?) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>?> = null,
 ): OptionalConverter<Duration<IsoUnit>?> =
     arg(
         displayName,
@@ -101,7 +101,7 @@ public fun Arguments.defaultingT4jDuration(
     description: String,
     longHelp: Boolean = true,
     defaultValue: Duration<IsoUnit>,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>> = null,
 ): DefaultingConverter<Duration<IsoUnit>> =
     arg(
         displayName,
@@ -122,7 +122,7 @@ public fun Arguments.t4jDurationList(
     description: String,
     longHelp: Boolean = true,
     required: Boolean = true,
-    validator: (suspend Argument<*>.(List<Duration<IsoUnit>>) -> Unit)? = null,
+    validator: Validator<List<Duration<IsoUnit>>> = null,
 ): MultiConverter<Duration<IsoUnit>> =
     arg(
         displayName,

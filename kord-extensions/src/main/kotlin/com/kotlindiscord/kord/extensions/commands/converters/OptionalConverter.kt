@@ -2,7 +2,6 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import kotlin.reflect.KProperty
@@ -18,7 +17,7 @@ import kotlin.reflect.KProperty
 @KordPreview
 public abstract class OptionalConverter<T : Any?>(
     public val outputError: Boolean = false,
-    public open var validator: (suspend Argument<*>.(result: T?) -> Unit)? = null
+    public open var validator: Validator<T?> = null
 ) : Converter<T>(false), SlashCommandConverter {
     /**
      * The parsed value.
@@ -49,8 +48,8 @@ public abstract class OptionalConverter<T : Any?>(
     public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T? = parsed
 
     /** Call the validator lambda, if one was provided. **/
-    public open suspend fun validate() {
-        validator?.let { it(this.argumentObj, parsed) }
+    public open suspend fun validate(context: CommandContext) {
+        validator?.let { it(context, this.argumentObj, parsed) }
     }
 
     /**

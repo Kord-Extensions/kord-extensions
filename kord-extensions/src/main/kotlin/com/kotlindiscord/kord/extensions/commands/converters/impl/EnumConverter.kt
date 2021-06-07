@@ -29,7 +29,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 public class EnumConverter<E : Enum<E>>(
     typeName: String,
     private val getter: suspend (String) -> E?,
-    override var validator: (suspend Argument<*>.(E) -> Unit)? = null
+    override var validator: Validator<E> = null
 ) : SingleConverter<E>() {
     override val signatureTypeString: String = typeName
 
@@ -57,7 +57,7 @@ public inline fun <reified T : Enum<T>> Arguments.enum(
     description: String,
     typeName: String,
     noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+    noinline validator: Validator<T> = null,
 ): SingleConverter<T> = arg(displayName, description, EnumConverter(typeName, getter, validator))
 
 /**
@@ -69,7 +69,7 @@ public inline fun <reified T : Enum<T>> Arguments.enum(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+    noinline validator: Validator<T> = null,
 ): SingleConverter<T> =
     enum(displayName, description, typeName, ::getEnum, validator)
 
@@ -84,7 +84,7 @@ public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
     typeName: String,
     defaultValue: T,
     noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+    noinline validator: Validator<T> = null,
 ): DefaultingConverter<T> = arg(
     displayName,
     description,
@@ -102,7 +102,7 @@ public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
     description: String,
     typeName: String,
     defaultValue: T,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+    noinline validator: Validator<T> = null,
 ): DefaultingConverter<T> =
     defaultingEnum(displayName, description, typeName, defaultValue, ::getEnum, validator)
 
@@ -116,7 +116,7 @@ public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
     description: String,
     typeName: String,
     noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
+    noinline validator: Validator<T?> = null,
 ): OptionalConverter<T?> = arg(
     displayName,
     description,
@@ -133,7 +133,7 @@ public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
+    noinline validator: Validator<T?> = null,
 ): OptionalConverter<T?> =
     optionalEnum<T>(displayName, description, typeName, ::getEnum, validator)
 
@@ -150,7 +150,7 @@ public inline fun <reified T : Enum<T>> Arguments.enumList(
     typeName: String,
     required: Boolean = true,
     noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend Argument<*>.(List<T>) -> Unit)? = null,
+    noinline validator: Validator<List<T>> = null,
 ): MultiConverter<T> = arg(
     displayName,
     description,
@@ -170,7 +170,7 @@ public inline fun <reified T : Enum<T>> Arguments.enumList(
     description: String,
     typeName: String,
     required: Boolean = true,
-    noinline validator: (suspend Argument<*>.(List<T>) -> Unit)? = null,
+    noinline validator: Validator<List<T>> = null,
 ): MultiConverter<T> =
     enumList<T>(displayName, description, typeName, required, ::getEnum, validator)
 

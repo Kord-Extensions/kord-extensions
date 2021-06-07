@@ -43,7 +43,7 @@ private val logger = KotlinLogging.logger {}
 public class MessageConverter(
     private var requireGuild: Boolean = false,
     private var requiredGuild: (suspend () -> Snowflake)? = null,
-    override var validator: (suspend Argument<*>.(Message) -> Unit)? = null
+    override var validator: Validator<Message> = null
 ) : SingleConverter<Message>() {
     override val signatureTypeString: String = "converters.message.signatureType"
 
@@ -174,7 +174,7 @@ public fun Arguments.message(
     description: String,
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend Argument<*>.(Message) -> Unit)? = null,
+    validator: Validator<Message> = null,
 ): SingleConverter<Message> = arg(displayName, description, MessageConverter(requireGuild, requiredGuild, validator))
 
 /**
@@ -188,7 +188,7 @@ public fun Arguments.optionalMessage(
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Message?) -> Unit)? = null,
+    validator: Validator<Message?> = null,
 ): OptionalConverter<Message?> =
     arg(
         displayName,
@@ -210,7 +210,7 @@ public fun Arguments.messageList(
     required: Boolean = true,
     requireGuild: Boolean = false,
     requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: (suspend Argument<*>.(List<Message>) -> Unit)? = null,
+    validator: Validator<List<Message>> = null,
 ): MultiConverter<Message> =
     arg(
         displayName,
