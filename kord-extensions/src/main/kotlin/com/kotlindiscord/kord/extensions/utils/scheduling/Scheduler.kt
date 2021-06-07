@@ -1,0 +1,85 @@
+@file:OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
+
+package com.kotlindiscord.kord.extensions.utils.scheduling
+
+import kotlinx.coroutines.*
+import mu.KotlinLogging
+import java.util.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+
+private val logger = KotlinLogging.logger {}
+
+/**
+ * Simple task scheduler based on time-polling [Task] objects.
+ *
+ * Schedulers are [CoroutineScope]s and thus can be cancelled to cancel all nested jobs, if required..
+ */
+public class Scheduler : CoroutineScope {
+    internal val tasks: MutableList<Task> = mutableListOf()
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Default + SupervisorJob()
+
+    /** Convenience function to schedule a [Task] using [seconds] instead of a [Duration]. **/
+    public fun schedule(
+        seconds: Long,
+        name: String? = null,
+        pollingSeconds: Long = 1,
+        callback: suspend () -> Unit
+    ): Task = schedule(
+        delay = Duration.seconds(seconds),
+        name = name,
+        pollingSeconds = pollingSeconds,
+        callback = callback,
+    )
+
+    /**
+     * Schedule a [Task] using the given [delay] and [callback]. A name will be generated if not provided.
+     *
+     * @param delay [Duration] object representing the time to wait for.
+     * @param name Optional task name, used in logging.
+     * @param pollingSeconds How often to check whether enough time has passed - `1` by default.
+     * @param callback Callback to run when the task has waited for long enough.
+     */
+    public fun schedule(
+        delay: Duration,
+        name: String? = null,
+        pollingSeconds: Long = 1,
+        callback: suspend () -> Unit
+    ): Task {
+        val taskName = name ?: UUID.randomUUID().toString()
+
+        val task = Task(
+            callback = callback,
+            coroutineScope = this,
+            pollingSeconds = pollingSeconds,
+            duration = delay,
+            name = taskName,
+            parent = this
+        )
+
+        tasks.add(task)
+        task.start()
+
+        return task
+    }
+
+    /** Make all child tasks complete immediately. **/
+    public suspend fun callAllNow(): Unit = tasks.forEach { it.callNow() }
+
+    /** Shut down this scheduler, cancelling all tasks. **/
+    public fun shutdown() {
+        tasks.toList().forEach { it.cancel() }  // So we don't modify while we iterate
+
+        try {
+            this.cancel()
+        } catch (e: IllegalStateException) {
+            logger.debug(e) { "Scheduler cancelled with no jobs." }
+        }
+
+        tasks.clear()
+    }
+
+    internal fun removeTask(task: Task) = tasks.remove(task)
+}

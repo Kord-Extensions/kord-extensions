@@ -5,6 +5,8 @@ import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 
 /**
  * Tests for [RestRequestException] extension functions.
@@ -20,6 +22,7 @@ class RestRequestTest {
      * Test `hasStatus()` with zero parameters.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     fun `test hasStatus with zero parameters`() {
         createMockAndHasStatus(HttpStatusCode.Forbidden, false)
     }
@@ -28,6 +31,7 @@ class RestRequestTest {
      * Test `hasStatus()` with one parameter.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     fun `test hasStatus with one parameter`() {
         createMockAndHasStatus(HttpStatusCode.Forbidden, true, HttpStatusCode.Forbidden)
     }
@@ -36,6 +40,7 @@ class RestRequestTest {
      * Test `hasStatus()` with multiple parameters.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     fun `test hasStatus with multiple parameters`() {
         createMockAndHasStatus(
             HttpStatusCode.Forbidden,
@@ -50,6 +55,7 @@ class RestRequestTest {
      * Test `hasNotStatus()` with zero parameters.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     fun `test hasNotStatus with zero parameters`() {
         createMockAndHasNotStatus(HttpStatusCode.Forbidden, true)
     }
@@ -58,6 +64,7 @@ class RestRequestTest {
      * Test `hasNotStatus()` with one parameter.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     fun `test hasNotStatus with one parameter`() {
         createMockAndHasNotStatus(HttpStatusCode.Forbidden, false, HttpStatusCode.Forbidden)
     }
@@ -66,6 +73,7 @@ class RestRequestTest {
      * Test `hasNotStatus()` with multiple parameters.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     fun `test hasNotStatus with multiple parameters`() {
         createMockAndHasNotStatus(
             HttpStatusCode.Forbidden,

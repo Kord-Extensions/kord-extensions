@@ -2,6 +2,8 @@ package com.kotlindiscord.kord.extensions.utils
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 
 /**
  * Tests for [String] extension functions.
@@ -12,6 +14,7 @@ class StringTest {
      * Check that `.toReaction()` for a unicode emoji transforms the string correctly.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     fun `unicode to reaction`() {
         val unicode = "❤"
         val reaction = unicode.toReaction()
@@ -22,6 +25,7 @@ class StringTest {
      * Check that `.splitOn()` correctly splits a string into a pair with the given separator.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     fun `splitting strings returns the correct pairs`() {
         assertEquals("Kord" to "-Ext", "Kord-Ext".splitOn { it == '-' })
         assertEquals("KordExt" to "", "KordExt".splitOn { it == '-' })
