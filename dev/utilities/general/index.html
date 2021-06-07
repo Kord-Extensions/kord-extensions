@@ -12,7 +12,7 @@
         <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/utilities/general/">
       
       <link rel="icon" href="../../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.7">
+      <meta name="generator" content="mkdocs-1.2, mkdocs-material-7.1.7">
     
     
       
@@ -619,13 +619,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#scheduler" class="md-nav__link">
-    Scheduler
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#string" class="md-nav__link">
     String
   </a>
@@ -654,6 +647,18 @@
     <li class="md-nav__item">
       <a href="../paginator/" class="md-nav__link">
         Paginator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scheduler/" class="md-nav__link">
+        Scheduler
       </a>
     </li>
   
@@ -1167,43 +1172,6 @@ also get <code>null</code> from <code>RoleDelta.from()</code> if there were no c
 </tr>
 </tbody>
 </table>
-<h2 id="scheduler">Scheduler<a class="headerlink" href="#scheduler" title="Permanent link">&para;</a></h2>
-<p>The <code>Scheduler</code> class is a rudimentary approach to scheduling <code>Job</code>s within a given coroutine scope, with the option
-to cancel the <code>Job</code> early if required. The following instance functions are available for this:</p>
-<table>
-<thead>
-<tr>
-<th align="left">Function</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><code>cancelAll</code></td>
-<td align="left">Immediately cancel the execution of all scheduled jobs</td>
-</tr>
-<tr>
-<td align="left"><code>cancelJob</code></td>
-<td align="left">Given a job's UUID, cancel its execution</td>
-</tr>
-<tr>
-<td align="left"><code>finishAll</code></td>
-<td align="left">Immediately execute the callbacks of all scheduled jobs</td>
-</tr>
-<tr>
-<td align="left"><code>finishJob</code></td>
-<td align="left">Given a job's UUID, immediately execute its callback</td>
-</tr>
-<tr>
-<td align="left"><code>getJob</code></td>
-<td align="left">Given a job's UUID, return the <code>Job</code> object - or <code>null</code> if the UUID doesn't match anything</td>
-</tr>
-<tr>
-<td align="left"><code>schedule</code></td>
-<td align="left">Schedule a job - either returning a generated UUID, or using a provided one</td>
-</tr>
-</tbody>
-</table>
 <h2 id="string">String<a class="headerlink" href="#string" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1272,7 +1240,7 @@ to cancel the <code>Job</code> early if required. The following instance functio
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-06-01
+      Last update: 2021-06-07
     
   </small>
 </div>

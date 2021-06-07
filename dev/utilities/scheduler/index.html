@@ -9,14 +9,14 @@
       
       
       
-        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/integrations/koin/">
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/utilities/scheduler/">
       
       <link rel="icon" href="../../assets/icon.png">
       <meta name="generator" content="mkdocs-1.2, mkdocs-material-7.1.7">
     
     
       
-        <title>Koin - Kord Extensions</title>
+        <title>Scheduler - Kord Extensions</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#koin" class="md-skip">
+        <a href="#scheduler" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Koin
+              Scheduler
             
           </span>
         </div>
@@ -226,13 +226,15 @@
         
   
   
+    
+  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../utilities/general/" class="md-tabs__link">
+      <a href="../general/" class="md-tabs__link md-tabs__link--active">
         Utilities
       </a>
     </li>
@@ -242,15 +244,13 @@
         
   
   
-    
-  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="./" class="md-tabs__link md-tabs__link--active">
+      <a href="../../integrations/koin/" class="md-tabs__link">
         Integrations
       </a>
     </li>
@@ -484,12 +484,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
       <label class="md-nav__link" for="__nav_4">
         Utilities
@@ -507,7 +509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../utilities/general/" class="md-nav__link">
+      <a href="../general/" class="md-nav__link">
         General
       </a>
     </li>
@@ -519,56 +521,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../utilities/paginator/" class="md-nav__link">
+      <a href="../paginator/" class="md-nav__link">
         Paginator
       </a>
     </li>
   
 
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../utilities/scheduler/" class="md-nav__link">
-        Scheduler
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-    
-  
-  
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
-      
-      <label class="md-nav__link" for="__nav_5">
-        Integrations
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Integrations" data-md-level="1">
-        <label class="md-nav__title" for="__nav_5">
-          <span class="md-nav__icon md-icon"></span>
-          Integrations
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
           
             
   
@@ -585,12 +543,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Koin
+          Scheduler
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Koin
+        Scheduler
       </a>
       
         
@@ -608,22 +566,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#registering-modules" class="md-nav__link">
-    Registering modules
+  <a href="#scheduler_1" class="md-nav__link">
+    Scheduler
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-koin" class="md-nav__link">
-    Using Koin
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bundled-modules" class="md-nav__link">
-    Bundled modules
+  <a href="#task" class="md-nav__link">
+    Task
   </a>
   
 </li>
@@ -636,12 +587,54 @@
   
 
           
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Integrations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Integrations" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Integrations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
             
   
   
   
     <li class="md-nav__item">
-      <a href="../sentry/" class="md-nav__link">
+      <a href="../../integrations/koin/" class="md-nav__link">
+        Koin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/sentry/" class="md-nav__link">
         Sentry
       </a>
     </li>
@@ -787,101 +780,116 @@
               
                 
                 
-                <h1 id="koin">Koin<a class="headerlink" href="#koin" title="Permanent link">&para;</a></h1>
-<p><a href="https://insert-koin.io/">Koin</a> is a lightweight service locator framework, written in pure Kotlin. It's a fairly
-popular framework that's often used in place of a larger dependency injection framework like Dagger, and Kord Extensions
-supports it as a first-class citizen.</p>
-<details class="question"><summary>Do I have to use this?</summary><p>Koin integration is entirely optional, but it cannot be unbundled from the main distribution at the moment. The
-integration is still in the early stages, and will be made more useful over time.</p>
-<p>We expect Koin integration to be more useful for users developing their own extensions, but you are of course
-free to make use of it however you like.</p>
-</details>
-<details class="tip"><summary>Koin contexts</summary><p>Koin is designed to be used with a single global context by default. In order to support multiple individual bots in one
-application, however, Kord Extensions creates a separate Koin context for every instance of <code>ExtensibleBot</code>. You can
-access it on the <code>ExtensibleBot#koin</code> property.</p>
-</details>
-<h2 id="registering-modules">Registering modules<a class="headerlink" href="#registering-modules" title="Permanent link">&para;</a></h2>
-<p>In order to register a Koin module, call the <code>koin.loadModules</code> function before you start your bot.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">config</span> <span class="o">=</span> <span class="n">MyBotConfig</span><span class="p">()</span>
-
-<span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">config</span><span class="p">.</span><span class="na">token</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">commands</span> <span class="p">{</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="n">config</span><span class="p">.</span><span class="na">prefix</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">bot</span><span class="p">.</span><span class="na">koin</span><span class="p">.</span><span class="na">module</span> <span class="p">{</span> <span class="n">single</span> <span class="p">{</span> <span class="n">config</span> <span class="p">}</span> <span class="p">}</span>
-
-    <span class="n">bot</span><span class="p">.</span><span class="na">start</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div>
-</td></tr></table>
-<h2 id="using-koin">Using Koin<a class="headerlink" href="#using-koin" title="Permanent link">&para;</a></h2>
-<p>All extensions inherit <code>KoinComponent</code>, which means that all relevant Koin functions will be present within the 
-extension. You can make use of these directly - Kord Extensions makes use of the global Koin instance.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">MyExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">:</span> <span class="n">ExtensibleBot</span><span class="p">)</span> <span class="p">:</span> <span class="n">KoinExtension</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="nv">sentry</span><span class="p">:</span> <span class="n">SentryAdapter</span> <span class="k">by</span> <span class="n">inject</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div>
-</td></tr></table>
-<h2 id="bundled-modules">Bundled modules<a class="headerlink" href="#bundled-modules" title="Permanent link">&para;</a></h2>
-<p>The following modules are registered automatically. They do not have any qualifiers (it wouldn't make sense to have
-multiple instances registered at once in most cases), but you can supply your own alternatives as necessary by
-passing <code>override = true</code> to the <code>module</code> function when you create your module.</p>
+                <h1 id="scheduler">Scheduler<a class="headerlink" href="#scheduler" title="Permanent link">&para;</a></h1>
+<p>It's fairly often that Discord bots need to schedule some task or job for later. To make this simple (and to try to be
+accurate about timings), a simple <code>Scheduler</code> class is included with Kord Extensions. This class exists to schedule
+cancellable delayed <code>Task</code> objects, with callbacks.</p>
+<h2 id="scheduler_1">Scheduler<a class="headerlink" href="#scheduler_1" title="Permanent link">&para;</a></h2>
+<p>For most purposes, you'll want to create an instance of the <code>Scheduler</code> class. This class takes no arguments, and is
+its own <code>CoroutineScope</code>. This allows you to easily manage your scheduled tasks as a whole.</p>
 <table>
 <thead>
 <tr>
-<th align="left">Type</th>
-<th align="left">Notes</th>
+<th align="left">Function</th>
+<th align="left">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>ExtensibleBot</code></td>
-<td align="left">The current instance of the bot</td>
+<td align="left"><code>callAllNow</code></td>
+<td align="left">Execute the callback for all registered <code>Task</code>s immediately</td>
 </tr>
 <tr>
-<td align="left"><code>ExtensibleBotBuilder</code></td>
-<td align="left">The current extensible bot settings object</td>
+<td align="left"><code>schedule</code></td>
+<td align="left">Schedule a new <code>Task</code> with callback, with a delay specified in seconds or with a <code>Duration</code> object from <code>kx.time</code></td>
 </tr>
 <tr>
-<td align="left"><code>Kord</code></td>
-<td align="left">Current Kord instance, <strong>registered after <code>bot.start()</code> is called</strong></td>
-</tr>
-<tr>
-<td align="left"><code>MessageCommandRegistry</code></td>
-<td align="left">Class that keeps track of message commands, and is in charge of executing them and finding the right prefixes</td>
-</tr>
-<tr>
-<td align="left"><code>SentryAdapter</code></td>
-<td align="left">Sentry adapter created for <a href="/integrations/sentry">the Sentry integration</a></td>
-</tr>
-<tr>
-<td align="left"><code>SlashCommandRegistry</code></td>
-<td align="left">Class that keeps track of slash commands, and is in charge of executing and registering them</td>
-</tr>
-<tr>
-<td align="left"><code>TranslationsProvider</code></td>
-<td align="left">Class providing access to <a href="/concepts/i18n">translations</a></td>
+<td align="left"><code>shutdown</code></td>
+<td align="left">Cancel all scheduled <code>Task</code>s and cancel the schedule's coroutine scope, making it unusable</td>
 </tr>
 </tbody>
 </table>
-<p>We'll be updating this list further as parts of Kord Extensions are modularized.</p>
+<h2 id="task">Task<a class="headerlink" href="#task" title="Permanent link">&para;</a></h2>
+<p>Task objects contain a callback, as well as scheduling information pertaining to that callback. You normally won't want
+to create these yourself - they're managed by <code>Scheduler</code> objects - but you can do so if you need to.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>callback</code></td>
+<td align="left">Callback to be executed once enough time has passed</td>
+</tr>
+<tr>
+<td align="left"><code>coroutineScope</code></td>
+<td align="left">Optional coroutine scope to launch with, defaulting to the current Kord instance</td>
+</tr>
+<tr>
+<td align="left"><code>duration</code></td>
+<td align="left">How long to wait after starting before calling the <code>callback</code></td>
+</tr>
+<tr>
+<td align="left"><code>parent</code></td>
+<td align="left">Parent <code>Scheduler</code> object, if any - <code>Task</code> objects remove themselves from their parents on completion</td>
+</tr>
+<tr>
+<td align="left"><code>pollingSeconds</code></td>
+<td align="left">How long to wait between time checks, in seconds - defaults to <code>1</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="left">Property</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>running</code></td>
+<td align="left"><code>true</code> if the <code>Task</code> is currently waiting for time to pass before execution, or if the callback is executing</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="left">Function</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>callNow</code></td>
+<td align="left">Stop waiting and immediately call the callback, without launching - <code>job</code> will be <code>null</code> during execution</td>
+</tr>
+<tr>
+<td align="left"><code>cancel</code></td>
+<td align="left">Stop waiting immediately by cancelling the job</td>
+</tr>
+<tr>
+<td align="left"><code>cancelAndJoin</code></td>
+<td align="left">Stop waiting, cancelling the job and waiting for it to complete</td>
+</tr>
+<tr>
+<td align="left"><code>join</code></td>
+<td align="left">Join the job that's waiting for execution to happen, if any</td>
+</tr>
+<tr>
+<td align="left"><code>shouldStart</code></td>
+<td align="left">Calculate whether it's currently time to start the task</td>
+</tr>
+<tr>
+<td align="left"><code>start</code></td>
+<td align="left">Mark the current time and start waiting until the <code>delay</code> has passed</td>
+</tr>
+</tbody>
+</table>
                 
                   
                     
@@ -890,7 +898,7 @@ passing <code>override = true</code> to the <code>module</code> function when yo
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-14
+      Last update: 2021-06-07
     
   </small>
 </div>
@@ -918,7 +926,7 @@ passing <code>override = true</code> to the <code>module</code> function when yo
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../../utilities/scheduler/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Scheduler" rel="prev">
+        <a href="../paginator/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Paginator" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -927,20 +935,20 @@ passing <code>override = true</code> to the <code>module</code> function when yo
               <span class="md-footer__direction">
                 Previous
               </span>
-              Scheduler
+              Paginator
             </div>
           </div>
         </a>
       
       
         
-        <a href="../sentry/" class="md-footer__link md-footer__link--next" aria-label="Next: Sentry" rel="next">
+        <a href="../../integrations/koin/" class="md-footer__link md-footer__link--next" aria-label="Next: Koin" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Sentry
+              Koin
             </div>
           </div>
           <div class="md-footer__button md-icon">
