@@ -140,12 +140,13 @@ public class HelpExtension : HelpProvider, Extension() {
         }
 
         return Paginator(
-            targetMessage = event.message,
-            pages = pages,
-            owner = event.message.author,
-            timeout = settings.paginatorTimeout,
             keepEmbed = settings.deletePaginatorOnTimeout.not(),
-            locale = locale
+            locale = locale,
+            owner = event.message.author,
+            pages = pages,
+            pingInReply = settings.pingInReply,
+            targetMessage = event.message,
+            timeout = settings.paginatorTimeout,
         ).onTimeout {
             if (settings.deleteInvocationOnPaginatorTimeout) {
                 @Suppress("TooGenericExceptionCaught")
@@ -213,12 +214,13 @@ public class HelpExtension : HelpProvider, Extension() {
         }
 
         return Paginator(
-            targetMessage = event.message,
-            pages = pages,
-            owner = event.message.author,
-            timeout = settings.paginatorTimeout,
             keepEmbed = settings.deletePaginatorOnTimeout.not(),
-            locale = locale
+            locale = locale,
+            owner = event.message.author,
+            pages = pages,
+            pingInReply = settings.pingInReply,
+            targetMessage = event.message,
+            timeout = settings.paginatorTimeout,
         ).onTimeout {
             if (settings.deleteInvocationOnPaginatorTimeout) {
                 @Suppress("TooGenericExceptionCaught")

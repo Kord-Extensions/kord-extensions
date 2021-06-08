@@ -290,6 +290,9 @@ public open class ExtensibleBotBuilder {
             /** Whether to delete the help command invocation after the paginator timeout ends. **/
             public var deleteInvocationOnPaginatorTimeout: Boolean = false
 
+            /** Whether to ping users when responding to them. **/
+            public var pingInReply: Boolean = true
+
             /** List of command checks. These checks will be checked against all commands in the help extension. **/
             public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
 
