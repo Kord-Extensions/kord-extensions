@@ -171,7 +171,7 @@ public class ChronoContainer {
 
         values.forEach { unit, value ->
             if (target.isSupported(unit)) {
-                result = target.plus(value, unit) as T
+                result = result.plus(value, unit) as T
             } else {
                 logger.debug { "Unit $unit is not supported by $target" }
             }
