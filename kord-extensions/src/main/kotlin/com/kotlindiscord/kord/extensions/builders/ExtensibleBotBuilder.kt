@@ -387,7 +387,7 @@ public open class ExtensibleBotBuilder {
          * via `loadModule` before the modules are actually accessed.
          */
         public fun afterKoinSetup(body: () -> Unit): Boolean =
-            beforeKoinSetupList.add(body)
+            afterKoinSetupList.add(body)
 
         /**
          * Register a lambda to be called before Koin has been set up. You can use this to register Koin modules
