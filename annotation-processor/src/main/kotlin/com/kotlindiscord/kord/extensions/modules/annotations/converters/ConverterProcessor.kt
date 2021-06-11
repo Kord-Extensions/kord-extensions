@@ -1,3 +1,5 @@
+@file:Suppress("StringLiteralDuplication")
+
 package com.kotlindiscord.kord.extensions.modules.annotations.converters
 
 import com.google.devtools.ksp.processing.*
@@ -6,6 +8,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.google.devtools.ksp.validate
+import com.kotlindiscord.kord.extensions.modules.annotations.*
 import java.util.*
 
 /**
@@ -110,7 +113,7 @@ public class ConverterProcessor(
                     ConverterType.CHOICE.name -> ""  // Done in the converter functions
 
                     else -> "// UNSUPPPORTED: $it"
-                }
+                }.trim('\n')
 
                 functions.add(func)
             }
@@ -166,50 +169,56 @@ public class ConverterProcessor(
             typeParam: String,
             hasChoice: Boolean
         ): String = if (!hasChoice) {
-            """
-                /**
-                 * Creates a defaulting $name converter, for single arguments.
-                 * 
-                 * @param defaultValue Default value to use if no argument was provided.
-                 * @see ${classDeclaration.simpleName.asString()}
-                 */
-                public fun Arguments.defaulting${name.toCapitalized()}(
-                    displayName: String,
-                    description: String,
-                    defaultValue: $typeParam,
-                    validator: Validator<$typeParam> = null,
-                ): DefaultingConverter<$typeParam> =
-                    arg(
-                        displayName = displayName,
-                        description = description,
+            docComment(
+                """
+                   Creates a defaulting $name converter, for single arguments.
 
-                        converter = ${classDeclaration.simpleName.asString()}()
-                            .toDefaulting(defaultValue, nestedValidator = validator)
-                    )
-            """.trimIndent()
-        } else {
-            """
-                /**
-                 * Creates a defaulting $name choice converter, for a defined set of single arguments.
-                 * 
-                 * @param defaultValue Default value to use if no argument was provided.
-                 * @see ${classDeclaration.simpleName.asString()}
-                 */
-                public fun Arguments.defaulting${name.toCapitalized()}Choice(
-                    displayName: String,
-                    description: String,
-                    defaultValue: $typeParam,
-                    choices: Map<String, $typeParam>,
-                    validator: Validator<$typeParam> = null,
-                ): DefaultingConverter<$typeParam> =
-                    arg(
-                        displayName = displayName,
-                        description = description,
-
-                        converter = ${classDeclaration.simpleName.asString()}(choices)
-                            .toDefaulting(defaultValue, nestedValidator = validator)
-                    )
+                   @param defaultValue Default value to use if no argument was provided.
+                   @see ${classDeclaration.simpleName.asString()}
                 """.trimIndent()
+            ).function("defaulting${name.toCapitalized()}", "Arguments")
+                .argument("displayName", "String")
+                .argument("description", "String")
+                .argument("defaultValue", typeParam)
+                .argument("validator", "Validator<$typeParam>", "null")
+                .returnsStatement("DefaultingConverter<$typeParam>")
+                .line(
+                    """
+                    |arg(
+                    |    displayName = displayName,
+                    |    description = description,
+                    |    
+                    |    converter = ${classDeclaration.simpleName.asString()}()
+                    |        .toDefaulting(defaultValue, nestedValidator = validator)
+                    |)
+                    """.trimMargin()
+                )
+        } else {
+            docComment(
+                """
+                   Creates a defaulting $name choice converter, for a defined set of single arguments.
+
+                   @param defaultValue Default value to use if no argument was provided.
+                   @see ${classDeclaration.simpleName.asString()}
+                """.trimIndent()
+            ).function("defaulting${name.toCapitalized()}Choice", "Arguments")
+                .argument("displayName", "String")
+                .argument("description", "String")
+                .argument("defaultValue", typeParam)
+                .argument("choices", "Map<String, $typeParam>")
+                .argument("validator", "Validator<$typeParam>", "null")
+                .returnsStatement("DefaultingConverter<$typeParam>")
+                .line(
+                    """
+                    |arg(
+                    |    displayName = displayName,
+                    |    description = description,
+                    |
+                    |    converter = ${classDeclaration.simpleName.asString()}(choices)
+                    |        .toDefaulting(defaultValue, nestedValidator = validator)
+                    |)
+                    """.trimMargin()
+                )
         }
 
         private fun createListConverterFunction(
@@ -219,27 +228,30 @@ public class ConverterProcessor(
             hasChoice: Boolean
         ): String =
             if (!hasChoice) {
-                """
-                    /**
-                     * Creates a $name converter, for lists of arguments.
-                     * 
-                     * @param required Whether command parsing should fail if no arguments could be converted.
-                     * @see ${classDeclaration.simpleName.asString()}
-                     */
-                    public fun Arguments.${name.toLowered()}List(
-                        displayName: String,
-                        description: String,
-                        required: Boolean = true,
-                        validator: Validator<List<$typeParam>> = null,
-                    ): MultiConverter<$typeParam> =
-                        arg(
-                            displayName = displayName,
-                            description = description,
-    
-                            converter = ${classDeclaration.simpleName.asString()}()
-                                .toMulti(required, nestedValidator = validator)
-                        )
-                """.trimIndent()
+                docComment(
+                    """
+                        Creates a $name converter, for lists of arguments.
+                        
+                        @param required Whether command parsing should fail if no arguments could be converted.
+                        @see ${classDeclaration.simpleName.asString()}
+                    """.trimIndent()
+                ).function("${name.toLowered()}List", "Arguments")
+                    .argument("displayName", "String")
+                    .argument("description", "String")
+                    .argument("required", "Boolean", "true")
+                    .argument("validator", "Validator<List<$typeParam>>", "null")
+                    .returnsStatement("MultiConverter<$typeParam>")
+                    .line(
+                        """
+                        |arg(
+                        |    displayName = displayName,
+                        |    description = description,
+                        |
+                        |    converter = ${classDeclaration.simpleName.asString()}()
+                        |        .toMulti(required, nestedValidator = validator)
+                        |)
+                        """.trimMargin()
+                    )
             } else {
                 // There are no list-based choice converters
                 error("Choice converters are incompatible with list converters.")
@@ -252,44 +264,50 @@ public class ConverterProcessor(
             hasChoice: Boolean
         ): String =
             if (!hasChoice) {
-                """
-                    /**
-                     * Creates a $name converter, for single arguments.
-                     * 
-                     * @see ${classDeclaration.simpleName.asString()}
-                     */
-                    public fun Arguments.${name.toLowered()}(
-                        displayName: String,
-                        description: String,
-                        validator: Validator<$typeParam> = null,
-                    ): SingleConverter<$typeParam> =
-                        arg(
-                            displayName = displayName,
-                            description = description,
-    
-                            converter = ${classDeclaration.simpleName.asString()}(validator)
-                        )
-                """.trimIndent()
+                docComment(
+                    """
+                        Creates a $name converter, for single arguments.
+                        
+                        @see ${classDeclaration.simpleName.asString()}
+                    """.trimIndent()
+                ).function(name.toLowered(), "Arguments")
+                    .argument("displayName", "String")
+                    .argument("description", "String")
+                    .argument("validator", "Validator<$typeParam>", "null")
+                    .returnsStatement("SingleConverter<$typeParam>")
+                    .line(
+                        """
+                            |arg(
+                            |    displayName = displayName,
+                            |    description = description,
+                            |
+                            |    converter = ${classDeclaration.simpleName.asString()}(validator)
+                            |)
+                        """.trimMargin()
+                    )
             } else {
-                """
-                    /**
-                     * Creates a $name choice converter, for a defined set of single arguments.
-                     * 
-                     * @see ${classDeclaration.simpleName.asString()}
-                     */
-                    public fun Arguments.${name.toLowered()}Choice(
-                        displayName: String,
-                        description: String,
-                        choices: Map<String, $typeParam>,
-                        validator: Validator<$typeParam> = null,
-                    ): SingleConverter<$typeParam> =
-                        arg(
-                            displayName = displayName,
-                            description = description,
-    
-                            converter = ${classDeclaration.simpleName.asString()}(choices, validator)
-                        )
-                """.trimIndent()
+                docComment(
+                    """
+                        Creates a $name choice converter, for a defined set of single arguments.
+                        
+                        @see ${classDeclaration.simpleName.asString()}
+                    """.trimIndent()
+                ).function("${name.toLowered()}Choice", "Arguments")
+                    .argument("displayName", "String")
+                    .argument("description", "String")
+                    .argument("choices", "Map<String, $typeParam>")
+                    .argument("validator", "Validator<$typeParam>", "null")
+                    .returnsStatement("SingleConverter<$typeParam>")
+                    .line(
+                        """
+                            |arg(
+                            |    displayName = displayName,
+                            |    description = description,
+                            |
+                            |    converter = ${classDeclaration.simpleName.asString()}(choices, validator)
+                            |)
+                        """.trimMargin()
+                    )
             }
 
         private fun createOptionalConverterFunction(
@@ -299,48 +317,54 @@ public class ConverterProcessor(
             hasChoice: Boolean
         ): String =
             if (!hasChoice) {
-                """
-                    /**
-                     * Creates an optional $name converter, for single arguments.
-                     * 
-                     * @param required Whether command parsing should fail if an invalid argument is provided.
-                     * @see ${classDeclaration.simpleName.asString()}
-                     */
-                    public fun Arguments.optional${name.toCapitalized()}(
-                        displayName: String,
-                        description: String,
-                        required: Boolean = false,
-                        validator: Validator<$typeParam?> = null,
-                    ): OptionalConverter<$typeParam?> =
-                        arg(
-                            displayName = displayName,
-                            description = description,
-    
-                            converter = ${classDeclaration.simpleName.asString()}()
-                                .toOptional(outputError = required, nestedValidator = validator)
-                        )
-                """.trimIndent()
+                docComment(
+                    """
+                        Creates an optional $name converter, for single arguments.
+                        
+                        @param required Whether command parsing should fail if an invalid argument is provided.
+                        @see ${classDeclaration.simpleName.asString()}
+                    """.trimIndent()
+                ).function("optional${name.toCapitalized()}", "Arguments")
+                    .argument("displayName", "String")
+                    .argument("description", "String")
+                    .argument("required", "Boolean", "false")
+                    .argument("validator", "Validator<$typeParam?>", "null")
+                    .returnsStatement("OptionalConverter<$typeParam?>")
+                    .line(
+                        """
+                        |arg(
+                        |    displayName = displayName,
+                        |    description = description,
+                        |    
+                        |    converter = ${classDeclaration.simpleName.asString()}()
+                        |        .toOptional(outputError = required, nestedValidator = validator)
+                        |)
+                        """.trimMargin()
+                    )
             } else {
-                """
-                    /**
-                     * Creates an optional $name choice converter, for a defined set of single arguments.
-                     * 
-                     * @see ${classDeclaration.simpleName.asString()}
-                     */
-                    public fun Arguments.optional${name.toCapitalized()}Choice(
-                        displayName: String,
-                        description: String,
-                        choices: Map<String, $typeParam>,
-                        validator: Validator<$typeParam?> = null,
-                    ): OptionalConverter<$typeParam?> =
-                        arg(
-                            displayName = displayName,
-                            description = description,
-    
-                            converter = ${classDeclaration.simpleName.asString()}(choices)
-                                .toOptional(nestedValidator = validator)
-                        )
-                """.trimIndent()
+                docComment(
+                    """
+                        Creates an optional $name choice converter, for a defined set of single arguments.
+                        
+                        @see ${classDeclaration.simpleName.asString()}
+                    """.trimIndent()
+                ).function("optional${name.toCapitalized()}Choice", "Arguments")
+                    .argument("displayName", "String")
+                    .argument("description", "String")
+                    .argument("choices", "Map<String, $typeParam>")
+                    .argument("validator", "Validator<$typeParam?>", "null")
+                    .returnsStatement("OptionalConverter<$typeParam?>")
+                    .line(
+                        """
+                        |arg(
+                        |    displayName = displayName,
+                        |    description = description,
+                        |    
+                        |    converter = ${classDeclaration.simpleName.asString()}(choices)
+                        |        .toOptional(nestedValidator = validator)
+                        |)
+                        """.trimMargin()
+                    )
             }
 
         private fun String.toCapitalized() =
