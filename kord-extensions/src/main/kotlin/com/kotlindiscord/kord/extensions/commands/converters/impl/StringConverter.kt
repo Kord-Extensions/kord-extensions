@@ -1,16 +1,11 @@
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -19,10 +14,12 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * Coalescing argument that simply returns the argument as it was given.
  *
  * The multi version of this converter (via [toMulti]) will consume all remaining arguments.
- *
- * @see string
- * @see stringList
  */
+@Converter(
+    "string",
+
+    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+)
 @OptIn(KordPreview::class)
 public class StringConverter(
     override var validator: Validator<String> = null
@@ -39,71 +36,3 @@ public class StringConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create a string converter, for single arguments.
- *
- * @see StringConverter
- */
-public fun Arguments.string(
-    displayName: String,
-    description: String,
-    validator: Validator<String> = null,
-): SingleConverter<String> =
-    arg(displayName, description, StringConverter(validator))
-
-/**
- * Create an optional string converter, for single arguments.
- *
- * @see StringConverter
- */
-public fun Arguments.optionalString(
-    displayName: String,
-    description: String,
-    outputError: Boolean = false,
-    validator: Validator<String?> = null,
-): OptionalConverter<String?> =
-    arg(
-        displayName,
-        description,
-        StringConverter()
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting string converter, for single arguments.
- *
- * @see StringConverter
- */
-public fun Arguments.defaultingString(
-    displayName: String,
-    description: String,
-    defaultValue: String,
-    validator: Validator<String> = null,
-): DefaultingConverter<String> =
-    arg(
-        displayName,
-        description,
-        StringConverter()
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create a string converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see StringConverter
- */
-public fun Arguments.stringList(
-    displayName: String,
-    description: String,
-    required: Boolean = true,
-    validator: Validator<List<String>> = null,
-): MultiConverter<String> =
-    arg(
-        displayName,
-        description,
-        StringConverter()
-            .toMulti(required, nestedValidator = validator)
-    )

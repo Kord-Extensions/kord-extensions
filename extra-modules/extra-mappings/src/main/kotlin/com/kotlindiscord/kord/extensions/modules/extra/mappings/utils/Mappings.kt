@@ -158,7 +158,7 @@ fun fieldsToPages(
 
             if (namespace.supportsFieldDescription()) {
                 text += "\n"
-                text += "**Type:** `${mappedDesc.localiseFieldDesc()}`"
+                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
             }
 
             text
@@ -202,7 +202,7 @@ fun fieldsToPages(
 
             if (namespace.supportsFieldDescription()) {
                 text += "\n"
-                text += "**Type:** `${mappedDesc.localiseFieldDesc()}`"
+                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
             }
 
             text += "\n"

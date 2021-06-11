@@ -242,7 +242,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * You can subscribe to any type, realistically - but this is intended to be used only with Kord
      * [Event] subclasses, and our own [ExtensionEvent]s.
      *
-     * @param T Type of event to subscribe to.
+     * @param T Types of event to subscribe to.
      * @param scope Coroutine scope to run the body of your callback under.
      * @param consumer The callback to run when the event is fired.
      */
@@ -324,7 +324,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      *
      * This can be used to find an extension based on, for example, an implemented interface.
      *
-     * @param T Type to match extensions against.
+     * @param T Types to match extensions against.
      */
     public inline fun <reified T> findExtension(): T? =
         findExtensions<T>().firstOrNull()
@@ -334,7 +334,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      *
      * This can be used to find extensions based on, for example, an implemented interface.
      *
-     * @param T Type to match extensions against.
+     * @param T Types to match extensions against.
      */
     public inline fun <reified T> findExtensions(): List<T> =
         extensions.values.filterIsInstance<T>()

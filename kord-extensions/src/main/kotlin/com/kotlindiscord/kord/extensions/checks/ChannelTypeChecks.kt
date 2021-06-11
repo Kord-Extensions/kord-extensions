@@ -31,7 +31,7 @@ public fun channelType(vararg channelTypes: ChannelType): CheckFun {
             logger.passed()
             true
         } else {
-            logger.failed("Type $type is not within $channelTypes")
+            logger.failed("Types $type is not within $channelTypes")
             false
         }
     }
@@ -61,7 +61,7 @@ public fun notChannelType(vararg channelTypes: ChannelType): CheckFun {
         val type = eventChannel.asChannel().type
 
         return if (channelTypes.contains(type)) {
-            logger.failed("Type $type is within $channelTypes")
+            logger.failed("Types $type is within $channelTypes")
             false
         } else {
             logger.passed()

@@ -11,7 +11,8 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -23,6 +24,11 @@ import org.apache.commons.validator.routines.EmailValidator
  * @see email
  * @see emailList
  */
+@Converter(
+    "email",
+
+    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+)
 @OptIn(KordPreview::class)
 public class EmailConverter(
     override var validator: Validator<String> = null
@@ -44,71 +50,3 @@ public class EmailConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create an email converter, for single arguments.
- *
- * @see EmailConverter
- */
-public fun Arguments.email(
-    displayName: String,
-    description: String,
-    validator: Validator<String> = null,
-): SingleConverter<String> =
-    arg(displayName, description, EmailConverter(validator))
-
-/**
- * Create an optional email converter, for single arguments.
- *
- * @see EmailConverter
- */
-public fun Arguments.optionalEmail(
-    displayName: String,
-    description: String,
-    outputError: Boolean = false,
-    validator: Validator<String?> = null,
-): OptionalConverter<String?> =
-    arg(
-        displayName,
-        description,
-        EmailConverter()
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting email converter, for single arguments.
- *
- * @see EmailConverter
- */
-public fun Arguments.defaultingEmail(
-    displayName: String,
-    description: String,
-    defaultValue: String,
-    validator: Validator<String> = null,
-): DefaultingConverter<String> =
-    arg(
-        displayName,
-        description,
-        EmailConverter()
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create an email converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see EmailConverter
- */
-public fun Arguments.emailList(
-    displayName: String,
-    description: String,
-    required: Boolean = true,
-    validator: Validator<List<String>> = null,
-): MultiConverter<String> =
-    arg(
-        displayName,
-        description,
-        EmailConverter()
-            .toMulti(required, nestedValidator = validator)
-    )

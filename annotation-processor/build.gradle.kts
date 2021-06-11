@@ -11,17 +11,14 @@ plugins {
 }
 
 dependencies {
-    api(libs.time4j.base)
-    api(libs.time4j.tzdata)
-
     implementation(libs.kotlin.stdlib)
-    implementation(project(":kord-extensions"))
+
+    implementation(libs.kotlinpoet)
+    implementation(libs.ksp)
+
+    implementation(project(":annotations"))
 
     detektPlugins(libs.detekt)
-
-    testImplementation(libs.groovy)  // For logback config
-    testImplementation(libs.junit)
-    testImplementation(libs.logback)
 }
 
 val sourceJar = task("sourceJar", Jar::class) {
@@ -47,7 +44,7 @@ kotlin {
 
 detekt {
     buildUponDefaultConfig = true
-    config = files("../../detekt.yml")
+    config = files("$rootDir/detekt.yml")
 
     autoCorrect = true
 }
@@ -107,14 +104,14 @@ fun getCurrentGitBranch(): String {  // https://gist.github.com/lordcodes/15b2a4
 }
 
 tasks.dokkaHtml.configure {
-    moduleName.set("Kord Extensions: Time4J")
+    moduleName.set("Kord Extensions: Annotation Processor")
 
     dokkaSourceSets {
         configureEach {
             includeNonPublic.set(false)
             skipDeprecated.set(false)
 
-            displayName.set("Kord Extensions: Time4J")
+            displayName.set("Kord Extensions: Java Time")
             includes.from("packages.md")
             jdkVersion.set(8)
 
@@ -124,7 +121,7 @@ tasks.dokkaHtml.configure {
                 remoteUrl.set(
                     URL(
                         "https://github.com/Kotlin-Discord/kord-extensions/" +
-                            "tree/${getCurrentGitBranch()}/time4j/src/main/kotlin"
+                            "tree/${getCurrentGitBranch()}/annotation-processor/src/main/kotlin"
                     )
                 )
 

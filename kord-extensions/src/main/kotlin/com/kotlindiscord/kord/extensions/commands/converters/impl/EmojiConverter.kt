@@ -11,7 +11,8 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.GuildEmoji
@@ -34,6 +35,11 @@ import kotlinx.coroutines.flow.mapNotNull
  * @see emoji
  * @see emojiList
  */
+@Converter(
+    "emoji",
+
+    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+)
 @OptIn(KordPreview::class)
 public class EmojiConverter(
     override var validator: Validator<GuildEmoji> = null
@@ -41,7 +47,7 @@ public class EmojiConverter(
     override val signatureTypeString: String = "converters.emoji.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext): Boolean {
-        val emoji = findEmoji(arg, context)
+        val emoji: GuildEmoji = findEmoji(arg, context)
             ?: throw CommandException(
                 context.translate("converters.emoji.error.missing", replacements = arrayOf(arg))
             )
@@ -52,10 +58,10 @@ public class EmojiConverter(
 
     private suspend fun findEmoji(arg: String, context: CommandContext): GuildEmoji? =
         if (arg.startsWith("<a:") || arg.startsWith("<:") && arg.endsWith('>')) { // Emoji mention
-            val id = arg.substring(0, arg.length - 1).split(":").last()
+            val id: String = arg.substring(0, arg.length - 1).split(":").last()
 
             try {
-                val snowflake = Snowflake(id)
+                val snowflake: Snowflake = Snowflake(id)
 
                 kord.guilds.mapNotNull {
                     it.getEmojiOrNull(snowflake)
@@ -69,7 +75,7 @@ public class EmojiConverter(
             val name = if (arg.startsWith(":") && arg.endsWith(":")) arg.substring(1, arg.length - 1) else arg
 
             try {
-                val snowflake = Snowflake(name)
+                val snowflake: Snowflake = Snowflake(name)
 
                 kord.guilds.mapNotNull {
                     it.getEmojiOrNull(snowflake)
@@ -84,53 +90,3 @@ public class EmojiConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create an emoji converter, for single arguments.
- *
- * @see EmojiConverter
- */
-public fun Arguments.emoji(
-    displayName: String,
-    description: String,
-    validator: Validator<GuildEmoji> = null,
-): SingleConverter<GuildEmoji> =
-    arg(displayName, description, EmojiConverter(validator))
-
-/**
- * Create an optional emoji converter, for single arguments.
- *
- * @see EmojiConverter
- */
-public fun Arguments.optionalEmoji(
-    displayName: String,
-    description: String,
-    outputError: Boolean = false,
-    validator: Validator<GuildEmoji?> = null,
-): OptionalConverter<GuildEmoji?> =
-    arg(
-        displayName,
-        description,
-        EmojiConverter()
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create an emoji converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see EmojiConverter
- */
-public fun Arguments.emojiList(
-    displayName: String,
-    description: String,
-    required: Boolean = true,
-    validator: Validator<List<GuildEmoji>> = null,
-): MultiConverter<GuildEmoji> =
-    arg(
-        displayName,
-        description,
-        EmojiConverter()
-            .toMulti(required, signatureTypeString = "server emojis", nestedValidator = validator)
-    )

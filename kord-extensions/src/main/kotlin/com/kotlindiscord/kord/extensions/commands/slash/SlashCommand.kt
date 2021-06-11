@@ -86,7 +86,7 @@ public open class SlashCommand<T : Arguments>(
         null
     }
 
-    /** Type of automatic ack to use, if any. **/
+    /** Types of automatic ack to use, if any. **/
     public open var autoAck: AutoAckType = AutoAckType.EPHEMERAL
 
     /** Map of group names to slash command groups, if any. **/

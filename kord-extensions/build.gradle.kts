@@ -14,7 +14,9 @@ plugins {
     `maven-publish`
 
     kotlin("jvm")
+    kotlin("kapt")
 
+    id("com.google.devtools.ksp")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
 }
@@ -33,10 +35,14 @@ dependencies {
     implementation(libs.bundles.commons)
     implementation(libs.kotlin.stdlib)
 
+    implementation(project(":annotations"))
+
     testImplementation(libs.groovy)  // For logback config
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.logback)
+
+    ksp(project(":annotation-processor"))
 }
 
 val sourceJar = task("sourceJar", Jar::class) {
@@ -58,6 +64,19 @@ java {
 
 kotlin {
     explicitApi()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir(file("$buildDir/generated/ksp/src/main/kotlin"))
+        }
+    }
+    test {
+        java {
+            srcDir(file("$buildDir/generated/ksp/src/test/kotlin"))
+        }
+    }
 }
 
 detekt {

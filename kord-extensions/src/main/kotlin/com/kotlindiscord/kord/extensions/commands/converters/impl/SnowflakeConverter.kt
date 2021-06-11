@@ -11,7 +11,8 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.builder.interaction.OptionsBuilder
@@ -23,6 +24,11 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see long
  * @see longList
  */
+@Converter(
+    "snowflake",
+
+    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+)
 @OptIn(KordPreview::class)
 public class SnowflakeConverter(
     override var validator: Validator<Snowflake> = null
@@ -44,71 +50,3 @@ public class SnowflakeConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create a snowflake converter, for single arguments.
- *
- * @see SnowflakeConverter
- */
-public fun Arguments.snowflake(
-    displayName: String,
-    description: String,
-    validator: Validator<Snowflake> = null,
-): SingleConverter<Snowflake> =
-    arg(displayName, description, SnowflakeConverter(validator))
-
-/**
- * Create an optional snowflake converter, for single arguments.
- *
- * @see SnowflakeConverter
- */
-public fun Arguments.optionalSnowflake(
-    displayName: String,
-    description: String,
-    outputError: Boolean = false,
-    validator: Validator<Snowflake?> = null,
-): OptionalConverter<Snowflake?> =
-    arg(
-        displayName,
-        description,
-        SnowflakeConverter()
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting snowflake converter, for single arguments.
- *
- * @see SnowflakeConverter
- */
-public fun Arguments.defaultingString(
-    displayName: String,
-    description: String,
-    defaultValue: Snowflake,
-    validator: Validator<Snowflake> = null,
-): DefaultingConverter<Snowflake> =
-    arg(
-        displayName,
-        description,
-        SnowflakeConverter()
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create a snowflake converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see SnowflakeConverter
- */
-public fun Arguments.snowflakeList(
-    displayName: String,
-    description: String,
-    required: Boolean = true,
-    validator: Validator<List<Snowflake>> = null,
-): MultiConverter<Snowflake> =
-    arg(
-        displayName,
-        description,
-        SnowflakeConverter()
-            .toMulti(required, nestedValidator = validator)
-    )
