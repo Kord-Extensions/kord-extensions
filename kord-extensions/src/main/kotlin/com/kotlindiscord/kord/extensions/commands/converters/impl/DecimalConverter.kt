@@ -11,7 +11,8 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -22,6 +23,11 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see decimal
  * @see decimalList
  */
+@Converter(
+    "decimal",
+
+    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+)
 @OptIn(KordPreview::class)
 public class DecimalConverter(
     override var validator: Validator<Double> = null
@@ -43,70 +49,3 @@ public class DecimalConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create a decimal converter, for single arguments.
- *
- * @see DecimalConverter
- */
-public fun Arguments.decimal(
-    displayName: String,
-    description: String,
-    validator: Validator<Double> = null,
-): SingleConverter<Double> =
-    arg(displayName, description, DecimalConverter(validator))
-
-/**
- * Create an optional decimal converter, for single arguments.
- *
- * @see DecimalConverter
- */
-public fun Arguments.optionalDecimal(
-    displayName: String,
-    description: String,
-    outputError: Boolean = false,
-    validator: Validator<Double?> = null,
-): OptionalConverter<Double?> =
-    arg(
-        displayName,
-        description,
-        DecimalConverter()
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting decimal converter, for single arguments.
- *
- * @see DecimalConverter
- */
-public fun Arguments.defaultingDecimal(
-    displayName: String,
-    description: String,
-    defaultValue: Double,
-    validator: Validator<Double> = null,
-): DefaultingConverter<Double> =
-    arg(
-        displayName,
-        description,
-        DecimalConverter()
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create a decimal converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see DecimalConverter
- */
-public fun Arguments.decimalList(
-    displayName: String,
-    description: String,
-    required: Boolean = true,
-    validator: Validator<List<Double>> = null,
-): MultiConverter<Double> =
-    arg(
-        displayName,
-        description,
-        DecimalConverter().toMulti(required, signatureTypeString = "decimals", nestedValidator = validator)
-    )

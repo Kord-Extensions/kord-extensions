@@ -20,9 +20,6 @@ import org.apache.commons.validator.routines.EmailValidator
 
 /**
  * Argument converter for email address arguments.
- *
- * @see email
- * @see emailList
  */
 @Converter(
     "email",

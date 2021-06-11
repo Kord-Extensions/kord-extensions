@@ -23,12 +23,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @Converter(
     "string",
 
-    types = [
-        ConverterType.CHOICE,
-        ConverterType.DEFAULTING,
-        ConverterType.OPTIONAL,
-        ConverterType.SINGLE
-    ]
+    types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
 @OptIn(KordPreview::class)
 public class StringChoiceConverter(

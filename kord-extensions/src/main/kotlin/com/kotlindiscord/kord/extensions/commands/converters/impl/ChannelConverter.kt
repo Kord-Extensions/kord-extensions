@@ -11,7 +11,8 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.Channel
@@ -32,10 +33,17 @@ import kotlinx.coroutines.flow.toList
  *
  * @param requireSameGuild Whether to require that the channel passed is on the same guild as the message.
  * @param requiredGuild Lambda returning a specific guild to require the channel to be in, if needed.
- *
- * @see channel
- * @see channelList
  */
+@Converter(
+    "channel",
+
+    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    imports = ["dev.kord.common.entity.Snowflake"],
+    arguments = [
+        "requireSameGuild: Boolean = true",
+        "requiredGuild: (suspend () -> Snowflake)? = null"
+    ]
+)
 @OptIn(KordPreview::class)
 public class ChannelConverter(
     private val requireSameGuild: Boolean = true,
@@ -45,7 +53,7 @@ public class ChannelConverter(
     override val signatureTypeString: String = "converters.channel.signatureType"
 
     override suspend fun parse(arg: String, context: CommandContext): Boolean {
-        val channel = findChannel(arg, context)
+        val channel: Channel = findChannel(arg, context)
             ?: throw CommandException(
                 context.translate(
                     "converters.channel.error.missing",
@@ -72,8 +80,7 @@ public class ChannelConverter(
                 )
             }
         } else {
-            val string = if (arg.startsWith("#")) arg.substring(1) else arg
-
+            val string: String = if (arg.startsWith("#")) arg.substring(1) else arg
             var foundChannel: Channel? = null
 
             try {
@@ -90,7 +97,7 @@ public class ChannelConverter(
         }
 
         if (channel is GuildChannel && (requireSameGuild || requiredGuild != null)) {
-            val guildId = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id
+            val guildId: Snowflake? = if (requiredGuild != null) requiredGuild!!.invoke() else context.getGuild()?.id
 
             if (requireSameGuild && channel.guildId != guildId) {
                 return null  // Channel isn't in the right guild
@@ -103,61 +110,3 @@ public class ChannelConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         ChannelBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create a channel argument converter, for single arguments.
- *
- * @see ChannelConverter
- */
-public fun Arguments.channel(
-    displayName: String,
-    description: String,
-    requireSameGuild: Boolean = true,
-    requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: Validator<Channel> = null,
-): SingleConverter<Channel> = arg(
-    displayName,
-    description,
-    ChannelConverter(requireSameGuild, requiredGuild, validator)
-)
-
-/**
- * Create an optional channel argument converter, for single arguments.
- *
- * @see ChannelConverter
- */
-public fun Arguments.optionalChannel(
-    displayName: String,
-    description: String,
-    requireSameGuild: Boolean = true,
-    requiredGuild: (suspend () -> Snowflake)? = null,
-    outputError: Boolean = false,
-    validator: Validator<Channel?> = null,
-): OptionalConverter<Channel?> =
-    arg(
-        displayName,
-        description,
-        ChannelConverter(requireSameGuild, requiredGuild)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a channel argument converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see ChannelConverter
- */
-public fun Arguments.channelList(
-    displayName: String,
-    description: String,
-    required: Boolean = true,
-    requireSameGuild: Boolean = true,
-    requiredGuild: (suspend () -> Snowflake)? = null,
-    validator: Validator<List<Channel>> = null,
-): MultiConverter<Channel> = arg(
-    displayName,
-    description,
-    ChannelConverter(requireSameGuild, requiredGuild)
-        .toMulti(required, signatureTypeString = "channels", nestedValidator = validator)
-)

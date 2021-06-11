@@ -118,7 +118,9 @@ public class ConverterProcessor(
 
                     ConverterType.CHOICE.name -> ""  // Done in the converter functions
 
-                    // TODO: Coalescing
+                    // TODO: Coalescing converters
+                    // TODO: Optional generic types for converter functions
+
                     else -> "// UNSUPPPORTED: $it"
                 }.trim('\n')
 
