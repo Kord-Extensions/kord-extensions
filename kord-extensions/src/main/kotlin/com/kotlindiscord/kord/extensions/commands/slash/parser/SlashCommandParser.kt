@@ -41,7 +41,7 @@ public open class SlashCommandParser : ArgumentParser() {
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
-        val command = context.event.interaction.command
+        val command = context.interaction.command
 
         val values = command.options.mapValues {
             val option = it.value.value

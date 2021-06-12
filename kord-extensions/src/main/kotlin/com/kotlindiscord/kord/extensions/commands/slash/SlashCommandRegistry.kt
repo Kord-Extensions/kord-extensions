@@ -10,6 +10,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.SlashCommands
+import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.rest.builder.interaction.ApplicationCommandCreateBuilder
 import kotlinx.coroutines.flow.filter
@@ -281,7 +282,9 @@ public open class SlashCommandRegistry : KoinComponent {
 
     /** Handle an [InteractionCreateEvent] and try to execute the corresponding command. **/
     public open suspend fun handle(event: InteractionCreateEvent) {
-        val commandId = event.interaction.command.rootId
+        val interaction = event.interaction as? CommandInteraction ?: return
+
+        val commandId = interaction.command.rootId
         val command = commandMap[commandId]
 
         if (command == null) {

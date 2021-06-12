@@ -25,6 +25,7 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.InteractionCreateEvent
@@ -361,7 +362,10 @@ public open class SlashCommand<T : Arguments>(
      * @param event The interaction creation event.
      */
     public open suspend fun call(event: InteractionCreateEvent) {
-        val eventCommand = event.interaction.command
+        if (event.interaction !is CommandInteraction) return
+
+        val interaction = event.interaction as CommandInteraction
+        val eventCommand = interaction.command
 
         // We lie to the compiler thrice below to work around an issue with generics.
         val commandObj: SlashCommand<Arguments> = if (eventCommand is SubCommand) {
@@ -385,8 +389,8 @@ public open class SlashCommand<T : Arguments>(
         }
 
         val resp = when (commandObj.autoAck) {
-            AutoAckType.EPHEMERAL -> event.interaction.acknowledgeEphemeral()
-            AutoAckType.PUBLIC -> event.interaction.ackowledgePublic()
+            AutoAckType.EPHEMERAL -> interaction.acknowledgeEphemeral()
+            AutoAckType.PUBLIC -> interaction.acknowledgePublic()
 
             AutoAckType.NONE -> null
         }

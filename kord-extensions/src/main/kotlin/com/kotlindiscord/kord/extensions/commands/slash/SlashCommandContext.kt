@@ -16,6 +16,7 @@ import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.InteractionCreateEvent
@@ -37,6 +38,9 @@ public open class SlashCommandContext<T : Arguments>(
 ) : CommandContext(slashCommand, event, commandName, arrayOf()) {
     /** Event that triggered this command execution. **/
     public val event: InteractionCreateEvent get() = eventObj as InteractionCreateEvent
+
+    /** Quick access to the [CommandInteraction]. **/
+    public val interaction: CommandInteraction get() = event.interaction as CommandInteraction
 
     /** Channel this command happened in. **/
     public open lateinit var channel: MessageChannel
@@ -103,7 +107,7 @@ public open class SlashCommandContext<T : Arguments>(
         interactionResponse = if (ephemeral) {
             event.interaction.acknowledgeEphemeral()
         } else {
-            event.interaction.ackowledgePublic()
+            event.interaction.acknowledgePublic()
         }
 
         return interactionResponse!!
