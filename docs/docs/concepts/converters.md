@@ -194,3 +194,154 @@ easier.
 This will allow you to use the `toDefaulting`, `toMulti` and `toOptional` functions that will return wrapped versions
 of the converter they're being called against. Please note that **users should never make use of these functions as they
 may cause all kinds of strange issues** - provide wrapping extension functions instead!
+
+### Generated converter functions
+
+??? warning "KSP is in beta!"
+    The Kord Extensions annotation processor is written using Google's 
+    [Kolin Symbol Processing API](https://github.com/google/ksp). This project is considered to be in an early beta
+    and, while we are using it to generate converter functions as part of Kord Extensions, you should beware of
+    unexpected issues.
+
+For the sake of convenience, you can make use of an annotation processor to generate your converter functions. This 
+will automatically generate converter functions for annotated converters, matching a (fairly specific) standard
+specification. This system isn't suitable for use by _every_ converter, but most types should be very suitable for use
+with it.
+
+#### Gradle setup
+
+First, you'll need to set up your gradle project. You'll need to add Google's KSP plugin, as well as the KordEx
+annotation processor.
+
+!!! note "settings.gradle.kts"
+    ```kotlin
+    pluginManagement {
+        repositories {
+                google()  // Google's KSP plugin is still beta
+                gradlePluginPortal()
+            }
+        }
+        
+    plugins {
+        id("com.google.devtools.ksp") version "1.5.10-1.0.0-beta02"
+    }
+    ```
+
+!!! note "build.gradle.kts"
+    ```kotlin
+    plugins {
+        id("com.google.devtools.ksp")
+    }
+
+    dependencies {
+        ksp("com.kotlindiscord.kord.extensions:annotation-processor:$kordexVersion")
+    }
+    ```
+
+#### Converter annotation
+
+To start with, write your converters as you always do. Once you're happy with your converters, you can apply the
+`@Converter` annotation to configure its code generation. Properties marked with :warning: are required.
+
+??? warning "Converter type restrictions"
+    Some converter types are not compatible with each other. Specifically, you can't specify the following types 
+    together:
+
+    * `COALESCING` with `CHOICE`
+    * `LIST` with `COALESCING` or `CHOICE`
+
+    These converter types cannot work togther, and the annotation process will throw an exception if you specify them
+    together. 
+
+    Additionally, please note that the `COALESCING` and `CHOICE` converter types will affect the generation of all
+    converter functions - specifying `COALESCING` with `DEFAULTING` will, for example, create a coalescing, defaulting
+    converter function. Specify `SINGLE` to generate a function without any additional modifiers.
+
+    You can specify any number of compatible types together - `SINGLE`, `DEFAULTING`, `LIST` and `OPTIONAL` together
+    will, for example, generate four converter functions - one for each.
+
+Parameter | Type                              | Description
+:-------- | :-------------------------------- | :----------
+name      | :warning: `String`                | The base name of your converter functions - `string` or `int` for example
+types     | :warning: `Array <ConverterType>` | A list of converter function types to generate - there are some restrictions, which you can find in the warning above this table
+imports   | `Array<String>`                   | A list of extra imports that must be present in the generated file - without the preceeding `import` keyword
+arguments | `Array<String>`                   | A list of extra arguments that will be added to all generated functions, without the trailing commas - these will also be passed into the converter class invocation as matching named arguments, so your converter's constructor must have the same names
+generic   | `String`                          | A single generic typevar of the form `NAME : Type` that will be applied to all generated functions - typevars will be marked `reified` and the functions will be marked `inline`, so you may need to add `noinline` or `crossinline` modifiers to any callable arguments you supply to the `arguments` array
+
+As an example, let's apply this annotation to the built-in enum converter.
+
+```kotlin
+@Converter(
+    name = "enum",
+    types = [ConverterType.SINGLE],
+
+    generic = "E: Enum<E>",
+    imports = ["com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum"],
+    arguments = [
+        "typeName: String",
+        "noinline getter: suspend (String) -> E? = { getEnum<E>(it) }"
+    ]
+)
+public class EnumConverter<E : Enum<E>>(
+    typeName: String,
+    private val getter: suspend (String) -> E?,
+    override var validator: Validator<E> = null
+) : SingleConverter<E>() {
+    // ...
+}
+
+public inline fun <reified E : Enum<E>> getEnum(arg: String): E? =
+    enumValues<E>().firstOrNull {
+        it.name.equals(arg, true)
+    }
+```
+
+This will generate the following function when you next build your project.
+
+```kotlin
+/**
+ * Creates a enum converter, for single arguments.
+ * 
+ * @see EnumConverter
+ */
+public inline fun <reified E: Enum<E>> Arguments.enum(
+    displayName: String,  // All converters need this argument
+    description: String,  // All converters need this argument
+    typeName: String,
+    noinline getter: suspend (String) -> E? = { getEnum<E>(it) },
+    noinline validator: Validator<E> = null,  // All converters need this argument
+): SingleConverter<E> =
+    arg(
+        displayName = displayName,
+        description = description,
+
+        converter = EnumConverter(
+            validator = validator,
+            typeName = typeName,
+            getter = getter,
+        )
+    )
+```
+
+#### IDE support
+
+Once you've finished annotating your converters, build your project. KSP will output the generated sources to
+`build/generated/ksp/main/kotlin` - but your IDE will not be aware of these generated sources by default. In
+IntelliJ IDEA, you can solve this problem by updating the project settings for your module.
+
+<a href="../../assets/ij-generated-sources.png">
+    <figure>
+        <img src="../../assets/ij-generated-sources.png" style="max-width: 700px" />
+        <figcaption>Click to enlarge</figcaption>
+    </figure>
+</a>
+
+1. Find your module's `main` source set
+2. Click `Add Content Root` and add `build/generated/ksp/`
+3. Find the `main/kotlin` folder, right-click it and mark it as a sources root
+4. Click `Apply` and `OK`
+5. Locate `build/generated/ksp/main/kotlin` in your project's file tree, right-click it, go to `Mark as` and select `Generated sources root`
+
+Once you've done this, IDEA should properly resolve your generated converter functions as normal. Please note, however,
+that anything that removes your `build` folder (or specifically `build/generated/kotlin`) **will break your project 
+settings**, and you'll have to re-add the content root.
