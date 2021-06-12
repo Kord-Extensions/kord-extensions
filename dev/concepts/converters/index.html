@@ -12,7 +12,7 @@
         <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/dev/concepts/converters/">
       
       <link rel="icon" href="../../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.7">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
     
     
       
@@ -42,6 +42,8 @@
     
     
       
+
+
     
     
   </head>
@@ -532,6 +534,46 @@
   <a href="#custom-converters" class="md-nav__link">
     Custom converters
   </a>
+  
+    <nav class="md-nav" aria-label="Custom converters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generated-converter-functions" class="md-nav__link">
+    Generated converter functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Generated converter functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gradle-setup" class="md-nav__link">
+    Gradle setup
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converter-annotation" class="md-nav__link">
+    Converter annotation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ide-support" class="md-nav__link">
+    IDE support
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1033,6 +1075,228 @@ easier.</p>
 <p>This will allow you to use the <code>toDefaulting</code>, <code>toMulti</code> and <code>toOptional</code> functions that will return wrapped versions
 of the converter they're being called against. Please note that <strong>users should never make use of these functions as they
 may cause all kinds of strange issues</strong> - provide wrapping extension functions instead!</p>
+<h3 id="generated-converter-functions">Generated converter functions<a class="headerlink" href="#generated-converter-functions" title="Permanent link">&para;</a></h3>
+<details class="warning"><summary>KSP is in beta!</summary><p>The Kord Extensions annotation processor is written using Google's 
+<a href="https://github.com/google/ksp">Kolin Symbol Processing API</a>. This project is considered to be in an early beta
+and, while we are using it to generate converter functions as part of Kord Extensions, you should beware of
+unexpected issues.</p>
+</details>
+<p>For the sake of convenience, you can make use of an annotation processor to generate your converter functions. This 
+will automatically generate converter functions for annotated converters, matching a (fairly specific) standard
+specification. This system isn't suitable for use by <em>every</em> converter, but most types should be very suitable for use
+with it.</p>
+<h4 id="gradle-setup">Gradle setup<a class="headerlink" href="#gradle-setup" title="Permanent link">&para;</a></h4>
+<p>First, you'll need to set up your gradle project. You'll need to add Google's KSP plugin, as well as the KordEx
+annotation processor.</p>
+<div class="admonition note">
+<p class="admonition-title">settings.gradle.kts</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">pluginManagement</span> <span class="p">{</span>
+    <span class="n">repositories</span> <span class="p">{</span>
+            <span class="n">google</span><span class="p">()</span>  <span class="c1">// Google&#39;s KSP plugin is still beta</span>
+            <span class="n">gradlePluginPortal</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="n">plugins</span> <span class="p">{</span>
+    <span class="n">id</span><span class="p">(</span><span class="s">&quot;com.google.devtools.ksp&quot;</span><span class="p">)</span> <span class="n">version</span> <span class="s">&quot;1.5.10-1.0.0-beta02&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">build.gradle.kts</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">plugins</span> <span class="p">{</span>
+    <span class="n">id</span><span class="p">(</span><span class="s">&quot;com.google.devtools.ksp&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">dependencies</span> <span class="p">{</span>
+    <span class="n">ksp</span><span class="p">(</span><span class="s">&quot;com.kotlindiscord.kord.extensions:annotation-processor:</span><span class="si">$</span><span class="n">kordexVersion</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<h4 id="converter-annotation">Converter annotation<a class="headerlink" href="#converter-annotation" title="Permanent link">&para;</a></h4>
+<p>To start with, write your converters as you always do. Once you're happy with your converters, you can apply the
+<code>@Converter</code> annotation to configure its code generation. Properties marked with <img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> are required.</p>
+<details class="warning"><summary>Converter type restrictions</summary><p>Some converter types are not compatible with each other. Specifically, you can't specify the following types 
+together:</p>
+<ul>
+<li><code>COALESCING</code> with <code>CHOICE</code></li>
+<li><code>LIST</code> with <code>COALESCING</code> or <code>CHOICE</code></li>
+</ul>
+<p>These converter types cannot work togther, and the annotation process will throw an exception if you specify them
+together. </p>
+<p>Additionally, please note that the <code>COALESCING</code> and <code>CHOICE</code> converter types will affect the generation of all
+converter functions - specifying <code>COALESCING</code> with <code>DEFAULTING</code> will, for example, create a coalescing, defaulting
+converter function. Specify <code>SINGLE</code> to generate a function without any additional modifiers.</p>
+<p>You can specify any number of compatible types together - <code>SINGLE</code>, <code>DEFAULTING</code>, <code>LIST</code> and <code>OPTIONAL</code> together
+will, for example, generate four converter functions - one for each.</p>
+</details>
+<table>
+<thead>
+<tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">name</td>
+<td align="left"><img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> <code>String</code></td>
+<td align="left">The base name of your converter functions - <code>string</code> or <code>int</code> for example</td>
+</tr>
+<tr>
+<td align="left">types</td>
+<td align="left"><img alt="⚠" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/26a0.svg" title=":warning:" /> <code>Array &lt;ConverterType&gt;</code></td>
+<td align="left">A list of converter function types to generate - there are some restrictions, which you can find in the warning above this table</td>
+</tr>
+<tr>
+<td align="left">imports</td>
+<td align="left"><code>Array&lt;String&gt;</code></td>
+<td align="left">A list of extra imports that must be present in the generated file - without the preceeding <code>import</code> keyword</td>
+</tr>
+<tr>
+<td align="left">arguments</td>
+<td align="left"><code>Array&lt;String&gt;</code></td>
+<td align="left">A list of extra arguments that will be added to all generated functions, without the trailing commas - these will also be passed into the converter class invocation as matching named arguments, so your converter's constructor must have the same names</td>
+</tr>
+<tr>
+<td align="left">generic</td>
+<td align="left"><code>String</code></td>
+<td align="left">A single generic typevar of the form <code>NAME : Type</code> that will be applied to all generated functions - typevars will be marked <code>reified</code> and the functions will be marked <code>inline</code>, so you may need to add <code>noinline</code> or <code>crossinline</code> modifiers to any callable arguments you supply to the <code>arguments</code> array</td>
+</tr>
+</tbody>
+</table>
+<p>As an example, let's apply this annotation to the built-in enum converter.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nd">@Converter</span><span class="p">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;enum&quot;</span><span class="p">,</span>
+    <span class="n">types</span> <span class="o">=</span> <span class="o">[</span><span class="n">ConverterType</span><span class="p">.</span><span class="na">SINGLE</span><span class="o">]</span><span class="p">,</span>
+
+    <span class="n">generic</span> <span class="o">=</span> <span class="s">&quot;E: Enum&lt;E&gt;&quot;</span><span class="p">,</span>
+    <span class="n">imports</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum&quot;</span><span class="o">]</span><span class="p">,</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="o">[</span>
+        <span class="s">&quot;typeName: String&quot;</span><span class="p">,</span>
+        <span class="s">&quot;noinline getter: suspend (String) -&gt; E? = { getEnum&lt;E&gt;(it) }&quot;</span>
+    <span class="o">]</span>
+<span class="p">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">EnumConverter</span><span class="o">&lt;</span><span class="n">E</span> <span class="p">:</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+    <span class="n">typeName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="kd">private</span> <span class="kd">val</span> <span class="nv">getter</span><span class="p">:</span> <span class="n">suspend</span> <span class="p">(</span><span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E?,</span>
+    <span class="kd">override</span> <span class="kd">var</span> <span class="nv">validator</span><span class="p">:</span> <span class="n">Validator</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kc">null</span>
+<span class="p">)</span> <span class="p">:</span> <span class="n">SingleConverter</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="kd">public</span> <span class="kd">inline</span> <span class="kd">fun</span> <span class="o">&lt;</span><span class="k">reified</span> <span class="n">E</span> <span class="p">:</span> <span class="n">Enum</span><span class="err">&lt;</span><span class="n">E</span><span class="o">&gt;</span><span class="err">&gt; </span><span class="nf">getEnum</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="kt">String</span><span class="p">):</span> <span class="n">E? </span><span class="o">=</span>
+    <span class="n">enumValues</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span><span class="p">().</span><span class="na">firstOrNull</span> <span class="p">{</span>
+        <span class="nb">it</span><span class="p">.</span><span class="na">name</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<p>This will generate the following function when you next build your project.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="cm">/**</span>
+<span class="cm"> * Creates a enum converter, for single arguments.</span>
+<span class="cm"> * </span>
+<span class="cm"> * @see EnumConverter</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="kd">inline</span> <span class="kd">fun</span> <span class="o">&lt;</span><span class="k">reified</span> <span class="n">E</span><span class="p">:</span> <span class="n">Enum</span><span class="err">&lt;</span><span class="n">E</span><span class="o">&gt;</span><span class="err">&gt; </span><span class="n">Arguments</span><span class="p">.</span><span class="nf">enum</span><span class="p">(</span>
+    <span class="n">displayName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>  <span class="c1">// All converters need this argument</span>
+    <span class="n">description</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>  <span class="c1">// All converters need this argument</span>
+    <span class="n">typeName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">noinline</span> <span class="n">getter</span><span class="p">:</span> <span class="n">suspend</span> <span class="p">(</span><span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">E? </span><span class="o">=</span> <span class="p">{</span> <span class="n">getEnum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span> <span class="p">},</span>
+    <span class="n">noinline</span> <span class="n">validator</span><span class="p">:</span> <span class="n">Validator</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span>  <span class="c1">// All converters need this argument</span>
+<span class="p">):</span> <span class="n">SingleConverter</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">=</span>
+    <span class="n">arg</span><span class="p">(</span>
+        <span class="n">displayName</span> <span class="o">=</span> <span class="n">displayName</span><span class="p">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">description</span><span class="p">,</span>
+
+        <span class="n">converter</span> <span class="o">=</span> <span class="n">EnumConverter</span><span class="p">(</span>
+            <span class="n">validator</span> <span class="o">=</span> <span class="n">validator</span><span class="p">,</span>
+            <span class="n">typeName</span> <span class="o">=</span> <span class="n">typeName</span><span class="p">,</span>
+            <span class="n">getter</span> <span class="o">=</span> <span class="n">getter</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+<h4 id="ide-support">IDE support<a class="headerlink" href="#ide-support" title="Permanent link">&para;</a></h4>
+<p>Once you've finished annotating your converters, build your project. KSP will output the generated sources to
+<code>build/generated/ksp/main/kotlin</code> - but your IDE will not be aware of these generated sources by default. In
+IntelliJ IDEA, you can solve this problem by updating the project settings for your module.</p>
+<p><a href="../../assets/ij-generated-sources.png">
+    <figure>
+        <img src="../../assets/ij-generated-sources.png" style="max-width: 700px" />
+        <figcaption>Click to enlarge</figcaption>
+    </figure>
+</a></p>
+<ol>
+<li>Find your module's <code>main</code> source set</li>
+<li>Click <code>Add Content Root</code> and add <code>build/generated/ksp/</code></li>
+<li>Find the <code>main/kotlin</code> folder, right-click it and mark it as a sources root</li>
+<li>Click <code>Apply</code> and <code>OK</code></li>
+<li>Locate <code>build/generated/ksp/main/kotlin</code> in your project's file tree, right-click it, go to <code>Mark as</code> and select <code>Generated sources root</code></li>
+</ol>
+<p>Once you've done this, IDEA should properly resolve your generated converter functions as normal. Please note, however,
+that anything that removes your <code>build</code> folder (or specifically <code>build/generated/kotlin</code>) <strong>will break your project 
+settings</strong>, and you'll have to re-add the content root.</p>
                 
                   
                     
@@ -1041,7 +1305,7 @@ may cause all kinds of strange issues</strong> - provide wrapping extension func
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-15
+      Last update: 2021-06-12
     
   </small>
 </div>
