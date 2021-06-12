@@ -58,6 +58,12 @@ public class ConverterProcessor(
             val extraImports = arguments["imports"] as ArrayList<String>?
             val extraArguments = arguments["arguments"] as ArrayList<String>? ?: arrayListOf()
 
+            var generic = arguments["generic"] as String?
+
+            if (generic?.isEmpty() == true) {
+                generic = null
+            }
+
             val functions: MutableList<String> = mutableListOf()
             val superTypes = classDeclaration.superTypes.map { it.resolve() }.toList()
 
@@ -78,48 +84,126 @@ public class ConverterProcessor(
 
             val typeParam = typeParams.first().type!!.resolve().declaration
             val typeParamName = typeParam.simpleName.asString()
-            val hasChoice: Boolean = types.contains(ConverterType.CHOICE.name)
+            val isChoice: Boolean = types.contains(ConverterType.CHOICE.name)
+            val isCoalescing: Boolean = types.contains(ConverterType.COALESCING.name)
+
+            if (isChoice && isCoalescing) {
+                error(
+                    "Choice converters are not compatible with coalescing converters. Converter: " +
+                        classDeclaration.simpleName.asString()
+                )
+            }
 
             types.sorted().forEach {
                 logger.info("Current type: $it")
 
                 val func = when (it) {
-                    ConverterType.SINGLE.name -> createSingleConverterFunction(
-                        classDeclaration,
-                        name,
-                        typeParamName,
-                        extraArguments,
-                        hasChoice,
-                    )
+                    ConverterType.SINGLE.name -> when {
+                        isChoice -> singleChoiceConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
 
-                    ConverterType.OPTIONAL.name -> createOptionalConverterFunction(
-                        classDeclaration,
-                        name,
-                        typeParamName,
-                        extraArguments,
-                        hasChoice,
-                    )
+                        isCoalescing -> singleCoalescingConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
 
-                    ConverterType.DEFAULTING.name -> createDefaultingConverterFunction(
-                        classDeclaration,
-                        name,
-                        typeParamName,
-                        extraArguments,
-                        hasChoice,
-                    )
+                        else -> singleConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+                    }
 
-                    ConverterType.LIST.name -> createListConverterFunction(
-                        classDeclaration,
-                        name,
-                        typeParamName,
-                        extraArguments,
-                        hasChoice,
-                    )
+                    ConverterType.OPTIONAL.name -> when {
+                        isChoice -> optionalChoiceConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+
+                        isCoalescing -> optionalCoalescingConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+
+                        else -> optionalConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+                    }
+
+                    ConverterType.DEFAULTING.name -> when {
+                        isChoice -> defaultingChoiceConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+
+                        isCoalescing -> defaultingCoalescingConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+
+                        else -> defaultingConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+                    }
+
+                    ConverterType.LIST.name -> when {
+                        isChoice -> listChoiceConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+
+                        isCoalescing -> listCoalescingConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+
+                        else -> listConverter(
+                            classDeclaration,
+                            name,
+                            typeParamName,
+                            extraArguments,
+                            generic,
+                        )
+                    }
 
                     ConverterType.CHOICE.name -> ""  // Done in the converter functions
-
-                    // TODO: Coalescing converters
-                    // TODO: Optional generic types for converter functions
+                    ConverterType.COALESCING.name -> ""  // Done in the converter functions
 
                     else -> "// UNSUPPPORTED: $it"
                 }.trim('\n')
@@ -137,9 +221,6 @@ public class ConverterProcessor(
 
                 package ${classDeclaration.packageName.asString()}
                 
-                // Converter type param
-                import ${typeParam.qualifiedName!!.asString()}
-                
                 // Original converter class, for safety
                 import ${classDeclaration.qualifiedName!!.asString()}
                 
@@ -147,9 +228,21 @@ public class ConverterProcessor(
                 import com.kotlindiscord.kord.extensions.commands.converters.*
                 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
                 import dev.kord.common.annotation.KordPreview
-                
-                
+
+
             """.trimIndent()
+
+            if (typeParam.simpleName.getShortName() != generic?.split(":")?.first()) {
+                outputText += """
+                    // Converter type param
+                    import ${typeParam.qualifiedName!!.asString()}
+
+
+                """.trimIndent()
+            }
+
+            // Converter type param
+            // "import ${typeParam.qualifiedName!!.asString()}"
 
             if (extraImports != null) {
                 outputText += "// Extra imports\n"
@@ -171,214 +264,6 @@ public class ConverterProcessor(
             file.flush()
             file.close()
         }
-
-        private fun createDefaultingConverterFunction(
-            classDeclaration: KSClassDeclaration,
-            name: String,
-            typeParam: String,
-            extraArguments: ArrayList<String>,
-            hasChoice: Boolean
-        ): String = if (!hasChoice) {
-            ConverterFunctionBuilder(
-                "defaulting${name.toCapitalized()}",
-                "Arguments",
-                "DefaultingConverter<$typeParam>"
-            ).comment(
-                """
-                   Creates a defaulting $name converter, for single arguments.
-
-                   @param defaultValue Default value to use if no argument was provided.
-                   @see ${classDeclaration.simpleName.asString()}
-                """.trimIndent()
-            )
-                .defaultFirstArgs()
-                .requiredFunArg("defaultValue", typeParam)
-                .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach { rawFunArg(it) } }
-                .defaultLastArgs(typeParam)
-                .converter(classDeclaration.simpleName.asString())
-                .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach {
-                    converterArg(it.split(":").first().trim())
-                } }
-                .wrapper("defaulting")
-                .wrapperArg("defaultValue")
-                .wrapperArg("nestedValidator", "validator")
-                .build()
-        } else {
-            ConverterFunctionBuilder(
-                "defaulting${name.toCapitalized()}Choice",
-                "Arguments",
-                "DefaultingConverter<$typeParam>"
-            ).comment(
-                """
-                   Creates a defaulting $name choice converter, for a defined set of single arguments.
-
-                   @param defaultValue Default value to use if no argument was provided.
-                   @see ${classDeclaration.simpleName.asString()}
-                """.trimIndent()
-            )
-                .defaultFirstArgs()
-                .requiredFunArg("defaultValue", typeParam)
-                .requiredFunArg("choices", "Map<String, $typeParam>")
-                .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach { rawFunArg(it) } }
-                .defaultLastArgs(typeParam)
-                .converter(classDeclaration.simpleName.asString())
-                .converterArg("choices")
-                .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach {
-                    converterArg(it.split(":").first().trim())
-                } }
-                .wrapper("defaulting")
-                .wrapperArg("defaultValue")
-                .wrapperArg("nestedValidator", "validator")
-                .build()
-        }
-
-        private fun createListConverterFunction(
-            classDeclaration: KSClassDeclaration,
-            name: String,
-            typeParam: String,
-            extraArguments: ArrayList<String>,
-            hasChoice: Boolean
-        ): String =
-            if (!hasChoice) {
-                ConverterFunctionBuilder(
-                    "${name.toLowered()}List",
-                    "Arguments",
-                    "MultiConverter<$typeParam>"
-                ).comment(
-                    """
-                            Creates a $name converter, for lists of arguments.
-                            
-                            @param required Whether command parsing should fail if no arguments could be converted.
-                            @see ${classDeclaration.simpleName.asString()}
-                        """.trimIndent()
-                )
-                    .defaultFirstArgs()
-                    .optionalFunArg("required", "Boolean", "true")
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach { rawFunArg(it) } }
-                    .defaultLastArgs("List<$typeParam>")
-                    .converter(classDeclaration.simpleName.asString())
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach {
-                        converterArg(it.split(":").first().trim())
-                    } }
-                    .wrapper("multi")
-                    .wrapperArg("required")
-                    .wrapperArg("nestedValidator", "validator")
-                    .build()
-            } else {
-                // There are no list-based choice converters
-                error("Choice converters are incompatible with list converters.")
-            }
-
-        private fun createSingleConverterFunction(
-            classDeclaration: KSClassDeclaration,
-            name: String,
-            typeParam: String,
-            extraArguments: ArrayList<String>,
-            hasChoice: Boolean
-        ): String =
-            if (!hasChoice) {
-                ConverterFunctionBuilder(
-                    name.toLowered(),
-                    "Arguments",
-                    "SingleConverter<$typeParam>"
-                ).comment(
-                    """
-                        Creates a $name converter, for single arguments.
-                        
-                        @see ${classDeclaration.simpleName.asString()}
-                    """.trimIndent()
-                )
-                    .defaultFirstArgs()
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach { rawFunArg(it) } }
-                    .defaultLastArgs(typeParam)
-                    .converter(classDeclaration.simpleName.asString())
-                    .converterArg("validator")
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach {
-                        converterArg(it.split(":").first().trim())
-                    } }
-                    .build()
-            } else {
-                ConverterFunctionBuilder(
-                    "${name.toLowered()}Choice",
-                    "Arguments",
-                    "SingleConverter<$typeParam>"
-                ).comment(
-                    """
-                        Creates a $name choice converter, for a defined set of single arguments.
-                        
-                        @see ${classDeclaration.simpleName.asString()}
-                    """.trimIndent()
-                )
-                    .defaultFirstArgs()
-                    .requiredFunArg("choices", "Map<String, $typeParam>")
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach { rawFunArg(it) } }
-                    .defaultLastArgs(typeParam)
-                    .converter(classDeclaration.simpleName.asString())
-                    .converterArg("choices")
-                    .converterArg("validator")
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach {
-                        converterArg(it.split(":").first().trim())
-                    } }
-                    .build()
-            }
-
-        private fun createOptionalConverterFunction(
-            classDeclaration: KSClassDeclaration,
-            name: String,
-            typeParam: String,
-            extraArguments: ArrayList<String>,
-            hasChoice: Boolean
-        ): String =
-            if (!hasChoice) {
-                ConverterFunctionBuilder(
-                    "optional${name.toCapitalized()}",
-                    "Arguments",
-                    "OptionalConverter<$typeParam?>"
-                ).comment(
-                    """
-                        Creates an optional $name converter, for single arguments.
-                        
-                        @param required Whether command parsing should fail if an invalid argument is provided.
-                        @see ${classDeclaration.simpleName.asString()}
-                    """.trimIndent()
-                )
-                    .defaultFirstArgs()
-                    .optionalFunArg("required", "Boolean", "false")
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach { rawFunArg(it) } }
-                    .defaultLastArgs("$typeParam?")
-                    .converter(classDeclaration.simpleName.asString())
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach {
-                        converterArg(it.split(":").first().trim())
-                    } }
-                    .wrapper("optional")
-                    .wrapperArg("outputError", "required")
-                    .wrapperArg("nestedValidator", "validator")
-                    .build()
-            } else {
-                ConverterFunctionBuilder(
-                    "optional${name.toCapitalized()}Choice",
-                    "Arguments",
-                    "OptionalConverter<$typeParam?>"
-                ).comment(
-                    """
-                        Creates an optional $name choice converter, for a defined set of single arguments.
-                        
-                        @see ${classDeclaration.simpleName.asString()}
-                    """.trimIndent()
-                )
-                    .defaultFirstArgs()
-                    .requiredFunArg("choices", "Map<String, $typeParam>")
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach { rawFunArg(it) } }
-                    .defaultLastArgs("$typeParam?")
-                    .converter(classDeclaration.simpleName.asString())
-                    .converterArg("choices")
-                    .maybe(extraArguments.isNotEmpty()) { extraArguments.forEach {
-                        converterArg(it.split(":").first().trim())
-                    } }
-                    .wrapper("optional")
-                    .wrapperArg("nestedValidator", "validator")
-                    .build()
-            }
     }
 }
 

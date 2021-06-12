@@ -24,10 +24,10 @@ class TestExtension : Extension() {
         val enum by enum<TestEnum>("enum", "Enum argument", "test")
 
         val optionalEnum by defaultingEnum(
-            "optional-enum",
-            "Defaulting enum argument",
-            "test",
-            TestEnum.THREE
+            displayName = "optional-enum",
+            description = "Defaulting enum argument",
+            typeName = "test",
+            defaultValue = TestEnum.THREE
         )
 
         val bools by booleanList("bools", "Boolean list argument")
@@ -39,10 +39,10 @@ class TestExtension : Extension() {
         val bool by boolean("bool", "Boolean argument")
 
         val optionalEnum by defaultingEnum(
-            "optional-enum",
-            "Defaulting enum argument",
-            "test",
-            TestEnum.THREE
+            displayName = "optional-enum",
+            description = "Defaulting enum argument",
+            typeName = "test",
+            defaultValue = TestEnum.THREE
         )
     }
 

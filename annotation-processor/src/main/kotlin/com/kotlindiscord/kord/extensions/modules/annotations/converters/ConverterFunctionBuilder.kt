@@ -9,13 +9,13 @@ import org.koin.core.component.inject
 /** Convenience class for building converter functions. **/
 public class ConverterFunctionBuilder(
     public val name: String,
-    public val receiver: String? = null,
-    private val returnType: String
 ) : KoinComponent {
     private val logger: KSPLogger by inject()
 
     private var comment: String? = null
     private val functionArgs: MutableList<String> = mutableListOf()
+
+    private var generic: String? = null
 
     private lateinit var converterName: String
     private val converterArgs: MutableList<String> = mutableListOf()
@@ -24,8 +24,15 @@ public class ConverterFunctionBuilder(
     private val wrapperArgs: MutableList<String> = mutableListOf()
 
     private val lines: MutableList<String> = mutableListOf()
+    private lateinit var returnType: String
 
     private var implicitReturn: Boolean = true
+
+    public fun returnType(type: String): ConverterFunctionBuilder {
+        returnType = type
+
+        return this
+    }
 
     public fun defaultFirstArgs(): ConverterFunctionBuilder {
         requiredFunArg("displayName", "String")
@@ -35,7 +42,11 @@ public class ConverterFunctionBuilder(
     }
 
     public fun defaultLastArgs(typeParam: String): ConverterFunctionBuilder {
-        optionalFunArg("validator", "Validator<$typeParam>", "null")
+        if (generic != null) {
+            optionalFunArg("noinline validator", "Validator<$typeParam>", "null")
+        } else {
+            optionalFunArg("validator", "Validator<$typeParam>", "null")
+        }
 
         return this
     }
@@ -60,6 +71,18 @@ public class ConverterFunctionBuilder(
 
     public fun converterArg(name: String, value: String): ConverterFunctionBuilder {
         converterArgs.add("$name = $value")
+
+        return this
+    }
+
+    public fun rawGeneric(generic: String): ConverterFunctionBuilder {
+        this.generic = generic
+
+        return this
+    }
+
+    public fun generic(name: String, type: String): ConverterFunctionBuilder {
+        generic = "$name : $type"
 
         return this
     }
@@ -136,15 +159,19 @@ public class ConverterFunctionBuilder(
             """.trimMargin() + "\n"
         }
 
-        result += "public fun "
+        result += "public "
 
-        result += if (receiver != null) {
-            "$receiver.$name"
-        } else {
-            name
+        if (generic != null) {
+            result += "inline "
         }
 
-        result += "(\n"
+        result += "fun "
+
+        if (generic != null) {
+            result += "<reified $generic> "
+        }
+
+        result += "Arguments.$name(\n"
         result += functionArgs.joinToString("") { "    $it,\n" }
         result += "): $returnType "
 
@@ -175,7 +202,7 @@ public class ConverterFunctionBuilder(
 
         result += ")"
 
-        result +=  if (converterArgs.isNotEmpty() && wrapperName != null) {
+        result += if (converterArgs.isNotEmpty() && wrapperName != null) {
             ""
         } else if (converterArgs.isEmpty() && wrapperName != null) {
             "\n            "
@@ -216,11 +243,9 @@ public class ConverterFunctionBuilder(
 @Suppress("FunctionNaming")  // Factory function
 public fun ConverterFunctionBuilder(
     name: String,
-    receiver: String? = null,
-    returnType: String,
     body: ConverterFunctionBuilder.() -> Unit
 ): String {
-    val builder = ConverterFunctionBuilder(name = name, receiver = receiver, returnType = returnType)
+    val builder = ConverterFunctionBuilder(name = name)
 
     body(builder)
 

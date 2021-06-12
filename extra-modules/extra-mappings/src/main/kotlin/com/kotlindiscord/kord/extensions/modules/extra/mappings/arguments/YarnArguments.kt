@@ -13,10 +13,10 @@ class YarnArguments(patchworkEnabled: Boolean) : Arguments() {
     val query by string("query", "Name to query mappings for")
 
     val channel by optionalEnum<YarnChannels>(
-        "channel",
-        "Mappings channel to use for this query",
+        displayName = "channel",
+        description = "Mappings channel to use for this query",
 
-        "official/snapshot" + if (patchworkEnabled) {
+        typeName = "official/snapshot" + if (patchworkEnabled) {
             "/patchwork"
         } else {
             ""

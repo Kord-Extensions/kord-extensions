@@ -10,7 +10,8 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -22,6 +23,11 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  *
  * @see coalescedString
  */
+@Converter(
+    "string",
+
+    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE]
+)
 public class StringCoalescingConverter(
     shouldThrow: Boolean = false,
     override var validator: Validator<String> = null
@@ -38,51 +44,3 @@ public class StringCoalescingConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create a coalescing string converter.
- *
- * @see StringCoalescingConverter
- */
-public fun Arguments.coalescedString(
-    displayName:
-    String,
-    description: String,
-    validator: Validator<String> = null,
-): CoalescingConverter<String> =
-    arg(displayName, description, StringCoalescingConverter(validator = validator))
-
-/**
- * Create an optional coalescing string converter.
- *
- * @see StringCoalescingConverter
- */
-public fun Arguments.optionalCoalescedString(
-    displayName: String,
-    description: String,
-    validator: Validator<String?> = null,
-): OptionalCoalescingConverter<String?> =
-    arg(
-        displayName,
-        description,
-
-        StringCoalescingConverter().toOptional(nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting coalescing string converter.
- *
- * @see StringCoalescingConverter
- */
-public fun Arguments.defaultingCoalescedString(
-    displayName: String,
-    description: String,
-    defaultValue: String,
-    validator: Validator<String> = null,
-): DefaultingCoalescingConverter<String> =
-    arg(
-        displayName,
-        description,
-        StringCoalescingConverter()
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )

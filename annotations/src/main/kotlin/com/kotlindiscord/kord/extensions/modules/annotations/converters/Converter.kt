@@ -10,6 +10,10 @@ package com.kotlindiscord.kord.extensions.modules.annotations.converters
  * @property arguments Extra argument lines to add to every generated function, without the trailing comma. These will
  * be added as extra function arguments, and they'll also be passed into the class as matching named arguments- so
  * your converter's constructor must have the same names!
+ *
+ * @property generic Generic typevar to be made accessible in your converter functions. The function will be marked
+ * inline and the typevar will be reified - if you have custom callable arguments, you'll probably need to mark them
+ * `noinline`. Typevars should be specified without the angle brackets - eg, "T : Any".
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
@@ -17,5 +21,6 @@ public annotation class Converter(
     public val name: String,
     public val types: Array<ConverterType>,
     public val imports: Array<String> = [],
-    public val arguments: Array<String> = []
+    public val arguments: Array<String> = [],
+    public val generic: String = ""
 )

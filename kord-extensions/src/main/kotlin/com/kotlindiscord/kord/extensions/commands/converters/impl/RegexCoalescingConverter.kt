@@ -10,7 +10,8 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -27,6 +28,13 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  *
  * @see coalescedRegex
  */
+@Converter(
+    "regex",
+
+    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    imports = ["kotlin.text.RegexOption"],
+    arguments = ["options: Set<RegexOption> = setOf()"]
+)
 public class RegexCoalescingConverter(
     private val options: Set<RegexOption> = setOf(),
     shouldThrow: Boolean = false,
@@ -44,53 +52,3 @@ public class RegexCoalescingConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create a coalescing regex converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.coalescedRegex(
-    displayName: String,
-    description: String,
-    options: Set<RegexOption> = setOf(),
-    validator: Validator<Regex> = null,
-): CoalescingConverter<Regex> =
-    arg(displayName, description, RegexCoalescingConverter(options, validator = validator))
-
-/**
- * Create an optional coalescing regex converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.optionalCoalescedRegex(
-    displayName: String,
-    description: String,
-    options: Set<RegexOption> = setOf(),
-    validator: Validator<Regex?> = null,
-): OptionalCoalescingConverter<Regex?> =
-    arg(
-        displayName,
-        description,
-
-        RegexCoalescingConverter(options).toOptional(nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting coalescing regex converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.defaultingCoalescedRegex(
-    displayName: String,
-    description: String,
-    defaultValue: Regex,
-    options: Set<RegexOption> = setOf(),
-    validator: Validator<Regex> = null,
-): DefaultingCoalescingConverter<Regex> =
-    arg(
-        displayName,
-        description,
-        RegexCoalescingConverter(options)
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )

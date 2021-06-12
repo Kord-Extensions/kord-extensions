@@ -35,7 +35,7 @@ public class UnionConverter(
 
     /** @suppress Internal validation function. **/
     public fun validateUnion() {
-        val allConverters = converters.toMutableList()
+        val allConverters: MutableList<Converter<*>> = converters.toMutableList()
 
         allConverters.removeLast()  // The last converter can be any type.
 
@@ -61,7 +61,7 @@ public class UnionConverter(
             @Suppress("TooGenericExceptionCaught")
             when (converter) {
                 is SingleConverter<*> -> try {
-                    val result = converter.parse(args.first(), context)
+                    val result: Boolean = converter.parse(args.first(), context)
 
                     if (result) {
                         converter.parseSuccess = true
@@ -74,7 +74,7 @@ public class UnionConverter(
                 }
 
                 is DefaultingConverter<*> -> try {
-                    val result = converter.parse(args.first(), context)
+                    val result: Boolean = converter.parse(args.first(), context)
 
                     if (result) {
                         converter.parseSuccess = true
@@ -87,7 +87,7 @@ public class UnionConverter(
                 }
 
                 is OptionalConverter<*> -> try {
-                    val result = converter.parse(args.first(), context)
+                    val result: Boolean = converter.parse(args.first(), context)
 
                     if (result && converter.parsed != null) {
                         converter.parseSuccess = true
@@ -100,7 +100,7 @@ public class UnionConverter(
                 }
 
                 is MultiConverter<*> -> try {
-                    val result = converter.parse(args, context)
+                    val result: Int = converter.parse(args, context)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -113,7 +113,7 @@ public class UnionConverter(
                 }
 
                 is CoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context)
+                    val result: Int = converter.parse(args, context)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -126,7 +126,7 @@ public class UnionConverter(
                 }
 
                 is DefaultingCoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context)
+                    val result: Int = converter.parse(args, context)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -139,7 +139,7 @@ public class UnionConverter(
                 }
 
                 is OptionalCoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context)
+                    val result: Int = converter.parse(args, context)
 
                     if (result > 0 && converter.parsed != null) {
                         converter.parseSuccess = true
@@ -183,7 +183,7 @@ public fun Arguments.union(
     vararg converters: Converter<*>,
     validator: Validator<Any> = null,
 ): UnionConverter {
-    val converter = UnionConverter(converters.toList(), typeName, shouldThrow, validator)
+    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, validator)
 
     converter.validateUnion()
 
@@ -215,7 +215,7 @@ public fun Arguments.optionalUnion(
     vararg converters: Converter<*>,
     validator: Validator<Any?> = null
 ): OptionalCoalescingConverter<Any?> {
-    val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
+    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow)
 
     converter.validateUnion()
 
@@ -225,7 +225,7 @@ public fun Arguments.optionalUnion(
         }
     }
 
-    val optionalConverter = converter.toOptional(nestedValidator = validator)
+    val optionalConverter: OptionalCoalescingConverter<Any?> = converter.toOptional(nestedValidator = validator)
 
     arg(displayName, description, optionalConverter)
 
