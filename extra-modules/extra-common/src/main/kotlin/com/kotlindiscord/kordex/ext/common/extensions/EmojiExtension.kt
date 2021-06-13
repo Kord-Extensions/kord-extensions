@@ -7,20 +7,16 @@ import com.kotlindiscord.kordex.ext.common.builders.ExtCommonBuilder
 import com.kotlindiscord.kordex.ext.common.configuration.emoji.EmojiConfig
 import com.kotlindiscord.kordex.ext.common.emoji.NamedEmoji
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.Kord
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.event.guild.EmojisUpdateEvent
 import dev.kord.core.event.guild.GuildCreateEvent
 import kotlinx.coroutines.flow.toList
-import org.koin.core.component.inject
 
 /**
  * Emoji extension, in charge of keeping track of custom emoji so you can easily retrieve them later.
  */
 class EmojiExtension : Extension() {
     override val name: String = "emoji"
-
-    private val kord: Kord by inject()
 
     override suspend fun setup() {
         event<GuildCreateEvent> {

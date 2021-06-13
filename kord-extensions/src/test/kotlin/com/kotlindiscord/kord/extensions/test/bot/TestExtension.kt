@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 
@@ -51,6 +52,43 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
+        slashCommand {
+            name = "buttons"
+            description = "Buttons!"
+
+            guild(787452339908116521) // Our test server
+
+            action {
+                ephemeralFollowUp("Buttons!") {
+                    actionRow {
+                        button(ButtonStyle.Primary) {
+                            label = "Button one!"
+
+                            action {
+                                ephemeralFollowUp("Button one pressed!")
+                            }
+                        }
+
+                        button(ButtonStyle.Secondary) {
+                            label = "Button two!"
+
+                            action {
+                                ephemeralFollowUp("Button two pressed!")
+                            }
+                        }
+
+                        button(ButtonStyle.Success) {
+                            label = "Button three!"
+
+                            action {
+                                ephemeralFollowUp("Button three pressed!")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         slashCommand {
             name = "test-noack"
             description = "Don't auto-ack this one"

@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.memberFor
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.extensions.ComponentInteractionContext
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
@@ -20,6 +21,7 @@ import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.rest.builder.component.ButtonBuilder
 import dev.kord.rest.builder.interaction.EphemeralFollowupMessageCreateBuilder
 import dev.kord.rest.builder.interaction.PublicFollowupMessageCreateBuilder
 
@@ -154,5 +156,38 @@ public open class SlashCommandContext<T : Arguments>(
         }
 
         return (interactionResponse as PublicInteractionResponseBehavior).followUp(builder)
+    }
+
+    /**
+     * Register an event handler for this specific button, to be fired when it's clicked.
+     *
+     * Will use the same ack type that this slash command's [isEphemeral] reports. If you'd like to use a different
+     * one, you can use the variant of this function that's present in [command.extension].
+     *
+     * **Note:** Buttons will not be automatically disabled after [timeout]/[fireOnce] has been met.
+     *
+     * @param timeout How long to wait before the bot stops waiting for button clicks, if needed.
+     * @param fireOnce Whether to stop listening for clicks after the first one.
+     * @param body Code to run after the click.
+     */
+    @OptIn(KordPreview::class)
+    @ExtensionDSL
+    public suspend fun ButtonBuilder.InteractionButtonBuilder.action(
+        timeout: Long? = null,
+        fireOnce: Boolean = true,
+        body: suspend ComponentInteractionContext.() -> Unit
+    ): Unit = with(command.extension) {
+        action(
+            ackType = when (isEphemeral) {
+                true -> AutoAckType.EPHEMERAL
+                false -> AutoAckType.PUBLIC
+
+                else -> null
+            },
+
+            timeout = timeout,
+            fireOnce = fireOnce,
+            body = body
+        )
     }
 }

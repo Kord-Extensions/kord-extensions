@@ -48,7 +48,7 @@ public abstract class CommandContext(
     /** Cached locale variable, stored and retrieved by [getLocale]. **/
     public open var resolvedLocale: Locale? = null
 
-    /** Called before command processing, used to populate any extra variables from event data. **/
+    /** Called before processing, used to populate any extra variables from event data. **/
     public abstract suspend fun populate()
 
     /** Extract channel information from event data, if that context is available. **/
