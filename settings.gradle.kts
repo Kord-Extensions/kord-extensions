@@ -2,7 +2,6 @@ pluginManagement {
     repositories {
         google()
         gradlePluginPortal()
-        jcenter()
 
         plugins {
             // NOTE: UPDATE THIS IF YOU UPDATE THE LIBS.VERSIONS.TOML

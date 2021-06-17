@@ -14,7 +14,6 @@ plugins {
     `maven-publish`
 
     kotlin("jvm")
-    kotlin("kapt")
 
     id("com.google.devtools.ksp")
     id("io.gitlab.arturbosch.detekt")
@@ -69,12 +68,13 @@ kotlin {
 sourceSets {
     main {
         java {
-            srcDir(file("$buildDir/generated/ksp/src/main/kotlin"))
+            srcDir(file("$buildDir/generated/ksp/main/kotlin/"))
         }
     }
+
     test {
         java {
-            srcDir(file("$buildDir/generated/ksp/src/test/kotlin"))
+            srcDir(file("$buildDir/generated/ksp/test/kotlin/"))
         }
     }
 }

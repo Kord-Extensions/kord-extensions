@@ -45,6 +45,20 @@ kotlin {
     explicitApi()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir(file("$buildDir/generated/ksp/main/kotlin/"))
+        }
+    }
+
+    test {
+        java {
+            srcDir(file("$buildDir/generated/ksp/test/kotlin/"))
+        }
+    }
+}
+
 detekt {
     buildUponDefaultConfig = true
     config = files("../../detekt.yml")
