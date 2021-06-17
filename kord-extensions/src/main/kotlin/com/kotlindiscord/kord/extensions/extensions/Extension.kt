@@ -542,7 +542,9 @@ fun delay() = kord.launch {
                             content = text
                         }
 
-                        else -> interaction.respondEphemeral(text)
+                        else -> interaction.respondEphemeral {
+                            content = text
+                        }
                     }
 
                 val interactionContext = ComponentInteractionContext(

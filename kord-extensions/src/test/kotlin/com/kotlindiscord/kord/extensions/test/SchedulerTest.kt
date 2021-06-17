@@ -51,16 +51,16 @@ class SchedulerTest {
 
         val tasks = mutableListOf<Task>()
 
-        tasks += scheduler.schedule(3) { count += 1 }
-        tasks += scheduler.schedule(3) { count += 1 }
-        tasks += scheduler.schedule(3) { count += 1 }
+        tasks += scheduler.schedule(10) { count += 1 }
+        tasks += scheduler.schedule(10) { count += 1 }
+        tasks += scheduler.schedule(10) { count += 1 }
 
         assertEquals(
             scheduler.tasks.size,
             tasks.size
         ) { "Scheduler should have ${tasks.size} tasks, but it has ${scheduler.tasks.size}" }
 
-        tasks.forEach { it.join() }
+        tasks.forEach { it.callNow() }
 
         delay(1000)  // Some systems are a bit weird about job timing
 
