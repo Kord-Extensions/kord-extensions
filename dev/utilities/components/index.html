@@ -1039,6 +1039,16 @@ required properties marked with <img alt="⚠" class="twemoji" src="https://twem
 <td align="left">If the button isn't being sent as part of a slash command interaction, then this will be used for the automatic acknowledgement - just like it would be for slash commands. Defaults to <code>EPHEMERAL</code>, disable with <code>null</code>.</td>
 </tr>
 <tr>
+<td align="left"><code>deferredAck</code></td>
+<td align="left"><code>Boolean</code></td>
+<td align="left">Set this to <code>true</code> to send a deferred acknowledgement instead of a normal one, which will clear the "processing" state of the button interaction. This is <code>false</code> by default, which will wait for you to send a <code>followUp</code> before clearing the "processing" state.</td>
+</tr>
+<tr>
+<td align="left"><code>followParent</code></td>
+<td align="left"><code>Boolean</code></td>
+<td align="left">By default, button interactions that happen as part of a slash command follow the ack type of that slash command's context. If you don't want that, then set this to <code>false</code>.</td>
+</tr>
+<tr>
 <td align="left"><code>id</code></td>
 <td align="left"><code>String</code></td>
 <td align="left">The button's unique ID on Discord, which defaults to a randomly-generated UUID. Normally this would be used for click actions, but disabled buttons don't have one!</td>
@@ -1065,7 +1075,7 @@ required properties marked with <img alt="⚠" class="twemoji" src="https://twem
 </tr>
 <tr>
 <td align="left"><code>check</code></td>
-<td align="left">Provide a check lambda or callable which must pass for the button action to be run. If a check fails, the interaction won't be acknowledged, and the user will be presented with a timeout error from Discord.</td>
+<td align="left">Provide a check lambda or callable which must pass for the button action to be run. If a check fails, the interaction will be acknowledged with a deferred ack - meaning the "processing" status will be cleared - and the <code>action</code> will not be called.</td>
 </tr>
 </tbody>
 </table>
