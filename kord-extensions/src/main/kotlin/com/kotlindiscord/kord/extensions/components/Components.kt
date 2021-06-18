@@ -205,7 +205,7 @@ public open class Components(
     public open suspend fun MessageCreateBuilder.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
 
-        for (row in rows) {
+        for (row in rows.filter { row -> row.all { it != null } }) {
             actionRow {
                 row.forEach { it?.apply(this) }
             }
@@ -221,7 +221,7 @@ public open class Components(
     public open suspend fun FollowupMessageBuilder<*>.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
 
-        for (row in rows.filter { it.count { it == null } != it.count() }) {
+        for (row in rows.filter { row -> row.all { it != null } }) {
             actionRow {
                 row.filterNotNull().forEach { it.apply(this) }
             }
