@@ -854,8 +854,16 @@
 <td align="left">For a Time4J Duration, return a human-readable string formatted for the given locale</td>
 </tr>
 <tr>
-<td align="left"><code>Duration .toSeconds</code></td>
-<td align="left">For a Time4J Duration, return the total number of seconds it contains</td>
+<td align="left"><code>GeneralTimestamp&lt;*&gt;.toDiscord</code></td>
+<td align="left">For a Time4J GeneralTimestamp, return the Discord auto-formatted String for the given <code>TimestampType</code> at UTC, with the day starting at midnight</td>
+</tr>
+<tr>
+<td align="left"><code>Moment.toDiscord</code></td>
+<td align="left">For a Time4J Moment, return the Discord auto-formatted String for the given <code>TimestampType</code></td>
+</tr>
+<tr>
+<td align="left"><code>PlainTimestamp.toDiscord</code></td>
+<td align="left">For a Time4J PlainTimestamp, return the Discord auto-formatted String for the given <code>TimestampType</code> at UTC</td>
 </tr>
 </tbody>
 </table>
@@ -867,7 +875,7 @@
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-05-16
+      Last update: 2021-06-18
     
   </small>
 </div>
