@@ -1036,7 +1036,7 @@ required properties marked with <img alt="⚠" class="twemoji" src="https://twem
 <tr>
 <td align="left"><code>ackType</code></td>
 <td align="left"><code>AutoAck Type?</code></td>
-<td align="left">If the button isn't being sent as part of a slash command interaction, then this will be used for the automatic acknowledgement - just like it would be for slash commands. Defaults to <code>EPHEMERAL</code>, disable with <code>null</code>.</td>
+<td align="left">If the button isn't being sent as part of a slash command interaction, then this will be used for the automatic acknowledgement - just like it would be for slash commands. Defaults to <code>EPHEMERAL</code> if you're working within a slash command, and <code>PUBLIC</code> if you're working with normal messages. Disable with <code>null</code>.</td>
 </tr>
 <tr>
 <td align="left"><code>deferredAck</code></td>
