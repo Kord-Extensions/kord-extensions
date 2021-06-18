@@ -81,22 +81,12 @@ class TestExtension : Extension() {
                             }
                         }
 
-                        interactiveButton {
-                            label = "Button three!"
-                            style = ButtonStyle.Success
-
-                            action {
-                                respond("Button three pressed!")
-                            }
-                        }
-
                         disabledButton {
-                            // Labels are optional if you have an emoji
-                            emoji("❎")  // Easily add an emoji from various sources
+                            emoji("❎")
                         }
 
                         linkButton {
-                            label = "Google"  // You can provide both a label and emoji if you like
+                            label = "Google"
                             emoji("🔗")
 
                             url = "https://google.com"
