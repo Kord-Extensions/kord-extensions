@@ -89,6 +89,18 @@ class TestExtension : Extension() {
                                 respond("Button three pressed!")
                             }
                         }
+
+                        disabledButton {
+                            // Labels are optional if you have an emoji
+                            emoji("❎")  // Easily add an emoji from various sources
+                        }
+
+                        linkButton {
+                            label = "Google"  // You can provide both a label and emoji if you like
+                            emoji("🔗")
+
+                            url = "https://google.com"
+                        }
                     }
                 }
             }

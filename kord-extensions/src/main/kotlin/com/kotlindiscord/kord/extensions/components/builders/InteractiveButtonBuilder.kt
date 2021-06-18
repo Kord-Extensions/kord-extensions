@@ -42,6 +42,11 @@ public open class InteractiveButtonBuilder : ButtonBuilder() {
     /** Button style. **/
     public open var style: ButtonStyle = ButtonStyle.Primary
 
+    /**
+     * Automatic ack type, if not following a parent context.
+     */
+    public open var ackType: AutoAckType? = AutoAckType.EPHEMERAL
+
     /** @suppress Internal variable, a list of checks to apply to click actions. **/
     public open val checks: MutableList<ButtonCheckFun> = mutableListOf()
 

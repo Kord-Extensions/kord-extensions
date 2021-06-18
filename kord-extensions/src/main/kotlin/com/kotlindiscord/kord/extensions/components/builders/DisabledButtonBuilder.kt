@@ -14,7 +14,7 @@ import java.util.*
  */
 public open class DisabledButtonBuilder : ButtonBuilder() {
     /** Unique ID for this button. Required by Discord. **/
-    public open val id: String = UUID.randomUUID().toString()
+    public open var id: String = UUID.randomUUID().toString()
 
     /** Button style. **/
     public open var style: ButtonStyle = ButtonStyle.Primary
