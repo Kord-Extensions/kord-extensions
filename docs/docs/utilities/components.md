@@ -107,7 +107,7 @@ required properties marked with :warning::
 
 Parameter      | Type            | Description
 :------------- | :-------------- | :----------
-`ackType`      | `AutoAck Type?` | If the button isn't being sent as part of a slash command interaction, then this will be used for the automatic acknowledgement - just like it would be for slash commands. Defaults to `EPHEMERAL`, disable with `null`.
+`ackType`      | `AutoAck Type?` | If the button isn't being sent as part of a slash command interaction, then this will be used for the automatic acknowledgement - just like it would be for slash commands. Defaults to `EPHEMERAL` if you're working within a slash command, and `PUBLIC` if you're working with normal messages. Disable with `null`.
 `deferredAck`  | `Boolean`       | Set this to `true` to send a deferred acknowledgement instead of a normal one, which will clear the "processing" state of the button interaction. This is `false` by default, which will wait for you to send a `followUp` before clearing the "processing" state.
 `followParent` | `Boolean`       | By default, button interactions that happen as part of a slash command follow the ack type of that slash command's context. If you don't want that, then set this to `false`.
 `id`           | `String`        | The button's unique ID on Discord, which defaults to a randomly-generated UUID. Normally this would be used for click actions, but disabled buttons don't have one!

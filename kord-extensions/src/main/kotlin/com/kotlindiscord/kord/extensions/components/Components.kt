@@ -2,6 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.components
 
+import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
 import com.kotlindiscord.kord.extensions.components.builders.ButtonBuilder
 import com.kotlindiscord.kord.extensions.components.builders.DisabledButtonBuilder
@@ -74,6 +75,10 @@ public open class Components(
         builder: suspend InteractiveButtonBuilder.() -> Unit
     ): InteractiveButtonBuilder {
         val buttonBuilder = InteractiveButtonBuilder()
+
+        if (parentContext == null) {
+            buttonBuilder.ackType = AutoAckType.PUBLIC
+        }
 
         builder.invoke(buttonBuilder)
         addButton(buttonBuilder, row)
