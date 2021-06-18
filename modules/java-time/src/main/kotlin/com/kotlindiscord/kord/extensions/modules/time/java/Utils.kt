@@ -4,7 +4,7 @@ import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
 import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.utils.TimestampType
+import com.kotlindiscord.kord.extensions.time.TimestampType
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit

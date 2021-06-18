@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.time
 
-import com.kotlindiscord.kord.extensions.utils.TimestampType
 import kotlinx.datetime.Instant
 
 /**

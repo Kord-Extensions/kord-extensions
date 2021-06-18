@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.utils
+package com.kotlindiscord.kord.extensions.time
 
 /**
  * Sealed class representing the different types of Discord-formatted timestamps.
