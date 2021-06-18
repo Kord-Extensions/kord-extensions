@@ -4,6 +4,8 @@ import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
 import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.utils.TimestampType
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -67,3 +69,10 @@ public suspend fun ChronoContainer.toHuman(
     context: CommandContext,
     relativeTo: LocalDateTime = LocalDateTime.now()
 ): String? = toHuman(context.getLocale(), relativeTo)
+
+/**
+ * Format the given `Instant` to Discord's automatically-formatted timestamp format. This will return a String that
+ * you can include in your messages, which Discord should automatically format for users based on their locale.
+ */
+public fun Instant.toDiscord(format: TimestampType = TimestampType.Default): String =
+    format.format(toEpochMilli())

@@ -39,6 +39,7 @@ These can be added to your `Arguments` objects using the following functions:
 
 ## Utilities
 
-Function             | Description
-:------------------- | :----------
-`Duration .toHuman`  | For a Java Time Duration, return a human-readable string formatted for the given locale
+Function                   | Description
+:------------------------- | :----------
+`ChronoContainer .toHuman` | For a ChronoContainer, return a human-readable string formatted for the given locale
+`Instant .toDiscord`       | For a Java Instant, return the Discord auto-formatted String for the given `TimestampType`

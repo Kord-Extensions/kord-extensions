@@ -40,7 +40,9 @@ These can be added to your `Arguments` objects using the following functions:
 
 ## Utilities
 
-Function              | Description
-:-------------------- | :----------
-`Duration .toHuman`   | For a Time4J Duration, return a human-readable string formatted for the given locale
-`Duration .toSeconds` | For a Time4J Duration, return the total number of seconds it contains
+Function                         | Description
+:------------------------------- | :----------
+`Duration .toHuman`              | For a Time4J Duration, return a human-readable string formatted for the given locale
+`GeneralTimestamp<*>.toDiscord`  | For a Time4J GeneralTimestamp, return the Discord auto-formatted String for the given `TimestampType` at UTC, with the day starting at midnight
+`Moment.toDiscord`               | For a Time4J Moment, return the Discord auto-formatted String for the given `TimestampType`
+`PlainTimestamp.toDiscord`       | For a Time4J PlainTimestamp, return the Discord auto-formatted String for the given `TimestampType` at UTC

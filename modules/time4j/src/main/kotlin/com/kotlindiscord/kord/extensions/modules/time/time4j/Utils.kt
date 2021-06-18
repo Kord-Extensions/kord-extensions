@@ -4,8 +4,11 @@ import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
 import com.ibm.icu.util.MeasureUnit
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.utils.TimestampType
 import com.kotlindiscord.kord.extensions.utils.component6
 import net.time4j.*
+import net.time4j.engine.StartOfDay
+import net.time4j.tz.ZonalOffset
 import java.util.*
 
 private const val DAYS_PER_WEEK = 7L
@@ -75,3 +78,31 @@ public suspend fun Duration<IsoUnit>.toHuman(
     context: CommandContext,
     relativeTo: PlainTimestamp = PlainTimestamp.nowInSystemTime()
 ): String? = toHuman(context.getLocale(), relativeTo)
+
+/**
+ * Format the given `Moment` to Discord's automatically-formatted timestamp format. This will return a String that
+ * you can include in your messages, which Discord should automatically format for users based on their locale.
+ */
+public fun Moment.toDiscord(format: TimestampType = TimestampType.Default): String =
+    format.format(posixTime)
+
+/**
+ * Format the given `PlainTimestamp` to Discord's automatically-formatted timestamp format. This will return a String
+ * that you can include in your messages, which Discord should automatically format for users based on their locale.
+ *
+ * This will get the timestamp's `Moment` at UTC. If this isn't what you want, use the
+ * `PlainTimestamp#at(ZonalOffset)` function and call `.toDiscord(format)` with the result..
+ */
+public fun PlainTimestamp.toDiscord(format: TimestampType = TimestampType.Default): String =
+    atUTC().toDiscord(format)
+
+/**
+ * Format the given `PlainTimestamp` to Discord's automatically-formatted timestamp format. This will return a String
+ * that you can include in your messages, which Discord should automatically format for users based on their locale.
+ *
+ * This will get the timestamp's `Moment` at UTC, with the start of day set to `MIDNIGHT`. If this isn't what you
+ * want, use the `GeneralTimestamp#at(ZonalOffset, StartOfDay)` function and call `.toDiscord(format)` with the
+ * result.
+ */
+public fun GeneralTimestamp<*>.toDiscord(format: TimestampType = TimestampType.Default): String =
+    at(ZonalOffset.UTC, StartOfDay.MIDNIGHT).toDiscord(format)
