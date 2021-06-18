@@ -1,18 +1,17 @@
-package com.kotlindiscord.kord.extensions.extensions
+package com.kotlindiscord.kord.extensions.components.contexts
 
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.memberFor
+import com.kotlindiscord.kord.extensions.components.Components
+import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.InteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.followUp
+import dev.kord.core.behavior.interaction.*
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.ComponentInteraction
@@ -28,18 +27,20 @@ import org.koin.core.component.inject
 import java.util.*
 
 /**
- * Context object representing the execution context of a component interaction.
+ * Context object representing the execution context of an interactive button interaction.
  *
  * @property extension Extension object this interaction happened within.
  * @property event Event that was fired for this interaction.
+ * @property components Components container this button belongs to.
  * @property interactionResponse Interaction response, if automatically acked.
  * @property interaction Convenience access to the properly-typed interaction object.
  */
 @OptIn(KordPreview::class)
 @ExtensionDSL
-public open class ComponentInteractionContext(
+public open class InteractiveButtonContext(
     public open val extension: Extension,
     public open val event: InteractionCreateEvent,
+    public open val components: Components,
     public open var interactionResponse: InteractionResponseBehavior? = null,
     public open val interaction: ComponentInteraction = event.interaction as ComponentInteraction
 ) : KoinComponent {
@@ -132,7 +133,6 @@ public open class ComponentInteractionContext(
      * Note that ephemeral follow-ups require a content string, and may not contain embeds or files.
      */
     public suspend inline fun ephemeralFollowUp(
-        content: String,
         builder: EphemeralFollowupMessageCreateBuilder.() -> Unit = {}
     ): InteractionFollowup {
         if (interactionResponse == null) {
@@ -143,7 +143,7 @@ public open class ComponentInteractionContext(
             error("Tried send an ephemeral follow-up for a public interaction.")
         }
 
-        return (interactionResponse as EphemeralInteractionResponseBehavior).followUp(content, builder)
+        return (interactionResponse as EphemeralInteractionResponseBehavior).followUpEphemeral(builder)
     }
 
     /**
@@ -232,4 +232,12 @@ public open class ComponentInteractionContext(
         extension.bundle,
         replacements
     )
+
+    /** Convenience function to send a response follow-up message containing only text. **/
+    public suspend fun respond(text: String): Any = when (isEphemeral) {
+        true -> ephemeralFollowUp { content = text }
+        false -> publicFollowUp { content = text }
+
+        else -> interactionResponse = interaction.respondEphemeral { content = text }
+    }
 }

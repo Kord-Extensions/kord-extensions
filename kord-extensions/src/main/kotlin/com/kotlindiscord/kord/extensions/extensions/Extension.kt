@@ -2,44 +2,20 @@ package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
-import com.kotlindiscord.kord.extensions.checks.channelFor
-import com.kotlindiscord.kord.extensions.checks.guildFor
-import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
-import com.kotlindiscord.kord.extensions.sentry.tag
-import com.kotlindiscord.kord.extensions.sentry.user
-import dev.kord.common.annotation.KordPreview
-import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.Kord
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.followUp
-import dev.kord.core.behavior.interaction.respondEphemeral
-import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
-import dev.kord.core.entity.interaction.ComponentInteraction
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
-import dev.kord.rest.builder.component.ActionRowBuilder
-import dev.kord.rest.builder.component.ButtonBuilder
-import io.sentry.Sentry
-import io.sentry.protocol.SentryId
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.Serializable
-import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -442,192 +418,5 @@ public abstract class Extension : KoinComponent {
     @ExtensionDSL
     public open fun check(check: suspend (MessageCreateEvent) -> Boolean) {
         commandChecks.add(check)
-    }
-
-    /**
-     * Convenience function to create an `interactionButton` with a randomly-generated UUID.
-     */
-    @OptIn(KordPreview::class)
-    public inline fun ActionRowBuilder.button(
-        style: ButtonStyle,
-        builder: ButtonBuilder.InteractionButtonBuilder.() -> Unit
-    ): Unit =
-        interactionButton(style, UUID.randomUUID().toString(), builder)
-
-    /**
-     * Register an event handler for this specific button, to be fired when it's clicked.
-     *
-     * **Note:** Buttons will not be automatically disabled after [timeout]/[fireOnce] has been met.
-     *
-     * @param ackType Acknowledgement type, to ack automatically. Defaults to `EPHEMERAL`, set to `null` to disable.
-     * @param timeout How long to wait before the bot stops waiting for button clicks, if needed.
-     * @param fireOnce Whether to stop listening for clicks after the first one.
-     * @param body Code to run after the click.
-     */
-    @OptIn(KordPreview::class)
-    @ExtensionDSL
-    public suspend fun ButtonBuilder.InteractionButtonBuilder.action(
-        ackType: AutoAckType? = AutoAckType.EPHEMERAL,
-        timeout: Long? = null,
-        fireOnce: Boolean = true,
-        body: suspend ComponentInteractionContext.() -> Unit
-    ) {
-        var isRunning = false
-        var delayJob: Job? = null
-
-        event<InteractionCreateEvent> {
-            // To seconds!
-            @Suppress("MagicNumber")
-fun delay() = kord.launch {
-                delay(timeout!! * 1000)
-
-                if (!isRunning && job?.isCancelled != true) {
-                    job?.cancel()
-                    bot.removeEventHandler(this@event)
-                }
-            }
-
-            check {
-                val interaction = it.interaction as? ComponentInteraction
-
-                interaction != null && interaction.componentId == customId
-            }
-
-            this.action {
-                isRunning = true
-
-                val firstBreadcrumb = if (sentry.enabled) {
-                    val channel = channelFor(event)
-                    val guild = guildFor(event)?.asGuildOrNull()
-
-                    val data = mutableMapOf<String, Serializable>()
-
-                    if (channel != null) {
-                        data["channel"] = when (channel) {
-                            is DmChannel -> "Private Message (${channel.id.asString})"
-                            is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
-
-                            else -> channel.id.asString
-                        }
-                    }
-
-                    if (guild != null) {
-                        data["guild"] = "${guild.name} (${guild.id.asString})"
-                    }
-
-                    sentry.createBreadcrumb(
-                        category = "interaction",
-                        type = "user",
-                        message = "Interaction for component \"$customId\" received.",
-                        data = data
-                    )
-                } else {
-                    null
-                }
-
-                val interaction = event.interaction as ComponentInteraction
-
-                val response = when (ackType) {
-                    AutoAckType.EPHEMERAL -> interaction.acknowledgeEphemeral()
-                    AutoAckType.PUBLIC -> interaction.acknowledgePublic()
-
-                    else -> null
-                }
-
-                suspend fun respond(text: String) =
-                    when (response) {
-                        is EphemeralInteractionResponseBehavior -> response.followUp(text)
-
-                        is PublicInteractionResponseBehavior -> response.followUp {
-                            content = text
-                        }
-
-                        else -> interaction.respondEphemeral {
-                            content = text
-                        }
-                    }
-
-                val interactionContext = ComponentInteractionContext(
-                    this@Extension,
-                    event,
-                    response,
-                    interaction
-                )
-
-                @Suppress("TooGenericExceptionCaught")
-                try {
-                    body(interactionContext)
-                } catch (e: CommandException) {
-                    respond(e.toString())
-                } catch (t: Throwable) {
-                    if (sentry.enabled) {
-                        logger.debug { "Submitting error to sentry." }
-
-                        lateinit var sentryId: SentryId
-
-                        val user = userFor(event)?.asUserOrNull()
-                        val channel = channelFor(event)?.asChannelOrNull()
-
-                        Sentry.withScope {
-                            if (user != null) {
-                                it.user(user)
-                            }
-
-                            it.tag("private", "false")
-
-                            if (channel is DmChannel) {
-                                it.tag("private", "true")
-                            }
-
-                            it.tag("extension", this@Extension.name)
-                            it.addBreadcrumb(firstBreadcrumb!!)
-
-                            interactionContext.breadcrumbs.forEach(it::addBreadcrumb)
-
-                            sentryId = Sentry.captureException(t, "Component interaction execution failed.")
-
-                            logger.debug { "Error submitted to Sentry: $sentryId" }
-                        }
-
-                        sentry.addEventId(sentryId)
-
-                        logger.error(t) { "Error thrown during component interaction" }
-
-                        if (extension.bot.extensions.containsKey("sentry")) {
-                            respond(
-                                interactionContext.translate(
-                                    "commands.error.user.sentry.slash",
-                                    null,
-                                    replacements = arrayOf(sentryId)
-                                )
-                            )
-                        } else {
-                            respond(
-                                interactionContext.translate("commands.error.user")
-                            )
-                        }
-                    } else {
-                        logger.error(t) { "Error thrown during component interaction" }
-
-                        respond(interactionContext.translate("commands.error.user", null))
-                    }
-                }
-
-                if (fireOnce) {
-                    delayJob?.cancel()
-                    bot.removeEventHandler(this@event)
-                    this@event.job?.cancel()
-                } else {
-                    isRunning = false
-
-                    delayJob?.cancel()
-                    delayJob = delay()
-                }
-            }
-
-            if (timeout != null) {
-                delayJob = delay()
-            }
-        }
     }
 }

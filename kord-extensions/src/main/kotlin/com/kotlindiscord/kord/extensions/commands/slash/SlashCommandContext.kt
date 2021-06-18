@@ -6,23 +6,20 @@ import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.memberFor
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.extensions.ComponentInteractionContext
+import com.kotlindiscord.kord.extensions.components.Components
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.InteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.followUp
+import dev.kord.core.behavior.interaction.*
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import dev.kord.rest.builder.component.ButtonBuilder
 import dev.kord.rest.builder.interaction.EphemeralFollowupMessageCreateBuilder
+import dev.kord.rest.builder.interaction.FollowupMessageBuilder
 import dev.kord.rest.builder.interaction.PublicFollowupMessageCreateBuilder
 
 /**
@@ -124,7 +121,6 @@ public open class SlashCommandContext<T : Arguments>(
      * Note that ephemeral follow-ups require a content string, and may not contain embeds or files.
      */
     public suspend inline fun ephemeralFollowUp(
-        content: String,
         builder: EphemeralFollowupMessageCreateBuilder.() -> Unit = {}
     ): InteractionFollowup {
         if (interactionResponse == null) {
@@ -135,7 +131,7 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried send an ephemeral follow-up for a public interaction.")
         }
 
-        return (interactionResponse as EphemeralInteractionResponseBehavior).followUp(content, builder)
+        return (interactionResponse as EphemeralInteractionResponseBehavior).followUpEphemeral(builder)
     }
 
     /**
@@ -159,35 +155,22 @@ public open class SlashCommandContext<T : Arguments>(
     }
 
     /**
-     * Register an event handler for this specific button, to be fired when it's clicked.
+     * Convenience function for adding components to your message via the [Components] class.
      *
-     * Will use the same ack type that this slash command's [isEphemeral] reports. If you'd like to use a different
-     * one, you can use the variant of this function that's present in [command.extension].
-     *
-     * **Note:** Buttons will not be automatically disabled after [timeout]/[fireOnce] has been met.
-     *
-     * @param timeout How long to wait before the bot stops waiting for button clicks, if needed.
-     * @param fireOnce Whether to stop listening for clicks after the first one.
-     * @param body Code to run after the click.
+     * @see Components
      */
-    @OptIn(KordPreview::class)
-    @ExtensionDSL
-    public suspend fun ButtonBuilder.InteractionButtonBuilder.action(
-        timeout: Long? = null,
-        fireOnce: Boolean = true,
-        body: suspend ComponentInteractionContext.() -> Unit
-    ): Unit = with(command.extension) {
-        action(
-            ackType = when (isEphemeral) {
-                true -> AutoAckType.EPHEMERAL
-                false -> AutoAckType.PUBLIC
+    public suspend fun FollowupMessageBuilder<*>.components(
+        timeoutSeconds: Long? = null,
+        body: suspend Components.() -> Unit
+    ): Components {
+        val components = Components(command.extension, this@SlashCommandContext)
 
-                else -> null
-            },
+        body(components)
 
-            timeout = timeout,
-            fireOnce = fireOnce,
-            body = body
-        )
+        with(components) {
+            setup(timeoutSeconds)
+        }
+
+        return components
     }
 }

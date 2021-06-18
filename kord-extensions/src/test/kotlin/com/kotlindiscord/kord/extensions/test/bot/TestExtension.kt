@@ -13,7 +13,6 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
-import dev.kord.rest.builder.interaction.actionRow
 import dev.kord.rest.builder.interaction.embed
 
 // They're IDs
@@ -61,29 +60,33 @@ class TestExtension : Extension() {
             guild(787452339908116521) // Our test server
 
             action {
-                ephemeralFollowUp("Buttons!") {
-                    actionRow {
-                        button(ButtonStyle.Primary) {
+                ephemeralFollowUp {
+                    content = "Buttons!"
+
+                    components(60) {
+                        interactiveButton {
                             label = "Button one!"
 
                             action {
-                                ephemeralFollowUp("Button one pressed!")
+                                respond("Button one pressed!")
                             }
                         }
 
-                        button(ButtonStyle.Secondary) {
+                        interactiveButton {
                             label = "Button two!"
+                            style = ButtonStyle.Secondary
 
                             action {
-                                ephemeralFollowUp("Button two pressed!")
+                                respond("Button two pressed!")
                             }
                         }
 
-                        button(ButtonStyle.Success) {
+                        interactiveButton {
                             label = "Button three!"
+                            style = ButtonStyle.Success
 
                             action {
-                                ephemeralFollowUp("Button three pressed!")
+                                respond("Button three pressed!")
                             }
                         }
                     }
@@ -177,7 +180,9 @@ class TestExtension : Extension() {
                     description = "Test command, please ignore"
 
                     action {
-                        ephemeralFollowUp("Some content")
+                        ephemeralFollowUp {
+                            content = "Some content"
+                        }
                     }
                 }
             }

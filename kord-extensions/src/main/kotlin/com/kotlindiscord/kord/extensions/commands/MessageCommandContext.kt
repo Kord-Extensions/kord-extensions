@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
@@ -13,6 +14,7 @@ import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.rest.builder.message.MessageCreateBuilder
 
 /**
  * Command context object representing the context given to message commands.
@@ -92,4 +94,24 @@ public open class MessageCommandContext<T : Arguments>(
         replacements: Array<Any?> = arrayOf(),
         useReply: Boolean = true
     ): Message = respond(translate(key, replacements), useReply)
+
+    /**
+     * Convenience function for adding components to your message via the [Components] class.
+     *
+     * @see Components
+     */
+    public suspend fun MessageCreateBuilder.components(
+        timeoutSeconds: Long? = null,
+        body: suspend Components.() -> Unit
+    ): Components {
+        val components = Components(command.extension)
+
+        body(components)
+
+        with(components) {
+            setup(timeoutSeconds)
+        }
+
+        return components
+    }
 }

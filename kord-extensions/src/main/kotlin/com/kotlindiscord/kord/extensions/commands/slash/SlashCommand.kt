@@ -520,10 +520,10 @@ public open class SlashCommand<T : Arguments>(
     ): KordObject = when (context.isEphemeral) {
         null -> {
             context.ack(true)
-            context.ephemeralFollowUp(text)
+            context.ephemeralFollowUp { content = text }
         }
 
-        true -> context.ephemeralFollowUp(text)
+        true -> context.ephemeralFollowUp { content = text }
         false -> context.publicFollowUp { content = text }
     }
 }

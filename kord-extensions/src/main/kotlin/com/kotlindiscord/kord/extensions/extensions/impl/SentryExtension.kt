@@ -32,9 +32,9 @@ public class SentryExtension : Extension() {
 
                 action {
                     if (!sentry.hasEventId(arguments.id)) {
-                        ephemeralFollowUp(
-                            translate("extensions.sentry.error.invalidId")
-                        )
+                        ephemeralFollowUp {
+                            content = translate("extensions.sentry.error.invalidId")
+                        }
 
                         return@action
                     }
@@ -49,9 +49,9 @@ public class SentryExtension : Extension() {
                     Sentry.captureUserFeedback(feedback)
                     sentry.removeEventId(arguments.id)
 
-                    ephemeralFollowUp(
-                        translate("extensions.sentry.thanks")
-                    )
+                    ephemeralFollowUp {
+                        content = translate("extensions.sentry.thanks")
+                    }
                 }
             }
 
