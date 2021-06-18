@@ -105,18 +105,20 @@ Parameter | Type           | Description
 Interactive buttons have a click action that's handled by the bot. Their builders have the following properties, with
 required properties marked with :warning::
 
-Parameter | Type            | Description
-:-------- | :-------------- | :----------
-`ackType` | `AutoAck Type?` | If the button isn't being sent as part of a slash command interaction, then this will be used for the automatic acknowledgement - just like it would be for slash commands. Defaults to `EPHEMERAL`, disable with `null`.
-`id`      | `String`        | The button's unique ID on Discord, which defaults to a randomly-generated UUID. Normally this would be used for click actions, but disabled buttons don't have one!
-`style`   | `Button Style`  | The button's style on Discord, which defaults to `Primary`.
+Parameter      | Type            | Description
+:------------- | :-------------- | :----------
+`ackType`      | `AutoAck Type?` | If the button isn't being sent as part of a slash command interaction, then this will be used for the automatic acknowledgement - just like it would be for slash commands. Defaults to `EPHEMERAL`, disable with `null`.
+`deferredAck`  | `Boolean`       | Set this to `true` to send a deferred acknowledgement instead of a normal one, which will clear the "processing" state of the button interaction. This is `false` by default, which will wait for you to send a `followUp` before clearing the "processing" state.
+`followParent` | `Boolean`       | By default, button interactions that happen as part of a slash command follow the ack type of that slash command's context. If you don't want that, then set this to `false`.
+`id`           | `String`        | The button's unique ID on Discord, which defaults to a randomly-generated UUID. Normally this would be used for click actions, but disabled buttons don't have one!
+`style`        | `Button Style`  | The button's style on Discord, which defaults to `Primary`.
 
 Additionally, the following functions are available, with functions that must be called marked with :warning::
 
 Function  | Description
 :-------- | :----------
 `action`  | :warning: Set the action to be taken when this button is clicked. All interactive button actions are treated as receiver functions to an `InteractiveButtonContext` object.
-`check`   | Provide a check lambda or callable which must pass for the button action to be run. If a check fails, the interaction won't be acknowledged, and the user will be presented with a timeout error from Discord.
+`check`   | Provide a check lambda or callable which must pass for the button action to be run. If a check fails, the interaction will be acknowledged with a deferred ack - meaning the "processing" status will be cleared - and the `action` will not be called.
 
 ??? note "Interactive button contexts"
     The `InteractiveButtonContext` class provides the execution context for your button's click actions. It largely

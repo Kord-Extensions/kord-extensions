@@ -15,6 +15,8 @@ import com.kotlindiscord.kord.extensions.components.contexts.InteractiveButtonCo
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.utils.ackEphemeral
+import com.kotlindiscord.kord.extensions.utils.ackPublic
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.entity.channel.DmChannel
@@ -47,6 +49,12 @@ public open class InteractiveButtonBuilder : ButtonBuilder() {
      */
     public open var ackType: AutoAckType? = AutoAckType.EPHEMERAL
 
+    /** Whether to send a deferred acknowledgement instead of a normal one. **/
+    public open var deferredAck: Boolean = false
+
+    /** Whether to follow the ack type of the parent slash command context, if any. **/
+    public open var followParent: Boolean = true
+
     /** @suppress Internal variable, a list of checks to apply to click actions. **/
     public open val checks: MutableList<ButtonCheckFun> = mutableListOf()
 
@@ -74,11 +82,13 @@ public open class InteractiveButtonBuilder : ButtonBuilder() {
         }
     }
 
-    /** Register a check that must pass for this button to be actioned. Failing checks will show an error. **/
-    public open fun check(vararg checks: ButtonCheckFun): Boolean = this.checks.addAll(checks)
+    /** Register a check that must pass for this button to be actioned. Failing checks will fail quietly. **/
+    public open fun check(vararg checks: ButtonCheckFun): Boolean =
+        this.checks.addAll(checks)
 
-    /** Register a check that must pass for this button to be actioned. Failing checks will show an error. **/
-    public open fun check(check: ButtonCheckFun): Boolean = checks.add(check)
+    /** Register a check that must pass for this button to be actioned. Failing checks will fail quietly. **/
+    public open fun check(check: ButtonCheckFun): Boolean =
+        checks.add(check)
 
     /** Register the click action that should be run when this button is clicked, assuming the checks pass. **/
     public open fun action(action: InteractiveButtonAction) {
@@ -92,6 +102,7 @@ public open class InteractiveButtonBuilder : ButtonBuilder() {
         parentContext: SlashCommandContext<*>?
     ) {
         if (!checks.all { it(event) }) {
+            (event.interaction as ComponentInteraction).acknowledgeEphemeralDeferredMessageUpdate()
             return
         }
 
@@ -126,17 +137,17 @@ public open class InteractiveButtonBuilder : ButtonBuilder() {
 
         val interaction = event.interaction as ComponentInteraction
 
-        val response = if (parentContext != null) {
+        val response = if (parentContext != null && followParent) {
             when (parentContext.isEphemeral) {
-                true -> interaction.acknowledgeEphemeral()
-                false -> interaction.acknowledgePublic()
+                true -> interaction.ackEphemeral(deferredAck)
+                false -> interaction.ackPublic(deferredAck)
 
                 else -> null
             }
         } else {
             when (ackType) {
-                AutoAckType.EPHEMERAL -> interaction.acknowledgeEphemeral()
-                AutoAckType.PUBLIC -> interaction.acknowledgePublic()
+                AutoAckType.EPHEMERAL -> interaction.ackEphemeral(deferredAck)
+                AutoAckType.PUBLIC -> interaction.ackPublic(deferredAck)
 
                 else -> null
             }
