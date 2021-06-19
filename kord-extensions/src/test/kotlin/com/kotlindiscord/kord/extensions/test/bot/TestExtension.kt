@@ -5,7 +5,8 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.enumChoice
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.pagination.Paginator
+import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
+import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
@@ -53,6 +54,61 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
+        slashCommand {
+            name = "pages"
+            description = "Pages!"
+            autoAck = AutoAckType.PUBLIC
+
+            guild(787452339908116521)
+
+            action {
+                val pages = Pages()
+
+                (0..2).forEach {
+                    pages.addPage(
+                        Page(
+                            "Short page $it.",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "Expanded",
+
+                        Page(
+                            "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "MASSIVE GROUP",
+
+                        Page(
+                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+                }
+
+                val paginator = InteractionButtonPaginator(
+                    extension = this@TestExtension,
+                    pages = pages,
+                    owner = event.interaction.user.asUser(),
+                    timeoutSeconds = 60,
+                    parentContext = this,
+                    keepEmbed = false
+                )
+
+                paginator.send()
+            }
+        }
+
         slashCommand {
             name = "buttons"
             description = "Buttons!"
@@ -390,7 +446,8 @@ class TestExtension : Extension() {
                     )
                 }
 
-                Paginator(
+                MessageButtonPaginator(
+                    extension = this@TestExtension,
                     targetMessage = event.message,
                     pages = pages,
                     keepEmbed = true,

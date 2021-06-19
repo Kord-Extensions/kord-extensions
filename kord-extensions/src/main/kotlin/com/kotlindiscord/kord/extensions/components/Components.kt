@@ -17,8 +17,11 @@ import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.rest.builder.interaction.FollowupMessageBuilder
 import dev.kord.rest.builder.interaction.actionRow
 import dev.kord.rest.builder.message.MessageCreateBuilder
+import dev.kord.rest.builder.message.MessageModifyBuilder
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -42,11 +45,16 @@ public open class Components(
     public open val extension: Extension,
     public open val parentContext: SlashCommandContext<*>? = null
 ) : KoinComponent {
+    private val logger = KotlinLogging.logger {}
+
     /** Current Kord instance. **/
     public val kord: Kord by inject()
 
     /** Current event handler instance waiting for interaction creation events. **/
     public var eventHandler: EventHandler<InteractionCreateEvent>? = null
+
+    /** @suppress Internal Job object representing the timeout job. **/
+    public var delayJob: Job? = null
 
     /** List of buttons that have yet to be sorted into rows. **/
     public open val unsortedButtons: MutableList<ButtonBuilder> = mutableListOf()
@@ -64,6 +72,9 @@ public open class Components(
         arrayOf(null, null, null, null, null),
         arrayOf(null, null, null, null, null),
     )
+
+    /** List of registered timeout callbacks. **/
+    public open val timeoutCallbacks: MutableList<suspend () -> Unit> = mutableListOf()
 
     /**
      * Create an interactive button that may be clicked on.
@@ -120,6 +131,22 @@ public open class Components(
         addButton(buttonBuilder, row)
 
         return buttonBuilder
+    }
+
+    /** Register a callback to run when a setup timeout expires. **/
+    public open fun onTimeout(body: suspend () -> Unit): Boolean =
+        timeoutCallbacks.add(body)
+
+    /** @suppress Internal API function that runs the timeout callbacks. **/
+    @Suppress("TooGenericExceptionCaught")
+    public open suspend fun runTimeoutCallbacks() {
+        timeoutCallbacks.forEach {
+            try {
+                it()
+            } catch (t: Throwable) {
+                logger.error(t) { "Error during timeout callback: $it" }
+            }
+        }
     }
 
     /**
@@ -188,10 +215,11 @@ public open class Components(
         }
 
         if (timeoutMillis != null) {
-            kord.launch {
+            delayJob = kord.launch {
                 delay(timeoutMillis)
 
                 stop()
+                runTimeoutCallbacks()
             }
         }
     }
@@ -201,6 +229,7 @@ public open class Components(
      */
     public open fun stop() {
         eventHandler?.job?.cancel()
+        delayJob?.cancel()
     }
 
     /**
@@ -208,6 +237,22 @@ public open class Components(
      * clicks.
      */
     public open suspend fun MessageCreateBuilder.setup(timeoutSeconds: Long? = null) {
+        sortIntoRows()
+
+        for (row in rows.filter { row -> !row.all { it == null } }) {
+            actionRow {
+                row.forEach { it?.apply(this) }
+            }
+        }
+
+        startListening(timeoutSeconds)
+    }
+
+    /**
+     * @suppress Internal API function that sets up all of the buttons, adds them to the message, and listens for
+     * clicks.
+     */
+    public open suspend fun MessageModifyBuilder.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
 
         for (row in rows.filter { row -> !row.all { it == null } }) {

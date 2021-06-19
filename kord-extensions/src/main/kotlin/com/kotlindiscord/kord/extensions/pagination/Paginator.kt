@@ -26,27 +26,6 @@ import java.util.*
 
 private const val WRONG_TYPE = "Wrong event type!"
 
-/** Emoji used to jump to the first page. **/
-public val FIRST_PAGE_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u23EE")
-
-/** Emoji used to jump to the previous page. **/
-public val LEFT_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u2B05")
-
-/** Emoji used to jump to the next page. **/
-public val RIGHT_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u27A1")
-
-/** Emoji used to jump to the last page. **/
-public val LAST_PAGE_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u23ED")
-
-/** Emoji used to destroy the paginator. **/
-public val DELETE_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u274C")
-
-/** Group switch emoji, counter-clockwise arrows icon. **/
-public val SWITCH_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\uD83D\uDD04")
-
-/** Group switch emoji, information icon. **/
-public val EXPAND_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u2139\uFE0F")
-
 private val logger = KotlinLogging.logger {}
 
 /**
