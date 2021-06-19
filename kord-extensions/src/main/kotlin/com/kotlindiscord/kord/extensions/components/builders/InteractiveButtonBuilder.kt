@@ -157,6 +157,8 @@ public open class InteractiveButtonBuilder : ButtonBuilder() {
             extension, event, components, response, interaction
         )
 
+        context.populate()
+
         @Suppress("TooGenericExceptionCaught")
         try {
             body(context)
