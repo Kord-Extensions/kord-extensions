@@ -31,7 +31,13 @@ public abstract class ButtonBuilder : KoinComponent {
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 
-    /** The button's label text. Optional if you've got an emoji **/
+    /**
+     * The button's label text. Optional if you've got an emoji.
+     *
+     * Labels default to a zero-width space. This does make them slightly wider than usual if you don't set your
+     * own label, but it means that iOS users can tap emoji-only buttons without having to specifically tap the
+     * emoji.
+     */
     public open var label: String? = null
 
     /**
@@ -71,6 +77,12 @@ public abstract class ButtonBuilder : KoinComponent {
             name = guildEmoji.name,
             animated = guildEmoji.isAnimated.optional()
         )
+    }
+
+    /** Convenience function for setting [partialEmoji] based on a given reaction emoji. **/
+    public fun emoji(emoji: ReactionEmoji): Unit = when (emoji) {
+        is ReactionEmoji.Unicode -> emoji(emoji)
+        is ReactionEmoji.Custom -> emoji(emoji)
     }
 
     /** Function used to add this button to an action row. **/

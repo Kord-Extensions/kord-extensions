@@ -22,7 +22,9 @@ public open class DisabledButtonBuilder : ButtonBuilder() {
     public override fun apply(builder: ActionRowBuilder) {
         builder.interactionButton(style, id) {
             emoji = partialEmoji
-            label = this@DisabledButtonBuilder.label
+
+            // ZWSP, so iOS users don't have to directly tap an emoji if there's no label
+            label = this@DisabledButtonBuilder.label ?: "\u200B"
 
             disabled = true
         }

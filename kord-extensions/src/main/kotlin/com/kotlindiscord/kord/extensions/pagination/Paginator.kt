@@ -148,7 +148,7 @@ public open class Paginator(
         }
 
         if (message.getChannelOrNull() !is DmChannel && reactions.isNotEmpty()) {
-            reactions += DELETE_EMOJI
+            reactions += FINISH_EMOJI
         }
 
         if (reactions.isNotEmpty()) {
@@ -251,7 +251,7 @@ public open class Paginator(
             LEFT_EMOJI -> goToPage(message, currentPageNum - 1)
             RIGHT_EMOJI -> goToPage(message, currentPageNum + 1)
             LAST_PAGE_EMOJI -> goToPage(message, pages.size - 1)
-            DELETE_EMOJI -> if (channel !is DmChannel) destroy(message)
+            FINISH_EMOJI -> if (channel !is DmChannel) destroy(message)
 
             switchEmoji -> switchGroup(message)
 

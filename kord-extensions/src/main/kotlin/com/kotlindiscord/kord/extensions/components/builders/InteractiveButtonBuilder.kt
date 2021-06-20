@@ -64,7 +64,9 @@ public open class InteractiveButtonBuilder : ButtonBuilder() {
     public override fun apply(builder: ActionRowBuilder) {
         builder.interactionButton(style, id) {
             emoji = partialEmoji
-            label = this@InteractiveButtonBuilder.label
+
+            // ZWSP, so iOS users don't have to directly tap an emoji if there's no label
+            label = this@InteractiveButtonBuilder.label ?: "\u200B"
         }
     }
 

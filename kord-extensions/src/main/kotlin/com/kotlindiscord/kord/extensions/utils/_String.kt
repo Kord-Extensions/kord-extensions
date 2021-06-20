@@ -45,3 +45,18 @@ public suspend fun String.parseBoolean(context: CommandContext): Boolean? = pars
  * Translations may contain commas, in which case any of the given values will be suitable.
  */
 public fun String.parseBoolean(locale: Locale): Boolean? = BooleanParser.parse(this, locale)
+
+/**
+ * Capitalize words in this string according to the given locale. Uses the Java default locale if none is
+ * provided.
+ */
+public fun String.capitalizeWords(locale: Locale? = null): String {
+    return split(" ").joinToString(" ") { word ->
+        word.replaceFirstChar {
+            if (it.isLowerCase()) {
+                it.titlecase(locale ?: Locale.getDefault())
+            } else {
+                it.toString()
+            } }
+    }
+}

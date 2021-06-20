@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.Kord
@@ -14,19 +15,22 @@ import org.koin.core.component.inject
 import java.util.*
 
 /** Emoji used to jump to the first page. **/
-public val FIRST_PAGE_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u23EE")
+public val FIRST_PAGE_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("⏮️")
 
 /** Emoji used to jump to the previous page. **/
-public val LEFT_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u2B05")
+public val LEFT_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("⬅️")
 
 /** Emoji used to jump to the next page. **/
-public val RIGHT_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u27A1")
+public val RIGHT_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("➡️")
 
 /** Emoji used to jump to the last page. **/
-public val LAST_PAGE_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u23ED")
+public val LAST_PAGE_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("⏭️")
 
-/** Emoji used to destroy the paginator. **/
-public val DELETE_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u274C")
+/** Emoji used to destroy the paginator and delete the message. **/
+public val DELETE_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\uD83D\uDDD1️")
+
+/** Emoji used to destroy the paginator without deleting the message. **/
+public val FINISH_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("☑️")
 
 /** Group switch emoji, counter-clockwise arrows icon. **/
 public val SWITCH_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\uD83D\uDD04")
@@ -46,6 +50,7 @@ public val EXPAND_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u2139\u
  * @param keepEmbed Set this to `false` to remove the paginator's message when it's destroyed
  * @param switchEmoji The `ReactionEmoji` to use for group switching
  * @param locale A Locale object for this pagination context, which defaults to the bot's default locale
+ * @param bundle Translation bundle to use for this paginator
  */
 public abstract class BasePaginator(
     public open val extension: Extension,
@@ -53,7 +58,8 @@ public abstract class BasePaginator(
     public open val owner: User? = null,
     public open val timeoutSeconds: Long? = null,
     public open val keepEmbed: Boolean = true,
-    public open val switchEmoji: ReactionEmoji.Unicode = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+    public open val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+    public open val bundle: String? = null,
 
     locale: Locale? = null
 ) : KoinComponent {
@@ -65,8 +71,11 @@ public abstract class BasePaginator(
     /** Kord instance, backing the ExtensibleBot. **/
     public val kord: Kord by inject()
 
+    /** Current translations provider. **/
+    public val translations: TranslationsProvider by inject()
+
     /** Locale to use for translations. **/
-    public val localeObj: Locale = locale ?: bot.settings.i18nBuilder.defaultLocale
+    public open val localeObj: Locale = locale ?: bot.settings.i18nBuilder.defaultLocale
 
     /** What to do after the paginator times out. **/
     public val timeoutCallbacks: MutableList<suspend () -> Unit> = mutableListOf()
@@ -156,4 +165,8 @@ public abstract class BasePaginator(
             }
         }
     }
+
+    /** Quick access to translations, using the paginator's locale and bundle. **/
+    public fun translate(key: String, replacements: Array<Any?> = arrayOf()): String =
+        translations.translate(key, localeObj, bundle, replacements = replacements)
 }

@@ -17,7 +17,9 @@ public open class LinkButtonBuilder : ButtonBuilder() {
     public override fun apply(builder: ActionRowBuilder) {
         builder.linkButton(url) {
             emoji = partialEmoji
-            label = this@LinkButtonBuilder.label
+
+            // ZWSP, so iOS users don't have to directly tap an emoji if there's no label
+            label = this@LinkButtonBuilder.label ?: "\u200B"
         }
     }
 

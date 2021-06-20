@@ -412,6 +412,58 @@ class TestExtension : Extension() {
             description = "Paginator test"
 
             action {
+                val pages = Pages(defaultGroup = "short")
+
+                (0..2).forEach {
+                    pages.addPage(
+                        "short",
+
+                        Page(
+                            "Short page $it.",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "expanded",
+
+                        Page(
+                            "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "massive",
+
+                        Page(
+                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+                }
+
+                MessageButtonPaginator(
+                    extension = this@TestExtension,
+                    targetMessage = event.message,
+                    pages = pages,
+                    keepEmbed = true,
+                    owner = user,
+                    locale = getLocale()
+                ).send()
+            }
+        }
+
+        command {
+            name = "page2"
+            description = "Paginator test 2"
+
+            action {
                 val pages = Pages()
 
                 (0..2).forEach {
@@ -431,26 +483,14 @@ class TestExtension : Extension() {
                             footer = "Footer text ($it)"
                         )
                     )
-
-                    pages.addPage(
-                        "MASSIVE GROUP",
-
-                        Page(
-                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
-                            footer = "Footer text ($it)"
-                        )
-                    )
                 }
 
                 MessageButtonPaginator(
                     extension = this@TestExtension,
                     targetMessage = event.message,
                     pages = pages,
-                    keepEmbed = true,
+                    keepEmbed = false,
+                    owner = user,
                     locale = getLocale()
                 ).send()
             }
