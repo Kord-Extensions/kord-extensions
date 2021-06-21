@@ -218,8 +218,11 @@ public open class Components(
             delayJob = kord.launch {
                 delay(timeoutMillis)
 
-                stop()
+                eventHandler?.job?.cancel()
+                eventHandler = null
+
                 runTimeoutCallbacks()
+                stop()
             }
         }
     }
