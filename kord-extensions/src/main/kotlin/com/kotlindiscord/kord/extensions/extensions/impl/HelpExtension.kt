@@ -12,7 +12,8 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.pagination.Paginator
+import com.kotlindiscord.kord.extensions.pagination.BasePaginator
+import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.deleteIgnoringNotFound
@@ -74,7 +75,7 @@ public class HelpExtension : HelpProvider, Extension() {
         }
     }
 
-    override suspend fun getMainHelpPaginator(event: MessageCreateEvent, prefix: String): Paginator {
+    override suspend fun getMainHelpPaginator(event: MessageCreateEvent, prefix: String): BasePaginator {
         var totalCommands = 0
         val locale = event.getLocale()
 
@@ -139,14 +140,15 @@ public class HelpExtension : HelpProvider, Extension() {
             )
         }
 
-        return Paginator(
+        return MessageButtonPaginator(
+            extension = this,
             keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale,
             owner = event.message.author,
             pages = pages,
             pingInReply = settings.pingInReply,
             targetMessage = event.message,
-            timeout = settings.paginatorTimeout,
+            timeoutSeconds = settings.paginatorTimeout,
         ).onTimeout {
             if (settings.deleteInvocationOnPaginatorTimeout) {
                 @Suppress("TooGenericExceptionCaught")
@@ -163,16 +165,16 @@ public class HelpExtension : HelpProvider, Extension() {
         event: MessageCreateEvent,
         prefix: String,
         args: List<String>
-    ): Paginator = getCommandHelpPaginator(event, prefix, getCommand(event, args))
+    ): BasePaginator = getCommandHelpPaginator(event, prefix, getCommand(event, args))
 
-    override suspend fun getCommandHelpPaginator(context: MessageCommandContext<*>, args: List<String>): Paginator =
+    override suspend fun getCommandHelpPaginator(context: MessageCommandContext<*>, args: List<String>): BasePaginator =
         getCommandHelpPaginator(context, getCommand(context.event, args))
 
     override suspend fun getCommandHelpPaginator(
         event: MessageCreateEvent,
         prefix: String,
         command: MessageCommand<out Arguments>?
-    ): Paginator {
+    ): BasePaginator {
         val pages = Pages(COMMANDS_GROUP)
         val locale = event.getLocale()
 
@@ -213,14 +215,15 @@ public class HelpExtension : HelpProvider, Extension() {
             )
         }
 
-        return Paginator(
+        return MessageButtonPaginator(
+            extension = this,
             keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale,
             owner = event.message.author,
             pages = pages,
             pingInReply = settings.pingInReply,
             targetMessage = event.message,
-            timeout = settings.paginatorTimeout,
+            timeoutSeconds = settings.paginatorTimeout,
         ).onTimeout {
             if (settings.deleteInvocationOnPaginatorTimeout) {
                 @Suppress("TooGenericExceptionCaught")

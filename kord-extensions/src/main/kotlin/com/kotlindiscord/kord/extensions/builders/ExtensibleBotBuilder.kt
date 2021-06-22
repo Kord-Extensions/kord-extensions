@@ -280,9 +280,11 @@ public open class ExtensibleBotBuilder {
             /** Whether to enable the bundled help extension. Defaults to `true`. **/
             public var enableBundledExtension: Boolean = true
 
-            /** Time to wait before the help paginator times out and can't be used. Defaults to 60 seconds. **/
+            /**
+             * Time to wait before the help paginator times out and can't be used, in seconds. Defaults to 60.
+             */
             @Suppress("MagicNumber")
-            public var paginatorTimeout: Long = 60_000L  // 60 seconds
+            public var paginatorTimeout: Long = 60L  // 60 seconds
 
             /** Whether to delete the help paginator after the timeout ends. **/
             public var deletePaginatorOnTimeout: Boolean = false

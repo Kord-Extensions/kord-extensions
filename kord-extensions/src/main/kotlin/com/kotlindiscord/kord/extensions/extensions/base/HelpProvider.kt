@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.pagination.BasePaginator
 import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.core.event.message.MessageCreateEvent
@@ -86,7 +87,7 @@ public interface HelpProvider {
         event: MessageCreateEvent,
         prefix: String,
         args: List<String>
-    ): Paginator
+    ): BasePaginator
 
     /**
      * Given a command context and argument list, attempt to find the command represented by the arguments and
@@ -102,7 +103,7 @@ public interface HelpProvider {
     public suspend fun getCommandHelpPaginator(
         context: MessageCommandContext<*>,
         args: List<String>
-    ): Paginator {
+    ): BasePaginator {
         val prefix = getKoin().get<MessageCommandRegistry>().getPrefix(context.event)
 
         return getCommandHelpPaginator(context.event, prefix, args)
@@ -127,7 +128,7 @@ public interface HelpProvider {
         event: MessageCreateEvent,
         prefix: String,
         command: MessageCommand<out Arguments>?
-    ): Paginator
+    ): BasePaginator
 
     /**
      * Given an command context and argument list, attempt to find the command represented by the arguments and return
@@ -146,7 +147,7 @@ public interface HelpProvider {
     public suspend fun getCommandHelpPaginator(
         context: MessageCommandContext<*>,
         command: MessageCommand<out Arguments>?
-    ): Paginator {
+    ): BasePaginator {
         val prefix = getKoin().get<MessageCommandRegistry>().getPrefix(context.event)
 
         return getCommandHelpPaginator(context.event, prefix, command)
@@ -167,7 +168,7 @@ public interface HelpProvider {
      *
      * @return Paginator containing help information for all loaded commands with passing checks.
      */
-    public suspend fun getMainHelpPaginator(event: MessageCreateEvent, prefix: String): Paginator
+    public suspend fun getMainHelpPaginator(event: MessageCreateEvent, prefix: String): BasePaginator
 
     /**
      * Given an command context, return a [Paginator] containing help information for all loaded commands with passing
@@ -183,7 +184,7 @@ public interface HelpProvider {
      *
      * @return Paginator containing help information for all loaded commands with passing checks.
      */
-    public suspend fun getMainHelpPaginator(context: MessageCommandContext<*>): Paginator {
+    public suspend fun getMainHelpPaginator(context: MessageCommandContext<*>): BasePaginator {
         val prefix = getKoin().get<MessageCommandRegistry>().getPrefix(context.event)
 
         return getMainHelpPaginator(context.event, prefix)
