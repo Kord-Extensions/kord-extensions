@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceEnum
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -31,7 +32,9 @@ public class EnumChoiceConverter<E>(
 ) : ChoiceConverter<E>(choices.associateBy { it.readableName }) where E : Enum<E>, E : ChoiceEnum {
     override val signatureTypeString: String = typeName
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
+        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+
         try {
             parsed = getter.invoke(arg) ?: return false
         } catch (e: IllegalArgumentException) {

@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
@@ -182,7 +183,7 @@ public open class GroupCommand<T : Arguments>(
     override suspend fun call(
         event: MessageCreateEvent,
         commandName: String,
-        args: Array<String>,
+        parser: StringParser,
         argString: String,
         skipChecks: Boolean
     ) {
@@ -190,14 +191,14 @@ public open class GroupCommand<T : Arguments>(
             return
         }
 
-        val command = args.firstOrNull()?.lowercase()
-        val remainingArgs = args.drop(1).toTypedArray()
+        val command = parser.parseNext()?.data?.lowercase()
+        val remainingArgs = parser.consumeRemaining()
         val subCommand = getCommand(command, event)
 
         if (subCommand == null) {
-            super.call(event, commandName, args, argString, true)
+            super.call(event, commandName, parser, argString, true)
         } else {
-            subCommand.call(event, commandName, remainingArgs, argString)
+            subCommand.call(event, commandName, StringParser(remainingArgs), argString)
         }
     }
 

@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.MessageChannelBehavior
@@ -27,9 +28,9 @@ public open class MessageCommandContext<T : Arguments>(
     public val messageCommand: MessageCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
-    argsList: Array<String>,
+    parser: StringParser,
     public val argString: String
-) : CommandContext(messageCommand, eventObj, commandName, argsList) {
+) : CommandContext(messageCommand, eventObj, commandName, parser) {
     /** Event that triggered this command execution. **/
     public val event: MessageCreateEvent get() = eventObj as MessageCreateEvent
 

@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -32,7 +33,9 @@ public class StringChoiceConverter(
 ) : ChoiceConverter<String>(choices) {
     override val signatureTypeString: String = "converters.string.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
+        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+
         this.parsed = arg
 
         return true

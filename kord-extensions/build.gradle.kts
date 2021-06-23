@@ -29,6 +29,8 @@ dependencies {
     api(libs.kx.ser)
     api(libs.sentry)  // Needs to be transitive or bots will start breaking
 
+    api(project(":token-parser"))
+
     detektPlugins(libs.detekt)
 
     implementation(libs.bundles.commons)

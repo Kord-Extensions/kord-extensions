@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
@@ -27,14 +28,14 @@ import java.util.*
  * @param command Respective command for this context object.
  * @param eventObj Event that triggered this command.
  * @param commandName MessageCommand name given by the user to invoke the command - lower-cased.
- * @param argsList Array of string arguments for this command.
+ * @param parser String parser instance, if any - will be `null` if this isn't a message command.
  */
 @ExtensionDSL
 public abstract class CommandContext(
     public open val command: Command,
     public open val eventObj: Event,
     public open val commandName: String,
-    public open val argsList: Array<String>
+    public open val parser: StringParser?,
 ) : KoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()

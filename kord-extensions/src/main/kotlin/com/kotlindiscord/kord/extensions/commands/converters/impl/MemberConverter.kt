@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.users
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
@@ -48,7 +49,9 @@ public class MemberConverter(
 ) : SingleConverter<Member>() {
     override val signatureTypeString: String = "converters.member.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
+        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+
         parsed = findMember(arg, context)
             ?: throw CommandException(
                 context.translate("converters.member.error.missing", replacements = arrayOf(arg))

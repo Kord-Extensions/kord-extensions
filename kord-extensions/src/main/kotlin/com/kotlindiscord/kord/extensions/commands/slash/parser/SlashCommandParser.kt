@@ -74,7 +74,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
                 is SingleConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context)
+                        converter.parse(null, context, currentValue)
                     } else {
                         false
                     }
@@ -102,7 +102,7 @@ public open class SlashCommandParser : ArgumentParser() {
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
-                        throw CommandException(converter.handleError(e, currentValue, context))
+                        throw CommandException(converter.handleError(e, context))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -114,7 +114,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
                 is CoalescingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(listOf(currentValue), context) > 0
+                        converter.parse(null, context, listOf(currentValue)) > 0
                     } else {
                         false
                     }
@@ -142,13 +142,7 @@ public open class SlashCommandParser : ArgumentParser() {
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
-                        val wrappedValues = mutableListOf<String>()
-
-                        if (currentValue != null) {
-                            wrappedValues += currentValue
-                        }
-
-                        throw CommandException(converter.handleError(e, wrappedValues, context))
+                        throw CommandException(converter.handleError(e, context))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -160,7 +154,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
                 is OptionalConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context)
+                        converter.parse(null, context, currentValue)
                     } else {
                         false
                     }
@@ -176,7 +170,7 @@ public open class SlashCommandParser : ArgumentParser() {
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError) {
                         throw CommandException(
-                            converter.handleError(e, currentValue, context)
+                            converter.handleError(e, context)
                         )
                     }
                 } catch (t: Throwable) {
@@ -185,7 +179,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
                 is DefaultingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context)
+                        converter.parse(null, context, currentValue)
                     } else {
                         false
                     }

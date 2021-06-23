@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.RegexCoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
@@ -41,14 +42,30 @@ public class T4JDurationCoalescingConverter(
     override val signatureTypeString: String = "converters.duration.error.signatureType"
     private val logger = KotlinLogging.logger {}
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArguments: List<String>?): Int {
         val durations = mutableListOf<String>()
         val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
 
         var skipNext = false
 
+        val args = namedArguments ?: parser?.run {
+            val tokens: MutableList<String> = mutableListOf()
+
+            while (hasNext) {
+                val nextToken = peekNext()
+
+                if (nextToken!!.data.all { T4JDurationParser.charValid(it, context.getLocale()) }) {
+                    tokens.add(parseNext()!!.data)
+                } else {
+                    break
+                }
+            }
+
+            tokens
+        } ?: return 0
+
         @Suppress("LoopWithTooManyJumpStatements")  // Well you rewrite it then, detekt
-        for (index in 0 until args.size) {
+        for (index in args.indices) {
             if (skipNext) {
                 skipNext = false
 

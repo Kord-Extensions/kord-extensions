@@ -33,6 +33,9 @@ public open class StringParser(public open val input: String) {
      */
     public var cursor: Cursor = Cursor(input)
 
+    /** Returns `true` if the [cursor] has more parsing to do. **/
+    public val hasNext: Boolean get() = cursor.hasNext
+
     /**
      * Parse all of the flag and keyword arguments out of the [cursor], creating a new [Cursor] containing only the
      * positional arguments and returning a list of parsed [NamedArgumentToken]s.
@@ -140,7 +143,7 @@ public open class StringParser(public open val input: String) {
                 continue
             }
 
-            if (char.isWhitespace() && !isQuoted) {
+            if (char == ' ' && !isQuoted) {
                 // Not quoted, so we're at the end of this part of the token
                 logger.trace { "  Whitespace detected." }
 
@@ -182,7 +185,7 @@ public open class StringParser(public open val input: String) {
                     logger.trace { "" }
 
                     outputBuffer += "$buffer "
-                    cursor.skipWhitespace()
+//                    cursor.skipWhitespace()
                 }
 
                 buffer = ""
@@ -223,6 +226,19 @@ public open class StringParser(public open val input: String) {
         cursor = Cursor(outputBuffer.trim())
 
         return tokens
+    }
+
+    /**
+     * Attempt to parse the next token and reset the cursor's index to what it was before parsing, before returning
+     * the result.
+     */
+    public fun peekNext(): PositionalArgumentToken? {
+        val curIndex = cursor.index
+        val token = parseNext()
+
+        cursor.index = curIndex
+
+        return token
     }
 
     /**
@@ -270,7 +286,7 @@ public open class StringParser(public open val input: String) {
                 break
             }
 
-            if (char.isWhitespace() && !isQuoted) {
+            if (char == ' ' && !isQuoted) {
                 // Not quoted, so we're at the end of this part of the token
                 logger.trace { "  Whitespace detected." }
                 logger.trace { "    Token end detected." }

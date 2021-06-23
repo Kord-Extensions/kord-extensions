@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -32,7 +33,9 @@ public class EmailConverter(
 ) : SingleConverter<String>() {
     override val signatureTypeString: String = "converters.email.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
+        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+
         if (!EmailValidator.getInstance().isValid(arg)) {
             throw CommandException(
                 context.translate("converters.email.error.invalid", replacements = arrayOf(arg))

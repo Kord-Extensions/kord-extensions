@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
@@ -290,7 +291,7 @@ public open class MessageCommand<T : Arguments>(
     public open suspend fun call(
         event: MessageCreateEvent,
         commandName: String,
-        args: Array<String>,
+        parser: StringParser,
         argString: String,
         skipChecks: Boolean = false
     ) {
@@ -298,7 +299,7 @@ public open class MessageCommand<T : Arguments>(
             return
         }
 
-        val context = MessageCommandContext(this, event, commandName, args, argString)
+        val context = MessageCommandContext(this, event, commandName, parser, argString)
 
         context.populate()
 
@@ -307,7 +308,7 @@ public open class MessageCommand<T : Arguments>(
             val guild = event.message.getGuildOrNull()
 
             val data = mutableMapOf(
-                "arguments" to args,
+                "arguments" to argString,
                 "message" to event.message.content
             )
 

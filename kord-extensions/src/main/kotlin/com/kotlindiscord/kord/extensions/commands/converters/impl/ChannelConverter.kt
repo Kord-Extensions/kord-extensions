@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.Channel
@@ -52,7 +53,9 @@ public class ChannelConverter(
 ) : SingleConverter<Channel>() {
     override val signatureTypeString: String = "converters.channel.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
+        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+
         val channel: Channel = findChannel(arg, context)
             ?: throw CommandException(
                 context.translate(

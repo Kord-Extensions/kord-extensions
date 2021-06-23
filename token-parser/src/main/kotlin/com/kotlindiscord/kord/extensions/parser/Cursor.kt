@@ -47,11 +47,11 @@ public class Cursor(public val input: String) {
 
     /** Skip any immediate whitespace, updating the [index]. **/
     public fun skipWhitespace(): Boolean {
-        if (peekNext()?.isWhitespace() != true) {
+        if (peekNext() != ' ') {
             return false
         }
 
-        while (peekNext()?.isWhitespace() == true) {
+        while (peekNext() == ' ') {
             next()
         }
 

@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -31,8 +32,12 @@ public class SingleToDefaultingConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
-        val result = singleConverter.parse(arg, context)
+    override suspend fun parse(
+        parser: StringParser?,
+        context: CommandContext,
+        namedArgument: String?
+    ): Boolean {
+        val result = singleConverter.parse(parser, context, namedArgument)
 
         if (result) {
             this.parsed = singleConverter.parsed
@@ -45,9 +50,8 @@ public class SingleToDefaultingConverter<T : Any>(
 
     override suspend fun handleError(
         t: Throwable,
-        value: String?,
         context: CommandContext
-    ): String = singleConverter.handleError(t, value, context)
+    ): String = singleConverter.handleError(t, context)
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
         val option = singleConverter.toSlashOption(arg)

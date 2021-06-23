@@ -9,6 +9,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import me.shedaniel.linkie.MappingsContainer
@@ -24,7 +25,9 @@ class MappingsVersionConverter(
     override val signatureTypeString: String = "version"
     override val showTypeInSignature: Boolean = false
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
+        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+
         val namespace = namespaceGetter.invoke()
 
         if (arg in namespace.getAllVersions()) {

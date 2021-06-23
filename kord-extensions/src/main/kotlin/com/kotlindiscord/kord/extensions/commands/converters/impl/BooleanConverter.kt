@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.parseBoolean
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.BooleanBuilder
@@ -28,7 +29,8 @@ public class BooleanConverter(
     public override val signatureTypeString: String = "converters.boolean.signatureType"
     public override val errorTypeString: String = "converters.boolean.errorType"
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
+        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
         val bool: Boolean = arg.parseBoolean(context) ?: return false
 
         this.parsed = bool

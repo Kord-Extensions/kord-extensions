@@ -53,7 +53,30 @@ class TestExtension : Extension() {
         val arg by enumChoice<TestChoiceEnum>("choice", "Enum Choice", "test")
     }
 
+    class CoalescedArgs : Arguments() {
+        val string by coalescedString("input", "Text to use")
+        val flag by optionalBoolean("flag", "Some kinda flag")
+    }
+
     override suspend fun setup() {
+        command(::CoalescedArgs) {
+            name = "coalesce"
+            description = "Coalesce me, baby"
+
+            action {
+                message.respond {
+                    embed {
+                        description = arguments.string
+
+                        field {
+                            name = "flag"
+                            value = arguments.flag.toString()
+                        }
+                    }
+                }
+            }
+        }
+
         slashCommand {
             name = "pages"
             description = "Pages!"

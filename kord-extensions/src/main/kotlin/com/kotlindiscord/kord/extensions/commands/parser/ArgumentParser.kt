@@ -33,10 +33,8 @@ private val logger = KotlinLogging.logger {}
  * that take lambdas as constructor parameters are able to rely on the values provided by previously parsed arguments.
  *
  * We recommend reading over the source code if you'd like to get to grips with how this all works.
- *
- * @param splitChar The character to use for splitting keyword arguments
  */
-public open class ArgumentParser(private val splitChar: Char = '=') : KoinComponent {
+public open class ArgumentParser : KoinComponent {
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
 
@@ -67,44 +65,24 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
      */
     public open suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
         val argumentsObj = builder.invoke()
+        val parser = context.parser!!
 
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
         val argsMap = args.map { Pair(it.displayName.lowercase(), it) }.toMap()
-        val keywordArgs = mutableMapOf<String, MutableList<String>>()
+        val keywordArgs: MutableMap<String, MutableList<String>> = mutableMapOf()
+
+        parser.parseNamed().forEach {
+            val name = it.name.lowercase()
+
+            keywordArgs[name] = keywordArgs[name] ?: mutableListOf()
+            keywordArgs[name]!!.add(it.data)
+        }
 
         logger.debug { "Args map: $argsMap" }
 
-        val values = context.argsList.filter { v ->
-            if (v.contains(splitChar)) {
-                logger.debug { "Potential keyword argument: $v" }
-
-                val split = v.split(splitChar, limit = 2)
-                val key = split.first().lowercase()
-                val value = split.last()
-
-                logger.debug { "Split value: $key -> $value" }
-
-                val argument = argsMap[key]
-
-                if (argument != null) {
-                    logger.debug { "Found valid argument: $argument" }
-
-                    keywordArgs[key] = keywordArgs[key] ?: mutableListOf()
-                    keywordArgs[key]!!.add(value)
-
-                    return@filter false  // This is a keyword argument, filter it from the rest
-                } else {
-                    logger.debug { "Invalid argument: $key" }
-                }
-            }
-
-            return@filter true
-        }.toMutableList()
-
         var currentArg: Argument<*>?
-        var currentValue: String? = null
 
         @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
         while (true) {
@@ -117,15 +95,9 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
             logger.debug { "Current argument: ${currentArg.displayName}" }
             logger.debug { "Keyword arg ($hasKwargs): $kwValue" }
 
-            currentValue = if (!hasKwargs) {  // Keyword args get values elsewhere
-                currentValue ?: values.removeFirstOrNull()
-            } else {
-                currentValue ?: ""  // To avoid skipping
+            if (!parser.cursor.hasNext && !hasKwargs) {
+                continue
             }
-
-            currentValue ?: continue  // If it's null, we're out of values
-
-            logger.debug { "Current value: $currentValue" }
 
             when (val converter = currentArg.converter) {
                 is SingleConverter<*> -> try {
@@ -139,9 +111,9 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             )
                         }
 
-                        converter.parse(kwValue.first(), context)
+                        converter.parse(parser, context, kwValue.first())
                     } else {
-                        converter.parse(currentValue, context)
+                        converter.parse(parser, context)
                     }
 
                     if ((converter.required || hasKwargs) && !parsed) {
@@ -152,7 +124,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-                                    currentValue
+//                                    currentValue
                                 )
                             )
                         )
@@ -162,7 +134,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-                        currentValue = null
+//                        currentValue = null
 
                         converter.validate(context)
                     }
@@ -175,7 +147,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
 
-                                    converter.handleError(e, currentValue, context)
+                                    converter.handleError(e, context)
                                 )
                             )
                         )
@@ -199,16 +171,16 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             )
                         }
 
-                        converter.parse(kwValue.first(), context)
+                        converter.parse(parser, context, kwValue.first())
                     } else {
-                        converter.parse(currentValue, context)
+                        converter.parse(parser, context)
                     }
 
                     if (parsed) {
                         logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-                        currentValue = null
+//                        currentValue = null
 
                         converter.validate(context)
                     }
@@ -227,16 +199,16 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                             )
                         }
 
-                        converter.parse(kwValue.first(), context)
+                        converter.parse(parser, context, kwValue.first())
                     } else {
-                        converter.parse(currentValue, context)
+                        converter.parse(parser, context)
                     }
 
                     if (parsed) {
                         logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-                        currentValue = null
+//                        currentValue = null
 
                         converter.validate(context)
                     }
@@ -249,7 +221,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
 
-                                    converter.handleError(e, currentValue, context)
+                                    converter.handleError(e, context)
                                 )
                             )
                         )
@@ -264,9 +236,9 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
 
                 is MultiConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
-                        converter.parse(kwValue!!, context)
+                        converter.parse(parser, context, kwValue!!)
                     } else {
-                        converter.parse(listOf(currentValue) + values.toList(), context)
+                        converter.parse(parser, context)
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
@@ -277,7 +249,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-                                    currentValue
+//                                    currentValue
                                 )
                             )
                         )
@@ -300,18 +272,18 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         }
 
                         converter.parseSuccess = true
-                        currentValue = null
+//                        currentValue = null
                     } else {
                         if (parsedCount > 0) {
                             logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
-                            currentValue = null
+//                            currentValue = null
                             converter.parseSuccess = true
 
                             converter.validate(context)
                         }
 
-                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+//                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
@@ -322,7 +294,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
 
-                                    converter.handleError(e, values, context)
+                                    converter.handleError(e, context)
                                 )
                             )
                         )
@@ -337,9 +309,9 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
 
                 is CoalescingConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
-                        converter.parse(kwValue!!, context)
+                        converter.parse(parser, context, kwValue!!)
                     } else {
-                        converter.parse(listOf(currentValue) + values.toList(), context)
+                        converter.parse(parser, context)
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
@@ -350,7 +322,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-                                    currentValue
+//                                    currentValue
                                 )
                             )
                         )
@@ -373,18 +345,18 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         }
 
                         converter.parseSuccess = true
-                        currentValue = null
+//                        currentValue = null
                     } else {
                         if (parsedCount > 0) {
                             logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
 
-                            currentValue = null
+//                            currentValue = null
                             converter.parseSuccess = true
 
                             converter.validate(context)
                         }
 
-                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+//                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
@@ -395,7 +367,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
 
-                                    converter.handleError(e, values, context)
+                                    converter.handleError(e, context)
                                 )
                             )
                         )
@@ -410,9 +382,9 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
 
                 is OptionalCoalescingConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
-                        converter.parse(kwValue!!, context)
+                        converter.parse(parser, context, kwValue!!)
                     } else {
-                        converter.parse(listOf(currentValue) + values.toList(), context)
+                        converter.parse(parser, context)
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
@@ -423,7 +395,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-                                    currentValue
+//                                    currentValue
                                 )
                             )
                         )
@@ -446,18 +418,18 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         }
 
                         converter.parseSuccess = true
-                        currentValue = null
+//                        currentValue = null
                     } else {
                         if (parsedCount > 0) {
                             logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
 
-                            currentValue = null
+//                            currentValue = null
                             converter.parseSuccess = true
 
                             converter.validate(context)
                         }
 
-                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+//                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
@@ -468,7 +440,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
 
-                                    converter.handleError(e, values, context)
+                                    converter.handleError(e, context)
                                 )
                             )
                         )
@@ -483,9 +455,9 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
 
                 is DefaultingCoalescingConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
-                        converter.parse(kwValue!!, context)
+                        converter.parse(parser, context, kwValue!!)
                     } else {
-                        converter.parse(listOf(currentValue) + values.toList(), context)
+                        converter.parse(parser, context)
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
@@ -496,7 +468,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-                                    currentValue
+//                                    currentValue
                                 )
                             )
                         )
@@ -519,18 +491,18 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                         }
 
                         converter.parseSuccess = true
-                        currentValue = null
+//                        currentValue = null
                     } else {
                         if (parsedCount > 0) {
                             logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
 
-                            currentValue = null
+//                            currentValue = null
                             converter.parseSuccess = true
 
                             converter.validate(context)
                         }
 
-                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
+//                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
@@ -541,7 +513,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
                                 replacements = arrayOf(
                                     currentArg.displayName,
 
-                                    converter.handleError(e, values, context)
+                                    converter.handleError(e, context)
                                 )
                             )
                         )
@@ -601,7 +573,7 @@ public open class ArgumentParser(private val splitChar: Char = '=') : KoinCompon
             }
         }
 
-        logger.debug { "Leftover arguments: ${values.size}" }
+//        logger.debug { "Leftover arguments: ${values.size}" }
 
         return argumentsObj
     }

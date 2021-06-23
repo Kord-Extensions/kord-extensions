@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.parser.StringParser
 
 /**
  * A special [MultiConverter] that wraps a [SingleConverter], effectively turning it into a list-handling converter
@@ -31,13 +32,20 @@ public class SingleToMultiConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArguments: List<String>?): Int {
         val values = mutableListOf<T>()
         val dummyArgs = Arguments()
+        val tokens = namedArguments?.toMutableList() ?: mutableListOf()
 
-        for (arg in args) {
+        if (tokens.isEmpty()) {
+            while (parser!!.hasNext) {
+                tokens.add(parser.parseNext()!!.data)
+            }
+        }
+
+        for (arg in tokens) {
             try {
-                val result = singleConverter.parse(arg, context)
+                val result = singleConverter.parse(null, context, arg)
 
                 if (!result) {
                     break
@@ -58,7 +66,6 @@ public class SingleToMultiConverter<T : Any>(
 
     override suspend fun handleError(
         t: Throwable,
-        values: List<String>,
         context: CommandContext
-    ): String = singleConverter.handleError(t, null, context)
+    ): String = singleConverter.handleError(t, context)
 }

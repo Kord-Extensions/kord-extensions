@@ -34,7 +34,7 @@ public open class SlashCommandContext<T : Arguments>(
     event: InteractionCreateEvent,
     commandName: String,
     public var interactionResponse: InteractionResponseBehavior? = null
-) : CommandContext(slashCommand, event, commandName, arrayOf()) {
+) : CommandContext(slashCommand, event, commandName, null) {
     /** Event that triggered this command execution. **/
     public val event: InteractionCreateEvent get() = eventObj as InteractionCreateEvent
 

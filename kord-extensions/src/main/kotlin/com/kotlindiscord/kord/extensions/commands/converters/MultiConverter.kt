@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import kotlin.reflect.KProperty
 
 /**
@@ -45,7 +46,11 @@ public abstract class MultiConverter<T : Any>(
      *
      * @see Converter
      */
-    public abstract suspend fun parse(args: List<String>, context: CommandContext): Int
+    public abstract suspend fun parse(
+        parser: StringParser?,
+        context: CommandContext,
+        namedArguments: List<String>? = null
+    ): Int
 
     /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
     public operator fun getValue(thisRef: Arguments, property: KProperty<*>): List<T> = parsed
@@ -64,7 +69,6 @@ public abstract class MultiConverter<T : Any>(
      */
     public open suspend fun handleError(
         t: Throwable,
-        values: List<String>,
         context: CommandContext
     ): String = if (t is CommandException) t.reason else throw t
 }

@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.parser.StringParser
 
 /**
  * A special [OptionalConverter] that wraps a [SingleConverter], effectively turning it into an optional
@@ -29,8 +30,8 @@ public class CoalescingToDefaultingConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
-        val result = coalescingConverter.parse(args, context)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArguments: List<String>?): Int {
+        val result = coalescingConverter.parse(parser, context, namedArguments)
 
         if (result > 0) {
             this.parsed = coalescingConverter.parsed
@@ -41,7 +42,6 @@ public class CoalescingToDefaultingConverter<T : Any>(
 
     override suspend fun handleError(
         t: Throwable,
-        values: List<String>,
         context: CommandContext
-    ): String = coalescingConverter.handleError(t, values, context)
+    ): String = coalescingConverter.handleError(t, context)
 }

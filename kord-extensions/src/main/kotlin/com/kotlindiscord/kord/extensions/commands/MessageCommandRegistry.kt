@@ -5,8 +5,8 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import com.kotlindiscord.kord.extensions.utils.parse
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.message.MessageCreateEvent
@@ -127,98 +127,114 @@ public open class MessageCommandRegistry : KoinComponent {
      */
     public open suspend fun handleEvent(event: MessageCreateEvent) {
         val message = event.message
-        var commandName: String? = null
-        var parts = message.parse()
+        var commandName: String?
         val prefix = getPrefix(event)
-        var argString = event.message.content
+        var content = message.content
 
-        if (parts.isEmpty()) {
+        if (content.isEmpty()) {
             // Empty message.
             return
         }
 
-        if (parts.size == 1) {
-            // It's just the command with no arguments
+        val mention = content.startsWithSelfMention()
 
-            if (parts[0].startsWith(prefix)) {
-                commandName = parts[0]
-                parts = arrayOf()
-            } else {
-                // Doesn't start with the right prefix
-                return
-            }
-        } else {
-            val matchedMention = parts[0].startsWithSelfMention()
+        content = when {
+            // Starts with the right mention and mentions are allowed, so remove it
+            mention != null && botSettings.messageCommandsBuilder.invokeOnMention -> content.substring(mention.length)
 
-            when {
-                parts[0].startsWith(prefix) -> {
-                    // MessageCommand with args
+            // Starts with the right prefix, so remove it
+            content.startsWith(prefix) -> content.substring(prefix.length)
 
-                    commandName = parts[0]
-                    parts = parts.sliceArray(1 until parts.size)
+            // Not a valid command, so stop here
+            else -> return
+        }.trim()  // Remove unnecessary spaces
 
-                    argString = argString.replaceFirst(prefix, "")
-                        .trim()
-                }
+        commandName = content.split(" ").first()
+        content = content.substring(commandName.length).trim()  // Remove the command name and extra whitespace
 
-                botSettings.messageCommandsBuilder.invokeOnMention &&
-                    matchedMention != null && parts[0] == matchedMention -> {
-                    // MessageCommand with a mention; first part is exactly the mention
-
-                    commandName = parts[1]
-
-                    parts = if (parts.size > 2) {
-                        parts.sliceArray(2 until parts.size)
-                    } else {
-                        arrayOf()
-                    }
-
-                    argString = argString.replaceFirst(matchedMention, "")
-                        .trim()
-                }
-
-                botSettings.messageCommandsBuilder.invokeOnMention &&
-                    matchedMention != null && parts[0].startsWith(matchedMention) -> {
-                    // MessageCommand with a mention; no space between mention and command
-
-                    commandName = parts[0].slice(matchedMention.length until parts[0].length)
-                    parts = parts.sliceArray(1 until parts.size)
-
-                    argString = argString.replaceFirst(matchedMention, "")
-                        .trim()
-                }
-            }
-        }
-
-        if (commandName == null || commandName == prefix) {
-            return  // After all that, we couldn't find a command.
-        }
-
-        if (commandName.startsWith(prefix)) {
-            commandName = commandName.slice(prefix.length until commandName.length)
-        }
-
-        argString = argString.replaceFirst(commandName, "")
-            .trim()
-
-        if (commandName.contains("\n")) {
-            val split = commandName.split("\n", limit = 2)
-
-            commandName = split.first()
-
-            parts = if (parts.isEmpty()) {
-                arrayOf("\n${split.last()}")
-            } else {
-                arrayOf("\n${split.last()}") + parts
-            }
-        }
+//        if (parts.size == 1) {
+//            // It's just the command with no arguments
+//
+//            if (parts[0].startsWith(prefix)) {
+//                commandName = parts[0]
+//                parts = arrayOf()
+//            } else {
+//                // Doesn't start with the right prefix
+//                return
+//            }
+//        } else {
+//            val matchedMention = parts[0].startsWithSelfMention()
+//
+//            when {
+//                parts[0].startsWith(prefix) -> {
+//                    // MessageCommand with args
+//
+//                    commandName = parts[0]
+//                    parts = parts.sliceArray(1 until parts.size)
+//
+//                    argString = argString.replaceFirst(prefix, "")
+//                        .trim()
+//                }
+//
+//                botSettings.messageCommandsBuilder.invokeOnMention &&
+//                    matchedMention != null && parts[0] == matchedMention -> {
+//                    // MessageCommand with a mention; first part is exactly the mention
+//
+//                    commandName = parts[1]
+//
+//                    parts = if (parts.size > 2) {
+//                        parts.sliceArray(2 until parts.size)
+//                    } else {
+//                        arrayOf()
+//                    }
+//
+//                    argString = argString.replaceFirst(matchedMention, "")
+//                        .trim()
+//                }
+//
+//                botSettings.messageCommandsBuilder.invokeOnMention &&
+//                    matchedMention != null && parts[0].startsWith(matchedMention) -> {
+//                    // MessageCommand with a mention; no space between mention and command
+//
+//                    commandName = parts[0].slice(matchedMention.length until parts[0].length)
+//                    parts = parts.sliceArray(1 until parts.size)
+//
+//                    argString = argString.replaceFirst(matchedMention, "")
+//                        .trim()
+//                }
+//            }
+//        }
+//
+//        if (commandName == null || commandName == prefix) {
+//            return  // After all that, we couldn't find a command.
+//        }
+//
+//        if (commandName.startsWith(prefix)) {
+//            commandName = commandName.slice(prefix.length until commandName.length)
+//        }
+//
+//        argString = argString.replaceFirst(commandName, "")
+//            .trim()
+//
+//        if (commandName.contains("\n")) {
+//            val split = commandName.split("\n", limit = 2)
+//
+//            commandName = split.first()
+//
+//            parts = if (parts.isEmpty()) {
+//                arrayOf("\n${split.last()}")
+//            } else {
+//                arrayOf("\n${split.last()}") + parts
+//            }
+//        }
 
         commandName = commandName.lowercase()
 
         val command = getCommand(commandName, event)
+        val parser = StringParser(content)
 
         commandThreadPool.invoke {
-            command?.call(event, commandName, parts, argString)
+            command?.call(event, commandName, parser, content)
         }
     }
 
