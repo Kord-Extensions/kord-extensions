@@ -39,3 +39,5 @@ include("extra-modules:extra-mappings")
 
 include("modules:java-time")
 include("modules:time4j")
+
+include("token-parser")
