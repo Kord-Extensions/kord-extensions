@@ -1064,6 +1064,70 @@ invocation and try again. If you need to provide developer-oriented feedback, us
 <p>Because of this, only <code>CommandException</code> instances will be returned to the user verbatim. All other exception types
 will be logged, and a generic error message will be returned to the user.</p>
 </details>
+<details class="important"><summary>Parsing expectations</summary><p>The Kord Extension parsing system uses a token-based parser under the hood. There are some expectations to bear
+in mind when writing a converter, to ensure that it behaves in a manner that's consistent with the rest of
+the framework.</p>
+<ol>
+<li>
+<p>Take values from <code>named</code> instead of taking tokens from the parser, where <code>named</code> isn't <code>null</code>. For example:</p>
+<ul>
+<li><strong>Single converters:</strong> 
+  <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">arg</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">named</span> <span class="o">?:</span> <span class="n">parser</span><span class="o">?.</span><span class="na">parseNext</span><span class="p">()</span><span class="o">?.</span><span class="na">data</span> <span class="o">?:</span> <span class="k">return</span> <span class="kc">false</span>
+</code></pre></div>
+</td></tr></table></li>
+</ul>
+<ul>
+<li><strong>Coalescing converters:</strong> 
+  <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">args</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="n">namedArgument</span><span class="o">?.</span><span class="na">joinToString</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span> <span class="o">?:</span> <span class="n">parser</span><span class="o">?.</span><span class="na">consumeRemaining</span><span class="p">()</span> <span class="o">?:</span> <span class="k">return</span> <span class="m">0</span>
+</code></pre></div>
+</td></tr></table></li>
+</ul>
+<ul>
+<li><strong>List-based converters:</strong> 
+  <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">args</span> <span class="o">=</span> <span class="n">namedArguments</span> <span class="o">?:</span> <span class="n">parser</span><span class="o">?.</span><span class="na">run</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="nv">tokens</span><span class="p">:</span> <span class="n">MutableList</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">mutableListOf</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">hasNext</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">val</span> <span class="nv">nextToken</span> <span class="o">=</span> <span class="n">peekNext</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">nextToken</span><span class="o">!!</span><span class="p">.</span><span class="na">data</span><span class="p">.</span><span class="na">all</span> <span class="p">{</span> <span class="n">isValid</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span> <span class="p">})</span> <span class="p">{</span>
+            <span class="n">tokens</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">parseNext</span><span class="p">()</span><span class="o">!!</span><span class="p">.</span><span class="na">data</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">break</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">tokens</span>
+<span class="p">}</span> <span class="o">?:</span> <span class="k">return</span> <span class="m">0</span>
+</code></pre></div>
+</td></tr></table></li>
+</ul>
+</li>
+<li>
+<p>For optional/defaulting converters, Use <code>peek</code> functions to validate based on what's coming without consuming
+   the token, and use <code>parseNext()</code> only when you're satisfied you can consume the token. This means that the 
+   token won't be consumed when you can't handle it, which means that parsing can move to the next converter, as
+   expected.</p>
+</li>
+</ol>
+<p>For more advanced use-cases, you can always make use of the other properties and functions present on the parser
+object. It's impossible for a framework to completely cover every possible use-case, so providing direct access
+to the parser (and its cursor) was a must.</p>
+</details>
 <p>Once you've created your converters, we recommend writing <code>Arguments</code> extension functions for them. As before, we
 heavily recommend reading the source for the extension functions that already exist - they're quite simple, but it 
 always pays to try to write the best APIs you can, especially if you expect someone else to make use of your code 
@@ -1317,7 +1381,7 @@ settings</strong>, and you'll have to re-add the content root.</p>
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-06-12
+      Last update: 2021-06-24
     
   </small>
 </div>
