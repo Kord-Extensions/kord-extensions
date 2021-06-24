@@ -12,10 +12,12 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import org.koin.core.component.inject
 
 private typealias GenericConverter = Converter<*, *, *, *>
 
@@ -34,8 +36,11 @@ public class UnionConverter(
     override val bundle: String? = null,
     override var validator: Validator<Any> = null
 ) : CoalescingConverter<Any>(shouldThrow) {
-    override val signatureTypeString: String = typeName
-        ?: converters.joinToString(" | ") { it.signatureTypeString }
+    private val translations: TranslationsProvider by inject()
+
+    override val signatureTypeString: String = typeName ?: converters.joinToString(" | ") {
+        translations.translate(it.signatureTypeString, it.bundle)
+    }
 
     /** @suppress Internal validation function. **/
     public fun validateUnion() {
