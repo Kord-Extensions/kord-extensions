@@ -3,10 +3,7 @@
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.commands.GroupCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
-import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.stringList
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -199,6 +196,14 @@ public class HelpExtension : HelpProvider, Extension() {
         } else {
             val (openingLine, desc, arguments) = formatCommandHelp(prefix, event, command, longDescription = true)
 
+            val commandName = if (command is MessageSubCommand) {
+                command.getFullTranslatedName(locale)
+            } else if (command is GroupCommand) {
+                command.getFullTranslatedName(locale)
+            } else {
+                command.getTranslatedName(locale)
+            }
+
             pages.addPage(
                 COMMANDS_GROUP,
 
@@ -209,7 +214,7 @@ public class HelpExtension : HelpProvider, Extension() {
                     title = translationsProvider.translate(
                         "extensions.help.paginator.title.command",
                         locale,
-                        replacements = arrayOf(command.getTranslatedName(locale))
+                        replacements = arrayOf(commandName)
                     )
                 )
             )
@@ -248,7 +253,15 @@ public class HelpExtension : HelpProvider, Extension() {
         val locale = event.getLocale()
         val defaultLocale = botSettings.i18nBuilder.defaultLocale
 
-        val openingLine = "**$prefix${command.getTranslatedName(locale)} ${command.getSignature(locale)}**\n"
+        val commandName = if (command is MessageSubCommand) {
+            command.getFullTranslatedName(locale)
+        } else if (command is GroupCommand) {
+            command.getFullTranslatedName(locale)
+        } else {
+            command.getTranslatedName(locale)
+        }
+
+        val openingLine = "**$prefix$commandName ${command.getSignature(locale)}**\n"
 
         var description = if (longDescription) {
             translationsProvider.translate(command.description, command.extension.bundle, locale)

@@ -518,5 +518,37 @@ class TestExtension : Extension() {
                 ).send()
             }
         }
+
+        group {
+            name = "group"
+            description = "Command group"
+
+            command {
+                name = "one"
+                description = "one"
+
+                action {
+                    message.respond("One!")
+                }
+            }
+
+            command {
+                name = "two"
+                description = "two"
+
+                action {
+                    message.respond("Two!")
+                }
+            }
+
+            command {
+                name = "three"
+                description = "three"
+
+                action {
+                    message.respond("Three!")
+                }
+            }
+        }
     }
 }
