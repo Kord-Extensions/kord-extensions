@@ -46,6 +46,13 @@ private val logger = KotlinLogging.logger {}
  * @param switchEmoji If you have multiple groups, this is the emoji used to switch between them
  * @param locale Locale to use for translations
  */
+@Deprecated(
+    "The paginator has been replaced with much better, button-based variants. You can easily get at them " +
+        "from your commands by using the `paginator` DSL, or take a look at `InteractionButtonPaginator` or " +
+        "`MessageButtonPaginator` for interaction-based and message-based implementations respectively.",
+
+    level = DeprecationLevel.WARNING
+)
 public open class Paginator(
     public val pages: Pages,
     public val targetChannel: MessageChannelBehavior? = null,
