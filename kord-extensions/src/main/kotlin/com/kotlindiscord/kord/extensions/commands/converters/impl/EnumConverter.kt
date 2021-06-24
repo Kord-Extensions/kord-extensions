@@ -35,13 +35,15 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
     imports = ["com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum"],
     arguments = [
         "typeName: String",
-        "noinline getter: suspend (String) -> E? = { getEnum<E>(it) }"
+        "noinline getter: suspend (String) -> E? = { getEnum<E>(it) }",
+        "bundle: String? = null",
     ]
 )
 @OptIn(KordPreview::class)
 public class EnumConverter<E : Enum<E>>(
     typeName: String,
     private val getter: suspend (String) -> E?,
+    override val bundle: String? = null,
     override var validator: Validator<E> = null
 ) : SingleConverter<E>() {
     override val signatureTypeString: String = typeName

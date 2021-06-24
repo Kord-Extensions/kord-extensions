@@ -31,6 +31,7 @@ public class UnionConverter(
     typeName: String? = null,
     shouldThrow: Boolean = false,
 
+    override val bundle: String? = null,
     override var validator: Validator<Any> = null
 ) : CoalescingConverter<Any>(shouldThrow) {
     override val signatureTypeString: String = typeName
@@ -184,9 +185,10 @@ public fun Arguments.union(
     typeName: String? = null,
     shouldThrow: Boolean = false,
     vararg converters: GenericConverter,
+    bundle: String? = null,
     validator: Validator<Any> = null,
 ): UnionConverter {
-    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, validator)
+    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle, validator)
 
     converter.validateUnion()
 
@@ -216,9 +218,10 @@ public fun Arguments.optionalUnion(
     typeName: String? = null,
     shouldThrow: Boolean = false,
     vararg converters: GenericConverter,
+    bundle: String? = null,
     validator: Validator<Any?> = null
 ): OptionalCoalescingConverter<Any?> {
-    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow)
+    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle)
 
     converter.validateUnion()
 

@@ -260,7 +260,7 @@ public open class ArgumentParser : KoinComponent {
                                         currentArg.displayName,
                                         kwValue.size,
                                         parsedCount,
-                                        context.translate(converter.signatureTypeString)
+                                        context.translate(converter.signatureTypeString, bundleName = converter.bundle)
                                     )
                                 )
                             )
@@ -328,7 +328,7 @@ public open class ArgumentParser : KoinComponent {
                                         currentArg.displayName,
                                         kwValue.size,
                                         parsedCount,
-                                        context.translate(converter.signatureTypeString)
+                                        context.translate(converter.signatureTypeString, bundleName = converter.bundle)
                                     )
                                 )
                             )
@@ -396,7 +396,7 @@ public open class ArgumentParser : KoinComponent {
                                         currentArg.displayName,
                                         kwValue.size,
                                         parsedCount,
-                                        context.translate(converter.signatureTypeString)
+                                        context.translate(converter.signatureTypeString, bundleName = converter.bundle)
                                     )
                                 )
                             )
@@ -464,7 +464,7 @@ public open class ArgumentParser : KoinComponent {
                                         currentArg.displayName,
                                         kwValue.size,
                                         parsedCount,
-                                        context.translate(converter.signatureTypeString)
+                                        context.translate(converter.signatureTypeString, bundleName = converter.bundle)
                                     )
                                 )
                             )

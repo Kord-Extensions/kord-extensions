@@ -28,7 +28,8 @@ public class EnumChoiceConverter<E>(
     typeName: String,
     private val getter: suspend (String) -> E?,
     choices: Array<E>,
-    override var validator: Validator<E> = null
+    override var validator: Validator<E> = null,
+    override val bundle: String? = null,
 ) : ChoiceConverter<E>(choices.associateBy { it.readableName }) where E : Enum<E>, E : ChoiceEnum {
     override val signatureTypeString: String = typeName
 
@@ -62,10 +63,11 @@ public inline fun <reified T> Arguments.enumChoice(
     description: String,
     typeName: String,
     noinline validator: Validator<T> = null,
+    bundle: String? = null,
 ): SingleConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
-    EnumChoiceConverter(typeName, ::getEnum, enumValues(), validator)
+    EnumChoiceConverter(typeName, ::getEnum, enumValues(), validator, bundle = bundle)
 )
 
 /**
@@ -78,10 +80,11 @@ public inline fun <reified T> Arguments.optionalEnumChoice(
     description: String,
     typeName: String,
     noinline validator: Validator<T?> = null,
+    bundle: String? = null,
 ): OptionalConverter<T?> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
-    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues())
+    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues(), bundle = bundle)
         .toOptional(nestedValidator = validator)
 )
 
@@ -96,10 +99,11 @@ public inline fun <reified T> Arguments.defaultingEnumChoice(
     typeName: String,
     defaultValue: T,
     noinline validator: Validator<T> = null,
+    bundle: String? = null,
 ): DefaultingConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
-    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues())
+    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues(), bundle = bundle)
         .toDefaulting(defaultValue, nestedValidator = validator)
 )
 
