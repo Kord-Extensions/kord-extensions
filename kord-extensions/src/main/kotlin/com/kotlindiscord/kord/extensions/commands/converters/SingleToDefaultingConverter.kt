@@ -32,15 +32,16 @@ public class SingleToDefaultingConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(
-        parser: StringParser?,
-        context: CommandContext,
-        named: String?
-    ): Boolean {
-        val result = singleConverter.parse(parser, context, named)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val token = parser?.peekNext()
+        val result = singleConverter.parse(parser, context, named ?: token?.data)
 
         if (result) {
             this.parsed = singleConverter.parsed
+
+            if (named == null) {
+                parser?.parseNext()  // Move the cursor ahead
+            }
 
             return true
         }

@@ -30,8 +30,8 @@ public class CoalescingToDefaultingConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: List<String>?): Int {
-        val result = coalescingConverter.parse(parser, context, namedArgument)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+        val result = coalescingConverter.parse(parser, context, named)
 
         if (result > 0) {
             this.parsed = coalescingConverter.parsed

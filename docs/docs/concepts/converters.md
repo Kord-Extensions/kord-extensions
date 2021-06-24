@@ -173,6 +173,51 @@ feel free to join the Kotlin Discord server if you need to ask questions.
     Because of this, only `CommandException` instances will be returned to the user verbatim. All other exception types
     will be logged, and a generic error message will be returned to the user.
 
+??? important "Parsing expectations"
+    The Kord Extension parsing system uses a token-based parser under the hood. There are some expectations to bear
+    in mind when writing a converter, to ensure that it behaves in a manner that's consistent with the rest of
+    the framework.
+
+    1. Take values from `named` instead of taking tokens from the parser, where `named` isn't `null`. For example:
+
+        * **Single converters:** 
+          ```kotlin 
+          val arg: String = named ?: parser?.parseNext()?.data ?: return false
+          ```
+
+        * **Coalescing converters:** 
+          ```kotlin 
+          val args: String = namedArgument?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
+          ```
+
+        * **List-based converters:** 
+          ```kotlin
+          val args = namedArguments ?: parser?.run {
+              val tokens: MutableList<String> = mutableListOf()
+    
+              while (hasNext) {
+                  val nextToken = peekNext()
+    
+                  if (nextToken!!.data.all { isValid(it) }) {
+                      tokens.add(parseNext()!!.data)
+                  } else {
+                      break
+                  }
+              }
+    
+              tokens
+          } ?: return 0
+          ```
+
+    2. For optional/defaulting converters, Use `peek` functions to validate based on what's coming without consuming
+       the token, and use `parseNext()` only when you're satisfied you can consume the token. This means that the 
+       token won't be consumed when you can't handle it, which means that parsing can move to the next converter, as
+       expected.
+
+    For more advanced use-cases, you can always make use of the other properties and functions present on the parser
+    object. It's impossible for a framework to completely cover every possible use-case, so providing direct access
+    to the parser (and its cursor) was a must.
+
 Once you've created your converters, we recommend writing `Arguments` extension functions for them. As before, we
 heavily recommend reading the source for the extension functions that already exist - they're quite simple, but it 
 always pays to try to write the best APIs you can, especially if you expect someone else to make use of your code 

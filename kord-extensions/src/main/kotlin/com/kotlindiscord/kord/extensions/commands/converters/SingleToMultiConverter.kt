@@ -35,27 +35,42 @@ public class SingleToMultiConverter<T : Any>(
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val values = mutableListOf<T>()
         val dummyArgs = Arguments()
-        val tokens = named?.toMutableList() ?: mutableListOf()
 
-        if (tokens.isEmpty()) {
-            while (parser!!.hasNext) {
-                tokens.add(parser.parseNext()!!.data)
-            }
-        }
+        if (named == null) {
+            while (true) {
+                val arg = parser?.peekNext()?.data
 
-        for (arg in tokens) {
-            try {
-                val result = singleConverter.parse(null, context, arg)
+                try {
+                    val result = singleConverter.parse(null, context, arg)
 
-                if (!result) {
+                    if (!result) {
+                        break
+                    }
+
+                    val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+
+                    values.add(value)
+
+                    parser?.parseNext()  // Move the cursor ahead
+                } catch (e: CommandException) {
                     break
                 }
+            }
+        } else {
+            for (arg in named) {
+                try {
+                    val result = singleConverter.parse(null, context, arg)
 
-                val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+                    if (!result) {
+                        break
+                    }
 
-                values.add(value)
-            } catch (e: CommandException) {
-                break
+                    val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+
+                    values.add(value)
+                } catch (e: CommandException) {
+                    break
+                }
             }
         }
 
