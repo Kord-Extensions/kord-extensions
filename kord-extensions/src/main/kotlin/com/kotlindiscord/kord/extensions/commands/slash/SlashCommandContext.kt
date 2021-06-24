@@ -7,6 +7,8 @@ import com.kotlindiscord.kord.extensions.checks.memberFor
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.components.Components
+import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
+import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
@@ -87,6 +89,21 @@ public open class SlashCommandContext<T : Arguments>(
     override suspend fun getMember(): MemberBehavior? = memberFor(event)?.asMemberOrNull()
     override suspend fun getMessage(): MessageBehavior? = null
     override suspend fun getUser(): UserBehavior = event.interaction.user
+
+    /**
+     * Convenience function to create a button paginator using a builder DSL syntax. Handles the contextual stuff for
+     * you.
+     */
+    public suspend fun paginator(
+        defaultGroup: String = "",
+        body: PaginatorBuilder.() -> Unit
+    ): InteractionButtonPaginator {
+        val builder = PaginatorBuilder(command.extension, getLocale(), defaultGroup = defaultGroup)
+
+        body(builder)
+
+        return InteractionButtonPaginator(builder, this)
+    }
 
     /**
      * Send an acknowledgement manually, assuming you have `autoAck` set to `NONE`.

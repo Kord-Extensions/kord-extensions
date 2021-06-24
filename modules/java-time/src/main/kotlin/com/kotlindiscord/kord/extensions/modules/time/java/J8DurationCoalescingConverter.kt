@@ -43,13 +43,13 @@ public class J8DurationCoalescingConverter(
     override val signatureTypeString: String = "converters.duration.error.signatureType"
     private val logger = KotlinLogging.logger {}
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArguments: List<String>?): Int {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val durations = mutableListOf<String>()
         val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
 
         var skipNext = false
 
-        val args = namedArguments ?: parser?.run {
+        val args = named ?: parser?.run {
             val tokens: MutableList<String> = mutableListOf()
 
             while (hasNext) {

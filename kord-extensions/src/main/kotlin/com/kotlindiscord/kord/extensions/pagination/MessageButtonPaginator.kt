@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.MessageChannelBehavior
@@ -98,3 +99,28 @@ public class MessageButtonPaginator(
         }
     }
 }
+
+/** Convenience function for creating a message button paginator from a paginator builder. **/
+@Suppress("FunctionNaming")  // Factory function
+public fun MessageButtonPaginator(
+    pingInReply: Boolean = true,
+    targetChannel: MessageChannelBehavior? = null,
+    targetMessage: Message? = null,
+
+    builder: PaginatorBuilder
+): MessageButtonPaginator =
+    MessageButtonPaginator(
+        extension = builder.extension,
+        pages = builder.pages,
+        owner = builder.owner,
+        timeoutSeconds = builder.timeoutSeconds,
+        keepEmbed = builder.keepEmbed,
+        bundle = builder.bundle,
+        locale = builder.locale,
+
+        pingInReply = pingInReply,
+        targetChannel = targetChannel,
+        targetMessage = targetMessage,
+
+        switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+    )

@@ -6,6 +6,8 @@ import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
+import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
+import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
@@ -71,6 +73,26 @@ public open class MessageCommandContext<T : Arguments>(
     override suspend fun getMember(): Member? = event.message.getAuthorAsMember()
     override suspend fun getMessage(): Message = event.message
     override suspend fun getUser(): User? = event.message.author
+
+    /**
+     * Convenience function to create a button paginator using a builder DSL syntax. Handles the contextual stuff for
+     * you.
+     */
+    public suspend fun paginator(
+        defaultGroup: String = "",
+
+        pingInReply: Boolean = true,
+        targetChannel: MessageChannelBehavior? = null,
+        targetMessage: Message? = null,
+
+        body: PaginatorBuilder.() -> Unit
+    ): MessageButtonPaginator {
+        val builder = PaginatorBuilder(command.extension, getLocale(), defaultGroup = defaultGroup)
+
+        body(builder)
+
+        return MessageButtonPaginator(pingInReply, targetChannel, targetMessage, builder)
+    }
 
     /**
      * Generate and send the help embed for this command, using the first loaded extensions that implements

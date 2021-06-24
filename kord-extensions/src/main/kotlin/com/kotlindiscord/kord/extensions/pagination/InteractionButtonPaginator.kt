@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.pagination
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.interaction.edit
@@ -82,7 +83,27 @@ public class InteractionButtonPaginator(
         } else {
             embedInteraction!!.edit {
                 embed(embedBuilder)
+
+                this.components = mutableListOf()
             }
         }
     }
 }
+
+/** Convenience function for creating an interaction button paginator from a paginator builder. **/
+@Suppress("FunctionNaming")  // Factory function
+public fun InteractionButtonPaginator(
+    builder: PaginatorBuilder,
+    parentContext: SlashCommandContext<*>
+): InteractionButtonPaginator = InteractionButtonPaginator(
+    extension = builder.extension,
+    pages = builder.pages,
+    owner = builder.owner,
+    timeoutSeconds = builder.timeoutSeconds,
+    keepEmbed = builder.keepEmbed,
+    bundle = builder.bundle,
+    locale = builder.locale,
+    parentContext = parentContext,
+
+    switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+)
