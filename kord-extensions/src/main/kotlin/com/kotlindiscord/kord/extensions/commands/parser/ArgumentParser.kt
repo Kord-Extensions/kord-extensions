@@ -2,7 +2,7 @@
 
 @file:Suppress(
     "TooGenericExceptionCaught",
-    "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
+    "StringLiteralDuplication"
 )
 
 package com.kotlindiscord.kord.extensions.commands.parser
@@ -124,7 +124,6 @@ public open class ArgumentParser : KoinComponent {
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-//                                    currentValue
                                 )
                             )
                         )
@@ -134,7 +133,6 @@ public open class ArgumentParser : KoinComponent {
                         logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-//                        currentValue = null
 
                         converter.validate(context)
                     }
@@ -180,7 +178,6 @@ public open class ArgumentParser : KoinComponent {
                         logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-//                        currentValue = null
 
                         converter.validate(context)
                     }
@@ -208,7 +205,6 @@ public open class ArgumentParser : KoinComponent {
                         logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-//                        currentValue = null
 
                         converter.validate(context)
                     }
@@ -248,8 +244,7 @@ public open class ArgumentParser : KoinComponent {
 
                                 replacements = arrayOf(
                                     currentArg.displayName,
-                                    converter.getErrorString(context),
-//                                    currentValue
+                                    converter.getErrorString(context)
                                 )
                             )
                         )
@@ -272,18 +267,14 @@ public open class ArgumentParser : KoinComponent {
                         }
 
                         converter.parseSuccess = true
-//                        currentValue = null
                     } else {
                         if (parsedCount > 0) {
                             logger.debug { "Argument ${currentArg.displayName} successfully filled." }
 
-//                            currentValue = null
                             converter.parseSuccess = true
 
                             converter.validate(context)
                         }
-
-//                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
@@ -322,7 +313,6 @@ public open class ArgumentParser : KoinComponent {
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-//                                    currentValue
                                 )
                             )
                         )
@@ -345,18 +335,14 @@ public open class ArgumentParser : KoinComponent {
                         }
 
                         converter.parseSuccess = true
-//                        currentValue = null
                     } else {
                         if (parsedCount > 0) {
                             logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
 
-//                            currentValue = null
                             converter.parseSuccess = true
 
                             converter.validate(context)
                         }
-
-//                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
@@ -395,7 +381,6 @@ public open class ArgumentParser : KoinComponent {
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-//                                    currentValue
                                 )
                             )
                         )
@@ -418,18 +403,14 @@ public open class ArgumentParser : KoinComponent {
                         }
 
                         converter.parseSuccess = true
-//                        currentValue = null
                     } else {
                         if (parsedCount > 0) {
                             logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
 
-//                            currentValue = null
                             converter.parseSuccess = true
 
                             converter.validate(context)
                         }
-
-//                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError || hasKwargs) {
@@ -468,7 +449,6 @@ public open class ArgumentParser : KoinComponent {
                                 replacements = arrayOf(
                                     currentArg.displayName,
                                     converter.getErrorString(context),
-//                                    currentValue
                                 )
                             )
                         )
@@ -491,18 +471,14 @@ public open class ArgumentParser : KoinComponent {
                         }
 
                         converter.parseSuccess = true
-//                        currentValue = null
                     } else {
                         if (parsedCount > 0) {
                             logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
 
-//                            currentValue = null
                             converter.parseSuccess = true
 
                             converter.validate(context)
                         }
-
-//                        (0 until parsedCount - 1).forEach { _ -> values.removeFirst() }
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
@@ -572,8 +548,6 @@ public open class ArgumentParser : KoinComponent {
                 )
             }
         }
-
-//        logger.debug { "Leftover arguments: ${values.size}" }
 
         return argumentsObj
     }
