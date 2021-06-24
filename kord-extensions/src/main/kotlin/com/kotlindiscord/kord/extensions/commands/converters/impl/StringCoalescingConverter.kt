@@ -36,8 +36,8 @@ public class StringCoalescingConverter(
     override val signatureTypeString: String = "converters.string.signatureType"
     override val showTypeInSignature: Boolean = false
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArguments: List<String>?): Int {
-        this.parsed = namedArguments?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: List<String>?): Int {
+        this.parsed = namedArgument?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
 
         return parsed.length
     }

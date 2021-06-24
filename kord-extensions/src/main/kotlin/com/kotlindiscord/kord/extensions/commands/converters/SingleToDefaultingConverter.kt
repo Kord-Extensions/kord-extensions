@@ -35,9 +35,9 @@ public class SingleToDefaultingConverter<T : Any>(
     override suspend fun parse(
         parser: StringParser?,
         context: CommandContext,
-        namedArgument: String?
+        named: String?
     ): Boolean {
-        val result = singleConverter.parse(parser, context, namedArgument)
+        val result = singleConverter.parse(parser, context, named)
 
         if (result) {
             this.parsed = singleConverter.parsed

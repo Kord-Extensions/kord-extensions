@@ -33,8 +33,8 @@ public class EmailConverter(
 ) : SingleConverter<String>() {
     override val signatureTypeString: String = "converters.email.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         if (!EmailValidator.getInstance().isValid(arg)) {
             throw CommandException(

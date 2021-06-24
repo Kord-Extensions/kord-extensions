@@ -29,8 +29,8 @@ public class BooleanConverter(
     public override val signatureTypeString: String = "converters.boolean.signatureType"
     public override val errorTypeString: String = "converters.boolean.errorType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
         val bool: Boolean = arg.parseBoolean(context) ?: return false
 
         this.parsed = bool

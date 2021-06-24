@@ -39,8 +39,8 @@ public class T4JDurationConverter(
 ) : SingleConverter<Duration<IsoUnit>>() {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
             this.parsed = T4JDurationParser.parse(arg, context.getLocale())

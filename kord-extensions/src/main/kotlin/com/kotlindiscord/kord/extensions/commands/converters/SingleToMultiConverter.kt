@@ -32,10 +32,10 @@ public class SingleToMultiConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArguments: List<String>?): Int {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val values = mutableListOf<T>()
         val dummyArgs = Arguments()
-        val tokens = namedArguments?.toMutableList() ?: mutableListOf()
+        val tokens = named?.toMutableList() ?: mutableListOf()
 
         if (tokens.isEmpty()) {
             while (parser!!.hasNext) {

@@ -34,8 +34,8 @@ public class SingleToOptionalConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val result = singleConverter.parse(parser, context, namedArgument)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val result = singleConverter.parse(parser, context, named)
 
         if (result) {
             this.parsed = singleConverter.parsed

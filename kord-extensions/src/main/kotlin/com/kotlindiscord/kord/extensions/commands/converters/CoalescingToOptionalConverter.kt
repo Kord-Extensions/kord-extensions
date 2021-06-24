@@ -33,9 +33,9 @@ public class CoalescingToOptionalConverter<T : Any>(
     override suspend fun parse(
         parser: StringParser?,
         context: CommandContext,
-        namedArguments: List<String>?
+        namedArgument: List<String>?
     ): Int {
-        val result = coalescingConverter.parse(parser, context, namedArguments)
+        val result = coalescingConverter.parse(parser, context, namedArgument)
 
         if (result > 0) {
             this.parsed = coalescingConverter.parsed

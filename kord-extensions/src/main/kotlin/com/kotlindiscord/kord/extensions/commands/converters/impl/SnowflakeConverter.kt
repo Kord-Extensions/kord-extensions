@@ -36,8 +36,8 @@ public class SnowflakeConverter(
 ) : SingleConverter<Snowflake>() {
     override val signatureTypeString: String = "converters.snowflake.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
             this.parsed = Snowflake(arg)

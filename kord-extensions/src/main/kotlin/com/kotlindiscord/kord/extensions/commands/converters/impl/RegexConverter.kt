@@ -41,8 +41,8 @@ public class RegexConverter(
 ) : SingleConverter<Regex>() {
     override val signatureTypeString: String = "converters.regex.signatureType.singular"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         this.parsed = arg.toRegex(options)
 

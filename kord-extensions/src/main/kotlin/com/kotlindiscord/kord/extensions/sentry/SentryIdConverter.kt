@@ -1,3 +1,5 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.sentry
 
 import com.kotlindiscord.kord.extensions.CommandException
@@ -5,6 +7,7 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import io.sentry.protocol.SentryId
@@ -18,8 +21,8 @@ import io.sentry.protocol.SentryId
 public class SentryIdConverter : SingleConverter<SentryId>() {
     override val signatureTypeString: String = "extensions.sentry.converter.sentryId.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
             this.parsed = SentryId(arg)

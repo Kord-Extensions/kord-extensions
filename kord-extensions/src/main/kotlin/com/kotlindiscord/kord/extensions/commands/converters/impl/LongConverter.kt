@@ -36,8 +36,8 @@ public class LongConverter(
 ) : SingleConverter<Long>() {
     override val signatureTypeString: String = "converters.number.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
             this.parsed = arg.toLong(radix)

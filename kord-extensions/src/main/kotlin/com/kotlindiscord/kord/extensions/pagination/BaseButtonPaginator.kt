@@ -73,88 +73,94 @@ public abstract class BaseButtonPaginator(
             destroy()
         }
 
-        // Add navigation buttons...
-        firstPageButton = components.interactiveButton {
-            deferredAck = true
-            style = ButtonStyle.Secondary
+        if (pages.size > 1) {
+            // Add navigation buttons...
+            firstPageButton = components.interactiveButton {
+                deferredAck = true
+                style = ButtonStyle.Secondary
 
-            check(defaultCheck)
-            emoji(FIRST_PAGE_EMOJI)
+                check(defaultCheck)
+                emoji(FIRST_PAGE_EMOJI)
 
-            action {
-                goToPage(0)
+                action {
+                    goToPage(0)
 
-                send()
+                    send()
+                }
+            }
+
+            backButton = components.interactiveButton {
+                deferredAck = true
+                style = ButtonStyle.Secondary
+
+                check(defaultCheck)
+                emoji(LEFT_EMOJI)
+
+                action {
+                    previousPage()
+
+                    send()
+                }
+            }
+
+            nextButton = components.interactiveButton {
+                deferredAck = true
+                style = ButtonStyle.Secondary
+
+                check(defaultCheck)
+                emoji(RIGHT_EMOJI)
+
+                action {
+                    nextPage()
+
+                    send()
+                }
+            }
+
+            lastPageButton = components.interactiveButton {
+                deferredAck = true
+                style = ButtonStyle.Secondary
+
+                check(defaultCheck)
+                emoji(LAST_PAGE_EMOJI)
+
+                action {
+                    goToPage(pages.size - 1)
+
+                    send()
+                }
             }
         }
 
-        backButton = components.interactiveButton {
-            deferredAck = true
-            style = ButtonStyle.Secondary
+        if (pages.size > 1 || !keepEmbed) {
+            // Add the destroy button
+            components.interactiveButton(LAST_ROW) {
+                deferredAck = true
 
-            check(defaultCheck)
-            emoji(LEFT_EMOJI)
+                check(defaultCheck)
 
-            action {
-                previousPage()
+                label = if (keepEmbed) {
+                    style = ButtonStyle.Primary
+                    emoji(FINISH_EMOJI)
 
-                send()
-            }
-        }
+                    translate("paginator.button.done")
+                } else {
+                    style = ButtonStyle.Danger
+                    emoji(DELETE_EMOJI)
 
-        nextButton = components.interactiveButton {
-            deferredAck = true
-            style = ButtonStyle.Secondary
+                    translate("paginator.button.delete")
+                }
 
-            check(defaultCheck)
-            emoji(RIGHT_EMOJI)
-
-            action {
-                nextPage()
-
-                send()
-            }
-        }
-
-        lastPageButton = components.interactiveButton {
-            deferredAck = true
-            style = ButtonStyle.Secondary
-
-            check(defaultCheck)
-            emoji(LAST_PAGE_EMOJI)
-
-            action {
-                goToPage(pages.size - 1)
-
-                send()
-            }
-        }
-
-        // Add the destroy button
-        components.interactiveButton(LAST_ROW) {
-            deferredAck = true
-
-            check(defaultCheck)
-
-            label = if (keepEmbed) {
-                style = ButtonStyle.Primary
-                emoji(FINISH_EMOJI)
-
-                translate("paginator.button.done")
-            } else {
-                style = ButtonStyle.Danger
-                emoji(DELETE_EMOJI)
-
-                translate("paginator.button.delete")
-            }
-
-            action {
-                destroy()
+                action {
+                    destroy()
+                }
             }
         }
 
         if (pages.groups.size > 1) {
             if (canUseSwitchingButtons) {
+                // Add group-switching buttons
+
                 allGroups.forEach { group ->
                     groupButtons[group] = components.interactiveButton(SECOND_ROW) {
                         deferredAck = true
@@ -170,6 +176,7 @@ public abstract class BaseButtonPaginator(
                 }
             } else {
                 // Add the singular switch button
+
                 switchButton = components.interactiveButton(LAST_ROW) {
                     deferredAck = true
 

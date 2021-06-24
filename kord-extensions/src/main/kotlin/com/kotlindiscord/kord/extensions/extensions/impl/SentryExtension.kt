@@ -1,3 +1,5 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescedString
@@ -7,6 +9,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.sentryId
 import com.kotlindiscord.kord.extensions.utils.respond
+import dev.kord.common.annotation.KordPreview
 import io.sentry.Sentry
 import io.sentry.UserFeedback
 import io.sentry.protocol.SentryId

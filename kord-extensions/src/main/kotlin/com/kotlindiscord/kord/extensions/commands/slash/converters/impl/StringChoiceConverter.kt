@@ -8,7 +8,10 @@
 package com.kotlindiscord.kord.extensions.commands.slash.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
@@ -33,8 +36,8 @@ public class StringChoiceConverter(
 ) : ChoiceConverter<String>(choices) {
     override val signatureTypeString: String = "converters.string.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         this.parsed = arg
 

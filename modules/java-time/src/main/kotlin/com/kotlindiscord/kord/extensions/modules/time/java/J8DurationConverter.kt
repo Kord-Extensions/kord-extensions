@@ -42,8 +42,8 @@ public class J8DurationConverter(
 ) : SingleConverter<ChronoContainer>() {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
             val result = J8DurationParser.parse(arg, context.getLocale())

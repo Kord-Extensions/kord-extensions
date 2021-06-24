@@ -58,8 +58,8 @@ public class MessageConverter(
 ) : SingleConverter<Message>() {
     override val signatureTypeString: String = "converters.message.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         parsed = findMessage(arg, context)
 

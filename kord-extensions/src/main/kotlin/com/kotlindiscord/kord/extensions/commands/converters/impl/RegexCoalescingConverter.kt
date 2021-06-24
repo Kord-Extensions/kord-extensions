@@ -44,8 +44,8 @@ public class RegexCoalescingConverter(
     override val signatureTypeString: String = "converters.regex.signatureType.plural"
     override val showTypeInSignature: Boolean = false
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArguments: List<String>?): Int {
-        val args: String = namedArguments?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
+    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: List<String>?): Int {
+        val args: String = namedArgument?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
 
         this.parsed = args.toRegex(options)
 

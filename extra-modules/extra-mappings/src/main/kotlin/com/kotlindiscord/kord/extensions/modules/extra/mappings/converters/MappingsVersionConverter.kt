@@ -1,4 +1,4 @@
-@file:OptIn(ConverterToOptional::class)
+@file:OptIn(ConverterToOptional::class, KordPreview::class)
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.converters
 
@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import me.shedaniel.linkie.MappingsContainer
@@ -25,8 +26,8 @@ class MappingsVersionConverter(
     override val signatureTypeString: String = "version"
     override val showTypeInSignature: Boolean = false
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         val namespace = namespaceGetter.invoke()
 

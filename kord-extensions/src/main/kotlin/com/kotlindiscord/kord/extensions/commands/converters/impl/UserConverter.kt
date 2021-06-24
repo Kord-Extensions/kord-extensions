@@ -44,8 +44,8 @@ public class UserConverter(
 ) : SingleConverter<User>() {
     override val signatureTypeString: String = "converters.user.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, namedArgument: String?): Boolean {
-        val arg: String = namedArgument ?: parser?.parseNext()?.data ?: return false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         this.parsed = findUser(arg, context)
             ?: throw CommandException(
