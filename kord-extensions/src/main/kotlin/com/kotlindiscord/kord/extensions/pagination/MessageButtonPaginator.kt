@@ -97,6 +97,8 @@ public class MessageButtonPaginator(
                 this.components = mutableListOf()
             }
         }
+
+        runTimeoutCallbacks()
     }
 }
 

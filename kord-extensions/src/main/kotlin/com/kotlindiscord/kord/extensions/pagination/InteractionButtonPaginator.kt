@@ -87,6 +87,8 @@ public class InteractionButtonPaginator(
                 this.components = mutableListOf()
             }
         }
+
+        runTimeoutCallbacks()
     }
 }
 
