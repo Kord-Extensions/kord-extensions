@@ -32,9 +32,9 @@ internal fun defaultingConverter(
     }
 
     .defaultFirstArgs()
-    .optionalFunArg("required", "Boolean", "false")
 
     .requiredFunArg("defaultValue", typeParam)
+    .optionalFunArg("required", "Boolean", "false")
 
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
@@ -89,9 +89,9 @@ internal fun defaultingChoiceConverter(
     }
 
     .defaultFirstArgs()
-    .optionalFunArg("required", "Boolean", "false")
 
     .requiredFunArg("defaultValue", typeParam)
+    .optionalFunArg("required", "Boolean", "false")
     .requiredFunArg("choices", "Map<String, $typeParam>")
 
     .maybe(extraArguments.isNotEmpty()) {
@@ -149,9 +149,9 @@ internal fun defaultingCoalescingConverter(
     }
 
     .defaultFirstArgs()
-    .optionalFunArg("required", "Boolean", "false")
 
     .requiredFunArg("defaultValue", typeParam)
+    .optionalFunArg("required", "Boolean", "false")
 
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
