@@ -1,4 +1,6 @@
-@file:Suppress("StringLiteralDuplication")  // There's no good way to avoid this repetition at the moment
+@file:OptIn(TranslationNotSupported::class)
+
+@file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.commands.slash
 
@@ -159,7 +161,7 @@ public open class SlashCommandRegistry : KoinComponent {
 
                     command(
                         translatedName,
-                        translationsProvider.translate(it.description, it.extension.bundle)
+                        translationsProvider.translate(it.description, it.extension.bundle, locale = locale)
                     ) { register(it) }
                 }
             }.toList().associate { it.name to it.id }
@@ -212,7 +214,7 @@ public open class SlashCommandRegistry : KoinComponent {
     }
 
     internal open suspend fun ApplicationCommandCreateBuilder.register(command: SlashCommand<out Arguments>) {
-//        val locale = bot.settings.i18nBuilder.defaultLocale
+        val locale = bot.settings.i18nBuilder.defaultLocale
 
         if (command.hasBody) {
             val args = command.arguments?.invoke()
@@ -244,7 +246,10 @@ public open class SlashCommandRegistry : KoinComponent {
                     converter.toSlashOption(arg)
                 }
 
-                this.subCommand(it.name, it.description) {
+                this.subCommand(
+                    it.name,
+                    translationsProvider.translate(it.description, command.extension.bundle, locale = locale)
+                ) {
                     if (args != null) {
                         if (this.options == null) this.options = mutableListOf()
 
@@ -267,7 +272,10 @@ public open class SlashCommandRegistry : KoinComponent {
                             converter.toSlashOption(arg)
                         }
 
-                        this.subCommand(it.name, it.description) {
+                        this.subCommand(
+                            it.name,
+                            translationsProvider.translate(it.description, command.extension.bundle, locale = locale)
+                        ) {
                             if (args != null) {
                                 if (this.options == null) this.options = mutableListOf()
 

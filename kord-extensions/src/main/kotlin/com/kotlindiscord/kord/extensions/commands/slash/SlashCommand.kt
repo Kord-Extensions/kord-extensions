@@ -1,4 +1,4 @@
-@file:OptIn(KordPreview::class)
+@file:OptIn(KordPreview::class, TranslationNotSupported::class)
 
 package com.kotlindiscord.kord.extensions.commands.slash
 
@@ -62,6 +62,9 @@ public open class SlashCommand<T : Arguments>(
 ) : Command(extension), KoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
+
+    @TranslationNotSupported
+    override var name: String = super.name
 
     private val settings: ExtensibleBotBuilder by inject()
 

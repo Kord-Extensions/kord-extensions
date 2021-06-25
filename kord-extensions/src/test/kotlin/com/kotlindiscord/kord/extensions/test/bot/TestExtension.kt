@@ -1,8 +1,11 @@
+@file:OptIn(KordPreview::class, TranslationNotSupported::class)
+
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
+import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
 import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.enumChoice
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
@@ -17,7 +20,6 @@ import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.rest.builder.interaction.embed
 
 // They're IDs
-@OptIn(KordPreview::class)
 @Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
     override val name = "test"
