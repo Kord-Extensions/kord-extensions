@@ -7,10 +7,7 @@ package com.kotlindiscord.kord.extensions.commands.slash.parser
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.DefaultingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.OptionalConverter
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -177,9 +174,53 @@ public open class SlashCommandParser : ArgumentParser() {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
                 }
 
+                is OptionalCoalescingConverter<*> -> try {
+                    val parsed = if (currentValue != null) {
+                        converter.parse(null, context, listOf(currentValue)) > 0
+                    } else {
+                        false
+                    }
+
+                    if (parsed) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+
+                        converter.parseSuccess = true
+                        currentValue = null
+
+                        converter.validate(context)
+                    }
+                } catch (e: CommandException) {
+                    if (converter.required || converter.outputError) {
+                        throw CommandException(
+                            converter.handleError(e, context)
+                        )
+                    }
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+                }
+
                 is DefaultingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
                         converter.parse(null, context, currentValue)
+                    } else {
+                        false
+                    }
+
+                    if (parsed) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+
+                        converter.parseSuccess = true
+                        currentValue = null
+
+                        converter.validate(context)
+                    }
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+                }
+
+                is DefaultingCoalescingConverter<*> -> try {
+                    val parsed = if (currentValue != null) {
+                        converter.parse(null, context, listOf(currentValue)) > 0
                     } else {
                         false
                     }

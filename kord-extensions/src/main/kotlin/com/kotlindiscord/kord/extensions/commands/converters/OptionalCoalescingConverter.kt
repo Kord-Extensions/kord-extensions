@@ -23,7 +23,7 @@ import dev.kord.common.annotation.KordPreview
 public abstract class OptionalCoalescingConverter<T : Any?>(
     public val outputError: Boolean = false,
     override var validator: Validator<T?> = null
-) : Converter<List<T>, T?, List<String>, Int>(false) {
+) : Converter<List<T>, T?, List<String>, Int>(false), SlashCommandConverter {
     /**
      * The parsed value.
      *

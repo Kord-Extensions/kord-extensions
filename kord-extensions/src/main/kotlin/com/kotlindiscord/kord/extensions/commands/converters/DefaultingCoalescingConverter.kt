@@ -21,9 +21,7 @@ import dev.kord.common.annotation.KordPreview
 public abstract class DefaultingCoalescingConverter<T : Any>(
     defaultValue: T,
     override var validator: Validator<T> = null
-) : Converter<List<T>, T, List<String>, Int>(
-    false
-) {
+) : Converter<List<T>, T, List<String>, Int>(false), SlashCommandConverter {
     /**
      * The parsed value.
      *

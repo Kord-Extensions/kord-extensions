@@ -1,7 +1,12 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
  * A special [OptionalConverter] that wraps a [SingleConverter], effectively turning it into an optional
@@ -44,4 +49,11 @@ public class CoalescingToOptionalConverter<T : Any>(
         t: Throwable,
         context: CommandContext
     ): String = coalescingConverter.handleError(t, context)
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
+        val option = coalescingConverter.toSlashOption(arg)
+        option.required = false
+
+        return option
+    }
 }
