@@ -333,4 +333,28 @@ public open class StringParser(public open val input: String) {
 
         return result
     }
+
+    /** Return whatever remains in the [cursor]'s string, without consuming it'. **/
+    public fun peekRemaining(): String {
+        val curIndex = cursor.index
+        val result = cursor.consumeRemaining()
+
+        cursor.index = curIndex
+
+        return result
+    }
+
+    /**
+     * Collect characters from the [cursor] while the [predicate] returns `true`, and return those characters joined
+     * into a String. If the predicate fails on the first character, `null` will be returned instead. After
+     * characters have been collected, the cursor's index is reset, so the characters won't be consumed.
+     */
+    public fun peekWhile(predicate: (Char) -> Boolean): String? {
+        val curIndex = cursor.index
+        val result = cursor.consumeWhile(predicate)
+
+        cursor.index = curIndex
+
+        return result
+    }
 }

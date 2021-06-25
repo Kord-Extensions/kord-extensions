@@ -181,6 +181,20 @@ public open class ArgumentParser : KoinComponent {
 
                         converter.validate(context)
                     }
+                } catch (e: CommandException) {
+                    if (converter.required || converter.outputError || hasKwargs) {
+                        throw CommandException(
+                            context.translate(
+                                "argumentParser.error.errorInArgument",
+
+                                replacements = arrayOf(
+                                    currentArg.displayName,
+
+                                    converter.handleError(e, context)
+                                )
+                            )
+                        )
+                    }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
                 }
@@ -481,7 +495,7 @@ public open class ArgumentParser : KoinComponent {
                         }
                     }
                 } catch (e: CommandException) {
-                    if (converter.required) {
+                    if (converter.required || converter.outputError || hasKwargs) {
                         throw CommandException(
                             context.translate(
                                 "argumentParser.error.errorInArgument",

@@ -110,7 +110,7 @@ public abstract class SingleConverter<T : Any>(
      * For more information on the parameters, see [Converter].
      *
      * @param defaultValue The default value to use when an argument can't be converted.
-     *
+     * @param outputError Whether the argument parser should output parsing errors on invalid arguments.
      * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
      * provides.
      *
@@ -123,16 +123,18 @@ public abstract class SingleConverter<T : Any>(
     @ConverterToDefaulting
     public open fun toDefaulting(
         defaultValue: T,
+        outputError: Boolean = false,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
         nestedValidator: Validator<T> = null
     ): DefaultingConverter<T> = SingleToDefaultingConverter(
         this,
-        defaultValue,
-        signatureTypeString,
-        showTypeInSignature,
-        errorTypeString,
-        nestedValidator
+        defaultValue = defaultValue,
+        outputError = outputError,
+        newSignatureTypeString = signatureTypeString,
+        newShowTypeInSignature = showTypeInSignature,
+        newErrorTypeString = errorTypeString,
+        validator = nestedValidator
     )
 }

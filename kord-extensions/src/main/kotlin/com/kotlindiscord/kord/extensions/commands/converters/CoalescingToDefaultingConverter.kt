@@ -24,13 +24,14 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 public class CoalescingToDefaultingConverter<T : Any>(
     public val coalescingConverter: CoalescingConverter<T>,
     defaultValue: T,
+    outputError: Boolean = false,
 
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
 
     override var validator: Validator<T> = null
-) : DefaultingCoalescingConverter<T>(defaultValue) {
+) : DefaultingCoalescingConverter<T>(defaultValue, outputError = outputError) {
     override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString

@@ -21,13 +21,14 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 public class SingleToDefaultingConverter<T : Any>(
     public val singleConverter: SingleConverter<T>,
     defaultValue: T,
+    outputError: Boolean = false,
 
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
 
     override var validator: Validator<T> = null
-) : DefaultingConverter<T>(defaultValue) {
+) : DefaultingConverter<T>(defaultValue, outputError = outputError) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString

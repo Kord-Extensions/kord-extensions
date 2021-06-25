@@ -12,10 +12,12 @@ import dev.kord.common.annotation.KordPreview
  *
  * You can create a defaulting converter of your own by extending this class.
  *
+ * @property outputError Whether the argument parser should output parsing errors on invalid arguments.
  * @property validator Validation lambda, which may throw a CommandException if required.
  */
 public abstract class DefaultingConverter<T : Any>(
     defaultValue: T,
+    public val outputError: Boolean = false,
     override var validator: Validator<T> = null
 ) : Converter<T, T, String, Boolean>(false), SlashCommandConverter {
     /**

@@ -17,7 +17,6 @@ import dev.kord.common.annotation.KordPreview
  * You can create an optional coalescing converter of your own by extending this class.
  *
  * @property outputError Whether the argument parser should output parsing errors on invalid arguments.
- *
  * @property validator Validation lambda, which may throw a CommandException if required.
  */
 public abstract class OptionalCoalescingConverter<T : Any?>(

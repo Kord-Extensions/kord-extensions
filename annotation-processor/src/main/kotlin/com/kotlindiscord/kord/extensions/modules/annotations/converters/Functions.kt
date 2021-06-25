@@ -32,6 +32,8 @@ internal fun defaultingConverter(
     }
 
     .defaultFirstArgs()
+    .optionalFunArg("required", "Boolean", "false")
+
     .requiredFunArg("defaultValue", typeParam)
 
     .maybe(extraArguments.isNotEmpty()) {
@@ -54,6 +56,7 @@ internal fun defaultingConverter(
 
     .wrapper("defaulting")
     .wrapperArg("defaultValue")
+    .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
 
     .build()
@@ -86,6 +89,7 @@ internal fun defaultingChoiceConverter(
     }
 
     .defaultFirstArgs()
+    .optionalFunArg("required", "Boolean", "false")
 
     .requiredFunArg("defaultValue", typeParam)
     .requiredFunArg("choices", "Map<String, $typeParam>")
@@ -112,6 +116,7 @@ internal fun defaultingChoiceConverter(
 
     .wrapper("defaulting")
     .wrapperArg("defaultValue")
+    .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
 
     .build()
@@ -144,6 +149,8 @@ internal fun defaultingCoalescingConverter(
     }
 
     .defaultFirstArgs()
+    .optionalFunArg("required", "Boolean", "false")
+
     .requiredFunArg("defaultValue", typeParam)
 
     .maybe(extraArguments.isNotEmpty()) {
@@ -166,6 +173,7 @@ internal fun defaultingCoalescingConverter(
 
     .wrapper("defaulting")
     .wrapperArg("defaultValue")
+    .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
 
     .build()

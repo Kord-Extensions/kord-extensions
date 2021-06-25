@@ -214,6 +214,12 @@ public open class SlashCommandParser : ArgumentParser() {
 
                         converter.validate(context)
                     }
+                } catch (e: CommandException) {
+                    if (converter.required || converter.outputError) {
+                        throw CommandException(
+                            converter.handleError(e, context)
+                        )
+                    }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
                 }
@@ -232,6 +238,12 @@ public open class SlashCommandParser : ArgumentParser() {
                         currentValue = null
 
                         converter.validate(context)
+                    }
+                } catch (e: CommandException) {
+                    if (converter.required || converter.outputError) {
+                        throw CommandException(
+                            converter.handleError(e, context)
+                        )
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
