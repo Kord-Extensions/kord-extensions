@@ -63,9 +63,6 @@ public open class SlashCommand<T : Arguments>(
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 
-    @TranslationNotSupported
-    override var name: String = super.name
-
     private val settings: ExtensibleBotBuilder by inject()
 
     /** Kord instance, backing the ExtensibleBot. **/
