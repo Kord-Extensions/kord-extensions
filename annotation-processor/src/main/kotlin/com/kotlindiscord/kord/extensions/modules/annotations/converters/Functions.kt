@@ -483,6 +483,7 @@ internal fun optionalChoiceConverter(
 
     .defaultFirstArgs()
     .requiredFunArg("choices", "Map<String, $typeParam>")
+    .optionalFunArg("required", "Boolean", "false")
 
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
@@ -506,6 +507,7 @@ internal fun optionalChoiceConverter(
     }
 
     .wrapper("optional")
+    .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
 
     .build()
@@ -537,6 +539,7 @@ internal fun optionalCoalescingConverter(
     }
 
     .defaultFirstArgs()
+    .optionalFunArg("required", "Boolean", "false")
 
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
@@ -558,6 +561,7 @@ internal fun optionalCoalescingConverter(
     }
 
     .wrapper("optional")
+    .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
 
     .build()
