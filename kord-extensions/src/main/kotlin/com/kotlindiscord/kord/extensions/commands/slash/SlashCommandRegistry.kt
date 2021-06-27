@@ -204,6 +204,28 @@ public open class SlashCommandRegistry : KoinComponent {
                 }
         }
 
+        val commandsWithPerms = commandMap.filterValues { !it.allowByDefault }.toList().groupBy {
+            it.second.guild
+        }
+
+        commandsWithPerms.forEach { (guild, commands) ->
+            if (guild != null) {
+                api.bulkEditApplicationCommandPermissions(api.applicationId, guild) {
+                    commands.forEach { (id, commandObj) ->
+                        command(id) {
+                            commandObj.allowedUsers.map { user(it, true) }
+                            commandObj.disallowedUsers.map { user(it, false) }
+
+                            commandObj.allowedRoles.map { role(it, true) }
+                            commandObj.disallowedRoles.map { role(it, false) }
+                        }
+                    }
+                }
+            } else {
+                logger.warn { "Applying permissions to global slash commands is currently not supported." }
+            }
+        }
+
         logger.info {
             if (guild == null) {
                 "Finished synchronising global slash commands"
@@ -215,6 +237,8 @@ public open class SlashCommandRegistry : KoinComponent {
 
     internal open suspend fun ApplicationCommandCreateBuilder.register(command: SlashCommand<out Arguments>) {
         val locale = bot.settings.i18nBuilder.defaultLocale
+
+        this.defaultPermission = command.guild == null || command.allowByDefault
 
         if (command.hasBody) {
             val args = command.arguments?.invoke()

@@ -22,6 +22,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.KordObject
 import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
@@ -86,6 +87,32 @@ public open class SlashCommand<T : Arguments>(
     } else {
         null
     }
+
+    /**
+     * Whether to allow everyone to use this command by default. Set to `false` to use the allowed/disallowed role/user
+     * lists instead. This will be set to `false` automatically by the allow/disallow functions.
+     */
+    public open var allowByDefault: Boolean = true
+
+    /**
+     * List of allowed role IDs. Allows take priority over disallows.
+     */
+    public open val allowedRoles: MutableList<Snowflake> = mutableListOf()
+
+    /**
+     * List of allowed invoker IDs. Allows take priority over disallows.
+     */
+    public open val allowedUsers: MutableList<Snowflake> = mutableListOf()
+
+    /**
+     * List of disallowed role IDs. Allows take priority over disallows.
+     */
+    public open val disallowedRoles: MutableList<Snowflake> = mutableListOf()
+
+    /**
+     * List of disallowed invoker IDs. Allows take priority over disallows.
+     */
+    public open val disallowedUsers: MutableList<Snowflake> = mutableListOf()
 
     /** Types of automatic ack to use, if any. **/
     public open var autoAck: AutoAckType = AutoAckType.EPHEMERAL
@@ -213,6 +240,50 @@ public open class SlashCommand<T : Arguments>(
     public open fun guild(guild: GuildBehavior) {
         this.guild = guild.id
     }
+
+    /** Register an allowed role, and set [allowByDefault] to `false`. **/
+    public open fun allowRole(role: Snowflake) {
+        allowByDefault = false
+
+        allowedRoles.add(role)
+    }
+
+    /** Register an allowed role, and set [allowByDefault] to `false`. **/
+    public open fun allowRole(role: UserBehavior): Unit =
+        allowRole(role.id)
+
+    /** Register a disallowed role, and set [allowByDefault] to `false`. **/
+    public open fun disallowRole(role: Snowflake) {
+        allowByDefault = false
+
+        disallowedRoles.add(role)
+    }
+
+    /** Register a disallowed role, and set [allowByDefault] to `false`. **/
+    public open fun disallowRole(role: UserBehavior): Unit =
+        disallowRole(role.id)
+
+    /** Register an allowed user, and set [allowByDefault] to `false`. **/
+    public open fun allowUser(user: Snowflake) {
+        allowByDefault = false
+
+        allowedUsers.add(user)
+    }
+
+    /** Register an allowed user, and set [allowByDefault] to `false`. **/
+    public open fun allowUser(user: UserBehavior): Unit =
+        allowUser(user.id)
+
+    /** Register a disallowed user, and set [allowByDefault] to `false`. **/
+    public open fun disallowUser(user: Snowflake) {
+        allowByDefault = false
+
+        disallowedUsers.add(user)
+    }
+
+    /** Register a disallowed user, and set [allowByDefault] to `false`. **/
+    public open fun disallowUser(user: UserBehavior): Unit =
+        disallowUser(user.id)
 
     /**
      * DSL function for easily registering a subcommand, with arguments.
