@@ -21,6 +21,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.KordObject
+import dev.kord.core.any
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.channel.DmChannel
@@ -404,6 +405,7 @@ public open class SlashCommand<T : Arguments>(
             }
         }
 
+        // parent command checks
         if (parentCommand != null) {
             val parentChecks = parentCommand!!.runChecks(event)
 
@@ -412,11 +414,24 @@ public open class SlashCommand<T : Arguments>(
             }
         }
 
+        // command-specific checks
         for (check in checkList) {
             if (!check.invoke(event)) {
                 return false
             }
         }
+
+        // check that discord should enforce but we don't trust them to
+        if (!allowByDefault) {
+            val channel = event.interaction.channel.asChannel() as? GuildMessageChannel
+
+            if (channel != null) {
+                val member = event.interaction.user.asMember(channel.guildId)
+
+                return member.id in allowedUsers || member.roles.any { it.id in allowedRoles }
+            }
+        }
+
         return true
     }
 
