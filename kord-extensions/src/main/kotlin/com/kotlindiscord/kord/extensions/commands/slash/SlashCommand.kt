@@ -33,6 +33,8 @@ import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.toList
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
@@ -93,27 +95,27 @@ public open class SlashCommand<T : Arguments>(
      * Whether to allow everyone to use this command by default. Set to `false` to use the allowed/disallowed role/user
      * lists instead. This will be set to `false` automatically by the allow/disallow functions.
      */
-    public open var allowByDefault: Boolean = true
+    public open var allowByDefault: Boolean = parentCommand?.allowByDefault ?: true
 
     /**
      * List of allowed role IDs. Allows take priority over disallows.
      */
-    public open val allowedRoles: MutableList<Snowflake> = mutableListOf()
+    public open val allowedRoles: MutableList<Snowflake> = parentCommand?.allowedRoles ?: mutableListOf()
 
     /**
      * List of allowed invoker IDs. Allows take priority over disallows.
      */
-    public open val allowedUsers: MutableList<Snowflake> = mutableListOf()
+    public open val allowedUsers: MutableList<Snowflake> = parentCommand?.allowedUsers ?: mutableListOf()
 
     /**
      * List of disallowed role IDs. Allows take priority over disallows.
      */
-    public open val disallowedRoles: MutableList<Snowflake> = mutableListOf()
+    public open val disallowedRoles: MutableList<Snowflake> = parentCommand?.disallowedRoles ?: mutableListOf()
 
     /**
      * List of disallowed invoker IDs. Allows take priority over disallows.
      */
-    public open val disallowedUsers: MutableList<Snowflake> = mutableListOf()
+    public open val disallowedUsers: MutableList<Snowflake> = parentCommand?.disallowedUsers ?: mutableListOf()
 
     /** Types of automatic ack to use, if any. **/
     public open var autoAck: AutoAckType = AutoAckType.EPHEMERAL
@@ -421,14 +423,20 @@ public open class SlashCommand<T : Arguments>(
             }
         }
 
+        val channel = event.interaction.channel.asChannel() as? GuildMessageChannel
+
         // check that discord should enforce but we don't trust them to
         if (!allowByDefault) {
-            val channel = event.interaction.channel.asChannel() as? GuildMessageChannel
-
             if (channel != null) {
                 val member = event.interaction.user.asMember(channel.guildId)
 
                 return member.id in allowedUsers || member.roles.any { it.id in allowedRoles }
+            }
+        } else {
+            if (channel != null) {
+                val member = event.interaction.user.asMember(channel.guildId)
+
+                return member.id !in disallowedRoles && member.roles.toList().all { it.id !in disallowedRoles }
             }
         }
 
