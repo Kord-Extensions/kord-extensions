@@ -68,7 +68,7 @@ public open class MessageCommandContext<T : Arguments>(
         arguments = args
     }
 
-    override suspend fun getChannel(): MessageChannelBehavior = event.message.channel
+    override suspend fun getChannel(): MessageChannelBehavior = event.message.channel.asChannel()
     override suspend fun getGuild(): Guild? = event.getGuild()
     override suspend fun getMember(): Member? = event.message.getAuthorAsMember()
     override suspend fun getMessage(): Message = event.message

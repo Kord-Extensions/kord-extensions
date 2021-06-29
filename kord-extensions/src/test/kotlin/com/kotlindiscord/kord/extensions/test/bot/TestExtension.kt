@@ -17,6 +17,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.behavior.reply
 import dev.kord.rest.builder.interaction.embed
 
 // They're IDs
@@ -60,7 +61,22 @@ class TestExtension : Extension() {
         val flag by optionalBoolean("flag", "Some kinda flag")
     }
 
+    class MessageArgs : Arguments() {
+        val message by message("target", "Target message")
+    }
+
     override suspend fun setup() {
+        command(::MessageArgs) {
+            name = "msg"
+            description = "Message argument test"
+
+            action {
+                arguments.message.reply {
+                    content = "Replied to message."
+                }
+            }
+        }
+
         command(::CoalescedArgs) {
             name = "coalesce"
             description = "Coalesce me, baby"

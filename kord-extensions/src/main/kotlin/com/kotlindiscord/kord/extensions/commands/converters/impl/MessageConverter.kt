@@ -86,10 +86,10 @@ public class MessageConverter(
 
             @Suppress("MagicNumber")
             val gid: Snowflake = try {
-                Snowflake(split[2])
+                Snowflake(split[0])
             } catch (e: NumberFormatException) {
                 throw CommandException(
-                    context.translate("converters.message.error.invalidGuildId", replacements = arrayOf(split[2]))
+                    context.translate("converters.message.error.invalidGuildId", replacements = arrayOf(split[0]))
                 )
             }
 
@@ -101,12 +101,12 @@ public class MessageConverter(
 
             @Suppress("MagicNumber")
             val cid: Snowflake = try {
-                Snowflake(split[3])
+                Snowflake(split[1])
             } catch (e: NumberFormatException) {
                 throw CommandException(
                     context.translate(
                         "converters.message.error.invalidChannelId",
-                        replacements = arrayOf(split[3])
+                        replacements = arrayOf(split[1])
                     )
                 )
             }
@@ -127,12 +127,12 @@ public class MessageConverter(
 
             @Suppress("MagicNumber")
             val mid: Snowflake = try {
-                Snowflake(split[4])
+                Snowflake(split[2])
             } catch (e: NumberFormatException) {
                 throw CommandException(
                     context.translate(
                         "converters.message.error.invalidMessageId",
-                        replacements = arrayOf(split[4])
+                        replacements = arrayOf(split[2])
                     )
                 )
             }
