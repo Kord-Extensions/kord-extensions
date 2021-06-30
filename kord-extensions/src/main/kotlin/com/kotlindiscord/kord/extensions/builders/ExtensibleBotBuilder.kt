@@ -1,3 +1,5 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.builders
 
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
@@ -13,6 +15,7 @@ import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
 import dev.kord.common.Color
+import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
@@ -187,8 +190,19 @@ public open class ExtensibleBotBuilder {
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { messageCommandsBuilder.messageRegistryBuilder() } bind MessageCommandRegistry::class }
-        loadModule { single { SentryAdapter() } bind SentryAdapter::class }
         loadModule { single { slashCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
+
+        loadModule {
+            single {
+                val adapter = extensionsBuilder.sentryExtensionBuilder.builder()
+
+                if (extensionsBuilder.sentryExtensionBuilder.enable) {
+                    extensionsBuilder.sentryExtensionBuilder.setupCallback(adapter)
+                }
+
+                adapter
+            } bind SentryAdapter::class
+        }
 
         hooksBuilder.runAfterKoinSetup()
     }
@@ -261,8 +275,16 @@ public open class ExtensibleBotBuilder {
         /** @suppress Help extension builder. **/
         public open val helpExtensionBuilder: HelpExtensionBuilder = HelpExtensionBuilder()
 
+        /** @suppress Sentry extension builder. **/
+        public open val sentryExtensionBuilder: SentryExtensionBuilder = SentryExtensionBuilder()
+
         /** Whether to enable the bundled Sentry extension. Defaults to `true`. **/
-        public var sentry: Boolean = true
+        @Deprecated("Use the sentry { } builder instead.", level = DeprecationLevel.ERROR)
+        public var sentry: Boolean
+            get() = sentryExtensionBuilder.debug
+            set(value) {
+                sentryExtensionBuilder.debug = value
+            }
 
         /** Add a custom extension to the bot via a builder - probably the extension constructor. **/
         public open fun add(builder: () -> Extension) {
@@ -272,6 +294,73 @@ public open class ExtensibleBotBuilder {
         /** Configure the built-in help extension, or disable it so you can use your own. **/
         public open suspend fun help(builder: HelpExtensionBuilder.() -> Unit) {
             builder(helpExtensionBuilder)
+        }
+
+        /** Configure the built-in sentry extension, or disable it so you can use your own. **/
+        public open suspend fun sentry(builder: SentryExtensionBuilder.() -> Unit) {
+            builder(sentryExtensionBuilder)
+        }
+
+        /** Builder used to configure Sentry and the Sentry extension. **/
+        @BotBuilderDSL
+        public open class SentryExtensionBuilder {
+            /** Whether to enable Sentry integration. This includes the extension, and [SentryAdapter] setup. **/
+            public open var enable: Boolean = false
+
+            /** Whether to enable Sentry's debug mode. **/
+            public open var debug: Boolean = false
+
+            /** Your Sentry DSN, required for submitting events to Sentry. **/
+            public open var dsn: String? = null
+
+            /** Optional distribution name to send to Sentry. **/
+            public open var distribution: String? = null
+
+            /** Optional environment name to send to Sentry. **/
+            public open var environment: String? = null
+
+            /** Optional release version to send to Sentry. **/
+            public open val release: String? = null
+
+            /** Optional server name to send to Sentry. **/
+            public open val serverName: String? = null
+
+            /** Whether to ping users when responding to them. **/
+            public var pingInReply: Boolean = true
+
+            /** Builder used to construct a [SentryAdapter] instance, usually the constructor. **/
+            public open var builder: () -> SentryAdapter = ::SentryAdapter
+
+            /**
+             * Function in charge of setting up the [SentryAdapter], by calling its `setup` function. You can use this
+             * if you need to pass extra parameters to the setup function, but make sure you pass everything that's
+             * required.
+             */
+            public open var setupCallback: SentryAdapter.() -> Unit = {
+                this.setup(
+                    dsn = dsn,
+                    debug = debug,
+
+                    distribution = distribution,
+                    environment = environment,
+                    release = release,
+                    serverName = serverName,
+                )
+            }
+
+            /** Register a builder used to construct a [SentryAdapter] instance, usually the constructor. **/
+            public fun builder(body: () -> SentryAdapter) {
+                builder = body
+            }
+
+            /**
+             * Register the function in charge of setting up the [SentryAdapter], by calling its `setup` function.
+             * You can use this if you need to pass extra parameters to the setup function, but make sure you pass
+             * everything that's required.
+             */
+            public fun setup(body: SentryAdapter.() -> Unit) {
+                setupCallback = body
+            }
         }
 
         /** Builder used for configuring options, specifically related to the help extension. **/

@@ -53,7 +53,7 @@ public class ConverterProcessor(
                 .associate { it.name?.getShortName() to it.value }
                 .filterKeys { it != null }
 
-            val name = arguments["name"]!! as String
+            val names = arguments["names"]!! as ArrayList<String>
             val types = (arguments["types"]!! as ArrayList<KSType>).map { it.declaration.simpleName.asString() }
             val extraImports = arguments["imports"] as ArrayList<String>?
             val extraArguments = arguments["arguments"] as ArrayList<String>? ?: arrayListOf()
@@ -94,121 +94,123 @@ public class ConverterProcessor(
                 )
             }
 
-            types.sorted().forEach {
-                logger.info("Current type: $it")
+            for (name in names) {
+                types.sorted().forEach {
+                    logger.info("Current type: $it")
 
-                val func = when (it) {
-                    ConverterType.SINGLE.name -> when {
-                        isChoice -> singleChoiceConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
+                    val func = when (it) {
+                        ConverterType.SINGLE.name -> when {
+                            isChoice -> singleChoiceConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
 
-                        isCoalescing -> singleCoalescingConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
+                            isCoalescing -> singleCoalescingConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
 
-                        else -> singleConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
-                    }
+                            else -> singleConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
+                        }
 
-                    ConverterType.OPTIONAL.name -> when {
-                        isChoice -> optionalChoiceConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
+                        ConverterType.OPTIONAL.name -> when {
+                            isChoice -> optionalChoiceConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
 
-                        isCoalescing -> optionalCoalescingConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
+                            isCoalescing -> optionalCoalescingConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
 
-                        else -> optionalConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
-                    }
+                            else -> optionalConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
+                        }
 
-                    ConverterType.DEFAULTING.name -> when {
-                        isChoice -> defaultingChoiceConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
+                        ConverterType.DEFAULTING.name -> when {
+                            isChoice -> defaultingChoiceConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
 
-                        isCoalescing -> defaultingCoalescingConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
+                            isCoalescing -> defaultingCoalescingConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
 
-                        else -> defaultingConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
-                    }
+                            else -> defaultingConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
+                        }
 
-                    ConverterType.LIST.name -> when {
-                        isChoice -> listChoiceConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
+                        ConverterType.LIST.name -> when {
+                            isChoice -> listChoiceConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
 
-                        isCoalescing -> listCoalescingConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
+                            isCoalescing -> listCoalescingConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
 
-                        else -> listConverter(
-                            classDeclaration,
-                            name,
-                            typeParamName,
-                            extraArguments,
-                            generic,
-                        )
-                    }
+                            else -> listConverter(
+                                classDeclaration,
+                                name,
+                                typeParamName,
+                                extraArguments,
+                                generic,
+                            )
+                        }
 
-                    ConverterType.CHOICE.name -> ""  // Done in the converter functions
-                    ConverterType.COALESCING.name -> ""  // Done in the converter functions
+                        ConverterType.CHOICE.name -> ""  // Done in the converter functions
+                        ConverterType.COALESCING.name -> ""  // Done in the converter functions
 
-                    else -> "// UNSUPPPORTED: $it"
-                }.trim('\n')
+                        else -> "// UNSUPPPORTED: $it"
+                    }.trim('\n')
 
-                functions.add(func)
+                    functions.add(func)
+                }
             }
 
             var outputText = """

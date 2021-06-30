@@ -1,3 +1,5 @@
+@file:OptIn(PrivilegedIntent::class, KordPreview::class)
+
 package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
@@ -10,9 +12,8 @@ import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.loadModule
+import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
@@ -53,67 +54,42 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      */
     @Deprecated(
         "Use Koin to get this instead. This will be private in future.",
+
         ReplaceWith(
             "getKoin().get<Kord>()",
 
             "com.kotlindiscord.kord.extensions.utils.getKoin",
             "dev.kord.core.Kord"
         ),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.ERROR
     )
     public val kord: Kord by inject()
-
-    /**
-     * Sentry adapter, for working with Sentry.
-     */
-    @Deprecated(
-        "Use Koin to get this instead. This will be removed in future.",
-        ReplaceWith(
-            "getKoin().get<SentryAdapter>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "com.kotlindiscord.kord.extensions.sentry.SentryAdapter"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public open val sentry: SentryAdapter by inject()
-
-    /** Translations provider, for retrieving translations. **/
-    @Deprecated(
-        "Use Koin to get this instead. This will be removed in future.",
-        ReplaceWith(
-            "getKoin().get<TranslationsProvider>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "com.kotlindiscord.kord.extensions.i18n.TranslationsProvider"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public val translationsProvider: TranslationsProvider by inject()
 
     /** Message command registry, keeps track of and executes message commands. **/
     @Deprecated(
         "Use Koin to get this instead. This will be made private in future.",
+
         ReplaceWith(
             "getKoin().get<MessageCommandRegistry>()",
 
             "com.kotlindiscord.kord.extensions.utils.getKoin",
             "com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry"
         ),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.ERROR
     )
     public open val messageCommands: MessageCommandRegistry by inject()
 
     /** Slash command registry, keeps track of and executes slash commands. **/
     @Deprecated(
         "Use Koin to get this instead. This will be made private in future.",
+
         ReplaceWith(
             "getKoin().get<SlashCommandRegistry>()",
 
             "com.kotlindiscord.kord.extensions.utils.getKoin",
             "com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry"
         ),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.ERROR
     )
     public open val slashCommands: SlashCommandRegistry by inject()
 
@@ -175,7 +151,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /** This function sets up all of the bot's default event listeners. **/
-    @OptIn(PrivilegedIntent::class)
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
             if (
@@ -231,7 +206,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             this.addExtension(::HelpExtension)
         }
 
-        if (settings.extensionsBuilder.sentry) {
+        if (settings.extensionsBuilder.sentryExtensionBuilder.enable) {
             this.addExtension(::SentryExtension)
         }
     }

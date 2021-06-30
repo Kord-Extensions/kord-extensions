@@ -28,7 +28,8 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see enumList
  */
 @Converter(
-    name = "enum",
+    "enum",
+
     types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.LIST],
 
     generic = "E: Enum<E>",

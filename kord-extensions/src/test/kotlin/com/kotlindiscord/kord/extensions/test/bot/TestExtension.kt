@@ -25,6 +25,10 @@ import dev.kord.rest.builder.interaction.embed
 class TestExtension : Extension() {
     override val name = "test"
 
+    class ColorArgs : Arguments() {
+        val color by colour("color", "Color to use for the embed")
+    }
+
     class TestArgs : Arguments() {
         val string by string("string", "String argument")
         val enum by enum<TestEnum>("enum", "Enum argument", "test")
@@ -66,6 +70,22 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
+        command(::ColorArgs) {
+            name = "color"
+            aliases = arrayOf("colour")
+            description = "Get an embed with a set color"
+
+            action {
+                message.respond {
+                    embed {
+                        description = "Here's your embed!"
+
+                        color = arguments.color
+                    }
+                }
+            }
+        }
+
         command(::MessageArgs) {
             name = "msg"
             description = "Message argument test"

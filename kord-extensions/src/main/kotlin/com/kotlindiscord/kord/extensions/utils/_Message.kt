@@ -46,22 +46,6 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
  * @param millis The delay before deleting the message, in milliseconds.
  * @return Job spawned by the CoroutineScope.
  */
-@Deprecated(
-    "The name of the method has changed, please use the replace method",
-
-    ReplaceWith("delete(millis, retry)"),
-    DeprecationLevel.ERROR
-)
-public fun Message.deleteWithDelay(millis: Long, retry: Boolean = true): Job = delete(millis, retry)
-
-/**
- * Deletes a message after a delay.
- *
- * This function **does not block**.
- *
- * @param millis The delay before deleting the message, in milliseconds.
- * @return Job spawned by the CoroutineScope.
- */
 public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
     return kord.launch {
         delay(millis)
@@ -222,25 +206,6 @@ public suspend fun Message.respond(
     } else {
         channel.createMessage { innerBuilder() }
     }
-}
-
-/**
- * Generate the jump URL for this message.
- *
- * @return A clickable URL to jump to this message.
- */
-@Deprecated(
-    "This method has been renamed to 'getJumpUrl'.",
-
-    ReplaceWith(
-        "getJumpUrl()",
-    ),
-    level = DeprecationLevel.ERROR
-)
-public suspend fun Message.getUrl(): String {
-    val guild = getGuildOrNull()?.id?.asString ?: "@me"
-
-    return "$DISCORD_CHANNEL_URI/$guild/${channelId.value}/${id.value}"
 }
 
 /**

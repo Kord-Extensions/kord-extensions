@@ -2,6 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.extensions.impl
 
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescedString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -26,6 +27,13 @@ public class SentryExtension : Extension() {
 
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
+
+    /** Bot settings. **/
+    public val botSettings: ExtensibleBotBuilder by inject()
+
+    /** Sentry extension settings, from the bot builder. **/
+    public val settings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
+        botSettings.extensionsBuilder.sentryExtensionBuilder
 
     @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
@@ -68,7 +76,8 @@ public class SentryExtension : Extension() {
                 action {
                     if (!sentry.hasEventId(arguments.id)) {
                         message.respond(
-                            translate("extensions.sentry.error.invalidId")
+                            translate("extensions.sentry.error.invalidId"),
+                            pingInReply = settings.pingInReply
                         )
 
                         return@action

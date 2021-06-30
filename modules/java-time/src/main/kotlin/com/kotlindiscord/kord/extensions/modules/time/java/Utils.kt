@@ -75,4 +75,4 @@ public suspend fun ChronoContainer.toHuman(
  * you can include in your messages, which Discord should automatically format for users based on their locale.
  */
 public fun Instant.toDiscord(format: TimestampType = TimestampType.Default): String =
-    format.format(toEpochMilli())
+    format.format(epochSecond)
