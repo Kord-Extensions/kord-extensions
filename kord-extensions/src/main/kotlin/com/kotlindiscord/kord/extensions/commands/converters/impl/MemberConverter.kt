@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.firstOrNull
  * * The user's tag (`username#discriminator`)
  *
  * @param requiredGuild Lambda returning a specific guild to require the member to be in, if needed.
+ * @param useReply Whether to use the author of the replied-to message (if there is one) instead of trying to parse an
+ * argument.
  */
 @Converter(
     "member",
@@ -39,17 +41,32 @@ import kotlinx.coroutines.flow.firstOrNull
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["dev.kord.common.entity.Snowflake"],
     arguments = [
-        "requiredGuild: (suspend () -> Snowflake)? = null"
+        "requiredGuild: (suspend () -> Snowflake)? = null",
+        "useReply: Boolean = true",
     ]
 )
 @OptIn(KordPreview::class)
 public class MemberConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
+    private var useReply: Boolean = true,
     override var validator: Validator<Member> = null
 ) : SingleConverter<Member>() {
     override val signatureTypeString: String = "converters.member.signatureType"
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        if (useReply) {
+            val messageReference = context.getMessage()?.asMessage()?.messageReference
+
+            if (messageReference != null) {
+                val member = messageReference.message?.asMessage()?.getAuthorAsMember()
+
+                if (member != null) {
+                    parsed = member
+                    return true
+                }
+            }
+        }
+
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         parsed = findMember(arg, context)

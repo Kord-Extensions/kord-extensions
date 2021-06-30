@@ -30,21 +30,38 @@ import kotlinx.coroutines.flow.firstOrNull
  * * A user ID
  * * The user's tag (`username#discriminator`)
  *
- * @see user
- * @see userList
+ * @param useReply Whether to use the author of the replied-to message (if there is one) instead of trying to parse an
+ * argument.
  */
 @Converter(
     "user",
 
-    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    arguments = [
+        "useReply: Boolean = true",
+    ]
 )
 @OptIn(KordPreview::class)
 public class UserConverter(
+    private var useReply: Boolean = true,
     override var validator: Validator<User> = null
 ) : SingleConverter<User>() {
     override val signatureTypeString: String = "converters.user.signatureType"
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        if (useReply) {
+            val messageReference = context.getMessage()?.asMessage()?.messageReference
+
+            if (messageReference != null) {
+                val user = messageReference.message?.asMessage()?.author?.asUserOrNull()
+
+                if (user != null) {
+                    parsed = user
+                    return true
+                }
+            }
+        }
+
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         this.parsed = findUser(arg, context)

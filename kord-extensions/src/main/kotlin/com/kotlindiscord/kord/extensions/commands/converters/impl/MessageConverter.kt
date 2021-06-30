@@ -39,6 +39,7 @@ private val logger = KotlinLogging.logger {}
  * @param requireGuild Whether to require messages to be in a specified guild.
  * @param requiredGuild Lambda returning a specific guild to require the member to be in. If omitted, defaults to the
  * guild the command was invoked in.
+ * @param useReply Whether to use the replied-to message (if there is one) instead of trying to parse an argument.
  */
 @Converter(
     "message",
@@ -47,18 +48,33 @@ private val logger = KotlinLogging.logger {}
     imports = ["dev.kord.common.entity.Snowflake"],
     arguments = [
         "requireGuild: Boolean = false",
-        "requiredGuild: (suspend () -> Snowflake)? = null"
+        "requiredGuild: (suspend () -> Snowflake)? = null",
+        "useReply: Boolean = true",
     ]
 )
 @OptIn(KordPreview::class)
 public class MessageConverter(
     private var requireGuild: Boolean = false,
     private var requiredGuild: (suspend () -> Snowflake)? = null,
+    private var useReply: Boolean = true,
     override var validator: Validator<Message> = null
 ) : SingleConverter<Message>() {
     override val signatureTypeString: String = "converters.message.signatureType"
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        if (useReply) {
+            val messageReference = context.getMessage()?.asMessage()?.messageReference
+
+            if (messageReference != null) {
+                val message = messageReference.message?.asMessageOrNull()
+
+                if (message != null) {
+                    parsed = message
+                    return true
+                }
+            }
+        }
+
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         parsed = findMessage(arg, context)
