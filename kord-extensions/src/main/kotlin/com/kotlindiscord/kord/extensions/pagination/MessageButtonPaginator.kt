@@ -85,7 +85,6 @@ public class MessageButtonPaginator(
         }
 
         active = false
-        components.stop()
 
         if (!keepEmbed) {
             message!!.delete()
@@ -99,6 +98,7 @@ public class MessageButtonPaginator(
         }
 
         runTimeoutCallbacks()
+        components.stop()
     }
 }
 

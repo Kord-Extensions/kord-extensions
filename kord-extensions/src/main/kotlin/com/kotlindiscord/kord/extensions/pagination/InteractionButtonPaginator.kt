@@ -76,7 +76,6 @@ public class InteractionButtonPaginator(
         }
 
         active = false
-        components.stop()
 
         if (!keepEmbed) {
             embedInteraction!!.delete()
@@ -89,6 +88,7 @@ public class InteractionButtonPaginator(
         }
 
         runTimeoutCallbacks()
+        components.stop()
     }
 }
 

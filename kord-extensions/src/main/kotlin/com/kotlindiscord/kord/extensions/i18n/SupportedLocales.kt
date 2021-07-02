@@ -42,7 +42,7 @@ public object SupportedLocales {
         "fr" to FRENCH,
         "fr_fr" to FRENCH,
 
-        "deutsche" to GERMAN,
+        "deutsch" to GERMAN,
         "german" to GERMAN,
         "de" to GERMAN,
         "de_de" to GERMAN,

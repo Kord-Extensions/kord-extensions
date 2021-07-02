@@ -80,6 +80,8 @@ public abstract class BaseButtonPaginator(
                 style = ButtonStyle.Secondary
 
                 check(defaultCheck)
+                check { active }
+
                 emoji(FIRST_PAGE_EMOJI)
 
                 action {
@@ -94,6 +96,8 @@ public abstract class BaseButtonPaginator(
                 style = ButtonStyle.Secondary
 
                 check(defaultCheck)
+                check { active }
+
                 emoji(LEFT_EMOJI)
 
                 action {
@@ -108,6 +112,8 @@ public abstract class BaseButtonPaginator(
                 style = ButtonStyle.Secondary
 
                 check(defaultCheck)
+                check { active }
+
                 emoji(RIGHT_EMOJI)
 
                 action {
@@ -122,6 +128,8 @@ public abstract class BaseButtonPaginator(
                 style = ButtonStyle.Secondary
 
                 check(defaultCheck)
+                check { active }
+
                 emoji(LAST_PAGE_EMOJI)
 
                 action {
@@ -138,6 +146,7 @@ public abstract class BaseButtonPaginator(
                 deferredAck = true
 
                 check(defaultCheck)
+                check { active }
 
                 label = if (keepEmbed) {
                     style = ButtonStyle.Primary
@@ -168,6 +177,7 @@ public abstract class BaseButtonPaginator(
                         style = ButtonStyle.Secondary
 
                         check(defaultCheck)
+                        check { active }
 
                         action {
                             switchGroup(group)
@@ -181,6 +191,8 @@ public abstract class BaseButtonPaginator(
                     deferredAck = true
 
                     check(defaultCheck)
+                    check { active }
+
                     emoji(switchEmoji)
 
                     label = if (allGroups.size == 2) {
