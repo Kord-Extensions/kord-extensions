@@ -1,4 +1,26 @@
-:root {
+[data-md-color-scheme="default"] {
+    --md-hue:                        227;
+
+    --md-primary-fg-color:           #7289da;
+    --md-primary-fg-color--light:    #7289DA;
+    --md-primary-fg-color--dark:     #7289DA;
+
+    --md-primary-bg-color:           #FFFFFF;
+    --md-primary-bg-color--light:    #FFFFFF;
+
+    --md-default-bg-color:           #FFFFFF;
+    --md-default-bg-color--light:    #FFFFFF;
+    --md-default-bg-color--dark:     #FFFFFF;
+
+    --md-default-fg-color--lightest: hsla(var(--md-hue), 75%, 90%, 0.12);
+
+    --md-accent-fg-color:            #7289da;
+
+    --md-accent-bg-color--light:     #DEDEDE;
+    --md-accent-fg-color--light:     #97A9E8;
+}
+
+[data-md-color-scheme="slate"] {
     --md-hue:                        227;
 
     --md-primary-fg-color:           #7289da;
@@ -8,21 +30,21 @@
     --md-primary-bg-color:           #FFFFFF;
     --md-primary-bg-color--light:    #23272A;
 
-    --md-default-bg-color:           #FFFFFF;
-    --md-default-bg-color--light:    #23272A;
-    --md-default-bg-color--dark:     #23272A;
+    --md-default-bg-color:           #23272A;
+    --md-default-bg-color--light:    #FFFFFF;
+    --md-default-bg-color--dark:     #FFFFFF;
 
     --md-default-fg-color--lightest: hsla(var(--md-hue), 75%, 90%, 0.12);
 
     --md-accent-fg-color:            #4E5D94;
 }
 
-.md-typeset .tabbed-set {
-    background-color: var(--md-accent-fg-color);
+.md-search__input::placeholder{
+    color: #FFFFFF;
 }
 
-.md-typeset .tabbed-set .tabbed-content {
-    background-color: var(--md-default-bg-color);
+.md-typeset .tabbed-set {
+    background-color: var(--md-accent-fg-color);
 }
 
 .md-typeset .tabbed-set > input + label {
@@ -34,12 +56,24 @@
     border-right: none;
 }
 
+[data-md-color-scheme="default"] .md-typeset .tabbed-set > label {
+    color: var(--md-accent-bg-color--light);
+}
+
 html .md-typeset .tabbed-set > label:hover {
     color: var(--md-primary-bg-color);
 }
 
 .md-typeset .tabbed-set > input:checked + label {
+    border-bottom: none;
+}
+
+[data-md-color-scheme="default"] .md-typeset .tabbed-set > input:checked + label {
+    background-color: var(--md-accent-fg-color--light);
+    color: var(--md-primary-bg-color);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .tabbed-set > input:checked + label {
     background-color: var(--md-primary-fg-color);
-    border-bottom-color: var(--md-primary-bg-color);
     color: var(--md-primary-bg-color);
 }

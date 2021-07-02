@@ -9,21 +9,21 @@
       
       
       
-        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/modules/common/">
+        <link rel="canonical" href="https://kord-extensions.docs.kotlindiscord.com/latest/modules/common/">
       
       <link rel="icon" href="../../assets/icon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.7">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
-        <title>Common - Kord Extensions</title>
+        <title>Extra: Common - Kord Extensions</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c772ddf0.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ca7ac06f.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.7fa14f5b.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f1a3b89f.min.css">
         
       
     
@@ -42,6 +42,8 @@
     
     
       
+
+
     
     
   </head>
@@ -49,14 +51,17 @@
   
     
     
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="" data-md-color-accent="">
       
-        <script>matchMedia("(prefers-color-scheme: dark)").matches&&document.body.setAttribute("data-md-color-scheme","slate")</script>
-      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
   
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -64,7 +69,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#common" class="md-skip">
+        <a href="#extra-common" class="md-skip">
           Skip to content
         </a>
       
@@ -93,15 +98,36 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Common
+              Extra: Common
             
           </span>
         </div>
       </div>
     </div>
-    <div class="md-header__options">
-      
-    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m10-3a5 5 0 0 1 5 5 5 5 0 0 1-5 5H7a5 5 0 0 1-5-5 5 5 0 0 1 5-5h10M7 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3h10a3 3 0 0 0 3-3 3 3 0 0 0-3-3H7z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
     
       <label class="md-header__button md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
@@ -136,7 +162,7 @@
     
       <div class="md-header__source">
         
-<a href="https://github.com/Kord-Extensions/kord-extensions/" title="Go to repository" class="md-source" data-md-component="source">
+<a href="https://github.com/Kord-Extensions/kord-extensions" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
@@ -242,7 +268,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="./" class="md-tabs__link md-tabs__link--active">
+      <a href="../" class="md-tabs__link md-tabs__link--active">
         Modules
       </a>
     </li>
@@ -263,18 +289,6 @@
       </a>
     </li>
   
-
-      
-        
-  
-  
-
-
-  <li class="md-tabs__item">
-    <a href="/-kord%20-extensions/" class="md-tabs__link">
-      API Docs
-    </a>
-  </li>
 
       
     </ul>
@@ -309,7 +323,7 @@
   
     <div class="md-nav__source">
       
-<a href="https://github.com/Kord-Extensions/kord-extensions/" title="Go to repository" class="md-source" data-md-component="source">
+<a href="https://github.com/Kord-Extensions/kord-extensions" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
@@ -448,6 +462,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/i18n/" class="md-nav__link">
+        Internationalisation
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -495,8 +521,32 @@
   
   
     <li class="md-nav__item">
+      <a href="../../utilities/components/" class="md-nav__link">
+        Components
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../utilities/paginator/" class="md-nav__link">
         Paginator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utilities/scheduler/" class="md-nav__link">
+        Scheduler
       </a>
     </li>
   
@@ -591,6 +641,42 @@
             
   
   
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../java-time/" class="md-nav__link">
+        Java Time
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../time4j/" class="md-nav__link">
+        Time4J
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
     
   
   
@@ -598,20 +684,22 @@
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
+      
         
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Common
+          Extra: Common
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Common
+        Extra: Common
       </a>
       
         
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
@@ -721,7 +809,7 @@
   
     <li class="md-nav__item">
       <a href="../../migrating/1.4.0/" class="md-nav__link">
-        Migrating: 1.3.x to 1.4.x
+        1.3.x to 1.4.x
       </a>
     </li>
   
@@ -729,21 +817,6 @@
           
         </ul>
       </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="/-kord%20-extensions/" class="md-nav__link">
-        API Docs
-      </a>
     </li>
   
 
@@ -760,15 +833,9 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/Kord-Extensions/kord-extensions/edit/master/docs/modules/common.md" title="Edit this page" class="md-content__button md-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
-                  </a>
                 
-                
-                <h1 id="common">Common<a class="headerlink" href="#common" title="Permanent link">&para;</a></h1>
-<p><a href="https://discord.gg/gjXqqCS"><img alt="Discord: Click here" src="https://img.shields.io/static/v1?label=Discord&amp;message=Click%20here&amp;color=7289DA&amp;style=for-the-badge&amp;logo=discord" /></a>
-<a href="https://maven.kotlindiscord.com/#browse/browse:maven-releases:com.kotlindiscord.kordex.ext.common%2Fext-common"><img alt="Release" src="https://img.shields.io/nexus/r/com.kotlindiscord.kordex.ext.common/ext-common?nexusVersion=3&amp;logo=gradle&amp;color=blue&amp;label=Release&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a>
-<a href="https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com.kotlindiscord.kordex.ext.common%2Fext-common"><img alt="Snapshot" src="https://img.shields.io/nexus/s/com.kotlindiscord.kordex.ext.common/ext-common?logo=gradle&amp;color=orange&amp;label=Snapshot&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a></p>
+                <h1 id="extra-common">Extra: Common<a class="headerlink" href="#extra-common" title="Permanent link">&para;</a></h1>
+<p><a href="https://discord.gg/gjXqqCS"><img alt="Discord: Click here" src="https://img.shields.io/static/v1?label=Discord&amp;message=Click%20here&amp;color=7289DA&amp;style=for-the-badge&amp;logo=discord" /></a> <a href="https://maven.kotlindiscord.com/#browse/browse:maven-releases:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fextra-common"><img alt="Release" src="https://img.shields.io/nexus/r/com.kotlindiscord.kord.extensions/extra-common?nexusVersion=3&amp;logo=gradle&amp;color=blue&amp;label=Release&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a> <a href="https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fextra-common"><img alt="Snapshot" src="https://img.shields.io/nexus/s/com.kotlindiscord.kord.extensions/extra-common?logo=gradle&amp;color=orange&amp;label=Snapshot&amp;server=https%3A%2F%2Fmaven.kotlindiscord.com&amp;style=for-the-badge" /></a></p>
 <p>The Common module provides shared code that is intended for use by other extensions, and extra extensions that provide
 additional services for other extensions to use. While this does make it largely a developer tool and library, users
 may also want to configure the bundled extensions.</p>
@@ -780,7 +847,7 @@ may also want to configure the bundled extensions.</p>
 <h3 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Maven repo:</strong> <code>https://maven.kotlindiscord.com/repository/maven-public/</code></li>
-<li><strong>Maven coordinates:</strong> <code>com.kotlindiscord.kordex.ext.common:ext-common:VERSION</code></li>
+<li><strong>Maven coordinates:</strong> <code>com.kotlindiscord.kord.extensions:extra-common:VERSION</code></li>
 </ul>
 <p>This module doesn't contain much that a user may need to interact with directly, but if you're using another module
 that makes use of one of the extensions in this one, you may need to configure them as explained below. As of this
@@ -799,7 +866,7 @@ writing, none of the bundled extensions add any commands or user-facing componen
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="na">getenv</span><span class="p">(</span><span class="s">&quot;TOKEN&quot;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">env</span><span class="p">(</span><span class="s">&quot;TOKEN&quot;</span><span class="p">)</span><span class="o">!!</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">commands</span> <span class="p">{</span>
             <span class="n">defaultPrefix</span> <span class="o">=</span> <span class="s">&quot;!&quot;</span>
         <span class="p">}</span>
@@ -852,7 +919,7 @@ can then register it in the builder when you set up your bot:</p>
 <span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kd">suspend</span> <span class="kd">fun</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="na">getenv</span><span class="p">(</span><span class="s">&quot;TOKEN&quot;</span><span class="p">))</span> <span class="p">{</span>
+  <span class="kd">val</span> <span class="nv">bot</span> <span class="o">=</span> <span class="n">ExtensibleBot</span><span class="p">(</span><span class="n">env</span><span class="p">(</span><span class="s">&quot;TOKEN&quot;</span><span class="p">)</span><span class="o">!!</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">commands</span> <span class="p">{</span>
       <span class="n">defaultPrefix</span> <span class="o">=</span> <span class="s">&quot;!&quot;</span>
     <span class="p">}</span>
@@ -1103,7 +1170,7 @@ data from a database, and writing it back. Here's an example of one way you can 
 <div class="md-source-date">
   <small>
     
-      Last update: 2021-03-13
+      Last update: 2021-05-22
     
   </small>
 </div>
@@ -1118,6 +1185,11 @@ data from a database, and writing it back. Here's an example of one way you can 
             </article>
           </div>
         </div>
+        
+          <a href="#" class="md-top md-icon" title="Back to top" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+          </a>
+        
       </main>
       
         
@@ -1125,7 +1197,8 @@ data from a database, and writing it back. Here's an example of one way you can 
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../../integrations/sentry/" class="md-footer__link md-footer__link--prev" rel="prev">
+        
+        <a href="../time4j/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Time4J" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1134,19 +1207,20 @@ data from a database, and writing it back. Here's an example of one way you can 
               <span class="md-footer__direction">
                 Previous
               </span>
-              Sentry
+              Time4J
             </div>
           </div>
         </a>
       
       
-        <a href="../../migrating/1.4.0/" class="md-footer__link md-footer__link--next" rel="next">
+        
+        <a href="../../migrating/1.4.0/" class="md-footer__link md-footer__link--next" aria-label="Next: 1.3.x to 1.4.x" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Migrating: 1.3.x to 1.4.x
+              1.3.x to 1.4.x
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -1175,10 +1249,10 @@ data from a database, and writing it back. Here's an example of one way you can 
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tabs", "navigation.tracking", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.65ce87ac.min.js"></script>
+      <script src="../../assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>
