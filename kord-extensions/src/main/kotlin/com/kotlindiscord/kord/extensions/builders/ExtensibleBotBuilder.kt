@@ -242,7 +242,8 @@ public open class ExtensibleBotBuilder {
         public var cachedMessages: Int? = 10_000
 
         /** The default Kord caching strategy - defaults to caching REST when an entity doesn't exist in the cache. **/
-        public var defaultStrategy: EntitySupplyStrategy<EntitySupplier> = EntitySupplyStrategy.cacheWithRestFallback
+        public var defaultStrategy: EntitySupplyStrategy<EntitySupplier> =
+            EntitySupplyStrategy.cacheWithCachingRestFallback
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var builder: (KordCacheBuilder.(resources: ClientResources) -> Unit) = {

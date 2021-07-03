@@ -10,7 +10,7 @@ import kotlinx.datetime.Instant
 public fun Instant.toDiscord(format: TimestampType): String = format.format(toEpochMilliseconds())
 
 /** Retrieve the [DateTimeUnit] for the given pluralized English name. **/
-public fun named(name: String): DateTimeUnit = when (name) {
+public fun namedDateTimeUnit(name: String): DateTimeUnit = when (name) {
     "nanoseconds" -> DateTimeUnit.NANOSECOND
     "microseconds" -> DateTimeUnit.MICROSECOND
     "milliseconds" -> DateTimeUnit.MILLISECOND
