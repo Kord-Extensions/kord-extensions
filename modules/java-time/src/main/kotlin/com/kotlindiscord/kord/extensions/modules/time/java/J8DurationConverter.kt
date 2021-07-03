@@ -29,10 +29,6 @@ import java.time.LocalDateTime
  *
  * @param longHelp Whether to send the user a long help message with specific information on how to specify durations.
  * @param positiveOnly Whether a positive duration is required - `true` by default.
- *
- * @see duration
- * @see durationList
- * @see parseDurationJ8
  */
 @OptIn(KordPreview::class)
 public class J8DurationConverter(
