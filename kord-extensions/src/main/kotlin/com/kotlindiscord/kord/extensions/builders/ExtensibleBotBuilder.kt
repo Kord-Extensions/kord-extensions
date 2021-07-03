@@ -26,6 +26,8 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.supplier.EntitySupplier
+import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
 import mu.KLogger
@@ -238,6 +240,9 @@ public open class ExtensibleBotBuilder {
          */
         @Suppress("MagicNumber")
         public var cachedMessages: Int? = 10_000
+
+        /** The default Kord caching strategy - defaults to caching REST when an entity doesn't exist in the cache. **/
+        public var defaultStrategy: EntitySupplyStrategy<EntitySupplier> = EntitySupplyStrategy.cacheWithRestFallback
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var builder: (KordCacheBuilder.(resources: ClientResources) -> Unit) = {

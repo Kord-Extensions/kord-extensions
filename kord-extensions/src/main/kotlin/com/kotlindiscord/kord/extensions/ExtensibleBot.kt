@@ -122,6 +122,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                 settings.cacheBuilder.builder.invoke(this, it)
             }
 
+            defaultStrategy = settings.cacheBuilder.defaultStrategy
+
             if (settings.intentsBuilder != null) {
                 this.intents = Intents(settings.intentsBuilder!!)
             }
