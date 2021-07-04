@@ -22,6 +22,8 @@ import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+private const val COMPONENTS_PER_ROW = 5
+
 /**
  * Class in charge of keeping track of sets of components, organising them into rows and handling their actions.
  *
@@ -59,14 +61,14 @@ public open class Components(
     public open val actionableComponents: MutableMap<String, ActionableComponentBuilder<*, *>> = mutableMapOf()
 
     /** Predefined row structure, a 5x5 2D array of nulls. Filled in with component builders later. **/
-    public open val rows: Array<Array<ComponentBuilder?>> = arrayOf(
-        // Up to 5 rows of 5 components each
+    public open val rows: Array<MutableList<ComponentBuilder>> = arrayOf(
+        // Up to 5 rows of components
 
-        arrayOf(null, null, null, null, null),
-        arrayOf(null, null, null, null, null),
-        arrayOf(null, null, null, null, null),
-        arrayOf(null, null, null, null, null),
-        arrayOf(null, null, null, null, null),
+        mutableListOf(),
+        mutableListOf(),
+        mutableListOf(),
+        mutableListOf(),
+        mutableListOf(),
     )
 
     /** List of registered timeout callbacks. **/
@@ -174,17 +176,23 @@ public open class Components(
             unsortedComponents.add(builder)
         } else {
             if (row < 0 || row >= rows.size) {
-                error("The given row number ($row) is invalid - it must be between 0 - ${rows.size - 1} inclusive.")
+                error("The given row number ($row) is invalid - it must be between 0 - ${rows.size - 1}, inclusive.")
             }
 
-            val rowArray = rows[row]
-            val index = rowArray.indexOfFirst { it == null }
+            val components = rows[row]
 
-            if (index == -1) {
-                error("Row $row is full - up to ${rowArray.size} components are allowed per row.")
+            if (components.size >= COMPONENTS_PER_ROW) {
+                error(
+                    "Row $row is full - up to $COMPONENTS_PER_ROW components are allowed per row, or 1 " +
+                        "row-exclusive component."
+                )
             }
 
-            rowArray[index] = builder
+            if (components.isNotEmpty() && components.any { it.rowExclusive }) {
+                error("Row $row contains a row-exclusive component, and can't contain any other components.")
+            }
+
+            components.add(builder)
         }
     }
 
@@ -195,15 +203,18 @@ public open class Components(
         while (unsortedComponents.isNotEmpty()) {
             val component = unsortedComponents.removeFirst()
 
-            @Suppress("MagicNumber")
-            val row = rows.filter { it.contains(null) }.firstOrNull() ?: error(
-                "Failed to sort components into rows - there are ${unsortedComponents.size + 26} components, but " +
-                    "only 25 (5 rows of 5 components) are allowed."
-            )
+            val row = if (component.rowExclusive) {
+                rows.firstOrNull { it.isEmpty() } ?: error(
+                    "Failed to sort components into rows - Component $component is row-exclusive, but there are no " +
+                        "empty rows left."
+                )
+            } else {
+                rows.firstOrNull { it.size < COMPONENTS_PER_ROW && !it.any { e -> e.rowExclusive } } ?: error(
+                    "Failed to sort components into rows - all possible rows are full."
+                )
+            }
 
-            val index = row.indexOfFirst { it == null }
-
-            row[index] = component
+            row.add(component)
         }
     }
 
@@ -258,9 +269,9 @@ public open class Components(
     public open suspend fun MessageCreateBuilder.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
 
-        for (row in rows.filter { row -> !row.all { it == null } }) {
+        for (row in rows.filter { row -> row.isNotEmpty() }) {
             actionRow {
-                row.forEach { it?.apply(this) }
+                row.forEach { it.apply(this) }
             }
         }
 
@@ -274,9 +285,9 @@ public open class Components(
     public open suspend fun MessageModifyBuilder.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
 
-        for (row in rows.filter { row -> !row.all { it == null } }) {
+        for (row in rows.filter { row -> row.isNotEmpty() }) {
             actionRow {
-                row.forEach { it?.apply(this) }
+                row.forEach { it.apply(this) }
             }
         }
 
@@ -290,9 +301,9 @@ public open class Components(
     public open suspend fun FollowupMessageBuilder<*>.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
 
-        for (row in rows.filter { row -> !row.all { it == null } }) {
+        for (row in rows.filter { row -> row.isNotEmpty() }) {
             actionRow {
-                row.filterNotNull().forEach { it.apply(this) }
+                row.forEach { it.apply(this) }
             }
         }
 

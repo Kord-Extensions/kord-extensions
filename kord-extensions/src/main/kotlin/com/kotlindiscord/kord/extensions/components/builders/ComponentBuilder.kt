@@ -27,6 +27,9 @@ public abstract class ComponentBuilder : KoinComponent {
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 
+    /** Whether this component must be in a row on its own. **/
+    public open val rowExclusive: Boolean = false
+
     /** Function used to add this button to an action row. **/
     public abstract fun apply(builder: ActionRowBuilder)
 

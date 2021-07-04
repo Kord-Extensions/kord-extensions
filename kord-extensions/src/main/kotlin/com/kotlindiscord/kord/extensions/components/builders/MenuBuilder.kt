@@ -36,6 +36,9 @@ public open class MenuBuilder : ActionableComponentBuilder<SelectMenuInteraction
     /** Placeholder text to show before the user has selected any options.. **/
     public var placeholder: String? = null
 
+    // Menus can only be on their own in a row.
+    override val rowExclusive: Boolean = true
+
     /** Add an option to this select menu. **/
     public suspend fun option(label: String, value: String, body: suspend SelectOptionBuilder.() -> Unit = {}) {
         val builder = SelectOptionBuilder(label, value)
