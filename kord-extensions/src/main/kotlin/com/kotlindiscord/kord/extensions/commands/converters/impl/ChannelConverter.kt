@@ -1,10 +1,10 @@
 @file:OptIn(
-    KordPreview::class,
     ConverterToDefaulting::class,
     ConverterToMulti::class,
-    ConverterToOptional::class
+    ConverterToOptional::class,
+    FlowPreview::class,
+    KordPreview::class,
 )
-
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
@@ -20,6 +20,7 @@ import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.rest.builder.interaction.ChannelBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 

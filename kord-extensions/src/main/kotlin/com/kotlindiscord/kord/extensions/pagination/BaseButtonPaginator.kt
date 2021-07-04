@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.pagination
 
-import com.kotlindiscord.kord.extensions.components.ButtonCheckFun
+import com.kotlindiscord.kord.extensions.components.ComponentCheckFun
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.components.builders.DisabledButtonBuilder
 import com.kotlindiscord.kord.extensions.components.builders.InteractiveButtonBuilder
@@ -60,7 +60,7 @@ public abstract class BaseButtonPaginator(
     public val canUseSwitchingButtons: Boolean = allGroups.size in 3..5 && "" !in allGroups
 
     /** A button-oriented check function that matches based on the [owner] property. **/
-    public val defaultCheck: ButtonCheckFun = {
+    public val defaultCheck: ComponentCheckFun = {
         if (owner == null) {
             true
         } else {

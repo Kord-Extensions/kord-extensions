@@ -1,5 +1,8 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.checks
 
+import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior

@@ -115,6 +115,36 @@ class TestExtension : Extension() {
             }
         }
 
+        command {
+            name = "dropdown"
+            description = "Dropdown test!"
+
+            action {
+                message.respond {
+                    content = "Here's a dropdown."
+
+                    components(60) {
+                        menu {
+                            ackType = AutoAckType.PUBLIC
+                            maximumChoices = null
+
+                            option("Option 1", "one")
+                            option("Option 2", "two")
+                            option("Option 3", "three")
+
+                            action {
+                                publicFollowUp {
+                                    content = "You picked the following options: " + selected.joinToString {
+                                        "`$it`"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         slashCommand {
             name = "pages"
             description = "Pages!"

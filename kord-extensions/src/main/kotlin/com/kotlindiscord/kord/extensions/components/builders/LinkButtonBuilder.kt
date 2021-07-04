@@ -3,6 +3,7 @@
 package com.kotlindiscord.kord.extensions.components.builders
 
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.rest.builder.component.ActionRowBuilder
 
 /**
@@ -10,9 +11,12 @@ import dev.kord.rest.builder.component.ActionRowBuilder
  *
  * Either a [label] or [emoji] must be provided. A [url] is also required.
  */
-public open class LinkButtonBuilder : ButtonBuilder() {
+public open class LinkButtonBuilder : ButtonBuilder, ComponentBuilder() {
     /** URL to direct users to when clicked. **/
     public open lateinit var url: String
+
+    override var label: String? = null
+    override var partialEmoji: DiscordPartialEmoji? = null
 
     public override fun apply(builder: ActionRowBuilder) {
         builder.linkButton(url) {

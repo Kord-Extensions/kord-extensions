@@ -4,10 +4,7 @@ package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
-import com.kotlindiscord.kord.extensions.components.builders.ButtonBuilder
-import com.kotlindiscord.kord.extensions.components.builders.DisabledButtonBuilder
-import com.kotlindiscord.kord.extensions.components.builders.InteractiveButtonBuilder
-import com.kotlindiscord.kord.extensions.components.builders.LinkButtonBuilder
+import com.kotlindiscord.kord.extensions.components.builders.*
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.common.annotation.KordPreview
@@ -26,14 +23,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
- * Class in charge of keeping track of sets of components, organising them into rows and handling their click
- * actions.
+ * Class in charge of keeping track of sets of components, organising them into rows and handling their actions.
  *
- * Row specification is optional - by default, this class will try to sort buttons into rows automatically, filling
- * in any available spots from top to bottom. If you don't want this, you can specify the row number and the button
+ * Row specification is optional - by default, this class will try to sort components into rows automatically, filling
+ * in any available spots from top to bottom. If you don't want this, you can specify the row number and the component
  * will be placed at the end of the row.
  *
- * When [parentContext] is provided, interactive button behaviour will match the slash command's current ack type.]
+ * When [parentContext] is provided, actionable component behaviour will match the slash command's current ack type.
  *
  * You most likely don't want to instantiate this class yourself - check the `components` DSL function available in
  * all message creation contexts instead.
@@ -56,15 +52,15 @@ public open class Components(
     /** @suppress Internal Job object representing the timeout job. **/
     public var delayJob: Job? = null
 
-    /** List of buttons that have yet to be sorted into rows. **/
-    public open val unsortedButtons: MutableList<ButtonBuilder> = mutableListOf()
+    /** List of components that have yet to be sorted into rows. **/
+    public open val unsortedComponents: MutableList<ComponentBuilder> = mutableListOf()
 
-    /** Mapping of UUID to interactive button builder, used for handling click actions. **/
-    public open val interactiveActions: MutableMap<String, InteractiveButtonBuilder> = mutableMapOf()
+    /** Mapping of UUID to actionable component builder, used for handling interactions. **/
+    public open val actionableComponents: MutableMap<String, ActionableComponentBuilder<*, *>> = mutableMapOf()
 
-    /** Predefined row structure, a 5x5 2D array of nulls. Filled in with button builders later. **/
-    public open val rows: Array<Array<ButtonBuilder?>> = arrayOf(
-        // Up to 5 rows of 5 buttons each
+    /** Predefined row structure, a 5x5 2D array of nulls. Filled in with component builders later. **/
+    public open val rows: Array<Array<ComponentBuilder?>> = arrayOf(
+        // Up to 5 rows of 5 components each
 
         arrayOf(null, null, null, null, null),
         arrayOf(null, null, null, null, null),
@@ -92,9 +88,9 @@ public open class Components(
         }
 
         builder.invoke(buttonBuilder)
-        addButton(buttonBuilder, row)
+        addComponent(buttonBuilder, row)
 
-        interactiveActions[buttonBuilder.id] = buttonBuilder
+        actionableComponents[buttonBuilder.id] = buttonBuilder
 
         return buttonBuilder
     }
@@ -111,7 +107,7 @@ public open class Components(
         val buttonBuilder = LinkButtonBuilder()
 
         builder.invoke(buttonBuilder)
-        addButton(buttonBuilder, row)
+        addComponent(buttonBuilder, row)
 
         return buttonBuilder
     }
@@ -128,9 +124,28 @@ public open class Components(
         val buttonBuilder = DisabledButtonBuilder()
 
         builder.invoke(buttonBuilder)
-        addButton(buttonBuilder, row)
+        addComponent(buttonBuilder, row)
 
         return buttonBuilder
+    }
+
+    /**
+     * Create a dropdown menu, allowing users to select one or more values.
+     *
+     * @see MenuBuilder
+     */
+    public open suspend fun menu(
+        row: Int? = null,
+        builder: suspend MenuBuilder.() -> Unit
+    ): MenuBuilder {
+        val menuBuilder = MenuBuilder()
+
+        builder.invoke(menuBuilder)
+        addComponent(menuBuilder, row)
+
+        actionableComponents[menuBuilder.id] = menuBuilder
+
+        return menuBuilder
     }
 
     /** Register a callback to run when a setup timeout expires. **/
@@ -150,13 +165,13 @@ public open class Components(
     }
 
     /**
-     * @suppress Internal API function for validating the given row number and storing the button builder.
+     * @suppress Internal API function for validating the given row number and storing the component builder.
      */
-    public open fun addButton(builder: ButtonBuilder, row: Int? = null) {
+    public open fun addComponent(builder: ComponentBuilder, row: Int? = null) {
         builder.validate()
 
         if (row == null) {
-            unsortedButtons.add(builder)
+            unsortedComponents.add(builder)
         } else {
             if (row < 0 || row >= rows.size) {
                 error("The given row number ($row) is invalid - it must be between 0 - ${rows.size - 1} inclusive.")
@@ -166,7 +181,7 @@ public open class Components(
             val index = rowArray.indexOfFirst { it == null }
 
             if (index == -1) {
-                error("Row $row is full - up to ${rowArray.size} buttons are allowed per row.")
+                error("Row $row is full - up to ${rowArray.size} components are allowed per row.")
             }
 
             rowArray[index] = builder
@@ -174,26 +189,27 @@ public open class Components(
     }
 
     /**
-     * @suppress Internal API function that tries to sort buttons into rows as tightly as possible.
+     * @suppress Internal API function that tries to sort components into rows as tightly as possible.
      */
     public open fun sortIntoRows() {
-        while (unsortedButtons.isNotEmpty()) {
-            val button = unsortedButtons.removeFirst()
+        while (unsortedComponents.isNotEmpty()) {
+            val component = unsortedComponents.removeFirst()
 
             @Suppress("MagicNumber")
             val row = rows.filter { it.contains(null) }.firstOrNull() ?: error(
-                "Failed to sort buttons into rows - there are ${unsortedButtons.size + 26} buttons, but only 25 (5 " +
-                    "rows of 5 buttons) are allowed."
+                "Failed to sort components into rows - there are ${unsortedComponents.size + 26} components, but " +
+                    "only 25 (5 rows of 5 components) are allowed."
             )
 
             val index = row.indexOfFirst { it == null }
 
-            row[index] = button
+            row[index] = component
         }
     }
 
     /**
-     * @suppress Internal API function that creates an event handler to listen for button presses, with a timeout.
+     * @suppress Internal API function that creates an event handler to listen for component interactions, with a
+     * timeout.
      */
     @Suppress("MagicNumber")  // Turning seconds into millis, again
     public open suspend fun startListening(timeoutSeconds: Long? = null) {
@@ -203,14 +219,14 @@ public open class Components(
             check {
                 val interaction = it.interaction as? ComponentInteraction
 
-                interaction != null && interaction.componentId in interactiveActions
+                interaction != null && interaction.componentId in actionableComponents
             }
 
             action {
                 val interaction = event.interaction as ComponentInteraction
-                val button = interactiveActions[interaction.componentId]!!
+                val component = actionableComponents[interaction.componentId]!!
 
-                button.call(this@Components, extension, event, parentContext)
+                component.call(this@Components, extension, event, parentContext)
             }
         }
 
@@ -228,7 +244,7 @@ public open class Components(
     }
 
     /**
-     * Stop listening for interaction events. Interactive buttons will no longer function.
+     * Stop listening for interaction events. Actionable components will no longer function.
      */
     public open fun stop() {
         eventHandler?.job?.cancel()
@@ -236,8 +252,8 @@ public open class Components(
     }
 
     /**
-     * @suppress Internal API function that sets up all of the buttons, adds them to the message, and listens for
-     * clicks.
+     * @suppress Internal API function that sets up all of the components, adds them to the message, and listens for
+     * interactions.
      */
     public open suspend fun MessageCreateBuilder.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
@@ -252,8 +268,8 @@ public open class Components(
     }
 
     /**
-     * @suppress Internal API function that sets up all of the buttons, adds them to the message, and listens for
-     * clicks.
+     * @suppress Internal API function that sets up all of the components, adds them to the message, and listens for
+     * interactions.
      */
     public open suspend fun MessageModifyBuilder.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
@@ -268,8 +284,8 @@ public open class Components(
     }
 
     /**
-     * @suppress Internal API function that sets up all of the buttons, adds them to the message, and listens for
-     * clicks.
+     * @suppress Internal API function that sets up all of the components, adds them to the message, and listens for
+     * interactions.
      */
     public open suspend fun FollowupMessageBuilder<*>.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()

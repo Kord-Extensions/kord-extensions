@@ -5,7 +5,6 @@ import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.pagination.BasePaginator
-import com.kotlindiscord.kord.extensions.pagination.Paginator
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.core.event.message.MessageCreateEvent
 
@@ -73,9 +72,9 @@ public interface HelpProvider {
 
     /**
      * Given an event, prefix and argument list, attempt to find the command represented by the arguments and return
-     * a [Paginator], ready to be sent.
+     * a [BasePaginator], ready to be sent.
      *
-     * The [Paginator] will contain an error message if the command can't be found, or the command's checks fail.
+     * The [BasePaginator] will contain an error message if the command can't be found, or the command's checks fail.
      *
      * @param event MessageCreateEvent that triggered this help invocation.
      * @param prefix Command prefix to use for formatting.
@@ -91,9 +90,9 @@ public interface HelpProvider {
 
     /**
      * Given a command context and argument list, attempt to find the command represented by the arguments and
-     * return a [Paginator], ready to be sent.
+     * return a [BasePaginator], ready to be sent.
      *
-     * The [Paginator] will contain an error message if the command can't be found, or the command's checks fail.
+     * The [BasePaginator] will contain an error message if the command can't be found, or the command's checks fail.
      *
      * @param context MessageCommandContext object that triggered this help invocation.
      * @param args List of arguments to use to find the command.
@@ -111,9 +110,9 @@ public interface HelpProvider {
 
     /**
      * Given an event, prefix and argument list, attempt to find the command represented by the arguments and return
-     * a [Paginator], ready to be sent.
+     * a [BasePaginator], ready to be sent.
      *
-     * The [Paginator] will contain an error message if the command passed was `null`, or the command's checks fail.
+     * The [BasePaginator] will contain an error message if the command passed was `null`, or the command's checks fail.
      *
      * Please be mindful of using this with subcommands, as the extension's design intends for users to be unable to
      * retrieve help for subcommands when any parent command's checks fail, and this function does not run those checks.
@@ -132,9 +131,9 @@ public interface HelpProvider {
 
     /**
      * Given an command context and argument list, attempt to find the command represented by the arguments and return
-     * a [Paginator], ready to be sent.
+     * a [BasePaginator], ready to be sent.
      *
-     * The [Paginator] will contain an error message if the command passed was `null`, or the command's checks fail.
+     * The [BasePaginator] will contain an error message if the command passed was `null`, or the command's checks fail.
      *
      * Please be mindful of using this with subcommands, as the extension's design intends for users to be unable to
      * retrieve help for subcommands when any parent command's checks fail, and this function does not run those checks.
@@ -154,8 +153,8 @@ public interface HelpProvider {
     }
 
     /**
-     * Given an event and prefix, return a [Paginator] containing help information for all loaded commands with passing
-     * checks.
+     * Given an event and prefix, return a [BasePaginator] containing help information for all loaded commands with
+     * passing checks.
      *
      * While it shouldn't really be possible, this will also handle the case where there are no commands registered
      * at all, for all you weirdos out there breaking everything intentionally.
@@ -171,8 +170,8 @@ public interface HelpProvider {
     public suspend fun getMainHelpPaginator(event: MessageCreateEvent, prefix: String): BasePaginator
 
     /**
-     * Given an command context, return a [Paginator] containing help information for all loaded commands with passing
-     * checks.
+     * Given an command context, return a [BasePaginator] containing help information for all loaded commands with
+     * passing checks.
      *
      * While it shouldn't really be possible, this will also handle the case where there are no commands registered
      * at all, for all you weirdos out there breaking everything intentionally.
@@ -182,7 +181,7 @@ public interface HelpProvider {
      *
      * @param context MessageCommandContext object that triggered this help invocation..
      *
-     * @return Paginator containing help information for all loaded commands with passing checks.
+     * @return BasePaginator containing help information for all loaded commands with passing checks.
      */
     public suspend fun getMainHelpPaginator(context: MessageCommandContext<*>): BasePaginator {
         val prefix = getKoin().get<MessageCommandRegistry>().getPrefix(context.event)
