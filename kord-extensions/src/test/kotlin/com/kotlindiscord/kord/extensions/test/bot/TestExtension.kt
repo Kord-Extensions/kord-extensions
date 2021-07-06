@@ -125,7 +125,7 @@ class TestExtension : Extension() {
 
                     components(60) {
                         menu {
-                            ackType = AutoAckType.PUBLIC
+                            autoAck = AutoAckType.PUBLIC
                             maximumChoices = null
 
                             option("Option 1", "one")

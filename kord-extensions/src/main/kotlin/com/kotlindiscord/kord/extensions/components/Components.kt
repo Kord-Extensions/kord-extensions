@@ -86,7 +86,7 @@ public open class Components(
         val buttonBuilder = InteractiveButtonBuilder()
 
         if (parentContext == null) {
-            buttonBuilder.ackType = AutoAckType.PUBLIC
+            buttonBuilder.autoAck = AutoAckType.PUBLIC
         }
 
         builder.invoke(buttonBuilder)

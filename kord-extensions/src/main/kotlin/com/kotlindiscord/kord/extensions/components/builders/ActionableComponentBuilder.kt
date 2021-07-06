@@ -44,7 +44,22 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     /**
      * Automatic ack type, if not following a parent context.
      */
-    public open var ackType: AutoAckType? = AutoAckType.EPHEMERAL
+    public open var autoAck: AutoAckType? = AutoAckType.EPHEMERAL
+
+    /**
+     * Automatic ack type, if not following a parent context.
+     */
+    @Deprecated(
+        "This property was renamed to autoAck for consistency.",
+        ReplaceWith("autoAck"),
+        DeprecationLevel.ERROR
+    )
+    public open var ackType: AutoAckType?
+        get() = autoAck
+
+        set(value) {
+            autoAck = value
+        }
 
     /** Whether to send a deferred acknowledgement instead of a normal one. **/
     public open var deferredAck: Boolean = false
@@ -127,7 +142,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
                 else -> null
             }
         } else {
-            when (ackType) {
+            when (autoAck) {
                 AutoAckType.EPHEMERAL -> interaction.ackEphemeral(deferredAck)
                 AutoAckType.PUBLIC -> interaction.ackPublic(deferredAck)
 
