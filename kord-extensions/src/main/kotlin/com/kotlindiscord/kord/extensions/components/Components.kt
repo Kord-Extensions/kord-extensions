@@ -227,7 +227,7 @@ public open class Components(
         val timeoutMillis = timeoutSeconds?.let { it * 1000 }
 
         eventHandler = extension.event {
-            check {
+            booleanCheck {
                 val interaction = it.interaction as? ComponentInteraction
 
                 interaction != null && interaction.componentId in actionableComponents

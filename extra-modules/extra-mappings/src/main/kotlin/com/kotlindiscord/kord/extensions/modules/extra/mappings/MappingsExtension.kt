@@ -2,6 +2,8 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
+import com.kotlindiscord.kord.extensions.checks.and
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -19,7 +21,6 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.core.behavior.channel.withTyping
-import dev.kord.core.event.message.MessageCreateEvent
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.MappingsQuery
@@ -1188,16 +1189,18 @@ class MappingsExtension : Extension() {
 
     private suspend fun getTimeout() = builder.config.getTimeout()
 
-    private suspend fun customChecks(command: String, namespace: Namespace): suspend (MessageCreateEvent) -> Boolean {
-        val allChecks = builder.commandChecks.map { it.invoke(command) }
-        val allNamespaceChecks = builder.namespaceChecks.map { it.invoke(namespace) }
+    private suspend fun customChecks(command: String, namespace: Namespace): Check<*> {
+        val allChecks = builder.commandChecks.map { it.invoke(command) }.toMutableList()
+        val allNamespaceChecks = builder.namespaceChecks.map { it.invoke(namespace) }.toMutableList()
 
-        suspend fun inner(event: MessageCreateEvent): Boolean =
-            allChecks.all { it.invoke(event) }.and(
-                allNamespaceChecks.all { it.invoke(event) }
-            )
+        var rootCheck = allChecks.removeFirstOrNull()
+            ?: allNamespaceChecks.removeFirstOrNull()
+            ?: return { pass() }
 
-        return ::inner
+        allChecks.forEach { rootCheck = rootCheck and it }
+        allNamespaceChecks.forEach { rootCheck = rootCheck and it }
+
+        return rootCheck
     }
 
     companion object {

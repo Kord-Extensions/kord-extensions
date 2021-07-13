@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
@@ -14,6 +15,7 @@ import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
+import dev.kord.core.event.Event
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
@@ -64,7 +66,7 @@ public abstract class Extension : KoinComponent {
      * When an extension is unloaded, all the event handlers are cancelled and
      * removed from the bot.
      */
-    public open val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
+    public open val eventHandlers: MutableList<EventHandler<out Event>> = mutableListOf()
 
     /**
      * List of registered commands.
@@ -82,18 +84,20 @@ public abstract class Extension : KoinComponent {
     public open val slashCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
 
     /**
-     * List of slash command checks.
+     * List of message command checks.
      *
      * These checks will be checked against all commands in this extension.
      */
-    public open val commandChecks: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+    public open val commandChecks: MutableList<Check<MessageCreateEvent>> =
+        mutableListOf()
 
     /**
      * List of slash command checks.
      *
      * These checks will be checked against all slash commands in this extension.
      */
-    public open val slashCommandChecks: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
+    public open val slashCommandChecks: MutableList<Check<InteractionCreateEvent>> =
+        mutableListOf()
 
     /** String representing the bundle to get translations from for command names/descriptions. **/
     public open val bundle: String? = null
@@ -348,7 +352,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param body Builder lambda used for setting up the event handler object.
      */
-    public suspend inline fun <reified T : Any> event(
+    public suspend inline fun <reified T : Event> event(
         noinline body: suspend EventHandler<T>.() -> Unit
     ): EventHandler<T> {
         val eventHandler = EventHandler<T>(this, T::class)
@@ -382,7 +386,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param checks Checks to apply to all slash commands in this extension.
      */
-    public open fun slashCheck(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+    public open fun slashCheck(vararg checks: Check<InteractionCreateEvent>) {
         checks.forEach { slashCommandChecks.add(it) }
     }
 
@@ -392,7 +396,7 @@ public abstract class Extension : KoinComponent {
      * @param check Check to apply to all slash commands in this extension.
      */
     @ExtensionDSL
-    public open fun slashCheck(check: suspend (InteractionCreateEvent) -> Boolean) {
+    public open fun slashCheck(check: Check<InteractionCreateEvent>) {
         slashCommandChecks.add(check)
     }
 
@@ -409,7 +413,7 @@ public abstract class Extension : KoinComponent {
      * @param checks Checks to apply to all commands in this extension.
      */
     @ExtensionDSL
-    public open fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+    public open fun check(vararg checks: Check<MessageCreateEvent>) {
         checks.forEach { commandChecks.add(it) }
     }
 
@@ -419,7 +423,7 @@ public abstract class Extension : KoinComponent {
      * @param check Check to apply to all commands in this extension.
      */
     @ExtensionDSL
-    public open fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+    public open fun check(check: Check<MessageCreateEvent>) {
         commandChecks.add(check)
     }
 }

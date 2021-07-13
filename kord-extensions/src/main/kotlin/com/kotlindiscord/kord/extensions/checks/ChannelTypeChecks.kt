@@ -2,9 +2,18 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.utils.getKoin
+import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.ChannelType
 import dev.kord.core.event.Event
 import mu.KotlinLogging
+import java.util.*
+
+private val defaultLocale: Locale
+    get() =
+        getKoin().get<ExtensibleBotBuilder>().i18nBuilder.defaultLocale
 
 /**
  * Check asserting that the channel an [Event] fired in is of a given set of types.
@@ -14,29 +23,32 @@ import mu.KotlinLogging
  *
  * @param channelTypes The channel types to compare to.
  */
-public fun channelType(vararg channelTypes: ChannelType): CheckFun {
+public fun channelType(vararg channelTypes: ChannelType): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelType")
+    val eventChannel = channelFor(event)
 
-    suspend fun inner(event: Event): Boolean {
-        val eventChannel = channelFor(event)
+    if (eventChannel == null) {
+        logger.nullChannel(event)
 
-        if (eventChannel == null) {
-            logger.nullChannel(event)
-            return false
-        }
-
+        fail()
+    } else {
         val type = eventChannel.asChannel().type
 
-        return if (channelTypes.contains(type)) {
+        if (channelTypes.contains(type)) {
             logger.passed()
-            true
+
+            pass()
         } else {
             logger.failed("Types $type is not within $channelTypes")
-            false
+
+            fail(
+                translate(
+                    "checks.channelType.failed",
+                    replacements = arrayOf(type.translate(locale)),
+                )
+            )
         }
     }
-
-    return ::inner
 }
 
 /**
@@ -47,27 +59,30 @@ public fun channelType(vararg channelTypes: ChannelType): CheckFun {
  *
  * @param channelTypes The channel types to compare to.
  */
-public fun notChannelType(vararg channelTypes: ChannelType): CheckFun {
+public fun notChannelType(vararg channelTypes: ChannelType): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notChannelType")
+    val eventChannel = channelFor(event)
 
-    suspend fun inner(event: Event): Boolean {
-        val eventChannel = channelFor(event)
+    if (eventChannel == null) {
+        logger.nullChannel(event)
 
-        if (eventChannel == null) {
-            logger.nullChannel(event)
-            return false
-        }
-
+        fail()
+    } else {
         val type = eventChannel.asChannel().type
 
-        return if (channelTypes.contains(type)) {
+        if (channelTypes.contains(type)) {
             logger.failed("Types $type is within $channelTypes")
-            false
+
+            fail(
+                translate(
+                    "checks.notChannelType.failed",
+                    replacements = arrayOf(type.translate(locale)),
+                )
+            )
         } else {
             logger.passed()
-            true
+
+            pass()
         }
     }
-
-    return ::inner
 }

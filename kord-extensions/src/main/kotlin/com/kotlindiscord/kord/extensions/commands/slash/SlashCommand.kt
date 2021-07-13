@@ -7,6 +7,8 @@ import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
@@ -15,6 +17,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
@@ -24,6 +27,8 @@ import dev.kord.core.KordObject
 import dev.kord.core.any
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.interaction.respondEphemeral
+import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
@@ -33,7 +38,6 @@ import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.toList
 import mu.KLogger
 import mu.KotlinLogging
@@ -127,7 +131,7 @@ public open class SlashCommand<T : Arguments>(
     public open val subCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
 
     /** @suppress **/
-    public open val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
+    public open val checkList: MutableList<Check<InteractionCreateEvent>> = mutableListOf()
 
     public override val parser: SlashCommandParser = SlashCommandParser()
 
@@ -376,7 +380,7 @@ public open class SlashCommand<T : Arguments>(
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun check(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+    public open fun check(vararg checks: Check<InteractionCreateEvent>) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -385,24 +389,92 @@ public open class SlashCommand<T : Arguments>(
      *
      * @param check Check to apply to this command.
      */
-    public open fun check(check: suspend (InteractionCreateEvent) -> Boolean) {
+    public open fun check(check: Check<InteractionCreateEvent>) {
         checkList.add(check)
+    }
+
+    /**
+     * Define a simple Boolean check which must pass for the command to be executed.
+     *
+     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
+     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
+     * the same functionality as a regular check, and cannot return a message.
+     *
+     * A command may have multiple checks - all checks must pass for the command to be executed.
+     * Checks will be run in the order that they're defined.
+     *
+     * This function can be used DSL-style with a given body, or it can be passed one or more
+     * predefined functions. See the samples for more information.
+     *
+     * @param checks Checks to apply to this command.
+     */
+    public open fun booleanCheck(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+        checks.forEach(::booleanCheck)
+    }
+
+    /**
+     * Overloaded simple Boolean check function to allow for DSL syntax.
+     *
+     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
+     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
+     * the same functionality as a regular check, and cannot return a message.
+     *
+     * @param check Check to apply to this command.
+     */
+    public open fun booleanCheck(check: suspend (InteractionCreateEvent) -> Boolean) {
+        check {
+            if (check(event)) {
+                pass()
+            } else {
+                fail()
+            }
+        }
     }
 
     // endregion
 
     /** Run checks with the provided [InteractionCreateEvent]. Return false if any failed, true otherwise. **/
-    public open suspend fun runChecks(event: InteractionCreateEvent): Boolean {
+    public open suspend fun runChecks(event: InteractionCreateEvent, sendMessage: Boolean = true): Boolean {
+        val locale = event.getLocale()
+
         // global checks
         for (check in extension.bot.settings.slashCommandsBuilder.checkList) {
-            if (!check.invoke(event)) {
+            val context = CheckContext(event, locale)
+
+            check(context)
+
+            if (!context.passed) {
+                val message = context.message
+
+                if (message != null && sendMessage) {
+                    if (autoAck == AutoAckType.EPHEMERAL) {
+                        event.interaction.respondEphemeral { content = message }
+                    } else {
+                        event.interaction.respondPublic { content = message }
+                    }
+                }
+
                 return false
             }
         }
 
         // local extension checks
         for (check in extension.slashCommandChecks) {
-            if (!check.invoke(event)) {
+            val context = CheckContext(event, locale)
+
+            check(context)
+
+            if (!context.passed) {
+                val message = context.message
+
+                if (message != null && sendMessage) {
+                    if (autoAck == AutoAckType.EPHEMERAL) {
+                        event.interaction.respondEphemeral { content = message }
+                    } else {
+                        event.interaction.respondPublic { content = message }
+                    }
+                }
+
                 return false
             }
         }
@@ -418,7 +490,21 @@ public open class SlashCommand<T : Arguments>(
 
         // command-specific checks
         for (check in checkList) {
-            if (!check.invoke(event)) {
+            val context = CheckContext(event, locale)
+
+            check(context)
+
+            if (!context.passed) {
+                val message = context.message
+
+                if (message != null && sendMessage) {
+                    if (autoAck == AutoAckType.EPHEMERAL) {
+                        event.interaction.respondEphemeral { content = message }
+                    } else {
+                        event.interaction.respondPublic { content = message }
+                    }
+                }
+
                 return false
             }
         }
@@ -436,7 +522,7 @@ public open class SlashCommand<T : Arguments>(
             if (channel != null) {
                 val member = event.interaction.user.asMember(channel.guildId)
 
-                return member.id !in disallowedRoles && member.roles.toList().all { it.id !in disallowedRoles }
+                return member.id !in disallowedUsers && member.roles.toList().all { it.id !in disallowedRoles }
             }
         }
 

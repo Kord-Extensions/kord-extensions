@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.builders
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -191,7 +192,7 @@ public open class ExtensibleBotBuilder {
 
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
-        loadModule { single { messageCommandsBuilder.messageRegistryBuilder() } bind MessageCommandRegistry::class }
+        loadModule { single { messageCommandsBuilder.registryBuilder() } bind MessageCommandRegistry::class }
         loadModule { single { slashCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
 
         loadModule {
@@ -391,7 +392,7 @@ public open class ExtensibleBotBuilder {
             public var pingInReply: Boolean = true
 
             /** List of command checks. These checks will be checked against all commands in the help extension. **/
-            public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+            public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
 
             /** For custom help embed colours. Only one may be defined. **/
             public var colourGetter: suspend MessageCreateEvent.() -> Color = { DISCORD_BLURPLE }
@@ -416,7 +417,7 @@ public open class ExtensibleBotBuilder {
              *
              * @param checks Checks to apply to all help commands.
              */
-            public fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+            public fun check(vararg checks: Check<MessageCreateEvent>) {
                 checks.forEach { checkList.add(it) }
             }
 
@@ -425,7 +426,7 @@ public open class ExtensibleBotBuilder {
              *
              * @param check Check to apply to all help commands.
              */
-            public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+            public fun check(check: Check<MessageCreateEvent>) {
                 checkList.add(check)
             }
         }
@@ -513,7 +514,7 @@ public open class ExtensibleBotBuilder {
             createdList.add(body)
 
         /**
-         * Register a lambda to be called before after any extension is successfully added to the bot..
+         * Register a lambda to be called after any extension is successfully added to the bot.
          */
         public fun extensionAdded(body: suspend ExtensibleBot.(extension: Extension) -> Unit): Boolean =
             extensionAddedList.add(body)
@@ -761,14 +762,14 @@ public open class ExtensibleBotBuilder {
         public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var messageRegistryBuilder: () -> MessageCommandRegistry = { MessageCommandRegistry() }
+        public var registryBuilder: () -> MessageCommandRegistry = { MessageCommandRegistry() }
 
         /**
          * List of command checks.
          *
          * These checks will be checked against all commands.
          */
-        public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+        public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
 
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
@@ -785,8 +786,8 @@ public open class ExtensibleBotBuilder {
          * Register the builder used to create the [MessageCommandRegistry]. You can change this if you need to make
          * use of a subclass.
          */
-        public fun messageRegistry(builder: () -> MessageCommandRegistry) {
-            messageRegistryBuilder = builder
+        public fun registry(builder: () -> MessageCommandRegistry) {
+            registryBuilder = builder
         }
 
         /**
@@ -800,7 +801,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all commands.
          */
-        public fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+        public fun check(vararg checks: Check<MessageCreateEvent>) {
             checks.forEach { checkList.add(it) }
         }
 
@@ -809,7 +810,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param check Checks to apply to all commands.
          */
-        public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+        public fun check(check: Check<MessageCreateEvent>) {
             checkList.add(check)
         }
     }
@@ -831,7 +832,7 @@ public open class ExtensibleBotBuilder {
          *
          * These checks will be checked against all slash commands.
          */
-        public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
+        public val checkList: MutableList<Check<InteractionCreateEvent>> = mutableListOf()
 
         /** Set a guild ID to use for all global slash commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake) {
@@ -868,7 +869,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all slash commands.
          */
-        public fun check(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+        public fun check(vararg checks: Check<InteractionCreateEvent>) {
             checks.forEach { checkList.add(it) }
         }
 
@@ -877,7 +878,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param check Check to apply to all slash commands.
          */
-        public fun check(check: suspend (InteractionCreateEvent) -> Boolean) {
+        public fun check(check: Check<InteractionCreateEvent>) {
             checkList.add(check)
         }
     }

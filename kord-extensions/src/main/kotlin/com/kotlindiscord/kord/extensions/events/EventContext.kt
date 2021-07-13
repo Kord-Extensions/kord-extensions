@@ -20,7 +20,7 @@ import java.util.*
  * @param eventHandler Respective event handler for this context object.
  * @param event Event that triggered this event handler.
  */
-public open class EventContext<T : Any>(
+public open class EventContext<T : Event>(
     public open val eventHandler: EventHandler<T>,
     public open val event: T
 ) : KoinComponent {
@@ -42,10 +42,6 @@ public open class EventContext<T : Any>(
         bundleName: String?,
         replacements: Array<Any?> = arrayOf()
     ): String {
-        if (event !is Event) {
-            return translationsProvider.get(key, bundleName)
-        }
-
         val eventObj = event as Event
         var locale: Locale? = null
 

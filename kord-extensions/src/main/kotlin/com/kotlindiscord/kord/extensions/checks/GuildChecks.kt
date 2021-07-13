@@ -2,10 +2,12 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.Event
 import mu.KotlinLogging
+import java.util.*
 
 /**
  * Check asserting an [Event] was fired within a guild.
@@ -16,17 +18,19 @@ import mu.KotlinLogging
  *
  * @param event Event object to check.
  */
-public suspend fun anyGuild(event: Event): Boolean {
+public val anyGuild: Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.anyGuild")
 
-    return if (guildFor(event) != null) {
+    if (guildFor(event) != null) {
         logger.passed()
 
-        true
+        pass()
     } else {
         logger.failed("Event did not happen within a guild.")
 
-        false
+        fail(
+            translate("checks.anyGuild.failed")
+        )
     }
 }
 
@@ -39,17 +43,19 @@ public suspend fun anyGuild(event: Event): Boolean {
  *
  * @param event Event object to check.
  */
-public suspend fun noGuild(event: Event): Boolean {
+public val noGuild: Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.noGuild")
 
-    return if (guildFor(event) == null) {
+    if (guildFor(event) == null) {
         logger.passed()
 
-        true
+        pass()
     } else {
         logger.failed("Event happened within a guild.")
 
-        false
+        fail(
+            translate("checks.noGuild.failed")
+        )
     }
 }
 
@@ -63,29 +69,32 @@ public suspend fun noGuild(event: Event): Boolean {
  *
  * @param builder Lambda returning the guild to compare to.
  */
-public fun inGuild(builder: suspend () -> GuildBehavior): CheckFun {
+public fun inGuild(builder: suspend () -> GuildBehavior): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
+    val eventGuild = guildFor(event)?.asGuildOrNull()
 
-    suspend fun inner(event: Event): Boolean {
-        val eventGuild = guildFor(event)
+    if (eventGuild == null) {
+        logger.nullGuild(event)
 
-        if (eventGuild == null) {
-            logger.nullGuild(event)
-            return false
-        }
-
+        fail()
+    } else {
         val guild = builder()
 
-        return if (eventGuild.id == guild.id) {
+        if (eventGuild.id == guild.id) {
             logger.passed()
-            true
+
+            pass()
         } else {
             logger.failed("Guild $eventGuild does not match $guild")
-            false
+
+            fail(
+                translate(
+                    "checks.inGuild.failed",
+                    replacements = arrayOf(eventGuild.name),
+                )
+            )
         }
     }
-
-    return ::inner
 }
 
 /**
@@ -96,29 +105,32 @@ public fun inGuild(builder: suspend () -> GuildBehavior): CheckFun {
  *
  * @param builder Lambda returning the guild to compare to.
  */
-public fun notInGuild(builder: suspend () -> GuildBehavior): CheckFun {
+public fun notInGuild(builder: suspend () -> GuildBehavior): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
+    val eventGuild = guildFor(event)?.asGuild()
 
-    suspend fun inner(event: Event): Boolean {
-        val eventGuild = guildFor(event)
+    if (eventGuild == null) {
+        logger.nullGuild(event)
 
-        if (eventGuild == null) {
-            logger.nullGuild(event)
-            return false
-        }
-
+        fail()
+    } else {
         val guild = builder()
 
-        return if (eventGuild.id != guild.id) {
+        if (eventGuild.id != guild.id) {
             logger.passed()
-            true
+
+            pass()
         } else {
             logger.failed("Guild $eventGuild matches $guild")
-            false
+
+            fail(
+                translate(
+                    "checks.notInGuild.failed",
+                    replacements = arrayOf(eventGuild.name),
+                )
+            )
         }
     }
-
-    return ::inner
 }
 
 // endregion
@@ -133,21 +145,17 @@ public fun notInGuild(builder: suspend () -> GuildBehavior): CheckFun {
  *
  * @param id Guild snowflake to compare to.
  */
-public fun inGuild(id: Snowflake): CheckFun {
+public fun inGuild(id: Snowflake): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
+    val guild = event.kord.getGuild(id)
 
-    suspend fun inner(event: Event): Boolean {
-        val guild = event.kord.getGuild(id)
+    if (guild == null) {
+        logger.noGuildId(id)
 
-        if (guild == null) {
-            logger.noGuildId(id)
-            return false
-        }
-
-        return inGuild { guild }(event)
+        fail()
+    } else {
+        inGuild { guild }()
     }
-
-    return ::inner
 }
 
 /**
@@ -158,21 +166,17 @@ public fun inGuild(id: Snowflake): CheckFun {
  *
  * @param id Guild snowflake to compare to.
  */
-public fun notInGuild(id: Snowflake): CheckFun {
+public fun notInGuild(id: Snowflake): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
+    val guild = event.kord.getGuild(id)
 
-    suspend fun inner(event: Event): Boolean {
-        val guild = event.kord.getGuild(id)
+    if (guild == null) {
+        logger.noGuildId(id)
 
-        if (guild == null) {
-            logger.noGuildId(id)
-            return false
-        }
-
-        return notInGuild { guild }(event)
+        fail()
+    } else {
+        notInGuild { guild }()
     }
-
-    return ::inner
 }
 
 // endregion
