@@ -11,6 +11,7 @@ import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.components.contexts.ActionableComponentContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.ackEphemeral
@@ -27,6 +28,7 @@ import dev.kord.core.event.interaction.InteractionCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import java.io.Serializable
 import java.util.*
 
@@ -38,6 +40,7 @@ import java.util.*
 public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : ActionableComponentContext<T>> :
     ComponentBuilder() {
     private val logger = KotlinLogging.logger {}
+    private val translations: TranslationsProvider by inject()
 
     /** Unique ID for this button. Required by Discord. **/
     public open val id: String = UUID.randomUUID().toString()
@@ -134,7 +137,12 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
                 val message = context.message
 
                 if (message != null && sendMessage) {
-                    interaction.respondEphemeral { content = message }
+                    interaction.respondEphemeral {
+                        content = translations.translate(
+                            "checks.responseTemplate",
+                            replacements = arrayOf(message)
+                        )
+                    }
                 } else {
                     interaction.acknowledgeEphemeralDeferredMessageUpdate()
                 }

@@ -1,3 +1,5 @@
+@file:Suppress("StringLiteralDuplication")
+
 package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.CommandException
@@ -303,7 +305,12 @@ public open class MessageCommand<T : Arguments>(
                 val message = context.message
 
                 if (message != null && sendMessage) {
-                    event.message.respond(message)
+                    event.message.respond(
+                        translationsProvider.translate(
+                            "checks.responseTemplate",
+                            replacements = arrayOf(message)
+                        )
+                    )
                 }
 
                 return false
@@ -320,7 +327,12 @@ public open class MessageCommand<T : Arguments>(
                 val message = context.message
 
                 if (message != null && sendMessage) {
-                    event.message.respond(message)
+                    event.message.respond(
+                        translationsProvider.translate(
+                            "checks.responseTemplate",
+                            replacements = arrayOf(message)
+                        )
+                    )
                 }
 
                 return false
@@ -336,7 +348,12 @@ public open class MessageCommand<T : Arguments>(
                 val message = context.message
 
                 if (message != null && sendMessage) {
-                    event.message.respond(message)
+                    event.message.respond(
+                        translationsProvider.translate(
+                            "checks.responseTemplate",
+                            replacements = arrayOf(message)
+                        )
+                    )
                 }
 
                 return false

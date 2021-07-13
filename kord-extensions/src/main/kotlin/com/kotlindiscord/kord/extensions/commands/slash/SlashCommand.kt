@@ -1,4 +1,5 @@
 @file:OptIn(KordPreview::class, TranslationNotSupported::class)
+@file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.commands.slash
 
@@ -448,9 +449,19 @@ public open class SlashCommand<T : Arguments>(
 
                 if (message != null && sendMessage) {
                     if (autoAck == AutoAckType.EPHEMERAL) {
-                        event.interaction.respondEphemeral { content = message }
+                        event.interaction.respondEphemeral {
+                            content = translationsProvider.translate(
+                                "checks.responseTemplate",
+                                replacements = arrayOf(message)
+                            )
+                        }
                     } else {
-                        event.interaction.respondPublic { content = message }
+                        event.interaction.respondPublic {
+                            content = translationsProvider.translate(
+                                "checks.responseTemplate",
+                                replacements = arrayOf(message)
+                            )
+                        }
                     }
                 }
 
@@ -469,9 +480,19 @@ public open class SlashCommand<T : Arguments>(
 
                 if (message != null && sendMessage) {
                     if (autoAck == AutoAckType.EPHEMERAL) {
-                        event.interaction.respondEphemeral { content = message }
+                        event.interaction.respondEphemeral {
+                            content = translationsProvider.translate(
+                                "checks.responseTemplate",
+                                replacements = arrayOf(message)
+                            )
+                        }
                     } else {
-                        event.interaction.respondPublic { content = message }
+                        event.interaction.respondPublic {
+                            content = translationsProvider.translate(
+                                "checks.responseTemplate",
+                                replacements = arrayOf(message)
+                            )
+                        }
                     }
                 }
 
@@ -499,9 +520,19 @@ public open class SlashCommand<T : Arguments>(
 
                 if (message != null && sendMessage) {
                     if (autoAck == AutoAckType.EPHEMERAL) {
-                        event.interaction.respondEphemeral { content = message }
+                        event.interaction.respondEphemeral {
+                            content = translationsProvider.translate(
+                                "checks.responseTemplate",
+                                replacements = arrayOf(message)
+                            )
+                        }
                     } else {
-                        event.interaction.respondPublic { content = message }
+                        event.interaction.respondPublic {
+                            content = translationsProvider.translate(
+                                "checks.responseTemplate",
+                                replacements = arrayOf(message)
+                            )
+                        }
                     }
                 }
 
