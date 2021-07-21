@@ -326,7 +326,7 @@ fun methodsToPages(
                 text += "\n"
 
                 text += "**Mixin Target** `" +
-                    "L${clazz.optimumName}" +
+                    "L${clazz.optimumName};" +
                     method.optimumName +
                     mappedDesc +
                     "`"
