@@ -3,6 +3,8 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
@@ -19,6 +21,9 @@ import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.reply
 import dev.kord.rest.builder.interaction.embed
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 // They're IDs
 @Suppress("UnderscoresInNumericLiterals")
@@ -69,6 +74,7 @@ class TestExtension : Extension() {
         val message by message("target", "Target message")
     }
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun setup() {
         command(::ColorArgs) {
             name = "color"
@@ -616,6 +622,32 @@ class TestExtension : Extension() {
                 action {
                     message.respond("Three!")
                 }
+            }
+        }
+
+        command {
+            name = "cooldown-test"
+            description = "Tests the User cooldown."
+
+            cooldowns<UserCooldown> {
+                Duration.seconds(30)
+            }
+
+            action {
+                message.respond("There is no cooldown!")
+            }
+        }
+
+        slashCommand {
+            name = "cooldown-test"
+            description = "Tests the Channel cooldown."
+
+            cooldowns<ChannelCooldown> {
+                Duration.seconds(15)
+            }
+
+            action {
+                publicFollowUp { content = "There is no cooldown!" }
             }
         }
     }

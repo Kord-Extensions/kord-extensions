@@ -6,7 +6,18 @@ import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownType
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.MutableCooldownProvider
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.Cooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
+import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
@@ -227,6 +238,51 @@ public open class ExtensibleBotBuilder {
         hooksBuilder.runAfterExtensionsAdded(bot)
 
         return bot
+    }
+
+    /** Builder used for configuring a command's cooldown options. */
+    public class CooldownsBuilder<T : Command> {
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var provider: () -> MutableCooldownProvider = { Cooldown() }
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var importBuilder: CooldownProvider.(T) -> Unit = {}
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var exportBuilder: CooldownProvider.(T) -> Unit = {}
+
+        /** A list of registered cooldown types for this cooldown builder. */
+        public val registered: MutableList<CooldownType> = mutableListOf(
+            UserCooldown(),
+            ChannelCooldown(),
+            GuildCooldown()
+        )
+
+        /** Sets the cooldown provider that will be given to all commands. */
+        public fun defaultProvider(builder: () -> MutableCooldownProvider) {
+            this.provider = builder
+        }
+
+        /**
+         * Allows you to import cooldowns into commands.
+         * This will be run for every command in an extension, when an extension is setup.
+         */
+        public fun import(builder: CooldownProvider.(T) -> Unit) {
+            this.importBuilder = builder
+        }
+
+        /**
+         * Allows you to export cooldowns from commands.
+         * This will be run for every command in an extension, when an extension is disabled.
+         */
+        public fun export(builder: CooldownProvider.(T) -> Unit) {
+            this.exportBuilder = builder
+        }
+
+        /** Registers a new cooldown type. **/
+        public fun register(cooldownType: () -> CooldownType) {
+            registered.add(cooldownType())
+        }
     }
 
     /** Builder used for configuring the bot's caching options. **/
@@ -771,6 +827,9 @@ public open class ExtensibleBotBuilder {
          */
         public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
 
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public val cooldownsBuilder: CooldownsBuilder<MessageCommand<out Arguments>> = CooldownsBuilder()
+
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
          * command prefix to be made use of for that message event.
@@ -813,6 +872,13 @@ public open class ExtensibleBotBuilder {
         public fun check(check: Check<MessageCreateEvent>) {
             checkList.add(check)
         }
+
+        /**
+         * Configures cooldowns settings for all message commands.
+         */
+        public fun cooldowns(builder: CooldownsBuilder<MessageCommand<out Arguments>>.() -> Unit) {
+            cooldownsBuilder.apply(builder)
+        }
     }
 
     /** Builder used for configuring the bot's slash command options. **/
@@ -826,6 +892,9 @@ public open class ExtensibleBotBuilder {
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var slashRegistryBuilder: () -> SlashCommandRegistry = { SlashCommandRegistry() }
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public val cooldownsBuilder: CooldownsBuilder<SlashCommand<out Arguments>> = CooldownsBuilder()
 
         /**
          * List of slash command checks.
@@ -880,6 +949,13 @@ public open class ExtensibleBotBuilder {
          */
         public fun check(check: Check<InteractionCreateEvent>) {
             checkList.add(check)
+        }
+
+        /**
+         * Configures cooldowns settings for all slash commands.
+         */
+        public fun cooldowns(builder: CooldownsBuilder<SlashCommand<out Arguments>>.() -> Unit) {
+            cooldownsBuilder.apply(builder)
         }
     }
 }

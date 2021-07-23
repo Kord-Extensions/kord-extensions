@@ -5,8 +5,12 @@ package com.kotlindiscord.kord.extensions.commands
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownType
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.MutableCooldownProvider
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -31,6 +35,9 @@ import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.reflect.KClass
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 private val logger = KotlinLogging.logger {}
 
@@ -44,6 +51,7 @@ private val logger = KotlinLogging.logger {}
  * @param extension The [Extension] that registered this command.
  * @param arguments Arguments object builder for this command, if it has arguments.
  */
+@OptIn(ExperimentalTime::class)
 @ExtensionDSL
 public open class MessageCommand<T : Arguments>(
     extension: Extension,
@@ -54,6 +62,8 @@ public open class MessageCommand<T : Arguments>(
 
     /** Message command registry. **/
     public val messageCommandsRegistry: MessageCommandRegistry by inject()
+
+    private val settings: ExtensibleBotBuilder by inject()
 
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
@@ -120,6 +130,11 @@ public open class MessageCommand<T : Arguments>(
      */
     public open val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
 
+    /**
+     * @suppress
+     */
+    public open val cooldowns: CooldownProvider = settings.messageCommandsBuilder.cooldownsBuilder.provider()
+
     override val parser: ArgumentParser = ArgumentParser()
 
     /** Permissions required to be able to run this command. **/
@@ -136,6 +151,15 @@ public open class MessageCommand<T : Arguments>(
 
     /** Locale-based cache of generated signature strings. **/
     public open var signatureCache: MutableMap<Locale, String> = mutableMapOf()
+
+    /** Cooldown object that keeps track of the cooldowns for this command. **/
+    public var cooldown: MutableCooldownProvider = settings.slashCommandsBuilder.cooldownsBuilder.provider()
+
+    /** Cooldown body that defines the duration for the cooldown type. **/
+    public var cooldownBody: suspend MessageCreateEvent.() -> Duration? = { null }
+
+    /** The cooldown type that this command has. */
+    public lateinit var cooldownTypeKClass: KClass<out CooldownType>
 
     /**
      * Retrieve the command signature for a locale, which specifies how the command's arguments should be structured.
@@ -363,6 +387,20 @@ public open class MessageCommand<T : Arguments>(
         return true
     }
 
+    /** Allows you to set a cooldown for this command. */
+    public open fun <T : CooldownType> cooldowns(
+        kClass: KClass<T>,
+        cooldownBody: suspend MessageCreateEvent.() -> Duration?
+    ) {
+        this.cooldownTypeKClass = kClass
+        this.cooldownBody = cooldownBody
+    }
+
+    /** Allows you to set a cooldown for this command. */
+    public inline fun <reified T : CooldownType> cooldowns(
+        noinline cooldownBody: suspend MessageCreateEvent.() -> Duration?
+    ): Unit = cooldowns(T::class, cooldownBody)
+
     /**
      * Execute this command, given a [MessageCreateEvent].
      *
@@ -443,6 +481,27 @@ public open class MessageCommand<T : Arguments>(
                             )
                         )
                     )
+                }
+            }
+
+            if (::cooldownTypeKClass.isInitialized) {
+                val cooldownType = settings.slashCommandsBuilder.cooldownsBuilder.registered
+                    .find { type -> cooldownTypeKClass.java.isAssignableFrom(type::class.java) }
+
+                if (cooldownType != null) {
+                    val key = cooldownType.getCooldownKey(event)
+                    if (key != null) {
+                        val timeLeft = cooldown.getCooldown(key)
+
+                        if (timeLeft != null && timeLeft > Duration.ZERO) {
+                            throw CommandException("You must wait another $timeLeft before using this command.")
+                        } else {
+                            val cooldownDuration = cooldownBody.invoke(event)
+                            if (cooldownDuration != null) {
+                                cooldown.setCooldown(key, cooldownDuration)
+                            }
+                        }
+                    }
                 }
             }
 

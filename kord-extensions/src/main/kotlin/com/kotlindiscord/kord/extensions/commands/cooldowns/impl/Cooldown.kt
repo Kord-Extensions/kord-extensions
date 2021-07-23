@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.cooldowns.impl
 
 import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.MutableCooldownProvider
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.*
 
@@ -8,7 +9,7 @@ import kotlin.time.*
  * An implementation of [CooldownProvider] that will be used by default.
  */
 @OptIn(ExperimentalTime::class)
-public class Cooldown : CooldownProvider {
+public class Cooldown : MutableCooldownProvider {
 
     private val cooldownsMap: MutableMap<String, Long> = ConcurrentHashMap()
 

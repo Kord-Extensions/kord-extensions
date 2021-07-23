@@ -11,8 +11,8 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Command
-import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
 import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownType
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.MutableCooldownProvider
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -47,8 +47,8 @@ import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.reflect.KClass
 import kotlin.time.Duration
-import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 private val logger: KLogger = KotlinLogging.logger {}
@@ -149,10 +149,13 @@ public open class SlashCommand<T : Arguments>(
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /** Cooldown object that keeps track of the cooldowns for this command. **/
-    public var cooldown: CooldownProvider = settings.slashCommandsBuilder.cooldownsBuilder.provider.invoke()
+    public var cooldown: MutableCooldownProvider = settings.slashCommandsBuilder.cooldownsBuilder.provider()
 
     /** Cooldown body that defines the duration for the different cooldown types. **/
-    public var cooldownBody: suspend (CooldownType, InteractionCreateEvent) -> Duration? = { _, _ -> null }
+    public var cooldownBody: suspend InteractionCreateEvent.() -> Duration? = { null }
+
+    /** The cooldown type that this command has. */
+    public lateinit var cooldownTypeKClass: KClass<out CooldownType>
 
     /** Return this command's name translated for the given locale, cached as required. **/
     public open fun getTranslatedName(locale: Locale): String {
@@ -572,12 +575,19 @@ public open class SlashCommand<T : Arguments>(
         return true
     }
 
-    /**
-     * Defines the durations for the different cooldown types.
-     */
-    public open fun cooldowns(cooldown: suspend (CooldownType, InteractionCreateEvent) -> Duration?) {
-        this.cooldownBody = cooldown
+    /** Allows you to set a cooldown for this command. */
+    public open fun <T : CooldownType> cooldowns(
+        kClass: KClass<T>,
+        cooldownBody: suspend InteractionCreateEvent.() -> Duration?
+    ) {
+        this.cooldownTypeKClass = kClass
+        this.cooldownBody = cooldownBody
     }
+
+    /** Allows you to set a cooldown for this command. */
+    public inline fun <reified T : CooldownType> cooldowns(
+        noinline cooldownBody: suspend InteractionCreateEvent.() -> Duration?
+    ): Unit = cooldowns(T::class, cooldownBody)
 
     /**
      * Execute this command, given an [InteractionCreateEvent].
@@ -685,15 +695,24 @@ public open class SlashCommand<T : Arguments>(
                 }
             }
 
-            for (cooldownType in extension.bot.settings.slashCommandsBuilder.cooldownsBuilder.priority.invoke()) {
-                val key = cooldownType.getSlashCooldownKey(event) ?: continue
-                val timeLeft = cooldown.getCooldown(key)
+            if (::cooldownTypeKClass.isInitialized) {
+                val cooldownType = settings.slashCommandsBuilder.cooldownsBuilder.registered
+                    .find { type -> cooldownTypeKClass.java.isAssignableFrom(type::class.java) }
 
-                if (timeLeft != null && timeLeft > Duration.ZERO) {
-                    throw CommandException("You must wait another ${timeLeft.toDouble(DurationUnit.SECONDS)}")
-                } else {
-                    val cooldownDuration = cooldownBody.invoke(cooldownType, event) ?: continue
-                    cooldown.setCooldown(key, cooldownDuration)
+                if (cooldownType != null) {
+                    val key = cooldownType.getSlashCooldownKey(event)
+                    if (key != null) {
+                        val timeLeft = cooldown.getCooldown(key)
+
+                        if (timeLeft != null && timeLeft > Duration.ZERO) {
+                            throw CommandException("You must wait another $timeLeft before using this command.")
+                        } else {
+                            val cooldownDuration = cooldownBody.invoke(event)
+                            if (cooldownDuration != null) {
+                                cooldown.setCooldown(key, cooldownDuration)
+                            }
+                        }
+                    }
                 }
             }
 
