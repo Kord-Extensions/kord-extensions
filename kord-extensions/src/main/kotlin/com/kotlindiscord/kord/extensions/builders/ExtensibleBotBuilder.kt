@@ -9,7 +9,7 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CommandCooldown
 import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownType
 import com.kotlindiscord.kord.extensions.commands.cooldowns.base.MutableCooldownProvider
 import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
@@ -246,10 +246,10 @@ public open class ExtensibleBotBuilder {
         public var provider: () -> MutableCooldownProvider = { Cooldown() }
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var importBuilder: CooldownProvider.(T) -> Unit = {}
+        public var importBuilder: Extension.(List<CommandCooldown<T>>) -> Unit = {}
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var exportBuilder: CooldownProvider.(T) -> Unit = {}
+        public var exportBuilder: Extension.(List<CommandCooldown<T>>) -> Unit = {}
 
         /** A list of registered cooldown types for this cooldown builder. */
         public val registered: MutableList<CooldownType> = mutableListOf(
@@ -267,7 +267,7 @@ public open class ExtensibleBotBuilder {
          * Allows you to import cooldowns into commands.
          * This will be run for every command in an extension, when an extension is setup.
          */
-        public fun import(builder: CooldownProvider.(T) -> Unit) {
+        public fun import(builder: Extension.(List<CommandCooldown<T>>) -> Unit) {
             this.importBuilder = builder
         }
 
@@ -275,7 +275,7 @@ public open class ExtensibleBotBuilder {
          * Allows you to export cooldowns from commands.
          * This will be run for every command in an extension, when an extension is disabled.
          */
-        public fun export(builder: CooldownProvider.(T) -> Unit) {
+        public fun export(builder: Extension.(List<CommandCooldown<T>>) -> Unit) {
             this.exportBuilder = builder
         }
 
