@@ -8,6 +8,8 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.GroupCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.MessageCommandCooldown
+import com.kotlindiscord.kord.extensions.commands.cooldowns.base.SlashCommandCooldown
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
@@ -127,6 +129,20 @@ public abstract class Extension : KoinComponent {
         } catch (t: Throwable) {
             this.setState(ExtensionState.FAILED_LOADING)
             throw t
+        }
+
+        if (commands.isNotEmpty()) {
+            bot.settings.messageCommandsBuilder.cooldownsBuilder.importBuilder(
+                this,
+                commands.map(::MessageCommandCooldown)
+            )
+        }
+
+        if (slashCommands.isNotEmpty()) {
+            bot.settings.slashCommandsBuilder.cooldownsBuilder.importBuilder(
+                this,
+                slashCommands.map(::SlashCommandCooldown)
+            )
         }
 
         this.setState(ExtensionState.LOADED)
@@ -333,6 +349,20 @@ public abstract class Extension : KoinComponent {
 
         for (command in commands) {
             messageCommandsRegistry.remove(command)
+        }
+
+        if (commands.isNotEmpty()) {
+            bot.settings.messageCommandsBuilder.cooldownsBuilder.exportBuilder(
+                this,
+                commands.map(::MessageCommandCooldown)
+            )
+        }
+
+        if (slashCommands.isNotEmpty()) {
+            bot.settings.slashCommandsBuilder.cooldownsBuilder.exportBuilder(
+                this,
+                slashCommands.map(::SlashCommandCooldown)
+            )
         }
 
         eventHandlers.clear()
