@@ -12,9 +12,14 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import org.koin.core.component.inject
+
+private typealias GenericConverter = Converter<*, *, *, *>
 
 /**
  * Experimental converter allowing for combining other converters together, with the caveat of type erasure.
@@ -23,19 +28,23 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 @OptIn(KordPreview::class)
 public class UnionConverter(
-    private val converters: Collection<Converter<*>>,
+    private val converters: Collection<GenericConverter>,
 
     typeName: String? = null,
     shouldThrow: Boolean = false,
 
-    override var validator: (suspend Argument<*>.(Any) -> Unit)? = null
+    override val bundle: String? = null,
+    override var validator: Validator<Any> = null
 ) : CoalescingConverter<Any>(shouldThrow) {
-    override val signatureTypeString: String = typeName
-        ?: converters.joinToString(" | ") { it.signatureTypeString }
+    private val translations: TranslationsProvider by inject()
+
+    override val signatureTypeString: String = typeName ?: converters.joinToString(" | ") {
+        translations.translate(it.signatureTypeString, it.bundle)
+    }
 
     /** @suppress Internal validation function. **/
     public fun validateUnion() {
-        val allConverters = converters.toMutableList()
+        val allConverters: MutableList<GenericConverter> = converters.toMutableList()
 
         allConverters.removeLast()  // The last converter can be any type.
 
@@ -56,12 +65,12 @@ public class UnionConverter(
         }
     }
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         for (converter in converters) {
             @Suppress("TooGenericExceptionCaught")
             when (converter) {
                 is SingleConverter<*> -> try {
-                    val result = converter.parse(args.first(), context)
+                    val result: Boolean = converter.parse(parser, context, named?.first())
 
                     if (result) {
                         converter.parseSuccess = true
@@ -74,7 +83,7 @@ public class UnionConverter(
                 }
 
                 is DefaultingConverter<*> -> try {
-                    val result = converter.parse(args.first(), context)
+                    val result: Boolean = converter.parse(parser, context, named?.first())
 
                     if (result) {
                         converter.parseSuccess = true
@@ -87,7 +96,7 @@ public class UnionConverter(
                 }
 
                 is OptionalConverter<*> -> try {
-                    val result = converter.parse(args.first(), context)
+                    val result: Boolean = converter.parse(parser, context, named?.first())
 
                     if (result && converter.parsed != null) {
                         converter.parseSuccess = true
@@ -100,7 +109,7 @@ public class UnionConverter(
                 }
 
                 is MultiConverter<*> -> try {
-                    val result = converter.parse(args, context)
+                    val result: Int = converter.parse(parser, context, named)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -113,7 +122,7 @@ public class UnionConverter(
                 }
 
                 is CoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context)
+                    val result: Int = converter.parse(parser, context, named)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -126,7 +135,7 @@ public class UnionConverter(
                 }
 
                 is DefaultingCoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context)
+                    val result: Int = converter.parse(parser, context, named)
 
                     if (result > 0) {
                         converter.parseSuccess = true
@@ -139,7 +148,7 @@ public class UnionConverter(
                 }
 
                 is OptionalCoalescingConverter<*> -> try {
-                    val result = converter.parse(args, context)
+                    val result: Int = converter.parse(parser, context, named)
 
                     if (result > 0 && converter.parsed != null) {
                         converter.parseSuccess = true
@@ -180,10 +189,11 @@ public fun Arguments.union(
     description: String,
     typeName: String? = null,
     shouldThrow: Boolean = false,
-    vararg converters: Converter<*>,
-    validator: (suspend Argument<*>.(Any) -> Unit)? = null,
+    vararg converters: GenericConverter,
+    bundle: String? = null,
+    validator: Validator<Any> = null,
 ): UnionConverter {
-    val converter = UnionConverter(converters.toList(), typeName, shouldThrow, validator)
+    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle, validator)
 
     converter.validateUnion()
 
@@ -212,10 +222,11 @@ public fun Arguments.optionalUnion(
     description: String,
     typeName: String? = null,
     shouldThrow: Boolean = false,
-    vararg converters: Converter<*>,
-    validator: (suspend Argument<*>.(Any?) -> Unit)? = null
+    vararg converters: GenericConverter,
+    bundle: String? = null,
+    validator: Validator<Any?> = null
 ): OptionalCoalescingConverter<Any?> {
-    val converter = UnionConverter(converters.toList(), typeName, shouldThrow)
+    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle)
 
     converter.validateUnion()
 
@@ -225,7 +236,7 @@ public fun Arguments.optionalUnion(
         }
     }
 
-    val optionalConverter = converter.toOptional(nestedValidator = validator)
+    val optionalConverter: OptionalCoalescingConverter<Any?> = converter.toOptional(nestedValidator = validator)
 
     arg(displayName, description, optionalConverter)
 

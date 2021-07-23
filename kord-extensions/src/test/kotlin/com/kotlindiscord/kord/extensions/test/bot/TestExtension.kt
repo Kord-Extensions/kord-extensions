@@ -1,41 +1,43 @@
+@file:OptIn(KordPreview::class, TranslationNotSupported::class)
+
 package com.kotlindiscord.kord.extensions.test.bot
 
-import com.kotlindiscord.kord.extensions.commands.converters.impl.boolean
-import com.kotlindiscord.kord.extensions.commands.converters.impl.booleanList
-import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingEnum
-import com.kotlindiscord.kord.extensions.commands.converters.impl.enum
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
-import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
+import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
+import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
 import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.enumChoice
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.pagination.Paginator
+import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
+import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import dev.kord.core.behavior.reply
+import dev.kord.rest.builder.interaction.embed
 
 // They're IDs
-@OptIn(KordPreview::class)
 @Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
     override val name = "test"
+
+    class ColorArgs : Arguments() {
+        val color by colour("color", "Color to use for the embed")
+    }
 
     class TestArgs : Arguments() {
         val string by string("string", "String argument")
         val enum by enum<TestEnum>("enum", "Enum argument", "test")
 
         val optionalEnum by defaultingEnum(
-            "optional-enum",
-            "Defaulting enum argument",
-            "test",
-            TestEnum.THREE
+            displayName = "optional-enum",
+            description = "Defaulting enum argument",
+            typeName = "test",
+            defaultValue = TestEnum.THREE
         )
 
         val bools by booleanList("bools", "Boolean list argument")
@@ -47,10 +49,10 @@ class TestExtension : Extension() {
         val bool by boolean("bool", "Boolean argument")
 
         val optionalEnum by defaultingEnum(
-            "optional-enum",
-            "Defaulting enum argument",
-            "test",
-            TestEnum.THREE
+            displayName = "optional-enum",
+            description = "Defaulting enum argument",
+            typeName = "test",
+            defaultValue = TestEnum.THREE
         )
     }
 
@@ -58,8 +60,189 @@ class TestExtension : Extension() {
         val arg by enumChoice<TestChoiceEnum>("choice", "Enum Choice", "test")
     }
 
-    @OptIn(ExperimentalTime::class)
+    class CoalescedArgs : Arguments() {
+        val string by coalescedString("input", "Text to use")
+        val flag by optionalBoolean("flag", "Some kinda flag")
+    }
+
+    class MessageArgs : Arguments() {
+        val message by message("target", "Target message")
+    }
+
     override suspend fun setup() {
+        command(::ColorArgs) {
+            name = "color"
+            aliases = arrayOf("colour")
+            description = "Get an embed with a set color"
+
+            action {
+                message.respond {
+                    embed {
+                        description = "Here's your embed!"
+
+                        color = arguments.color
+                    }
+                }
+            }
+        }
+
+        command(::MessageArgs) {
+            name = "msg"
+            description = "Message argument test"
+
+            action {
+                arguments.message.reply {
+                    content = "Replied to message."
+                }
+            }
+        }
+
+        command(::CoalescedArgs) {
+            name = "coalesce"
+            description = "Coalesce me, baby"
+
+            action {
+                message.respond {
+                    embed {
+                        description = arguments.string
+
+                        field {
+                            name = "flag"
+                            value = arguments.flag.toString()
+                        }
+                    }
+                }
+            }
+        }
+
+        command {
+            name = "dropdown"
+            description = "Dropdown test!"
+
+            action {
+                message.respond {
+                    content = "Here's a dropdown."
+
+                    components(60) {
+                        menu {
+                            autoAck = AutoAckType.PUBLIC
+                            maximumChoices = null
+
+                            option("Option 1", "one")
+                            option("Option 2", "two")
+                            option("Option 3", "three")
+
+                            action {
+                                publicFollowUp {
+                                    content = "You picked the following options: " + selected.joinToString {
+                                        "`$it`"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        slashCommand {
+            name = "pages"
+            description = "Pages!"
+            autoAck = AutoAckType.PUBLIC
+
+            guild(787452339908116521)
+
+            action {
+                val pages = Pages()
+
+                (0..2).forEach {
+                    pages.addPage(
+                        Page(
+                            "Short page $it.",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "Expanded",
+
+                        Page(
+                            "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "MASSIVE GROUP",
+
+                        Page(
+                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+                }
+
+                val paginator = InteractionButtonPaginator(
+                    extension = this@TestExtension,
+                    pages = pages,
+                    owner = event.interaction.user.asUser(),
+                    timeoutSeconds = 60,
+                    parentContext = this,
+                    keepEmbed = false
+                )
+
+                paginator.send()
+            }
+        }
+
+        slashCommand {
+            name = "buttons"
+            description = "Buttons!"
+
+            guild(787452339908116521) // Our test server
+
+            action {
+                ephemeralFollowUp {
+                    content = "Buttons!"
+
+                    components(60) {
+                        interactiveButton {
+                            label = "Button one!"
+
+                            action {
+                                respond("Button one pressed!")
+                            }
+                        }
+
+                        interactiveButton {
+                            label = "Button two!"
+                            style = ButtonStyle.Secondary
+
+                            action {
+                                respond("Button two pressed!")
+                            }
+                        }
+
+                        disabledButton {
+                            emoji("❎")
+                        }
+
+                        linkButton {
+                            label = "Google"
+                            emoji("🔗")
+
+                            url = "https://google.com"
+                        }
+                    }
+                }
+            }
+        }
+
         slashCommand {
             name = "test-noack"
             description = "Don't auto-ack this one"
@@ -146,7 +329,9 @@ class TestExtension : Extension() {
                     description = "Test command, please ignore"
 
                     action {
-                        ephemeralFollowUp("Some content")
+                        ephemeralFollowUp {
+                            content = "Some content"
+                        }
                     }
                 }
             }
@@ -240,27 +425,6 @@ class TestExtension : Extension() {
             }
         }
 
-        slashCommand {
-            name = "cooldown-test"
-            description = "Cooldown test"
-            autoAck = AutoAckType.PUBLIC
-            guild(787452339908116521) // Our test server
-
-            cooldowns { cooldownType, event ->
-                if (cooldownType is ChannelCooldown) {
-                    Duration.seconds(8)
-                } else {
-                    null
-                }
-            }
-
-            action {
-                publicFollowUp {
-                    content = "There is no cooldown!"
-                }
-            }
-        }
-
         command {
             name = "translation-test"
             description = "Let's test translations."
@@ -335,25 +499,60 @@ class TestExtension : Extension() {
         }
 
         command {
-            name = "cooldown-test"
-            description = "Cooldown test"
-
-            cooldowns { cooldownType, event ->
-                if (cooldownType is UserCooldown) {
-                    Duration.seconds(5)
-                } else {
-                    null
-                }
-            }
+            name = "page"
+            description = "Paginator test"
 
             action {
-                message.respond("There is no cooldown!")
+                val pages = Pages(defaultGroup = "short")
+
+                (0..2).forEach {
+                    pages.addPage(
+                        "short",
+
+                        Page(
+                            "Short page $it.",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "expanded",
+
+                        Page(
+                            "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+
+                    pages.addPage(
+                        "massive",
+
+                        Page(
+                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
+                            footer = "Footer text ($it)"
+                        )
+                    )
+                }
+
+                MessageButtonPaginator(
+                    extension = this@TestExtension,
+                    targetMessage = event.message,
+                    pages = pages,
+                    keepEmbed = true,
+                    owner = user,
+                    locale = getLocale()
+                ).send()
             }
         }
 
         command {
-            name = "page"
-            description = "Paginator test"
+            name = "page2"
+            description = "Paginator test 2"
 
             action {
                 val pages = Pages()
@@ -375,27 +574,48 @@ class TestExtension : Extension() {
                             footer = "Footer text ($it)"
                         )
                     )
-
-                    pages.addPage(
-                        "MASSIVE GROUP",
-
-                        Page(
-                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
-                            footer = "Footer text ($it)"
-                        )
-                    )
                 }
 
-                Paginator(
+                MessageButtonPaginator(
+                    extension = this@TestExtension,
                     targetMessage = event.message,
                     pages = pages,
-                    keepEmbed = true,
+                    keepEmbed = false,
+                    owner = user,
                     locale = getLocale()
                 ).send()
+            }
+        }
+
+        group {
+            name = "group"
+            description = "Command group"
+
+            command {
+                name = "one"
+                description = "one"
+
+                action {
+                    message.respond("One!")
+                }
+            }
+
+            command {
+                name = "two"
+                description = "two"
+
+                action {
+                    message.respond("Two!")
+                }
+            }
+
+            command {
+                name = "three"
+                description = "three"
+
+                action {
+                    message.respond("Three!")
+                }
             }
         }
     }

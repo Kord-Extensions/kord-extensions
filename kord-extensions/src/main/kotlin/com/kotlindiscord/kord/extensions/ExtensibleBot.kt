@@ -1,3 +1,5 @@
+@file:OptIn(PrivilegedIntent::class, KordPreview::class)
+
 package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
@@ -5,15 +7,13 @@ import com.kotlindiscord.kord.extensions.commands.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
-import com.kotlindiscord.kord.extensions.events.DiscordReadyEvent
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.loadModule
+import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
@@ -27,9 +27,7 @@ import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import mu.KLogger
@@ -56,74 +54,49 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      */
     @Deprecated(
         "Use Koin to get this instead. This will be private in future.",
+
         ReplaceWith(
             "getKoin().get<Kord>()",
 
             "com.kotlindiscord.kord.extensions.utils.getKoin",
             "dev.kord.core.Kord"
         ),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.ERROR
     )
     public val kord: Kord by inject()
-
-    /**
-     * Sentry adapter, for working with Sentry.
-     */
-    @Deprecated(
-        "Use Koin to get this instead. This will be removed in future.",
-        ReplaceWith(
-            "getKoin().get<SentryAdapter>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "com.kotlindiscord.kord.extensions.sentry.SentryAdapter"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public open val sentry: SentryAdapter by inject()
-
-    /** Translations provider, for retrieving translations. **/
-    @Deprecated(
-        "Use Koin to get this instead. This will be removed in future.",
-        ReplaceWith(
-            "getKoin().get<TranslationsProvider>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "com.kotlindiscord.kord.extensions.i18n.TranslationsProvider"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public val translationsProvider: TranslationsProvider by inject()
 
     /** Message command registry, keeps track of and executes message commands. **/
     @Deprecated(
         "Use Koin to get this instead. This will be made private in future.",
+
         ReplaceWith(
             "getKoin().get<MessageCommandRegistry>()",
 
             "com.kotlindiscord.kord.extensions.utils.getKoin",
             "com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry"
         ),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.ERROR
     )
     public open val messageCommands: MessageCommandRegistry by inject()
 
     /** Slash command registry, keeps track of and executes slash commands. **/
     @Deprecated(
         "Use Koin to get this instead. This will be made private in future.",
+
         ReplaceWith(
             "getKoin().get<SlashCommandRegistry>()",
 
             "com.kotlindiscord.kord.extensions.utils.getKoin",
             "com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry"
         ),
-        level = DeprecationLevel.WARNING
+        level = DeprecationLevel.ERROR
     )
     public open val slashCommands: SlashCommandRegistry by inject()
 
     /**
      * A list of all registered event handlers.
      */
-    public open val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
+    public open val eventHandlers: MutableList<EventHandler<out Event>> = mutableListOf()
 
     /**
      * A map of the names of all loaded [Extension]s to their instances.
@@ -131,11 +104,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     public open val extensions: MutableMap<String, Extension> = mutableMapOf()
 
     /** @suppress **/
-    public open val eventPublisher: BroadcastChannel<Any> = BroadcastChannel(1)
+    public open val eventPublisher: MutableSharedFlow<Any> = MutableSharedFlow()
 
-    // TODO: Move away from BroadcastChannel
     /** A [Flow] representing a combined set of Kord events and Kord Extensions events. **/
-    public open val events: Flow<Any> get() = eventPublisher.asFlow().buffer(Channel.UNLIMITED)
+    public open val events: SharedFlow<Any> = eventPublisher.asSharedFlow()
 
     /** @suppress **/
     public open var initialized: Boolean = false
@@ -149,6 +121,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             cache {
                 settings.cacheBuilder.builder.invoke(this, it)
             }
+
+            defaultStrategy = settings.cacheBuilder.defaultStrategy
 
             if (settings.intentsBuilder != null) {
                 this.intents = Intents(settings.intentsBuilder!!)
@@ -179,7 +153,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /** This function sets up all of the bot's default event listeners. **/
-    @OptIn(PrivilegedIntent::class, kotlin.time.ExperimentalTime::class)
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
             if (
@@ -199,11 +172,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.warn { "Disconnected: $closeCode" }
         }
 
-        var shardsReady = 0
-        val shardCount = getKoin().get<Kord>().gateway.gateways.count()
         on<ReadyEvent> {
-            shardsReady++
-
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
                 initialized = true
 
@@ -215,10 +184,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                             " if you want to use them."
                     }
                 }
-            }
-
-            if (shardsReady == shardCount) {
-                send(DiscordReadyEvent(this@ExtensibleBot))
             }
 
             logger.info { "Ready!" }
@@ -235,32 +200,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                 getKoin().get<SlashCommandRegistry>().handle(this)
             }
         }
-
-        on<DiscordReadyEvent> {
-            if (settings.messageCommandsBuilder.cooldownsBuilder.autoClearCooldowns) {
-                getKoin().get<Kord>().launch {
-                    while (true) {
-                        delay(settings.messageCommandsBuilder.cooldownsBuilder.autoClearTime)
-
-                        getKoin().get<MessageCommandRegistry>().commands.forEach { cmd ->
-                            cmd.cooldown.clearCooldowns()
-                        }
-                    }
-                }
-            }
-
-            if (settings.slashCommandsBuilder.cooldownsBuilder.autoClearCooldowns) {
-                getKoin().get<Kord>().launch {
-                    while (true) {
-                        delay(settings.slashCommandsBuilder.cooldownsBuilder.autoClearTime)
-
-                        getKoin().get<SlashCommandRegistry>().commandMap.forEach { (_, cmd) ->
-                            cmd.cooldown.clearCooldowns()
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /** This function adds all of the default extensions when the bot is being set up. **/
@@ -269,7 +208,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             this.addExtension(::HelpExtension)
         }
 
-        if (settings.extensionsBuilder.sentry) {
+        if (settings.extensionsBuilder.sentryExtensionBuilder.enable) {
             this.addExtension(::SentryExtension)
         }
     }
@@ -280,7 +219,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * You can subscribe to any type, realistically - but this is intended to be used only with Kord
      * [Event] subclasses, and our own [ExtensionEvent]s.
      *
-     * @param T Type of event to subscribe to.
+     * @param T Types of event to subscribe to.
      * @param scope Coroutine scope to run the body of your callback under.
      * @param consumer The callback to run when the event is fired.
      */
@@ -288,23 +227,28 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         launch: Boolean = true,
         scope: CoroutineScope = this.getKoin().get<Kord>(),
         noinline consumer: suspend T.() -> Unit
-    ): Job = events.buffer(Channel.UNLIMITED).filterIsInstance<T>().onEach {
-        runCatching { if (launch) getKoin().get<Kord>().launch { consumer(it) } else consumer(it) }
-            .onFailure { logger.catching(it) }
-    }.catch { logger.catching(it) }.launchIn(scope)
+    ): Job =
+        events.buffer(Channel.UNLIMITED)
+            .filterIsInstance<T>()
+            .onEach {
+                runCatching {
+                    if (launch) scope.launch { consumer(it) } else consumer(it)
+                }.onFailure { logger.catching(it) }
+            }.catch { logger.catching(it) }
+            .launchIn(scope)
 
     /**
      * @suppress
      */
     public suspend inline fun send(event: Event) {
-        eventPublisher.send(event)
+        eventPublisher.emit(event)
     }
 
     /**
      * @suppress
      */
     public suspend inline fun send(event: ExtensionEvent) {
-        eventPublisher.send(event)
+        eventPublisher.emit(event)
     }
 
     /**
@@ -357,7 +301,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      *
      * This can be used to find an extension based on, for example, an implemented interface.
      *
-     * @param T Type to match extensions against.
+     * @param T Types to match extensions against.
      */
     public inline fun <reified T> findExtension(): T? =
         findExtensions<T>().firstOrNull()
@@ -367,7 +311,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      *
      * This can be used to find extensions based on, for example, an implemented interface.
      *
-     * @param T Type to match extensions against.
+     * @param T Types to match extensions against.
      */
     public inline fun <reified T> findExtensions(): List<T> =
         extensions.values.filterIsInstance<T>()
@@ -454,7 +398,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
      */
     @Throws(EventHandlerRegistrationException::class)
-    public inline fun <reified T : Any> addEventHandler(handler: EventHandler<T>): Job {
+    public inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>): Job {
         if (eventHandlers.contains(handler)) {
             throw EventHandlerRegistrationException(
                 "Event handler already registered in '${handler.extension.name}' extension."
@@ -476,7 +420,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      *
      * @param handler The event handler to be removed.
      */
-    public open fun removeEventHandler(handler: EventHandler<out Any>): Boolean = eventHandlers.remove(handler)
+    public open fun removeEventHandler(handler: EventHandler<out Event>): Boolean = eventHandlers.remove(handler)
 }
 
 /**

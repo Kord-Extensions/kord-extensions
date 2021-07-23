@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.checks
 
-import dev.kord.core.event.Event
+import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import mu.KotlinLogging
 
 /**
@@ -12,24 +13,35 @@ import mu.KotlinLogging
  * @param checks Two or more checks to combine.
  * @return Whether any of the checks passed.
  */
-public fun or(vararg checks: CheckFun): CheckFun {
+public fun or(vararg checks: Check<*>): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.or")
 
-    suspend fun inner(event: Event): Boolean {
-        return if (checks.any { it.invoke(event) }) {
-            logger.passed()
-            true
-        } else {
-            logger.failed("None of the given checks passed")
-            false
-        }
+    val contexts = checks.map {
+        val context = CheckContext(event, locale)
+
+        it(context)
+        context
     }
 
-    return ::inner
+    if (contexts.any { it.passed }) {
+        logger.passed()
+
+        pass()
+    } else {
+        logger.failed("None of the given checks passed")
+
+        val failedContext = contexts.firstOrNull { !it.passed }
+
+        if (failedContext != null) {
+            fail(failedContext.message)
+        } else {
+            fail()
+        }
+    }
 }
 
 /** Infix-function version of [or]. **/
-public infix fun (CheckFun).or(other: CheckFun): CheckFun = or(this, other)
+public infix fun (Check<*>).or(other: Check<*>): Check<*> = or(this, other)
 
 /**
  * Special check that passes if all of the given checks pass.
@@ -43,21 +55,32 @@ public infix fun (CheckFun).or(other: CheckFun): CheckFun = or(this, other)
  * @param checks Two or more checks to combine.
  * @return Whether all of the checks passed.
  */
-public fun and(vararg checks: CheckFun): CheckFun {
+public fun and(vararg checks: Check<*>): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.and")
 
-    suspend fun inner(event: Event): Boolean {
-        return if (checks.all { it.invoke(event) }) {
-            logger.passed()
-            true
-        } else {
-            logger.failed("At least one of the given checks failed")
-            false
-        }
+    val contexts = checks.map {
+        val context = CheckContext(event, locale)
+
+        it(context)
+        context
     }
 
-    return ::inner
+    if (contexts.all { it.passed }) {
+        logger.passed()
+
+        pass()
+    } else {
+        logger.failed("At least one of the given checks failed")
+
+        val failedContext = contexts.firstOrNull { !it.passed }
+
+        if (failedContext != null) {
+            fail(failedContext.message)
+        } else {
+            fail()
+        }
+    }
 }
 
 /** Infix-function version of [and]. **/
-public infix fun (CheckFun).and(other: CheckFun): CheckFun = and(this, other)
+public infix fun (Check<*>).and(other: Check<*>): Check<*> = and(this, other)

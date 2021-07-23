@@ -13,9 +13,9 @@ class MojangArguments : Arguments() {
     val query by string("query", "Name to query mappings for")
 
     val channel by optionalEnum<Channels>(
-        "channel",
-        "Mappings channel to use for this query",
-        "official/snapshot"
+        displayName = "channel",
+        description = "Mappings channel to use for this query",
+        typeName = "official/snapshot"
     )
 
     val version by optionalMappingsVersion(

@@ -22,4 +22,16 @@ public open class MessageSubCommand<T : Arguments>(
     /** Get the full command name, translated, with parent commands taken into account. **/
     public open suspend fun getFullTranslatedName(locale: Locale): String =
         parent.getFullTranslatedName(locale) + " " + this.getTranslatedName(locale)
+
+    override fun getTranslatedName(locale: Locale): String {
+        if (!nameTranslationCache.containsKey(locale)) {
+            nameTranslationCache[locale] = translationsProvider.translate(
+                this.name,
+                this.extension.bundle,
+                locale
+            ).lowercase()
+        }
+
+        return nameTranslationCache[locale]!!
+    }
 }

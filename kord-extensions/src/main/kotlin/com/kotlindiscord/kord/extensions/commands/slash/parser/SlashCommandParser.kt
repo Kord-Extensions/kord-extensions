@@ -7,10 +7,7 @@ package com.kotlindiscord.kord.extensions.commands.slash.parser
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.DefaultingConverter
-import com.kotlindiscord.kord.extensions.commands.converters.OptionalConverter
-import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
@@ -41,7 +38,7 @@ public open class SlashCommandParser : ArgumentParser() {
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
-        val command = context.event.interaction.command
+        val command = context.interaction.command
 
         val values = command.options.mapValues {
             val option = it.value.value
@@ -74,7 +71,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
                 is SingleConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context)
+                        converter.parse(null, context, currentValue)
                     } else {
                         false
                     }
@@ -98,11 +95,11 @@ public open class SlashCommandParser : ArgumentParser() {
                         converter.parseSuccess = true
                         currentValue = null
 
-                        converter.validate()
+                        converter.validate(context)
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
-                        throw CommandException(converter.handleError(e, currentValue, context))
+                        throw CommandException(converter.handleError(e, context))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -114,7 +111,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
                 is CoalescingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(listOf(currentValue), context) > 0
+                        converter.parse(null, context, listOf(currentValue)) > 0
                     } else {
                         false
                     }
@@ -138,17 +135,11 @@ public open class SlashCommandParser : ArgumentParser() {
                         converter.parseSuccess = true
                         currentValue = null
 
-                        converter.validate()
+                        converter.validate(context)
                     }
                 } catch (e: CommandException) {
                     if (converter.required) {
-                        val wrappedValues = mutableListOf<String>()
-
-                        if (currentValue != null) {
-                            wrappedValues += currentValue
-                        }
-
-                        throw CommandException(converter.handleError(e, wrappedValues, context))
+                        throw CommandException(converter.handleError(e, context))
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -160,7 +151,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
                 is OptionalConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context)
+                        converter.parse(null, context, currentValue)
                     } else {
                         false
                     }
@@ -171,12 +162,37 @@ public open class SlashCommandParser : ArgumentParser() {
                         converter.parseSuccess = true
                         currentValue = null
 
-                        converter.validate()
+                        converter.validate(context)
                     }
                 } catch (e: CommandException) {
                     if (converter.required || converter.outputError) {
                         throw CommandException(
-                            converter.handleError(e, currentValue, context)
+                            converter.handleError(e, context)
+                        )
+                    }
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+                }
+
+                is OptionalCoalescingConverter<*> -> try {
+                    val parsed = if (currentValue != null) {
+                        converter.parse(null, context, listOf(currentValue)) > 0
+                    } else {
+                        false
+                    }
+
+                    if (parsed) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+
+                        converter.parseSuccess = true
+                        currentValue = null
+
+                        converter.validate(context)
+                    }
+                } catch (e: CommandException) {
+                    if (converter.required || converter.outputError) {
+                        throw CommandException(
+                            converter.handleError(e, context)
                         )
                     }
                 } catch (t: Throwable) {
@@ -185,7 +201,7 @@ public open class SlashCommandParser : ArgumentParser() {
 
                 is DefaultingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(currentValue, context)
+                        converter.parse(null, context, currentValue)
                     } else {
                         false
                     }
@@ -196,7 +212,38 @@ public open class SlashCommandParser : ArgumentParser() {
                         converter.parseSuccess = true
                         currentValue = null
 
-                        converter.validate()
+                        converter.validate(context)
+                    }
+                } catch (e: CommandException) {
+                    if (converter.required || converter.outputError) {
+                        throw CommandException(
+                            converter.handleError(e, context)
+                        )
+                    }
+                } catch (t: Throwable) {
+                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+                }
+
+                is DefaultingCoalescingConverter<*> -> try {
+                    val parsed = if (currentValue != null) {
+                        converter.parse(null, context, listOf(currentValue)) > 0
+                    } else {
+                        false
+                    }
+
+                    if (parsed) {
+                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+
+                        converter.parseSuccess = true
+                        currentValue = null
+
+                        converter.validate(context)
+                    }
+                } catch (e: CommandException) {
+                    if (converter.required || converter.outputError) {
+                        throw CommandException(
+                            converter.handleError(e, context)
+                        )
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }

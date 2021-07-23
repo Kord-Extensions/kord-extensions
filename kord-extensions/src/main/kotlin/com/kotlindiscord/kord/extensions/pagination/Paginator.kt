@@ -26,27 +26,6 @@ import java.util.*
 
 private const val WRONG_TYPE = "Wrong event type!"
 
-/** Emoji used to jump to the first page. **/
-public val FIRST_PAGE_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u23EE")
-
-/** Emoji used to jump to the previous page. **/
-public val LEFT_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u2B05")
-
-/** Emoji used to jump to the next page. **/
-public val RIGHT_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u27A1")
-
-/** Emoji used to jump to the last page. **/
-public val LAST_PAGE_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u23ED")
-
-/** Emoji used to destroy the paginator. **/
-public val DELETE_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u274C")
-
-/** Group switch emoji, counter-clockwise arrows icon. **/
-public val SWITCH_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\uD83D\uDD04")
-
-/** Group switch emoji, information icon. **/
-public val EXPAND_EMOJI: ReactionEmoji = ReactionEmoji.Unicode("\u2139\uFE0F")
-
 private val logger = KotlinLogging.logger {}
 
 /**
@@ -67,6 +46,13 @@ private val logger = KotlinLogging.logger {}
  * @param switchEmoji If you have multiple groups, this is the emoji used to switch between them
  * @param locale Locale to use for translations
  */
+@Deprecated(
+    "The paginator has been replaced with much better, button-based variants. You can easily get at them " +
+        "from your commands by using the `paginator` DSL, or take a look at `InteractionButtonPaginator` or " +
+        "`MessageButtonPaginator` for interaction-based and message-based implementations respectively.",
+
+    level = DeprecationLevel.WARNING
+)
 public open class Paginator(
     public val pages: Pages,
     public val targetChannel: MessageChannelBehavior? = null,
@@ -168,15 +154,11 @@ public open class Paginator(
             reactions += switchEmoji
         }
 
-        if (message.getChannelOrNull() !is DmChannel) {
-            reactions += DELETE_EMOJI
+        if (message.getChannelOrNull() !is DmChannel && reactions.isNotEmpty()) {
+            reactions += FINISH_EMOJI
         }
 
         if (reactions.isNotEmpty()) {
-            if (reactions.size == 1 && reactions.first() == DELETE_EMOJI) {
-                return  // No point in paginating this
-            }
-
             reactions.forEach { message.addReaction(it) }
 
             val guildCondition: suspend Event.() -> Boolean = {
@@ -224,9 +206,13 @@ public open class Paginator(
                 runTimeoutCallbacks()
             }
         } else {
-            if (timeout != null && !keepEmbed) {
+            if (timeout != null) {
                 delay(timeout)
-                destroy(message)
+
+                if (!keepEmbed) {
+                    destroy(message)
+                }
+
                 runTimeoutCallbacks()
             }
         }
@@ -272,7 +258,7 @@ public open class Paginator(
             LEFT_EMOJI -> goToPage(message, currentPageNum - 1)
             RIGHT_EMOJI -> goToPage(message, currentPageNum + 1)
             LAST_PAGE_EMOJI -> goToPage(message, pages.size - 1)
-            DELETE_EMOJI -> if (channel !is DmChannel) destroy(message)
+            FINISH_EMOJI -> if (channel !is DmChannel) destroy(message)
 
             switchEmoji -> switchGroup(message)
 

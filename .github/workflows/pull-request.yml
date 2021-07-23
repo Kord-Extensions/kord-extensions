@@ -2,8 +2,9 @@ name: CI (PRs/root)
 
 on:
   push:
-    branches:
-      - "root"
+    branches-ignore:
+      - "develop"
+      - "gh-pages"
 
   pull_request:
 

@@ -2,6 +2,8 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
+import com.kotlindiscord.kord.extensions.checks.and
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -14,12 +16,11 @@ import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.classesToP
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.fieldsToPages
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.methodsToPages
 import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
-import com.kotlindiscord.kord.extensions.pagination.Paginator
+import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.core.behavior.channel.withTyping
-import dev.kord.core.event.message.MessageCreateEvent
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.MappingsQuery
@@ -31,8 +32,6 @@ private const val PAGE_FOOTER = "Powered by Linkie"
 
 private const val PAGE_FOOTER_ICON =
     "https://cdn.discordapp.com/attachments/789139884307775580/790887070334976020/linkie_arrow.png"
-
-private const val TIMEOUT_MULTIPLIER = 1000L  // To transform it into seconds
 
 /**
  * Extension providing Minecraft mappings lookups on Discord.
@@ -514,12 +513,14 @@ class MappingsExtension : Extension() {
                         )
                     }
 
-                    val paginator = Paginator(
-                        targetMessage = message,
+                    val paginator = MessageButtonPaginator(
+                        extension = this@MappingsExtension,
+                        targetMessage = event.message,
                         pages = pagesObj,
-                        owner = message.author,
                         keepEmbed = true,
-                        timeout = getTimeout()
+                        owner = message.author,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
                     )
 
                     paginator.send()
@@ -574,12 +575,14 @@ class MappingsExtension : Extension() {
                         )
                     }
 
-                    val paginator = Paginator(
-                        targetMessage = message,
+                    val paginator = MessageButtonPaginator(
+                        extension = this@MappingsExtension,
+                        targetMessage = event.message,
                         pages = pagesObj,
-                        owner = message.author,
                         keepEmbed = true,
-                        timeout = getTimeout()
+                        owner = message.author,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
                     )
 
                     paginator.send()
@@ -638,12 +641,14 @@ class MappingsExtension : Extension() {
                         )
                     }
 
-                    val paginator = Paginator(
-                        targetMessage = message,
+                    val paginator = MessageButtonPaginator(
+                        extension = this@MappingsExtension,
+                        targetMessage = event.message,
                         pages = pagesObj,
-                        owner = message.author,
                         keepEmbed = true,
-                        timeout = getTimeout()
+                        owner = message.author,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
                     )
 
                     paginator.send()
@@ -699,12 +704,14 @@ class MappingsExtension : Extension() {
                         )
                     }
 
-                    val paginator = Paginator(
-                        targetMessage = message,
+                    val paginator = MessageButtonPaginator(
+                        extension = this@MappingsExtension,
+                        targetMessage = event.message,
                         pages = pagesObj,
-                        owner = message.author,
                         keepEmbed = true,
-                        timeout = getTimeout()
+                        owner = message.author,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
                     )
 
                     paginator.send()
@@ -788,12 +795,14 @@ class MappingsExtension : Extension() {
                         )
                     }
 
-                    val paginator = Paginator(
-                        targetMessage = message,
+                    val paginator = MessageButtonPaginator(
+                        extension = this@MappingsExtension,
+                        targetMessage = event.message,
                         pages = pagesObj,
-                        owner = message.author,
                         keepEmbed = true,
-                        timeout = getTimeout()
+                        owner = message.author,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
                     )
 
                     paginator.send()
@@ -849,12 +858,14 @@ class MappingsExtension : Extension() {
                         )
                     }
 
-                    val paginator = Paginator(
-                        targetMessage = message,
+                    val paginator = MessageButtonPaginator(
+                        extension = this@MappingsExtension,
+                        targetMessage = event.message,
                         pages = pagesObj,
-                        owner = message.author,
                         keepEmbed = true,
-                        timeout = getTimeout()
+                        owner = message.author,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
                     )
 
                     paginator.send()
@@ -957,12 +968,14 @@ class MappingsExtension : Extension() {
             }
         }
 
-        val paginator = Paginator(
-            targetMessage = message,
+        val paginator = MessageButtonPaginator(
+            extension = this@MappingsExtension,
+            targetMessage = event.message,
             pages = pagesObj,
-            owner = message.author,
             keepEmbed = true,
-            timeout = getTimeout()
+            owner = message.author,
+            timeoutSeconds = getTimeout(),
+            locale = getLocale(),
         )
 
         paginator.send()
@@ -1058,12 +1071,14 @@ class MappingsExtension : Extension() {
             }
         }
 
-        val paginator = Paginator(
-            targetMessage = message,
+        val paginator = MessageButtonPaginator(
+            extension = this@MappingsExtension,
+            targetMessage = event.message,
             pages = pagesObj,
-            owner = message.author,
             keepEmbed = true,
-            timeout = getTimeout()
+            owner = message.author,
+            timeoutSeconds = getTimeout(),
+            locale = getLocale(),
         )
 
         paginator.send()
@@ -1159,29 +1174,33 @@ class MappingsExtension : Extension() {
             }
         }
 
-        val paginator = Paginator(
-            targetMessage = message,
+        val paginator = MessageButtonPaginator(
+            extension = this@MappingsExtension,
+            targetMessage = event.message,
             pages = pagesObj,
-            owner = message.author,
             keepEmbed = true,
-            timeout = getTimeout()
+            owner = message.author,
+            timeoutSeconds = getTimeout(),
+            locale = getLocale(),
         )
 
         paginator.send()
     }
 
-    private suspend fun getTimeout() = builder.config.getTimeout() * TIMEOUT_MULTIPLIER
+    private suspend fun getTimeout() = builder.config.getTimeout()
 
-    private suspend fun customChecks(command: String, namespace: Namespace): suspend (MessageCreateEvent) -> Boolean {
-        val allChecks = builder.commandChecks.map { it.invoke(command) }
-        val allNamespaceChecks = builder.namespaceChecks.map { it.invoke(namespace) }
+    private suspend fun customChecks(command: String, namespace: Namespace): Check<*> {
+        val allChecks = builder.commandChecks.map { it.invoke(command) }.toMutableList()
+        val allNamespaceChecks = builder.namespaceChecks.map { it.invoke(namespace) }.toMutableList()
 
-        suspend fun inner(event: MessageCreateEvent): Boolean =
-            allChecks.all { it.invoke(event) }.and(
-                allNamespaceChecks.all { it.invoke(event) }
-            )
+        var rootCheck = allChecks.removeFirstOrNull()
+            ?: allNamespaceChecks.removeFirstOrNull()
+            ?: return { pass() }
 
-        return ::inner
+        allChecks.forEach { rootCheck = rootCheck and it }
+        allNamespaceChecks.forEach { rootCheck = rootCheck and it }
+
+        return rootCheck
     }
 
     companion object {

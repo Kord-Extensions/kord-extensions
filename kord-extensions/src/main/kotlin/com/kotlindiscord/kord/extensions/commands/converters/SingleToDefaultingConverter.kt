@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -20,22 +21,28 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 public class SingleToDefaultingConverter<T : Any>(
     public val singleConverter: SingleConverter<T>,
     defaultValue: T,
+    outputError: Boolean = false,
 
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
 
-    override var validator: (suspend Argument<*>.(T) -> Unit)? = null
-) : DefaultingConverter<T>(defaultValue) {
+    override var validator: Validator<T> = null
+) : DefaultingConverter<T>(defaultValue, outputError = outputError) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
-        val result = singleConverter.parse(arg, context)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val token = parser?.peekNext()
+        val result = singleConverter.parse(parser, context, named ?: token?.data)
 
         if (result) {
             this.parsed = singleConverter.parsed
+
+            if (named == null) {
+                parser?.parseNext()  // Move the cursor ahead
+            }
 
             return true
         }
@@ -45,9 +52,8 @@ public class SingleToDefaultingConverter<T : Any>(
 
     override suspend fun handleError(
         t: Throwable,
-        value: String?,
         context: CommandContext
-    ): String = singleConverter.handleError(t, value, context)
+    ): String = singleConverter.handleError(t, context)
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
         val option = singleConverter.toSlashOption(arg)

@@ -128,20 +128,6 @@ Function                                | Description
 `RestRequestException.hasNotStatus`     | Check whether the given exception **does not concern** a specific `HttpStatusCode`
 `RestRequestException.hasNotStatusCode` | Check whether the given exception **does not concern** a specific HTTP status code integer
 
-## Scheduler
-
-The `Scheduler` class is a rudimentary approach to scheduling `Job`s within a given coroutine scope, with the option
-to cancel the `Job` early if required. The following instance functions are available for this:
-
-Function    | Description
-:---------- | :----------
-`cancelAll` | Immediately cancel the execution of all scheduled jobs
-`cancelJob` | Given a job's UUID, cancel its execution
-`finishAll` | Immediately execute the callbacks of all scheduled jobs
-`finishJob` | Given a job's UUID, immediately execute its callback
-`getJob`    | Given a job's UUID, return the `Job` object - or `null` if the UUID doesn't match anything
-`schedule`  | Schedule a job - either returning a generated UUID, or using a provided one
-
 ## String
 
 Function                 | Description

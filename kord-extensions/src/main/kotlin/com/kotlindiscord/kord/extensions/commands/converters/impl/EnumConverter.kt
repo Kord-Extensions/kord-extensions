@@ -10,7 +10,9 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -25,15 +27,31 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see enum
  * @see enumList
  */
+@Converter(
+    "enum",
+
+    types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.LIST],
+
+    generic = "E: Enum<E>",
+    imports = ["com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum"],
+    arguments = [
+        "typeName: String",
+        "noinline getter: suspend (String) -> E? = { getEnum<E>(it) }",
+        "bundle: String? = null",
+    ]
+)
 @OptIn(KordPreview::class)
 public class EnumConverter<E : Enum<E>>(
     typeName: String,
     private val getter: suspend (String) -> E?,
-    override var validator: (suspend Argument<*>.(E) -> Unit)? = null
+    override val bundle: String? = null,
+    override var validator: Validator<E> = null
 ) : SingleConverter<E>() {
     override val signatureTypeString: String = typeName
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
         try {
             parsed = getter.invoke(arg) ?: return false
         } catch (e: IllegalArgumentException) {
@@ -48,136 +66,9 @@ public class EnumConverter<E : Enum<E>>(
 }
 
 /**
- * Create an enum converter, for single arguments - using a custom getter.
- *
- * @see EnumConverter
- */
-public inline fun <reified T : Enum<T>> Arguments.enum(
-    displayName: String,
-    description: String,
-    typeName: String,
-    noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
-): SingleConverter<T> = arg(displayName, description, EnumConverter(typeName, getter, validator))
-
-/**
- * Create an enum converter, for single arguments - using the default getter, [getEnum].
- *
- * @see EnumConverter
- */
-public inline fun <reified T : Enum<T>> Arguments.enum(
-    displayName: String,
-    description: String,
-    typeName: String,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
-): SingleConverter<T> =
-    enum(displayName, description, typeName, ::getEnum, validator)
-
-/**
- * Create a defaulting enum converter, for single arguments - using a custom getter.
- *
- * @see EnumConverter
- */
-public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
-    displayName: String,
-    description: String,
-    typeName: String,
-    defaultValue: T,
-    noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
-): DefaultingConverter<T> = arg(
-    displayName,
-    description,
-    EnumConverter(typeName, getter)
-        .toDefaulting(defaultValue, nestedValidator = validator)
-)
-
-/**
- * Create an enum converter, for single arguments - using the default getter, [getEnum].
- *
- * @see EnumConverter
- */
-public inline fun <reified T : Enum<T>> Arguments.defaultingEnum(
-    displayName: String,
-    description: String,
-    typeName: String,
-    defaultValue: T,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
-): DefaultingConverter<T> =
-    defaultingEnum(displayName, description, typeName, defaultValue, ::getEnum, validator)
-
-/**
- * Create an optional enum converter, for single arguments - using a custom getter.
- *
- * @see EnumConverter
- */
-public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
-    displayName: String,
-    description: String,
-    typeName: String,
-    noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
-): OptionalConverter<T?> = arg(
-    displayName,
-    description,
-    EnumConverter(typeName, getter)
-        .toOptional(nestedValidator = validator)
-)
-
-/**
- * Create an optional enum converter, for single arguments - using the default getter, [getEnum].
- *
- * @see EnumConverter
- */
-public inline fun <reified T : Enum<T>> Arguments.optionalEnum(
-    displayName: String,
-    description: String,
-    typeName: String,
-    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
-): OptionalConverter<T?> =
-    optionalEnum<T>(displayName, description, typeName, ::getEnum, validator)
-
-/**
- * Create an enum converter, for lists of arguments - using a custom getter.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see EnumConverter
- */
-public inline fun <reified T : Enum<T>> Arguments.enumList(
-    displayName: String,
-    description: String,
-    typeName: String,
-    required: Boolean = true,
-    noinline getter: suspend (String) -> T?,
-    noinline validator: (suspend Argument<*>.(List<T>) -> Unit)? = null,
-): MultiConverter<T> = arg(
-    displayName,
-    description,
-    EnumConverter(typeName, getter)
-        .toMulti(required, nestedValidator = validator)
-)
-
-/**
- * Create an enum converter, for lists of arguments - using the default getter, [getEnum].
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see EnumConverter
- */
-public inline fun <reified T : Enum<T>> Arguments.enumList(
-    displayName: String,
-    description: String,
-    typeName: String,
-    required: Boolean = true,
-    noinline validator: (suspend Argument<*>.(List<T>) -> Unit)? = null,
-): MultiConverter<T> =
-    enumList<T>(displayName, description, typeName, required, ::getEnum, validator)
-
-/**
  * The default enum value getter - matches enums based on a case-insensitive string comparison with the name.
  */
-public inline fun <reified T : Enum<T>> getEnum(arg: String): T? =
-    enumValues<T>().firstOrNull {
+public inline fun <reified E : Enum<E>> getEnum(arg: String): E? =
+    enumValues<E>().firstOrNull {
         it.name.equals(arg, true)
     }

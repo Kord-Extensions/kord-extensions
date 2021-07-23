@@ -9,10 +9,15 @@ package com.kotlindiscord.kord.extensions.commands.slash.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.IntChoiceBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
@@ -24,15 +29,24 @@ private const val DEFAULT_RADIX = 10
  *
  * Discord doesn't support longs or floating point types, so this is the only numeric type you can use directly.
  */
+@Converter(
+    "number",
+
+    types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    arguments = ["radix: Int = $DEFAULT_RADIX"]
+)
 @OptIn(KordPreview::class)
-public class NumberChoiceConverter(
+public
+class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
     choices: Map<String, Int>,
-    override var validator: (suspend Argument<*>.(Int) -> Unit)? = null
+    override var validator: Validator<Int> = null
 ) : ChoiceConverter<Int>(choices) {
     override val signatureTypeString: String = "converters.number.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
         try {
             this.parsed = arg.toInt(radix)
         } catch (e: NumberFormatException) {
@@ -55,53 +69,3 @@ public class NumberChoiceConverter(
             this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
         }
 }
-
-/**
- * Create a number choice argument converter, for a defined set of single arguments.
- *
- * @see NumberChoiceConverter
- */
-public fun Arguments.numberChoice(
-    displayName: String,
-    description: String,
-    choices: Map<String, Int>,
-    radix: Int = 10,
-    validator: (suspend Argument<*>.(Int) -> Unit)? = null
-): SingleConverter<Int> = arg(displayName, description, NumberChoiceConverter(radix, choices, validator))
-
-/**
- * Create an optional number choice argument converter, for a defined set of single arguments.
- *
- * @see NumberChoiceConverter
- */
-public fun Arguments.optionalNumberChoice(
-    displayName: String,
-    description: String,
-    choices: Map<String, Int>,
-    radix: Int = 10,
-    validator: (suspend Argument<*>.(Int?) -> Unit)? = null
-): OptionalConverter<Int?> = arg(
-    displayName,
-    description,
-    NumberChoiceConverter(radix, choices)
-        .toOptional(nestedValidator = validator)
-)
-
-/**
- * Create a defaulting number choice argument converter, for a defined set of single arguments.
- *
- * @see NumberChoiceConverter
- */
-public fun Arguments.defaultingNumberChoice(
-    displayName: String,
-    description: String,
-    defaultValue: Int,
-    choices: Map<String, Int>,
-    radix: Int = 10,
-    validator: (suspend Argument<*>.(Int) -> Unit)? = null
-): DefaultingConverter<Int> = arg(
-    displayName,
-    description,
-    NumberChoiceConverter(radix, choices)
-        .toDefaulting(defaultValue, nestedValidator = validator)
-)

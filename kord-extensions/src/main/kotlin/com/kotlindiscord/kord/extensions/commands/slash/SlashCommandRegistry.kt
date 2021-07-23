@@ -1,4 +1,6 @@
-@file:Suppress("StringLiteralDuplication")  // There's no good way to avoid this repetition at the moment
+@file:OptIn(TranslationNotSupported::class)
+
+@file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.commands.slash
 
@@ -10,6 +12,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.SlashCommands
+import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.rest.builder.interaction.ApplicationCommandCreateBuilder
 import kotlinx.coroutines.flow.filter
@@ -158,7 +161,7 @@ public open class SlashCommandRegistry : KoinComponent {
 
                     command(
                         translatedName,
-                        translationsProvider.translate(it.description, it.extension.bundle)
+                        translationsProvider.translate(it.description, it.extension.bundle, locale = locale)
                     ) { register(it) }
                 }
             }.toList().associate { it.name to it.id }
@@ -201,6 +204,28 @@ public open class SlashCommandRegistry : KoinComponent {
                 }
         }
 
+        val commandsWithPerms = commandMap.filterValues { !it.allowByDefault }.toList().groupBy {
+            it.second.guild
+        }
+
+        commandsWithPerms.forEach { (guild, commands) ->
+            if (guild != null) {
+                api.bulkEditApplicationCommandPermissions(api.applicationId, guild) {
+                    commands.forEach { (id, commandObj) ->
+                        command(id) {
+                            commandObj.allowedUsers.map { user(it, true) }
+                            commandObj.disallowedUsers.map { user(it, false) }
+
+                            commandObj.allowedRoles.map { role(it, true) }
+                            commandObj.disallowedRoles.map { role(it, false) }
+                        }
+                    }
+                }
+            } else {
+                logger.warn { "Applying permissions to global slash commands is currently not supported." }
+            }
+        }
+
         logger.info {
             if (guild == null) {
                 "Finished synchronising global slash commands"
@@ -211,7 +236,9 @@ public open class SlashCommandRegistry : KoinComponent {
     }
 
     internal open suspend fun ApplicationCommandCreateBuilder.register(command: SlashCommand<out Arguments>) {
-//        val locale = bot.settings.i18nBuilder.defaultLocale
+        val locale = bot.settings.i18nBuilder.defaultLocale
+
+        this.defaultPermission = command.guild == null || command.allowByDefault
 
         if (command.hasBody) {
             val args = command.arguments?.invoke()
@@ -243,7 +270,10 @@ public open class SlashCommandRegistry : KoinComponent {
                     converter.toSlashOption(arg)
                 }
 
-                this.subCommand(it.name, it.description) {
+                this.subCommand(
+                    it.name,
+                    translationsProvider.translate(it.description, command.extension.bundle, locale = locale)
+                ) {
                     if (args != null) {
                         if (this.options == null) this.options = mutableListOf()
 
@@ -266,7 +296,10 @@ public open class SlashCommandRegistry : KoinComponent {
                             converter.toSlashOption(arg)
                         }
 
-                        this.subCommand(it.name, it.description) {
+                        this.subCommand(
+                            it.name,
+                            translationsProvider.translate(it.description, command.extension.bundle, locale = locale)
+                        ) {
                             if (args != null) {
                                 if (this.options == null) this.options = mutableListOf()
 
@@ -281,7 +314,9 @@ public open class SlashCommandRegistry : KoinComponent {
 
     /** Handle an [InteractionCreateEvent] and try to execute the corresponding command. **/
     public open suspend fun handle(event: InteractionCreateEvent) {
-        val commandId = event.interaction.command.rootId
+        val interaction = event.interaction as? CommandInteraction ?: return
+
+        val commandId = interaction.command.rootId
         val command = commandMap[commandId]
 
         if (command == null) {

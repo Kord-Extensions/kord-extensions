@@ -1,19 +1,12 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.builders
 
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
-import com.kotlindiscord.kord.extensions.commands.Command
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownProvider
-import com.kotlindiscord.kord.extensions.commands.cooldowns.base.CooldownType
-import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.ChannelCooldown
-import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.Cooldown
-import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.GuildCooldown
-import com.kotlindiscord.kord.extensions.commands.cooldowns.impl.UserCooldown
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
@@ -23,6 +16,7 @@ import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
 import dev.kord.common.Color
+import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
@@ -33,6 +27,8 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.supplier.EntitySupplier
+import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
 import mu.KLogger
@@ -44,7 +40,6 @@ import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
 import java.util.*
-import kotlin.time.*
 
 internal typealias LocaleResolver = suspend (
     guild: GuildBehavior?,
@@ -197,9 +192,20 @@ public open class ExtensibleBotBuilder {
 
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
-        loadModule { single { messageCommandsBuilder.messageRegistryBuilder() } bind MessageCommandRegistry::class }
-        loadModule { single { SentryAdapter() } bind SentryAdapter::class }
+        loadModule { single { messageCommandsBuilder.registryBuilder() } bind MessageCommandRegistry::class }
         loadModule { single { slashCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
+
+        loadModule {
+            single {
+                val adapter = extensionsBuilder.sentryExtensionBuilder.builder()
+
+                if (extensionsBuilder.sentryExtensionBuilder.enable) {
+                    extensionsBuilder.sentryExtensionBuilder.setupCallback(adapter)
+                }
+
+                adapter
+            } bind SentryAdapter::class
+        }
 
         hooksBuilder.runAfterKoinSetup()
     }
@@ -223,73 +229,6 @@ public open class ExtensibleBotBuilder {
         return bot
     }
 
-    /** Builder used for configuring the bot's cooldowns options. **/
-    public class CooldownsBuilder<T : Command> {
-
-        /** @suppress **/
-        public var provider: () -> CooldownProvider = { Cooldown() }
-
-        /** @suppress **/
-        public var priority: () -> List<CooldownType> = {
-            listOf(
-                UserCooldown(),
-                ChannelCooldown(),
-                GuildCooldown()
-            )
-        }
-
-        /** @suppress **/
-        public var importBuilder: CooldownProvider.(T) -> Unit = {}
-
-        /** @suppress **/
-        public var exportBuilder: CooldownProvider.(T) -> Unit = {}
-
-        /**
-         * Defines whether we should automatically clear expired cooldowns in the background.
-         */
-        public var autoClearCooldowns: Boolean = true
-
-        /**
-         * Specifies how often we should clear expired cooldowns.
-         */
-        @OptIn(ExperimentalTime::class)
-        @Suppress("MagicNumber")
-        public var autoClearTime: Duration = Duration.minutes(5)
-
-        /**
-         * Sets the implementation to use for the command's cooldown object.
-         */
-        public fun defaultProvider(builder: () -> CooldownProvider) {
-            this.provider = builder
-        }
-
-        /**
-         * Defines the priority for which cooldowns to check and set.
-         */
-        public fun priority(builder: () -> List<CooldownType>) {
-            this.priority = builder
-        }
-
-        /**
-         * Allows cooldowns to be imported, giving you access to the command's [CooldownProvider] as well as the
-         * command itself. This is called when extensions are being setup.
-         */
-        public fun import(builder: CooldownProvider.(T) -> Unit) {
-            this.importBuilder = builder
-        }
-
-        /**
-         * Allows cooldowns to be exported, giving you access to the command's [CooldownProvider] as well as the
-         * command itself. This is called when extensions are being unloaded.
-         *
-         * You will need to make sure you unload extensions yourself, e.g. shutdown command that unloads extensions
-         * before disconnecting, as kord-ex does not unload extensions in its lifecycle.
-         */
-        public fun export(builder: CooldownProvider.(T) -> Unit) {
-            this.exportBuilder = builder
-        }
-    }
-
     /** Builder used for configuring the bot's caching options. **/
     @BotBuilderDSL
     public class CacheBuilder {
@@ -302,6 +241,10 @@ public open class ExtensibleBotBuilder {
          */
         @Suppress("MagicNumber")
         public var cachedMessages: Int? = 10_000
+
+        /** The default Kord caching strategy - defaults to caching REST when an entity doesn't exist in the cache. **/
+        public var defaultStrategy: EntitySupplyStrategy<EntitySupplier> =
+            EntitySupplyStrategy.cacheWithCachingRestFallback
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var builder: (KordCacheBuilder.(resources: ClientResources) -> Unit) = {
@@ -339,8 +282,16 @@ public open class ExtensibleBotBuilder {
         /** @suppress Help extension builder. **/
         public open val helpExtensionBuilder: HelpExtensionBuilder = HelpExtensionBuilder()
 
+        /** @suppress Sentry extension builder. **/
+        public open val sentryExtensionBuilder: SentryExtensionBuilder = SentryExtensionBuilder()
+
         /** Whether to enable the bundled Sentry extension. Defaults to `true`. **/
-        public var sentry: Boolean = true
+        @Deprecated("Use the sentry { } builder instead.", level = DeprecationLevel.ERROR)
+        public var sentry: Boolean
+            get() = sentryExtensionBuilder.debug
+            set(value) {
+                sentryExtensionBuilder.debug = value
+            }
 
         /** Add a custom extension to the bot via a builder - probably the extension constructor. **/
         public open fun add(builder: () -> Extension) {
@@ -352,15 +303,84 @@ public open class ExtensibleBotBuilder {
             builder(helpExtensionBuilder)
         }
 
+        /** Configure the built-in sentry extension, or disable it so you can use your own. **/
+        public open suspend fun sentry(builder: SentryExtensionBuilder.() -> Unit) {
+            builder(sentryExtensionBuilder)
+        }
+
+        /** Builder used to configure Sentry and the Sentry extension. **/
+        @BotBuilderDSL
+        public open class SentryExtensionBuilder {
+            /** Whether to enable Sentry integration. This includes the extension, and [SentryAdapter] setup. **/
+            public open var enable: Boolean = false
+
+            /** Whether to enable Sentry's debug mode. **/
+            public open var debug: Boolean = false
+
+            /** Your Sentry DSN, required for submitting events to Sentry. **/
+            public open var dsn: String? = null
+
+            /** Optional distribution name to send to Sentry. **/
+            public open var distribution: String? = null
+
+            /** Optional environment name to send to Sentry. **/
+            public open var environment: String? = null
+
+            /** Optional release version to send to Sentry. **/
+            public open val release: String? = null
+
+            /** Optional server name to send to Sentry. **/
+            public open val serverName: String? = null
+
+            /** Whether to ping users when responding to them. **/
+            public var pingInReply: Boolean = true
+
+            /** Builder used to construct a [SentryAdapter] instance, usually the constructor. **/
+            public open var builder: () -> SentryAdapter = ::SentryAdapter
+
+            /**
+             * Function in charge of setting up the [SentryAdapter], by calling its `setup` function. You can use this
+             * if you need to pass extra parameters to the setup function, but make sure you pass everything that's
+             * required.
+             */
+            public open var setupCallback: SentryAdapter.() -> Unit = {
+                this.setup(
+                    dsn = dsn,
+                    debug = debug,
+
+                    distribution = distribution,
+                    environment = environment,
+                    release = release,
+                    serverName = serverName,
+                )
+            }
+
+            /** Register a builder used to construct a [SentryAdapter] instance, usually the constructor. **/
+            public fun builder(body: () -> SentryAdapter) {
+                builder = body
+            }
+
+            /**
+             * Register the function in charge of setting up the [SentryAdapter], by calling its `setup` function.
+             * You can use this if you need to pass extra parameters to the setup function, but make sure you pass
+             * everything that's required.
+             */
+            public fun setup(body: SentryAdapter.() -> Unit) {
+                setupCallback = body
+            }
+        }
+
         /** Builder used for configuring options, specifically related to the help extension. **/
         @BotBuilderDSL
         public open class HelpExtensionBuilder {
             /** Whether to enable the bundled help extension. Defaults to `true`. **/
             public var enableBundledExtension: Boolean = true
 
-            /** Time to wait before the help paginator times out and can't be used. Defaults to 60 seconds. **/
+            /**
+             * Time to wait before the help paginator times out and can't be used, in seconds. Defaults to 60.
+             */
             @Suppress("MagicNumber")
-            public var paginatorTimeout: Long = 60_000L  // 60 seconds
+            public var paginatorTimeout: Long = 60L  // 60 seconds
 
             /** Whether to delete the help paginator after the timeout ends. **/
             public var deletePaginatorOnTimeout: Boolean = false
@@ -368,19 +388,22 @@ public open class ExtensibleBotBuilder {
             /** Whether to delete the help command invocation after the paginator timeout ends. **/
             public var deleteInvocationOnPaginatorTimeout: Boolean = false
 
+            /** Whether to ping users when responding to them. **/
+            public var pingInReply: Boolean = true
+
             /** List of command checks. These checks will be checked against all commands in the help extension. **/
-            public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+            public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
 
             /** For custom help embed colours. Only one may be defined. **/
-            public var colourGetter: suspend () -> Color = { DISCORD_BLURPLE }
+            public var colourGetter: suspend MessageCreateEvent.() -> Color = { DISCORD_BLURPLE }
 
             /** Define a callback that returns a [Color] to use for help embed colours. Feel free to mix it up! **/
-            public fun colour(builder: suspend () -> Color) {
+            public fun colour(builder: suspend MessageCreateEvent.() -> Color) {
                 colourGetter = builder
             }
 
             /** Like [colour], but American. **/
-            public fun color(builder: suspend () -> Color): Unit = colour(builder)
+            public fun color(builder: suspend MessageCreateEvent.() -> Color): Unit = colour(builder)
 
             /**
              * Define a check which must pass for help commands to be executed. This check will be applied to all
@@ -394,7 +417,7 @@ public open class ExtensibleBotBuilder {
              *
              * @param checks Checks to apply to all help commands.
              */
-            public fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+            public fun check(vararg checks: Check<MessageCreateEvent>) {
                 checks.forEach { checkList.add(it) }
             }
 
@@ -403,7 +426,7 @@ public open class ExtensibleBotBuilder {
              *
              * @param check Check to apply to all help commands.
              */
-            public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+            public fun check(check: Check<MessageCreateEvent>) {
                 checkList.add(check)
             }
         }
@@ -462,7 +485,7 @@ public open class ExtensibleBotBuilder {
          * via `loadModule` before the modules are actually accessed.
          */
         public fun afterKoinSetup(body: () -> Unit): Boolean =
-            beforeKoinSetupList.add(body)
+            afterKoinSetupList.add(body)
 
         /**
          * Register a lambda to be called before Koin has been set up. You can use this to register Koin modules
@@ -491,7 +514,7 @@ public open class ExtensibleBotBuilder {
             createdList.add(body)
 
         /**
-         * Register a lambda to be called before after any extension is successfully added to the bot..
+         * Register a lambda to be called after any extension is successfully added to the bot.
          */
         public fun extensionAdded(body: suspend ExtensibleBot.(extension: Extension) -> Unit): Boolean =
             extensionAddedList.add(body)
@@ -739,17 +762,14 @@ public open class ExtensibleBotBuilder {
         public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var messageRegistryBuilder: () -> MessageCommandRegistry = { MessageCommandRegistry() }
+        public var registryBuilder: () -> MessageCommandRegistry = { MessageCommandRegistry() }
 
         /**
          * List of command checks.
          *
          * These checks will be checked against all commands.
          */
-        public val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
-
-        /** @suppress Builder that shouldn't be set directly by the user. **/
-        public val cooldownsBuilder: CooldownsBuilder<MessageCommand<out Arguments>> = CooldownsBuilder()
+        public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
 
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
@@ -766,8 +786,8 @@ public open class ExtensibleBotBuilder {
          * Register the builder used to create the [MessageCommandRegistry]. You can change this if you need to make
          * use of a subclass.
          */
-        public fun messageRegistry(builder: () -> MessageCommandRegistry) {
-            messageRegistryBuilder = builder
+        public fun registry(builder: () -> MessageCommandRegistry) {
+            registryBuilder = builder
         }
 
         /**
@@ -781,7 +801,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all commands.
          */
-        public fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+        public fun check(vararg checks: Check<MessageCreateEvent>) {
             checks.forEach { checkList.add(it) }
         }
 
@@ -790,15 +810,8 @@ public open class ExtensibleBotBuilder {
          *
          * @param check Checks to apply to all commands.
          */
-        public fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+        public fun check(check: Check<MessageCreateEvent>) {
             checkList.add(check)
-        }
-
-        /**
-         * Allows for configuring cooldown settings for commands.
-         */
-        public fun cooldowns(builder: CooldownsBuilder<MessageCommand<out Arguments>>.() -> Unit) {
-            cooldownsBuilder.apply(builder)
         }
     }
 
@@ -819,10 +832,7 @@ public open class ExtensibleBotBuilder {
          *
          * These checks will be checked against all slash commands.
          */
-        public val checkList: MutableList<suspend (InteractionCreateEvent) -> Boolean> = mutableListOf()
-
-        /** @suppress Builder that shouldn't be set directly by the user. **/
-        public val cooldownsBuilder: CooldownsBuilder<SlashCommand<out Arguments>> = CooldownsBuilder()
+        public val checkList: MutableList<Check<InteractionCreateEvent>> = mutableListOf()
 
         /** Set a guild ID to use for all global slash commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake) {
@@ -859,7 +869,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all slash commands.
          */
-        public fun check(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+        public fun check(vararg checks: Check<InteractionCreateEvent>) {
             checks.forEach { checkList.add(it) }
         }
 
@@ -868,15 +878,8 @@ public open class ExtensibleBotBuilder {
          *
          * @param check Check to apply to all slash commands.
          */
-        public fun check(check: suspend (InteractionCreateEvent) -> Boolean) {
+        public fun check(check: Check<InteractionCreateEvent>) {
             checkList.add(check)
-        }
-
-        /**
-         * Allows for configuring cooldown settings for slash commands.
-         */
-        public fun cooldowns(builder: CooldownsBuilder<SlashCommand<out Arguments>>.() -> Unit) {
-            cooldownsBuilder.apply(builder)
         }
     }
 }

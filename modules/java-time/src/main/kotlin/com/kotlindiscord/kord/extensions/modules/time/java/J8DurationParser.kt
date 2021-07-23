@@ -14,6 +14,11 @@ import java.util.*
 public object J8DurationParser : KoinComponent {
     private val translations: TranslationsProvider by inject()
 
+    public fun charValid(char: Char, locale: Locale): Boolean =
+        char.isDigit() ||
+            char == ' ' ||
+            J8TimeUnitCache.getUnits(locale).filterKeys { it.startsWith(char) }.isNotEmpty()
+
     /**
      * Parse the provided string to a [ChronoContainer] object, using the strings provided by the given [Locale].
      */

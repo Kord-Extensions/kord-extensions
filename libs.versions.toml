@@ -10,7 +10,10 @@ icu4j = "69.1"
 junit = "5.6.2"
 koin = "3.0.2"
 konf = "0.23.0"
+#kord = "0.7.2"
 kord = "0.7.x-SNAPSHOT"
+kotlinpoet = "1.8.0"
+ksp = "1.5.10-1.0.0-beta02"
 logging = "2.0.6"
 kx-ser = "1.2.1"
 linkie = "1.0.76"
@@ -32,7 +35,9 @@ koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 konf-core = { module = "com.uchuhimo:konf", version.ref = "konf" }
 konf-toml = { module = "com.uchuhimo:konf-toml", version.ref = "konf" }
 kord = { module = "dev.kord:kord-core", version.ref = "kord" }
+kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
+ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
 linkie = { module = "me.shedaniel:linkie-core", version.ref = "linkie" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }

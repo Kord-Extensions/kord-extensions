@@ -158,7 +158,7 @@ fun fieldsToPages(
 
             if (namespace.supportsFieldDescription()) {
                 text += "\n"
-                text += "**Type:** `${mappedDesc.localiseFieldDesc()}`"
+                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
             }
 
             text
@@ -202,7 +202,7 @@ fun fieldsToPages(
 
             if (namespace.supportsFieldDescription()) {
                 text += "\n"
-                text += "**Type:** `${mappedDesc.localiseFieldDesc()}`"
+                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
             }
 
             text += "\n"
@@ -326,7 +326,7 @@ fun methodsToPages(
                 text += "\n"
 
                 text += "**Mixin Target** `" +
-                    "L${clazz.optimumName}" +
+                    "L${clazz.optimumName};" +
                     method.optimumName +
                     mappedDesc +
                     "`"

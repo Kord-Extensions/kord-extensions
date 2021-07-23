@@ -15,6 +15,7 @@ plugins {
 
     kotlin("jvm")
 
+    id("com.google.devtools.ksp")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
 }
@@ -28,15 +29,21 @@ dependencies {
     api(libs.kx.ser)
     api(libs.sentry)  // Needs to be transitive or bots will start breaking
 
+    api(project(":token-parser"))
+
     detektPlugins(libs.detekt)
 
     implementation(libs.bundles.commons)
     implementation(libs.kotlin.stdlib)
 
+    implementation(project(":annotations"))
+
     testImplementation(libs.groovy)  // For logback config
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.logback)
+
+    ksp(project(":annotation-processor"))
 }
 
 val sourceJar = task("sourceJar", Jar::class) {
@@ -58,6 +65,20 @@ java {
 
 kotlin {
     explicitApi()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir(file("$buildDir/generated/ksp/main/kotlin/"))
+        }
+    }
+
+    test {
+        java {
+            srcDir(file("$buildDir/generated/ksp/test/kotlin/"))
+        }
+    }
 }
 
 detekt {

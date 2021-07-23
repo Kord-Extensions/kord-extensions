@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.pagination.pages
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import org.koin.core.component.KoinComponent
@@ -22,6 +23,7 @@ import java.util.*
  * @param image Optional: Embed image
  * @param thumbnail Optional: Embed thumbnail
  * @param url Optional: Embed URL
+ * @param bundle Optional: Translations bundle for group names
  */
 public open class Page(
     public open val description: String,
@@ -35,6 +37,7 @@ public open class Page(
     public open val image: String? = null,
     public open val thumbnail: String? = null,
     public open val url: String? = null,
+    public open val bundle: String? = null,
 ) : KoinComponent {
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
@@ -94,7 +97,11 @@ public open class Page(
                         replacements = arrayOf(groupIndex + 1, groups)
                     )
                 } else {
-                    "$group (${groupIndex + 1}/$groups)"
+                    val groupName = translationsProvider.translate(
+                        group, locale, bundle
+                    ).capitalizeWords(locale)
+
+                    "$groupName (${groupIndex + 1}/$groups)"
                 }
             }
 

@@ -1,30 +1,33 @@
 package com.kotlindiscord.kord.extensions.checks
 
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import dev.kord.core.event.Event
 import mu.KotlinLogging
+import java.util.*
 
 /**
  * Check asserting the user for an [Event] is a bot. Will fail if the event doesn't concern a user.
  *
  * @param event Event object to check.
  */
-public suspend fun isBot(event: Event): Boolean {
+public val isBot: Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isBot")
-
     val user = userFor(event)?.asUserOrNull()
 
-    return if (user == null) {
+    if (user == null) {
         logger.failed("Event did not concern a user.")
 
-        true
+        fail()
     } else if (user.isBot) {
         logger.passed()
 
-        false
+        pass()
     } else {
         logger.failed("User is not a bot.")
 
-        false
+        fail(
+            translate("checks.isBot.failed")
+        )
     }
 }
 
@@ -33,22 +36,23 @@ public suspend fun isBot(event: Event): Boolean {
  *
  * @param event Event object to check.
  */
-public suspend fun isNotBot(event: Event): Boolean {
+public val isNotbot: Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotBot")
-
     val user = userFor(event)?.asUserOrNull()
 
-    return if (user == null) {
+    if (user == null) {
         logger.failed("Event did not concern a user.")
 
-        true
+        fail()
     } else if (!user.isBot) {
         logger.passed()
 
-        true
+        pass()
     } else {
         logger.failed("User is a bot.")
 
-        false
+        fail(
+            translate("checks.isNotBot.failed")
+        )
     }
 }

@@ -1,12 +1,17 @@
+@file:OptIn(KordPreview::class, TranslationNotSupported::class)
+
 package com.kotlindiscord.kord.extensions.extensions.impl
 
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescedString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.sentryId
 import com.kotlindiscord.kord.extensions.utils.respond
+import dev.kord.common.annotation.KordPreview
 import io.sentry.Sentry
 import io.sentry.UserFeedback
 import io.sentry.protocol.SentryId
@@ -23,6 +28,13 @@ public class SentryExtension : Extension() {
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 
+    /** Bot settings. **/
+    public val botSettings: ExtensibleBotBuilder by inject()
+
+    /** Sentry extension settings, from the bot builder. **/
+    public val settings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
+        botSettings.extensionsBuilder.sentryExtensionBuilder
+
     @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
         if (sentry.enabled) {
@@ -32,9 +44,9 @@ public class SentryExtension : Extension() {
 
                 action {
                     if (!sentry.hasEventId(arguments.id)) {
-                        ephemeralFollowUp(
-                            translate("extensions.sentry.error.invalidId")
-                        )
+                        ephemeralFollowUp {
+                            content = translate("extensions.sentry.error.invalidId")
+                        }
 
                         return@action
                     }
@@ -49,9 +61,9 @@ public class SentryExtension : Extension() {
                     Sentry.captureUserFeedback(feedback)
                     sentry.removeEventId(arguments.id)
 
-                    ephemeralFollowUp(
-                        translate("extensions.sentry.thanks")
-                    )
+                    ephemeralFollowUp {
+                        content = translate("extensions.sentry.thanks")
+                    }
                 }
             }
 
@@ -64,7 +76,8 @@ public class SentryExtension : Extension() {
                 action {
                     if (!sentry.hasEventId(arguments.id)) {
                         message.respond(
-                            translate("extensions.sentry.error.invalidId")
+                            translate("extensions.sentry.error.invalidId"),
+                            pingInReply = settings.pingInReply
                         )
 
                         return@action

@@ -21,7 +21,9 @@ nav:
 
   - Utilities:
       - utilities/general.md
+      - utilities/components.md
       - utilities/paginator.md
+      - utilities/scheduler.md
 
   - Integrations:
       - integrations/koin.md

@@ -6,20 +6,22 @@ import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.memberFor
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.components.Components
+import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
+import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.InteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.followUp
+import dev.kord.core.behavior.interaction.*
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.rest.builder.interaction.EphemeralFollowupMessageCreateBuilder
+import dev.kord.rest.builder.interaction.FollowupMessageBuilder
 import dev.kord.rest.builder.interaction.PublicFollowupMessageCreateBuilder
 
 /**
@@ -34,9 +36,12 @@ public open class SlashCommandContext<T : Arguments>(
     event: InteractionCreateEvent,
     commandName: String,
     public var interactionResponse: InteractionResponseBehavior? = null
-) : CommandContext(slashCommand, event, commandName, arrayOf()) {
+) : CommandContext(slashCommand, event, commandName, null) {
     /** Event that triggered this command execution. **/
     public val event: InteractionCreateEvent get() = eventObj as InteractionCreateEvent
+
+    /** Quick access to the [CommandInteraction]. **/
+    public val interaction: CommandInteraction get() = event.interaction as CommandInteraction
 
     /** Channel this command happened in. **/
     public open lateinit var channel: MessageChannel
@@ -86,6 +91,21 @@ public open class SlashCommandContext<T : Arguments>(
     override suspend fun getUser(): UserBehavior = event.interaction.user
 
     /**
+     * Convenience function to create a button paginator using a builder DSL syntax. Handles the contextual stuff for
+     * you.
+     */
+    public suspend fun paginator(
+        defaultGroup: String = "",
+        body: PaginatorBuilder.() -> Unit
+    ): InteractionButtonPaginator {
+        val builder = PaginatorBuilder(command.extension, getLocale(), defaultGroup = defaultGroup)
+
+        body(builder)
+
+        return InteractionButtonPaginator(builder, this)
+    }
+
+    /**
      * Send an acknowledgement manually, assuming you have `autoAck` set to `NONE`.
      *
      * Note that what you supply for `ephemeral` will decide how the rest of your interactions - both responses and
@@ -103,7 +123,7 @@ public open class SlashCommandContext<T : Arguments>(
         interactionResponse = if (ephemeral) {
             event.interaction.acknowledgeEphemeral()
         } else {
-            event.interaction.ackowledgePublic()
+            event.interaction.acknowledgePublic()
         }
 
         return interactionResponse!!
@@ -118,7 +138,6 @@ public open class SlashCommandContext<T : Arguments>(
      * Note that ephemeral follow-ups require a content string, and may not contain embeds or files.
      */
     public suspend inline fun ephemeralFollowUp(
-        content: String,
         builder: EphemeralFollowupMessageCreateBuilder.() -> Unit = {}
     ): InteractionFollowup {
         if (interactionResponse == null) {
@@ -129,7 +148,7 @@ public open class SlashCommandContext<T : Arguments>(
             error("Tried send an ephemeral follow-up for a public interaction.")
         }
 
-        return (interactionResponse as EphemeralInteractionResponseBehavior).followUp(content, builder)
+        return (interactionResponse as EphemeralInteractionResponseBehavior).followUpEphemeral(builder)
     }
 
     /**
@@ -150,5 +169,25 @@ public open class SlashCommandContext<T : Arguments>(
         }
 
         return (interactionResponse as PublicInteractionResponseBehavior).followUp(builder)
+    }
+
+    /**
+     * Convenience function for adding components to your message via the [Components] class.
+     *
+     * @see Components
+     */
+    public suspend fun FollowupMessageBuilder<*>.components(
+        timeoutSeconds: Long? = null,
+        body: suspend Components.() -> Unit
+    ): Components {
+        val components = Components(command.extension, this@SlashCommandContext)
+
+        body(components)
+
+        with(components) {
+            setup(timeoutSeconds)
+        }
+
+        return components
     }
 }

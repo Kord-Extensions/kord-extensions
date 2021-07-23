@@ -1,7 +1,12 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.parser.StringParser
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
  * A special [OptionalConverter] that wraps a [SingleConverter], effectively turning it into an optional
@@ -19,19 +24,20 @@ import com.kotlindiscord.kord.extensions.commands.parser.Argument
 public class CoalescingToDefaultingConverter<T : Any>(
     public val coalescingConverter: CoalescingConverter<T>,
     defaultValue: T,
+    outputError: Boolean = false,
 
     newSignatureTypeString: String? = null,
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
 
-    override var validator: (suspend Argument<*>.(T) -> Unit)? = null
-) : DefaultingCoalescingConverter<T>(defaultValue) {
+    override var validator: Validator<T> = null
+) : DefaultingCoalescingConverter<T>(defaultValue, outputError = outputError) {
     override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
-        val result = coalescingConverter.parse(args, context)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+        val result = coalescingConverter.parse(parser, context, named)
 
         if (result > 0) {
             this.parsed = coalescingConverter.parsed
@@ -42,7 +48,13 @@ public class CoalescingToDefaultingConverter<T : Any>(
 
     override suspend fun handleError(
         t: Throwable,
-        values: List<String>,
         context: CommandContext
-    ): String = coalescingConverter.handleError(t, values, context)
+    ): String = coalescingConverter.handleError(t, context)
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
+        val option = coalescingConverter.toSlashOption(arg)
+        option.required = false
+
+        return option
+    }
 }

@@ -11,7 +11,9 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.users
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
@@ -28,28 +30,51 @@ import kotlinx.coroutines.flow.firstOrNull
  * * A user ID
  * * The user's tag (`username#discriminator`)
  *
- * @see user
- * @see userList
+ * @param useReply Whether to use the author of the replied-to message (if there is one) instead of trying to parse an
+ * argument.
  */
+@Converter(
+    "user",
+
+    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    arguments = [
+        "useReply: Boolean = true",
+    ]
+)
 @OptIn(KordPreview::class)
 public class UserConverter(
-    override var validator: (suspend Argument<*>.(User) -> Unit)? = null
+    private var useReply: Boolean = true,
+    override var validator: Validator<User> = null
 ) : SingleConverter<User>() {
     override val signatureTypeString: String = "converters.user.signatureType"
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
-        val user = findUser(arg, context)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        if (useReply) {
+            val messageReference = context.getMessage()?.asMessage()?.messageReference
+
+            if (messageReference != null) {
+                val user = messageReference.message?.asMessage()?.author?.asUserOrNull()
+
+                if (user != null) {
+                    parsed = user
+                    return true
+                }
+            }
+        }
+
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
+        this.parsed = findUser(arg, context)
             ?: throw CommandException(
                 context.translate("converters.user.error.missing", replacements = arrayOf(arg))
             )
 
-        parsed = user
         return true
     }
 
     private suspend fun findUser(arg: String, context: CommandContext): User? =
         if (arg.startsWith("<@") && arg.endsWith(">")) { // It's a mention
-            val id = arg.substring(2, arg.length - 1).replace("!", "")
+            val id: String = arg.substring(2, arg.length - 1).replace("!", "")
 
             try {
                 kord.getUser(Snowflake(id))
@@ -75,53 +100,3 @@ public class UserConverter(
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         UserBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create a user converter, for single arguments.
- *
- * @see UserConverter
- */
-public fun Arguments.user(
-    displayName: String,
-    description: String,
-    validator: (suspend Argument<*>.(User) -> Unit)? = null,
-): SingleConverter<User> =
-    arg(displayName, description, UserConverter(validator))
-
-/**
- * Create an optional user converter, for single arguments.
- *
- * @see UserConverter
- */
-public fun Arguments.optionalUser(
-    displayName: String,
-    description: String,
-    outputError: Boolean = false,
-    validator: (suspend Argument<*>.(User?) -> Unit)? = null,
-): OptionalConverter<User?> =
-    arg(
-        displayName,
-        description,
-        UserConverter()
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a user converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see UserConverter
- */
-public fun Arguments.userList(
-    displayName: String,
-    description: String,
-    required: Boolean = true,
-    validator: (suspend Argument<*>.(List<User>) -> Unit)? = null,
-): MultiConverter<User> =
-    arg(
-        displayName,
-        description,
-        UserConverter()
-            .toMulti(required, signatureTypeString = "users", nestedValidator = validator)
-    )

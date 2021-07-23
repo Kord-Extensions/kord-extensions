@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -27,17 +28,22 @@ public class SingleToOptionalConverter<T : Any>(
     newErrorTypeString: String? = null,
     outputError: Boolean = false,
 
-    override var validator: (suspend Argument<*>.(T?) -> Unit)? = null
+    override var validator: Validator<T?> = null
 ) : OptionalConverter<T?>(outputError) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
-        val result = singleConverter.parse(arg, context)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val token = parser?.peekNext()
+        val result = singleConverter.parse(parser, context, named ?: token?.data)
 
         if (result) {
             this.parsed = singleConverter.parsed
+
+            if (named == null) {
+                parser?.parseNext()  // Move the cursor ahead
+            }
         }
 
         return result
@@ -45,9 +51,8 @@ public class SingleToOptionalConverter<T : Any>(
 
     override suspend fun handleError(
         t: Throwable,
-        value: String?,
         context: CommandContext
-    ): String = singleConverter.handleError(t, value, context)
+    ): String = singleConverter.handleError(t, context)
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
         val option = singleConverter.toSlashOption(arg)

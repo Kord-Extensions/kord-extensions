@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import kotlinx.serialization.Serializable
+import mu.KotlinLogging
 import java.time.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.Temporal
@@ -31,6 +32,8 @@ private const val YEARS_PER_MILLENNIUM = 1000L
 private const val HOURS_PER_DAY = 24L
 private const val MINUTES_PER_HOUR = 60L
 private const val SECONDS_PER_MINUTE = 60L
+
+private val logger = KotlinLogging.logger { }
 
 /**
  * Class storing time units against values, to be applied to a time later on.
@@ -168,7 +171,9 @@ public class ChronoContainer {
 
         values.forEach { unit, value ->
             if (target.isSupported(unit)) {
-                result = target.plus(value, unit) as T
+                result = result.plus(value, unit) as T
+            } else {
+                logger.debug { "Unit $unit is not supported by $target" }
             }
         }
 

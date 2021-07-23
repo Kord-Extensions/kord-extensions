@@ -25,6 +25,7 @@ val printVersion = task("printVersion") {
 }
 
 repositories {
+    google()
     mavenCentral()
 
     maven {

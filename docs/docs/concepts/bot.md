@@ -131,7 +131,6 @@ may be using.
 
 #### Help Extension
 
-
 ```kotlin
 val bot = ExtensibleBot(token) {
     extensions {
@@ -153,6 +152,7 @@ deleteInvocationOnPaginatorTimeout | Boolean      | `false`    | Whether to try 
 deletePaginatorOnTimeout           | Boolean      | `false`    | Whether to delete the help command's output paginator when it times out
 enableBundledExtension             | Boolean      | `true`     | Whether to enable the bundled help extension
 paginatorTimeout                   | Long         | `60_000`   | How long to wait until a paginator times out and becomes unusable - defaults to 60 seconds
+pingInReply                        | Boolean      | `true`     | Whether to ping users in response to their help command invocations
 
 ### Hooks
 

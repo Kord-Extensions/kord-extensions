@@ -9,13 +9,17 @@ import net.time4j.IsoUnit
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
-import com.kotlindiscord.kord.extensions.modules.time.time4j.T4JTimeUnitCache as T4JTimeUnitCache1
 
 /**
  * Object in charge of parsing strings into [Duration]s, using translated locale-aware units.
  */
 public object T4JDurationParser : KoinComponent {
     private val translations: TranslationsProvider by inject()
+
+    public fun charValid(char: Char, locale: Locale): Boolean =
+        char.isDigit() ||
+            char == ' ' ||
+            T4JTimeUnitCache.getUnits(locale).filterKeys { it.startsWith(char) }.isNotEmpty()
 
     /**
      * Parse the provided string to a [Duration] object, using the strings provided by the given [Locale].
@@ -27,7 +31,7 @@ public object T4JDurationParser : KoinComponent {
             )
         }
 
-        val unitMap = T4JTimeUnitCache1.getUnits(locale)
+        val unitMap = T4JTimeUnitCache.getUnits(locale)
 
         val units: MutableList<String> = mutableListOf()
         val values: MutableList<String> = mutableListOf()

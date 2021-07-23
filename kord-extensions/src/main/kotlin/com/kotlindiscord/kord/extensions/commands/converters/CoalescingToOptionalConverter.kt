@@ -1,7 +1,12 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.parser.StringParser
+import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
  * A special [OptionalConverter] that wraps a [SingleConverter], effectively turning it into an optional
@@ -24,14 +29,14 @@ public class CoalescingToOptionalConverter<T : Any>(
     newErrorTypeString: String? = null,
     outputError: Boolean = false,
 
-    override var validator: (suspend Argument<*>.(T?) -> Unit)? = null
+    override var validator: Validator<T?> = null
 ) : OptionalCoalescingConverter<T?>(outputError) {
     override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
-        val result = coalescingConverter.parse(args, context)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+        val result = coalescingConverter.parse(parser, context, named)
 
         if (result > 0) {
             this.parsed = coalescingConverter.parsed
@@ -42,7 +47,13 @@ public class CoalescingToOptionalConverter<T : Any>(
 
     override suspend fun handleError(
         t: Throwable,
-        values: List<String>,
         context: CommandContext
-    ): String = coalescingConverter.handleError(t, values, context)
+    ): String = coalescingConverter.handleError(t, context)
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
+        val option = coalescingConverter.toSlashOption(arg)
+        option.required = false
+
+        return option
+    }
 }

@@ -1,10 +1,9 @@
+@file:OptIn(KordPreview::class)
+
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import kotlin.reflect.KProperty
+import dev.kord.common.annotation.KordPreview
 
 /**
  * Abstract base class for a coalescing converter.
@@ -27,54 +26,14 @@ import kotlin.reflect.KProperty
  */
 public abstract class CoalescingConverter<T : Any>(
     public open val shouldThrow: Boolean = false,
-    public open var validator: (suspend Argument<*>.(result: T) -> Unit)? = null
-) : Converter<List<T>>(true), SlashCommandConverter {
+    override var validator: Validator<T> = null
+) : Converter<List<T>, T, List<String>, Int>(true), SlashCommandConverter {
     /**
      * The parsed value.
      *
      * This should be set by the converter during the course of the [parse] function.
      */
-    public lateinit var parsed: T
-
-    /**
-     * Process the given [args], converting them into a single value.
-     *
-     * The resulting value should be stored in [parsed] - this will not be done for you.
-     *
-     * This type of converter should avoid throwing [CommandException]. The commands framework will return an
-     * appropriate error to the user, if this converter is marked as required. A thrown [CommandException] will still
-     * be shown in that situation, however.
-     *
-     * @param args List of [String] arguments, provided by the user running the current command
-     * @param context MessageCommand context object, containing the event, message, and other command-related things
-     *
-     * @return The number of arguments this converter consumed to produce its resulting value. Return 0 if you didn't
-     * consume any (eg, you failed to convert anything).
-     *
-     * @see Converter
-     */
-    public abstract suspend fun parse(args: List<String>, context: CommandContext): Int
-
-    /** For delegation, retrieve the parsed value if it's been set, or throw if it hasn't. **/
-    public open operator fun getValue(thisRef: Arguments, property: KProperty<*>): T = parsed
-
-    /** Call the validator lambda, if one was provided. **/
-    public open suspend fun validate() {
-        validator?.let { it(this.argumentObj, parsed) }
-    }
-
-    /**
-     * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
-     *
-     * For coalescing converters, this is only called when the converter is required. The default behaviour simply
-     * re-throws the Throwable (or returns the reason if it's a CommandException), so you only need to override this
-     * if you want to do something else.
-     */
-    public open suspend fun handleError(
-        t: Throwable,
-        values: List<String>,
-        context: CommandContext
-    ): String = if (t is CommandException) t.reason else throw t
+    public override lateinit var parsed: T
 
     /**
      * Wrap this coalescing converter with a [CoalescingToOptionalConverter], which is a special converter that will
@@ -104,7 +63,7 @@ public abstract class CoalescingConverter<T : Any>(
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
         outputError: Boolean = false,
-        nestedValidator: (suspend Argument<*>.(T?) -> Unit)? = null
+        nestedValidator: Validator<T?> = null
     ): OptionalCoalescingConverter<T?> = CoalescingToOptionalConverter(
         this,
         signatureTypeString,
@@ -124,7 +83,7 @@ public abstract class CoalescingConverter<T : Any>(
      * For more information on the parameters, see [Converter].
      *
      * @param defaultValue The default value to use when an argument can't be converted.
-     *
+     * @param outputError Whether the argument parser should output parsing errors on invalid arguments.
      * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
      * provides.
      *
@@ -137,16 +96,18 @@ public abstract class CoalescingConverter<T : Any>(
     @ConverterToDefaulting
     public open fun toDefaulting(
         defaultValue: T,
+        outputError: Boolean = false,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
-        nestedValidator: (suspend Argument<*>.(T) -> Unit)? = null
+        nestedValidator: Validator<T> = null
     ): DefaultingCoalescingConverter<T> = CoalescingToDefaultingConverter(
         this,
-        defaultValue,
-        signatureTypeString,
-        showTypeInSignature,
-        errorTypeString,
-        nestedValidator
+        defaultValue = defaultValue,
+        outputError = outputError,
+        newSignatureTypeString = signatureTypeString,
+        newShowTypeInSignature = showTypeInSignature,
+        newErrorTypeString = errorTypeString,
+        validator = nestedValidator,
     )
 }

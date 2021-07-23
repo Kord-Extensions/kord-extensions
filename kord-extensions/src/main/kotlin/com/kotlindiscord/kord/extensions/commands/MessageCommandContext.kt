@@ -4,7 +4,11 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
+import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
+import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.channel.MessageChannelBehavior
@@ -13,6 +17,7 @@ import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.rest.builder.message.MessageCreateBuilder
 
 /**
  * Command context object representing the context given to message commands.
@@ -25,9 +30,9 @@ public open class MessageCommandContext<T : Arguments>(
     public val messageCommand: MessageCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
-    argsList: Array<String>,
+    parser: StringParser,
     public val argString: String
-) : CommandContext(messageCommand, eventObj, commandName, argsList) {
+) : CommandContext(messageCommand, eventObj, commandName, parser) {
     /** Event that triggered this command execution. **/
     public val event: MessageCreateEvent get() = eventObj as MessageCreateEvent
 
@@ -63,11 +68,31 @@ public open class MessageCommandContext<T : Arguments>(
         arguments = args
     }
 
-    override suspend fun getChannel(): MessageChannelBehavior = event.message.channel
+    override suspend fun getChannel(): MessageChannelBehavior = event.message.channel.asChannel()
     override suspend fun getGuild(): Guild? = event.getGuild()
     override suspend fun getMember(): Member? = event.message.getAuthorAsMember()
     override suspend fun getMessage(): Message = event.message
     override suspend fun getUser(): User? = event.message.author
+
+    /**
+     * Convenience function to create a button paginator using a builder DSL syntax. Handles the contextual stuff for
+     * you.
+     */
+    public suspend fun paginator(
+        defaultGroup: String = "",
+
+        pingInReply: Boolean = true,
+        targetChannel: MessageChannelBehavior? = null,
+        targetMessage: Message? = null,
+
+        body: PaginatorBuilder.() -> Unit
+    ): MessageButtonPaginator {
+        val builder = PaginatorBuilder(command.extension, getLocale(), defaultGroup = defaultGroup)
+
+        body(builder)
+
+        return MessageButtonPaginator(pingInReply, targetChannel, targetMessage, builder)
+    }
 
     /**
      * Generate and send the help embed for this command, using the first loaded extensions that implements
@@ -92,4 +117,24 @@ public open class MessageCommandContext<T : Arguments>(
         replacements: Array<Any?> = arrayOf(),
         useReply: Boolean = true
     ): Message = respond(translate(key, replacements), useReply)
+
+    /**
+     * Convenience function for adding components to your message via the [Components] class.
+     *
+     * @see Components
+     */
+    public suspend fun MessageCreateBuilder.components(
+        timeoutSeconds: Long? = null,
+        body: suspend Components.() -> Unit
+    ): Components {
+        val components = Components(command.extension)
+
+        body(components)
+
+        with(components) {
+            setup(timeoutSeconds)
+        }
+
+        return components
+    }
 }

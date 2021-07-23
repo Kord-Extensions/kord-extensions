@@ -23,7 +23,7 @@ public val DISCORD_PINK: Color = DISCORD_FUCHSIA
 public val DISCORD_RED: Color = Color(0xEE4043)
 
 /** Colour representing Discord's new white colour. **/
-public val DISCORD_WHITE: Color = Color(0xFFFFFF)
+public val DISCORD_WHITE: Color = Color(0xFEFEFE)
 
 /** Colour representing Discord's new black colour. **/
 public val DISCORD_BLACK: Color = Color(0x1E2227)

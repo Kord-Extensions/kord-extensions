@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceEnum
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -27,11 +28,14 @@ public class EnumChoiceConverter<E>(
     typeName: String,
     private val getter: suspend (String) -> E?,
     choices: Array<E>,
-    override var validator: (suspend Argument<*>.(E) -> Unit)? = null
+    override var validator: Validator<E> = null,
+    override val bundle: String? = null,
 ) : ChoiceConverter<E>(choices.associateBy { it.readableName }) where E : Enum<E>, E : ChoiceEnum {
     override val signatureTypeString: String = typeName
 
-    override suspend fun parse(arg: String, context: CommandContext): Boolean {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
         try {
             parsed = getter.invoke(arg) ?: return false
         } catch (e: IllegalArgumentException) {
@@ -58,11 +62,12 @@ public inline fun <reified T> Arguments.enumChoice(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+    noinline validator: Validator<T> = null,
+    bundle: String? = null,
 ): SingleConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
-    EnumChoiceConverter(typeName, ::getEnum, enumValues(), validator)
+    EnumChoiceConverter(typeName, ::getEnum, enumValues(), validator, bundle = bundle)
 )
 
 /**
@@ -74,11 +79,12 @@ public inline fun <reified T> Arguments.optionalEnumChoice(
     displayName: String,
     description: String,
     typeName: String,
-    noinline validator: (suspend Argument<*>.(T?) -> Unit)? = null,
+    noinline validator: Validator<T?> = null,
+    bundle: String? = null,
 ): OptionalConverter<T?> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
-    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues())
+    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues(), bundle = bundle)
         .toOptional(nestedValidator = validator)
 )
 
@@ -92,11 +98,12 @@ public inline fun <reified T> Arguments.defaultingEnumChoice(
     description: String,
     typeName: String,
     defaultValue: T,
-    noinline validator: (suspend Argument<*>.(T) -> Unit)? = null,
+    noinline validator: Validator<T> = null,
+    bundle: String? = null,
 ): DefaultingConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
-    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues())
+    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues(), bundle = bundle)
         .toDefaulting(defaultValue, nestedValidator = validator)
 )
 

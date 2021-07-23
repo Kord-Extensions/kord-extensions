@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
@@ -37,16 +38,32 @@ public class J8DurationCoalescingConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,
     shouldThrow: Boolean = false,
-    override var validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null
+    override var validator: Validator<ChronoContainer> = null
 ) : CoalescingConverter<ChronoContainer>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
     private val logger = KotlinLogging.logger {}
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val durations = mutableListOf<String>()
         val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
 
         var skipNext = false
+
+        val args = named ?: parser?.run {
+            val tokens: MutableList<String> = mutableListOf()
+
+            while (hasNext) {
+                val nextToken = peekNext()
+
+                if (nextToken!!.data.all { J8DurationParser.charValid(it, context.getLocale()) }) {
+                    tokens.add(parseNext()!!.data)
+                } else {
+                    break
+                }
+            }
+
+            tokens
+        } ?: return 0
 
         @Suppress("LoopWithTooManyJumpStatements")  // Well you rewrite it then, detekt
         for (index in 0 until args.size) {
@@ -158,7 +175,7 @@ public fun Arguments.coalescedJ8Duration(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+    validator: Validator<ChronoContainer> = null,
 ): CoalescingConverter<ChronoContainer> =
     arg(
         displayName,
@@ -182,7 +199,7 @@ public fun Arguments.optionalCoalescedJ8Duration(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(ChronoContainer?) -> Unit)? = null,
+    validator: Validator<ChronoContainer?> = null,
 ): OptionalCoalescingConverter<ChronoContainer?> =
     arg(
         displayName,
@@ -204,7 +221,7 @@ public fun Arguments.defaultingCoalescedJ8Duration(
     requirePositive: Boolean = true,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(ChronoContainer) -> Unit)? = null,
+    validator: Validator<ChronoContainer> = null,
 ): DefaultingCoalescingConverter<ChronoContainer> =
     arg(
         displayName,

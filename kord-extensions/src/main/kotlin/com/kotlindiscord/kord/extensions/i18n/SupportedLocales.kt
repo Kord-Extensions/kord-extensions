@@ -16,10 +16,35 @@ public object SupportedLocales {
     public val GERMAN: Locale = Locale("de", "de")
 
     public val ALL_LOCALES: Map<String, Locale> = mapOf(
+        "中文" to CHINESE_SIMPLIFIED,
+        "汉语" to CHINESE_SIMPLIFIED,
+        "普通话" to CHINESE_SIMPLIFIED,
+        "简体中文" to CHINESE_SIMPLIFIED,
+        "chinese" to CHINESE_SIMPLIFIED,
         "zh" to CHINESE_SIMPLIFIED,
+        "zh_cn" to CHINESE_SIMPLIFIED,
+
+        "english" to ENGLISH,
         "en" to ENGLISH,
+        "en_gb" to ENGLISH,
+        "en_us" to ENGLISH,
+
+        "suomen kieli" to FINNISH,
+        "suomen" to FINNISH,
+        "suomi" to FINNISH,
+        "finnish" to FINNISH,
         "fi" to FINNISH,
+        "fi_fi" to FINNISH,
+
+        "français" to FRENCH,
+        "francais" to FRENCH,
+        "french" to FRENCH,
         "fr" to FRENCH,
+        "fr_fr" to FRENCH,
+
+        "deutsch" to GERMAN,
+        "german" to GERMAN,
         "de" to GERMAN,
+        "de_de" to GERMAN,
     )
 }

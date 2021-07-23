@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.RegexCoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
@@ -36,19 +37,35 @@ import net.time4j.IsoUnit
 public class T4JDurationCoalescingConverter(
     public val longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    override var validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null
+    override var validator: Validator<Duration<IsoUnit>> = null
 ) : CoalescingConverter<Duration<IsoUnit>>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
     private val logger = KotlinLogging.logger {}
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val durations = mutableListOf<String>()
         val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
 
         var skipNext = false
 
+        val args = named ?: parser?.run {
+            val tokens: MutableList<String> = mutableListOf()
+
+            while (hasNext) {
+                val nextToken = peekNext()
+
+                if (nextToken!!.data.all { T4JDurationParser.charValid(it, context.getLocale()) }) {
+                    tokens.add(parseNext()!!.data)
+                } else {
+                    break
+                }
+            }
+
+            tokens
+        } ?: return 0
+
         @Suppress("LoopWithTooManyJumpStatements")  // Well you rewrite it then, detekt
-        for (index in 0 until args.size) {
+        for (index in args.indices) {
             if (skipNext) {
                 skipNext = false
 
@@ -144,7 +161,7 @@ public fun Arguments.coalescedT4jDuration(
     description: String,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>> = null,
 ): CoalescingConverter<Duration<IsoUnit>> =
     arg(
         displayName,
@@ -162,7 +179,7 @@ public fun Arguments.optionalCoalescedT4jDuration(
     description: String,
     longHelp: Boolean = true,
     outputError: Boolean = false,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>?) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>?> = null,
 ): OptionalCoalescingConverter<Duration<IsoUnit>?> =
     arg(
         displayName,
@@ -183,7 +200,7 @@ public fun Arguments.defaultingCoalescedT4jDuration(
     defaultValue: Duration<IsoUnit>,
     longHelp: Boolean = true,
     shouldThrow: Boolean = false,
-    validator: (suspend Argument<*>.(Duration<IsoUnit>) -> Unit)? = null,
+    validator: Validator<Duration<IsoUnit>> = null,
 ): DefaultingCoalescingConverter<Duration<IsoUnit>> =
     arg(
         displayName,

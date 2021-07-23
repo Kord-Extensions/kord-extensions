@@ -10,7 +10,9 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -27,70 +29,29 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  *
  * @see coalescedRegex
  */
+@Converter(
+    "regex",
+
+    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    imports = ["kotlin.text.RegexOption"],
+    arguments = ["options: Set<RegexOption> = setOf()"]
+)
 public class RegexCoalescingConverter(
     private val options: Set<RegexOption> = setOf(),
     shouldThrow: Boolean = false,
-    override var validator: (suspend Argument<*>.(Regex) -> Unit)? = null
+    override var validator: Validator<Regex> = null
 ) : CoalescingConverter<Regex>(shouldThrow) {
     override val signatureTypeString: String = "converters.regex.signatureType.plural"
     override val showTypeInSignature: Boolean = false
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
-        this.parsed = args.joinToString(" ").toRegex(options)
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+        val args: String = named?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
 
-        return args.size
+        this.parsed = args.toRegex(options)
+
+        return args.length
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }
-
-/**
- * Create a coalescing regex converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.coalescedRegex(
-    displayName: String,
-    description: String,
-    options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
-): CoalescingConverter<Regex> =
-    arg(displayName, description, RegexCoalescingConverter(options, validator = validator))
-
-/**
- * Create an optional coalescing regex converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.optionalCoalescedRegex(
-    displayName: String,
-    description: String,
-    options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(Regex?) -> Unit)? = null,
-): OptionalCoalescingConverter<Regex?> =
-    arg(
-        displayName,
-        description,
-
-        RegexCoalescingConverter(options).toOptional(nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting coalescing regex converter.
- *
- * @see RegexCoalescingConverter
- */
-public fun Arguments.defaultingCoalescedRegex(
-    displayName: String,
-    description: String,
-    defaultValue: Regex,
-    options: Set<RegexOption> = setOf(),
-    validator: (suspend Argument<*>.(Regex) -> Unit)? = null,
-): DefaultingCoalescingConverter<Regex> =
-    arg(
-        displayName,
-        description,
-        RegexCoalescingConverter(options)
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )

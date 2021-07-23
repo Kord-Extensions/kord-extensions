@@ -2,8 +2,8 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.parser.StringParser
 
 /**
  * A special [MultiConverter] that wraps a [SingleConverter], effectively turning it into a list-handling converter
@@ -26,29 +26,51 @@ public class SingleToMultiConverter<T : Any>(
     newShowTypeInSignature: Boolean? = null,
     newErrorTypeString: String? = null,
 
-    override var validator: (suspend Argument<*>.(List<T>) -> Unit)? = null
+    override var validator: Validator<List<T>> = null
 ) : MultiConverter<T>(required) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(args: List<String>, context: CommandContext): Int {
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val values = mutableListOf<T>()
         val dummyArgs = Arguments()
 
-        for (arg in args) {
-            try {
-                val result = singleConverter.parse(arg, context)
+        if (named == null) {
+            while (true) {
+                val arg = parser?.peekNext()?.data
 
-                if (!result) {
+                try {
+                    val result = singleConverter.parse(null, context, arg)
+
+                    if (!result) {
+                        break
+                    }
+
+                    val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+
+                    values.add(value)
+
+                    parser?.parseNext()  // Move the cursor ahead
+                } catch (e: CommandException) {
                     break
                 }
+            }
+        } else {
+            for (arg in named) {
+                try {
+                    val result = singleConverter.parse(null, context, arg)
 
-                val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+                    if (!result) {
+                        break
+                    }
 
-                values.add(value)
-            } catch (e: CommandException) {
-                break
+                    val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+
+                    values.add(value)
+                } catch (e: CommandException) {
+                    break
+                }
             }
         }
 
@@ -59,7 +81,6 @@ public class SingleToMultiConverter<T : Any>(
 
     override suspend fun handleError(
         t: Throwable,
-        values: List<String>,
         context: CommandContext
-    ): String = singleConverter.handleError(t, null, context)
+    ): String = singleConverter.handleError(t, context)
 }
