@@ -47,10 +47,10 @@ public fun Permission.toTranslationKey(): String = when (this) {
 public val Permission.Video: Permission.Stream
     inline get() = Permission.Stream
 
-/** Given a [CommandContext], translate the permission to a human-readable string based on the context's locale. **/
+/** Given a [CommandContext], translate the [Permission] to a human-readable string based on the context's locale. **/
 public suspend fun Permission.translate(context: CommandContext): String =
     context.translate(toTranslationKey())
 
-/** Given a locale, translate the permission to a human-readable string based on the context's locale. **/
-public suspend fun Permission.translate(locale: Locale): String =
+/** Given a locale, translate the [Permission] to a human-readable string. **/
+public fun Permission.translate(locale: Locale): String =
     getKoin().get<TranslationsProvider>().translate(toTranslationKey(), locale)

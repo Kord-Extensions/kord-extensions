@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.builders
 
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.MappingsConfigAdapter
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.TomlMappingsConfig
 import dev.kord.core.event.message.MessageCreateEvent
@@ -11,18 +12,18 @@ class ExtMappingsBuilder {
     var config: MappingsConfigAdapter = TomlMappingsConfig()
 
     /** List of checks to apply against the name of the command. **/
-    val commandChecks: MutableList<suspend (String) -> (suspend (MessageCreateEvent) -> Boolean)> = mutableListOf()
+    val commandChecks: MutableList<suspend (String) -> Check<*>> = mutableListOf()
 
     /** List of checks to apply against the namespace corresponding with the command. **/
-    val namespaceChecks: MutableList<suspend (Namespace) -> (suspend (MessageCreateEvent) -> Boolean)> = mutableListOf()
+    val namespaceChecks: MutableList<suspend (Namespace) -> Check<*>> = mutableListOf()
 
     /** Register a check that applies against the name of a command, and its message creation event. **/
-    fun commandCheck(check: suspend (String) -> (suspend (MessageCreateEvent) -> Boolean)) {
-        commandChecks.add(check)
+    fun commandCheck(check: suspend (String) -> Check<MessageCreateEvent>) {
+        commandChecks.add(check as (suspend (String) -> Check<*>))
     }
 
     /** Register a check that applies against the mappings namespace for a command, and its message creation event. **/
-    fun namespaceCheck(check: suspend (Namespace) -> (suspend (MessageCreateEvent) -> Boolean)) {
-        namespaceChecks.add(check)
+    fun namespaceCheck(check: suspend (Namespace) -> Check<MessageCreateEvent>) {
+        namespaceChecks.add(check as (suspend (Namespace) -> Check<*>))
     }
 }

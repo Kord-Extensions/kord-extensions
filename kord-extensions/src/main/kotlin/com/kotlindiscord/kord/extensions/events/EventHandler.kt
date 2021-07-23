@@ -1,11 +1,15 @@
 package com.kotlindiscord.kord.extensions.events
 
 import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.*
+import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
+import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
@@ -22,6 +26,10 @@ import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
 
+private val defaultLocale: Locale
+    get() =
+        getKoin().get<ExtensibleBotBuilder>().i18nBuilder.defaultLocale
+
 /**
  * Class representing an event handler. Event handlers react to a given Kord event.
  *
@@ -32,7 +40,10 @@ private val logger = KotlinLogging.logger {}
  * @param extension The [Extension] that registered this event handler.
  * @param type A [KClass] representing the event type this handler is subscribed to. This is for internal use.
  */
-public class EventHandler<T : Any>(public val extension: Extension, public val type: KClass<*>) : KoinComponent {
+public open class EventHandler<T : Event>(
+    public val extension: Extension,
+    public val type: KClass<*>
+) : KoinComponent {
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 
@@ -50,7 +61,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
     /**
      * @suppress
      */
-    public val checkList: MutableList<suspend (T) -> Boolean> = mutableListOf()
+    public val checkList: MutableList<Check<T>> = mutableListOf()
 
     /**
      * @suppress This is the job returned by `Kord#on`, which we cancel to stop listening.
@@ -86,7 +97,7 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
     /**
      * Define a check which must pass for the event handler to be executed.
      *
-     * A event handler may have multiple checks - all checks must pass for the event handler to be executed.
+     * An event handler may have multiple checks - all checks must pass for the event handler to be executed.
      * Checks will be run in the order that they're defined.
      *
      * This function can be used DSL-style with a given body, or it can be passed one or more
@@ -94,14 +105,54 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
      *
      * @param checks Checks to apply to this event handler.
      */
-    public fun check(vararg checks: suspend (T) -> Boolean): Unit = checks.forEach { checkList.add(it) }
+    public fun check(vararg checks: Check<T>): Unit = checks.forEach { checkList.add(it) }
 
     /**
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this event handler.
      */
-    public fun check(check: suspend (T) -> Boolean): Boolean = checkList.add(check) // endregion
+    public fun check(check: Check<T>): Boolean = checkList.add(check)
+
+    /**
+     * Define a simple Boolean check which must pass for the event handler to be executed.
+     *
+     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
+     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
+     * the same functionality as a regular check, and cannot return a message.
+     *
+     * An event handler may have multiple checks - all checks must pass for the command to be executed.
+     * Checks will be run in the order that they're defined.
+     *
+     * This function can be used DSL-style with a given body, or it can be passed one or more
+     * predefined functions. See the samples for more information.
+     *
+     * @param checks Checks to apply to this event handler.
+     */
+    public open fun booleanCheck(vararg checks: suspend (T) -> Boolean) {
+        checks.forEach(::booleanCheck)
+    }
+
+    /**
+     * Overloaded simple Boolean check function to allow for DSL syntax.
+     *
+     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
+     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
+     * the same functionality as a regular check, and cannot return a message.
+     *
+     * @param check Check to apply to this event handler.
+     */
+    public open fun booleanCheck(check: suspend (T) -> Boolean) {
+        check {
+            if (check(event)) {
+                pass()
+            } else {
+                fail()
+            }
+        }
+    }
+
+    // endregion
 
     /**
      * Execute this event handler, given an event.
@@ -115,8 +166,12 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
      */
     public suspend fun call(event: T) {
         for (check in checkList) {
-            if (!check.invoke(event)) {
-                return
+            val context = CheckContext(event, defaultLocale)
+
+            check(context)
+
+            if (!context.passed) {
+                return  // We don't send responses to plain event handlers
             }
         }
 
@@ -124,73 +179,69 @@ public class EventHandler<T : Any>(public val extension: Extension, public val t
         val eventName = event::class.simpleName
 
         val firstBreadcrumb = if (sentry.enabled) {
-            if (event is Event) {
-                val data = mutableMapOf<String, Serializable>()
+            val data = mutableMapOf<String, Serializable>()
 
-                val channelId = channelIdFor(event)
-                val guildBehavior = guildFor(event)
-                val messageBehavior = messageFor(event)
-                val roleBehavior = roleFor(event)
-                val userBehavior = userFor(event)
+            val channelId = channelIdFor(event)
+            val guildBehavior = guildFor(event)
+            val messageBehavior = messageFor(event)
+            val roleBehavior = roleFor(event)
+            val userBehavior = userFor(event)
 
-                if (channelId != null) {
-                    val channel = kord.getChannel(Snowflake(channelId))
+            if (channelId != null) {
+                val channel = kord.getChannel(Snowflake(channelId))
 
-                    if (channel != null) {
-                        data["channel"] = when (channel) {
-                            is DmChannel -> "Private Message (${channel.id.asString})"
-                            is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                if (channel != null) {
+                    data["channel"] = when (channel) {
+                        is DmChannel -> "Private Message (${channel.id.asString})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
 
-                            else -> channel.id.asString
-                        }
-                    } else {
-                        data["channel"] = channelId
+                        else -> channel.id.asString
                     }
+                } else {
+                    data["channel"] = channelId
                 }
-
-                if (guildBehavior != null) {
-                    val guild = guildBehavior.asGuildOrNull()
-
-                    data["guild"] = if (guild != null) {
-                        "${guild.name} (${guild.id.asString})"
-                    } else {
-                        guildBehavior.id.asString
-                    }
-                }
-
-                if (messageBehavior != null) {
-                    data["message"] = messageBehavior.id.asString
-                }
-
-                if (roleBehavior != null) {
-                    val role = roleBehavior.guild.getRoleOrNull(roleBehavior.id)
-
-                    data["role"] = if (role != null) {
-                        "@${role.name} (${role.id.asString})"
-                    } else {
-                        roleBehavior.id.asString
-                    }
-                }
-
-                if (userBehavior != null) {
-                    val user = userBehavior.asUserOrNull()
-
-                    data["user"] = if (user != null) {
-                        "${user.tag} (${user.id.asString})"
-                    } else {
-                        userBehavior.id.asString
-                    }
-                }
-
-                sentry.createBreadcrumb(
-                    category = "event",
-                    type = "info",
-                    message = "Event \"$eventName\" fired.",
-                    data = data
-                )
-            } else {
-                null
             }
+
+            if (guildBehavior != null) {
+                val guild = guildBehavior.asGuildOrNull()
+
+                data["guild"] = if (guild != null) {
+                    "${guild.name} (${guild.id.asString})"
+                } else {
+                    guildBehavior.id.asString
+                }
+            }
+
+            if (messageBehavior != null) {
+                data["message"] = messageBehavior.id.asString
+            }
+
+            if (roleBehavior != null) {
+                val role = roleBehavior.guild.getRoleOrNull(roleBehavior.id)
+
+                data["role"] = if (role != null) {
+                    "@${role.name} (${role.id.asString})"
+                } else {
+                    roleBehavior.id.asString
+                }
+            }
+
+            if (userBehavior != null) {
+                val user = userBehavior.asUserOrNull()
+
+                data["user"] = if (user != null) {
+                    "${user.tag} (${user.id.asString})"
+                } else {
+                    userBehavior.id.asString
+                }
+            }
+
+            sentry.createBreadcrumb(
+                category = "event",
+                type = "info",
+                message = "Event \"$eventName\" fired.",
+                data = data
+            )
         } else {
             null
         }

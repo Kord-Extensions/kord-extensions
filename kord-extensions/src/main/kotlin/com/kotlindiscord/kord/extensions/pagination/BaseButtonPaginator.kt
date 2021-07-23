@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.pagination
 
-import com.kotlindiscord.kord.extensions.components.ComponentCheckFun
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.components.builders.DisabledButtonBuilder
 import com.kotlindiscord.kord.extensions.components.builders.InteractiveButtonBuilder
@@ -13,6 +13,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.User
+import dev.kord.core.event.interaction.InteractionCreateEvent
 import java.util.*
 
 /** Last row number. **/
@@ -60,11 +61,15 @@ public abstract class BaseButtonPaginator(
     public val canUseSwitchingButtons: Boolean = allGroups.size in 3..5 && "" !in allGroups
 
     /** A button-oriented check function that matches based on the [owner] property. **/
-    public val defaultCheck: ComponentCheckFun = {
-        if (owner == null) {
-            true
+    public val defaultCheck: Check<InteractionCreateEvent> = {
+        if (!active) {
+            fail()
+        } else if (owner == null) {
+            pass()
+        } else if (event.interaction.user.id == owner.id) {
+            pass()
         } else {
-            it.interaction.user.id == owner.id
+            fail()
         }
     }
 
@@ -80,7 +85,6 @@ public abstract class BaseButtonPaginator(
                 style = ButtonStyle.Secondary
 
                 check(defaultCheck)
-                check { active }
 
                 emoji(FIRST_PAGE_EMOJI)
 
@@ -96,7 +100,6 @@ public abstract class BaseButtonPaginator(
                 style = ButtonStyle.Secondary
 
                 check(defaultCheck)
-                check { active }
 
                 emoji(LEFT_EMOJI)
 
@@ -112,7 +115,6 @@ public abstract class BaseButtonPaginator(
                 style = ButtonStyle.Secondary
 
                 check(defaultCheck)
-                check { active }
 
                 emoji(RIGHT_EMOJI)
 
@@ -128,7 +130,6 @@ public abstract class BaseButtonPaginator(
                 style = ButtonStyle.Secondary
 
                 check(defaultCheck)
-                check { active }
 
                 emoji(LAST_PAGE_EMOJI)
 
@@ -146,7 +147,6 @@ public abstract class BaseButtonPaginator(
                 deferredAck = true
 
                 check(defaultCheck)
-                check { active }
 
                 label = if (keepEmbed) {
                     style = ButtonStyle.Primary
@@ -177,7 +177,6 @@ public abstract class BaseButtonPaginator(
                         style = ButtonStyle.Secondary
 
                         check(defaultCheck)
-                        check { active }
 
                         action {
                             switchGroup(group)
@@ -191,7 +190,6 @@ public abstract class BaseButtonPaginator(
                     deferredAck = true
 
                     check(defaultCheck)
-                    check { active }
 
                     emoji(switchEmoji)
 

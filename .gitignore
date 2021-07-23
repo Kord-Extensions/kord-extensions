@@ -121,3 +121,4 @@ fabric.properties
 *.hprof
 .env
 docs/site
+.linkie-cache/

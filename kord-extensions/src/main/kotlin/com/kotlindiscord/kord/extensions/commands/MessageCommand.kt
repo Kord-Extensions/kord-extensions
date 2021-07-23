@@ -1,8 +1,12 @@
+@file:Suppress("StringLiteralDuplication")
+
 package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -12,6 +16,7 @@ import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.respond
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
@@ -113,7 +118,7 @@ public open class MessageCommand<T : Arguments>(
     /**
      * @suppress
      */
-    public open val checkList: MutableList<suspend (MessageCreateEvent) -> Boolean> = mutableListOf()
+    public open val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
 
     override val parser: ArgumentParser = ArgumentParser()
 
@@ -233,7 +238,7 @@ public open class MessageCommand<T : Arguments>(
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun check(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+    public open fun check(vararg checks: Check<MessageCreateEvent>) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -242,30 +247,115 @@ public open class MessageCommand<T : Arguments>(
      *
      * @param check Check to apply to this command.
      */
-    public open fun check(check: suspend (MessageCreateEvent) -> Boolean) {
+    public open fun check(check: Check<MessageCreateEvent>) {
         checkList.add(check)
+    }
+
+    /**
+     * Define a simple Boolean check which must pass for the command to be executed.
+     *
+     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
+     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
+     * the same functionality as a regular check, and cannot return a message.
+     *
+     * A command may have multiple checks - all checks must pass for the command to be executed.
+     * Checks will be run in the order that they're defined.
+     *
+     * This function can be used DSL-style with a given body, or it can be passed one or more
+     * predefined functions. See the samples for more information.
+     *
+     * @param checks Checks to apply to this command.
+     */
+    public open fun booleanCheck(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
+        checks.forEach(::booleanCheck)
+    }
+
+    /**
+     * Overloaded simple Boolean check function to allow for DSL syntax.
+     *
+     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
+     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
+     * the same functionality as a regular check, and cannot return a message.
+     *
+     * @param check Check to apply to this command.
+     */
+    public open fun booleanCheck(check: suspend (MessageCreateEvent) -> Boolean) {
+        check {
+            if (check(event)) {
+                pass()
+            } else {
+                fail()
+            }
+        }
     }
 
     // endregion
 
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
-    public open suspend fun runChecks(event: MessageCreateEvent): Boolean {
+    public open suspend fun runChecks(event: MessageCreateEvent, sendMessage: Boolean = true): Boolean {
+        val locale = event.getLocale()
+
         // global command checks
         for (check in extension.bot.settings.messageCommandsBuilder.checkList) {
-            if (!check.invoke(event)) {
+            val context = CheckContext(event, locale)
+
+            check(context)
+
+            if (!context.passed) {
+                val message = context.message
+
+                if (message != null && sendMessage) {
+                    event.message.respond(
+                        translationsProvider.translate(
+                            "checks.responseTemplate",
+                            replacements = arrayOf(message)
+                        )
+                    )
+                }
+
                 return false
             }
         }
 
         // local extension checks
         for (check in extension.commandChecks) {
-            if (!check.invoke(event)) {
+            val context = CheckContext(event, locale)
+
+            check(context)
+
+            if (!context.passed) {
+                val message = context.message
+
+                if (message != null && sendMessage) {
+                    event.message.respond(
+                        translationsProvider.translate(
+                            "checks.responseTemplate",
+                            replacements = arrayOf(message)
+                        )
+                    )
+                }
+
                 return false
             }
         }
 
         for (check in checkList) {
-            if (!check.invoke(event)) {
+            val context = CheckContext(event, locale)
+
+            check(context)
+
+            if (!context.passed) {
+                val message = context.message
+
+                if (message != null && sendMessage) {
+                    event.message.respond(
+                        translationsProvider.translate(
+                            "checks.responseTemplate",
+                            replacements = arrayOf(message)
+                        )
+                    )
+                }
+
                 return false
             }
         }

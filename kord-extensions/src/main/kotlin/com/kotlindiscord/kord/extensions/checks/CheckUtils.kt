@@ -2,6 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
@@ -301,4 +302,11 @@ public suspend fun userFor(event: Event): UserBehavior? {
 
         else -> null
     }
+}
+
+/** Wrap an existing check, calling it but ensuring that no message is produced. **/
+public suspend fun Check<*>.silenced(): Check<*> = {
+    this@silenced()
+
+    message = null
 }

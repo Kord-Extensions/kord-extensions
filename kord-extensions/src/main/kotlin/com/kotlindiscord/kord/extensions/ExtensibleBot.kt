@@ -96,7 +96,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     /**
      * A list of all registered event handlers.
      */
-    public open val eventHandlers: MutableList<EventHandler<out Any>> = mutableListOf()
+    public open val eventHandlers: MutableList<EventHandler<out Event>> = mutableListOf()
 
     /**
      * A map of the names of all loaded [Extension]s to their instances.
@@ -398,7 +398,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
      */
     @Throws(EventHandlerRegistrationException::class)
-    public inline fun <reified T : Any> addEventHandler(handler: EventHandler<T>): Job {
+    public inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>): Job {
         if (eventHandlers.contains(handler)) {
             throw EventHandlerRegistrationException(
                 "Event handler already registered in '${handler.extension.name}' extension."
@@ -420,7 +420,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      *
      * @param handler The event handler to be removed.
      */
-    public open fun removeEventHandler(handler: EventHandler<out Any>): Boolean = eventHandlers.remove(handler)
+    public open fun removeEventHandler(handler: EventHandler<out Event>): Boolean = eventHandlers.remove(handler)
 }
 
 /**

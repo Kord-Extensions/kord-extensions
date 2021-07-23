@@ -175,7 +175,7 @@ public class HelpExtension : HelpProvider, Extension() {
         val pages = Pages(COMMANDS_GROUP)
         val locale = event.getLocale()
 
-        if (command == null || !command.runChecks(event)) {
+        if (command == null || !command.runChecks(event, false)) {
             pages.addPage(
                 COMMANDS_GROUP,
 
@@ -242,7 +242,9 @@ public class HelpExtension : HelpProvider, Extension() {
     }
 
     override suspend fun gatherCommands(event: MessageCreateEvent): List<MessageCommand<out Arguments>> =
-        messageCommandsRegistry.commands.filter { !it.hidden && it.enabled && it.runChecks(event) }.sortedBy { it.name }
+        messageCommandsRegistry.commands
+            .filter { !it.hidden && it.enabled && it.runChecks(event, false) }
+            .sortedBy { it.name }
 
     override suspend fun formatCommandHelp(
         prefix: String,
@@ -296,7 +298,7 @@ public class HelpExtension : HelpProvider, Extension() {
         }
 
         if (command is GroupCommand) {
-            val subCommands = command.commands.filter { it.runChecks(event) }
+            val subCommands = command.commands.filter { it.runChecks(event, false) }
 
             if (subCommands.isNotEmpty()) {
                 description += "\n"
@@ -371,7 +373,7 @@ public class HelpExtension : HelpProvider, Extension() {
         val firstArg = args.first()
         var command = messageCommandsRegistry.getCommand(firstArg, event)
 
-        if (command?.runChecks(event) == false) {
+        if (command?.runChecks(event, false) == false) {
             return null
         }
 
@@ -379,7 +381,7 @@ public class HelpExtension : HelpProvider, Extension() {
             if (command is GroupCommand<out Arguments>) {
                 val gc = command as GroupCommand<out Arguments>
 
-                command = if (gc.runChecks(event)) {
+                command = if (gc.runChecks(event, false)) {
                     gc.getCommand(it, event)
                 } else {
                     null

@@ -3,22 +3,24 @@
 package com.kotlindiscord.kord.extensions.components.builders
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.checks.channelFor
-import com.kotlindiscord.kord.extensions.checks.guildFor
-import com.kotlindiscord.kord.extensions.checks.userFor
+import com.kotlindiscord.kord.extensions.checks.*
+import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
-import com.kotlindiscord.kord.extensions.components.ComponentCheckFun
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.components.contexts.ActionableComponentContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.ackEphemeral
 import com.kotlindiscord.kord.extensions.utils.ackPublic
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.interaction.InteractionResponseBehavior
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.ComponentInteraction
@@ -26,6 +28,7 @@ import dev.kord.core.event.interaction.InteractionCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import java.io.Serializable
 import java.util.*
 
@@ -37,6 +40,7 @@ import java.util.*
 public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : ActionableComponentContext<T>> :
     ComponentBuilder() {
     private val logger = KotlinLogging.logger {}
+    private val translations: TranslationsProvider by inject()
 
     /** Unique ID for this button. Required by Discord. **/
     public open val id: String = UUID.randomUUID().toString()
@@ -44,7 +48,21 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     /**
      * Automatic ack type, if not following a parent context.
      */
-    public open var ackType: AutoAckType? = AutoAckType.EPHEMERAL
+    public open var autoAck: AutoAckType? = AutoAckType.EPHEMERAL
+
+    /**
+     * Automatic ack type, if not following a parent context.
+     */
+    @Deprecated(
+        "This property was renamed to autoAck for consistency.",
+        ReplaceWith("autoAck"),
+        DeprecationLevel.ERROR
+    )
+    public open var ackType: AutoAckType?
+        get() = autoAck
+        set(value) {
+            autoAck = value
+        }
 
     /** Whether to send a deferred acknowledgement instead of a normal one. **/
     public open var deferredAck: Boolean = false
@@ -53,7 +71,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     public open var followParent: Boolean = true
 
     /** @suppress Internal variable, a list of checks to apply to click actions. **/
-    public open val checks: MutableList<ComponentCheckFun> = mutableListOf()
+    public open val checks: MutableList<Check<InteractionCreateEvent>> = mutableListOf()
 
     /** @suppress Internal variable, the click action to run. **/
     public open lateinit var body: suspend R.() -> Unit
@@ -64,17 +82,76 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
         }
     }
 
-    /** Register a check that must pass for this button to be actioned. Failing checks will fail quietly. **/
-    public open fun check(vararg checks: ComponentCheckFun): Boolean =
+    /** Register a check that must pass for this button to be actioned. **/
+    public open fun check(vararg checks: Check<InteractionCreateEvent>): Boolean =
         this.checks.addAll(checks)
 
-    /** Register a check that must pass for this button to be actioned. Failing checks will fail quietly. **/
-    public open fun check(check: ComponentCheckFun): Boolean =
+    /** Register a check that must pass for this button to be actioned. **/
+    public open fun check(check: Check<InteractionCreateEvent>): Boolean =
         checks.add(check)
+
+    /**
+     * Define a simple Boolean check which must pass for the button to be actioned.
+     *
+     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
+     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
+     * the same functionality as a regular check, and cannot return a message.
+     */
+    public open fun booleanCheck(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+        checks.forEach(::booleanCheck)
+    }
+
+    /**
+     * Overloaded simple Boolean check function to allow for DSL syntax.
+     *
+     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
+     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
+     * the same functionality as a regular check, and cannot return a message.
+     */
+    public open fun booleanCheck(check: suspend (InteractionCreateEvent) -> Boolean) {
+        check {
+            if (check(event)) {
+                pass()
+            } else {
+                fail()
+            }
+        }
+    }
 
     /** Register the click action that should be run when this button is clicked, assuming the checks pass. **/
     public open fun action(action: suspend R.() -> Unit) {
         this.body = action
+    }
+
+    /** Run this component's checks, returning a Boolean representing whether the checks passed. **/
+    public open suspend fun runChecks(event: InteractionCreateEvent, sendMessage: Boolean = true): Boolean {
+        val interaction = event.interaction as T
+        val locale = event.getLocale()
+
+        for (check in checks) {
+            val context = CheckContext(event, locale)
+
+            check(context)
+
+            if (!context.passed) {
+                val message = context.message
+
+                if (message != null && sendMessage) {
+                    interaction.respondEphemeral {
+                        content = translations.translate(
+                            "checks.responseTemplate",
+                            replacements = arrayOf(message)
+                        )
+                    }
+                } else {
+                    interaction.acknowledgeEphemeralDeferredMessageUpdate()
+                }
+
+                return false
+            }
+        }
+
+        return true
     }
 
     override suspend fun call(
@@ -83,8 +160,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
         event: InteractionCreateEvent,
         parentContext: SlashCommandContext<*>?
     ) {
-        if (!checks.all { it(event) }) {
-            (event.interaction as T).acknowledgeEphemeralDeferredMessageUpdate()
+        if (!runChecks(event)) {
             return
         }
 
@@ -127,7 +203,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
                 else -> null
             }
         } else {
-            when (ackType) {
+            when (autoAck) {
                 AutoAckType.EPHEMERAL -> interaction.ackEphemeral(deferredAck)
                 AutoAckType.PUBLIC -> interaction.ackPublic(deferredAck)
 

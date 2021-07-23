@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.CategorizableChannel
 import dev.kord.core.entity.channel.GuildChannel
@@ -25,71 +26,62 @@ import mu.KotlinLogging
  * @param allowed List of allowed category IDs
  * @param banned List of banned category IDs
  */
-suspend fun allowedCategory(
+fun allowedCategory(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
-): suspend (MessageCreateEvent) -> Boolean {
+): Check<MessageCreateEvent> = {
     val logger = KotlinLogging.logger { }
+    val channel = channelFor(event)
 
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        val channel = channelFor(event)
+    if (channel == null) {
+        logger.debug { "Passing: Event is not channel-related" }
 
-        if (channel == null) {
-            logger.debug { "Passing: Event is not channel-related" }
+        pass()
+    } else if (channel !is CategorizableChannel) {
+        logger.debug { "Passing: Channel is not categorizable (eg, it's a DM)" }
 
-            return true
-        }
-
-        if (channel !is CategorizableChannel) {
-            logger.debug { "Passing: Channel is not categorizable (eg, it's a DM)" }
-
-            return true  // It's a DM
-        }
-
+        pass()
+    } else {
         val parent = channel.category
 
         if (allowed.isNotEmpty()) {
             if (parent == null) {
                 logger.debug { "Failing: We have allowed categories, but the message was sent outside of a category" }
 
-                return false
-            }
-
-            return if (allowed.contains(parent.id)) {
+                fail()
+            } else if (allowed.contains(parent.id)) {
                 logger.debug { "Passing: Event happened in an allowed category" }
 
-                true
+                pass()
             } else {
                 logger.debug { "Failing: Event happened outside of the allowed categories" }
 
-                false
+                fail()
             }
-        }
+        } else {
+            if (parent == null) {
+                logger.debug {
+                    "Passing: We have no allowed categories, and the message was sent outside of a category"
+                }
 
-        if (parent == null) {
-            logger.debug { "Passing: We have no allowed categories, and the message was sent outside of a category" }
+                pass()
+            } else if (banned.isNotEmpty()) {
+                if (!banned.contains(parent.id)) {
+                    logger.debug { "Passing: Event did not happen in a banned category" }
 
-            return true
-        }
+                    pass()
+                } else {
+                    logger.debug { "Failing: Event happened in a banned category" }
 
-        if (banned.isNotEmpty()) {
-            return if (!banned.contains(parent.id)) {
-                logger.debug { "Passing: Event did not happen in a banned category" }
-
-                true
+                    fail()
+                }
             } else {
-                logger.debug { "Failing: Event happened in a banned category" }
+                logger.debug { "Passing: No allowed or banned categories configured" }
 
-                false
+                pass()
             }
         }
-
-        logger.debug { "Passing: No allowed or banned categories configured" }
-
-        return true
     }
-
-    return ::inner
 }
 
 /**
@@ -108,57 +100,46 @@ suspend fun allowedCategory(
  * @param allowed List of allowed channel IDs
  * @param banned List of banned channel IDs
  */
-suspend fun allowedChannel(
+fun allowedChannel(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
-): suspend (MessageCreateEvent) -> Boolean {
+): Check<MessageCreateEvent> = {
     val logger = KotlinLogging.logger { }
+    val channel = channelFor(event)
 
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        val channel = channelFor(event)
+    if (channel == null) {
+        logger.debug { "Passing: Event is not channel-related" }
 
-        if (channel == null) {
-            logger.debug { "Passing: Event is not channel-related" }
+        pass()
+    } else if (channel !is GuildChannel) {
+        logger.debug { "Passing: Message was sent privately" }
 
-            return true
+        pass()  // It's a DM
+    } else if (allowed.isNotEmpty()) {
+        if (allowed.contains(channel.id)) {
+            logger.debug { "Passing: Event happened in an allowed channel" }
+
+            pass()
+        } else {
+            logger.debug { "Failing: Event did not happen in an allowed channel" }
+
+            fail()
         }
+    } else if (banned.isNotEmpty()) {
+        if (!banned.contains(channel.id)) {
+            logger.debug { "Passing: Event did not happen in a banned channel" }
 
-        if (channel !is GuildChannel) {
-            logger.debug { "Passing: Message was sent privately" }
+            pass()
+        } else {
+            logger.debug { "Failing: Event happened in a banned channel" }
 
-            return true  // It's a DM
+            fail()
         }
-
-        if (allowed.isNotEmpty()) {
-            return if (allowed.contains(channel.id)) {
-                logger.debug { "Passing: Event happened in an allowed channel" }
-
-                true
-            } else {
-                logger.debug { "Failing: Event did not happen in an allowed channel" }
-
-                false
-            }
-        }
-
-        if (banned.isNotEmpty()) {
-            return if (!banned.contains(channel.id)) {
-                logger.debug { "Passing: Event did not happen in a banned channel" }
-
-                true
-            } else {
-                logger.debug { "Failing: Event happened in a banned channel" }
-
-                false
-            }
-        }
-
+    } else {
         logger.debug { "Passing: No allowed or banned channels configured" }
 
-        return true
+        pass()
     }
-
-    return ::inner
 }
 
 /**
@@ -176,49 +157,40 @@ suspend fun allowedChannel(
  * @param allowed List of allowed guild IDs
  * @param banned List of banned guild IDs
  */
-suspend fun allowedGuild(
+fun allowedGuild(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
-): suspend (MessageCreateEvent) -> Boolean {
+): Check<MessageCreateEvent> = {
     val logger = KotlinLogging.logger { }
+    val guild = guildFor(event)
 
-    suspend fun inner(event: MessageCreateEvent): Boolean {
-        val guild = guildFor(event)
+    if (guild == null) {
+        logger.debug { "Passing: Event is not guild-related" }
 
-        if (guild == null) {
-            logger.debug { "Passing: Event is not guild-related" }
+        pass()
+    } else if (allowed.isNotEmpty()) {
+        if (allowed.contains(guild.id)) {
+            logger.debug { "Passing: Event happened in an allowed guild" }
 
-            return true
+            pass()
+        } else {
+            logger.debug { "Failing: Event did not happen in an allowed guild" }
+
+            fail()
         }
+    } else if (banned.isNotEmpty()) {
+        if (!banned.contains(guild.id)) {
+            logger.debug { "Passing: Event did not happen in a banned guild" }
 
-        if (allowed.isNotEmpty()) {
-            return if (allowed.contains(guild.id)) {
-                logger.debug { "Passing: Event happened in an allowed guild" }
+            pass()
+        } else {
+            logger.debug { "Failing: Event happened in a banned guild" }
 
-                true
-            } else {
-                logger.debug { "Failing: Event did not happen in an allowed guild" }
-
-                false
-            }
+            fail()
         }
-
-        if (banned.isNotEmpty()) {
-            return if (!banned.contains(guild.id)) {
-                logger.debug { "Passing: Event did not happen in a banned guild" }
-
-                true
-            } else {
-                logger.debug { "Failing: Event happened in a banned guild" }
-
-                false
-            }
-        }
-
+    } else {
         logger.debug { "Passing: No allowed or banned guilds configured" }
 
-        return true
+        pass()
     }
-
-    return ::inner
 }

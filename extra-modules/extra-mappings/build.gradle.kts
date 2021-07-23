@@ -38,6 +38,9 @@ dependencies {
     implementation(libs.logging)
     implementation(libs.kotlin.stdlib)
 
+    testImplementation(libs.groovy)  // For logback config
+    testImplementation(libs.logback)
+
     implementation(project(":kord-extensions"))
 }
 

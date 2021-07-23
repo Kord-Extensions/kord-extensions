@@ -2,11 +2,19 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.hasPermission
+import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.Event
 import mu.KotlinLogging
+import java.util.*
+
+private val defaultLocale: Locale
+    get() = getKoin().get<ExtensibleBotBuilder>().i18nBuilder.defaultLocale
 
 /**
  * Check asserting that the user an [Event] fired for has a given permission, or the Administrator permission.
@@ -16,18 +24,16 @@ import mu.KotlinLogging
  *
  * @param perm The permission to check for.
  */
-public fun hasPermission(perm: Permission): CheckFun {
+public fun hasPermission(perm: Permission): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasPermission")
+    val channel = channelFor(event) as? GuildChannel
+    val member = memberFor(event)
 
-    suspend fun inner(event: Event): Boolean {
-        val channel = channelFor(event) as? GuildChannel
-        val member = memberFor(event)
+    if (member == null) {
+        logger.nullMember(event)
 
-        if (member == null) {
-            logger.nullMember(event)
-            return false
-        }
-
+        fail()
+    } else {
         val memberObj = member.asMember()
 
         val result = when {
@@ -37,16 +43,21 @@ public fun hasPermission(perm: Permission): CheckFun {
             else -> memberObj.hasPermission(perm)
         }
 
-        return if (result) {
+        if (result) {
             logger.passed()
-            true
+
+            pass()
         } else {
             logger.failed("Member $member does not have permission $perm")
-            false
+
+            fail(
+                translate(
+                    "checks.hasPermission.failed",
+                    replacements = arrayOf(perm.translate(locale))
+                )
+            )
         }
     }
-
-    return ::inner
 }
 
 /**
@@ -58,18 +69,16 @@ public fun hasPermission(perm: Permission): CheckFun {
  *
  * @param perm The permission to check for.
  */
-public fun notHasPermission(perm: Permission): CheckFun {
+public fun notHasPermission(perm: Permission): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasPermission")
+    val channel = channelFor(event) as? GuildChannel
+    val member = memberFor(event)
 
-    suspend fun inner(event: Event): Boolean {
-        val channel = channelFor(event) as? GuildChannel
-        val member = memberFor(event)
+    if (member == null) {
+        logger.nullMember(event)
 
-        if (member == null) {
-            logger.nullMember(event)
-            return false
-        }
-
+        fail()
+    } else {
         val memberObj = member.asMember()
 
         val result = when {
@@ -79,14 +88,19 @@ public fun notHasPermission(perm: Permission): CheckFun {
             else -> memberObj.hasPermission(perm)
         }
 
-        return if (result) {
+        if (result) {
             logger.failed("Member $member has permission $perm")
-            false
+
+            fail(
+                translate(
+                    "checks.notHasPermission.failed",
+                    replacements = arrayOf(perm.translate(locale)),
+                )
+            )
         } else {
             logger.passed()
-            true
+
+            pass()
         }
     }
-
-    return ::inner
 }
