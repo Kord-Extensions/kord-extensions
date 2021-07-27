@@ -21,7 +21,7 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
     public var message: String? = null
 
     /** Whether this check has passed. **/
-    public var passed: Boolean = false
+    public var passed: Boolean = true
 
     /** Mark this check as having passed successfully. **/
     public fun pass() {
