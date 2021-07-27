@@ -34,6 +34,63 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
         this.passed = false
     }
 
+    /**
+     * If [value] is `true`, mark this check as having failed, optionally providing a message for the user.
+     *
+     * Returns `true` if the check was marked as having failed, `false` otherwise.
+     */
+    public fun failIf(value: Boolean, message: String? = null): Boolean {
+        if (value) {
+            fail(message)
+
+            return true
+        }
+
+        return false
+    }
+
+    /**
+     * If [callback] returns `true`, mark this check as having failed, optionally providing a message for the user.
+     *
+     * Returns `true` if the check was marked as having failed, `false` otherwise.
+     */
+    public suspend fun failIf(message: String? = null, callback: suspend () -> Boolean): Boolean =
+        failIf(callback(), message)
+
+    /**
+     * If [value] is `false`, mark this check as having failed, optionally providing a message for the user.
+     *
+     * Returns `true` if the check was marked as having failed, `false` otherwise.
+     */
+    public fun failIfNot(value: Boolean, message: String? = null): Boolean =
+        failIf(!value, message)
+
+    /**
+     * If [callback] returns `false`, mark this check as having failed, optionally providing a message for the user.
+     *
+     * Returns `true` if the check was marked as having failed, `false` otherwise.
+     */
+    public suspend fun failIfNot(message: String? = null, callback: suspend () -> Boolean): Boolean =
+        failIfNot(callback(), message)
+
+    /** Call the given block if the Boolean receiver is `true`. **/
+    public inline fun <T : Any> Boolean.whenTrue(body: () -> T?): T? {
+        if (this) {
+            return body()
+        }
+
+        return null
+    }
+
+    /** Call the given block if the Boolean receiver is `false`. **/
+    public inline fun <T : Any> Boolean.whenFalse(body: () -> T?): T? {
+        if (!this) {
+            return body()
+        }
+
+        return null
+    }
+
     /** Quick access to translate strings using this check context's [locale]. **/
     public fun translate(key: String, bundle: String? = null, replacements: Array<Any?> = arrayOf()): String =
         translations.translate(key, locale, bundleName = bundle, replacements = replacements)
