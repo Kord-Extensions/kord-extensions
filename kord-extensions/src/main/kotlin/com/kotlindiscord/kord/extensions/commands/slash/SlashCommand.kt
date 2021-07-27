@@ -105,22 +105,22 @@ public open class SlashCommand<T : Arguments>(
     /**
      * List of allowed role IDs. Allows take priority over disallows.
      */
-    public open val allowedRoles: MutableList<Snowflake> = parentCommand?.allowedRoles ?: mutableListOf()
+    public open val allowedRoles: MutableSet<Snowflake> = parentCommand?.allowedRoles ?: mutableSetOf()
 
     /**
      * List of allowed invoker IDs. Allows take priority over disallows.
      */
-    public open val allowedUsers: MutableList<Snowflake> = parentCommand?.allowedUsers ?: mutableListOf()
+    public open val allowedUsers: MutableSet<Snowflake> = parentCommand?.allowedUsers ?: mutableSetOf()
 
     /**
      * List of disallowed role IDs. Allows take priority over disallows.
      */
-    public open val disallowedRoles: MutableList<Snowflake> = parentCommand?.disallowedRoles ?: mutableListOf()
+    public open val disallowedRoles: MutableSet<Snowflake> = parentCommand?.disallowedRoles ?: mutableSetOf()
 
     /**
      * List of disallowed invoker IDs. Allows take priority over disallows.
      */
-    public open val disallowedUsers: MutableList<Snowflake> = parentCommand?.disallowedUsers ?: mutableListOf()
+    public open val disallowedUsers: MutableSet<Snowflake> = parentCommand?.disallowedUsers ?: mutableSetOf()
 
     /** Types of automatic ack to use, if any. **/
     public open var autoAck: AutoAckType = AutoAckType.EPHEMERAL
