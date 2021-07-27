@@ -43,7 +43,7 @@ public abstract class TranslationsProvider(
         key: String,
         bundleName: String? = null,
         replacements: Array<Any?> = arrayOf()
-    ): String = translate(key, defaultLocale, bundleName)
+    ): String = translate(key, defaultLocale, bundleName, replacements)
 
     /** Get a formatted translation using the provided arguments. **/
     public open fun translate(
@@ -51,7 +51,7 @@ public abstract class TranslationsProvider(
         bundleName: String? = null,
         locale: Locale,
         replacements: Array<Any?> = arrayOf()
-    ): String = translate(key, locale, bundleName)
+    ): String = translate(key, locale, bundleName, replacements)
 
     /** Get a formatted translation using the provided arguments. **/
     public abstract fun translate(
@@ -67,7 +67,7 @@ public abstract class TranslationsProvider(
         language: String,
         bundleName: String? = null,
         replacements: Array<Any?> = arrayOf()
-    ): String = get(key, Locale(language), bundleName)
+    ): String = translate(key, Locale(language), bundleName, replacements)
 
     /** Get a formatted translation using the provided arguments. **/
     public open fun translate(
@@ -76,7 +76,7 @@ public abstract class TranslationsProvider(
         country: String,
         bundleName: String? = null,
         replacements: Array<Any?> = arrayOf()
-    ): String = get(key, Locale(language, country), bundleName)
+    ): String = translate(key, Locale(language, country), bundleName, replacements)
 
     /** Get a formatted translation using the provided arguments. **/
     public open fun translate(
