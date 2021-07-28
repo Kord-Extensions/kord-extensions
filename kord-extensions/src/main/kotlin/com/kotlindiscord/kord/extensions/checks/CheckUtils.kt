@@ -40,6 +40,7 @@ public fun channelFor(event: Event): ChannelBehavior? {
         is InteractionCreateEvent -> event.interaction.channel
         is InviteCreateEvent -> event.channel
         is InviteDeleteEvent -> event.channel
+        is MessageBulkDeleteEvent -> event.channel
         is MessageCreateEvent -> event.message.channel
         is MessageDeleteEvent -> event.message?.channel
         is MessageUpdateEvent -> event.channel
@@ -74,6 +75,7 @@ public fun channelIdFor(event: Event): Long? {
         is InteractionCreateEvent -> event.interaction.channel.id.value
         is InviteCreateEvent -> event.channel.id.value
         is InviteDeleteEvent -> event.channel.id.value
+        is MessageBulkDeleteEvent -> event.channelId.value
         is MessageCreateEvent -> event.message.channel.id.value
         is MessageDeleteEvent -> event.channelId.value
         is MessageUpdateEvent -> event.channel.id.value
@@ -108,6 +110,7 @@ public fun channelSnowflakeFor(event: Event): Snowflake? {
         is InteractionCreateEvent -> event.interaction.channel.id
         is InviteCreateEvent -> event.channel.id
         is InviteDeleteEvent -> event.channel.id
+        is MessageBulkDeleteEvent -> event.channelId
         is MessageCreateEvent -> event.message.channel.id
         is MessageDeleteEvent -> event.channelId
         is MessageUpdateEvent -> event.channel.id
@@ -153,6 +156,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is MemberJoinEvent -> event.guild
         is MemberLeaveEvent -> event.guild
         is MemberUpdateEvent -> event.guild
+        is MessageBulkDeleteEvent -> event.guild
         is MessageCreateEvent -> event.message.getGuildOrNull()
         is MessageDeleteEvent -> event.guild
         is MessageUpdateEvent -> event.getMessage().getGuildOrNull()
