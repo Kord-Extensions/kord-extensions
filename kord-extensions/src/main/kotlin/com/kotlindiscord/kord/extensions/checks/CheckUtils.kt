@@ -10,6 +10,7 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.entity.interaction.GuildInteraction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
+import dev.kord.core.event.channel.thread.*
 import dev.kord.core.event.guild.*
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.*
@@ -51,6 +52,13 @@ public fun channelFor(event: Event): ChannelBehavior? {
         is TypingStartEvent -> event.channel
         is WebhookUpdateEvent -> event.channel
 
+        is ThreadChannelCreateEvent -> event.channel
+        is ThreadUpdateEvent -> event.channel
+        is ThreadChannelDeleteEvent -> event.channel
+//        is ThreadListSyncEvent -> event.
+//        is ThreadMemberUpdateEvent -> event.
+//        is ThreadMembersUpdateEvent -> event.
+
         else -> null
     }
 }
@@ -86,6 +94,13 @@ public fun channelIdFor(event: Event): Long? {
         is TypingStartEvent -> event.channel.id.value
         is WebhookUpdateEvent -> event.channel.id.value
 
+        is ThreadChannelCreateEvent -> event.channel.id.value
+        is ThreadUpdateEvent -> event.channel.id.value
+        is ThreadChannelDeleteEvent -> event.channel.id.value
+//        is ThreadListSyncEvent -> event.
+//        is ThreadMemberUpdateEvent -> event.
+//        is ThreadMembersUpdateEvent -> event.
+
         else -> null
     }
 }
@@ -120,6 +135,13 @@ public fun channelSnowflakeFor(event: Event): Snowflake? {
         is ReactionRemoveEvent -> event.channel.id
         is TypingStartEvent -> event.channel.id
         is WebhookUpdateEvent -> event.channel.id
+
+        is ThreadChannelCreateEvent -> event.channel.id
+        is ThreadUpdateEvent -> event.channel.id
+        is ThreadChannelDeleteEvent -> event.channel.id
+//        is ThreadListSyncEvent -> event.
+//        is ThreadMemberUpdateEvent -> event.
+//        is ThreadMembersUpdateEvent -> event.
 
         else -> null
     }
@@ -178,6 +200,13 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is VoiceServerUpdateEvent -> event.guild
         is WebhookUpdateEvent -> event.guild
 
+        is ThreadChannelCreateEvent -> event.channel.guild
+        is ThreadUpdateEvent -> event.channel.guild
+//        is ThreadChannelDeleteEvent -> event.
+        is ThreadListSyncEvent -> event.guild
+//        is ThreadMemberUpdateEvent -> event.
+//        is ThreadMembersUpdateEvent -> event.
+
         else -> null
     }
 }
@@ -221,6 +250,13 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
             null
         }
 
+        event is ThreadChannelCreateEvent -> event.channel.owner.asMember(event.channel.guildId)
+//        event is ThreadUpdateEvent -> event.
+//        event is ThreadChannelDeleteEvent -> event.
+//        event is ThreadListSyncEvent -> event.
+//        event is ThreadMemberUpdateEvent -> event.
+//        event is ThreadMembersUpdateEvent -> event.
+
         else -> null
     }
 }
@@ -246,6 +282,13 @@ public suspend fun messageFor(event: Event): MessageBehavior? {
         is ReactionRemoveEmojiEvent -> event.message
         is ReactionRemoveEvent -> event.message
 
+//        is ThreadChannelCreateEvent -> event.
+//        is ThreadUpdateEvent -> event.
+//        is ThreadChannelDeleteEvent -> event.
+//        is ThreadListSyncEvent -> event.
+//        is ThreadMemberUpdateEvent -> event.
+//        is ThreadMembersUpdateEvent -> event.
+
         else -> null
     }
 }
@@ -266,6 +309,13 @@ public fun roleFor(event: Event): RoleBehavior? {
         is RoleCreateEvent -> event.role
         is RoleDeleteEvent -> event.role
         is RoleUpdateEvent -> event.role
+
+//        is ThreadChannelCreateEvent -> event.
+//        is ThreadUpdateEvent -> event.
+//        is ThreadChannelDeleteEvent -> event.
+//        is ThreadListSyncEvent -> event.
+//        is ThreadMemberUpdateEvent -> event.
+//        is ThreadMembersUpdateEvent -> event.
 
         else -> null
     }
@@ -303,6 +353,13 @@ public suspend fun userFor(event: Event): UserBehavior? {
         is ReactionRemoveEvent -> event.user
         is TypingStartEvent -> event.user
         is UserUpdateEvent -> event.user
+
+        is ThreadChannelCreateEvent -> event.channel.owner
+//        is ThreadUpdateEvent -> event.
+//        is ThreadChannelDeleteEvent -> event.
+//        is ThreadListSyncEvent -> event.
+        is ThreadMemberUpdateEvent -> event.member
+//        is ThreadMembersUpdateEvent -> event.
 
         else -> null
     }
