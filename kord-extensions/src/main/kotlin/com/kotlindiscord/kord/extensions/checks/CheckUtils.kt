@@ -7,6 +7,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior
+import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.entity.interaction.GuildInteraction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
@@ -56,7 +57,7 @@ public fun channelFor(event: Event): ChannelBehavior? {
         is ThreadUpdateEvent -> event.channel
         is ThreadChannelDeleteEvent -> event.channel
 //        is ThreadListSyncEvent -> event.
-//        is ThreadMemberUpdateEvent -> event.
+        is ThreadMemberUpdateEvent -> event.member.thread
 //        is ThreadMembersUpdateEvent -> event.
 
         else -> null
@@ -98,7 +99,7 @@ public fun channelIdFor(event: Event): Long? {
         is ThreadUpdateEvent -> event.channel.id.value
         is ThreadChannelDeleteEvent -> event.channel.id.value
 //        is ThreadListSyncEvent -> event.
-//        is ThreadMemberUpdateEvent -> event.
+        is ThreadMemberUpdateEvent -> event.member.thread.id.value
 //        is ThreadMembersUpdateEvent -> event.
 
         else -> null
@@ -140,7 +141,7 @@ public fun channelSnowflakeFor(event: Event): Snowflake? {
         is ThreadUpdateEvent -> event.channel.id
         is ThreadChannelDeleteEvent -> event.channel.id
 //        is ThreadListSyncEvent -> event.
-//        is ThreadMemberUpdateEvent -> event.
+        is ThreadMemberUpdateEvent -> event.member.thread.id
 //        is ThreadMembersUpdateEvent -> event.
 
         else -> null
@@ -204,7 +205,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is ThreadUpdateEvent -> event.channel.guild
 //        is ThreadChannelDeleteEvent -> event.
         is ThreadListSyncEvent -> event.guild
-//        is ThreadMemberUpdateEvent -> event.
+        is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()?.guild
 //        is ThreadMembersUpdateEvent -> event.
 
         else -> null
@@ -254,7 +255,17 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
 //        event is ThreadUpdateEvent -> event.
 //        event is ThreadChannelDeleteEvent -> event.
 //        event is ThreadListSyncEvent -> event.
-//        event is ThreadMemberUpdateEvent -> event.
+
+        event is ThreadMemberUpdateEvent -> {
+            val thread = event.member.getThreadOrNull()
+
+            if (thread == null) {
+                null
+            } else {
+                event.member.asMember(thread.guildId)
+            }
+        }
+
 //        event is ThreadMembersUpdateEvent -> event.
 
         else -> null
@@ -282,7 +293,7 @@ public suspend fun messageFor(event: Event): MessageBehavior? {
         is ReactionRemoveEmojiEvent -> event.message
         is ReactionRemoveEvent -> event.message
 
-//        is ThreadChannelCreateEvent -> event.
+        is ThreadChannelCreateEvent -> event.channel.getLastMessage()
 //        is ThreadUpdateEvent -> event.
 //        is ThreadChannelDeleteEvent -> event.
 //        is ThreadListSyncEvent -> event.
@@ -315,6 +326,48 @@ public fun roleFor(event: Event): RoleBehavior? {
 //        is ThreadChannelDeleteEvent -> event.
 //        is ThreadListSyncEvent -> event.
 //        is ThreadMemberUpdateEvent -> event.
+//        is ThreadMembersUpdateEvent -> event.
+
+        else -> null
+    }
+}
+
+/**
+ * Retrieves a thread that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the channel to retrieve.
+ * @return A [ThreadChannelBehavior] representing the role, or null if there isn't one.
+ */
+public fun threadFor(event: Event): ThreadChannelBehavior? {
+    return when (event) {
+        is ChannelCreateEvent -> event.channel as? ThreadChannelBehavior
+        is ChannelDeleteEvent -> event.channel as? ThreadChannelBehavior
+        is ChannelPinsUpdateEvent -> event.channel as? ThreadChannelBehavior
+        is ChannelUpdateEvent -> event.channel as? ThreadChannelBehavior
+        is InteractionCreateEvent -> event.interaction.channel as? ThreadChannelBehavior
+        is InviteCreateEvent -> event.channel as? ThreadChannelBehavior
+        is InviteDeleteEvent -> event.channel as? ThreadChannelBehavior
+        is MessageBulkDeleteEvent -> event.channel as? ThreadChannelBehavior
+        is MessageCreateEvent -> event.message.channel as? ThreadChannelBehavior
+        is MessageDeleteEvent -> event.message?.channel as? ThreadChannelBehavior
+        is MessageUpdateEvent -> event.channel as? ThreadChannelBehavior
+        is ReactionAddEvent -> event.channel as? ThreadChannelBehavior
+        is ReactionRemoveAllEvent -> event.channel as? ThreadChannelBehavior
+        is ReactionRemoveEmojiEvent -> event.channel as? ThreadChannelBehavior
+        is ReactionRemoveEvent -> event.channel as? ThreadChannelBehavior
+        is TypingStartEvent -> event.channel as? ThreadChannelBehavior
+        is WebhookUpdateEvent -> event.channel as? ThreadChannelBehavior
+
+        is ThreadChannelCreateEvent -> event.channel
+        is ThreadUpdateEvent -> event.channel
+//        is ThreadChannelDeleteEvent -> event.channel
+//        is ThreadListSyncEvent -> event.
+        is ThreadMemberUpdateEvent -> event.member.thread
 //        is ThreadMembersUpdateEvent -> event.
 
         else -> null
