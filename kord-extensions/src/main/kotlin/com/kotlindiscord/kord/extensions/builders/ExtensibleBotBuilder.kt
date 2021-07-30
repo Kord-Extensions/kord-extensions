@@ -24,6 +24,7 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
+import dev.kord.core.builder.kord.Shards
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -78,6 +79,9 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var presenceBuilder: PresenceBuilder.() -> Unit = { status = PresenceStatus.Online }
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
+    public var shardingBuilder: ((recommended: Int) -> Shards)? = null
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
@@ -173,6 +177,16 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public fun presence(builder: PresenceBuilder.() -> Unit) {
         this.presenceBuilder = builder
+    }
+
+    /**
+     * DSL function used to configure the bot's sharding settings.
+     *
+     * @see dev.kord.core.builder.kord.KordBuilder.shardsBuilder
+     */
+    @BotBuilderDSL
+    public fun sharding(shards: (recommended: Int) -> Shards) {
+        this.shardingBuilder = shards
     }
 
     /** @suppress Internal function used to initially set up Koin. **/
@@ -823,6 +837,9 @@ public open class ExtensibleBotBuilder {
 
         /** The guild ID to use for all global slash commands. Intended for testing. **/
         public var defaultGuild: Snowflake? = null
+
+        /** Whether to attempt to register the bot's slash commands. Intended for multi-instance sharded bots. **/
+        public var register: Boolean = true
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var slashRegistryBuilder: () -> SlashCommandRegistry = { SlashCommandRegistry() }

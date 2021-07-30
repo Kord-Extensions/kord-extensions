@@ -128,6 +128,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                 this.intents = Intents(settings.intentsBuilder!!)
             }
 
+            if (settings.shardingBuilder != null) {
+                sharding(settings.shardingBuilder!!)
+            }
+
             enableShutdownHook = settings.hooksBuilder.kordShutdownHook
         }
 

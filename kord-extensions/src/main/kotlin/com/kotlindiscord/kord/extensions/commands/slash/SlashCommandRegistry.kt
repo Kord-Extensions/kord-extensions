@@ -97,6 +97,12 @@ public open class SlashCommandRegistry : KoinComponent {
     public open suspend fun syncAll() {
         logger.info { "Synchronising slash commands. This may take some time." }
 
+        if (!bot.settings.slashCommandsBuilder.register) {
+            logger.debug {
+                "Slash command registration is disabled, pairing existing commands with extension commands."
+            }
+        }
+
         try {
             sync(null)
         } catch (t: Throwable) {
@@ -137,92 +143,105 @@ public open class SlashCommandRegistry : KoinComponent {
             api.getGuildApplicationCommands(guild).map { Pair(it.name, it.id) }.toList()
         }
 
-        val toAdd = registered.filter { r -> existing.all { it.first != r.getTranslatedName(locale) } }
-        val toUpdate = registered.filter { r -> existing.any { it.first == r.getTranslatedName(locale) } }
-        val toRemove = existing.filter { e -> registered.all { it.getTranslatedName(locale) != e.first } }
+        if (!bot.settings.slashCommandsBuilder.register) {
+            registered.forEach { r ->
+                val existingCommand = existing.firstOrNull { it.first == r.getTranslatedName(locale) }
 
-        logger.info {
-            if (guild == null) {
-                "Global slash commands: ${toAdd.size} to add / ${toUpdate.size} to update / ${toRemove.size} to remove"
-            } else {
-                "Slash commands for guild ${guildObj?.name}: ${toAdd.size} to add / ${toUpdate.size} to update / " +
-                    "${toRemove.size} to remove"
-            }
-        }
-
-        val toCreate = toAdd + toUpdate
-
-        if (guild == null) {
-            val response = api.createGlobalApplicationCommands {
-                toCreate.forEach {
-                    val translatedName = it.getTranslatedName(locale)
-
-                    logger.debug { "Adding/updating global slash command $translatedName" }
-
-                    command(
-                        translatedName,
-                        translationsProvider.translate(it.description, it.extension.bundle, locale = locale)
-                    ) { register(it) }
+                if (existingCommand != null) {
+                    commandMap[existingCommand.second] = r
                 }
-            }.toList().associate { it.name to it.id }
-
-            toCreate.forEach {
-                commandMap[response[it.getTranslatedName(locale)]!!] = it
             }
-
-            api.getGlobalApplicationCommands().filter { e -> toRemove.any { it.second == e.id } }
-                .toList()
-                .forEach {
-                    logger.debug { "Removing global slash command ${it.name}" }
-                    it.delete()
-                }
         } else {
-            toCreate.groupBy { it.guild!! }.forEach { (snowflake, commands) ->
-                val response = api.createGuildApplicationCommands(snowflake) {
-                    commands.forEach {
+            val toAdd = registered.filter { r -> existing.all { it.first != r.getTranslatedName(locale) } }
+            val toUpdate = registered.filter { r -> existing.any { it.first == r.getTranslatedName(locale) } }
+            val toRemove = existing.filter { e -> registered.all { it.getTranslatedName(locale) != e.first } }
+
+            logger.info {
+                if (guild == null) {
+                    "Global slash commands: ${toAdd.size} to add / " +
+                        "${toUpdate.size} to update / " +
+                        "${toRemove.size} to remove"
+                } else {
+                    "Slash commands for guild ${guildObj?.name}: ${toAdd.size} to add / " +
+                        "${toUpdate.size} to update / " +
+                        "${toRemove.size} to remove"
+                }
+            }
+
+            val toCreate = toAdd + toUpdate
+
+            if (guild == null) {
+                val response = api.createGlobalApplicationCommands {
+                    toCreate.forEach {
                         val translatedName = it.getTranslatedName(locale)
 
                         logger.debug { "Adding/updating global slash command $translatedName" }
 
                         command(
                             translatedName,
-                            translationsProvider.translate(it.description, it.extension.bundle)
+                            translationsProvider.translate(it.description, it.extension.bundle, locale = locale)
                         ) { register(it) }
                     }
                 }.toList().associate { it.name to it.id }
 
-                commands.forEach {
+                toCreate.forEach {
                     commandMap[response[it.getTranslatedName(locale)]!!] = it
                 }
-            }
 
-            api.getGuildApplicationCommands(guild).filter { e -> toRemove.any { it.second == e.id } }
-                .toList()
-                .forEach {
-                    logger.debug { "Removing guild slash command ${it.name}" }
-                    it.delete()
-                }
-        }
+                api.getGlobalApplicationCommands().filter { e -> toRemove.any { it.second == e.id } }
+                    .toList()
+                    .forEach {
+                        logger.debug { "Removing global slash command ${it.name}" }
+                        it.delete()
+                    }
+            } else {
+                toCreate.groupBy { it.guild!! }.forEach { (snowflake, commands) ->
+                    val response = api.createGuildApplicationCommands(snowflake) {
+                        commands.forEach {
+                            val translatedName = it.getTranslatedName(locale)
 
-        val commandsWithPerms = commandMap.filterValues { !it.allowByDefault }.toList().groupBy {
-            it.second.guild
-        }
+                            logger.debug { "Adding/updating global slash command $translatedName" }
 
-        commandsWithPerms.forEach { (guild, commands) ->
-            if (guild != null) {
-                api.bulkEditApplicationCommandPermissions(api.applicationId, guild) {
-                    commands.forEach { (id, commandObj) ->
-                        command(id) {
-                            commandObj.allowedUsers.map { user(it, true) }
-                            commandObj.disallowedUsers.map { user(it, false) }
-
-                            commandObj.allowedRoles.map { role(it, true) }
-                            commandObj.disallowedRoles.map { role(it, false) }
+                            command(
+                                translatedName,
+                                translationsProvider.translate(it.description, it.extension.bundle)
+                            ) { register(it) }
                         }
+                    }.toList().associate { it.name to it.id }
+
+                    commands.forEach {
+                        commandMap[response[it.getTranslatedName(locale)]!!] = it
                     }
                 }
-            } else {
-                logger.warn { "Applying permissions to global slash commands is currently not supported." }
+
+                api.getGuildApplicationCommands(guild).filter { e -> toRemove.any { it.second == e.id } }
+                    .toList()
+                    .forEach {
+                        logger.debug { "Removing guild slash command ${it.name}" }
+                        it.delete()
+                    }
+            }
+
+            val commandsWithPerms = commandMap.filterValues { !it.allowByDefault }.toList().groupBy {
+                it.second.guild
+            }
+
+            commandsWithPerms.forEach { (guild, commands) ->
+                if (guild != null) {
+                    api.bulkEditApplicationCommandPermissions(api.applicationId, guild) {
+                        commands.forEach { (id, commandObj) ->
+                            command(id) {
+                                commandObj.allowedUsers.map { user(it, true) }
+                                commandObj.disallowedUsers.map { user(it, false) }
+
+                                commandObj.allowedRoles.map { role(it, true) }
+                                commandObj.disallowedRoles.map { role(it, false) }
+                            }
+                        }
+                    }
+                } else {
+                    logger.warn { "Applying permissions to global slash commands is currently not supported." }
+                }
             }
         }
 
