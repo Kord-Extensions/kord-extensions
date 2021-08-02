@@ -19,6 +19,7 @@ import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.getLocale
+import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Permission
@@ -542,7 +543,7 @@ public open class SlashCommand<T : Arguments>(
 
         val channel = event.interaction.channel.asChannel() as? GuildMessageChannel
 
-        // check that discord should enforce but we don't trust them to
+        // check that discord should enforce, but we don't trust them to
         if (!allowByDefault) {
             if (channel != null) {
                 val member = event.interaction.user.asMember(channel.guildId)
@@ -649,7 +650,7 @@ public open class SlashCommand<T : Arguments>(
         try {
             if (context.guild != null) {
                 val perms = (context.channel.asChannel() as GuildChannel)
-                    .getEffectivePermissions(kord.selfId)
+                    .permissionsForMember(kord.selfId)
 
                 val missingPerms = requiredPerms.filter { !perms.contains(it) }
 

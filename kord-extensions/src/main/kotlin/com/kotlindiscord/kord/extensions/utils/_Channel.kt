@@ -1,8 +1,14 @@
 package com.kotlindiscord.kord.extensions.utils
 
+import dev.kord.common.entity.Permissions
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createWebhook
 import dev.kord.core.entity.Webhook
-import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.channel.GuildChannel
+import dev.kord.core.entity.channel.TopGuildChannel
+import dev.kord.core.entity.channel.TopGuildMessageChannel
+import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
 import mu.KotlinLogging
@@ -22,7 +28,7 @@ private val logger = KotlinLogging.logger {}
  * @return Webhook object for the newly created webhook, or the existing one if it's already there.
  */
 public suspend fun ensureWebhook(
-    channelObj: GuildMessageChannel,
+    channelObj: TopGuildMessageChannel,
     name: String,
     logoFormat: Image.Format = Image.Format.PNG,
     logo: (suspend () -> ByteArray)? = null
@@ -43,3 +49,25 @@ public suspend fun ensureWebhook(
         }
     }
 }
+
+/**
+ * Given a guild channel, attempt to calculate the effective permissions for the member corresponding with
+ * the given ID, checking the parent channel if this one happens to be a thread.
+ *
+ * @param memberId Member ID to calculate for
+ */
+public suspend fun GuildChannel.permissionsForMember(memberId: Snowflake): Permissions = when (this) {
+    is TopGuildChannel -> getEffectivePermissions(memberId)
+    is ThreadChannel -> getParent().getEffectivePermissions(memberId)
+
+    else -> error("Unsupported channel type for channel: $this")
+}
+
+/**
+ * Given a guild channel, attempt to calculate the effective permissions for given user, checking the
+ * parent channel if this one happens to be a thread.
+ *
+ * @param user User to calculate for
+ */
+public suspend fun GuildChannel.permissionsForMember(user: UserBehavior): Permissions =
+    permissionsForMember(user.id)

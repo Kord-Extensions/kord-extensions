@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.hasPermission
+import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
 import dev.kord.core.entity.channel.GuildChannel
@@ -38,7 +39,7 @@ public fun hasPermission(perm: Permission): Check<*> = {
 
         val result = when {
             memberObj.hasPermission(Permission.Administrator) -> true
-            channel != null -> channel.getEffectivePermissions(member.id).contains(perm)
+            channel != null -> channel.permissionsForMember(member.id).contains(perm)
 
             else -> memberObj.hasPermission(perm)
         }
@@ -83,7 +84,7 @@ public fun notHasPermission(perm: Permission): Check<*> = {
 
         val result = when {
             memberObj.hasPermission(Permission.Administrator) -> true
-            channel != null -> channel.getEffectivePermissions(member.id).contains(perm)
+            channel != null -> channel.permissionsForMember(member.id).contains(perm)
 
             else -> memberObj.hasPermission(perm)
         }
