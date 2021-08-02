@@ -23,17 +23,6 @@ import mu.KotlinLogging
  */
 public fun inChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
-
-    // TODO: When we can get the thread parent, checks will need looking at again
-//    val thread = threadFor(event)
-//
-//    val eventChannel = when(thread) {
-//        is NewsChannelThread -> thread
-//        is TextChannelThread -> thread
-//
-//        else -> channelFor(event)
-//    }
-
     val eventChannel = channelFor(event)
 
     if (eventChannel == null) {

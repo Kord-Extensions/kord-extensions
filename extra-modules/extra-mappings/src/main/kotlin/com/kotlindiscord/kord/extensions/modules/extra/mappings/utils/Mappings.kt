@@ -28,7 +28,7 @@ fun classesToPages(
 
             val (clientName, serverName) = clazz.obfName.stringPairs()
 
-            if (clientName != null) {
+            if (clientName != null && clientName.isNotEmpty()) {
                 if (serverName == null) {
                     text += "**Name:** `$clientName` -> "
                 } else {
@@ -41,7 +41,7 @@ fun classesToPages(
                     } ?: "")
             }
 
-            if (serverName != null) {
+            if (serverName != null && serverName.isNotEmpty()) {
                 if (clientName != null) {
                     text += "\n"
                 }
@@ -64,7 +64,7 @@ fun classesToPages(
 
             val (clientName, serverName) = clazz.obfName.stringPairs()
 
-            if (clientName != null) {
+            if (clientName != null && clientName.isNotEmpty()) {
                 if (serverName == null) {
                     text += "**Name:** `$clientName` -> "
                 } else {
@@ -77,7 +77,7 @@ fun classesToPages(
                     } ?: "")
             }
 
-            if (serverName != null) {
+            if (serverName != null && serverName.isNotEmpty()) {
                 if (clientName != null) {
                     text += "\n"
                 }
@@ -130,8 +130,8 @@ fun fieldsToPages(
 
             val (clientName, serverName) = field.obfName.stringPairs()
 
-            if (clientName != null) {
-                if (serverName == null) {
+            if (!clientName.isNullOrEmpty()) {
+                if (!serverName.isNullOrEmpty()) {
                     text += "**Name:** `$clientName` -> "
                 } else {
                     text += "**Client:** `$clientName` -> "
@@ -143,8 +143,8 @@ fun fieldsToPages(
                     } ?: "")
             }
 
-            if (serverName != null) {
-                if (clientName != null) {
+            if (!serverName.isNullOrEmpty()) {
+                if (!clientName.isNullOrEmpty()) {
                     text += "\n"
                 }
 
@@ -174,8 +174,8 @@ fun fieldsToPages(
 
             val (clientName, serverName) = field.obfName.stringPairs()
 
-            if (clientName != null) {
-                if (serverName == null) {
+            if (!clientName.isNullOrEmpty()) {
+                if (!serverName.isNullOrEmpty()) {
                     text += "**Name:** `$clientName` -> "
                 } else {
                     text += "**Client:** `$clientName` -> "
@@ -187,8 +187,8 @@ fun fieldsToPages(
                     } ?: "")
             }
 
-            if (serverName != null) {
-                if (clientName != null) {
+            if (!serverName.isNullOrEmpty()) {
+                if (!clientName.isNullOrEmpty()) {
                     text += "\n"
                 }
 
@@ -255,8 +255,8 @@ fun methodsToPages(
 
             val (clientName, serverName) = method.obfName.stringPairs()
 
-            if (clientName != null) {
-                if (serverName == null) {
+            if (!clientName.isNullOrEmpty()) {
+                if (!serverName.isNullOrEmpty()) {
                     text += "**Name:** `$clientName` -> "
                 } else {
                     text += "**Client:** `$clientName` -> "
@@ -268,8 +268,8 @@ fun methodsToPages(
                     } ?: "")
             }
 
-            if (serverName != null) {
-                if (clientName != null) {
+            if (!serverName.isNullOrEmpty()) {
+                if (!clientName.isNullOrEmpty()) {
                     text += "\n"
                 }
 
@@ -294,7 +294,7 @@ fun methodsToPages(
 
             val (clientName, serverName) = method.obfName.stringPairs()
 
-            if (clientName != null) {
+            if (clientName != null && clientName.isNotEmpty()) {
                 if (serverName == null) {
                     text += "**Name:** `$clientName` -> "
                 } else {
@@ -307,7 +307,7 @@ fun methodsToPages(
                     } ?: "")
             }
 
-            if (serverName != null) {
+            if (serverName != null && serverName.isNotEmpty()) {
                 if (clientName != null) {
                     text += "\n"
                 }
