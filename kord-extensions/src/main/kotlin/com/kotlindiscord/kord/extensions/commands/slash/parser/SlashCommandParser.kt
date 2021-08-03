@@ -47,7 +47,7 @@ public open class SlashCommandParser : ArgumentParser() {
                 option.id.asString
             } else {
                 option.toString()
-            }
+            }.trim()
         }
 
         var currentArg: Argument<*>?
