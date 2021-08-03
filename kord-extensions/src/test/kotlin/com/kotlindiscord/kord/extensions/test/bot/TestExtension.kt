@@ -18,7 +18,7 @@ import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.reply
-import dev.kord.rest.builder.interaction.embed
+import dev.kord.rest.builder.message.create.embed
 
 // They're IDs
 @Suppress("UnderscoresInNumericLiterals")

@@ -17,7 +17,7 @@ import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.event.message.MessageCreateEvent
-import dev.kord.rest.builder.message.MessageCreateBuilder
+import dev.kord.rest.builder.message.create.MessageCreateBuilder
 
 /**
  * Command context object representing the context given to message commands.

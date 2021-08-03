@@ -13,6 +13,10 @@ import dev.kord.core.behavior.edit
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.User
+import dev.kord.rest.builder.message.create.allowedMentions
+import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.modify.allowedMentions
+import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
 /**

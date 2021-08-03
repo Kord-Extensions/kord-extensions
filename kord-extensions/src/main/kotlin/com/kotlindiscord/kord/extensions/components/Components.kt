@@ -11,10 +11,10 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.entity.interaction.ComponentInteraction
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import dev.kord.rest.builder.interaction.FollowupMessageBuilder
-import dev.kord.rest.builder.interaction.actionRow
-import dev.kord.rest.builder.message.MessageCreateBuilder
-import dev.kord.rest.builder.message.MessageModifyBuilder
+import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import dev.kord.rest.builder.message.create.actionRow
+import dev.kord.rest.builder.message.modify.MessageModifyBuilder
+import dev.kord.rest.builder.message.modify.actionRow
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -283,22 +283,6 @@ public open class Components(
      * interactions.
      */
     public open suspend fun MessageModifyBuilder.setup(timeoutSeconds: Long? = null) {
-        sortIntoRows()
-
-        for (row in rows.filter { row -> row.isNotEmpty() }) {
-            actionRow {
-                row.forEach { it.apply(this) }
-            }
-        }
-
-        startListening(timeoutSeconds)
-    }
-
-    /**
-     * @suppress Internal API function that sets up all of the components, adds them to the message, and listens for
-     * interactions.
-     */
-    public open suspend fun FollowupMessageBuilder<*>.setup(timeoutSeconds: Long? = null) {
         sortIntoRows()
 
         for (row in rows.filter { row -> row.isNotEmpty() }) {

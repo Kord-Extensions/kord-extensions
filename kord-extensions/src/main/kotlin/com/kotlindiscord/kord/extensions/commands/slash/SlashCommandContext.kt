@@ -20,9 +20,10 @@ import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import dev.kord.rest.builder.interaction.EphemeralFollowupMessageCreateBuilder
-import dev.kord.rest.builder.interaction.FollowupMessageBuilder
-import dev.kord.rest.builder.interaction.PublicFollowupMessageCreateBuilder
+import dev.kord.rest.builder.message.create.EphemeralFollowupMessageCreateBuilder
+import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import dev.kord.rest.builder.message.create.PublicFollowupMessageCreateBuilder
+import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 
 /**
  * Command context object representing the context given to message commands.
@@ -176,7 +177,27 @@ public open class SlashCommandContext<T : Arguments>(
      *
      * @see Components
      */
-    public suspend fun FollowupMessageBuilder<*>.components(
+    public suspend fun MessageCreateBuilder.components(
+        timeoutSeconds: Long? = null,
+        body: suspend Components.() -> Unit
+    ): Components {
+        val components = Components(command.extension, this@SlashCommandContext)
+
+        body(components)
+
+        with(components) {
+            setup(timeoutSeconds)
+        }
+
+        return components
+    }
+
+    /**
+     * Convenience function for adding components to your message via the [Components] class.
+     *
+     * @see Components
+     */
+    public suspend fun MessageModifyBuilder.components(
         timeoutSeconds: Long? = null,
         body: suspend Components.() -> Unit
     ): Components {

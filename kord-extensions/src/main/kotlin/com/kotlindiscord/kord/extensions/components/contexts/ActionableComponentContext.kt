@@ -18,8 +18,8 @@ import dev.kord.core.entity.interaction.ComponentInteraction
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import dev.kord.rest.builder.interaction.EphemeralFollowupMessageCreateBuilder
-import dev.kord.rest.builder.interaction.PublicFollowupMessageCreateBuilder
+import dev.kord.rest.builder.message.create.EphemeralFollowupMessageCreateBuilder
+import dev.kord.rest.builder.message.create.PublicFollowupMessageCreateBuilder
 import io.sentry.Breadcrumb
 import io.sentry.SentryLevel
 import org.koin.core.component.KoinComponent

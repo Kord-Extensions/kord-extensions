@@ -12,7 +12,8 @@ import dev.kord.core.entity.*
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.*
-import dev.kord.rest.builder.message.MessageCreateBuilder
+import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.coroutines.*

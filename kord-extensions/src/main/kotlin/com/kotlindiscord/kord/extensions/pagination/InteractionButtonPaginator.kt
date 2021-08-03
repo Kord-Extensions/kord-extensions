@@ -12,7 +12,8 @@ import dev.kord.core.behavior.interaction.edit
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.User
 import dev.kord.core.entity.interaction.PublicFollowupMessage
-import dev.kord.rest.builder.interaction.embed
+import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
 /**
