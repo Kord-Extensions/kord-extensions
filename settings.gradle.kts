@@ -31,7 +31,6 @@ dependencyResolutionManagement {
 include("annotations")
 include("annotation-processor")
 
-include("docs")
 include("kord-extensions")
 
 include("extra-modules:extra-common")

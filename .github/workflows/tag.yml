@@ -10,29 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v1
 
       - name: Set up Java
         uses: actions/setup-java@v1
 
         with:
-          java-version: 1.14
+          java-version: 1.11
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-
-        with:
-          python-version: 3.x
+      - name: Set up Kotlin
+        uses: fwilhe2/setup-kotlin@main
 
       - name: Set up Gradle properties
         run: |
           mkdir -p ~/.gradle
           echo "org.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
-
-      - name: Install Python packages
-        run: pip install -r docs/requirements.txt
 
       - name: Set up git credentials
         uses: oleksiyrudenko/gha-git-credentials@v2-latest
@@ -41,11 +33,54 @@ jobs:
           global: true
           token: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: Get version
-        id: get_version
-        run: echo ::set-output name=VERSION::$(sh ./gradlew -q printVersion)
+      - name: Gradle (Build)
+        run: sh gradlew build
 
-      - name: Deploy Docs
-        run: |
-          cd docs
-          mike deploy --push --update-aliases latest ${{ steps.get_version.outputs.VERSION }}
+      - name: Gradle (Publish)
+        run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} publish
+
+      - name: Create release description
+        run: kotlin .github/tag.main.kts
+
+      - name: Get tag name
+        id: get_tag
+        run: echo ::set-output name=NAME::${GITHUB_REF#refs/tags/}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        with:
+          body_path: release.md
+          files: build/libs/*.jar
+          name: Release ${{ steps.get_tag.outputs.NAME }}
+
+      - name: Release webhook
+        run: kotlin .github/release.main.kts
+
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
+      - name: Upload artifact (Extra Module JARs)
+        uses: actions/upload-artifact@v2
+
+        with:
+          name: JARs (Extra Modules)
+          path: extra-modules/*/build/libs/*.jar
+
+      - name: Upload artifact (Main JARs)
+        uses: actions/upload-artifact@v2
+
+        with:
+          name: JARs (Main)
+          path: kord-extensions/build/libs/*.jar
+
+      - name: Upload artifact (Module JARs)
+        uses: actions/upload-artifact@v2
+
+        with:
+          name: JARs (Modules)
+          path: modules/*/build/libs/*.jar
+
