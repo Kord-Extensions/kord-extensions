@@ -195,7 +195,17 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is GuildDeleteEvent -> event.guild
         is GuildUpdateEvent -> event.guild
         is IntegrationsUpdateEvent -> event.guild
-        is InteractionCreateEvent -> (event.interaction as? GuildInteraction)?.guild
+
+        is InteractionCreateEvent -> {
+            val guildId = event.interaction.data.guildId.value
+
+            if (guildId == null) {
+                null
+            } else {
+                event.kord.getGuild(guildId)
+            }
+        }
+
         is InviteCreateEvent -> event.guild
         is InviteDeleteEvent -> event.guild
         is MembersChunkEvent -> event.guild
