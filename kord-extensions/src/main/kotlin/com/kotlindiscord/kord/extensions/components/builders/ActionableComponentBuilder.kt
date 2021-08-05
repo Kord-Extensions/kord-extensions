@@ -43,7 +43,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     private val translations: TranslationsProvider by inject()
 
     /** Unique ID for this button. Required by Discord. **/
-    public open val id: String = UUID.randomUUID().toString()
+    public open var id: String = UUID.randomUUID().toString()
 
     /**
      * Automatic ack type, if not following a parent context.
