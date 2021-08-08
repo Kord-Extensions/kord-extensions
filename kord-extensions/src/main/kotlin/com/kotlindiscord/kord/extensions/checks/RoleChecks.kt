@@ -63,7 +63,7 @@ public fun notHasRole(builder: suspend () -> RoleBehavior): Check<*> = {
     if (member == null) {
         logger.nullMember(event)
 
-        fail()
+        pass()
     } else {
         val role = builder()
 
@@ -151,7 +151,7 @@ public fun topRoleNotEqual(builder: suspend () -> RoleBehavior): Check<*> = {
     if (member == null) {
         logger.nullMember(event)
 
-        fail()
+        pass()
     } else {
         val role = builder()
 
@@ -426,7 +426,7 @@ public fun notHasRole(id: Snowflake): Check<*> = {
     if (role == null) {
         logger.noRoleId(id)
 
-        fail()
+        pass()
     } else {
         notHasRole { role }()
     }
@@ -468,7 +468,7 @@ public fun topRoleNotEqual(id: Snowflake): Check<*> = {
     if (role == null) {
         logger.noRoleId(id)
 
-        fail()
+        pass()
     } else {
         topRoleNotEqual { role }()
     }

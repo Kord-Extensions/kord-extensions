@@ -22,7 +22,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.Serializable
 import java.util.*
-import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
 
@@ -38,11 +37,9 @@ private val defaultLocale: Locale
  * function.
  *
  * @param extension The [Extension] that registered this event handler.
- * @param type A [KClass] representing the event type this handler is subscribed to. This is for internal use.
  */
 public open class EventHandler<T : Event>(
-    public val extension: Extension,
-    public val type: KClass<*>
+    public val extension: Extension
 ) : KoinComponent {
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()

@@ -78,7 +78,7 @@ public fun notHasPermission(perm: Permission): Check<*> = {
     if (member == null) {
         logger.nullMember(event)
 
-        fail()
+        pass()
     } else {
         val memberObj = member.asMember()
 

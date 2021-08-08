@@ -15,8 +15,6 @@ import java.util.*
  * **Note:** This check can't tell the difference between an event that wasn't fired within a guild, and an event
  * that fired within a guild the bot doesn't have access to, or that it can't get the GuildBehavior for (for
  * example, due to a niche Kord configuration).
- *
- * @param event Event object to check.
  */
 public val anyGuild: Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.anyGuild")
@@ -40,8 +38,6 @@ public val anyGuild: Check<*> = {
  * **Note:** This check can't tell the difference between an event that wasn't fired within a guild, and an event
  * that fired within a guild the bot doesn't have access to, or that it can't get the GuildBehavior for (for
  * example, due to a niche Kord configuration).
- *
- * @param event Event object to check.
  */
 public val noGuild: Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.noGuild")
@@ -112,7 +108,7 @@ public fun notInGuild(builder: suspend () -> GuildBehavior): Check<*> = {
     if (eventGuild == null) {
         logger.nullGuild(event)
 
-        fail()
+        pass()
     } else {
         val guild = builder()
 
@@ -173,7 +169,7 @@ public fun notInGuild(id: Snowflake): Check<*> = {
     if (guild == null) {
         logger.noGuildId(id)
 
-        fail()
+        pass()
     } else {
         notInGuild { guild }()
     }

@@ -22,17 +22,6 @@ import mu.KotlinLogging
  */
 public fun inTopChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
-
-    // TODO: When we can get the thread parent, checks will need looking at again
-//    val thread = threadFor(event)
-//
-//    val eventChannel = when(thread) {
-//        is NewsChannelThread -> thread
-//        is TextChannelThread -> thread
-//
-//        else -> channelFor(event)
-//    }
-
     val eventChannel = topChannelFor(event)
 
     if (eventChannel == null) {
@@ -75,7 +64,7 @@ public fun notInTopChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
     if (eventChannel == null) {
         logger.nullChannel(event)
 
-        fail()
+        pass()
     } else {
         val channel = builder()
 
@@ -146,7 +135,7 @@ public fun notInTopChannel(id: Snowflake): Check<*> = {
     if (channel == null) {
         logger.noChannelId(id)
 
-        fail()
+        pass()
     } else {
         notInChannel { channel }()
     }

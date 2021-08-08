@@ -148,7 +148,7 @@ public abstract class Extension : KoinComponent {
      */
     @ExtensionDSL
     public open suspend fun <T : Arguments> command(
-        arguments: (() -> T)?,
+        arguments: () -> T,
         body: suspend MessageCommand<T>.() -> Unit
     ): MessageCommand<T> {
         val commandObj = MessageCommand(this, arguments)
@@ -205,7 +205,7 @@ public abstract class Extension : KoinComponent {
      */
     @ExtensionDSL
     public open suspend fun <T : Arguments> slashCommand(
-        arguments: (() -> T),
+        arguments: () -> T,
         body: suspend SlashCommand<T>.() -> Unit
     ): SlashCommand<T> {
         val commandObj = SlashCommand(this, arguments)
@@ -266,7 +266,7 @@ public abstract class Extension : KoinComponent {
      */
     @ExtensionDSL
     public open suspend fun <T : Arguments> group(
-        arguments: (() -> T)?,
+        arguments: () -> T,
         body: suspend GroupCommand<T>.() -> Unit
     ): GroupCommand<T> {
         val commandObj = GroupCommand(this, arguments)
@@ -355,7 +355,7 @@ public abstract class Extension : KoinComponent {
     public suspend inline fun <reified T : Event> event(
         noinline body: suspend EventHandler<T>.() -> Unit
     ): EventHandler<T> {
-        val eventHandler = EventHandler<T>(this, T::class)
+        val eventHandler = EventHandler<T>(this)
         val logger = KotlinLogging.logger {}
 
         body.invoke(eventHandler)

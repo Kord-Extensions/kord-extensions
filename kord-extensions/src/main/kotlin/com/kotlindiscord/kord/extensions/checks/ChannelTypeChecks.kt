@@ -66,7 +66,7 @@ public fun notChannelType(vararg channelTypes: ChannelType): Check<*> = {
     if (eventChannel == null) {
         logger.nullChannel(event)
 
-        fail()
+        pass()
     } else {
         val type = eventChannel.asChannel().type
 

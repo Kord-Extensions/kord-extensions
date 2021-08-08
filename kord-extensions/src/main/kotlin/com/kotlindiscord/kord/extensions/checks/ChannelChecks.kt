@@ -64,7 +64,7 @@ public fun notInChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
     if (eventChannel == null) {
         logger.nullChannel(event)
 
-        fail()
+        pass()
     } else {
         val channel = builder()
 
@@ -95,7 +95,7 @@ public fun notInChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
  */
 public fun inCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inCategory")
-    val eventChannel = channelFor(event)
+    val eventChannel = topChannelFor(event)
 
     if (eventChannel == null) {
         logger.nullChannel(event)
@@ -132,12 +132,12 @@ public fun inCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
  */
 public fun notInCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInCategory")
-    val eventChannel = channelFor(event)
+    val eventChannel = topChannelFor(event)
 
     if (eventChannel == null) {
         logger.nullChannel(event)
 
-        fail()
+        pass()
     } else {
         val category = builder()
         val channels = category.channels.toList().map { it.id }
@@ -344,7 +344,7 @@ public fun notInChannel(id: Snowflake): Check<*> = {
     if (channel == null) {
         logger.noChannelId(id)
 
-        fail()
+        pass()
     } else {
         notInChannel { channel }()
     }
@@ -386,7 +386,7 @@ public fun notInCategory(id: Snowflake): Check<*> = {
     if (category == null) {
         logger.noCategoryId(id)
 
-        fail()
+        pass()
     } else {
         notInCategory { category }()
     }
