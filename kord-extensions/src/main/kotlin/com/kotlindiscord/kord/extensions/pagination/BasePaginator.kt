@@ -96,23 +96,22 @@ public abstract class BasePaginator(
     public open var currentPage: Page = pages.get(currentGroup, currentPageNum)
 
     /** Builder that generates an embed for the paginator's current context. **/
-    public open val embedBuilder: EmbedBuilder.() -> Unit
-        get() {
-            val groupEmoji = if (pages.groups.size > 1) {
-                currentGroup
-            } else {
-                null
-            }
-
-            return currentPage.build(
-                localeObj,
-                currentPageNum,
-                pages.size,
-                groupEmoji,
-                allGroups.indexOf(currentGroup),
-                allGroups.size
-            )
+    public open suspend fun EmbedBuilder.applyPage() {
+        val groupEmoji = if (pages.groups.size > 1) {
+            currentGroup
+        } else {
+            null
         }
+
+        currentPage.build(
+            localeObj,
+            currentPageNum,
+            pages.size,
+            groupEmoji,
+            allGroups.indexOf(currentGroup),
+            allGroups.size
+        )()
+    }
 
     /** Send the paginator, given the current context. If it's already sent, update it. **/
     public abstract suspend fun send()

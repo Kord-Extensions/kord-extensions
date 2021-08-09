@@ -91,31 +91,39 @@ public class HelpExtension : HelpProvider, Extension() {
             pages.addPage(
                 COMMANDS_GROUP,
 
-                Page(
-                    description = page.joinToString("\n\n") { "${it.first}\n${it.second}" },
-                    title = translationsProvider.translate("extensions.help.paginator.title.commands", locale),
-                    footer = translationsProvider.translate(
-                        "extensions.help.paginator.footer",
-                        locale,
-                        replacements = arrayOf(totalCommands)
-                    ),
+                Page {
+                    description = page.joinToString("\n\n") { "${it.first}\n${it.second}" }
+                    title = translationsProvider.translate("extensions.help.paginator.title.commands", locale)
+
+                    footer {
+                        text = translationsProvider.translate(
+                            "extensions.help.paginator.footer",
+                            locale,
+                            replacements = arrayOf(totalCommands)
+                        )
+                    }
+
                     color = settings.colourGetter(event)
-                )
+                }
             )
 
             pages.addPage(
                 ARGUMENTS_GROUP,
 
-                Page(
-                    description = page.joinToString("\n\n") { "${it.first}\n${it.third}" },
-                    title = translationsProvider.translate("extensions.help.paginator.title.arguments", locale),
-                    footer = translationsProvider.translate(
-                        "extensions.help.paginator.footer",
-                        locale,
-                        replacements = arrayOf(totalCommands)
-                    ),
+                Page {
+                    description = page.joinToString("\n\n") { "${it.first}\n${it.third}" }
+                    title = translationsProvider.translate("extensions.help.paginator.title.arguments", locale)
+
+                    footer {
+                        text = translationsProvider.translate(
+                            "extensions.help.paginator.footer",
+                            locale,
+                            replacements = arrayOf(totalCommands)
+                        )
+                    }
+
                     color = settings.colourGetter(event)
-                )
+                }
             )
         }
 
@@ -124,16 +132,18 @@ public class HelpExtension : HelpProvider, Extension() {
 
             pages.addPage(
                 COMMANDS_GROUP,
-                Page(
-                    description = translationsProvider.translate("extensions.help.paginator.noCommands", locale),
-                    title = translationsProvider.translate("extensions.help.paginator.noCommands", locale),
-                    footer = translationsProvider.translate(
-                        "extensions.help.paginator.footer",
-                        locale,
-                        replacements = arrayOf(0)
-                    ),
+                Page {
+                    description = translationsProvider.translate("extensions.help.paginator.noCommands", locale)
+                    title = translationsProvider.translate("extensions.help.paginator.noCommands", locale)
+                    footer {
+                        text = translationsProvider.translate(
+                            "extensions.help.paginator.footer",
+                            locale,
+                            replacements = arrayOf(0)
+                        )
+                    }
                     color = settings.colourGetter(event)
-                )
+                }
             )
         }
 
@@ -179,19 +189,19 @@ public class HelpExtension : HelpProvider, Extension() {
             pages.addPage(
                 COMMANDS_GROUP,
 
-                Page(
-                    color = settings.colourGetter(event),
+                Page {
+                    color = settings.colourGetter(event)
 
                     description = translationsProvider.translate(
                         "extensions.help.error.missingCommandDescription",
                         locale
-                    ),
+                    )
 
                     title = translationsProvider.translate(
                         "extensions.help.error.missingCommandTitle",
                         locale
                     )
-                )
+                }
             )
         } else {
             val (openingLine, desc, arguments) = formatCommandHelp(prefix, event, command, longDescription = true)
@@ -207,16 +217,16 @@ public class HelpExtension : HelpProvider, Extension() {
             pages.addPage(
                 COMMANDS_GROUP,
 
-                Page(
-                    color = settings.colourGetter(event),
-                    description = "$openingLine\n$desc\n\n$arguments",
+                Page {
+                    color = settings.colourGetter(event)
+                    description = "$openingLine\n$desc\n\n$arguments"
 
                     title = translationsProvider.translate(
                         "extensions.help.paginator.title.command",
                         locale,
                         replacements = arrayOf(commandName)
                     )
-                )
+                }
             )
         }
 

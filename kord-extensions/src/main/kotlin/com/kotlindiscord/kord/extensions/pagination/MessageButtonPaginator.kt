@@ -64,7 +64,7 @@ public class MessageButtonPaginator(
                 this.messageReference = targetMessage?.id
 
                 allowedMentions { repliedUser = pingInReply }
-                embed(embedBuilder)
+                embed { applyPage() }
 
                 with(this@MessageButtonPaginator.components) {
                     this@createMessage.setup(timeoutSeconds)
@@ -74,7 +74,7 @@ public class MessageButtonPaginator(
             updateButtons()
 
             message!!.edit {
-                embed(embedBuilder)
+                embed { applyPage() }
 
                 with(this@MessageButtonPaginator.components) {
                     this@edit.setup(timeoutSeconds)
@@ -95,7 +95,7 @@ public class MessageButtonPaginator(
         } else {
             message!!.edit {
                 allowedMentions { repliedUser = pingInReply }
-                embed(embedBuilder)
+                embed { applyPage() }
 
                 this.components = mutableListOf()
             }

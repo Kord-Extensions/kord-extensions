@@ -157,33 +157,42 @@ class TestExtension : Extension() {
 
                 (0..2).forEach {
                     pages.addPage(
-                        Page(
-                            "Short page $it.",
-                            footer = "Footer text ($it)"
-                        )
+                        Page {
+                            description = "Short page $it."
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
                     )
 
                     pages.addPage(
                         "Expanded",
 
-                        Page(
-                            "Expanded page $it, expanded page $it\n" +
-                                "Expanded page $it, expanded page $it",
-                            footer = "Footer text ($it)"
-                        )
+                        Page {
+                            description = "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it"
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
                     )
 
                     pages.addPage(
                         "MASSIVE GROUP",
 
-                        Page(
-                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                        Page {
+                            description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
                                 "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
                                 "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
                                 "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
-                            footer = "Footer text ($it)"
-                        )
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it"
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
                     )
                 }
 
@@ -509,33 +518,42 @@ class TestExtension : Extension() {
                     pages.addPage(
                         "short",
 
-                        Page(
-                            "Short page $it.",
-                            footer = "Footer text ($it)"
-                        )
+                        Page {
+                            description = "Short page $it."
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
                     )
 
                     pages.addPage(
                         "expanded",
 
-                        Page(
-                            "Expanded page $it, expanded page $it\n" +
-                                "Expanded page $it, expanded page $it",
-                            footer = "Footer text ($it)"
-                        )
+                        Page {
+                            description = "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it"
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
                     )
 
                     pages.addPage(
                         "massive",
 
-                        Page(
-                            "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                        Page {
+                            description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
                                 "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
                                 "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
                                 "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it",
-                            footer = "Footer text ($it)"
-                        )
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it"
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
                     )
                 }
 
@@ -559,20 +577,26 @@ class TestExtension : Extension() {
 
                 (0..2).forEach {
                     pages.addPage(
-                        Page(
-                            "Short page $it.",
-                            footer = "Footer text ($it)"
-                        )
+                        Page {
+                            description = "Short page $it."
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
                     )
 
                     pages.addPage(
                         "Expanded",
 
-                        Page(
-                            "Expanded page $it, expanded page $it\n" +
-                                "Expanded page $it, expanded page $it",
-                            footer = "Footer text ($it)"
-                        )
+                        Page {
+                            description = "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it"
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
                     )
                 }
 

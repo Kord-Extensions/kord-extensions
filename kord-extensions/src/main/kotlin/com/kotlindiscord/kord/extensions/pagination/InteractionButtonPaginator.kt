@@ -52,7 +52,7 @@ public class InteractionButtonPaginator(
             setup()
 
             embedInteraction = parentContext.publicFollowUp {
-                embed(embedBuilder)
+                embed { applyPage() }
 
                 with(this@InteractionButtonPaginator.components) {
                     this@publicFollowUp.setup(timeoutSeconds)
@@ -62,7 +62,7 @@ public class InteractionButtonPaginator(
             updateButtons()
 
             embedInteraction!!.edit {
-                embed(embedBuilder)
+                embed { applyPage() }
 
                 with(this@InteractionButtonPaginator.components) {
                     this@edit.setup(timeoutSeconds)
@@ -82,7 +82,7 @@ public class InteractionButtonPaginator(
             embedInteraction!!.delete()
         } else {
             embedInteraction!!.edit {
-                embed(embedBuilder)
+                embed { applyPage() }
 
                 this.components = mutableListOf()
             }

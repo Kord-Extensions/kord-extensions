@@ -504,12 +504,15 @@ class MappingsExtension : Extension() {
 
                     pages.forEach {
                         pagesObj.addPage(
-                            Page(
-                                description = it,
-                                title = pageTitle,
-                                footer = PAGE_FOOTER,
-                                footerIcon = PAGE_FOOTER_ICON
-                            )
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
                         )
                     }
 
@@ -566,12 +569,15 @@ class MappingsExtension : Extension() {
 
                     pages.forEach {
                         pagesObj.addPage(
-                            Page(
-                                description = it,
-                                title = pageTitle,
-                                footer = PAGE_FOOTER,
-                                footerIcon = PAGE_FOOTER_ICON
-                            )
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
                         )
                     }
 
@@ -632,12 +638,15 @@ class MappingsExtension : Extension() {
 
                     pages.forEach {
                         pagesObj.addPage(
-                            Page(
-                                description = it,
-                                title = pageTitle,
-                                footer = PAGE_FOOTER,
-                                footerIcon = PAGE_FOOTER_ICON
-                            )
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
                         )
                     }
 
@@ -695,12 +704,15 @@ class MappingsExtension : Extension() {
 
                     pages.forEach {
                         pagesObj.addPage(
-                            Page(
-                                description = it,
-                                title = pageTitle,
-                                footer = PAGE_FOOTER,
-                                footerIcon = PAGE_FOOTER_ICON
-                            )
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
                         )
                     }
 
@@ -786,12 +798,15 @@ class MappingsExtension : Extension() {
 
                     pages.forEach {
                         pagesObj.addPage(
-                            Page(
-                                description = it,
-                                title = pageTitle,
-                                footer = PAGE_FOOTER,
-                                footerIcon = PAGE_FOOTER_ICON
-                            )
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
                         )
                     }
 
@@ -849,12 +864,15 @@ class MappingsExtension : Extension() {
 
                     pages.forEach {
                         pagesObj.addPage(
-                            Page(
-                                description = it,
-                                title = pageTitle,
-                                footer = PAGE_FOOTER,
-                                footerIcon = PAGE_FOOTER_ICON
-                            )
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
                         )
                     }
 
@@ -944,12 +962,15 @@ class MappingsExtension : Extension() {
             pagesObj.addPage(
                 "${EXPAND_EMOJI.mention} for more",
 
-                Page(
-                    description = it,
-                    title = pageTitle,
-                    footer = PAGE_FOOTER,
-                    footerIcon = PAGE_FOOTER_ICON
-                )
+                Page {
+                    description = it
+                    title = pageTitle
+
+                    footer {
+                        text = PAGE_FOOTER
+                        icon = PAGE_FOOTER_ICON
+                    }
+                }
             )
         }
 
@@ -958,12 +979,15 @@ class MappingsExtension : Extension() {
                 pagesObj.addPage(
                     "${EXPAND_EMOJI.mention} for less",
 
-                    Page(
-                        description = it,
-                        title = pageTitle,
-                        footer = PAGE_FOOTER,
-                        footerIcon = PAGE_FOOTER_ICON
-                    )
+                    Page {
+                        description = it
+                        title = pageTitle
+
+                        footer {
+                            text = PAGE_FOOTER
+                            icon = PAGE_FOOTER_ICON
+                        }
+                    }
                 )
             }
         }
@@ -1047,12 +1071,15 @@ class MappingsExtension : Extension() {
             pagesObj.addPage(
                 "${EXPAND_EMOJI.mention} for more",
 
-                Page(
-                    description = it,
-                    title = pageTitle,
-                    footer = PAGE_FOOTER,
-                    footerIcon = PAGE_FOOTER_ICON
-                )
+                Page {
+                    description = it
+                    title = pageTitle
+
+                    footer {
+                        text = PAGE_FOOTER
+                        icon = PAGE_FOOTER_ICON
+                    }
+                }
             )
         }
 
@@ -1061,12 +1088,15 @@ class MappingsExtension : Extension() {
                 pagesObj.addPage(
                     "${EXPAND_EMOJI.mention} for less",
 
-                    Page(
-                        description = it,
-                        title = pageTitle,
-                        footer = PAGE_FOOTER,
-                        footerIcon = PAGE_FOOTER_ICON
-                    )
+                    Page {
+                        description = it
+                        title = pageTitle
+
+                        footer {
+                            text = PAGE_FOOTER
+                            icon = PAGE_FOOTER_ICON
+                        }
+                    }
                 )
             }
         }
@@ -1150,12 +1180,15 @@ class MappingsExtension : Extension() {
             pagesObj.addPage(
                 "${EXPAND_EMOJI.mention} for more",
 
-                Page(
-                    description = it,
-                    title = pageTitle,
-                    footer = PAGE_FOOTER,
-                    footerIcon = PAGE_FOOTER_ICON
-                )
+                Page {
+                    description = it
+                    title = pageTitle
+
+                    footer {
+                        text = PAGE_FOOTER
+                        icon = PAGE_FOOTER_ICON
+                    }
+                }
             )
         }
 
@@ -1164,12 +1197,15 @@ class MappingsExtension : Extension() {
                 pagesObj.addPage(
                     "${EXPAND_EMOJI.mention} for less",
 
-                    Page(
-                        description = it,
-                        title = pageTitle,
-                        footer = PAGE_FOOTER,
-                        footerIcon = PAGE_FOOTER_ICON
-                    )
+                    Page {
+                        description = it
+                        title = pageTitle
+
+                        footer {
+                            text = PAGE_FOOTER
+                            icon = PAGE_FOOTER_ICON
+                        }
+                    }
                 )
             }
         }
