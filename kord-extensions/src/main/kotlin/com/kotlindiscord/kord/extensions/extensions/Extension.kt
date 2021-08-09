@@ -134,7 +134,7 @@ public abstract class Extension : KoinComponent {
 
     /** Update this extension's state, firing the extension state change event. **/
     public open suspend fun setState(state: ExtensionState) {
-        bot.send(ExtensionStateEvent(bot, this, state))
+        bot.send(ExtensionStateEvent(this, state))
 
         this.state = state
     }

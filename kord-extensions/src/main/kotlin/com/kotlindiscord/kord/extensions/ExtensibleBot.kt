@@ -249,13 +249,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /**
-     * @suppress
-     */
-    public suspend inline fun send(event: ExtensionEvent) {
-        eventPublisher.emit(event)
-    }
-
-    /**
      * Install an [Extension] to this bot.
      *
      * This function will call the given builder function and store the resulting extension object, ready to be
