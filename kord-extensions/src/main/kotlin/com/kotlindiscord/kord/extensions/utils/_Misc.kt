@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.utils
 
+import dev.kord.rest.builder.message.EmbedBuilder
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,3 +19,11 @@ public suspend fun <T> runSuspended(
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     body: suspend CoroutineScope.() -> T
 ): T = withContext(dispatcher, body)
+
+/** Retrieve the text from the footer of an embed builder, or `null` if no text was set. **/
+public fun EmbedBuilder.Footer.textOrNull(): String? =
+    try {
+        text
+    } catch (e: UninitializedPropertyAccessException) {
+        null
+    }

@@ -54,7 +54,7 @@ public open class MessageCommand<T : Arguments>(
     public val translationsProvider: TranslationsProvider by inject()
 
     /** Message command registry. **/
-    public val messageCommandsRegistry: MessageCommandRegistry by inject()
+    public val messageCommandRegistry: MessageCommandRegistry by inject()
 
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
@@ -499,7 +499,7 @@ public open class MessageCommand<T : Arguments>(
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
                 if (extension.bot.extensions.containsKey("sentry")) {
-                    val prefix = messageCommandsRegistry.getPrefix(event)
+                    val prefix = messageCommandRegistry.getPrefix(event)
 
                     event.message.respond(
                         context.translate(

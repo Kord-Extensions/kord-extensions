@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.pagination.pages
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
+import com.kotlindiscord.kord.extensions.utils.textOrNull
 import dev.kord.rest.builder.message.EmbedBuilder
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -24,12 +25,6 @@ public open class Page(
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 
-    /** Whether to try to fill the author property. **/
-//    public open val anyAuthor: Boolean = listOf(author, authorIcon, authorUrl).any { it != null }
-
-    /** Whether to try to fill the footer property. **/
-//    public open val anyFooter: Boolean = footer != null
-
     /** Create an embed builder for this page. **/
     public open suspend fun build(
         locale: Locale,
@@ -41,7 +36,7 @@ public open class Page(
     ): suspend EmbedBuilder.() -> Unit = {
         builder()
 
-        val curFooterText = footer?.text
+        val curFooterText = footer?.textOrNull()
         val curFooterIcon = footer?.icon
 
         footer {
@@ -76,7 +71,7 @@ public open class Page(
                 }
             }
 
-            if (curFooterText != null) {
+            if (!curFooterText.isNullOrEmpty()) {
                 if (text.isNotBlank()) {
                     text += " • "
                 }

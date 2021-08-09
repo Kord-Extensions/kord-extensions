@@ -27,7 +27,7 @@ import java.util.*
  *
  * @param command Respective command for this context object.
  * @param eventObj Event that triggered this command.
- * @param commandName MessageCommand name given by the user to invoke the command - lower-cased.
+ * @param commandName Command name given by the user to invoke the command - lower-cased.
  * @param parser String parser instance, if any - will be `null` if this isn't a message command.
  */
 @ExtensionDSL
