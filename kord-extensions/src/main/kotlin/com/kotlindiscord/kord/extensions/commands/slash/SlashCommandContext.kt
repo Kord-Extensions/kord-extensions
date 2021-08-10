@@ -97,7 +97,7 @@ public open class SlashCommandContext<T : Arguments>(
      */
     public suspend fun paginator(
         defaultGroup: String = "",
-        body: PaginatorBuilder.() -> Unit
+        body: suspend PaginatorBuilder.() -> Unit
     ): InteractionButtonPaginator {
         val builder = PaginatorBuilder(command.extension, getLocale(), defaultGroup = defaultGroup)
 

@@ -18,6 +18,7 @@ import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 
 /**
  * Command context object representing the context given to message commands.
@@ -85,7 +86,7 @@ public open class MessageCommandContext<T : Arguments>(
         targetChannel: MessageChannelBehavior? = null,
         targetMessage: Message? = null,
 
-        body: PaginatorBuilder.() -> Unit
+        body: suspend PaginatorBuilder.() -> Unit
     ): MessageButtonPaginator {
         val builder = PaginatorBuilder(command.extension, getLocale(), defaultGroup = defaultGroup)
 
@@ -124,6 +125,26 @@ public open class MessageCommandContext<T : Arguments>(
      * @see Components
      */
     public suspend fun MessageCreateBuilder.components(
+        timeoutSeconds: Long? = null,
+        body: suspend Components.() -> Unit
+    ): Components {
+        val components = Components(command.extension)
+
+        body(components)
+
+        with(components) {
+            setup(timeoutSeconds)
+        }
+
+        return components
+    }
+
+    /**
+     * Convenience function for adding components to your message via the [Components] class.
+     *
+     * @see Components
+     */
+    public suspend fun MessageModifyBuilder.components(
         timeoutSeconds: Long? = null,
         body: suspend Components.() -> Unit
     ): Components {
