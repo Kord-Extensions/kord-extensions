@@ -1,0 +1,10 @@
+{
+  "name": "Kord Extensions",
+  "extensions": [
+    "mathiasfrohlich.kotlin",
+    "dunstontc.vscode-gitignore-syntax",
+    "d.git-file-status",
+    "mikestead.dotenv",
+    "vsls-contrib.gistfs"
+  ]
+}
