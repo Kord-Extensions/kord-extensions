@@ -21,7 +21,10 @@ import java.util.*
 public class ResourceBundleTranslations(
     defaultLocaleBuilder: () -> Locale
 ) : TranslationsProvider(defaultLocaleBuilder) {
-    private val logger: KLogger = KotlinLogging.logger {}
+    private val logger: KLogger = KotlinLogging.logger(
+        "com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations"
+    )
+
     private val bundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 
     public override fun hasKey(key: String, locale: Locale, bundleName: String?): Boolean {
@@ -30,7 +33,7 @@ public class ResourceBundleTranslations(
 
             bundleObj.keys.toList().contains(key)
         } catch (e: MissingResourceException) {
-            logger.warn(e) { "Failed to get bundle $bundleName for locale $locale" }
+            logger.trace { "Failed to get bundle $bundleName for locale $locale" }
 
             false
         }
@@ -46,7 +49,7 @@ public class ResourceBundleTranslations(
 
         val bundleKey = bundle to locale
 
-        logger.debug { "Getting bundle $bundleKey for locale $locale" }
+        logger.trace { "Getting bundle $bundleKey for locale $locale" }
         bundles[bundleKey] = bundles[bundleKey] ?: ResourceBundle.getBundle(bundle, locale, Control)
 
         return bundles[bundleKey]!!
@@ -56,7 +59,7 @@ public class ResourceBundleTranslations(
     public override fun get(key: String, locale: Locale, bundleName: String?): String {
         val result = getBundle(locale, bundleName).getString(key)
 
-        logger.debug { "Result: $key -> $result" }
+        logger.trace { "Result: $key -> $result" }
 
         return result
     }
@@ -67,7 +70,7 @@ public class ResourceBundleTranslations(
 
             if (string == key && bundleName != null) {
                 // Fall through to the default bundle if the key isn't found
-                logger.debug { "$key not found in bundle $bundleName - falling through to $KORDEX_KEY" }
+                logger.trace { "$key not found in bundle $bundleName - falling through to $KORDEX_KEY" }
 
                 string = get(key, locale, KORDEX_KEY)
             }
@@ -76,7 +79,7 @@ public class ResourceBundleTranslations(
 
             formatter.format(replacements)
         } catch (e: MissingResourceException) {
-            logger.debug(e) { "Unable to find translation for key '$key' in bundle '$bundleName'" }
+            logger.trace { "Unable to find translation for key '$key' in bundle '$bundleName'" }
 
             key
         }
