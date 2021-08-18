@@ -328,6 +328,13 @@ public open class ExtensibleBotBuilder {
             /** Whether to enable Sentry integration. This includes the extension, and [SentryAdapter] setup. **/
             public open var enable: Boolean = false
 
+            /**
+             * Whether to enable the Sentry extension, which provides feedback commands.
+             *
+             * This will be ignored if [enable] is `false`.
+             */
+            public open var feedbackExtension: Boolean = false
+
             /** Whether to enable Sentry's debug mode. **/
             public open var debug: Boolean = false
 

@@ -208,11 +208,12 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
     /** This function adds all of the default extensions when the bot is being set up. **/
     public open suspend fun addDefaultExtensions() {
-        if (settings.extensionsBuilder.helpExtensionBuilder.enableBundledExtension) {
+        val extBuilder = settings.extensionsBuilder
+        if (extBuilder.helpExtensionBuilder.enableBundledExtension) {
             this.addExtension(::HelpExtension)
         }
 
-        if (settings.extensionsBuilder.sentryExtensionBuilder.enable) {
+        if (extBuilder.sentryExtensionBuilder.enable && extBuilder.sentryExtensionBuilder.feedbackExtension) {
             this.addExtension(::SentryExtension)
         }
     }
