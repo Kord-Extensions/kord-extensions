@@ -18,8 +18,8 @@ repositories {
     }
 
     maven {
-        name = "Bintray (Linkie)"
-        url = uri("https://dl.bintray.com/shedaniel/linkie")
+        name = "Shedaniel"
+        url = uri("https://maven.shedaniel.me")
     }
 
     maven {
