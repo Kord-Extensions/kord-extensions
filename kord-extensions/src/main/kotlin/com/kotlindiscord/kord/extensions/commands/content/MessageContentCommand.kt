@@ -1,12 +1,13 @@
 @file:Suppress("StringLiteralDuplication")
 
-package com.kotlindiscord.kord.extensions.commands
+package com.kotlindiscord.kord.extensions.commands.content
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -39,14 +40,14 @@ private val logger = KotlinLogging.logger {}
  * Class representing a message command.
  *
  * You shouldn't need to use this class directly - instead, create an [Extension] and use the
- * [command function][Extension.command] to register your command, by overriding the [Extension.setup]
+ * [command function][Extension.messageContentCommand] to register your command, by overriding the [Extension.setup]
  * function.
  *
  * @param extension The [Extension] that registered this command.
  * @param arguments Arguments object builder for this command, if it has arguments.
  */
 @ExtensionDSL
-public open class MessageCommand<T : Arguments>(
+public open class MessageContentCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null
 ) : Command(extension), KoinComponent {
@@ -54,7 +55,7 @@ public open class MessageCommand<T : Arguments>(
     public val translationsProvider: TranslationsProvider by inject()
 
     /** Message command registry. **/
-    public val messageCommandRegistry: MessageCommandRegistry by inject()
+    public val messageCommandRegistry: MessageContentCommandRegistry by inject()
 
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
@@ -65,7 +66,7 @@ public open class MessageCommand<T : Arguments>(
     /**
      * @suppress
      */
-    public open lateinit var body: suspend MessageCommandContext<out T>.() -> Unit
+    public open lateinit var body: suspend MessageContentCommandContext<out T>.() -> Unit
 
     /**
      * A description of what this function and how it's intended to be used.
@@ -224,7 +225,7 @@ public open class MessageCommand<T : Arguments>(
      *
      * @param action The body of your command, which will be executed when your command is invoked.
      */
-    public open fun action(action: suspend MessageCommandContext<out T>.() -> Unit) {
+    public open fun action(action: suspend MessageContentCommandContext<out T>.() -> Unit) {
         this.body = action
     }
 
@@ -390,7 +391,7 @@ public open class MessageCommand<T : Arguments>(
             return
         }
 
-        val context = MessageCommandContext(this, event, commandName, parser, argString)
+        val context = MessageContentCommandContext(this, event, commandName, parser, argString)
 
         context.populate()
 
@@ -463,8 +464,8 @@ public open class MessageCommand<T : Arguments>(
                 val channel = event.message.getChannelOrNull()
 
                 val translatedName = when (this) {
-                    is MessageSubCommand -> this.getFullTranslatedName(context.getLocale())
-                    is GroupCommand -> this.getFullTranslatedName(context.getLocale())
+                    is MessageContentSubCommand -> this.getFullTranslatedName(context.getLocale())
+                    is MessageContentGroupCommand -> this.getFullTranslatedName(context.getLocale())
 
                     else -> this.getTranslatedName(context.getLocale())
                 }

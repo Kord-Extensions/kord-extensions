@@ -5,9 +5,9 @@ package com.kotlindiscord.kord.extensions.extensions
 import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.commands.GroupCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommand
+import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.content.MessageContentGroupCommand
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
@@ -39,7 +39,7 @@ public abstract class Extension : KoinComponent {
     public open val kord: Kord by inject()
 
     /** Message command registry. **/
-    private val messageCommandsRegistry: MessageCommandRegistry by inject()
+    private val messageContentCommandsRegistry: MessageContentCommandRegistry by inject()
 
     /** Slash command registry. **/
     private val slashCommandsRegistry: SlashCommandRegistry by inject()
@@ -73,7 +73,7 @@ public abstract class Extension : KoinComponent {
      *
      * When an extension is unloaded, all the commands are removed from the bot.
      */
-    public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
+    public open val commands: MutableList<MessageContentCommand<out Arguments>> = mutableListOf()
 
     /**
      * List of registered slash commands.
@@ -147,14 +147,14 @@ public abstract class Extension : KoinComponent {
      * @param body Builder lambda used for setting up the command object.
      */
     @ExtensionDSL
-    public open suspend fun <T : Arguments> command(
+    public open suspend fun <T : Arguments> messageContentCommand(
         arguments: () -> T,
-        body: suspend MessageCommand<T>.() -> Unit
-    ): MessageCommand<T> {
-        val commandObj = MessageCommand(this, arguments)
+        body: suspend MessageContentCommand<T>.() -> Unit
+    ): MessageContentCommand<T> {
+        val commandObj = MessageContentCommand(this, arguments)
         body.invoke(commandObj)
 
-        return command(commandObj)
+        return messageContentCommand(commandObj)
     }
 
     /**
@@ -165,13 +165,13 @@ public abstract class Extension : KoinComponent {
      * @param body Builder lambda used for setting up the command object.
      */
     @ExtensionDSL
-    public open suspend fun command(
-        body: suspend MessageCommand<Arguments>.() -> Unit
-    ): MessageCommand<Arguments> {
-        val commandObj = MessageCommand<Arguments>(this)
+    public open suspend fun messageContentCommand(
+        body: suspend MessageContentCommand<Arguments>.() -> Unit
+    ): MessageContentCommand<Arguments> {
+        val commandObj = MessageContentCommand<Arguments>(this)
         body.invoke(commandObj)
 
-        return command(commandObj)
+        return messageContentCommand(commandObj)
     }
 
     /**
@@ -179,12 +179,14 @@ public abstract class Extension : KoinComponent {
      *
      * You can use this if you have a custom command subclass you need to register.
      *
-     * @param commandObj MessageCommand object to register.
+     * @param commandObj MessageContentCommand object to register.
      */
-    public open suspend fun <T : Arguments> command(commandObj: MessageCommand<T>): MessageCommand<T> {
+    public open suspend fun <T : Arguments> messageContentCommand(
+        commandObj: MessageContentCommand<T>
+    ): MessageContentCommand<T> {
         try {
             commandObj.validate()
-            messageCommandsRegistry.add(commandObj)
+            messageContentCommandsRegistry.add(commandObj)
             commands.add(commandObj)
         } catch (e: CommandRegistrationException) {
             logger.error(e) { "Failed to register command - $e" }
@@ -265,14 +267,14 @@ public abstract class Extension : KoinComponent {
      * @param body Builder lambda used for setting up the command object.
      */
     @ExtensionDSL
-    public open suspend fun <T : Arguments> group(
+    public open suspend fun <T : Arguments> messageContentGroupCommand(
         arguments: () -> T,
-        body: suspend GroupCommand<T>.() -> Unit
-    ): GroupCommand<T> {
-        val commandObj = GroupCommand(this, arguments)
+        body: suspend MessageContentGroupCommand<T>.() -> Unit
+    ): MessageContentGroupCommand<T> {
+        val commandObj = MessageContentGroupCommand(this, arguments)
         body.invoke(commandObj)
 
-        return command(commandObj) as GroupCommand
+        return messageContentCommand(commandObj) as MessageContentGroupCommand
     }
 
     /**
@@ -286,11 +288,13 @@ public abstract class Extension : KoinComponent {
      * @param body Builder lambda used for setting up the command object.
      */
     @ExtensionDSL
-    public open suspend fun group(body: suspend GroupCommand<Arguments>.() -> Unit): GroupCommand<Arguments> {
-        val commandObj = GroupCommand<Arguments>(this)
+    public open suspend fun messageContentGroupCommand(
+        body: suspend MessageContentGroupCommand<Arguments>.() -> Unit
+    ): MessageContentGroupCommand<Arguments> {
+        val commandObj = MessageContentGroupCommand<Arguments>(this)
         body.invoke(commandObj)
 
-        return command(commandObj) as GroupCommand
+        return messageContentCommand(commandObj) as MessageContentGroupCommand
     }
 
     /**
@@ -332,7 +336,7 @@ public abstract class Extension : KoinComponent {
         }
 
         for (command in commands) {
-            messageCommandsRegistry.remove(command)
+            messageContentCommandsRegistry.remove(command)
         }
 
         eventHandlers.clear()

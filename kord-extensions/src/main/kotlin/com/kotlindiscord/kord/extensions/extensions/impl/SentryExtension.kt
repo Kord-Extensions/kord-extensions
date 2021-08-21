@@ -67,7 +67,7 @@ public class SentryExtension : Extension() {
                 }
             }
 
-            command(::FeedbackMessageArgs) {
+            messageContentCommand(::FeedbackMessageArgs) {
                 name = "extensions.sentry.commandName"
                 description = "extensions.sentry.commandDescription.long"
 

@@ -3,8 +3,8 @@
 package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommand
+import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
@@ -64,34 +64,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         level = DeprecationLevel.ERROR
     )
     public val kord: Kord by inject()
-
-    /** Message command registry, keeps track of and executes message commands. **/
-    @Deprecated(
-        "Use Koin to get this instead. This will be made private in future.",
-
-        ReplaceWith(
-            "getKoin().get<MessageCommandRegistry>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public open val messageCommands: MessageCommandRegistry by inject()
-
-    /** Slash command registry, keeps track of and executes slash commands. **/
-    @Deprecated(
-        "Use Koin to get this instead. This will be made private in future.",
-
-        ReplaceWith(
-            "getKoin().get<SlashCommandRegistry>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public open val slashCommands: SlashCommandRegistry by inject()
 
     /**
      * A list of all registered event handlers.
@@ -197,7 +169,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         if (settings.messageCommandsBuilder.enabled) {
             on<MessageCreateEvent> {
-                getKoin().get<MessageCommandRegistry>().handleEvent(this)
+                getKoin().get<MessageContentCommandRegistry>().handleEvent(this)
             }
         }
 
@@ -336,10 +308,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /**
-     * Directly register a [MessageCommand] to this bot.
+     * Directly register a [MessageContentCommand] to this bot.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
-     * call the [Extension.command] function in your [Extension.setup] function.
+     * call the [Extension.messageContentCommand] function in your [Extension.setup] function.
      *
      * This function will throw a [CommandRegistrationException] if the command has already been registered, if
      * a command with the same name exists, or if a command with one of the same aliases exists.
@@ -348,23 +320,23 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @throws CommandRegistrationException Thrown if the command could not be registered.
      */
     @Deprecated(
-        "Use the equivalent function within `MessageCommandRegistry` instead.",
+        "Use the equivalent function within `MessageContentCommandRegistry` instead.",
 
         ReplaceWith(
-            "getKoin().get<MessageCommandRegistry>().add(command)",
+            "getKoin().get<MessageContentCommandRegistry>().add(command)",
 
             "org.koin.core.component.KoinComponent.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.MessageCommand"
+            "com.kotlindiscord.kord.extensions.commands.MessageContentCommand"
         ),
         level = DeprecationLevel.ERROR
     )
     @Throws(CommandRegistrationException::class)
-    public open fun addCommand(command: MessageCommand<out Arguments>): Unit = getKoin()
-        .get<MessageCommandRegistry>()
+    public open fun addCommand(command: MessageContentCommand<out Arguments>): Unit = getKoin()
+        .get<MessageContentCommandRegistry>()
         .add(command)
 
     /**
-     * Directly remove a registered [MessageCommand] from this bot.
+     * Directly remove a registered [MessageContentCommand] from this bot.
      *
      * This function is used when extensions are unloaded, in order to clear out their commands.
      * No exception is thrown if the command wasn't registered.
@@ -372,18 +344,18 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @param command The command to be removed.
      */
     @Deprecated(
-        "Use the equivalent function within `MessageCommandRegistry` instead.",
+        "Use the equivalent function within `MessageContentCommandRegistry` instead.",
 
         ReplaceWith(
-            "getKoin().get<MessageCommandRegistry>().remove(command)",
+            "getKoin().get<MessageContentCommandRegistry>().remove(command)",
 
             "org.koin.core.component.KoinComponent.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.MessageCommand"
+            "com.kotlindiscord.kord.extensions.commands.MessageContentCommand"
         ),
         level = DeprecationLevel.ERROR
     )
-    public open fun removeCommand(command: MessageCommand<out Arguments>): Boolean = getKoin()
-        .get<MessageCommandRegistry>()
+    public open fun removeCommand(command: MessageContentCommand<out Arguments>): Boolean = getKoin()
+        .get<MessageContentCommandRegistry>()
         .remove(command)
 
     /**

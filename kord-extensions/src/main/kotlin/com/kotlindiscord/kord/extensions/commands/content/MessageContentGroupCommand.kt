@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.commands
+package com.kotlindiscord.kord.extensions.commands.content
 
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
@@ -22,26 +22,26 @@ private val logger = KotlinLogging.logger {}
  * `group` function to register your command group, by overriding the `Extension` setup function.
  *
  * @param extension The extension that registered this grouped command.
- * @param parent The [GroupCommand] this group exists under, if any.
+ * @param parent The [MessageContentGroupCommand] this group exists under, if any.
  */
 @Suppress("LateinitVarOverridesLateinitVar")
 // This is intentional
 @ExtensionDSL
-public open class GroupCommand<T : Arguments>(
+public open class MessageContentGroupCommand<T : Arguments>(
     extension: Extension,
     arguments: (() -> T)? = null,
-    public open val parent: GroupCommand<out Arguments>? = null
-) : MessageCommand<T>(extension, arguments) {
+    public open val parent: MessageContentGroupCommand<out Arguments>? = null
+) : MessageContentCommand<T>(extension, arguments) {
     /** @suppress **/
     public val botSettings: ExtensibleBotBuilder by inject()
 
     /** @suppress **/
-    public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
+    public open val commands: MutableList<MessageContentCommand<out Arguments>> = mutableListOf()
 
     override lateinit var name: String
 
     /** @suppress **/
-    override var body: suspend MessageCommandContext<out T>.() -> Unit = {
+    override var body: suspend MessageContentCommandContext<out T>.() -> Unit = {
         sendHelp()
     }
 
@@ -68,14 +68,14 @@ public open class GroupCommand<T : Arguments>(
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun <R : Arguments> command(
+    public open suspend fun <R : Arguments> messageContentCommand(
         arguments: (() -> R)?,
-        body: suspend MessageCommand<R>.() -> Unit
-    ): MessageCommand<R> {
-        val commandObj = MessageSubCommand<R>(extension, arguments, this)
+        body: suspend MessageContentCommand<R>.() -> Unit
+    ): MessageContentCommand<R> {
+        val commandObj = MessageContentSubCommand<R>(extension, arguments, this)
         body.invoke(commandObj)
 
-        return command(commandObj)
+        return messageContentCommand(commandObj)
     }
 
     /**
@@ -85,13 +85,13 @@ public open class GroupCommand<T : Arguments>(
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun command(
-        body: suspend MessageCommand<Arguments>.() -> Unit
-    ): MessageCommand<Arguments> {
-        val commandObj = MessageSubCommand<Arguments>(extension, parent = this)
+    public open suspend fun messageContentCommand(
+        body: suspend MessageContentCommand<Arguments>.() -> Unit
+    ): MessageContentCommand<Arguments> {
+        val commandObj = MessageContentSubCommand<Arguments>(extension, parent = this)
         body.invoke(commandObj)
 
-        return command(commandObj)
+        return messageContentCommand(commandObj)
     }
 
     /**
@@ -101,7 +101,9 @@ public open class GroupCommand<T : Arguments>(
      *
      * @param commandObj MessageCommand object to register.
      */
-    public open suspend fun <R : Arguments> command(commandObj: MessageCommand<R>): MessageCommand<R> {
+    public open suspend fun <R : Arguments> messageContentCommand(
+        commandObj: MessageContentCommand<R>
+    ): MessageContentCommand<R> {
         try {
             commandObj.validate()
             commands.add(commandObj)
@@ -124,14 +126,15 @@ public open class GroupCommand<T : Arguments>(
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun <R : Arguments> group(
+    @Suppress("MemberNameEqualsClassName")  // Really?
+    public open suspend fun <R : Arguments> messageContentGroupCommand(
         arguments: (() -> R)?,
-        body: suspend GroupCommand<R>.() -> Unit
-    ): GroupCommand<R> {
-        val commandObj = GroupCommand(extension, arguments, this)
+        body: suspend MessageContentGroupCommand<R>.() -> Unit
+    ): MessageContentGroupCommand<R> {
+        val commandObj = MessageContentGroupCommand(extension, arguments, this)
         body.invoke(commandObj)
 
-        return command(commandObj) as GroupCommand<R>
+        return messageContentCommand(commandObj) as MessageContentGroupCommand<R>
     }
 
     /**
@@ -144,17 +147,21 @@ public open class GroupCommand<T : Arguments>(
      *
      * @param body Builder lambda used for setting up the command object.
      */
-    public open suspend fun group(
-        body: suspend GroupCommand<Arguments>.() -> Unit
-    ): GroupCommand<Arguments> {
-        val commandObj = GroupCommand<Arguments>(extension, parent = this)
+    @Suppress("MemberNameEqualsClassName")  // Really?
+    public open suspend fun messageContentGroupCommand(
+        body: suspend MessageContentGroupCommand<Arguments>.() -> Unit
+    ): MessageContentGroupCommand<Arguments> {
+        val commandObj = MessageContentGroupCommand<Arguments>(extension, parent = this)
         body.invoke(commandObj)
 
-        return command(commandObj) as GroupCommand<Arguments>
+        return messageContentCommand(commandObj) as MessageContentGroupCommand<Arguments>
     }
 
     /** @suppress **/
-    public open suspend fun getCommand(name: String?, event: MessageCreateEvent): MessageCommand<out Arguments>? {
+    public open suspend fun getCommand(
+        name: String?,
+        event: MessageCreateEvent
+    ): MessageContentCommand<out Arguments>? {
         name ?: return null
 
         val defaultLocale = botSettings.i18nBuilder.defaultLocale

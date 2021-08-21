@@ -22,7 +22,7 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
-        command(::TestArgs) {
+        messageContentCommand(::TestArgs) {
             name = "format"
             description = "Let's test formatting."
 

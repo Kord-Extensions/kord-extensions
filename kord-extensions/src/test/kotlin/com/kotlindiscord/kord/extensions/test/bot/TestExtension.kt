@@ -70,7 +70,7 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
-        command(::ColorArgs) {
+        messageContentCommand(::ColorArgs) {
             name = "color"
             aliases = arrayOf("colour")
             description = "Get an embed with a set color"
@@ -86,7 +86,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command(::MessageArgs) {
+        messageContentCommand(::MessageArgs) {
             name = "msg"
             description = "Message argument test"
 
@@ -97,7 +97,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command(::CoalescedArgs) {
+        messageContentCommand(::CoalescedArgs) {
             name = "coalesce"
             description = "Coalesce me, baby"
 
@@ -115,7 +115,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        messageContentCommand {
             name = "dropdown"
             description = "Dropdown test!"
 
@@ -434,7 +434,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        messageContentCommand {
             name = "translation-test"
             description = "Let's test translations."
 
@@ -444,7 +444,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        messageContentCommand {
             name = "requires-perms"
             description = "A command that requires some permissions"
 
@@ -455,7 +455,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command(::TestArgs) {
+        messageContentCommand(::TestArgs) {
             name = "test"
             description = "Test command, please ignore\n\n" +
 
@@ -496,7 +496,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command(::TestArgs) {
+        messageContentCommand(::TestArgs) {
             name = "test-help"
             description = "Sends help for this command.\n\n" +
 
@@ -507,7 +507,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        messageContentCommand {
             name = "page"
             description = "Paginator test"
 
@@ -568,7 +568,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        messageContentCommand {
             name = "page2"
             description = "Paginator test 2"
 
@@ -611,11 +611,11 @@ class TestExtension : Extension() {
             }
         }
 
-        group {
+        messageContentGroupCommand {
             name = "group"
             description = "Command group"
 
-            command {
+            messageContentCommand {
                 name = "one"
                 description = "one"
 
@@ -624,7 +624,7 @@ class TestExtension : Extension() {
                 }
             }
 
-            command {
+            messageContentCommand {
                 name = "two"
                 description = "two"
 
@@ -633,7 +633,7 @@ class TestExtension : Extension() {
                 }
             }
 
-            command {
+            messageContentCommand {
                 name = "three"
                 description = "three"
 

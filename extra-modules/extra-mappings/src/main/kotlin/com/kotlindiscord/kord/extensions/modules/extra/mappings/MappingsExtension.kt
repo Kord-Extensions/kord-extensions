@@ -4,7 +4,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
 import com.kotlindiscord.kord.extensions.checks.and
 import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
+import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
@@ -85,7 +85,7 @@ class MappingsExtension : Extension() {
 
         if (legacyYarnEnabled) {
             // Class
-            command(::LegacyYarnArguments) {
+            messageContentCommand(::LegacyYarnArguments) {
                 name = "lyc"
                 aliases = arrayOf("lyarnc", "legacy-yarnc", "legacyyarnc", "legacyarnc")
 
@@ -103,7 +103,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::LegacyYarnArguments) {
+            messageContentCommand(::LegacyYarnArguments) {
                 name = "lyf"
                 aliases = arrayOf("lyarnf", "legacy-yarnf", "legacyyarnf", "legacyarnf")
 
@@ -121,7 +121,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::LegacyYarnArguments) {
+            messageContentCommand(::LegacyYarnArguments) {
                 name = "lym"
                 aliases = arrayOf("lyarnm", "legacy-yarnm", "legacyyarnm", "legacyarnm")
 
@@ -145,7 +145,7 @@ class MappingsExtension : Extension() {
 
         if (mcpEnabled) {
             // Class
-            command(::MCPArguments) {
+            messageContentCommand(::MCPArguments) {
                 name = "mcpc"
 
                 description = "Look up MCP mappings info for a class.\n\n" +
@@ -161,7 +161,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::MCPArguments) {
+            messageContentCommand(::MCPArguments) {
                 name = "mcpf"
 
                 description = "Look up MCP mappings info for a field.\n\n" +
@@ -177,7 +177,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::MCPArguments) {
+            messageContentCommand(::MCPArguments) {
                 name = "mcpm"
 
                 description = "Look up MCP mappings info for a method.\n\n" +
@@ -199,7 +199,7 @@ class MappingsExtension : Extension() {
 
         if (mojangEnabled) {
             // Class
-            command(::MojangArguments) {
+            messageContentCommand(::MojangArguments) {
                 name = "mmc"
                 aliases = arrayOf("mojc", "mojmapc")
 
@@ -220,7 +220,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::MojangArguments) {
+            messageContentCommand(::MojangArguments) {
                 name = "mmf"
                 aliases = arrayOf("mojf", "mojmapf")
 
@@ -241,7 +241,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::MojangArguments) {
+            messageContentCommand(::MojangArguments) {
                 name = "mmm"
                 aliases = arrayOf("mojm", "mojmapm")
 
@@ -268,7 +268,7 @@ class MappingsExtension : Extension() {
 
         if (plasmaEnabled) {
             // Class
-            command(::PlasmaArguments) {
+            messageContentCommand(::PlasmaArguments) {
                 name = "pc"
 
                 description = "Look up Plasma mappings info for a class.\n\n" +
@@ -285,7 +285,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::PlasmaArguments) {
+            messageContentCommand(::PlasmaArguments) {
                 name = "pf"
 
                 description = "Look up Plasma mappings info for a field.\n\n" +
@@ -302,7 +302,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::PlasmaArguments) {
+            messageContentCommand(::PlasmaArguments) {
                 name = "pm"
 
                 description = "Look up Plasma mappings info for a method.\n\n" +
@@ -325,7 +325,7 @@ class MappingsExtension : Extension() {
 
         if (yarnEnabled) {
             // Class
-            command({ YarnArguments(patchworkEnabled) }) {
+            messageContentCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "yc"
                 aliases = arrayOf("yarnc")
 
@@ -351,7 +351,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command({ YarnArguments(patchworkEnabled) }) {
+            messageContentCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "yf"
                 aliases = arrayOf("yarnf")
 
@@ -377,7 +377,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command({ YarnArguments(patchworkEnabled) }) {
+            messageContentCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "ym"
                 aliases = arrayOf("yarnm")
 
@@ -409,7 +409,7 @@ class MappingsExtension : Extension() {
 
         if (yarrnEnabled) {
             // Class
-            command(::YarrnArguments) {
+            messageContentCommand(::YarrnArguments) {
                 name = "yrc"
 
                 description = "Look up Yarrn mappings info for a class.\n\n" +
@@ -426,7 +426,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::YarrnArguments) {
+            messageContentCommand(::YarrnArguments) {
                 name = "yrf"
 
                 description = "Look up Yarrn mappings info for a field.\n\n" +
@@ -443,7 +443,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::YarrnArguments) {
+            messageContentCommand(::YarrnArguments) {
                 name = "yrm"
 
                 description = "Look up Yarrn mappings info for a method.\n\n" +
@@ -465,7 +465,7 @@ class MappingsExtension : Extension() {
         // region: Mappings info commands
 
         if (legacyYarnEnabled) {
-            command {
+            messageContentCommand {
                 name = "lyarn"
                 aliases = arrayOf("legacy-yarn", "legacyyarn", "legacyarn")
 
@@ -532,7 +532,7 @@ class MappingsExtension : Extension() {
         }
 
         if (mcpEnabled) {
-            command {
+            messageContentCommand {
                 name = "mcp"
 
                 description = "Get information and a list of supported versions for MCP mappings."
@@ -597,7 +597,7 @@ class MappingsExtension : Extension() {
         }
 
         if (mojangEnabled) {
-            command {
+            messageContentCommand {
                 name = "mojang"
                 aliases = arrayOf("mojmap")
 
@@ -666,7 +666,7 @@ class MappingsExtension : Extension() {
         }
 
         if (plasmaEnabled) {
-            command {
+            messageContentCommand {
                 name = "plasma"
 
                 description = "Get information and a list of supported versions for Plasma mappings."
@@ -732,7 +732,7 @@ class MappingsExtension : Extension() {
         }
 
         if (yarnEnabled) {
-            command {
+            messageContentCommand {
                 name = "yarn"
 
                 description = "Get information and a list of supported versions for Yarn mappings."
@@ -826,7 +826,7 @@ class MappingsExtension : Extension() {
         }
 
         if (yarrnEnabled) {
-            command {
+            messageContentCommand {
                 name = "yarrn"
 
                 description = "Get information and a list of supported versions for Yarrn mappings."
@@ -896,7 +896,7 @@ class MappingsExtension : Extension() {
         logger.info { "Mappings extension set up - namespaces: " + enabledNamespaces.joinToString(", ") }
     }
 
-    private suspend fun MessageCommandContext<out Arguments>.queryClasses(
+    private suspend fun MessageContentCommandContext<out Arguments>.queryClasses(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,
@@ -1005,7 +1005,7 @@ class MappingsExtension : Extension() {
         paginator.send()
     }
 
-    private suspend fun MessageCommandContext<out Arguments>.queryFields(
+    private suspend fun MessageContentCommandContext<out Arguments>.queryFields(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,
@@ -1114,7 +1114,7 @@ class MappingsExtension : Extension() {
         paginator.send()
     }
 
-    private suspend fun MessageCommandContext<out Arguments>.queryMethods(
+    private suspend fun MessageContentCommandContext<out Arguments>.queryMethods(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,
