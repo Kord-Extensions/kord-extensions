@@ -13,8 +13,8 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.SlashCommands
 import dev.kord.core.entity.interaction.CommandInteraction
-import dev.kord.core.event.interaction.InteractionCreateEvent
-import dev.kord.rest.builder.interaction.ApplicationCommandCreateBuilder
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kord.rest.builder.interaction.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -177,7 +177,7 @@ public open class SlashCommandRegistry : KoinComponent {
 
                         logger.debug { "Adding/updating global slash command $translatedName" }
 
-                        command(
+                        input(
                             translatedName,
                             translationsProvider.translate(it.description, it.extension.bundle, locale = locale)
                         ) { register(it) }
@@ -202,7 +202,7 @@ public open class SlashCommandRegistry : KoinComponent {
 
                             logger.debug { "Adding/updating global slash command $translatedName" }
 
-                            command(
+                            input(
                                 translatedName,
                                 translationsProvider.translate(it.description, it.extension.bundle)
                             ) { register(it) }
@@ -254,7 +254,7 @@ public open class SlashCommandRegistry : KoinComponent {
         }
     }
 
-    internal open suspend fun ApplicationCommandCreateBuilder.register(command: SlashCommand<out Arguments>) {
+    internal open suspend fun ChatInputCreateBuilder.register(command: SlashCommand<out Arguments>) {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         this.defaultPermission = command.guild == null || command.allowByDefault
@@ -332,7 +332,7 @@ public open class SlashCommandRegistry : KoinComponent {
     }
 
     /** Handle an [InteractionCreateEvent] and try to execute the corresponding command. **/
-    public open suspend fun handle(event: InteractionCreateEvent) {
+    public open suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
         val interaction = event.interaction as? CommandInteraction ?: return
 
         val commandId = interaction.command.rootId

@@ -13,7 +13,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.User
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ComponentCreateEvent
 import java.util.*
 
 /** Last row number. **/
@@ -61,7 +61,7 @@ public abstract class BaseButtonPaginator(
     public val canUseSwitchingButtons: Boolean = allGroups.size in 3..5 && "" !in allGroups
 
     /** A button-oriented check function that matches based on the [owner] property. **/
-    public val defaultCheck: Check<InteractionCreateEvent> = {
+    public val defaultCheck: Check<ComponentCreateEvent> = {
         if (!active) {
             fail()
         } else if (owner == null) {

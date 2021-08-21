@@ -10,7 +10,7 @@ import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.core.behavior.interaction.InteractionResponseBehavior
 import dev.kord.core.entity.interaction.ButtonInteraction
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ComponentCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import mu.KotlinLogging
 
@@ -52,7 +52,7 @@ public open class InteractiveButtonBuilder : ButtonBuilder,
 
     override fun getContext(
         extension: Extension,
-        event: InteractionCreateEvent,
+        event: ComponentCreateEvent,
         components: Components,
         interactionResponse: InteractionResponseBehavior?,
         interaction: ButtonInteraction

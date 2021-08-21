@@ -37,7 +37,7 @@ import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.SubCommand
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import kotlinx.coroutines.flow.toList
@@ -133,7 +133,7 @@ public open class SlashCommand<T : Arguments>(
     public open val subCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
 
     /** @suppress **/
-    public open val checkList: MutableList<Check<InteractionCreateEvent>> = mutableListOf()
+    public open val checkList: MutableList<Check<ChatInputCommandInteractionCreateEvent>> = mutableListOf()
 
     public override val parser: SlashCommandParser = SlashCommandParser()
 
@@ -382,7 +382,7 @@ public open class SlashCommand<T : Arguments>(
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun check(vararg checks: Check<InteractionCreateEvent>) {
+    public open fun check(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -391,7 +391,7 @@ public open class SlashCommand<T : Arguments>(
      *
      * @param check Check to apply to this command.
      */
-    public open fun check(check: Check<InteractionCreateEvent>) {
+    public open fun check(check: Check<ChatInputCommandInteractionCreateEvent>) {
         checkList.add(check)
     }
 
@@ -410,7 +410,7 @@ public open class SlashCommand<T : Arguments>(
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun booleanCheck(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+    public open fun booleanCheck(vararg checks: suspend (ChatInputCommandInteractionCreateEvent) -> Boolean) {
         checks.forEach(::booleanCheck)
     }
 
@@ -423,7 +423,7 @@ public open class SlashCommand<T : Arguments>(
      *
      * @param check Check to apply to this command.
      */
-    public open fun booleanCheck(check: suspend (InteractionCreateEvent) -> Boolean) {
+    public open fun booleanCheck(check: suspend (ChatInputCommandInteractionCreateEvent) -> Boolean) {
         check {
             if (check(event)) {
                 pass()
@@ -436,7 +436,10 @@ public open class SlashCommand<T : Arguments>(
     // endregion
 
     /** Run checks with the provided [InteractionCreateEvent]. Return false if any failed, true otherwise. **/
-    public open suspend fun runChecks(event: InteractionCreateEvent, sendMessage: Boolean = true): Boolean {
+    public open suspend fun runChecks(
+        event: ChatInputCommandInteractionCreateEvent,
+        sendMessage: Boolean = true
+    ): Boolean {
         val locale = event.getLocale()
 
         // global checks
@@ -573,7 +576,7 @@ public open class SlashCommand<T : Arguments>(
      *
      * @param event The interaction creation event.
      */
-    public open suspend fun call(event: InteractionCreateEvent) {
+    public open suspend fun call(event: ChatInputCommandInteractionCreateEvent) {
         if (event.interaction !is CommandInteraction) return
 
         val interaction = event.interaction as CommandInteraction

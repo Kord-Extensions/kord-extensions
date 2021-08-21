@@ -17,7 +17,7 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.ComponentInteraction
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ComponentCreateEvent
 import dev.kord.rest.builder.message.create.EphemeralFollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.create.PublicFollowupMessageCreateBuilder
 import io.sentry.Breadcrumb
@@ -39,7 +39,7 @@ import java.util.*
 @ExtensionDSL
 public abstract class ActionableComponentContext<T : ComponentInteraction>(
     public open val extension: Extension,
-    public open val event: InteractionCreateEvent,
+    public open val event: ComponentCreateEvent,
     public open val components: Components,
     public open var interactionResponse: InteractionResponseBehavior? = null,
     public open val interaction: T = event.interaction as T

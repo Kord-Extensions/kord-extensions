@@ -20,7 +20,7 @@ import dev.kord.core.event.Event
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
@@ -202,7 +202,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         }
 
         if (settings.slashCommandsBuilder.enabled) {
-            on<InteractionCreateEvent> {
+            on<ChatInputCommandInteractionCreateEvent> {
                 getKoin().get<SlashCommandRegistry>().handle(this)
             }
         }

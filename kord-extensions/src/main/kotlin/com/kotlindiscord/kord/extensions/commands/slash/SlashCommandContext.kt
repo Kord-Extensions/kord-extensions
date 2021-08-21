@@ -19,7 +19,7 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.entity.interaction.InteractionFollowup
 import dev.kord.core.entity.interaction.PublicFollowupMessage
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.EphemeralFollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.PublicFollowupMessageCreateBuilder
@@ -34,12 +34,12 @@ import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 @ExtensionDSL
 public open class SlashCommandContext<T : Arguments>(
     private val slashCommand: SlashCommand<out T>,
-    event: InteractionCreateEvent,
+    event: ChatInputCommandInteractionCreateEvent,
     commandName: String,
     public var interactionResponse: InteractionResponseBehavior? = null
 ) : CommandContext(slashCommand, event, commandName, null) {
     /** Event that triggered this command execution. **/
-    public val event: InteractionCreateEvent get() = eventObj as InteractionCreateEvent
+    public val event: ChatInputCommandInteractionCreateEvent get() = eventObj as ChatInputCommandInteractionCreateEvent
 
     /** Quick access to the [CommandInteraction]. **/
     public val interaction: CommandInteraction get() = event.interaction as CommandInteraction

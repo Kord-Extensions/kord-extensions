@@ -24,7 +24,7 @@ import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.ComponentInteraction
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ComponentCreateEvent
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import mu.KotlinLogging
@@ -71,7 +71,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     public open var followParent: Boolean = true
 
     /** @suppress Internal variable, a list of checks to apply to click actions. **/
-    public open val checks: MutableList<Check<InteractionCreateEvent>> = mutableListOf()
+    public open val checks: MutableList<Check<ComponentCreateEvent>> = mutableListOf()
 
     /** @suppress Internal variable, the click action to run. **/
     public open lateinit var body: suspend R.() -> Unit
@@ -83,11 +83,11 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     }
 
     /** Register a check that must pass for this button to be actioned. **/
-    public open fun check(vararg checks: Check<InteractionCreateEvent>): Boolean =
+    public open fun check(vararg checks: Check<ComponentCreateEvent>): Boolean =
         this.checks.addAll(checks)
 
     /** Register a check that must pass for this button to be actioned. **/
-    public open fun check(check: Check<InteractionCreateEvent>): Boolean =
+    public open fun check(check: Check<ComponentCreateEvent>): Boolean =
         checks.add(check)
 
     /**
@@ -97,7 +97,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
      * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
      * the same functionality as a regular check, and cannot return a message.
      */
-    public open fun booleanCheck(vararg checks: suspend (InteractionCreateEvent) -> Boolean) {
+    public open fun booleanCheck(vararg checks: suspend (ComponentCreateEvent) -> Boolean) {
         checks.forEach(::booleanCheck)
     }
 
@@ -108,7 +108,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
      * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
      * the same functionality as a regular check, and cannot return a message.
      */
-    public open fun booleanCheck(check: suspend (InteractionCreateEvent) -> Boolean) {
+    public open fun booleanCheck(check: suspend (ComponentCreateEvent) -> Boolean) {
         check {
             if (check(event)) {
                 pass()
@@ -124,7 +124,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     }
 
     /** Run this component's checks, returning a Boolean representing whether the checks passed. **/
-    public open suspend fun runChecks(event: InteractionCreateEvent, sendMessage: Boolean = true): Boolean {
+    public open suspend fun runChecks(event: ComponentCreateEvent, sendMessage: Boolean = true): Boolean {
         val interaction = event.interaction as T
         val locale = event.getLocale()
 
@@ -157,7 +157,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     override suspend fun call(
         components: Components,
         extension: Extension,
-        event: InteractionCreateEvent,
+        event: ComponentCreateEvent,
         parentContext: SlashCommandContext<*>?
     ) {
         if (!runChecks(event)) {
@@ -280,7 +280,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
     /** Function to be overridden in order to retrieve a context object of the correct type. **/
     public abstract fun getContext(
         extension: Extension,
-        event: InteractionCreateEvent,
+        event: ComponentCreateEvent,
         components: Components,
         interactionResponse: InteractionResponseBehavior? = null,
         interaction: T = event.interaction as T

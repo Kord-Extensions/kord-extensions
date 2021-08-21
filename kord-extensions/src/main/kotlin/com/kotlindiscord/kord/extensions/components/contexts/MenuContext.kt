@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.interaction.*
 import dev.kord.core.entity.interaction.SelectMenuInteraction
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ComponentCreateEvent
 import org.koin.core.component.KoinComponent
 import java.util.*
 
@@ -17,7 +17,7 @@ import java.util.*
 @ExtensionDSL
 public open class MenuContext(
     extension: Extension,
-    event: InteractionCreateEvent,
+    event: ComponentCreateEvent,
     components: Components,
     interactionResponse: InteractionResponseBehavior? = null,
     interaction: SelectMenuInteraction = event.interaction as SelectMenuInteraction

@@ -27,7 +27,7 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.builder.kord.KordBuilder
 import dev.kord.core.builder.kord.Shards
 import dev.kord.core.cache.KordCacheBuilder
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
@@ -875,7 +875,7 @@ public open class ExtensibleBotBuilder {
          *
          * These checks will be checked against all slash commands.
          */
-        public val checkList: MutableList<Check<InteractionCreateEvent>> = mutableListOf()
+        public val checkList: MutableList<Check<ChatInputCommandInteractionCreateEvent>> = mutableListOf()
 
         /** Set a guild ID to use for all global slash commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake) {
@@ -912,7 +912,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all slash commands.
          */
-        public fun check(vararg checks: Check<InteractionCreateEvent>) {
+        public fun check(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
             checks.forEach { checkList.add(it) }
         }
 
@@ -921,7 +921,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param check Check to apply to all slash commands.
          */
-        public fun check(check: Check<InteractionCreateEvent>) {
+        public fun check(check: Check<ChatInputCommandInteractionCreateEvent>) {
             checkList.add(check)
         }
     }

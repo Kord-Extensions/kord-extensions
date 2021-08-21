@@ -16,7 +16,7 @@ import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
@@ -96,7 +96,7 @@ public abstract class Extension : KoinComponent {
      *
      * These checks will be checked against all slash commands in this extension.
      */
-    public open val slashCommandChecks: MutableList<Check<InteractionCreateEvent>> =
+    public open val slashCommandChecks: MutableList<Check<ChatInputCommandInteractionCreateEvent>> =
         mutableListOf()
 
     /** String representing the bundle to get translations from for command names/descriptions. **/
@@ -386,7 +386,7 @@ public abstract class Extension : KoinComponent {
      *
      * @param checks Checks to apply to all slash commands in this extension.
      */
-    public open fun slashCheck(vararg checks: Check<InteractionCreateEvent>) {
+    public open fun slashCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
         checks.forEach { slashCommandChecks.add(it) }
     }
 
@@ -396,7 +396,7 @@ public abstract class Extension : KoinComponent {
      * @param check Check to apply to all slash commands in this extension.
      */
     @ExtensionDSL
-    public open fun slashCheck(check: Check<InteractionCreateEvent>) {
+    public open fun slashCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
         slashCommandChecks.add(check)
     }
 
