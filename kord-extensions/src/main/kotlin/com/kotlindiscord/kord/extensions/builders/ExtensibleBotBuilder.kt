@@ -24,6 +24,7 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
+import dev.kord.core.builder.kord.KordBuilder
 import dev.kord.core.builder.kord.Shards
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.event.interaction.InteractionCreateEvent
@@ -86,6 +87,9 @@ public open class ExtensibleBotBuilder {
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
 
+    /** @suppress List of Kord builders, shouldn't be set directly by the user. **/
+    public val kordBuilders: MutableList<suspend KordBuilder.() -> Unit> = mutableListOf()
+
     /** Logging level Koin should use, defaulting to ERROR. **/
     public var koinLogLevel: Level = Level.ERROR
 
@@ -107,6 +111,21 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public suspend fun hooks(builder: suspend HooksBuilder.() -> Unit) {
         builder(hooksBuilder)
+    }
+
+    /**
+     * DSL function allowing for additional Kord builders to be specified, allowing for direct customisation of the
+     * Kord object.
+     *
+     * Multiple builders may be registered, and they'll be called in the order they were registered here. Builders are
+     * called after Kord Extensions has applied its own builder actions - so you can override the changes it makes here
+     * if they don't suit your bot.
+     *
+     * @see KordBuilder
+     */
+    @BotBuilderDSL
+    public fun kord(builder: suspend KordBuilder.() -> Unit) {
+        kordBuilders.add(builder)
     }
 
     /**

@@ -133,6 +133,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             }
 
             enableShutdownHook = settings.hooksBuilder.kordShutdownHook
+
+            settings.kordBuilders.forEach { it() }
         }
 
         loadModule { single { kord } bind Kord::class }
