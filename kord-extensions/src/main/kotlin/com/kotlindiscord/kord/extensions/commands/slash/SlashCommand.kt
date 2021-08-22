@@ -451,7 +451,7 @@ public open class SlashCommand<T : Arguments>(
                 val message = context.message
 
                 if (message != null && sendMessage) {
-                    if (autoAck == AutoAckType.EPHEMERAL) {
+                    if (autoAck != AutoAckType.PUBLIC) {
                         event.interaction.respondEphemeral {
                             content = translationsProvider.translate(
                                 "checks.responseTemplate",
