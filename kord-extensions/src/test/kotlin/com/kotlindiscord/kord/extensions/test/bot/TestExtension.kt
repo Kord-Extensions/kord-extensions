@@ -11,7 +11,6 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.extensions.chatGroupCommand
 import com.kotlindiscord.kord.extensions.extensions.slashCommand
-import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
@@ -156,59 +155,52 @@ class TestExtension : Extension() {
             guild(787452339908116521)
 
             action {
-                val pages = Pages()
-
-                (0..2).forEach {
-                    pages.addPage(
-                        Page {
-                            description = "Short page $it."
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-
-                    pages.addPage(
-                        "Expanded",
-
-                        Page {
-                            description = "Expanded page $it, expanded page $it\n" +
-                                "Expanded page $it, expanded page $it"
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-
-                    pages.addPage(
-                        "MASSIVE GROUP",
-
-                        Page {
-                            description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it"
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-                }
-
-                val paginator = InteractionButtonPaginator(
-                    extension = this@TestExtension,
-                    pages = pages,
-                    owner = event.interaction.user.asUser(),
-                    timeoutSeconds = 60,
-                    parentContext = this,
+                paginator("short") {
+                    owner = event.interaction.user.asUser()
+                    timeoutSeconds = 60
                     keepEmbed = false
-                )
 
-                paginator.send()
+                    (0..2).forEach {
+                        page(
+                            Page {
+                                description = "Short page $it."
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+
+                        page(
+                            "Expanded",
+
+                            Page {
+                                description = "Expanded page $it, expanded page $it\n" +
+                                    "Expanded page $it, expanded page $it"
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+
+                        page(
+                            "MASSIVE GROUP",
+
+                            Page {
+                                description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it"
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+                    }
+                }.send()
             }
         }
 
@@ -515,59 +507,54 @@ class TestExtension : Extension() {
             description = "Paginator test"
 
             action {
-                val pages = Pages(defaultGroup = "short")
-
-                (0..2).forEach {
-                    pages.addPage(
-                        "short",
-
-                        Page {
-                            description = "Short page $it."
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-
-                    pages.addPage(
-                        "expanded",
-
-                        Page {
-                            description = "Expanded page $it, expanded page $it\n" +
-                                "Expanded page $it, expanded page $it"
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-
-                    pages.addPage(
-                        "massive",
-
-                        Page {
-                            description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it"
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-                }
-
-                MessageButtonPaginator(
-                    extension = this@TestExtension,
-                    targetMessage = event.message,
-                    pages = pages,
-                    keepEmbed = true,
-                    owner = user,
+                paginator("short", targetMessage = event.message) {
+                    keepEmbed = true
+                    owner = user
                     locale = getLocale()
-                ).send()
+
+                    (0..2).forEach {
+                        page(
+                            "short",
+
+                            Page {
+                                description = "Short page $it."
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+
+                        page(
+                            "expanded",
+
+                            Page {
+                                description = "Expanded page $it, expanded page $it\n" +
+                                    "Expanded page $it, expanded page $it"
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+
+                        page(
+                            "massive",
+
+                            Page {
+                                description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it"
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+                    }
+                }.send()
             }
         }
 

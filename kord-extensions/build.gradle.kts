@@ -1,5 +1,6 @@
 import java.io.ByteArrayOutputStream
 import java.net.URL
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -194,4 +195,10 @@ tasks.test {
 
 tasks.build {
     this.finalizedBy(sourceJar, javadocJar)
+}
+
+val compileKotlin: KotlinCompile by tasks
+
+compileKotlin.kotlinOptions {
+    languageVersion = "1.5"
 }

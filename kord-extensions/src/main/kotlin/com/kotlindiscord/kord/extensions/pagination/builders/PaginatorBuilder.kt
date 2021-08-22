@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.User
+import dev.kord.rest.builder.message.EmbedBuilder
 import java.util.*
 
 /**
@@ -42,4 +43,19 @@ public class PaginatorBuilder(
 
     /** Add a page to [pages], using the given group. **/
     public fun page(group: String, page: Page): Unit = pages.addPage(group, page)
+
+    /** Add a page to [pages], using the default group. **/
+    public fun page(
+        bundle: String? = null,
+        builder: suspend EmbedBuilder.() -> Unit
+    ): Unit =
+        page(Page(builder = builder, bundle = bundle))
+
+    /** Add a page to [pages], using the given group. **/
+    public fun page(
+        group: String,
+        bundle: String? = null,
+        builder: suspend EmbedBuilder.() -> Unit
+    ): Unit =
+        page(group, Page(builder = builder, bundle = bundle))
 }
