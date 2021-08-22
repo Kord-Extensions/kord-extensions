@@ -68,6 +68,7 @@ public open class MessageContentGroupCommand<T : Arguments>(
      *
      * @param body Builder lambda used for setting up the command object.
      */
+    @ExtensionDSL
     public open suspend fun <R : Arguments> messageContentCommand(
         arguments: (() -> R)?,
         body: suspend MessageContentCommand<R>.() -> Unit
@@ -85,6 +86,7 @@ public open class MessageContentGroupCommand<T : Arguments>(
      *
      * @param body Builder lambda used for setting up the command object.
      */
+    @ExtensionDSL
     public open suspend fun messageContentCommand(
         body: suspend MessageContentCommand<Arguments>.() -> Unit
     ): MessageContentCommand<Arguments> {
@@ -101,6 +103,7 @@ public open class MessageContentGroupCommand<T : Arguments>(
      *
      * @param commandObj MessageCommand object to register.
      */
+    @ExtensionDSL
     public open suspend fun <R : Arguments> messageContentCommand(
         commandObj: MessageContentCommand<R>
     ): MessageContentCommand<R> {
@@ -126,6 +129,7 @@ public open class MessageContentGroupCommand<T : Arguments>(
      *
      * @param body Builder lambda used for setting up the command object.
      */
+    @ExtensionDSL
     @Suppress("MemberNameEqualsClassName")  // Really?
     public open suspend fun <R : Arguments> messageContentGroupCommand(
         arguments: (() -> R)?,
@@ -147,6 +151,7 @@ public open class MessageContentGroupCommand<T : Arguments>(
      *
      * @param body Builder lambda used for setting up the command object.
      */
+    @ExtensionDSL
     @Suppress("MemberNameEqualsClassName")  // Really?
     public open suspend fun messageContentGroupCommand(
         body: suspend MessageContentGroupCommand<Arguments>.() -> Unit

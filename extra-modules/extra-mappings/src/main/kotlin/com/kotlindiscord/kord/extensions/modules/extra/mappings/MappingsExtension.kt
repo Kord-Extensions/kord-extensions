@@ -7,6 +7,7 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.messageContentCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.builders.ExtMappingsBuilder
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels

@@ -8,6 +8,9 @@ import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
 import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.enumChoice
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.messageContentCommand
+import com.kotlindiscord.kord.extensions.extensions.messageContentGroupCommand
+import com.kotlindiscord.kord.extensions.extensions.slashCommand
 import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page

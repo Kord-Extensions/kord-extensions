@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.stringList
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
+import com.kotlindiscord.kord.extensions.extensions.messageContentCommand
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.pagination.BasePaginator
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator

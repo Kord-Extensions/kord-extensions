@@ -7,6 +7,7 @@ import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
 import com.kotlindiscord.kord.extensions.components.builders.*
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.event
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.entity.interaction.ComponentInteraction

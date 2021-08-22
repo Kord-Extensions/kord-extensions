@@ -3,6 +3,7 @@ package com.kotlindiscord.kordex.ext.common.extensions
 import com.kotlindiscord.kord.extensions.checks.inGuild
 import com.kotlindiscord.kord.extensions.checks.or
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kordex.ext.common.builders.ExtCommonBuilder
 import com.kotlindiscord.kordex.ext.common.configuration.emoji.EmojiConfig
 import com.kotlindiscord.kordex.ext.common.emoji.NamedEmoji
