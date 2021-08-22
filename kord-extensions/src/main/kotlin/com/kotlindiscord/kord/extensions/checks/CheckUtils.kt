@@ -14,7 +14,7 @@ import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
 import dev.kord.core.event.channel.thread.*
 import dev.kord.core.event.guild.*
-import dev.kord.core.event.interaction.ApplicationCreateEvent
+import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.*
 import dev.kord.core.event.role.RoleCreateEvent
 import dev.kord.core.event.role.RoleDeleteEvent
@@ -40,7 +40,7 @@ public suspend fun channelFor(event: Event): ChannelBehavior? {
         is ChannelDeleteEvent -> event.channel
         is ChannelPinsUpdateEvent -> event.channel
         is ChannelUpdateEvent -> event.channel
-        is ApplicationCreateEvent -> event.interaction.channel
+        is InteractionCreateEvent -> event.interaction.channel
         is InviteCreateEvent -> event.channel
         is InviteDeleteEvent -> event.channel
         is MessageBulkDeleteEvent -> event.channel
@@ -104,7 +104,7 @@ public suspend fun channelIdFor(event: Event): Long? {
         is ChannelDeleteEvent -> event.channel.id.value
         is ChannelPinsUpdateEvent -> event.channel.id.value
         is ChannelUpdateEvent -> event.channel.id.value
-        is ApplicationCreateEvent -> event.interaction.channel.id.value
+        is InteractionCreateEvent -> event.interaction.channel.id.value
         is InviteCreateEvent -> event.channel.id.value
         is InviteDeleteEvent -> event.channel.id.value
         is MessageBulkDeleteEvent -> event.channelId.value
@@ -146,7 +146,7 @@ public suspend fun channelSnowflakeFor(event: Event): Snowflake? {
         is ChannelDeleteEvent -> event.channel.id
         is ChannelPinsUpdateEvent -> event.channel.id
         is ChannelUpdateEvent -> event.channel.id
-        is ApplicationCreateEvent -> event.interaction.channel.id
+        is InteractionCreateEvent -> event.interaction.channel.id
         is InviteCreateEvent -> event.channel.id
         is InviteDeleteEvent -> event.channel.id
         is MessageBulkDeleteEvent -> event.channelId
@@ -196,7 +196,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is GuildUpdateEvent -> event.guild
         is IntegrationsUpdateEvent -> event.guild
 
-        is ApplicationCreateEvent -> {
+        is InteractionCreateEvent -> {
             val guildId = event.interaction.data.guildId.value
 
             if (guildId == null) {
@@ -258,7 +258,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
     return when {
-        event is ApplicationCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.member
+        event is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.member
 
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member
@@ -399,7 +399,7 @@ public suspend fun userFor(event: Event): UserBehavior? {
         is DMChannelCreateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelDeleteEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelUpdateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
-        is ApplicationCreateEvent -> event.interaction.user
+        is InteractionCreateEvent -> event.interaction.user
         is MemberJoinEvent -> event.member
         is MemberLeaveEvent -> event.user
         is MemberUpdateEvent -> event.member

@@ -37,13 +37,15 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.Speak -> "permission.speak"
     Permission.Stream -> "permission.stream"
     Permission.UseExternalEmojis -> "permission.useExternalEmojis"
-    Permission.UsePrivateThreads -> "permission.usePrivateThreads"
-    Permission.UsePublicThreads -> "permission.usePublicThreads"
     Permission.UseSlashCommands -> "permission.useSlashCommands"
     Permission.UseVAD -> "permission.useVAD"
     Permission.ViewAuditLog -> "permission.viewAuditLog"
     Permission.ViewChannel -> "permission.viewChannel"
     Permission.ViewGuildInsights -> "permission.viewGuildInsights"
+
+    Permission.CreatePublicThreads -> "permission.createPublicThreads"
+    Permission.CreatePrivateThreads -> "permission.createPrivateThreads"
+    Permission.SendMessagesInThreads -> "permission.sendMessagesInThreads"
 }
 
 /** Because "Stream" is a confusing name, people may look for "Video" instead. **/

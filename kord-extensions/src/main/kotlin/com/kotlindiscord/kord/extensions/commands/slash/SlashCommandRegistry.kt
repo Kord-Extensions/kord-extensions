@@ -11,10 +11,10 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.SlashCommands
-import dev.kord.core.entity.interaction.CommandInteraction
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import dev.kord.rest.builder.interaction.*
+import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
+import dev.kord.rest.builder.interaction.group
+import dev.kord.rest.builder.interaction.subCommand
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -48,9 +48,6 @@ public open class SlashCommandRegistry : KoinComponent {
 
     /** @suppress **/
     public open val commandMap: MutableMap<Snowflake, SlashCommand<out Arguments>> = mutableMapOf()
-
-    /** @suppress **/
-    public open val api: SlashCommands get() = kord.slashCommands
 
 //    TODO: Sentry?
 //    private val sentry: SentryAdapter by bot.koin.inject()
@@ -138,9 +135,9 @@ public open class SlashCommandRegistry : KoinComponent {
         val registered = commands[guild]!!
 
         val existing = if (guild == null) {
-            api.getGlobalApplicationCommands().map { Pair(it.name, it.id) }.toList()
+            kord.globalCommands.map { Pair(it.name, it.id) }.toList()
         } else {
-            api.getGuildApplicationCommands(guild).map { Pair(it.name, it.id) }.toList()
+            kord.unsafe.guild(guild).commands.map { Pair(it.name, it.id) }.toList()
         }
 
         if (!bot.settings.slashCommandsBuilder.register) {
@@ -171,7 +168,7 @@ public open class SlashCommandRegistry : KoinComponent {
             val toCreate = toAdd + toUpdate
 
             if (guild == null) {
-                val response = api.createGlobalApplicationCommands {
+                val response = kord.createGlobalApplicationCommands {
                     toCreate.forEach {
                         val translatedName = it.getTranslatedName(locale)
 
@@ -188,7 +185,7 @@ public open class SlashCommandRegistry : KoinComponent {
                     commandMap[response[it.getTranslatedName(locale)]!!] = it
                 }
 
-                api.getGlobalApplicationCommands().filter { e -> toRemove.any { it.second == e.id } }
+                kord.globalCommands.filter { e -> toRemove.any { it.second == e.id } }
                     .toList()
                     .forEach {
                         logger.debug { "Removing global slash command ${it.name}" }
@@ -196,7 +193,7 @@ public open class SlashCommandRegistry : KoinComponent {
                     }
             } else {
                 toCreate.groupBy { it.guild!! }.forEach { (snowflake, commands) ->
-                    val response = api.createGuildApplicationCommands(snowflake) {
+                    val response = kord.createGuildApplicationCommands(snowflake) {
                         commands.forEach {
                             val translatedName = it.getTranslatedName(locale)
 
@@ -214,7 +211,7 @@ public open class SlashCommandRegistry : KoinComponent {
                     }
                 }
 
-                api.getGuildApplicationCommands(guild).filter { e -> toRemove.any { it.second == e.id } }
+                kord.unsafe.guild(guild).commands.filter { e -> toRemove.any { it.second == e.id } }
                     .toList()
                     .forEach {
                         logger.debug { "Removing guild slash command ${it.name}" }
@@ -228,7 +225,7 @@ public open class SlashCommandRegistry : KoinComponent {
 
             commandsWithPerms.forEach { (guild, commands) ->
                 if (guild != null) {
-                    api.bulkEditApplicationCommandPermissions(api.applicationId, guild) {
+                    kord.bulkEditApplicationCommandPermissions(kord.resources.applicationId, guild) {
                         commands.forEach { (id, commandObj) ->
                             command(id) {
                                 commandObj.allowedUsers.map { user(it, true) }
@@ -331,11 +328,9 @@ public open class SlashCommandRegistry : KoinComponent {
         }
     }
 
-    /** Handle an [InteractionCreateEvent] and try to execute the corresponding command. **/
+    /** Handle a [ChatInputCommandInteractionCreateEvent] and try to execute the corresponding command. **/
     public open suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
-        val interaction = event.interaction as? CommandInteraction ?: return
-
-        val commandId = interaction.command.rootId
+        val commandId = event.interaction.command.rootId
         val command = commandMap[commandId]
 
         if (command == null) {

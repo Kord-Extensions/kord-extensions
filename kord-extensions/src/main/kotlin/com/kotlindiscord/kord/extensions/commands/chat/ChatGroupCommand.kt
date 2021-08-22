@@ -69,14 +69,14 @@ public open class ChatGroupCommand<T : Arguments>(
      * @param body Builder lambda used for setting up the command object.
      */
     @ExtensionDSL
-    public open suspend fun <R : Arguments> messageContentCommand(
+    public open suspend fun <R : Arguments> chatCommand(
         arguments: (() -> R)?,
         body: suspend ChatCommand<R>.() -> Unit
     ): ChatCommand<R> {
         val commandObj = ChatSubCommand<R>(extension, arguments, this)
         body.invoke(commandObj)
 
-        return messageContentCommand(commandObj)
+        return chatCommand(commandObj)
     }
 
     /**
@@ -87,13 +87,13 @@ public open class ChatGroupCommand<T : Arguments>(
      * @param body Builder lambda used for setting up the command object.
      */
     @ExtensionDSL
-    public open suspend fun messageContentCommand(
+    public open suspend fun chatCommand(
         body: suspend ChatCommand<Arguments>.() -> Unit
     ): ChatCommand<Arguments> {
         val commandObj = ChatSubCommand<Arguments>(extension, parent = this)
         body.invoke(commandObj)
 
-        return messageContentCommand(commandObj)
+        return chatCommand(commandObj)
     }
 
     /**
@@ -104,7 +104,7 @@ public open class ChatGroupCommand<T : Arguments>(
      * @param commandObj MessageCommand object to register.
      */
     @ExtensionDSL
-    public open suspend fun <R : Arguments> messageContentCommand(
+    public open suspend fun <R : Arguments> chatCommand(
         commandObj: ChatCommand<R>
     ): ChatCommand<R> {
         try {
@@ -131,14 +131,14 @@ public open class ChatGroupCommand<T : Arguments>(
      */
     @ExtensionDSL
     @Suppress("MemberNameEqualsClassName")  // Really?
-    public open suspend fun <R : Arguments> messageContentGroupCommand(
+    public open suspend fun <R : Arguments> chatGroupCommand(
         arguments: (() -> R)?,
         body: suspend ChatGroupCommand<R>.() -> Unit
     ): ChatGroupCommand<R> {
         val commandObj = ChatGroupCommand(extension, arguments, this)
         body.invoke(commandObj)
 
-        return messageContentCommand(commandObj) as ChatGroupCommand<R>
+        return chatCommand(commandObj) as ChatGroupCommand<R>
     }
 
     /**
@@ -153,13 +153,13 @@ public open class ChatGroupCommand<T : Arguments>(
      */
     @ExtensionDSL
     @Suppress("MemberNameEqualsClassName")  // Really?
-    public open suspend fun messageContentGroupCommand(
+    public open suspend fun chatGroupCommand(
         body: suspend ChatGroupCommand<Arguments>.() -> Unit
     ): ChatGroupCommand<Arguments> {
         val commandObj = ChatGroupCommand<Arguments>(extension, parent = this)
         body.invoke(commandObj)
 
-        return messageContentCommand(commandObj) as ChatGroupCommand<Arguments>
+        return chatCommand(commandObj) as ChatGroupCommand<Arguments>
     }
 
     /** @suppress **/
