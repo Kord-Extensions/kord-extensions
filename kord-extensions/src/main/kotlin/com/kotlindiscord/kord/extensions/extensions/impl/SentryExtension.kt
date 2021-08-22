@@ -8,7 +8,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.messageContentCommand
+import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.extensions.slashCommand
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.sentryId
@@ -69,7 +69,7 @@ public class SentryExtension : Extension() {
                 }
             }
 
-            messageContentCommand(::FeedbackMessageArgs) {
+            chatCommand(::FeedbackMessageArgs) {
                 name = "extensions.sentry.commandName"
                 description = "extensions.sentry.commandDescription.long"
 

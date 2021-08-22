@@ -4,10 +4,10 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
 import com.kotlindiscord.kord.extensions.checks.and
 import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandContext
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.messageContentCommand
+import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.builders.ExtMappingsBuilder
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
@@ -86,7 +86,7 @@ class MappingsExtension : Extension() {
 
         if (legacyYarnEnabled) {
             // Class
-            messageContentCommand(::LegacyYarnArguments) {
+            chatCommand(::LegacyYarnArguments) {
                 name = "lyc"
                 aliases = arrayOf("lyarnc", "legacy-yarnc", "legacyyarnc", "legacyarnc")
 
@@ -104,7 +104,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            messageContentCommand(::LegacyYarnArguments) {
+            chatCommand(::LegacyYarnArguments) {
                 name = "lyf"
                 aliases = arrayOf("lyarnf", "legacy-yarnf", "legacyyarnf", "legacyarnf")
 
@@ -122,7 +122,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            messageContentCommand(::LegacyYarnArguments) {
+            chatCommand(::LegacyYarnArguments) {
                 name = "lym"
                 aliases = arrayOf("lyarnm", "legacy-yarnm", "legacyyarnm", "legacyarnm")
 
@@ -146,7 +146,7 @@ class MappingsExtension : Extension() {
 
         if (mcpEnabled) {
             // Class
-            messageContentCommand(::MCPArguments) {
+            chatCommand(::MCPArguments) {
                 name = "mcpc"
 
                 description = "Look up MCP mappings info for a class.\n\n" +
@@ -162,7 +162,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            messageContentCommand(::MCPArguments) {
+            chatCommand(::MCPArguments) {
                 name = "mcpf"
 
                 description = "Look up MCP mappings info for a field.\n\n" +
@@ -178,7 +178,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            messageContentCommand(::MCPArguments) {
+            chatCommand(::MCPArguments) {
                 name = "mcpm"
 
                 description = "Look up MCP mappings info for a method.\n\n" +
@@ -200,7 +200,7 @@ class MappingsExtension : Extension() {
 
         if (mojangEnabled) {
             // Class
-            messageContentCommand(::MojangArguments) {
+            chatCommand(::MojangArguments) {
                 name = "mmc"
                 aliases = arrayOf("mojc", "mojmapc")
 
@@ -221,7 +221,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            messageContentCommand(::MojangArguments) {
+            chatCommand(::MojangArguments) {
                 name = "mmf"
                 aliases = arrayOf("mojf", "mojmapf")
 
@@ -242,7 +242,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            messageContentCommand(::MojangArguments) {
+            chatCommand(::MojangArguments) {
                 name = "mmm"
                 aliases = arrayOf("mojm", "mojmapm")
 
@@ -269,7 +269,7 @@ class MappingsExtension : Extension() {
 
         if (plasmaEnabled) {
             // Class
-            messageContentCommand(::PlasmaArguments) {
+            chatCommand(::PlasmaArguments) {
                 name = "pc"
 
                 description = "Look up Plasma mappings info for a class.\n\n" +
@@ -286,7 +286,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            messageContentCommand(::PlasmaArguments) {
+            chatCommand(::PlasmaArguments) {
                 name = "pf"
 
                 description = "Look up Plasma mappings info for a field.\n\n" +
@@ -303,7 +303,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            messageContentCommand(::PlasmaArguments) {
+            chatCommand(::PlasmaArguments) {
                 name = "pm"
 
                 description = "Look up Plasma mappings info for a method.\n\n" +
@@ -326,7 +326,7 @@ class MappingsExtension : Extension() {
 
         if (yarnEnabled) {
             // Class
-            messageContentCommand({ YarnArguments(patchworkEnabled) }) {
+            chatCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "yc"
                 aliases = arrayOf("yarnc")
 
@@ -352,7 +352,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            messageContentCommand({ YarnArguments(patchworkEnabled) }) {
+            chatCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "yf"
                 aliases = arrayOf("yarnf")
 
@@ -378,7 +378,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            messageContentCommand({ YarnArguments(patchworkEnabled) }) {
+            chatCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "ym"
                 aliases = arrayOf("yarnm")
 
@@ -410,7 +410,7 @@ class MappingsExtension : Extension() {
 
         if (yarrnEnabled) {
             // Class
-            messageContentCommand(::YarrnArguments) {
+            chatCommand(::YarrnArguments) {
                 name = "yrc"
 
                 description = "Look up Yarrn mappings info for a class.\n\n" +
@@ -427,7 +427,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            messageContentCommand(::YarrnArguments) {
+            chatCommand(::YarrnArguments) {
                 name = "yrf"
 
                 description = "Look up Yarrn mappings info for a field.\n\n" +
@@ -444,7 +444,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            messageContentCommand(::YarrnArguments) {
+            chatCommand(::YarrnArguments) {
                 name = "yrm"
 
                 description = "Look up Yarrn mappings info for a method.\n\n" +
@@ -466,7 +466,7 @@ class MappingsExtension : Extension() {
         // region: Mappings info commands
 
         if (legacyYarnEnabled) {
-            messageContentCommand {
+            chatCommand {
                 name = "lyarn"
                 aliases = arrayOf("legacy-yarn", "legacyyarn", "legacyarn")
 
@@ -533,7 +533,7 @@ class MappingsExtension : Extension() {
         }
 
         if (mcpEnabled) {
-            messageContentCommand {
+            chatCommand {
                 name = "mcp"
 
                 description = "Get information and a list of supported versions for MCP mappings."
@@ -598,7 +598,7 @@ class MappingsExtension : Extension() {
         }
 
         if (mojangEnabled) {
-            messageContentCommand {
+            chatCommand {
                 name = "mojang"
                 aliases = arrayOf("mojmap")
 
@@ -667,7 +667,7 @@ class MappingsExtension : Extension() {
         }
 
         if (plasmaEnabled) {
-            messageContentCommand {
+            chatCommand {
                 name = "plasma"
 
                 description = "Get information and a list of supported versions for Plasma mappings."
@@ -733,7 +733,7 @@ class MappingsExtension : Extension() {
         }
 
         if (yarnEnabled) {
-            messageContentCommand {
+            chatCommand {
                 name = "yarn"
 
                 description = "Get information and a list of supported versions for Yarn mappings."
@@ -827,7 +827,7 @@ class MappingsExtension : Extension() {
         }
 
         if (yarrnEnabled) {
-            messageContentCommand {
+            chatCommand {
                 name = "yarrn"
 
                 description = "Get information and a list of supported versions for Yarrn mappings."
@@ -897,7 +897,7 @@ class MappingsExtension : Extension() {
         logger.info { "Mappings extension set up - namespaces: " + enabledNamespaces.joinToString(", ") }
     }
 
-    private suspend fun MessageContentCommandContext<out Arguments>.queryClasses(
+    private suspend fun ChatCommandContext<out Arguments>.queryClasses(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,
@@ -1006,7 +1006,7 @@ class MappingsExtension : Extension() {
         paginator.send()
     }
 
-    private suspend fun MessageContentCommandContext<out Arguments>.queryFields(
+    private suspend fun ChatCommandContext<out Arguments>.queryFields(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,
@@ -1115,7 +1115,7 @@ class MappingsExtension : Extension() {
         paginator.send()
     }
 
-    private suspend fun MessageContentCommandContext<out Arguments>.queryMethods(
+    private suspend fun ChatCommandContext<out Arguments>.queryMethods(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,

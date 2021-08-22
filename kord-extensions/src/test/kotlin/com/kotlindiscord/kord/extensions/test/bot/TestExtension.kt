@@ -8,8 +8,8 @@ import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
 import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
 import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.enumChoice
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.messageContentCommand
-import com.kotlindiscord.kord.extensions.extensions.messageContentGroupCommand
+import com.kotlindiscord.kord.extensions.extensions.chatCommand
+import com.kotlindiscord.kord.extensions.extensions.chatGroupCommand
 import com.kotlindiscord.kord.extensions.extensions.slashCommand
 import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
@@ -73,7 +73,7 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
-        messageContentCommand(::ColorArgs) {
+        chatCommand(::ColorArgs) {
             name = "color"
             aliases = arrayOf("colour")
             description = "Get an embed with a set color"
@@ -89,7 +89,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand(::MessageArgs) {
+        chatCommand(::MessageArgs) {
             name = "msg"
             description = "Message argument test"
 
@@ -100,7 +100,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand(::CoalescedArgs) {
+        chatCommand(::CoalescedArgs) {
             name = "coalesce"
             description = "Coalesce me, baby"
 
@@ -118,7 +118,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand {
+        chatCommand {
             name = "dropdown"
             description = "Dropdown test!"
 
@@ -437,7 +437,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand {
+        chatCommand {
             name = "translation-test"
             description = "Let's test translations."
 
@@ -447,7 +447,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand {
+        chatCommand {
             name = "requires-perms"
             description = "A command that requires some permissions"
 
@@ -458,7 +458,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand(::TestArgs) {
+        chatCommand(::TestArgs) {
             name = "test"
             description = "Test command, please ignore\n\n" +
 
@@ -499,7 +499,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand(::TestArgs) {
+        chatCommand(::TestArgs) {
             name = "test-help"
             description = "Sends help for this command.\n\n" +
 
@@ -510,7 +510,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand {
+        chatCommand {
             name = "page"
             description = "Paginator test"
 
@@ -571,7 +571,7 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentCommand {
+        chatCommand {
             name = "page2"
             description = "Paginator test 2"
 
@@ -614,11 +614,11 @@ class TestExtension : Extension() {
             }
         }
 
-        messageContentGroupCommand {
+        chatGroupCommand {
             name = "group"
             description = "Command group"
 
-            messageContentCommand {
+            chatCommand {
                 name = "one"
                 description = "one"
 
@@ -627,7 +627,7 @@ class TestExtension : Extension() {
                 }
             }
 
-            messageContentCommand {
+            chatCommand {
                 name = "two"
                 description = "two"
 
@@ -636,7 +636,7 @@ class TestExtension : Extension() {
                 }
             }
 
-            messageContentCommand {
+            chatCommand {
                 name = "three"
                 description = "three"
 

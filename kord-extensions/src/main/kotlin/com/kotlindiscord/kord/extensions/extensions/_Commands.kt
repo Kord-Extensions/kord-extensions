@@ -3,8 +3,8 @@ package com.kotlindiscord.kord.extensions.extensions
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommand
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentGroupCommand
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
+import com.kotlindiscord.kord.extensions.commands.chat.ChatGroupCommand
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import mu.KotlinLogging
@@ -19,14 +19,14 @@ private val logger = KotlinLogging.logger {}
  * @param body Builder lambda used for setting up the command object.
  */
 @ExtensionDSL
-public suspend fun <T : Arguments> Extension.messageContentCommand(
+public suspend fun <T : Arguments> Extension.chatCommand(
     arguments: () -> T,
-    body: suspend MessageContentCommand<T>.() -> Unit
-): MessageContentCommand<T> {
-    val commandObj = MessageContentCommand(this, arguments)
+    body: suspend ChatCommand<T>.() -> Unit
+): ChatCommand<T> {
+    val commandObj = ChatCommand(this, arguments)
     body.invoke(commandObj)
 
-    return messageContentCommand(commandObj)
+    return chatCommand(commandObj)
 }
 
 /**
@@ -37,13 +37,13 @@ public suspend fun <T : Arguments> Extension.messageContentCommand(
  * @param body Builder lambda used for setting up the command object.
  */
 @ExtensionDSL
-public suspend fun Extension.messageContentCommand(
-    body: suspend MessageContentCommand<Arguments>.() -> Unit
-): MessageContentCommand<Arguments> {
-    val commandObj = MessageContentCommand<Arguments>(this)
+public suspend fun Extension.chatCommand(
+    body: suspend ChatCommand<Arguments>.() -> Unit
+): ChatCommand<Arguments> {
+    val commandObj = ChatCommand<Arguments>(this)
     body.invoke(commandObj)
 
-    return messageContentCommand(commandObj)
+    return chatCommand(commandObj)
 }
 
 /**
@@ -53,13 +53,13 @@ public suspend fun Extension.messageContentCommand(
  *
  * @param commandObj MessageContentCommand object to register.
  */
-public fun <T : Arguments> Extension.messageContentCommand(
-    commandObj: MessageContentCommand<T>
-): MessageContentCommand<T> {
+public fun <T : Arguments> Extension.chatCommand(
+    commandObj: ChatCommand<T>
+): ChatCommand<T> {
     try {
         commandObj.validate()
-        messageContentCommandsRegistry.add(commandObj)
-        commands.add(commandObj)
+        chatCommandRegistry.add(commandObj)
+        chatCommands.add(commandObj)
     } catch (e: CommandRegistrationException) {
         logger.error(e) { "Failed to register command - $e" }
     } catch (e: InvalidCommandException) {
@@ -139,14 +139,14 @@ public fun <T : Arguments> Extension.slashCommand(
  * @param body Builder lambda used for setting up the command object.
  */
 @ExtensionDSL
-public suspend fun <T : Arguments> Extension.messageContentGroupCommand(
+public suspend fun <T : Arguments> Extension.chatGroupCommand(
     arguments: () -> T,
-    body: suspend MessageContentGroupCommand<T>.() -> Unit
-): MessageContentGroupCommand<T> {
-    val commandObj = MessageContentGroupCommand(this, arguments)
+    body: suspend ChatGroupCommand<T>.() -> Unit
+): ChatGroupCommand<T> {
+    val commandObj = ChatGroupCommand(this, arguments)
     body.invoke(commandObj)
 
-    return messageContentCommand(commandObj) as MessageContentGroupCommand
+    return chatCommand(commandObj) as ChatGroupCommand
 }
 
 /**
@@ -160,11 +160,11 @@ public suspend fun <T : Arguments> Extension.messageContentGroupCommand(
  * @param body Builder lambda used for setting up the command object.
  */
 @ExtensionDSL
-public suspend fun Extension.messageContentGroupCommand(
-    body: suspend MessageContentGroupCommand<Arguments>.() -> Unit
-): MessageContentGroupCommand<Arguments> {
-    val commandObj = MessageContentGroupCommand<Arguments>(this)
+public suspend fun Extension.chatGroupCommand(
+    body: suspend ChatGroupCommand<Arguments>.() -> Unit
+): ChatGroupCommand<Arguments> {
+    val commandObj = ChatGroupCommand<Arguments>(this)
     body.invoke(commandObj)
 
-    return messageContentCommand(commandObj) as MessageContentGroupCommand
+    return chatCommand(commandObj) as ChatGroupCommand
 }

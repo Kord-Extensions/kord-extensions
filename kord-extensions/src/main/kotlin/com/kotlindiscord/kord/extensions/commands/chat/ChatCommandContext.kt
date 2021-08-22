@@ -1,6 +1,6 @@
 @file:OptIn(KordPreview::class)
 
-package com.kotlindiscord.kord.extensions.commands.content
+package com.kotlindiscord.kord.extensions.commands.chat
 
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.CommandContext
@@ -24,12 +24,12 @@ import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 /**
  * Command context object representing the context given to message commands.
  *
- * @property messageCommand Message command object, typed as [MessageContentCommand] rather than [Command]
+ * @property messageCommand Message command object, typed as [ChatCommand] rather than [Command]
  * @property argString String containing the command's unparsed arguments, raw, fresh from Discord itself.
  */
 @ExtensionDSL
-public open class MessageContentCommandContext<T : Arguments>(
-    public val messageCommand: MessageContentCommand<out T>,
+public open class ChatCommandContext<T : Arguments>(
+    public val messageCommand: ChatCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
     parser: StringParser,

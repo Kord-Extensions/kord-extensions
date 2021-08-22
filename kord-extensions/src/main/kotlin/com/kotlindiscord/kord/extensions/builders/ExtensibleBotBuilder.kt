@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
@@ -225,7 +225,7 @@ public open class ExtensibleBotBuilder {
 
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
-        loadModule { single { messageCommandsBuilder.registryBuilder() } bind MessageContentCommandRegistry::class }
+        loadModule { single { messageCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
         loadModule { single { slashCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
 
         loadModule {
@@ -802,7 +802,7 @@ public open class ExtensibleBotBuilder {
         public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var registryBuilder: () -> MessageContentCommandRegistry = { MessageContentCommandRegistry() }
+        public var registryBuilder: () -> ChatCommandRegistry = { ChatCommandRegistry() }
 
         /**
          * List of command checks.
@@ -823,10 +823,10 @@ public open class ExtensibleBotBuilder {
         }
 
         /**
-         * Register the builder used to create the [MessageContentCommandRegistry]. You can change this if you need to
+         * Register the builder used to create the [ChatCommandRegistry]. You can change this if you need to
          * make use of a subclass.
          */
-        public fun registry(builder: () -> MessageContentCommandRegistry) {
+        public fun registry(builder: () -> ChatCommandRegistry) {
             registryBuilder = builder
         }
 

@@ -5,8 +5,8 @@ package com.kotlindiscord.kord.extensions.extensions
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommand
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
@@ -38,7 +38,7 @@ public abstract class Extension : KoinComponent {
     public open val kord: Kord by inject()
 
     /** Message command registry. **/
-    internal val messageContentCommandsRegistry: MessageContentCommandRegistry by inject()
+    internal val chatCommandRegistry: ChatCommandRegistry by inject()
 
     /** Slash command registry. **/
     internal val slashCommandsRegistry: SlashCommandRegistry by inject()
@@ -72,7 +72,7 @@ public abstract class Extension : KoinComponent {
      *
      * When an extension is unloaded, all the commands are removed from the bot.
      */
-    public open val commands: MutableList<MessageContentCommand<out Arguments>> = mutableListOf()
+    public open val chatCommands: MutableList<ChatCommand<out Arguments>> = mutableListOf()
 
     /**
      * List of registered slash commands.
@@ -87,7 +87,7 @@ public abstract class Extension : KoinComponent {
      *
      * These checks will be checked against all commands in this extension.
      */
-    public open val commandChecks: MutableList<Check<MessageCreateEvent>> =
+    public open val chatCommandChecks: MutableList<Check<MessageCreateEvent>> =
         mutableListOf()
 
     /**
@@ -176,12 +176,12 @@ public abstract class Extension : KoinComponent {
             bot.removeEventHandler(handler)
         }
 
-        for (command in commands) {
-            messageContentCommandsRegistry.remove(command)
+        for (command in chatCommands) {
+            chatCommandRegistry.remove(command)
         }
 
         eventHandlers.clear()
-        commands.clear()
+        chatCommands.clear()
 
         if (error != null) {
             throw error
@@ -229,8 +229,8 @@ public abstract class Extension : KoinComponent {
      * @param checks Checks to apply to all commands in this extension.
      */
     @ExtensionDSL
-    public open fun messageContentCommandCheck(vararg checks: Check<MessageCreateEvent>) {
-        checks.forEach { commandChecks.add(it) }
+    public open fun chatCommandCheck(vararg checks: Check<MessageCreateEvent>) {
+        checks.forEach { chatCommandChecks.add(it) }
     }
 
     /**
@@ -239,7 +239,7 @@ public abstract class Extension : KoinComponent {
      * @param check Check to apply to all commands in this extension.
      */
     @ExtensionDSL
-    public open fun messageContentCommandCheck(check: Check<MessageCreateEvent>) {
-        commandChecks.add(check)
+    public open fun chatCommandCheck(check: Check<MessageCreateEvent>) {
+        chatCommandChecks.add(check)
     }
 }

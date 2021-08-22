@@ -1,8 +1,8 @@
 package com.kotlindiscord.kord.extensions.extensions.base
 
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommand
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandContext
-import com.kotlindiscord.kord.extensions.commands.content.MessageContentCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.pagination.BasePaginator
 import com.kotlindiscord.kord.extensions.utils.getKoin
@@ -34,7 +34,7 @@ public interface HelpProvider {
     public suspend fun formatCommandHelp(
         prefix: String,
         event: MessageCreateEvent,
-        command: MessageContentCommand<out Arguments>,
+        command: ChatCommand<out Arguments>,
         longDescription: Boolean = false
     ): Triple<String, String, String>
 
@@ -51,11 +51,11 @@ public interface HelpProvider {
      *         description, and the command's argument list.
      */
     public suspend fun formatCommandHelp(
-        context: MessageContentCommandContext<*>,
-        command: MessageContentCommand<out Arguments>,
+        context: ChatCommandContext<*>,
+        command: ChatCommand<out Arguments>,
         longDescription: Boolean = false
     ): Triple<String, String, String> {
-        val prefix = getKoin().get<MessageContentCommandRegistry>().getPrefix(context.event)
+        val prefix = getKoin().get<ChatCommandRegistry>().getPrefix(context.event)
 
         return formatCommandHelp(prefix, context.event, command, longDescription)
     }
@@ -63,12 +63,12 @@ public interface HelpProvider {
     /**
      * Gather all available commands (with passing checks) from the bot, and return them.
      */
-    public suspend fun gatherCommands(event: MessageCreateEvent): List<MessageContentCommand<out Arguments>>
+    public suspend fun gatherCommands(event: MessageCreateEvent): List<ChatCommand<out Arguments>>
 
     /**
      * Return the [MessageCommand] specified in the arguments, or `null` if it can't be found (or the checks fail).
      */
-    public suspend fun getCommand(event: MessageCreateEvent, args: List<String>): MessageContentCommand<out Arguments>?
+    public suspend fun getCommand(event: MessageCreateEvent, args: List<String>): ChatCommand<out Arguments>?
 
     /**
      * Given an event, prefix and argument list, attempt to find the command represented by the arguments and return
@@ -100,10 +100,10 @@ public interface HelpProvider {
      * @return Paginator containing the command's help, or an error message.
      */
     public suspend fun getCommandHelpPaginator(
-        context: MessageContentCommandContext<*>,
+        context: ChatCommandContext<*>,
         args: List<String>
     ): BasePaginator {
-        val prefix = getKoin().get<MessageContentCommandRegistry>().getPrefix(context.event)
+        val prefix = getKoin().get<ChatCommandRegistry>().getPrefix(context.event)
 
         return getCommandHelpPaginator(context.event, prefix, args)
     }
@@ -126,7 +126,7 @@ public interface HelpProvider {
     public suspend fun getCommandHelpPaginator(
         event: MessageCreateEvent,
         prefix: String,
-        command: MessageContentCommand<out Arguments>?
+        command: ChatCommand<out Arguments>?
     ): BasePaginator
 
     /**
@@ -144,10 +144,10 @@ public interface HelpProvider {
      * @return Paginator containing the command's help, or an error message.
      */
     public suspend fun getCommandHelpPaginator(
-        context: MessageContentCommandContext<*>,
-        command: MessageContentCommand<out Arguments>?
+        context: ChatCommandContext<*>,
+        command: ChatCommand<out Arguments>?
     ): BasePaginator {
-        val prefix = getKoin().get<MessageContentCommandRegistry>().getPrefix(context.event)
+        val prefix = getKoin().get<ChatCommandRegistry>().getPrefix(context.event)
 
         return getCommandHelpPaginator(context.event, prefix, command)
     }
@@ -183,8 +183,8 @@ public interface HelpProvider {
      *
      * @return BasePaginator containing help information for all loaded commands with passing checks.
      */
-    public suspend fun getMainHelpPaginator(context: MessageContentCommandContext<*>): BasePaginator {
-        val prefix = getKoin().get<MessageContentCommandRegistry>().getPrefix(context.event)
+    public suspend fun getMainHelpPaginator(context: ChatCommandContext<*>): BasePaginator {
+        val prefix = getKoin().get<ChatCommandRegistry>().getPrefix(context.event)
 
         return getMainHelpPaginator(context.event, prefix)
     }

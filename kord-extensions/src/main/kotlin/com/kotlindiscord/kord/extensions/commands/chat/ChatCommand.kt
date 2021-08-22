@@ -1,6 +1,6 @@
 @file:Suppress("StringLiteralDuplication")
 
-package com.kotlindiscord.kord.extensions.commands.content
+package com.kotlindiscord.kord.extensions.commands.chat
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
@@ -47,7 +47,7 @@ private val logger = KotlinLogging.logger {}
  * @param arguments Arguments object builder for this command, if it has arguments.
  */
 @ExtensionDSL
-public open class MessageContentCommand<T : Arguments>(
+public open class ChatCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null
 ) : Command(extension), KoinComponent {
@@ -55,7 +55,7 @@ public open class MessageContentCommand<T : Arguments>(
     public val translationsProvider: TranslationsProvider by inject()
 
     /** Message command registry. **/
-    public val messageCommandRegistry: MessageContentCommandRegistry by inject()
+    public val messageCommandRegistry: ChatCommandRegistry by inject()
 
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
@@ -66,7 +66,7 @@ public open class MessageContentCommand<T : Arguments>(
     /**
      * @suppress
      */
-    public open lateinit var body: suspend MessageContentCommandContext<out T>.() -> Unit
+    public open lateinit var body: suspend ChatCommandContext<out T>.() -> Unit
 
     /**
      * A description of what this function and how it's intended to be used.
@@ -225,7 +225,7 @@ public open class MessageContentCommand<T : Arguments>(
      *
      * @param action The body of your command, which will be executed when your command is invoked.
      */
-    public open fun action(action: suspend MessageContentCommandContext<out T>.() -> Unit) {
+    public open fun action(action: suspend ChatCommandContext<out T>.() -> Unit) {
         this.body = action
     }
 
@@ -320,7 +320,7 @@ public open class MessageContentCommand<T : Arguments>(
         }
 
         // local extension checks
-        for (check in extension.commandChecks) {
+        for (check in extension.chatCommandChecks) {
             val context = CheckContext(event, locale)
 
             check(context)
@@ -391,7 +391,7 @@ public open class MessageContentCommand<T : Arguments>(
             return
         }
 
-        val context = MessageContentCommandContext(this, event, commandName, parser, argString)
+        val context = ChatCommandContext(this, event, commandName, parser, argString)
 
         context.populate()
 
@@ -464,8 +464,8 @@ public open class MessageContentCommand<T : Arguments>(
                 val channel = event.message.getChannelOrNull()
 
                 val translatedName = when (this) {
-                    is MessageContentSubCommand -> this.getFullTranslatedName(context.getLocale())
-                    is MessageContentGroupCommand -> this.getFullTranslatedName(context.getLocale())
+                    is ChatSubCommand -> this.getFullTranslatedName(context.getLocale())
+                    is ChatGroupCommand -> this.getFullTranslatedName(context.getLocale())
 
                     else -> this.getTranslatedName(context.getLocale())
                 }

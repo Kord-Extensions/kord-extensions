@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.commands.content
+package com.kotlindiscord.kord.extensions.commands.chat
 
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -21,7 +21,7 @@ import java.util.concurrent.Executors
  * A class for the registration and dispatching of message-based commands.
  */
 @OptIn(KordPreview::class)
-public open class MessageContentCommandRegistry : KoinComponent {
+public open class ChatCommandRegistry : KoinComponent {
     /** Current instance of the bot. **/
     public val bot: ExtensibleBot by inject()
 
@@ -31,7 +31,7 @@ public open class MessageContentCommandRegistry : KoinComponent {
     /**
      * A list of all registered commands.
      */
-    public open val commands: MutableList<MessageContentCommand<out Arguments>> = mutableListOf()
+    public open val commands: MutableList<ChatCommand<out Arguments>> = mutableListOf()
 
     /** @suppress **/
     public val botSettings: ExtensibleBotBuilder by inject()
@@ -44,7 +44,7 @@ public open class MessageContentCommandRegistry : KoinComponent {
     }
 
     /**
-     * Directly register a [MessageContentCommand] to this command registry.
+     * Directly register a [ChatCommand] to this command registry.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
      * call the [Extension.messageContentCommand] function in your [Extension.setup] function.
@@ -56,7 +56,7 @@ public open class MessageContentCommandRegistry : KoinComponent {
      * @throws CommandRegistrationException Thrown if the command could not be registered.
      */
     @Throws(CommandRegistrationException::class)
-    public open fun add(command: MessageContentCommand<out Arguments>) {
+    public open fun add(command: ChatCommand<out Arguments>) {
         val existingCommand = commands.any { it.name == command.name }
         val existingAlias: String? = commands.flatMap {
             it.aliases.toList()
@@ -88,14 +88,14 @@ public open class MessageContentCommandRegistry : KoinComponent {
     }
 
     /**
-     * Directly remove a registered [MessageContentCommand] from this command registry.
+     * Directly remove a registered [ChatCommand] from this command registry.
      *
      * This function is used when extensions are unloaded, in order to clear out their commands.
      * No exception is thrown if the command wasn't registered.
      *
      * @param command The command to be removed.
      */
-    public open fun remove(command: MessageContentCommand<out Arguments>): Boolean = commands.remove(command)
+    public open fun remove(command: ChatCommand<out Arguments>): Boolean = commands.remove(command)
 
     /**
      * Given a [MessageCreateEvent], return the prefix that should be used for a command invocation.
@@ -243,7 +243,7 @@ public open class MessageContentCommandRegistry : KoinComponent {
      *
      * If a command supports locale fallback, this will also attempt to resolve names via the bot's default locale.
      */
-    public open suspend fun getCommand(name: String, event: MessageCreateEvent): MessageContentCommand<out Arguments>? {
+    public open suspend fun getCommand(name: String, event: MessageCreateEvent): ChatCommand<out Arguments>? {
         val defaultLocale = botSettings.i18nBuilder.defaultLocale
         val locale = event.getLocale()
 

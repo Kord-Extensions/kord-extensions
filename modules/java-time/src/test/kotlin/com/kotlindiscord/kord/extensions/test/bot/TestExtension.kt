@@ -2,7 +2,7 @@ package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.messageContentCommand
+import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.modules.time.java.coalescedJ8Duration
 import com.kotlindiscord.kord.extensions.modules.time.java.toHuman
 import com.kotlindiscord.kord.extensions.utils.respond
@@ -23,7 +23,7 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
-        messageContentCommand(::TestArgs) {
+        chatCommand(::TestArgs) {
             name = "format"
             description = "Let's test formatting."
 
