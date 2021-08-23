@@ -203,13 +203,15 @@ public open class ChatGroupCommand<T : Arguments>(
             return
         }
 
-        val command = parser.parseNext()?.data?.lowercase()
+        val command = parser.peekNext()?.data?.lowercase()
         val remainingArgs = parser.consumeRemaining()
         val subCommand = getCommand(command, event)
 
         if (subCommand == null) {
             super.call(event, commandName, parser, argString, true)
         } else {
+            parser.parseNext()  // Advance the cursor so proper parsing can happen
+
             subCommand.call(event, commandName, StringParser(remainingArgs), argString)
         }
     }
