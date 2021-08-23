@@ -9,7 +9,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
-import dev.kord.core.event.interaction.ComponentCreateEvent
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -43,7 +43,7 @@ public abstract class ComponentBuilder : KoinComponent {
     public open suspend fun call(
         components: Components,
         extension: Extension,
-        event: ComponentCreateEvent,
+        event: ComponentInteractionCreateEvent,
         parentContext: SlashCommandContext<*>? = null
     ) {
         throw UnsupportedOperationException("This type of component doesn't support callable actions.")

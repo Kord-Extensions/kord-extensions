@@ -8,7 +8,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.interaction.InteractionResponseBehavior
 import dev.kord.core.entity.interaction.SelectMenuInteraction
-import dev.kord.core.event.interaction.ComponentCreateEvent
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
 
@@ -91,7 +91,7 @@ public open class MenuBuilder : ActionableComponentBuilder<SelectMenuInteraction
 
     override fun getContext(
         extension: Extension,
-        event: ComponentCreateEvent,
+        event: ComponentInteractionCreateEvent,
         components: Components,
         interactionResponse: InteractionResponseBehavior?,
         interaction: SelectMenuInteraction

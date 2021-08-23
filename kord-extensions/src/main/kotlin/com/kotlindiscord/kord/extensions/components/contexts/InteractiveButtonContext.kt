@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.interaction.*
 import dev.kord.core.entity.interaction.*
-import dev.kord.core.event.interaction.ComponentCreateEvent
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import org.koin.core.component.KoinComponent
 
 /**
@@ -16,7 +16,7 @@ import org.koin.core.component.KoinComponent
 @ExtensionDSL
 public open class InteractiveButtonContext(
     extension: Extension,
-    event: ComponentCreateEvent,
+    event: ComponentInteractionCreateEvent,
     components: Components,
     interactionResponse: InteractionResponseBehavior? = null,
     interaction: ButtonInteraction = event.interaction as ButtonInteraction

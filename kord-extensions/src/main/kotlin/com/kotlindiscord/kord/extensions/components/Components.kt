@@ -11,7 +11,7 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.entity.interaction.ComponentInteraction
-import dev.kord.core.event.interaction.ComponentCreateEvent
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
@@ -50,7 +50,7 @@ public open class Components(
     public val kord: Kord by inject()
 
     /** Current event handler instance waiting for interaction creation events. **/
-    public var eventHandler: EventHandler<ComponentCreateEvent>? = null
+    public var eventHandler: EventHandler<ComponentInteractionCreateEvent>? = null
 
     /** @suppress Internal Job object representing the timeout job. **/
     public var delayJob: Job? = null
