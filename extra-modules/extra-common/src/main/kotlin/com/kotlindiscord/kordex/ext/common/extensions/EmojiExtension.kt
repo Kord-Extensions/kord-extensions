@@ -33,7 +33,7 @@ class EmojiExtension : Extension() {
                     {
                         config.getGuilds()
                             .mapNotNull { kord.getGuild(it) }
-                            .map { inGuild { it } }
+                            .map { guild -> inGuild<EmojisUpdateEvent> { guild } }
                             .any()
                     }
                 )

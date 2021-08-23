@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.checks
 
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import dev.kord.core.event.Event
 import mu.KotlinLogging
 
 /**
@@ -13,7 +14,7 @@ import mu.KotlinLogging
  * @param checks Two or more checks to combine.
  * @return Whether any of the checks passed.
  */
-public fun or(vararg checks: Check<*>): Check<*> = {
+public fun <T : Event> or(vararg checks: Check<T>): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.or")
 
     val contexts = checks.map {
@@ -41,7 +42,7 @@ public fun or(vararg checks: Check<*>): Check<*> = {
 }
 
 /** Infix-function version of [or]. **/
-public infix fun (Check<*>).or(other: Check<*>): Check<*> = or(this, other)
+public infix fun <T : Event> (Check<T>).or(other: Check<T>): Check<T> = or(this, other)
 
 /**
  * Special check that passes if all of the given checks pass.
@@ -55,7 +56,7 @@ public infix fun (Check<*>).or(other: Check<*>): Check<*> = or(this, other)
  * @param checks Two or more checks to combine.
  * @return Whether all of the checks passed.
  */
-public fun and(vararg checks: Check<*>): Check<*> = {
+public fun <T : Event> and(vararg checks: Check<T>): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.and")
 
     val contexts = checks.map {
@@ -83,4 +84,4 @@ public fun and(vararg checks: Check<*>): Check<*> = {
 }
 
 /** Infix-function version of [and]. **/
-public infix fun (Check<*>).and(other: Check<*>): Check<*> = and(this, other)
+public infix fun <T : Event> (Check<T>).and(other: Check<T>): Check<T> = and(this, other)

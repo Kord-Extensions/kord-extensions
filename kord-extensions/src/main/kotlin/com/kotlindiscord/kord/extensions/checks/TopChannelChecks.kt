@@ -20,7 +20,7 @@ import mu.KotlinLogging
  *
  * @param builder Lambda returning the channel to compare to.
  */
-public fun inTopChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
+public fun <T : Event> inTopChannel(builder: suspend (T) -> ChannelBehavior): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
     val eventChannel = topChannelFor(event)
 
@@ -29,7 +29,7 @@ public fun inTopChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
 
         fail()
     } else {
-        val channel = builder()
+        val channel = builder(event)
 
         if (eventChannel.id == channel.id) {
             logger.passed()
@@ -57,7 +57,7 @@ public fun inTopChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
  *
  * @param builder Lambda returning the channel to compare to.
  */
-public fun notInTopChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
+public fun <T : Event> notInTopChannel(builder: suspend (T) -> ChannelBehavior): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
     val eventChannel = topChannelFor(event)
 
@@ -66,7 +66,7 @@ public fun notInTopChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
 
         pass()
     } else {
-        val channel = builder()
+        val channel = builder(event)
 
         if (eventChannel.id != channel.id) {
             logger.passed()
@@ -98,7 +98,7 @@ public fun notInTopChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
  *
  * @param id Channel snowflake to compare to.
  */
-public fun inTopChannel(id: Snowflake): Check<*> = {
+public fun <T : Event> inTopChannel(id: Snowflake): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
     var channel = event.kord.getChannel(id)
 
@@ -111,7 +111,7 @@ public fun inTopChannel(id: Snowflake): Check<*> = {
 
         fail()
     } else {
-        inChannel { channel }()
+        inChannel<T> { channel }()
     }
 }
 
@@ -124,7 +124,7 @@ public fun inTopChannel(id: Snowflake): Check<*> = {
  *
  * @param id Channel snowflake to compare to.
  */
-public fun notInTopChannel(id: Snowflake): Check<*> = {
+public fun <T : Event> notInTopChannel(id: Snowflake): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
     var channel = event.kord.getChannel(id)
 
@@ -137,7 +137,7 @@ public fun notInTopChannel(id: Snowflake): Check<*> = {
 
         pass()
     } else {
-        notInChannel { channel }()
+        notInChannel<T> { channel }()
     }
 }
 

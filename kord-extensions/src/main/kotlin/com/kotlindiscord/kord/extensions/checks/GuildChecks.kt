@@ -7,7 +7,6 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.Event
 import mu.KotlinLogging
-import java.util.*
 
 /**
  * Check asserting an [Event] was fired within a guild.
@@ -65,7 +64,7 @@ public val noGuild: Check<*> = {
  *
  * @param builder Lambda returning the guild to compare to.
  */
-public fun inGuild(builder: suspend () -> GuildBehavior): Check<*> = {
+public fun <T : Event> inGuild(builder: suspend (T) -> GuildBehavior): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
     val eventGuild = guildFor(event)?.asGuildOrNull()
 
@@ -74,7 +73,7 @@ public fun inGuild(builder: suspend () -> GuildBehavior): Check<*> = {
 
         fail()
     } else {
-        val guild = builder()
+        val guild = builder(event)
 
         if (eventGuild.id == guild.id) {
             logger.passed()
@@ -101,7 +100,7 @@ public fun inGuild(builder: suspend () -> GuildBehavior): Check<*> = {
  *
  * @param builder Lambda returning the guild to compare to.
  */
-public fun notInGuild(builder: suspend () -> GuildBehavior): Check<*> = {
+public fun <T : Event> notInGuild(builder: suspend (T) -> GuildBehavior): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
     val eventGuild = guildFor(event)?.asGuild()
 
@@ -110,7 +109,7 @@ public fun notInGuild(builder: suspend () -> GuildBehavior): Check<*> = {
 
         pass()
     } else {
-        val guild = builder()
+        val guild = builder(event)
 
         if (eventGuild.id != guild.id) {
             logger.passed()
@@ -141,7 +140,7 @@ public fun notInGuild(builder: suspend () -> GuildBehavior): Check<*> = {
  *
  * @param id Guild snowflake to compare to.
  */
-public fun inGuild(id: Snowflake): Check<*> = {
+public fun <T : Event> inGuild(id: Snowflake): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
     val guild = event.kord.getGuild(id)
 
@@ -150,7 +149,7 @@ public fun inGuild(id: Snowflake): Check<*> = {
 
         fail()
     } else {
-        inGuild { guild }()
+        inGuild<T> { guild }()
     }
 }
 
@@ -162,7 +161,7 @@ public fun inGuild(id: Snowflake): Check<*> = {
  *
  * @param id Guild snowflake to compare to.
  */
-public fun notInGuild(id: Snowflake): Check<*> = {
+public fun <T : Event> notInGuild(id: Snowflake): Check<T> = {
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
     val guild = event.kord.getGuild(id)
 
@@ -171,7 +170,7 @@ public fun notInGuild(id: Snowflake): Check<*> = {
 
         pass()
     } else {
-        notInGuild { guild }()
+        notInGuild<T> { guild }()
     }
 }
 
