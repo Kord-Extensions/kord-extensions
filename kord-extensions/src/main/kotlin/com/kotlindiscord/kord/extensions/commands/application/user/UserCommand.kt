@@ -5,7 +5,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
 /** User context command, for right-click actions on users. **/
-public class UserCommand(
+public abstract class UserCommand(
     extension: Extension
 ) : ApplicationCommand<UserCommandInteractionCreateEvent>(extension) {
     override suspend fun call(event: UserCommandInteractionCreateEvent) {

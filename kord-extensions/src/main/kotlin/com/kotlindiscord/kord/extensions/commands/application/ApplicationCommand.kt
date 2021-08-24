@@ -193,6 +193,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
     /** Called in order to execute the command. **/
     public open suspend fun doCall(event: E) {
+        call(event)
     }
 
     /** Runs standard checks that can be handled in a generic way, without worrying about subclass-specific checks. **/
