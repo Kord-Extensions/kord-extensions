@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.components.builders
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.components.contexts.InteractiveButtonContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
@@ -55,8 +56,9 @@ public open class InteractiveButtonBuilder : ButtonBuilder,
         event: ComponentInteractionCreateEvent,
         components: Components,
         interactionResponse: InteractionResponseBehavior?,
-        interaction: ButtonInteraction
+        interaction: ButtonInteraction,
+        sentryContext: SentryContext
     ): InteractiveButtonContext = InteractiveButtonContext(
-        extension, event, components, interactionResponse, interaction
+        extension, event, components, interactionResponse, interaction, sentryContext
     )
 }

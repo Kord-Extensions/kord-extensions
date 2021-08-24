@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.components.contexts
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.interaction.*
 import dev.kord.core.entity.interaction.SelectMenuInteraction
@@ -20,9 +21,10 @@ public open class MenuContext(
     event: ComponentInteractionCreateEvent,
     components: Components,
     interactionResponse: InteractionResponseBehavior? = null,
-    interaction: SelectMenuInteraction = event.interaction as SelectMenuInteraction
+    interaction: SelectMenuInteraction = event.interaction as SelectMenuInteraction,
+    sentryContext: SentryContext
 ) : KoinComponent, ActionableComponentContext<SelectMenuInteraction>(
-    extension, event, components, interactionResponse, interaction
+    extension, event, components, interactionResponse, interaction, sentryContext
 ) {
     /** Quick access to the selected values. **/
     public val selected: List<String> = interaction.values

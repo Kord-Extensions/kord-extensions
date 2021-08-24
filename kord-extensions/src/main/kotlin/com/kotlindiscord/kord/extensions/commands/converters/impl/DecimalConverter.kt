@@ -15,8 +15,8 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.rest.builder.interaction.NumberChoiceBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
-import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
 /**
  * Argument converter for decimal arguments, converting them into [Double].
@@ -50,5 +50,5 @@ public class DecimalConverter(
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+        NumberChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 }

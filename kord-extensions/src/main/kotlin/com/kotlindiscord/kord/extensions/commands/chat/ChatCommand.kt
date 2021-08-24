@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
@@ -27,8 +28,6 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
-import io.sentry.Sentry
-import io.sentry.protocol.SentryId
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -395,36 +394,30 @@ public open class ChatCommand<T : Arguments>(
 
         context.populate()
 
-        val firstBreadcrumb = if (sentry.enabled) {
-            val channel = event.message.getChannelOrNull()
-            val guild = event.message.getGuildOrNull()
+        if (sentry.enabled) {
+            context.sentry.breadcrumb(BreadcrumbType.User) {
+                category = "command.chat"
+                message = "Command \"$name\" called."
 
-            val data = mutableMapOf(
-                "arguments" to argString,
-                "message" to event.message.content
-            )
+                val channel = event.message.getChannelOrNull()
+                val guild = event.message.getGuildOrNull()
 
-            if (channel != null) {
-                data["channel"] = when (channel) {
-                    is DmChannel -> "Private Message (${channel.id.asString})"
-                    is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                data["arguments"] = argString
+                data["message"] = event.message.content
 
-                    else -> channel.id.asString
+                if (channel != null) {
+                    data["channel"] = when (channel) {
+                        is DmChannel -> "Private Message (${channel.id.asString})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+
+                        else -> channel.id.asString
+                    }
+                }
+
+                if (guild != null) {
+                    data["guild"] = "${guild.name} (${guild.id.asString})"
                 }
             }
-
-            if (guild != null) {
-                data["guild"] = "${guild.name} (${guild.id.asString})"
-            }
-
-            sentry.createBreadcrumb(
-                category = "command",
-                type = "user",
-                message = "Command \"$name\" called.",
-                data = data
-            )
-        } else {
-            null
         }
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
@@ -460,7 +453,6 @@ public open class ChatCommand<T : Arguments>(
             if (sentry.enabled) {
                 logger.debug { "Submitting error to sentry." }
 
-                lateinit var sentryId: SentryId
                 val channel = event.message.getChannelOrNull()
 
                 val translatedName = when (this) {
@@ -470,30 +462,24 @@ public open class ChatCommand<T : Arguments>(
                     else -> this.getTranslatedName(context.getLocale())
                 }
 
-                Sentry.withScope {
+                val sentryId = context.sentry.captureException(t, "MessageCommand execution failed.") {
                     val author = event.message.author
 
                     if (author != null) {
-                        it.user(author)
+                        user(author)
                     }
 
-                    it.tag("private", "false")
+                    tag("private", "false")
 
                     if (channel is DmChannel) {
-                        it.tag("private", "true")
+                        tag("private", "true")
                     }
 
-                    it.tag("command", translatedName)
-                    it.tag("extension", extension.name)
-
-                    it.addBreadcrumb(firstBreadcrumb!!)
-
-                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
-
-                    sentryId = Sentry.captureException(t, "MessageCommand execution failed.")
-
-                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                    tag("command", translatedName)
+                    tag("extension", extension.name)
                 }
+
+                logger.debug { "Error submitted to Sentry: $sentryId" }
 
                 sentry.addEventId(sentryId)
 

@@ -12,6 +12,8 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import io.sentry.protocol.SentryId
 
+// TODO: Move to annotation
+
 /**
  * Create a Sentry ID argument converter, for single arguments.
  *

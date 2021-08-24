@@ -1,8 +1,9 @@
+@file:Suppress("TooGenericExceptionCaught")
+
 package com.kotlindiscord.kord.extensions.sentry
 
-import io.sentry.Breadcrumb
-import io.sentry.Scope
-import io.sentry.SentryLevel
+import io.sentry.*
+import io.sentry.Sentry.startTransaction
 import io.sentry.protocol.User
 
 /**
@@ -62,4 +63,23 @@ public fun Scope.breadcrumb(
     data.toSortedMap().forEach { (key, value) -> breadcrumbObj.setData(key, value) }
 
     this.addBreadcrumb(breadcrumbObj, hint)
+}
+
+/** Convenience function for creating and testing a sub-transaction. **/
+public inline fun <T> ITransaction.transaction(name: String, operation: String, body: (ITransaction).() -> T) {
+    val transaction = startTransaction(name, operation)
+
+    transaction(transaction, body)
+}
+
+/** Convenience function for testing a sub-transaction. **/
+public inline fun <T> ITransaction.transaction(transaction: ITransaction, body: (ITransaction).() -> T) {
+    try {
+        body(transaction)
+    } catch (t: Throwable) {
+        transaction.throwable = t
+        transaction.status = SpanStatus.INTERNAL_ERROR
+    } finally {
+        transaction.finish()
+    }
 }

@@ -7,7 +7,7 @@ import com.kotlindiscord.kord.extensions.checks.memberFor
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
@@ -20,8 +20,6 @@ import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.rest.builder.message.create.EphemeralFollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.create.PublicFollowupMessageCreateBuilder
-import io.sentry.Breadcrumb
-import io.sentry.SentryLevel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -34,6 +32,7 @@ import java.util.*
  * @property components Components container this button belongs to.
  * @property interactionResponse Interaction response, if automatically acked.
  * @property interaction Convenience access to the properly-typed interaction object.
+ * @property sentry Current Sentry context, containing breadcrumbs and other goodies.
  */
 @OptIn(KordPreview::class)
 @ExtensionDSL
@@ -42,16 +41,11 @@ public abstract class ActionableComponentContext<T : ComponentInteraction>(
     public open val event: ComponentInteractionCreateEvent,
     public open val components: Components,
     public open var interactionResponse: InteractionResponseBehavior? = null,
-    public open val interaction: T = event.interaction as T
+    public open val interaction: T = event.interaction as T,
+    public open val sentry: SentryContext
 ) : KoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
-
-    /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentry: SentryAdapter by inject()
-
-    /** A list of Sentry breadcrumbs created during interaction execution. **/
-    public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
 
     /** Cached locale variable, stored and retrieved by [getLocale]. **/
     public open var resolvedLocale: Locale? = null
@@ -164,27 +158,6 @@ public abstract class ActionableComponentContext<T : ComponentInteraction>(
         }
 
         return (interactionResponse as PublicInteractionResponseBehavior).followUp(builder)
-    }
-
-    /**
-     * Add a Sentry breadcrumb to this context.
-     *
-     * This should be used for the purposes of tracing what exactly is happening during your
-     * interaction processing. If the bot administrator decides to enable Sentry integration, the
-     * breadcrumbs will be sent to Sentry when there's an interaction processing error.
-     */
-    public fun breadcrumb(
-        category: String? = null,
-        level: SentryLevel? = null,
-        type: String? = null,
-
-        data: Map<String, Any> = mapOf()
-    ): Breadcrumb {
-        val crumb = sentry.createBreadcrumb(category, level, null, type, data)
-
-        breadcrumbs.add(crumb)
-
-        return crumb
     }
 
     /** Resolve the locale for this context. **/

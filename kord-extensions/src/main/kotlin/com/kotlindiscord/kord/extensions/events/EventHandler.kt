@@ -7,20 +7,18 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.utils.getKoin
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.Event
-import io.sentry.Sentry
 import kotlinx.coroutines.Job
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.Serializable
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -175,17 +173,17 @@ public open class EventHandler<T : Event>(
         val context = EventContext(this, event)
         val eventName = event::class.simpleName
 
-        val firstBreadcrumb = if (sentry.enabled) {
-            val data = mutableMapOf<String, Serializable>()
+        if (sentry.enabled) {
+            context.sentry.breadcrumb(BreadcrumbType.Info) {
+                category = "event"
+                message = "Event \"$eventName\" fired."
 
-            val channelId = channelIdFor(event)
-            val guildBehavior = guildFor(event)
-            val messageBehavior = messageFor(event)
-            val roleBehavior = roleFor(event)
-            val userBehavior = userFor(event)
-
-            if (channelId != null) {
-                val channel = kord.getChannel(Snowflake(channelId))
+                val channel = topChannelFor(event)
+                val guildBehavior = guildFor(event)
+                val messageBehavior = messageFor(event)
+                val roleBehavior = roleFor(event)
+                val thread = threadFor(event)?.asChannel()
+                val userBehavior = userFor(event)
 
                 if (channel != null) {
                     data["channel"] = when (channel) {
@@ -194,53 +192,46 @@ public open class EventHandler<T : Event>(
 
                         else -> channel.id.asString
                     }
-                } else {
-                    data["channel"] = channelId
+                }
+
+                if (thread != null) {
+                    data["thread"] = "#${thread.name} (${thread.id.asString})"
+                }
+
+                if (guildBehavior != null) {
+                    val guild = guildBehavior.asGuildOrNull()
+
+                    data["guild"] = if (guild != null) {
+                        "${guild.name} (${guild.id.asString})"
+                    } else {
+                        guildBehavior.id.asString
+                    }
+                }
+
+                if (messageBehavior != null) {
+                    data["message"] = messageBehavior.id.asString
+                }
+
+                if (roleBehavior != null) {
+                    val role = roleBehavior.guild.getRoleOrNull(roleBehavior.id)
+
+                    data["role"] = if (role != null) {
+                        "@${role.name} (${role.id.asString})"
+                    } else {
+                        roleBehavior.id.asString
+                    }
+                }
+
+                if (userBehavior != null) {
+                    val user = userBehavior.asUserOrNull()
+
+                    data["user"] = if (user != null) {
+                        "${user.tag} (${user.id.asString})"
+                    } else {
+                        userBehavior.id.asString
+                    }
                 }
             }
-
-            if (guildBehavior != null) {
-                val guild = guildBehavior.asGuildOrNull()
-
-                data["guild"] = if (guild != null) {
-                    "${guild.name} (${guild.id.asString})"
-                } else {
-                    guildBehavior.id.asString
-                }
-            }
-
-            if (messageBehavior != null) {
-                data["message"] = messageBehavior.id.asString
-            }
-
-            if (roleBehavior != null) {
-                val role = roleBehavior.guild.getRoleOrNull(roleBehavior.id)
-
-                data["role"] = if (role != null) {
-                    "@${role.name} (${role.id.asString})"
-                } else {
-                    roleBehavior.id.asString
-                }
-            }
-
-            if (userBehavior != null) {
-                val user = userBehavior.asUserOrNull()
-
-                data["user"] = if (user != null) {
-                    "${user.tag} (${user.id.asString})"
-                } else {
-                    userBehavior.id.asString
-                }
-            }
-
-            sentry.createBreadcrumb(
-                category = "event",
-                type = "info",
-                message = "Event \"$eventName\" fired.",
-                data = data
-            )
-        } else {
-            null
         }
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
@@ -250,18 +241,12 @@ public open class EventHandler<T : Event>(
             if (sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
                 logger.debug { "Submitting error to sentry." }
 
-                Sentry.withScope {
-                    it.tag("event", eventName ?: "Unknown")
-                    it.tag("extension", extension.name)
-
-                    it.addBreadcrumb(firstBreadcrumb!!)
-
-                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
-
-                    val sentryId = Sentry.captureException(t, "Event processing failed.")
-
-                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                val sentryId = context.sentry.captureException(t, "Event processing failed.") {
+                    tag("event", eventName ?: "Unknown")
+                    tag("extension", extension.name)
                 }
+
+                logger.debug { "Error submitted to Sentry: $sentryId" }
 
                 logger.error(t) { "Error during execution of event handler ($eventName)" }
             } else {

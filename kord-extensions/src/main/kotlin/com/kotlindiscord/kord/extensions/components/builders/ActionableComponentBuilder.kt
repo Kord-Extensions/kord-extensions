@@ -12,6 +12,8 @@ import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.components.contexts.ActionableComponentContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
+import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.ackEphemeral
@@ -25,11 +27,8 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.ComponentInteraction
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
-import io.sentry.Sentry
-import io.sentry.protocol.SentryId
 import mu.KotlinLogging
 import org.koin.core.component.inject
-import java.io.Serializable
 import java.util.*
 
 /**
@@ -164,33 +163,30 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
             return
         }
 
-        val firstBreadcrumb = if (sentry.enabled) {
-            val channel = channelFor(event)
-            val guild = guildFor(event)?.asGuildOrNull()
+        val sentryContext = SentryContext()
 
-            val data = mutableMapOf<String, Serializable>()
+        if (sentry.enabled) {
+            sentryContext.breadcrumb(BreadcrumbType.User) {
+                category = "interaction"
+                type = "user"
+                message = "Interaction for component \"$id\" received."
 
-            if (channel != null) {
-                data["channel"] = when (channel) {
-                    is DmChannel -> "Private Message (${channel.id.asString})"
-                    is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                val channel = channelFor(event)
+                val guild = guildFor(event)?.asGuildOrNull()
 
-                    else -> channel.id.asString
+                if (channel != null) {
+                    data["channel"] = when (channel) {
+                        is DmChannel -> "Private Message (${channel.id.asString})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+
+                        else -> channel.id.asString
+                    }
+                }
+
+                if (guild != null) {
+                    data["guild"] = "${guild.name} (${guild.id.asString})"
                 }
             }
-
-            if (guild != null) {
-                data["guild"] = "${guild.name} (${guild.id.asString})"
-            }
-
-            sentry.createBreadcrumb(
-                category = "interaction",
-                type = "user",
-                message = "Interaction for component \"$id\" received.",
-                data = data
-            )
-        } else {
-            null
         }
 
         val interaction = event.interaction as T
@@ -212,7 +208,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
         }
 
         val context = getContext(
-            extension, event, components, response, interaction
+            extension, event, components, response, interaction, sentryContext
         )
 
         context.populate()
@@ -224,33 +220,26 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
             context.respond(e.toString())
         } catch (t: Throwable) {
             if (sentry.enabled) {
-                logger.debug { "Submitting error to sentry." }
-
-                lateinit var sentryId: SentryId
-
                 val user = userFor(event)?.asUserOrNull()
                 val channel = channelFor(event)?.asChannelOrNull()
 
-                Sentry.withScope {
+                val sentryId = sentryContext.captureException(t, "Component interaction execution failed.") {
+                    logger.debug { "Submitting error to sentry." }
+
                     if (user != null) {
-                        it.user(user)
+                        user(user)
                     }
 
-                    it.tag("private", "false")
+                    tag("private", "false")
 
                     if (channel is DmChannel) {
-                        it.tag("private", "true")
+                        tag("private", "true")
                     }
 
-                    it.tag("extension", extension.name)
-                    it.addBreadcrumb(firstBreadcrumb!!)
-
-                    context.breadcrumbs.forEach(it::addBreadcrumb)
-
-                    sentryId = Sentry.captureException(t, "Component interaction execution failed.")
-
-                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                    tag("extension", extension.name)
                 }
+
+                logger.debug { "Error submitted to Sentry: $sentryId" }
 
                 sentry.addEventId(sentryId)
 
@@ -283,6 +272,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
         event: ComponentInteractionCreateEvent,
         components: Components,
         interactionResponse: InteractionResponseBehavior? = null,
-        interaction: T = event.interaction as T
+        interaction: T = event.interaction as T,
+        sentryContext: SentryContext
     ): R
 }

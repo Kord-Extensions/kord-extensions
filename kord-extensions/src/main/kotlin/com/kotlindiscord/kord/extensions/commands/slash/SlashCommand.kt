@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.commands.slash.parser.SlashCommandParser
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
@@ -38,7 +39,6 @@ import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import io.sentry.Sentry
-import io.sentry.protocol.SentryId
 import kotlinx.coroutines.flow.toList
 import mu.KLogger
 import mu.KotlinLogging
@@ -610,39 +610,33 @@ public open class SlashCommand<T : Arguments>(
 
         context.populate()
 
-        val firstBreadcrumb = if (sentry.enabled) {
-            val channel = context.channel.asChannelOrNull()
-            val guild = context.guild?.asGuildOrNull()
+        if (sentry.enabled) {
+            context.sentry.breadcrumb(BreadcrumbType.User) {
+                category = "command.slash"
+                message = "Slash command \"${commandObj.name}\" called."
 
-            val data = mutableMapOf(
-                "command" to commandObj.name
-            )
+                val channel = context.channel.asChannelOrNull()
+                val guild = context.guild?.asGuildOrNull()
 
-            if (this.guild != null) {
-                data["command.guild"] to this.guild!!.asString
-            }
+                data["command"] = commandObj.name
 
-            if (channel != null) {
-                data["channel"] = when (channel) {
-                    is DmChannel -> "Private Message (${channel.id.asString})"
-                    is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                if (this@SlashCommand.guild != null) {
+                    data["command.guild"] to this@SlashCommand.guild!!.asString
+                }
 
-                    else -> channel.id.asString
+                if (channel != null) {
+                    data["channel"] = when (channel) {
+                        is DmChannel -> "Private Message (${channel.id.asString})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+
+                        else -> channel.id.asString
+                    }
+                }
+
+                if (guild != null) {
+                    data["guild"] = "${guild.name} (${guild.id.asString})"
                 }
             }
-
-            if (guild != null) {
-                data["guild"] = "${guild.name} (${guild.id.asString})"
-            }
-
-            sentry.createBreadcrumb(
-                category = "command.slash",
-                type = "user",
-                message = "Slash command \"${commandObj.name}\" called.",
-                data = data
-            )
-        } else {
-            null
         }
 
         @Suppress("TooGenericExceptionCaught")
@@ -678,35 +672,27 @@ public open class SlashCommand<T : Arguments>(
             if (sentry.enabled) {
                 logger.debug { "Submitting error to sentry." }
 
-                lateinit var sentryId: SentryId
-
                 val channel = context.channel
                 val author = context.user.asUserOrNull()
 
-                Sentry.withScope {
+                val sentryId = context.sentry.captureException(t, "Slash command execution failed.") {
                     if (author != null) {
-                        it.user(author)
+                        user(author)
                     }
 
-                    it.tag("private", "false")
+                    tag("private", "false")
 
                     if (channel is DmChannel) {
-                        it.tag("private", "true")
+                        tag("private", "true")
                     }
 
-                    it.tag("command", commandObj.name)
-                    it.tag("extension", commandObj.extension.name)
+                    tag("command", commandObj.name)
+                    tag("extension", commandObj.extension.name)
 
-                    it.addBreadcrumb(firstBreadcrumb!!)
-
-                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
-
-                    sentryId = Sentry.captureException(t, "SlashCommand execution failed.")
-
-                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                    Sentry.captureException(t, "SlashCommand execution failed.")
                 }
 
-                sentry.addEventId(sentryId)
+                logger.debug { "Error submitted to Sentry: $sentryId" }
 
                 logger.error(t) { "Error during execution of ${commandObj.name} slash command ($event)" }
 

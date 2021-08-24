@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.components.builders
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.components.contexts.MenuContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.interaction.InteractionResponseBehavior
 import dev.kord.core.entity.interaction.SelectMenuInteraction
@@ -94,8 +95,9 @@ public open class MenuBuilder : ActionableComponentBuilder<SelectMenuInteraction
         event: ComponentInteractionCreateEvent,
         components: Components,
         interactionResponse: InteractionResponseBehavior?,
-        interaction: SelectMenuInteraction
+        interaction: SelectMenuInteraction,
+        sentryContext: SentryContext
     ): MenuContext = MenuContext(
-        extension, event, components, interactionResponse, interaction
+        extension, event, components, interactionResponse, interaction, sentryContext
     )
 }

@@ -101,9 +101,12 @@ public open class SentryAdapter {
      */
     public fun sendFeedback(
         id: SentryId,
+
         comments: String? = null,
         email: String? = null,
-        name: String? = null
+        name: String? = null,
+
+        removeId: Boolean = true
     ) {
         if (!enabled) error("Sentry integration has not yet been configured.")
 
@@ -114,29 +117,10 @@ public open class SentryAdapter {
         if (name != null) feedback.name = name
 
         Sentry.captureUserFeedback(feedback)
-    }
 
-    /**
-     * Convenience function for creating a Breadcrumb object.
-     */
-    public fun createBreadcrumb(
-        category: String? = null,
-        level: SentryLevel? = null,
-        message: String? = null,
-        type: String? = null,
-
-        data: Map<String, Any> = mapOf()
-    ): Breadcrumb {
-        val breadcrumbObj = Breadcrumb()
-
-        if (category != null) breadcrumbObj.category = category
-        if (level != null) breadcrumbObj.level = level
-        if (message != null) breadcrumbObj.message = message
-        if (type != null) breadcrumbObj.type = type
-
-        data.toSortedMap().forEach { (key, value) -> breadcrumbObj.setData(key, value) }
-
-        return breadcrumbObj
+        if (removeId) {
+            removeEventId(id)
+        }
     }
 
     /** Register an event ID that a user may provide feedback for. **/

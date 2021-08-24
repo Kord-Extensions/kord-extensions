@@ -6,15 +6,13 @@ import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.event.Event
-import io.sentry.Breadcrumb
-import io.sentry.SentryLevel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -40,11 +38,8 @@ public abstract class CommandContext(
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 
-    /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentry: SentryAdapter by inject()
-
-    /** A list of Sentry breadcrumbs created during command execution. **/
-    public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
+    /** Current Sentry context, containing breadcrumbs and other goodies. **/
+    public val sentry: SentryContext = SentryContext()
 
     /** Cached locale variable, stored and retrieved by [getLocale]. **/
     public open var resolvedLocale: Locale? = null
@@ -66,28 +61,6 @@ public abstract class CommandContext(
 
     /** Extract user information from event data, if that context is available. **/
     public abstract suspend fun getUser(): UserBehavior?
-
-    /**
-     * Add a Sentry breadcrumb to this command context.
-     *
-     * This should be used for the purposes of tracing what exactly is happening during your
-     * command processing. If the bot administrator decides to enable Sentry integration, the
-     * breadcrumbs will be sent to Sentry when there's a command processing error.
-     */
-    public fun breadcrumb(
-        category: String? = null,
-        level: SentryLevel? = null,
-        message: String? = null,
-        type: String? = null,
-
-        data: Map<String, Any> = mapOf()
-    ): Breadcrumb {
-        val crumb = sentry.createBreadcrumb(category, level, message, type, data)
-
-        breadcrumbs.add(crumb)
-
-        return crumb
-    }
 
     /** Resolve the locale for this command context. **/
     public suspend fun getLocale(): Locale {

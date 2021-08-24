@@ -28,7 +28,7 @@ public class SentryExtension : Extension() {
     override val name: String = "sentry"
 
     /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentry: SentryAdapter by inject()
+    public val sentryAdapter: SentryAdapter by inject()
 
     /** Bot settings. **/
     public val botSettings: ExtensibleBotBuilder by inject()
@@ -39,13 +39,13 @@ public class SentryExtension : Extension() {
 
     @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
-        if (sentry.enabled) {
+        if (sentryAdapter.enabled) {
             slashCommand(::FeedbackSlashArgs) {
                 name = "extensions.sentry.commandName"
                 description = "extensions.sentry.commandDescription.short"
 
                 action {
-                    if (!sentry.hasEventId(arguments.id)) {
+                    if (!sentryAdapter.hasEventId(arguments.id)) {
                         ephemeralFollowUp {
                             content = translate("extensions.sentry.error.invalidId")
                         }
@@ -61,7 +61,7 @@ public class SentryExtension : Extension() {
                     )
 
                     Sentry.captureUserFeedback(feedback)
-                    sentry.removeEventId(arguments.id)
+                    sentryAdapter.removeEventId(arguments.id)
 
                     ephemeralFollowUp {
                         content = translate("extensions.sentry.thanks")
@@ -76,7 +76,7 @@ public class SentryExtension : Extension() {
                 aliasKey = "extensions.sentry.commandAliases"
 
                 action {
-                    if (!sentry.hasEventId(arguments.id)) {
+                    if (!sentryAdapter.hasEventId(arguments.id)) {
                         message.respond(
                             translate("extensions.sentry.error.invalidId"),
                             pingInReply = settings.pingInReply
@@ -94,7 +94,7 @@ public class SentryExtension : Extension() {
                     )
 
                     Sentry.captureUserFeedback(feedback)
-                    sentry.removeEventId(arguments.id)
+                    sentryAdapter.removeEventId(arguments.id)
 
                     message.respond(
                         translate("extensions.sentry.thanks")
