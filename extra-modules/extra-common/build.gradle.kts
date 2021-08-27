@@ -1,5 +1,6 @@
 plugins {
     `maven-publish`
+    signing
 
     id("io.gitlab.arturbosch.detekt")
 
@@ -89,4 +90,9 @@ publishing {
             artifact(sourceJar)
         }
     }
+}
+
+signing {
+    useGpgCmd()
+    sign(publishing.publications["maven"])
 }

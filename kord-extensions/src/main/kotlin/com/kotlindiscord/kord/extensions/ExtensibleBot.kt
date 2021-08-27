@@ -154,7 +154,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
                 initialized = true
 
-                if (settings.slashCommandsBuilder.enabled) {
+                if (settings.applicationCommandsBuilder.enabled) {
                     getKoin().get<SlashCommandRegistry>().syncAll()
                 } else {
                     logger.info {
@@ -173,7 +173,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             }
         }
 
-        if (settings.slashCommandsBuilder.enabled) {
+        if (settings.applicationCommandsBuilder.enabled) {
             on<ChatInputCommandInteractionCreateEvent> {
                 getKoin().get<SlashCommandRegistry>().handle(this)
             }

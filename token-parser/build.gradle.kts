@@ -3,6 +3,7 @@ import java.net.URL
 
 plugins {
     `maven-publish`
+    signing
 
     kotlin("jvm")
 
@@ -80,6 +81,11 @@ publishing {
             artifact(javadocJar)
         }
     }
+}
+
+signing {
+    useGpgCmd()
+    sign(publishing.publications["maven"])
 }
 
 fun runCommand(command: String): String {

@@ -5,7 +5,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
 /** Slash command, executed directly in the chat input. **/
-public abstract class SlashCommand(
+public open class SlashCommand(
     extension: Extension
 ) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
     /** Command description, to explain what your command does. **/

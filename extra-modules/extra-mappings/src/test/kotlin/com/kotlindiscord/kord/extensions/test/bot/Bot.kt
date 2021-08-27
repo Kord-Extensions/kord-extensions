@@ -15,7 +15,7 @@ suspend fun main() {
             check(isNotbot)
         }
 
-        slashCommands {
+        applicationCommands {
             enabled = true
         }
 

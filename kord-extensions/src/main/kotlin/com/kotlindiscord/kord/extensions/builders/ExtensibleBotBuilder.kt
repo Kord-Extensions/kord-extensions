@@ -85,7 +85,7 @@ public open class ExtensibleBotBuilder {
     public var shardingBuilder: ((recommended: Int) -> Shards)? = null
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
+    public val applicationCommandsBuilder: ApplicationCommandsBuilder = ApplicationCommandsBuilder()
 
     /** @suppress List of Kord builders, shouldn't be set directly by the user. **/
     public val kordBuilders: MutableList<suspend KordBuilder.() -> Unit> = mutableListOf()
@@ -139,13 +139,13 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
-     * DSL function used to configure the bot's slash command options.
+     * DSL function used to configure the bot's application command options.
      *
-     * @see SlashCommandsBuilder
+     * @see ApplicationCommandsBuilder
      */
     @BotBuilderDSL
-    public suspend fun slashCommands(builder: suspend SlashCommandsBuilder.() -> Unit) {
-        builder(slashCommandsBuilder)
+    public suspend fun applicationCommands(builder: suspend ApplicationCommandsBuilder.() -> Unit) {
+        builder(applicationCommandsBuilder)
     }
 
     /**
@@ -226,7 +226,7 @@ public open class ExtensibleBotBuilder {
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { messageCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
-        loadModule { single { slashCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
+        loadModule { single { applicationCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
 
         loadModule {
             single {
@@ -792,8 +792,8 @@ public open class ExtensibleBotBuilder {
         /** Prefix to require for command invocations on Discord. Defaults to `"!"`. **/
         public var defaultPrefix: String = "!"
 
-        /** Whether to register and process message commands. Defaults to `true`. **/
-        public var enabled: Boolean = true
+        /** Whether to register and process message commands. Defaults to `false`. **/
+        public var enabled: Boolean = false
 
         /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
         public var threads: Int = Runtime.getRuntime().availableProcessors() * 2
@@ -855,16 +855,16 @@ public open class ExtensibleBotBuilder {
         }
     }
 
-    /** Builder used for configuring the bot's slash command options. **/
+    /** Builder used for configuring the bot's application command options. **/
     @BotBuilderDSL
-    public class SlashCommandsBuilder {
-        /** Whether to register and process slash commands. Defaults to `false`. **/
+    public class ApplicationCommandsBuilder {
+        /** Whether to register and process application commands. Defaults to `false`. **/
         public var enabled: Boolean = false
 
-        /** The guild ID to use for all global slash commands. Intended for testing. **/
+        /** The guild ID to use for all global application commands. Intended for testing. **/
         public var defaultGuild: Snowflake? = null
 
-        /** Whether to attempt to register the bot's slash commands. Intended for multi-instance sharded bots. **/
+        /** Whether to attempt to register the bot's application commands. Intended for multi-instance sharded bots. **/
         public var register: Boolean = true
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
@@ -875,19 +875,19 @@ public open class ExtensibleBotBuilder {
          *
          * These checks will be checked against all slash commands.
          */
-        public val checkList: MutableList<Check<ChatInputCommandInteractionCreateEvent>> = mutableListOf()
+        public val slashCheckList: MutableList<Check<ChatInputCommandInteractionCreateEvent>> = mutableListOf()
 
-        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        /** Set a guild ID to use for all global application commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake) {
             defaultGuild = id
         }
 
-        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        /** Set a guild ID to use for all global application commands. Intended for testing. **/
         public fun defaultGuild(id: Long) {
             defaultGuild = Snowflake(id)
         }
 
-        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        /** Set a guild ID to use for all global application commands. Intended for testing. **/
         public fun defaultGuild(id: String) {
             defaultGuild = Snowflake(id)
         }
@@ -901,10 +901,10 @@ public open class ExtensibleBotBuilder {
         }
 
         /**
-         * Define a check which must pass for a command to be executed. This check will be applied to all
+         * Define a check which must pass for a slash command to be executed. This check will be applied to all
          * slash commands.
          *
-         * A command may have multiple checks - all checks must pass for the command to be executed.
+         * A slash command may have multiple checks - all checks must pass for the command to be executed.
          * Checks will be run in the order that they're defined.
          *
          * This function can be used DSL-style with a given body, or it can be passed one or more
@@ -912,17 +912,17 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all slash commands.
          */
-        public fun check(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
-            checks.forEach { checkList.add(it) }
+        public fun slashCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
+            checks.forEach { slashCheckList.add(it) }
         }
 
         /**
-         * Overloaded check function to allow for DSL syntax.
+         * Overloaded slash command check function to allow for DSL syntax.
          *
          * @param check Check to apply to all slash commands.
          */
-        public fun check(check: Check<ChatInputCommandInteractionCreateEvent>) {
-            checkList.add(check)
+        public fun slashCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
+            slashCheckList.add(check)
         }
     }
 }

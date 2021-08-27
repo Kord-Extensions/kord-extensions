@@ -94,7 +94,7 @@ public open class SlashCommandRegistry : KoinComponent {
     public open suspend fun syncAll() {
         logger.info { "Synchronising slash commands. This may take some time." }
 
-        if (!bot.settings.slashCommandsBuilder.register) {
+        if (!bot.settings.applicationCommandsBuilder.register) {
             logger.debug {
                 "Slash command registration is disabled, pairing existing commands with extension commands."
             }
@@ -140,7 +140,7 @@ public open class SlashCommandRegistry : KoinComponent {
             kord.unsafe.guild(guild).commands.map { Pair(it.name, it.id) }.toList()
         }
 
-        if (!bot.settings.slashCommandsBuilder.register) {
+        if (!bot.settings.applicationCommandsBuilder.register) {
             registered.forEach { r ->
                 val existingCommand = existing.firstOrNull { it.first == r.getTranslatedName(locale) }
 

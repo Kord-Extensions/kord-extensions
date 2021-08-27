@@ -91,7 +91,7 @@ public open class SlashCommand<T : Arguments>(
 
     /** Guild ID this slash command is to be registered for, if any. **/
     public open var guild: Snowflake? = if (parentCommand == null && parentGroup == null) {
-        settings.slashCommandsBuilder.defaultGuild
+        settings.applicationCommandsBuilder.defaultGuild
     } else {
         null
     }
@@ -442,7 +442,7 @@ public open class SlashCommand<T : Arguments>(
         val locale = event.getLocale()
 
         // global checks
-        for (check in extension.bot.settings.slashCommandsBuilder.checkList) {
+        for (check in extension.bot.settings.applicationCommandsBuilder.slashCheckList) {
             val context = CheckContext(event, locale)
 
             check(context)

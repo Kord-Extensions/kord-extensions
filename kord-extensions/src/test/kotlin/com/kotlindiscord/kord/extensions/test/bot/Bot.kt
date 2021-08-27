@@ -23,7 +23,7 @@ suspend fun main() {
             }
         }
 
-        slashCommands {
+        applicationCommands {
             enabled = true
         }
 
