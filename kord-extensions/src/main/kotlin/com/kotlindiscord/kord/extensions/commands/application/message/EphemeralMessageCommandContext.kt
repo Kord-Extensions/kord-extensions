@@ -7,6 +7,6 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 /** Ephemeral-only message command context. **/
 public class EphemeralMessageCommandContext(
     override val event: MessageCommandInteractionCreateEvent,
-    override val command: MessageCommand<MessageCommandContext>,
+    override val command: MessageCommand<EphemeralMessageCommandContext>,
     override val interactionResponse: EphemeralInteractionResponseBehavior
-) : MessageCommandContext(event, command), EphemeralApplicationCommandContext
+) : MessageCommandContext<EphemeralMessageCommandContext>(event, command), EphemeralApplicationCommandContext

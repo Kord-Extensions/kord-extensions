@@ -7,6 +7,6 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 /** Public-only message command context. **/
 public class PublicMessageCommandContext(
     override val event: MessageCommandInteractionCreateEvent,
-    override val command: MessageCommand<MessageCommandContext>,
+    override val command: MessageCommand<PublicMessageCommandContext>,
     override val interactionResponse: PublicInteractionResponseBehavior
-) : MessageCommandContext(event, command), PublicApplicationCommandContext
+) : MessageCommandContext<PublicMessageCommandContext>(event, command), PublicApplicationCommandContext
