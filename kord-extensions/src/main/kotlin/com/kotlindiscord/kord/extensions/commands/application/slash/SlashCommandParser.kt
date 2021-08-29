@@ -3,15 +3,12 @@
     "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
 )
 
-package com.kotlindiscord.kord.extensions.commands.slash.parser
+package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.KordEntity
 import mu.KotlinLogging
@@ -27,18 +24,23 @@ private val logger = KotlinLogging.logger {}
  * This parser does not support multi converters, as there's no good way to represent them with
  * Discord's API. Coalescing converters will act like single converters.
  */
-public open class SlashCommandParser : ArgumentParser() {
-    public override suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
-        if (context !is SlashCommandContext<out Arguments>) {
-            error("This parser only supports slash commands.")
-        }
-
+public open class SlashCommandParser {
+    /**
+     * Parse the arguments for this slash command, which have been provided by Discord.
+     *
+     * Instead of taking the objects as Discord provides them, this function will stringify all the command's
+     * arguments. This allows them to be passed through the usual converter system.
+     */
+    public suspend fun <T : Arguments> parse(
+        builder: () -> T,
+        context: SlashCommandContext<*, *>
+    ): T {
         val argumentsObj = builder.invoke()
 
         logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
-        val command = context.interaction.command
+        val command = context.event.interaction.command
 
         val values = command.options.mapValues {
             val option = it.value.value

@@ -3,8 +3,8 @@
 package com.kotlindiscord.kord.extensions.commands.chat
 
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
@@ -22,9 +22,10 @@ import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 
 /**
- * Command context object representing the context given to message commands.
+ * Command context object representing the context given to chat commands.
  *
- * @property messageCommand Message command object, typed as [ChatCommand] rather than [Command]
+ * @property messageCommand Chat command object
+ * @param parser String parser instance, if any - will be `null` if this isn't a chat command.
  * @property argString String containing the command's unparsed arguments, raw, fresh from Discord itself.
  */
 @ExtensionDSL
@@ -32,9 +33,9 @@ public open class ChatCommandContext<T : Arguments>(
     public val messageCommand: ChatCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
-    parser: StringParser,
+    public open val parser: StringParser?,
     public val argString: String
-) : CommandContext(messageCommand, eventObj, commandName, parser) {
+) : CommandContext(messageCommand, eventObj, commandName) {
     /** Event that triggered this command execution. **/
     public val event: MessageCreateEvent get() = eventObj as MessageCreateEvent
 
@@ -73,8 +74,10 @@ public open class ChatCommandContext<T : Arguments>(
     override suspend fun getChannel(): MessageChannelBehavior = event.message.channel.asChannel()
     override suspend fun getGuild(): Guild? = event.getGuild()
     override suspend fun getMember(): Member? = event.message.getAuthorAsMember()
-    override suspend fun getMessage(): Message = event.message
     override suspend fun getUser(): User? = event.message.author
+
+    /** Extract message information from event data, if that context is available. **/
+    public open suspend fun getMessage(): Message = event.message
 
     /**
      * Convenience function to create a button paginator using a builder DSL syntax. Handles the contextual stuff for

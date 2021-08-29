@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.commands.slash.converters
+package com.kotlindiscord.kord.extensions.commands.application.slash.converters
 
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import dev.kord.common.annotation.KordPreview

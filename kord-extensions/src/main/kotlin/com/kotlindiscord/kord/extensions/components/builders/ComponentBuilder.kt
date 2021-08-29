@@ -3,7 +3,7 @@
 package com.kotlindiscord.kord.extensions.components.builders
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommandContext
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
@@ -44,7 +44,7 @@ public abstract class ComponentBuilder : KoinComponent {
         components: Components,
         extension: Extension,
         event: ComponentInteractionCreateEvent,
-        parentContext: SlashCommandContext<*>? = null
+        parentContext: SlashCommandContext<*, *>? = null
     ) {
         throw UnsupportedOperationException("This type of component doesn't support callable actions.")
     }

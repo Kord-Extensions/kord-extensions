@@ -5,16 +5,16 @@
     ConverterToOptional::class
 )
 
-package com.kotlindiscord.kord.extensions.commands.slash.converters.impl
+package com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
 import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
 import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser

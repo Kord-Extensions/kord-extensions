@@ -8,9 +8,10 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -49,8 +50,8 @@ public class UserConverter(
     override val signatureTypeString: String = "converters.user.signatureType"
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        if (useReply) {
-            val messageReference = context.getMessage()?.asMessage()?.messageReference
+        if (useReply && context is ChatCommandContext<*>) {
+            val messageReference = context.message.asMessage().messageReference
 
             if (messageReference != null) {
                 val user = messageReference.message?.asMessage()?.author?.asUserOrNull()

@@ -12,7 +12,7 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
  */
 public abstract class UserCommandContext<C : UserCommandContext<C>>(
     public open val event: UserCommandInteractionCreateEvent,
-    public open val command: UserCommand<C>
+    public override val command: UserCommand<C>
 ) : ApplicationCommandContext(event, command) {
     /** Messages that this message command is being executed against. **/
     public val targetUsers: Collection<User> = event.interaction.users?.values ?: listOf()

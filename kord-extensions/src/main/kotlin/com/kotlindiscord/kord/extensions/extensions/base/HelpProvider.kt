@@ -1,9 +1,9 @@
 package com.kotlindiscord.kord.extensions.extensions.base
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.pagination.BasePaginator
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.core.event.message.MessageCreateEvent

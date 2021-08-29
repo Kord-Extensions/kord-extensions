@@ -1,12 +1,10 @@
-@file:OptIn(TranslationNotSupported::class)
-
 @file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.commands.slash
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
@@ -42,18 +40,18 @@ public open class SlashCommandRegistry : KoinComponent {
     public val translationsProvider: TranslationsProvider by inject()
 
     /** @suppress **/
-    public open val commands: MutableMap<Snowflake?, MutableList<SlashCommand<out Arguments>>> = mutableMapOf(
+    public open val commands: MutableMap<Snowflake?, MutableList<SlashCommand<*, *>>> = mutableMapOf(
         null to mutableListOf()  // So that global commands always have a list here
     )
 
     /** @suppress **/
-    public open val commandMap: MutableMap<Snowflake, SlashCommand<out Arguments>> = mutableMapOf()
+    public open val commandMap: MutableMap<Snowflake, SlashCommand<*, *>> = mutableMapOf()
 
 //    TODO: Sentry?
 //    private val sentry: SentryAdapter by bot.koin.inject()
 
     /** Register a slash command here, before they're synced to Discord. **/
-    public open fun register(command: SlashCommand<out Arguments>, guild: Snowflake? = null): Boolean {
+    public open fun register(command: SlashCommand<*, *>, guild: Snowflake? = null): Boolean {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         commands.putIfAbsent(guild, mutableListOf())
@@ -192,7 +190,7 @@ public open class SlashCommandRegistry : KoinComponent {
                         it.delete()
                     }
             } else {
-                toCreate.groupBy { it.guild!! }.forEach { (snowflake, commands) ->
+                toCreate.groupBy { it.guildId!! }.forEach { (snowflake, commands) ->
                     val response = kord.createGuildApplicationCommands(snowflake) {
                         commands.forEach {
                             val translatedName = it.getTranslatedName(locale)
@@ -220,7 +218,7 @@ public open class SlashCommandRegistry : KoinComponent {
             }
 
             val commandsWithPerms = commandMap.filterValues { !it.allowByDefault }.toList().groupBy {
-                it.second.guild
+                it.second.guildId
             }
 
             commandsWithPerms.forEach { (guild, commands) ->
@@ -251,10 +249,10 @@ public open class SlashCommandRegistry : KoinComponent {
         }
     }
 
-    internal open suspend fun ChatInputCreateBuilder.register(command: SlashCommand<out Arguments>) {
+    internal open suspend fun ChatInputCreateBuilder.register(command: SlashCommand<*, *>) {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
-        this.defaultPermission = command.guild == null || command.allowByDefault
+        this.defaultPermission = command.guildId == null || command.allowByDefault
 
         if (command.hasBody) {
             val args = command.arguments?.invoke()

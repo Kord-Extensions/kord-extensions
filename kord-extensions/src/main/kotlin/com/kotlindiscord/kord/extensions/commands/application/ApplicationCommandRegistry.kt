@@ -2,7 +2,8 @@ package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommandParser
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.core.Kord
 import dev.kord.core.entity.application.UserCommand
@@ -17,6 +18,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Kord instance, backing the ExtensibleBot. **/
     public val kord: Kord by inject()
 
+    /** Command parser to use for slash commands. **/
+    public open val argumentParser: SlashCommandParser = SlashCommandParser()
+
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 
@@ -26,7 +30,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     }
 
     /** Register a slash command. **/
-    public open suspend fun register(command: SlashCommand<*>) {
+    public open suspend fun register(command: SlashCommand<*, *>) {
         TODO()
     }
 

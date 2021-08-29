@@ -1,15 +1,15 @@
-@file:OptIn(KordPreview::class, TranslationNotSupported::class)
+@file:OptIn(KordPreview::class)
 
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.respond
 import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescedString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.chatCommand
-import com.kotlindiscord.kord.extensions.extensions.slashCommand
+import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.sentryId
 import com.kotlindiscord.kord.extensions.utils.respond
@@ -40,13 +40,13 @@ public class SentryExtension : Extension() {
     @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
         if (sentryAdapter.enabled) {
-            slashCommand(::FeedbackSlashArgs) {
+            ephemeralSlashCommand(::FeedbackSlashArgs) {
                 name = "extensions.sentry.commandName"
                 description = "extensions.sentry.commandDescription.short"
 
                 action {
                     if (!sentryAdapter.hasEventId(arguments.id)) {
-                        ephemeralFollowUp {
+                        respond {
                             content = translate("extensions.sentry.error.invalidId")
                         }
 
@@ -63,7 +63,7 @@ public class SentryExtension : Extension() {
                     Sentry.captureUserFeedback(feedback)
                     sentryAdapter.removeEventId(arguments.id)
 
-                    ephemeralFollowUp {
+                    respond {
                         content = translate("extensions.sentry.thanks")
                     }
                 }

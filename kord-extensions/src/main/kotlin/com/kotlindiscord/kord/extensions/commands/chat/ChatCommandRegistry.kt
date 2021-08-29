@@ -3,7 +3,7 @@ package com.kotlindiscord.kord.extensions.commands.chat
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.getLocale
@@ -27,6 +27,9 @@ public open class ChatCommandRegistry : KoinComponent {
 
     /** Kord instance, backing the ExtensibleBot. **/
     public val kord: Kord by inject()
+
+    /** Chat command parser object. **/
+    public open val parser: ChatCommandParser = ChatCommandParser()
 
     /**
      * A list of all registered commands.

@@ -3,9 +3,9 @@
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.chat.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.stringList
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.extensions.chatCommand

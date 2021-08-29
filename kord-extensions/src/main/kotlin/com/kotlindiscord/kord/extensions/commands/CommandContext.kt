@@ -5,11 +5,9 @@ import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
-import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.event.Event
@@ -26,14 +24,12 @@ import java.util.*
  * @param command Respective command for this context object.
  * @param eventObj Event that triggered this command.
  * @param commandName Command name given by the user to invoke the command - lower-cased.
- * @param parser String parser instance, if any - will be `null` if this isn't a message command.
  */
 @ExtensionDSL
 public abstract class CommandContext(
     public open val command: Command,
     public open val eventObj: Event,
     public open val commandName: String,
-    public open val parser: StringParser?,
 ) : KoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
@@ -55,9 +51,6 @@ public abstract class CommandContext(
 
     /** Extract member information from event data, if that context is available. **/
     public abstract suspend fun getMember(): MemberBehavior?
-
-    /** Extract message information from event data, if that context is available. **/
-    public abstract suspend fun getMessage(): MessageBehavior?
 
     /** Extract user information from event data, if that context is available. **/
     public abstract suspend fun getUser(): UserBehavior?

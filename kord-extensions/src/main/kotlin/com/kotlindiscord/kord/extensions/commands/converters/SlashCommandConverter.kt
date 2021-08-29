@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
+import com.kotlindiscord.kord.extensions.commands.Argument
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 

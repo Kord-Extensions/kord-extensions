@@ -12,7 +12,7 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
  */
 public abstract class MessageCommandContext<C : MessageCommandContext<C>>(
     public open val event: MessageCommandInteractionCreateEvent,
-    public open val command: MessageCommand<C>,
+    public override val command: MessageCommand<C>,
 ) : ApplicationCommandContext(event, command) {
     /** Messages that this message command is being executed against. **/
     public val targetMessages: Collection<Message> = event.interaction.messages?.values ?: listOf()

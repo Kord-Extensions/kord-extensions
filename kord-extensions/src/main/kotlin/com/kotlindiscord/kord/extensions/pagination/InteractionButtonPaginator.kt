@@ -2,7 +2,8 @@
 
 package com.kotlindiscord.kord.extensions.pagination
 
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.EphemeralSlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommandContext
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
@@ -32,10 +33,10 @@ public class InteractionButtonPaginator(
     bundle: String? = null,
     locale: Locale? = null,
 
-    public val parentContext: SlashCommandContext<*>,
+    public val parentContext: SlashCommandContext<*, *>,
 ) : BaseButtonPaginator(extension, pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
     init {
-        if (parentContext.isEphemeral == true) {
+        if (parentContext is EphemeralSlashCommandContext<*>) {
             error("Paginators cannot operate with ephemeral interactions.")
         }
     }
@@ -51,13 +52,15 @@ public class InteractionButtonPaginator(
         if (embedInteraction == null) {
             setup()
 
-            embedInteraction = parentContext.publicFollowUp {
-                embed { applyPage() }
+            TODO()
 
-                with(this@InteractionButtonPaginator.components) {
-                    this@publicFollowUp.setup(timeoutSeconds)
-                }
-            }
+//            embedInteraction = parentContext.respond {
+//                embed { applyPage() }
+//
+//                with(this@InteractionButtonPaginator.components) {
+//                    this@publicFollowUp.setup(timeoutSeconds)
+//                }
+//            }
         } else {
             updateButtons()
 
@@ -97,7 +100,7 @@ public class InteractionButtonPaginator(
 @Suppress("FunctionNaming")  // Factory function
 public fun InteractionButtonPaginator(
     builder: PaginatorBuilder,
-    parentContext: SlashCommandContext<*>
+    parentContext: SlashCommandContext<*, *>
 ): InteractionButtonPaginator = InteractionButtonPaginator(
     extension = builder.extension,
     pages = builder.pages,

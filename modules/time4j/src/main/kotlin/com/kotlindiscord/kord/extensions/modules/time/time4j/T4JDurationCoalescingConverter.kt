@@ -8,11 +8,11 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.RegexCoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException

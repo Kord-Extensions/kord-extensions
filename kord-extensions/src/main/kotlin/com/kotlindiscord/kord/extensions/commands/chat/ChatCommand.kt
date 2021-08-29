@@ -7,9 +7,8 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.Command
-import com.kotlindiscord.kord.extensions.commands.parser.ArgumentParser
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -54,7 +53,7 @@ public open class ChatCommand<T : Arguments>(
     public val translationsProvider: TranslationsProvider by inject()
 
     /** Message command registry. **/
-    public val messageCommandRegistry: ChatCommandRegistry by inject()
+    public val registry: ChatCommandRegistry by inject()
 
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
@@ -121,8 +120,6 @@ public open class ChatCommand<T : Arguments>(
      */
     public open val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
 
-    override val parser: ArgumentParser = ArgumentParser()
-
     /** Permissions required to be able to run this command. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
 
@@ -141,7 +138,7 @@ public open class ChatCommand<T : Arguments>(
     /**
      * Retrieve the command signature for a locale, which specifies how the command's arguments should be structured.
      *
-     * Command signatures are generated automatically by the [ArgumentParser].
+     * Command signatures are generated automatically by the [ChatCommandParser].
      */
     public open suspend fun getSignature(locale: Locale): String {
         if (this.arguments == null) {
@@ -156,7 +153,7 @@ public open class ChatCommand<T : Arguments>(
                     locale
                 )
             } else {
-                signatureCache[locale] = parser.signature(arguments!!, locale)
+                signatureCache[locale] = registry.parser.signature(arguments!!, locale)
             }
         }
 
@@ -442,7 +439,7 @@ public open class ChatCommand<T : Arguments>(
             }
 
             if (this.arguments != null) {
-                val parsedArgs = this.parser.parse(this.arguments!!, context)
+                val parsedArgs = registry.parser.parse(this.arguments!!, context)
                 context.populateArgs(parsedArgs)
             }
 
@@ -486,7 +483,7 @@ public open class ChatCommand<T : Arguments>(
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
                 if (extension.bot.extensions.containsKey("sentry")) {
-                    val prefix = messageCommandRegistry.getPrefix(event)
+                    val prefix = registry.getPrefix(event)
 
                     event.message.respond(
                         context.translate(

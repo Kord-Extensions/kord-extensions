@@ -5,10 +5,12 @@
     "StringLiteralDuplication"
 )
 
-package com.kotlindiscord.kord.extensions.commands.parser
+package com.kotlindiscord.kord.extensions.commands.chat
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -34,7 +36,7 @@ private val logger = KotlinLogging.logger {}
  *
  * We recommend reading over the source code if you'd like to get to grips with how this all works.
  */
-public open class ArgumentParser : KoinComponent {
+public open class ChatCommandParser : KoinComponent {
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
 
@@ -63,7 +65,7 @@ public open class ArgumentParser : KoinComponent {
      * @return Built [Arguments] object, with converters filled.
      * @throws CommandException Thrown based on a lot of possible cases. This is intended for display on Discord.
      */
-    public open suspend fun <T : Arguments> parse(builder: () -> T, context: CommandContext): T {
+    public open suspend fun <T : Arguments> parse(builder: () -> T, context: ChatCommandContext<*>): T {
         val argumentsObj = builder.invoke()
         val parser = context.parser!!
 

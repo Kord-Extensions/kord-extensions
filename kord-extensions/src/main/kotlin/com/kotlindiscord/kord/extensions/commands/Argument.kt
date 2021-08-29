@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.commands.parser
+package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.commands.converters.Converter
 

@@ -1,8 +1,10 @@
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
@@ -25,10 +27,16 @@ import java.util.*
  * @param extension Extension this application command belongs to.
  */
 public abstract class ApplicationCommand<E : InteractionCreateEvent>(
-    public open val extension: Extension
-) : KoinComponent {
+    extension: Extension
+) : Command(extension), KoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
+
+    /** Quick access to the command registry. **/
+    public val registry: ApplicationCommandRegistry by inject()
+
+    /** Bot settings object. **/
+    public val settings: ExtensibleBotBuilder by inject()
 
     /** Kord instance, backing the ExtensibleBot. **/
     public val kord: Kord by inject()
@@ -40,7 +48,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public open val checkList: MutableList<Check<E>> = mutableListOf()
 
     /** @suppress **/
-    public open var guildId: Snowflake? = null
+    public open var guildId: Snowflake? = settings.applicationCommandsBuilder.defaultGuild
 
     /**
      * Whether to allow everyone to use this command by default.
@@ -77,9 +85,6 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
     /** Translation cache, so we don't have to look up translations every time. **/
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
-
-    /** Command name, shown on Discord. **/
-    public lateinit var name: String
 
     /** Return this command's name translated for the given locale, cached as required. **/
     public open fun getTranslatedName(locale: Locale): String {
@@ -177,18 +182,6 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      */
     public open fun check(check: Check<E>) {
         checkList.add(check)
-    }
-
-    /** Override this in your subclass if you need to change how the command name is validated. **/
-    public open fun validateName() {
-        if (::name.isInitialized.not() || name.isEmpty()) {
-            error("Application command names are required.")
-        }
-    }
-
-    /** General command validation function. Can be overridden. **/
-    public open fun validate() {
-        validateName()
     }
 
     /** Called in order to execute the command. **/

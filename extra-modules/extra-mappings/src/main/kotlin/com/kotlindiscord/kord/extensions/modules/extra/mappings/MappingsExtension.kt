@@ -4,8 +4,8 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
 import com.kotlindiscord.kord.extensions.checks.and
 import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*

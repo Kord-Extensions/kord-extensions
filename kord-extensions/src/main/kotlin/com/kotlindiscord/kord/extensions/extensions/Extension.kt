@@ -5,10 +5,12 @@ package com.kotlindiscord.kord.extensions.extensions
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
+import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
@@ -80,7 +82,23 @@ public abstract class Extension : KoinComponent {
      * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
      * belong to unloaded extensions will not execute.
      */
-    public open val slashCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
+    public open val messageCommands: MutableList<MessageCommand<*>> = mutableListOf()
+
+    /**
+     * List of registered slash commands.
+     *
+     * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
+     * belong to unloaded extensions will not execute.
+     */
+    public open val slashCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
+
+    /**
+     * List of registered slash commands.
+     *
+     * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
+     * belong to unloaded extensions will not execute.
+     */
+    public open val userCommands: MutableList<UserCommand<*>> = mutableListOf()
 
     /**
      * List of message command checks.

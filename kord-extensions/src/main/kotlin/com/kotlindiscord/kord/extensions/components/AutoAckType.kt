@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.commands.slash
+package com.kotlindiscord.kord.extensions.components
 
 /** Acknowledgement type for autoAck. **/
 public sealed class AutoAckType {

@@ -7,8 +7,8 @@
 
 package com.kotlindiscord.kord.extensions.sentry
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import dev.kord.common.annotation.KordPreview
 import io.sentry.protocol.SentryId
 

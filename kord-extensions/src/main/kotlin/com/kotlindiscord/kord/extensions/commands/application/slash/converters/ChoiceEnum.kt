@@ -1,6 +1,6 @@
-package com.kotlindiscord.kord.extensions.commands.slash.converters
+package com.kotlindiscord.kord.extensions.commands.application.slash.converters
 
-import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.EnumChoiceConverter
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.EnumChoiceConverter
 
 /** Interface representing an enum used in the [EnumChoiceConverter]. **/
 public interface ChoiceEnum {

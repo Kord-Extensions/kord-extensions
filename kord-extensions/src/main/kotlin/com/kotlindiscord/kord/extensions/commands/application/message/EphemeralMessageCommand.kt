@@ -16,8 +16,13 @@ public typealias InitialEphemeralMessageResponseBuilder =
 public class EphemeralMessageCommand(
     extension: Extension
 ) : MessageCommand<EphemeralMessageCommandContext>(extension) {
-    /** Provide this tn open with a response, omit it to ack instead. **/
+    /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialEphemeralMessageResponseBuilder = null
+
+    /** Call this tn open with a response, omit it to ack instead. **/
+    public fun initialResponse(body: InitialEphemeralMessageResponseBuilder) {
+        initialResponseBuilder = body
+    }
 
     override suspend fun call(event: MessageCommandInteractionCreateEvent) {
         try {

@@ -16,8 +16,13 @@ public typealias InitialEphemeralUserResponseBuilder =
 public class EphemeralUserCommand(
     extension: Extension
 ) : UserCommand<EphemeralUserCommandContext>(extension) {
-    /** Provide this tn open with a response, omit it to ack instead. **/
+    /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialEphemeralUserResponseBuilder = null
+
+    /** Call this tn open with a response, omit it to ack instead. **/
+    public fun initialResponse(body: InitialEphemeralUserResponseBuilder) {
+        initialResponseBuilder = body
+    }
 
     override suspend fun call(event: UserCommandInteractionCreateEvent) {
         try {

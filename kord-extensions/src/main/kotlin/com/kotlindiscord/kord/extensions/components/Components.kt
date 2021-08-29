@@ -2,8 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.components
 
-import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommandContext
 import com.kotlindiscord.kord.extensions.components.builders.*
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -42,7 +41,7 @@ private const val COMPONENTS_PER_ROW = 5
  */
 public open class Components(
     public open val extension: Extension,
-    public open val parentContext: SlashCommandContext<*>? = null
+    public open val parentContext: SlashCommandContext<*, *>? = null
 ) : KoinComponent {
     private val logger = KotlinLogging.logger {}
 

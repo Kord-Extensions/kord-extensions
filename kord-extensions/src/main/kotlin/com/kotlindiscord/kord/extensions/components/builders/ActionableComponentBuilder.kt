@@ -6,8 +6,9 @@ import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.checks.*
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
-import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.EphemeralSlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommandContext
+import com.kotlindiscord.kord.extensions.components.AutoAckType
 import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.components.contexts.ActionableComponentContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -157,7 +158,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
         components: Components,
         extension: Extension,
         event: ComponentInteractionCreateEvent,
-        parentContext: SlashCommandContext<*>?
+        parentContext: SlashCommandContext<*, *>?
     ) {
         if (!runChecks(event)) {
             return
@@ -192,7 +193,7 @@ public abstract class ActionableComponentBuilder<T : ComponentInteraction, R : A
         val interaction = event.interaction as T
 
         val response = if (parentContext != null && followParent) {
-            when (parentContext.isEphemeral) {
+            when (parentContext is EphemeralSlashCommandContext<*>) {
                 true -> interaction.ackEphemeral(deferredAck)
                 false -> interaction.ackPublic(deferredAck)
 

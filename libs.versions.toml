@@ -1,7 +1,7 @@
 [versions]
 detekt = "1.17.1"  # Note: Plugin versions must be updated in the settings.gradle.kts too
 dokka = "1.4.10.2"  # Note: Plugin versions must be updated in the settings.gradle.kts too
-kotlin = "1.5.10"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+kotlin = "1.5.30"  # Note: Plugin versions must be updated in the settings.gradle.kts too
 
 commons-text = "1.9"
 commons-validator = "1.7"
@@ -13,8 +13,8 @@ konf = "0.23.0"
 #kord = "0.8.0-M4"
 kord = "0.8.0-M5"
 kotlinpoet = "1.8.0"
-ksp = "1.5.10-1.0.0-beta02"
-kx-ser = "1.2.1"
+ksp = "1.5.30-1.0.0-beta08"
+kx-ser = "1.2.2"
 linkie = "1.0.85"
 logback = "1.2.3"
 logging = "2.0.6"

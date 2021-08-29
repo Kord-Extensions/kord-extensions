@@ -1,22 +1,21 @@
-@file:OptIn(KordPreview::class, TranslationNotSupported::class)
+@file:OptIn(KordPreview::class)
 
 package com.kotlindiscord.kord.extensions.test.bot
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.respond
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.enumChoice
+import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.group
+import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
-import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
-import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.enumChoice
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.chatCommand
-import com.kotlindiscord.kord.extensions.extensions.chatGroupCommand
-import com.kotlindiscord.kord.extensions.extensions.slashCommand
+import com.kotlindiscord.kord.extensions.components.AutoAckType
+import com.kotlindiscord.kord.extensions.extensions.*
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
-import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.reply
@@ -147,140 +146,136 @@ class TestExtension : Extension() {
             }
         }
 
-        slashCommand {
+        publicSlashCommand {
             name = "pages"
             description = "Pages!"
-            autoAck = AutoAckType.PUBLIC
 
             guild(787452339908116521)
 
             action {
-                paginator("short") {
-                    owner = event.interaction.user.asUser()
-                    timeoutSeconds = 60
-                    keepEmbed = false
-
-                    (0..2).forEach {
-                        page(
-                            Page {
-                                description = "Short page $it."
-
-                                footer {
-                                    text = "Footer text ($it)"
-                                }
-                            }
-                        )
-
-                        page(
-                            "Expanded",
-
-                            Page {
-                                description = "Expanded page $it, expanded page $it\n" +
-                                    "Expanded page $it, expanded page $it"
-
-                                footer {
-                                    text = "Footer text ($it)"
-                                }
-                            }
-                        )
-
-                        page(
-                            "MASSIVE GROUP",
-
-                            Page {
-                                description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                    "MASSIVE PAGE $it, MASSIVE PAGE $it"
-
-                                footer {
-                                    text = "Footer text ($it)"
-                                }
-                            }
-                        )
-                    }
-                }.send()
+//                paginator("short") {
+//                    owner = event.interaction.user.asUser()
+//                    timeoutSeconds = 60
+//                    keepEmbed = false
+//
+//                    (0..2).forEach {
+//                        page(
+//                            Page {
+//                                description = "Short page $it."
+//
+//                                footer {
+//                                    text = "Footer text ($it)"
+//                                }
+//                            }
+//                        )
+//
+//                        page(
+//                            "Expanded",
+//
+//                            Page {
+//                                description = "Expanded page $it, expanded page $it\n" +
+//                                    "Expanded page $it, expanded page $it"
+//
+//                                footer {
+//                                    text = "Footer text ($it)"
+//                                }
+//                            }
+//                        )
+//
+//                        page(
+//                            "MASSIVE GROUP",
+//
+//                            Page {
+//                                description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+//                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+//                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+//                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+//                                    "MASSIVE PAGE $it, MASSIVE PAGE $it"
+//
+//                                footer {
+//                                    text = "Footer text ($it)"
+//                                }
+//                            }
+//                        )
+//                    }
+//                }.send()
             }
         }
 
-        slashCommand {
+        ephemeralSlashCommand {
             name = "buttons"
             description = "Buttons!"
 
             guild(787452339908116521) // Our test server
 
             action {
-                ephemeralFollowUp {
+                respond {
                     content = "Buttons!"
 
-                    components(60) {
-                        interactiveButton {
-                            label = "Button one!"
-
-                            action {
-                                respond("Button one pressed!")
-                            }
-                        }
-
-                        interactiveButton {
-                            label = "Button two!"
-                            style = ButtonStyle.Secondary
-
-                            action {
-                                respond("Button two pressed!")
-                            }
-                        }
-
-                        disabledButton {
-                            emoji("❎")
-                        }
-
-                        linkButton {
-                            label = "Google"
-                            emoji("🔗")
-
-                            url = "https://google.com"
-                        }
-                    }
+//                    components(60) {
+//                        interactiveButton {
+//                            label = "Button one!"
+//
+//                            action {
+//                                respond("Button one pressed!")
+//                            }
+//                        }
+//
+//                        interactiveButton {
+//                            label = "Button two!"
+//                            style = ButtonStyle.Secondary
+//
+//                            action {
+//                                respond("Button two pressed!")
+//                            }
+//                        }
+//
+//                        disabledButton {
+//                            emoji("❎")
+//                        }
+//
+//                        linkButton {
+//                            label = "Google"
+//                            emoji("🔗")
+//
+//                            url = "https://google.com"
+//                        }
+//                    }
                 }
             }
         }
 
-        slashCommand {
+        publicSlashCommand {
             name = "test-noack"
             description = "Don't auto-ack this one"
-            autoAck = AutoAckType.NONE
 
             guild(787452339908116521) // Our test server
 
-            action {
-                ack(false)  // Public ack
-
-                publicFollowUp {
-                    embed {
-                        title = "An embed!"
-                        description = "With a description, and without a content string!"
-                    }
+            initialResponse {
+                embed {
+                    title = "An embed!"
+                    description = "With a description, and without a content string!"
                 }
+            }
+
+            action {
             }
         }
 
-        slashCommand(::SlashChoiceArgs) {
+        publicSlashCommand(::SlashChoiceArgs) {
             name = "choice"
             description = "Choice-based"
-            autoAck = AutoAckType.PUBLIC
 
             guild(787452339908116521) // Our test server
 
             action {
-                publicFollowUp {
+                respond {
                     content = "Your choice: ${arguments.arg.readableName} -> ${arguments.arg.name}"
                 }
             }
         }
 
-        slashCommand {
+        ephemeralSlashCommand {
             name = "group"
             description = "Test command, please ignore"
 
@@ -289,14 +284,12 @@ class TestExtension : Extension() {
             group("one") {
                 description = "Group one"
 
-                subCommand(::SlashArgs) {
+                publicSubCommand(::SlashArgs) {
                     name = "test"
                     description = "Test command, please ignore"
 
-                    autoAck = AutoAckType.PUBLIC
-
                     action {
-                        publicFollowUp {
+                        respond {
                             content = "Some content"
 
                             embed {
@@ -328,12 +321,12 @@ class TestExtension : Extension() {
                     }
                 }
 
-                subCommand {
+                ephemeralSubCommand {
                     name = "test-two"
                     description = "Test command, please ignore"
 
                     action {
-                        ephemeralFollowUp {
+                        respond {
                             content = "Some content"
                         }
                     }
@@ -341,7 +334,7 @@ class TestExtension : Extension() {
             }
         }
 
-        slashCommand {
+        ephemeralSlashCommand {
             name = "guild-embed"
             description = "Test command, please ignore"
 
@@ -350,14 +343,12 @@ class TestExtension : Extension() {
             group("first") {
                 description = "First group."
 
-                subCommand(::SlashArgs) {
+                publicSubCommand(::SlashArgs) {
                     name = "inner-test"
                     description = "Test command, please ignore"
 
-                    autoAck = AutoAckType.PUBLIC
-
                     action {
-                        publicFollowUp {
+                        respond {
                             embed {
                                 title = "Guild response"
                                 description = "Guild description"
@@ -389,17 +380,16 @@ class TestExtension : Extension() {
             }
         }
 
-        slashCommand(::SlashArgs) {
+        publicSlashCommand(::SlashArgs) {
             name = "test-embed"
             description = "Test command, please ignore\n\n" +
 
                 "Now with some newlines in the description!"
 
-            autoAck = AutoAckType.PUBLIC
             guild(787452339908116521) // Our test server
 
             action {
-                publicFollowUp {
+                respond {
                     embed {
                         title = "Test response"
                         description = "Test description"

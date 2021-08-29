@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
@@ -28,6 +29,14 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
     /** Call this to supply a command [body], to be called when the command is executed. **/
     public fun action(action: suspend C.() -> Unit) {
         body = action
+    }
+
+    override fun validate() {
+        super.validate()
+
+        if (!::body.isInitialized) {
+            throw InvalidCommandException(name, "No command body given.")
+        }
     }
 
     /** Override this to implement your command's calling logic. Check subtypes for examples! **/
