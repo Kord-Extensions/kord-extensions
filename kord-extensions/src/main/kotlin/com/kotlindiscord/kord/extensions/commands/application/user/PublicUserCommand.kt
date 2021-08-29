@@ -1,25 +1,25 @@
 @file:Suppress("TooGenericExceptionCaught")
 
-package com.kotlindiscord.kord.extensions.commands.application.message
+package com.kotlindiscord.kord.extensions.commands.application.user
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.application.respond
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
 
-public typealias InitialPublicMessageResponseBuilder =
-    (suspend PublicInteractionResponseCreateBuilder.(MessageCommandInteractionCreateEvent) -> Unit)?
+public typealias InitialPublicUserResponseBuilder =
+    (suspend PublicInteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
 
-/** Public message command. **/
-public class PublicMessageCommand(
+/** Public user command. **/
+public class PublicUserCommand(
     extension: Extension
-) : MessageCommand<PublicMessageCommandContext>(extension) {
+) : UserCommand<PublicUserCommandContext>(extension) {
     /** Provide this tn open with a response, omit it to ack instead. **/
-    public var initialResponseBuilder: InitialPublicMessageResponseBuilder = null
+    public var initialResponseBuilder: InitialPublicUserResponseBuilder = null
 
-    override suspend fun call(event: MessageCommandInteractionCreateEvent) {
+    override suspend fun call(event: UserCommandInteractionCreateEvent) {
         try {
             if (!runChecks(event)) {
                 return
@@ -36,7 +36,7 @@ public class PublicMessageCommand(
             event.interaction.acknowledgePublic()
         }
 
-        val context = PublicMessageCommandContext(event, this, response)
+        val context = PublicUserCommandContext(event, this, response)
 
         context.populate()
 
@@ -52,7 +52,7 @@ public class PublicMessageCommand(
         }
     }
 
-    override suspend fun respondText(context: PublicMessageCommandContext, message: String) {
+    override suspend fun respondText(context: PublicUserCommandContext, message: String) {
         context.respond { content = message }
     }
 }

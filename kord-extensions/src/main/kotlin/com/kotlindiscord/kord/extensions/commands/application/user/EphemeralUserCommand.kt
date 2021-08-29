@@ -1,25 +1,25 @@
 @file:Suppress("TooGenericExceptionCaught")
 
-package com.kotlindiscord.kord.extensions.commands.application.message
+package com.kotlindiscord.kord.extensions.commands.application.user
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.application.respond
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import dev.kord.core.behavior.interaction.respondEphemeral
-import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
 
-public typealias InitialEphemeralMessageResponseBuilder =
-    (suspend EphemeralInteractionResponseCreateBuilder.(MessageCommandInteractionCreateEvent) -> Unit)?
+public typealias InitialEphemeralUserResponseBuilder =
+    (suspend EphemeralInteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
 
-/** Ephemeral message command. **/
-public class EphemeralMessageCommand(
+/** Ephemeral user command. **/
+public class EphemeralUserCommand(
     extension: Extension
-) : MessageCommand<EphemeralMessageCommandContext>(extension) {
+) : UserCommand<EphemeralUserCommandContext>(extension) {
     /** Provide this tn open with a response, omit it to ack instead. **/
-    public var initialResponseBuilder: InitialEphemeralMessageResponseBuilder = null
+    public var initialResponseBuilder: InitialEphemeralUserResponseBuilder = null
 
-    override suspend fun call(event: MessageCommandInteractionCreateEvent) {
+    override suspend fun call(event: UserCommandInteractionCreateEvent) {
         try {
             if (!runChecks(event)) {
                 return
@@ -36,7 +36,7 @@ public class EphemeralMessageCommand(
             event.interaction.acknowledgeEphemeral()
         }
 
-        val context = EphemeralMessageCommandContext(event, this, response)
+        val context = EphemeralUserCommandContext(event, this, response)
 
         context.populate()
 
@@ -52,7 +52,7 @@ public class EphemeralMessageCommand(
         }
     }
 
-    override suspend fun respondText(context: EphemeralMessageCommandContext, message: String) {
+    override suspend fun respondText(context: EphemeralUserCommandContext, message: String) {
         context.respond { content = message }
     }
 }
