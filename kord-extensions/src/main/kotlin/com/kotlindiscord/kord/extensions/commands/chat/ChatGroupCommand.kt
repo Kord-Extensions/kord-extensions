@@ -204,7 +204,6 @@ public open class ChatGroupCommand<T : Arguments>(
         }
 
         val command = parser.peekNext()?.data?.lowercase()
-        val remainingArgs = parser.consumeRemaining()
         val subCommand = getCommand(command, event)
 
         if (subCommand == null) {
@@ -212,7 +211,7 @@ public open class ChatGroupCommand<T : Arguments>(
         } else {
             parser.parseNext()  // Advance the cursor so proper parsing can happen
 
-            subCommand.call(event, commandName, StringParser(remainingArgs), argString)
+            subCommand.call(event, commandName, StringParser(parser.consumeRemaining()), argString)
         }
     }
 
