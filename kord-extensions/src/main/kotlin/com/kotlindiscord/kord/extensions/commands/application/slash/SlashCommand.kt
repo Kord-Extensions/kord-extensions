@@ -2,14 +2,17 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
+import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
@@ -50,7 +53,9 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     /** List of subcommands, if any. **/
     public open val subCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
 
-    override var guildId: Snowflake? = if (parentCommand == null && parentGroup == null) {
+    override val type: ApplicationCommandType = ApplicationCommandType.ChatInput
+
+    override var guildId: Snowflake? = if (parentCommand != null && parentGroup != null) {
         settings.applicationCommandsBuilder.defaultGuild
     } else {
         null
@@ -156,6 +161,39 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 }
             }
         }
+    }
+
+    override suspend fun runChecks(event: ChatInputCommandInteractionCreateEvent): Boolean {
+        val locale = event.getLocale()
+        val result = super.runChecks(event)
+
+        if (result) {
+            settings.applicationCommandsBuilder.slashCommandChecks.forEach { check ->
+                val context = CheckContext(event, locale)
+
+                check(context)
+
+                if (!context.passed) {
+                    context.throwIfFailedWithMessage()
+
+                    return false
+                }
+            }
+
+            extension.slashCommandChecks.forEach { check ->
+                val context = CheckContext(event, locale)
+
+                check(context)
+
+                if (!context.passed) {
+                    context.throwIfFailedWithMessage()
+
+                    return false
+                }
+            }
+        }
+
+        return result
     }
 
     /** A general way to handle errors thrown during the course of a command's execution. **/

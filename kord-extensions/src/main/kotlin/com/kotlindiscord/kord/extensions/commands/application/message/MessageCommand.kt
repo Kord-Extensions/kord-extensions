@@ -2,13 +2,16 @@ package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
+import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
@@ -25,6 +28,8 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
 
     /** Command body, to be called when the command is executed. **/
     public lateinit var body: suspend C.() -> Unit
+
+    override val type: ApplicationCommandType = ApplicationCommandType.Message
 
     /** Call this to supply a command [body], to be called when the command is executed. **/
     public fun action(action: suspend C.() -> Unit) {
@@ -99,6 +104,39 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
                 }
             }
         }
+    }
+
+    override suspend fun runChecks(event: MessageCommandInteractionCreateEvent): Boolean {
+        val locale = event.getLocale()
+        val result = super.runChecks(event)
+
+        if (result) {
+            settings.applicationCommandsBuilder.messageCommandChecks.forEach { check ->
+                val context = CheckContext(event, locale)
+
+                check(context)
+
+                if (!context.passed) {
+                    context.throwIfFailedWithMessage()
+
+                    return false
+                }
+            }
+
+            extension.messageCommandChecks.forEach { check ->
+                val context = CheckContext(event, locale)
+
+                check(context)
+
+                if (!context.passed) {
+                    context.throwIfFailedWithMessage()
+
+                    return false
+                }
+            }
+        }
+
+        return result
     }
 
     /** A general way to handle errors thrown during the course of a command's execution. **/

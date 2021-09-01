@@ -71,6 +71,34 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
+        publicMessageCommand {
+            name = "Raw Info"
+
+            action {
+                val message = targetMessages.firstOrNull() ?: return@action
+
+                respond {
+                    content = "**Message command:** Raw content for message sent by ${message.author!!.mention}"
+
+                    embed {
+                        description = "```markdown\n${message.content}```"
+                    }
+                }
+            }
+        }
+
+        publicUserCommand {
+            name = "ping"
+
+            action {
+                val user = targetUsers.firstOrNull() ?: return@action
+
+                respond {
+                    content = "Let's ping ${user.mention} for no reason. <3"
+                }
+            }
+        }
+
         chatCommand(::ColorArgs) {
             name = "color"
             aliases = arrayOf("colour")

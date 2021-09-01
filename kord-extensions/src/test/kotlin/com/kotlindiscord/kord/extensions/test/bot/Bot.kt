@@ -25,6 +25,8 @@ suspend fun main() {
 
         applicationCommands {
             enabled = true
+
+            defaultGuild("787452339908116521")
         }
 
         extensions {

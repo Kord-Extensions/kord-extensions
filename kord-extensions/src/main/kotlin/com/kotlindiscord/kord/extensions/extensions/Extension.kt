@@ -3,21 +3,22 @@
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
@@ -43,7 +44,7 @@ public abstract class Extension : KoinComponent {
     internal val chatCommandRegistry: ChatCommandRegistry by inject()
 
     /** Slash command registry. **/
-    internal val slashCommandsRegistry: SlashCommandRegistry by inject()
+    internal val applicationCommandRegistry: ApplicationCommandRegistry by inject()
 
     /**
      * The name of this extension.
@@ -109,12 +110,25 @@ public abstract class Extension : KoinComponent {
         mutableListOf()
 
     /**
+     * List of message command checks.
+     *
+     * These checks will be checked against all message commands in this extension.
+     */
+    public val messageCommandChecks: MutableList<Check<MessageCommandInteractionCreateEvent>> = mutableListOf()
+
+    /**
      * List of slash command checks.
      *
      * These checks will be checked against all slash commands in this extension.
      */
-    public open val slashCommandChecks: MutableList<Check<ChatInputCommandInteractionCreateEvent>> =
-        mutableListOf()
+    public val slashCommandChecks: MutableList<Check<ChatInputCommandInteractionCreateEvent>> = mutableListOf()
+
+    /**
+     * List of user command checks.
+     *
+     * These checks will be checked against all user commands in this extension.
+     */
+    public val userCommandChecks: MutableList<Check<UserCommandInteractionCreateEvent>> = mutableListOf()
 
     /** String representing the bundle to get translations from for command names/descriptions. **/
     public open val bundle: String? = null
@@ -206,58 +220,5 @@ public abstract class Extension : KoinComponent {
         }
 
         this.setState(ExtensionState.UNLOADED)
-    }
-
-    /**
-     * Define a check which must pass for the command to be executed. This check will be applied to all
-     * slash commands in this extension.
-     *
-     * A command may have multiple checks - all checks must pass for the command to be executed.
-     * Checks will be run in the order that they're defined.
-     *
-     * This function can be used DSL-style with a given body, or it can be passed one or more
-     * predefined functions. See the samples for more information.
-     *
-     * @param checks Checks to apply to all slash commands in this extension.
-     */
-    public open fun slashCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
-        checks.forEach { slashCommandChecks.add(it) }
-    }
-
-    /**
-     * Overloaded check function to allow for DSL syntax.
-     *
-     * @param check Check to apply to all slash commands in this extension.
-     */
-    @ExtensionDSL
-    public open fun slashCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
-        slashCommandChecks.add(check)
-    }
-
-    /**
-     * Define a check which must pass for the command to be executed. This check will be applied to all commands
-     * in this extension.
-     *
-     * A command may have multiple checks - all checks must pass for the command to be executed.
-     * Checks will be run in the order that they're defined.
-     *
-     * This function can be used DSL-style with a given body, or it can be passed one or more
-     * predefined functions. See the samples for more information.
-     *
-     * @param checks Checks to apply to all commands in this extension.
-     */
-    @ExtensionDSL
-    public open fun chatCommandCheck(vararg checks: Check<MessageCreateEvent>) {
-        checks.forEach { chatCommandChecks.add(it) }
-    }
-
-    /**
-     * Overloaded check function to allow for DSL syntax.
-     *
-     * @param check Check to apply to all commands in this extension.
-     */
-    @ExtensionDSL
-    public open fun chatCommandCheck(check: Check<MessageCreateEvent>) {
-        chatCommandChecks.add(check)
     }
 }

@@ -9,6 +9,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.getLocale
+import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -43,6 +44,9 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
+
+    /** Discord-side command type, for matching up. **/
+    public abstract val type: ApplicationCommandType
 
     /** @suppress **/
     public open val checkList: MutableList<Check<E>> = mutableListOf()

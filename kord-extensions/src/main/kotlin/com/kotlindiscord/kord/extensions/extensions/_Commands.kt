@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.extensions
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.message.EphemeralMessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.message.PublicMessageCommand
@@ -14,11 +15,38 @@ import com.kotlindiscord.kord.extensions.commands.application.user.EphemeralUser
 import com.kotlindiscord.kord.extensions.commands.application.user.PublicUserCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatGroupCommand
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
 // region: Message commands
+
+/**
+ * Define a check which must pass for a message command to be executed. This check will be applied to all
+ * message commands in this extension.
+ *
+ * A message command may have multiple checks - all checks must pass for the command to be executed.
+ * Checks will be run in the order that they're defined.
+ *
+ * This function can be used DSL-style with a given body, or it can be passed one or more
+ * predefined functions. See the samples for more information.
+ *
+ * @param checks Checks to apply to all slash commands.
+ */
+public fun Extension.messageCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
+    checks.forEach { slashCommandChecks.add(it) }
+}
+
+/**
+ * Overloaded message command check function to allow for DSL syntax.
+ *
+ * @param check Check to apply to all slash commands.
+ */
+public fun Extension.messageCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
+    slashCommandChecks.add(check)
+}
 
 /** Register an ephemeral message command, DSL-style. **/
 public suspend fun Extension.ephemeralMessageCommand(
@@ -31,7 +59,7 @@ public suspend fun Extension.ephemeralMessageCommand(
 }
 
 /** Register a custom instance of an ephemeral message command. **/
-public fun Extension.ephemeralMessageCommand(
+public suspend fun Extension.ephemeralMessageCommand(
     commandObj: EphemeralMessageCommand
 ): EphemeralMessageCommand {
     try {
@@ -41,6 +69,10 @@ public fun Extension.ephemeralMessageCommand(
         logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
     } catch (e: InvalidCommandException) {
         logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+    }
+
+    if (applicationCommandRegistry.initialised) {
+        applicationCommandRegistry.register(commandObj)
     }
 
     return commandObj
@@ -57,7 +89,7 @@ public suspend fun Extension.publicMessageCommand(
 }
 
 /** Register a custom instance of a public message command. **/
-public fun Extension.publicMessageCommand(
+public suspend fun Extension.publicMessageCommand(
     commandObj: PublicMessageCommand
 ): PublicMessageCommand {
     try {
@@ -69,7 +101,40 @@ public fun Extension.publicMessageCommand(
         logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
     }
 
+    if (applicationCommandRegistry.initialised) {
+        applicationCommandRegistry.register(commandObj)
+    }
+
     return commandObj
+}
+
+// endregion
+
+// region: Slash commands (Generic)
+
+/**
+ * Define a check which must pass for a slash command to be executed. This check will be applied to all
+ * slash commands in this extension.
+ *
+ * A slash command may have multiple checks - all checks must pass for the command to be executed.
+ * Checks will be run in the order that they're defined.
+ *
+ * This function can be used DSL-style with a given body, or it can be passed one or more
+ * predefined functions. See the samples for more information.
+ *
+ * @param checks Checks to apply to all slash commands.
+ */
+public fun Extension.slashCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
+    checks.forEach { slashCommandChecks.add(it) }
+}
+
+/**
+ * Overloaded slash command check function to allow for DSL syntax.
+ *
+ * @param check Check to apply to all slash commands.
+ */
+public fun Extension.slashCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
+    slashCommandChecks.add(check)
 }
 
 // endregion
@@ -101,7 +166,7 @@ public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
  *
  * @param commandObj EphemeralSlashCommand object to register.
  */
-public fun <T : Arguments> Extension.ephemeralSlashCommand(
+public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
     commandObj: EphemeralSlashCommand<T>
 ): EphemeralSlashCommand<T> {
     try {
@@ -111,6 +176,10 @@ public fun <T : Arguments> Extension.ephemeralSlashCommand(
         logger.error(e) { "Failed to register subcommand - $e" }
     } catch (e: InvalidCommandException) {
         logger.error(e) { "Failed to register subcommand - $e" }
+    }
+
+    if (applicationCommandRegistry.initialised) {
+        applicationCommandRegistry.register(commandObj)
     }
 
     return commandObj
@@ -161,7 +230,7 @@ public suspend fun <T : Arguments> Extension.publicSlashCommand(
  *
  * @param commandObj PublicSlashCommand object to register.
  */
-public fun <T : Arguments> Extension.publicSlashCommand(
+public suspend fun <T : Arguments> Extension.publicSlashCommand(
     commandObj: PublicSlashCommand<T>
 ): PublicSlashCommand<T> {
     try {
@@ -171,6 +240,10 @@ public fun <T : Arguments> Extension.publicSlashCommand(
         logger.error(e) { "Failed to register subcommand - $e" }
     } catch (e: InvalidCommandException) {
         logger.error(e) { "Failed to register subcommand - $e" }
+    }
+
+    if (applicationCommandRegistry.initialised) {
+        applicationCommandRegistry.register(commandObj)
     }
 
     return commandObj
@@ -196,6 +269,31 @@ public suspend fun Extension.publicSlashCommand(
 
 // region: User commands
 
+/**
+ * Define a check which must pass for a user command to be executed. This check will be applied to all
+ * user commands in this extension.
+ *
+ * A user command may have multiple checks - all checks must pass for the command to be executed.
+ * Checks will be run in the order that they're defined.
+ *
+ * This function can be used DSL-style with a given body, or it can be passed one or more
+ * predefined functions. See the samples for more information.
+ *
+ * @param checks Checks to apply to all slash commands.
+ */
+public fun Extension.userCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
+    checks.forEach { slashCommandChecks.add(it) }
+}
+
+/**
+ * Overloaded user command check function to allow for DSL syntax.
+ *
+ * @param check Check to apply to all slash commands.
+ */
+public fun Extension.userCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
+    slashCommandChecks.add(check)
+}
+
 /** Register an ephemeral user command, DSL-style. **/
 public suspend fun Extension.ephemeralUserCommand(
     body: suspend EphemeralUserCommand.() -> Unit
@@ -207,7 +305,7 @@ public suspend fun Extension.ephemeralUserCommand(
 }
 
 /** Register a custom instance of an ephemeral user command. **/
-public fun Extension.ephemeralUserCommand(
+public suspend fun Extension.ephemeralUserCommand(
     commandObj: EphemeralUserCommand
 ): EphemeralUserCommand {
     try {
@@ -217,6 +315,10 @@ public fun Extension.ephemeralUserCommand(
         logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
     } catch (e: InvalidCommandException) {
         logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+    }
+
+    if (applicationCommandRegistry.initialised) {
+        applicationCommandRegistry.register(commandObj)
     }
 
     return commandObj
@@ -233,7 +335,7 @@ public suspend fun Extension.publicUserCommand(
 }
 
 /** Register a custom instance of a public user command. **/
-public fun Extension.publicUserCommand(
+public suspend fun Extension.publicUserCommand(
     commandObj: PublicUserCommand
 ): PublicUserCommand {
     try {
@@ -245,12 +347,43 @@ public fun Extension.publicUserCommand(
         logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
     }
 
+    if (applicationCommandRegistry.initialised) {
+        applicationCommandRegistry.register(commandObj)
+    }
+
     return commandObj
 }
 
 // endregion
 
 // region: Chat commands
+
+/**
+ * Define a check which must pass for the command to be executed. This check will be applied to all commands
+ * in this extension.
+ *
+ * A command may have multiple checks - all checks must pass for the command to be executed.
+ * Checks will be run in the order that they're defined.
+ *
+ * This function can be used DSL-style with a given body, or it can be passed one or more
+ * predefined functions. See the samples for more information.
+ *
+ * @param checks Checks to apply to all commands in this extension.
+ */
+@ExtensionDSL
+public fun Extension.chatCommandCheck(vararg checks: Check<MessageCreateEvent>) {
+    checks.forEach { chatCommandChecks.add(it) }
+}
+
+/**
+ * Overloaded check function to allow for DSL syntax.
+ *
+ * @param check Check to apply to all commands in this extension.
+ */
+@ExtensionDSL
+public fun Extension.chatCommandCheck(check: Check<MessageCreateEvent>) {
+    chatCommandChecks.add(check)
+}
 
 /**
  * DSL function for easily registering a command.

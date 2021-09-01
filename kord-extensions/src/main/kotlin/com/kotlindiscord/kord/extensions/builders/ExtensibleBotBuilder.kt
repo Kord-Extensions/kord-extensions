@@ -6,8 +6,8 @@ import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
@@ -28,6 +28,8 @@ import dev.kord.core.builder.kord.KordBuilder
 import dev.kord.core.builder.kord.Shards
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
@@ -76,7 +78,7 @@ public open class ExtensibleBotBuilder {
     public val membersBuilder: MembersBuilder = MembersBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val messageCommandsBuilder: MessageCommandsBuilder = MessageCommandsBuilder()
+    public val messageCommandsBuilder: ChatCommandsBuilder = ChatCommandsBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var presenceBuilder: PresenceBuilder.() -> Unit = { status = PresenceStatus.Online }
@@ -131,10 +133,10 @@ public open class ExtensibleBotBuilder {
     /**
      * DSL function used to configure the bot's message command options.
      *
-     * @see MessageCommandsBuilder
+     * @see ChatCommandsBuilder
      */
     @BotBuilderDSL
-    public suspend fun messageCommands(builder: suspend MessageCommandsBuilder.() -> Unit) {
+    public suspend fun messageCommands(builder: suspend ChatCommandsBuilder.() -> Unit) {
         builder(messageCommandsBuilder)
     }
 
@@ -226,7 +228,12 @@ public open class ExtensibleBotBuilder {
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { messageCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
-        loadModule { single { applicationCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
+
+        loadModule {
+            single {
+                applicationCommandsBuilder.applicationCommandRegistryBuilder()
+            } bind ApplicationCommandRegistry::class
+        }
 
         loadModule {
             single {
@@ -785,14 +792,14 @@ public open class ExtensibleBotBuilder {
 
     /** Builder used for configuring the bot's message command options. **/
     @BotBuilderDSL
-    public class MessageCommandsBuilder {
-        /** Whether to invoke commands on bot mentions, in addition to using message prefixes. Defaults to `true`. **/
+    public class ChatCommandsBuilder {
+        /** Whether to invoke commands on bot mentions, in addition to using chat prefixes. Defaults to `true`. **/
         public var invokeOnMention: Boolean = true
 
         /** Prefix to require for command invocations on Discord. Defaults to `"!"`. **/
         public var defaultPrefix: String = "!"
 
-        /** Whether to register and process message commands. Defaults to `false`. **/
+        /** Whether to register and process chat commands. Defaults to `false`. **/
         public var enabled: Boolean = false
 
         /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
@@ -858,8 +865,8 @@ public open class ExtensibleBotBuilder {
     /** Builder used for configuring the bot's application command options. **/
     @BotBuilderDSL
     public class ApplicationCommandsBuilder {
-        /** Whether to register and process application commands. Defaults to `false`. **/
-        public var enabled: Boolean = false
+        /** Whether to register and process application commands. Defaults to `true`. **/
+        public var enabled: Boolean = true
 
         /** The guild ID to use for all global application commands. Intended for testing. **/
         public var defaultGuild: Snowflake? = null
@@ -868,14 +875,29 @@ public open class ExtensibleBotBuilder {
         public var register: Boolean = true
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var slashRegistryBuilder: () -> SlashCommandRegistry = { SlashCommandRegistry() }
+        public var applicationCommandRegistryBuilder: () -> ApplicationCommandRegistry =
+            { ApplicationCommandRegistry() }
+
+        /**
+         * List of message command checks.
+         *
+         * These checks will be checked against all message commands.
+         */
+        public val messageCommandChecks: MutableList<Check<MessageCommandInteractionCreateEvent>> = mutableListOf()
 
         /**
          * List of slash command checks.
          *
          * These checks will be checked against all slash commands.
          */
-        public val slashCheckList: MutableList<Check<ChatInputCommandInteractionCreateEvent>> = mutableListOf()
+        public val slashCommandChecks: MutableList<Check<ChatInputCommandInteractionCreateEvent>> = mutableListOf()
+
+        /**
+         * List of user command checks.
+         *
+         * These checks will be checked against all user commands.
+         */
+        public val userCommandChecks: MutableList<Check<UserCommandInteractionCreateEvent>> = mutableListOf()
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake) {
@@ -896,8 +918,33 @@ public open class ExtensibleBotBuilder {
          * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
          * use of a subclass.
          */
-        public fun slashRegistry(builder: () -> SlashCommandRegistry) {
-            slashRegistryBuilder = builder
+        public fun applicationCommandRegistry(builder: () -> ApplicationCommandRegistry) {
+            applicationCommandRegistryBuilder = builder
+        }
+
+        /**
+         * Define a check which must pass for a message command to be executed. This check will be applied to all
+         * message commands.
+         *
+         * A message command may have multiple checks - all checks must pass for the command to be executed.
+         * Checks will be run in the order that they're defined.
+         *
+         * This function can be used DSL-style with a given body, or it can be passed one or more
+         * predefined functions. See the samples for more information.
+         *
+         * @param checks Checks to apply to all slash commands.
+         */
+        public fun messageCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
+            checks.forEach { slashCommandChecks.add(it) }
+        }
+
+        /**
+         * Overloaded message command check function to allow for DSL syntax.
+         *
+         * @param check Check to apply to all slash commands.
+         */
+        public fun messageCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
+            slashCommandChecks.add(check)
         }
 
         /**
@@ -912,8 +959,8 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all slash commands.
          */
-        public fun slashCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
-            checks.forEach { slashCheckList.add(it) }
+        public fun slashCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
+            checks.forEach { slashCommandChecks.add(it) }
         }
 
         /**
@@ -921,8 +968,33 @@ public open class ExtensibleBotBuilder {
          *
          * @param check Check to apply to all slash commands.
          */
-        public fun slashCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
-            slashCheckList.add(check)
+        public fun slashCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
+            slashCommandChecks.add(check)
+        }
+
+        /**
+         * Define a check which must pass for a user command to be executed. This check will be applied to all
+         * user commands.
+         *
+         * A user command may have multiple checks - all checks must pass for the command to be executed.
+         * Checks will be run in the order that they're defined.
+         *
+         * This function can be used DSL-style with a given body, or it can be passed one or more
+         * predefined functions. See the samples for more information.
+         *
+         * @param checks Checks to apply to all slash commands.
+         */
+        public fun userCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
+            checks.forEach { slashCommandChecks.add(it) }
+        }
+
+        /**
+         * Overloaded user command check function to allow for DSL syntax.
+         *
+         * @param check Check to apply to all slash commands.
+         */
+        public fun userCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
+            slashCommandChecks.add(check)
         }
     }
 }

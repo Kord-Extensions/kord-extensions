@@ -4,9 +4,9 @@ package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -21,6 +21,8 @@ import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
@@ -151,11 +153,11 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         }
 
         on<ReadyEvent> {
-            if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
+            if (!initialized) {  // We do this because a reconnection will cause this event to happen again.
                 initialized = true
 
                 if (settings.applicationCommandsBuilder.enabled) {
-                    getKoin().get<SlashCommandRegistry>().syncAll()
+                    getKoin().get<ApplicationCommandRegistry>().initialRegistration()
                 } else {
                     logger.info {
                         "Slash command support is disabled - set `enabled` to `true` in the `slashCommands` builder" +
@@ -175,7 +177,15 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         if (settings.applicationCommandsBuilder.enabled) {
             on<ChatInputCommandInteractionCreateEvent> {
-                getKoin().get<SlashCommandRegistry>().handle(this)
+                getKoin().get<ApplicationCommandRegistry>().handle(this)
+            }
+
+            on<MessageCommandInteractionCreateEvent> {
+                getKoin().get<ApplicationCommandRegistry>().handle(this)
+            }
+
+            on<UserCommandInteractionCreateEvent> {
+                getKoin().get<ApplicationCommandRegistry>().handle(this)
             }
         }
     }
