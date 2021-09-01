@@ -42,7 +42,7 @@ public open class ChatCommandRegistry : KoinComponent {
     /** @suppress **/
     public open val commandThreadPool: ExecutorCoroutineDispatcher by lazy {
         Executors
-            .newFixedThreadPool(botSettings.messageCommandsBuilder.threads)
+            .newFixedThreadPool(botSettings.chatCommandsBuilder.threads)
             .asCoroutineDispatcher()
     }
 
@@ -107,7 +107,7 @@ public open class ChatCommandRegistry : KoinComponent {
      * needed.
      */
     public open suspend fun getPrefix(event: MessageCreateEvent): String =
-        botSettings.messageCommandsBuilder.prefixCallback(event, botSettings.messageCommandsBuilder.defaultPrefix)
+        botSettings.chatCommandsBuilder.prefixCallback(event, botSettings.chatCommandsBuilder.defaultPrefix)
 
     /**
      * Check whether the given string starts with a mention referring to the bot. If so, the matching mention string
@@ -143,7 +143,7 @@ public open class ChatCommandRegistry : KoinComponent {
 
         content = when {
             // Starts with the right mention and mentions are allowed, so remove it
-            mention != null && botSettings.messageCommandsBuilder.invokeOnMention -> content.substring(mention.length)
+            mention != null && botSettings.chatCommandsBuilder.invokeOnMention -> content.substring(mention.length)
 
             // Starts with the right prefix, so remove it
             content.startsWith(prefix) -> content.substring(prefix.length)

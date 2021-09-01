@@ -24,7 +24,7 @@ suspend fun main() {
             }
         }
 
-        messageCommands {
+        chatCommands {
             defaultPrefix = "?"
 
             prefix { default ->

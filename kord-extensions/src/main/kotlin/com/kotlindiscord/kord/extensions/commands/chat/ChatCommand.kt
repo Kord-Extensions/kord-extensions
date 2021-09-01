@@ -35,10 +35,10 @@ import java.util.*
 private val logger = KotlinLogging.logger {}
 
 /**
- * Class representing a message command.
+ * Class representing a chat command.
  *
  * You shouldn't need to use this class directly - instead, create an [Extension] and use the
- * [command function][Extension.messageContentCommand] to register your command, by overriding the [Extension.setup]
+ * `chatCommand` function to register your command, by overriding the [Extension.setup]
  * function.
  *
  * @param extension The [Extension] that registered this command.
@@ -294,7 +294,7 @@ public open class ChatCommand<T : Arguments>(
         val locale = event.getLocale()
 
         // global command checks
-        for (check in extension.bot.settings.messageCommandsBuilder.checkList) {
+        for (check in extension.bot.settings.chatCommandsBuilder.checkList) {
             val context = CheckContext(event, locale)
 
             check(context)

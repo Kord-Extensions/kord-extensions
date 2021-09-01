@@ -11,7 +11,7 @@ suspend fun main() {
     val bot = ExtensibleBot(env("TOKEN")!!) {
         koinLogLevel = Level.DEBUG
 
-        messageCommands {
+        chatCommands {
             check(isNotbot)
         }
 

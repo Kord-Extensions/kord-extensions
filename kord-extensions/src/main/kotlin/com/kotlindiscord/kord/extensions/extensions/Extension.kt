@@ -3,7 +3,7 @@
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.*
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
@@ -16,10 +16,6 @@ import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
-import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
-import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -102,11 +98,11 @@ public abstract class Extension : KoinComponent {
     public open val userCommands: MutableList<UserCommand<*>> = mutableListOf()
 
     /**
-     * List of message command checks.
+     * List of chat command checks.
      *
-     * These checks will be checked against all commands in this extension.
+     * These checks will be checked against all chat commands in this extension.
      */
-    public open val chatCommandChecks: MutableList<Check<MessageCreateEvent>> =
+    public open val chatCommandChecks: MutableList<ChatCommandCheck> =
         mutableListOf()
 
     /**
@@ -114,21 +110,21 @@ public abstract class Extension : KoinComponent {
      *
      * These checks will be checked against all message commands in this extension.
      */
-    public val messageCommandChecks: MutableList<Check<MessageCommandInteractionCreateEvent>> = mutableListOf()
+    public val messageCommandChecks: MutableList<MessageCommandCheck> = mutableListOf()
 
     /**
      * List of slash command checks.
      *
      * These checks will be checked against all slash commands in this extension.
      */
-    public val slashCommandChecks: MutableList<Check<ChatInputCommandInteractionCreateEvent>> = mutableListOf()
+    public val slashCommandChecks: MutableList<SlashCommandCheck> = mutableListOf()
 
     /**
      * List of user command checks.
      *
      * These checks will be checked against all user commands in this extension.
      */
-    public val userCommandChecks: MutableList<Check<UserCommandInteractionCreateEvent>> = mutableListOf()
+    public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
 
     /** String representing the bundle to get translations from for command names/descriptions. **/
     public open val bundle: String? = null

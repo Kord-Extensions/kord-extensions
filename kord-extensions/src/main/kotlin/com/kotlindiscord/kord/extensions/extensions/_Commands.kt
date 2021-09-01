@@ -5,7 +5,7 @@ package com.kotlindiscord.kord.extensions.extensions
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.*
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.message.EphemeralMessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.message.PublicMessageCommand
@@ -15,8 +15,6 @@ import com.kotlindiscord.kord.extensions.commands.application.user.EphemeralUser
 import com.kotlindiscord.kord.extensions.commands.application.user.PublicUserCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatGroupCommand
-import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -35,8 +33,8 @@ private val logger = KotlinLogging.logger {}
  *
  * @param checks Checks to apply to all slash commands.
  */
-public fun Extension.messageCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
-    checks.forEach { slashCommandChecks.add(it) }
+public fun Extension.messageCommandCheck(vararg checks: MessageCommandCheck) {
+    checks.forEach { messageCommandChecks.add(it) }
 }
 
 /**
@@ -44,8 +42,8 @@ public fun Extension.messageCommandCheck(vararg checks: Check<ChatInputCommandIn
  *
  * @param check Check to apply to all slash commands.
  */
-public fun Extension.messageCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
-    slashCommandChecks.add(check)
+public fun Extension.messageCommandCheck(check: MessageCommandCheck) {
+    messageCommandChecks.add(check)
 }
 
 /** Register an ephemeral message command, DSL-style. **/
@@ -124,7 +122,7 @@ public suspend fun Extension.publicMessageCommand(
  *
  * @param checks Checks to apply to all slash commands.
  */
-public fun Extension.slashCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
+public fun Extension.slashCommandCheck(vararg checks: SlashCommandCheck) {
     checks.forEach { slashCommandChecks.add(it) }
 }
 
@@ -133,7 +131,7 @@ public fun Extension.slashCommandCheck(vararg checks: Check<ChatInputCommandInte
  *
  * @param check Check to apply to all slash commands.
  */
-public fun Extension.slashCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
+public fun Extension.slashCommandCheck(check: SlashCommandCheck) {
     slashCommandChecks.add(check)
 }
 
@@ -281,8 +279,8 @@ public suspend fun Extension.publicSlashCommand(
  *
  * @param checks Checks to apply to all slash commands.
  */
-public fun Extension.userCommandCheck(vararg checks: Check<ChatInputCommandInteractionCreateEvent>) {
-    checks.forEach { slashCommandChecks.add(it) }
+public fun Extension.userCommandCheck(vararg checks: UserCommandCheck) {
+    checks.forEach { userCommandChecks.add(it) }
 }
 
 /**
@@ -290,8 +288,8 @@ public fun Extension.userCommandCheck(vararg checks: Check<ChatInputCommandInter
  *
  * @param check Check to apply to all slash commands.
  */
-public fun Extension.userCommandCheck(check: Check<ChatInputCommandInteractionCreateEvent>) {
-    slashCommandChecks.add(check)
+public fun Extension.userCommandCheck(check: UserCommandCheck) {
+    userCommandChecks.add(check)
 }
 
 /** Register an ephemeral user command, DSL-style. **/
@@ -371,7 +369,7 @@ public suspend fun Extension.publicUserCommand(
  * @param checks Checks to apply to all commands in this extension.
  */
 @ExtensionDSL
-public fun Extension.chatCommandCheck(vararg checks: Check<MessageCreateEvent>) {
+public fun Extension.chatCommandCheck(vararg checks: ChatCommandCheck) {
     checks.forEach { chatCommandChecks.add(it) }
 }
 
@@ -381,7 +379,7 @@ public fun Extension.chatCommandCheck(vararg checks: Check<MessageCreateEvent>) 
  * @param check Check to apply to all commands in this extension.
  */
 @ExtensionDSL
-public fun Extension.chatCommandCheck(check: Check<MessageCreateEvent>) {
+public fun Extension.chatCommandCheck(check: ChatCommandCheck) {
     chatCommandChecks.add(check)
 }
 

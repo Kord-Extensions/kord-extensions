@@ -169,7 +169,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.info { "Ready!" }
         }
 
-        if (settings.messageCommandsBuilder.enabled) {
+        if (settings.chatCommandsBuilder.enabled) {
             on<MessageCreateEvent> {
                 getKoin().get<ChatCommandRegistry>().handleEvent(this)
             }

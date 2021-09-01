@@ -9,8 +9,9 @@ suspend fun main() {
     val bot = ExtensibleBot(env("TOKEN")!!) {
         koinLogLevel = Level.DEBUG
 
-        messageCommands {
+        chatCommands {
             defaultPrefix = "?"
+            enabled = true
 
             check(isNotbot)
 
@@ -24,8 +25,6 @@ suspend fun main() {
         }
 
         applicationCommands {
-            enabled = true
-
             defaultGuild("787452339908116521")
         }
 
