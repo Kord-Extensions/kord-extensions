@@ -74,6 +74,12 @@ class TestExtension : Extension() {
         publicMessageCommand {
             name = "Raw Info"
 
+            check {
+                failIf("This message command only supports non-webhook, non-interaction messages.") {
+                    event.interaction.messages?.values?.firstOrNull()?.author == null
+                }
+            }
+
             action {
                 val message = targetMessages.firstOrNull() ?: return@action
 
@@ -89,6 +95,12 @@ class TestExtension : Extension() {
 
         publicUserCommand {
             name = "ping"
+
+            check {
+                failIf("That's me, you can't make me ping myself!") {
+                    event.interaction.users?.values?.firstOrNull()?.id == kord.selfId
+                }
+            }
 
             action {
                 val user = targetUsers.firstOrNull() ?: return@action

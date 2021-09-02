@@ -5,7 +5,10 @@ package com.kotlindiscord.kord.extensions.extensions
 import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
-import com.kotlindiscord.kord.extensions.checks.types.*
+import com.kotlindiscord.kord.extensions.checks.types.ChatCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.message.EphemeralMessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.message.PublicMessageCommand
@@ -47,6 +50,7 @@ public fun Extension.messageCommandCheck(check: MessageCommandCheck) {
 }
 
 /** Register an ephemeral message command, DSL-style. **/
+@ExtensionDSL
 public suspend fun Extension.ephemeralMessageCommand(
     body: suspend EphemeralMessageCommand.() -> Unit
 ): EphemeralMessageCommand {
@@ -57,6 +61,7 @@ public suspend fun Extension.ephemeralMessageCommand(
 }
 
 /** Register a custom instance of an ephemeral message command. **/
+@ExtensionDSL
 public suspend fun Extension.ephemeralMessageCommand(
     commandObj: EphemeralMessageCommand
 ): EphemeralMessageCommand {
@@ -77,6 +82,7 @@ public suspend fun Extension.ephemeralMessageCommand(
 }
 
 /** Register a public message command, DSL-style. **/
+@ExtensionDSL
 public suspend fun Extension.publicMessageCommand(
     body: suspend PublicMessageCommand.() -> Unit
 ): PublicMessageCommand {
@@ -87,6 +93,7 @@ public suspend fun Extension.publicMessageCommand(
 }
 
 /** Register a custom instance of a public message command. **/
+@ExtensionDSL
 public suspend fun Extension.publicMessageCommand(
     commandObj: PublicMessageCommand
 ): PublicMessageCommand {
@@ -147,6 +154,7 @@ public fun Extension.slashCommandCheck(check: SlashCommandCheck) {
  * @param arguments Arguments builder (probably a reference to the class constructor).
  * @param body Builder lambda used for setting up the slash command object.
  */
+@ExtensionDSL
 public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
     arguments: () -> T,
     body: suspend EphemeralSlashCommand<T>.() -> Unit
@@ -164,6 +172,7 @@ public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
  *
  * @param commandObj EphemeralSlashCommand object to register.
  */
+@ExtensionDSL
 public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
     commandObj: EphemeralSlashCommand<T>
 ): EphemeralSlashCommand<T> {
@@ -190,6 +199,7 @@ public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
  *
  * @param body Builder lambda used for setting up the slash command object.
  */
+@ExtensionDSL
 public suspend fun Extension.ephemeralSlashCommand(
     body: suspend EphemeralSlashCommand<Arguments>.() -> Unit
 ): EphemeralSlashCommand<Arguments> {
@@ -211,6 +221,7 @@ public suspend fun Extension.ephemeralSlashCommand(
  * @param arguments Arguments builder (probably a reference to the class constructor).
  * @param body Builder lambda used for setting up the slash command object.
  */
+@ExtensionDSL
 public suspend fun <T : Arguments> Extension.publicSlashCommand(
     arguments: () -> T,
     body: suspend PublicSlashCommand<T>.() -> Unit
@@ -228,6 +239,7 @@ public suspend fun <T : Arguments> Extension.publicSlashCommand(
  *
  * @param commandObj PublicSlashCommand object to register.
  */
+@ExtensionDSL
 public suspend fun <T : Arguments> Extension.publicSlashCommand(
     commandObj: PublicSlashCommand<T>
 ): PublicSlashCommand<T> {
@@ -254,6 +266,7 @@ public suspend fun <T : Arguments> Extension.publicSlashCommand(
  *
  * @param body Builder lambda used for setting up the slash command object.
  */
+@ExtensionDSL
 public suspend fun Extension.publicSlashCommand(
     body: suspend PublicSlashCommand<Arguments>.() -> Unit
 ): PublicSlashCommand<Arguments> {
@@ -293,6 +306,7 @@ public fun Extension.userCommandCheck(check: UserCommandCheck) {
 }
 
 /** Register an ephemeral user command, DSL-style. **/
+@ExtensionDSL
 public suspend fun Extension.ephemeralUserCommand(
     body: suspend EphemeralUserCommand.() -> Unit
 ): EphemeralUserCommand {
@@ -303,6 +317,7 @@ public suspend fun Extension.ephemeralUserCommand(
 }
 
 /** Register a custom instance of an ephemeral user command. **/
+@ExtensionDSL
 public suspend fun Extension.ephemeralUserCommand(
     commandObj: EphemeralUserCommand
 ): EphemeralUserCommand {
@@ -323,6 +338,7 @@ public suspend fun Extension.ephemeralUserCommand(
 }
 
 /** Register a public user command, DSL-style. **/
+@ExtensionDSL
 public suspend fun Extension.publicUserCommand(
     body: suspend PublicUserCommand.() -> Unit
 ): PublicUserCommand {
@@ -333,6 +349,7 @@ public suspend fun Extension.publicUserCommand(
 }
 
 /** Register a custom instance of a public user command. **/
+@ExtensionDSL
 public suspend fun Extension.publicUserCommand(
     commandObj: PublicUserCommand
 ): PublicUserCommand {
@@ -425,6 +442,7 @@ public suspend fun Extension.chatCommand(
  *
  * @param commandObj MessageContentCommand object to register.
  */
+@ExtensionDSL
 public fun <T : Arguments> Extension.chatCommand(
     commandObj: ChatCommand<T>
 ): ChatCommand<T> {

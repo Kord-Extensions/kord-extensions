@@ -24,4 +24,10 @@ public suspend inline fun PublicApplicationCommandContext.respond(
  */
 public suspend inline fun PublicApplicationCommandContext.edit(
     builder: PublicInteractionResponseModifyBuilder.() -> Unit
-): Message? = (interactionResponse as? PublicInteractionResponseBehavior)?.edit(builder)
+): Message {
+    val response = interactionResponse as? PublicInteractionResponseBehavior ?: error(
+        "Unable to edit: No `initialResponse` builder was provided."
+    )
+
+    return response.edit(builder)
+}

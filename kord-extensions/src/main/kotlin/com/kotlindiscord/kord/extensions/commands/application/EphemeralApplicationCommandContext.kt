@@ -27,4 +27,10 @@ public suspend inline fun EphemeralApplicationCommandContext.respond(
  */
 public suspend inline fun EphemeralApplicationCommandContext.edit(
     builder: EphemeralInteractionResponseModifyBuilder.() -> Unit
-): Unit? = (interactionResponse as? EphemeralInteractionResponseBehavior)?.edit(builder)
+) {
+    val response = interactionResponse as? EphemeralInteractionResponseBehavior ?: error(
+        "Unable to edit: No `initialResponse` builder was provided."
+    )
+
+    response.edit(builder)
+}
