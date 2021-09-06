@@ -3,9 +3,7 @@
 package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
@@ -34,7 +32,6 @@ import kotlinx.coroutines.launch
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koin.dsl.bind
 
 /**
@@ -50,22 +47,6 @@ import org.koin.dsl.bind
  * @param token Token for connecting to Discord.
  */
 public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, private val token: String) : KoinComponent {
-    /**
-     * @suppress
-     */
-    @Deprecated(
-        "Use Koin to get this instead. This will be private in future.",
-
-        ReplaceWith(
-            "getKoin().get<Kord>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "dev.kord.core.Kord"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public val kord: Kord by inject()
-
     /**
      * A list of all registered event handlers.
      */
@@ -323,57 +304,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             extensionObj.doUnload()
         }
     }
-
-    /**
-     * Directly register a [ChatCommand] to this bot.
-     *
-     * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
-     * call the [Extension.messageContentCommand] function in your [Extension.setup] function.
-     *
-     * This function will throw a [CommandRegistrationException] if the command has already been registered, if
-     * a command with the same name exists, or if a command with one of the same aliases exists.
-     *
-     * @param command The command to be registered.
-     * @throws CommandRegistrationException Thrown if the command could not be registered.
-     */
-    @Deprecated(
-        "Use the equivalent function within `MessageContentCommandRegistry` instead.",
-
-        ReplaceWith(
-            "getKoin().get<MessageContentCommandRegistry>().add(command)",
-
-            "org.koin.core.component.KoinComponent.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.MessageContentCommand"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    @Throws(CommandRegistrationException::class)
-    public open fun addCommand(command: ChatCommand<out Arguments>): Unit = getKoin()
-        .get<ChatCommandRegistry>()
-        .add(command)
-
-    /**
-     * Directly remove a registered [ChatCommand] from this bot.
-     *
-     * This function is used when extensions are unloaded, in order to clear out their commands.
-     * No exception is thrown if the command wasn't registered.
-     *
-     * @param command The command to be removed.
-     */
-    @Deprecated(
-        "Use the equivalent function within `MessageContentCommandRegistry` instead.",
-
-        ReplaceWith(
-            "getKoin().get<MessageContentCommandRegistry>().remove(command)",
-
-            "org.koin.core.component.KoinComponent.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.MessageContentCommand"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public open fun removeCommand(command: ChatCommand<out Arguments>): Boolean = getKoin()
-        .get<ChatCommandRegistry>()
-        .remove(command)
 
     /**
      * Directly register an [EventHandler] to this bot.

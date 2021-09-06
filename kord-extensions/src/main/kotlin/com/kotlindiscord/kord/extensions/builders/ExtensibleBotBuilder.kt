@@ -355,14 +355,6 @@ public open class ExtensibleBotBuilder {
         /** @suppress Sentry extension builder. **/
         public open val sentryExtensionBuilder: SentryExtensionBuilder = SentryExtensionBuilder()
 
-        /** Whether to enable the bundled Sentry extension. Defaults to `true`. **/
-        @Deprecated("Use the sentry { } builder instead.", level = DeprecationLevel.ERROR)
-        public var sentry: Boolean
-            get() = sentryExtensionBuilder.debug
-            set(value) {
-                sentryExtensionBuilder.debug = value
-            }
-
         /** Add a custom extension to the bot via a builder - probably the extension constructor. **/
         public open fun add(builder: () -> Extension) {
             extensions.add(builder)
