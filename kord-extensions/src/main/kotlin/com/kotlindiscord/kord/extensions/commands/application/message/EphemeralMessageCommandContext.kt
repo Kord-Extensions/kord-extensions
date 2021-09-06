@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
-import com.kotlindiscord.kord.extensions.commands.application.EphemeralApplicationCommandContext
+import com.kotlindiscord.kord.extensions.interactions.EphemeralInteractionContext
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
@@ -9,4 +9,4 @@ public class EphemeralMessageCommandContext(
     override val event: MessageCommandInteractionCreateEvent,
     override val command: MessageCommand<EphemeralMessageCommandContext>,
     override val interactionResponse: EphemeralInteractionResponseBehavior
-) : MessageCommandContext<EphemeralMessageCommandContext>(event, command), EphemeralApplicationCommandContext
+) : MessageCommandContext<EphemeralMessageCommandContext>(event, command), EphemeralInteractionContext

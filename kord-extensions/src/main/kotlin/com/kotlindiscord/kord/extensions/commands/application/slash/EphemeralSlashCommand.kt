@@ -4,8 +4,8 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.application.respond
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.interactions.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.SubCommand

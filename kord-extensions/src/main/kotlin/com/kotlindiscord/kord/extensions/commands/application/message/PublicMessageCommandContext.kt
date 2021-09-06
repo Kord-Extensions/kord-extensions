@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
-import com.kotlindiscord.kord.extensions.commands.application.PublicApplicationCommandContext
+import com.kotlindiscord.kord.extensions.interactions.PublicInteractionContext
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
@@ -9,4 +9,4 @@ public class PublicMessageCommandContext(
     override val event: MessageCommandInteractionCreateEvent,
     override val command: MessageCommand<PublicMessageCommandContext>,
     override val interactionResponse: PublicInteractionResponseBehavior
-) : MessageCommandContext<PublicMessageCommandContext>(event, command), PublicApplicationCommandContext
+) : MessageCommandContext<PublicMessageCommandContext>(event, command), PublicInteractionContext

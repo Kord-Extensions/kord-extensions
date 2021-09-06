@@ -202,9 +202,6 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public open suspend fun runStandardChecks(event: E): Boolean {
         val locale = event.getLocale()
 
-        // TODO: Global checks
-        // TODO: Extension-level checks
-
         checkList.forEach { check ->
             val context = CheckContext(event, locale)
 

@@ -7,6 +7,7 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
+import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -20,9 +21,7 @@ import dev.kord.core.event.Event
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
-import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
-import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.*
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
@@ -167,6 +166,14 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             }
 
             logger.info { "Ready!" }
+        }
+
+        on<ButtonInteractionCreateEvent> {
+            getKoin().get<ComponentRegistry>().handle(this)
+        }
+
+        on<SelectMenuInteractionCreateEvent> {
+            getKoin().get<ComponentRegistry>().handle(this)
         }
 
         if (settings.chatCommandsBuilder.enabled) {

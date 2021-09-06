@@ -1,7 +1,6 @@
 package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
@@ -43,7 +42,6 @@ public val EXPAND_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u2139\u
  *
  * **Note:** This is going to be renamed - it's not ready for use yet!
  *
- * @param extension Extension that this paginator was created for
  * @param pages Pages object containing this paginator's pages
  * @param owner Optional paginator owner - setting this will prevent other users from interacting with the paginator
  * @param timeoutSeconds How long (in seconds) to wait before destroying the paginator, if needed
@@ -53,7 +51,6 @@ public val EXPAND_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u2139\u
  * @param bundle Translation bundle to use for this paginator
  */
 public abstract class BasePaginator(
-    public open val extension: Extension,
     public open val pages: Pages,
     public open val owner: User? = null,
     public open val timeoutSeconds: Long? = null,

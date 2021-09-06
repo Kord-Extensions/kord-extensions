@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.application.user
 
-import com.kotlindiscord.kord.extensions.commands.application.EphemeralApplicationCommandContext
+import com.kotlindiscord.kord.extensions.interactions.EphemeralInteractionContext
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
@@ -9,4 +9,4 @@ public class EphemeralUserCommandContext(
     override val event: UserCommandInteractionCreateEvent,
     override val command: UserCommand<EphemeralUserCommandContext>,
     override val interactionResponse: EphemeralInteractionResponseBehavior
-) : UserCommandContext<EphemeralUserCommandContext>(event, command), EphemeralApplicationCommandContext
+) : UserCommandContext<EphemeralUserCommandContext>(event, command), EphemeralInteractionContext

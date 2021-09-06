@@ -3,19 +3,22 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.application.respond
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.enumChoice
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
-import com.kotlindiscord.kord.extensions.components.AutoAckType
+import com.kotlindiscord.kord.extensions.components.*
+import com.kotlindiscord.kord.extensions.components.types.emoji
 import com.kotlindiscord.kord.extensions.extensions.*
+import com.kotlindiscord.kord.extensions.interactions.editingPaginator
+import com.kotlindiscord.kord.extensions.interactions.respond
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.reply
@@ -164,9 +167,8 @@ class TestExtension : Extension() {
                 message.respond {
                     content = "Here's a dropdown."
 
-                    components(60) {
-                        menu {
-                            autoAck = AutoAckType.PUBLIC
+                    components {
+                        publicSelectMenu {
                             maximumChoices = null
 
                             option("Option 1", "one")
@@ -174,7 +176,7 @@ class TestExtension : Extension() {
                             option("Option 3", "three")
 
                             action {
-                                publicFollowUp {
+                                respond {
                                     content = "You picked the following options: " + selected.joinToString {
                                         "`$it`"
                                     }
@@ -186,59 +188,50 @@ class TestExtension : Extension() {
             }
         }
 
-        publicSlashCommand {
+        ephemeralSlashCommand {
             name = "pages"
             description = "Pages!"
 
             guild(787452339908116521)
 
             action {
-//                paginator("short") {
-//                    owner = event.interaction.user.asUser()
-//                    timeoutSeconds = 60
-//                    keepEmbed = false
-//
-//                    (0..2).forEach {
-//                        page(
-//                            Page {
-//                                description = "Short page $it."
-//
-//                                footer {
-//                                    text = "Footer text ($it)"
-//                                }
-//                            }
-//                        )
-//
-//                        page(
-//                            "Expanded",
-//
-//                            Page {
-//                                description = "Expanded page $it, expanded page $it\n" +
-//                                    "Expanded page $it, expanded page $it"
-//
-//                                footer {
-//                                    text = "Footer text ($it)"
-//                                }
-//                            }
-//                        )
-//
-//                        page(
-//                            "MASSIVE GROUP",
-//
-//                            Page {
-//                                description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-//                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-//                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-//                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-//                                    "MASSIVE PAGE $it, MASSIVE PAGE $it"
-//
-//                                footer {
-//                                    text = "Footer text ($it)"
-//                                }
-//                            }
-//                        )
-//                    }
-//                }.send()
+                editingPaginator("short") {
+                    owner = event.interaction.user.asUser()
+                    timeoutSeconds = 60
+                    keepEmbed = false
+
+                    (0..2).forEach {
+                        page {
+                            description = "Short page $it."
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
+
+
+                        page("Expanded") {
+                            description = "Expanded page $it, expanded page $it\n" +
+                                "Expanded page $it, expanded page $it"
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
+
+                        page("MASSIVE GROUP") {
+                            description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                "MASSIVE PAGE $it, MASSIVE PAGE $it"
+
+                            footer {
+                                text = "Footer text ($it)"
+                            }
+                        }
+                    }
+                }.send()
             }
         }
 
@@ -252,35 +245,35 @@ class TestExtension : Extension() {
                 respond {
                     content = "Buttons!"
 
-//                    components(60) {
-//                        interactiveButton {
-//                            label = "Button one!"
-//
-//                            action {
-//                                respond("Button one pressed!")
-//                            }
-//                        }
-//
-//                        interactiveButton {
-//                            label = "Button two!"
-//                            style = ButtonStyle.Secondary
-//
-//                            action {
-//                                respond("Button two pressed!")
-//                            }
-//                        }
-//
-//                        disabledButton {
-//                            emoji("❎")
-//                        }
-//
-//                        linkButton {
-//                            label = "Google"
-//                            emoji("🔗")
-//
-//                            url = "https://google.com"
-//                        }
-//                    }
+                    components {
+                        ephemeralButton {
+                            label = "Button one!"
+
+                            action {
+                                respond { content = "Button one pressed!" }
+                            }
+                        }
+
+                        ephemeralButton {
+                            label = "Button two!"
+                            style = ButtonStyle.Secondary
+
+                            action {
+                                respond { content = "Button two pressed!" }
+                            }
+                        }
+
+                        disabledButton {
+                            emoji("❎")
+                        }
+
+                        linkButton {
+                            label = "Google"
+                            emoji("🔗")
+
+                            url = "https://google.com"
+                        }
+                    }
                 }
             }
         }
@@ -621,7 +614,6 @@ class TestExtension : Extension() {
                 }
 
                 MessageButtonPaginator(
-                    extension = this@TestExtension,
                     targetMessage = event.message,
                     pages = pages,
                     keepEmbed = false,

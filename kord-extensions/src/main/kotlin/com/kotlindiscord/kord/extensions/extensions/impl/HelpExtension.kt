@@ -149,7 +149,6 @@ public class HelpExtension : HelpProvider, Extension() {
         }
 
         return MessageButtonPaginator(
-            extension = this,
             keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale,
             owner = event.message.author,
@@ -235,7 +234,6 @@ public class HelpExtension : HelpProvider, Extension() {
         }
 
         return MessageButtonPaginator(
-            extension = this,
             keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale,
             owner = event.message.author,

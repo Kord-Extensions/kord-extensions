@@ -1,6 +1,5 @@
 package com.kotlindiscord.kord.extensions.pagination.builders
 
-import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.entity.ReactionEmoji
@@ -16,7 +15,6 @@ import java.util.*
  * @param defaultGroup Default page group, if any
  */
 public class PaginatorBuilder(
-    public val extension: Extension,
     public var locale: Locale? = null,
     public val defaultGroup: String = ""
 ) {

@@ -5,7 +5,6 @@ package com.kotlindiscord.kord.extensions.commands.chat
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.components.Components
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
@@ -18,8 +17,6 @@ import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
 import dev.kord.core.event.message.MessageCreateEvent
-import dev.kord.rest.builder.message.create.MessageCreateBuilder
-import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 
 /**
  * Command context object representing the context given to chat commands.
@@ -92,7 +89,7 @@ public open class ChatCommandContext<T : Arguments>(
 
         body: suspend PaginatorBuilder.() -> Unit
     ): MessageButtonPaginator {
-        val builder = PaginatorBuilder(command.extension, getLocale(), defaultGroup = defaultGroup)
+        val builder = PaginatorBuilder(getLocale(), defaultGroup = defaultGroup)
 
         body(builder)
 
@@ -122,44 +119,4 @@ public open class ChatCommandContext<T : Arguments>(
         replacements: Array<Any?> = arrayOf(),
         useReply: Boolean = true
     ): Message = respond(translate(key, replacements), useReply)
-
-    /**
-     * Convenience function for adding components to your message via the [Components] class.
-     *
-     * @see Components
-     */
-    public suspend fun MessageCreateBuilder.components(
-        timeoutSeconds: Long? = null,
-        body: suspend Components.() -> Unit
-    ): Components {
-        val components = Components(command.extension)
-
-        body(components)
-
-        with(components) {
-            setup(timeoutSeconds)
-        }
-
-        return components
-    }
-
-    /**
-     * Convenience function for adding components to your message via the [Components] class.
-     *
-     * @see Components
-     */
-    public suspend fun MessageModifyBuilder.components(
-        timeoutSeconds: Long? = null,
-        body: suspend Components.() -> Unit
-    ): Components {
-        val components = Components(command.extension)
-
-        body(components)
-
-        with(components) {
-            setup(timeoutSeconds)
-        }
-
-        return components
-    }
 }

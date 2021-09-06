@@ -2,14 +2,12 @@
 
 package com.kotlindiscord.kord.extensions.pagination
 
-import com.kotlindiscord.kord.extensions.commands.application.slash.EphemeralSlashCommandContext
-import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommandContext
-import com.kotlindiscord.kord.extensions.components.Components
-import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
+import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.User
 import dev.kord.core.entity.interaction.PublicFollowupMessage
@@ -17,14 +15,14 @@ import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
+
 /**
- * Class representing a button-based paginator that operates on public-acked interactions. Essentially, use this with
- * slash commands.
+ * Class representing a button-based paginator that operates by creating and editing a follow-up message for the
+ * given public interaction response.
  *
- * @param parentContext Parent slash command context to be worked with.
+ * @param interaction Interaction response behaviour to work with.
  */
-public class InteractionButtonPaginator(
-    extension: Extension,
+public class PublicFollowUpPaginator(
     pages: Pages,
     owner: User? = null,
     timeoutSeconds: Long? = null,
@@ -33,48 +31,37 @@ public class InteractionButtonPaginator(
     bundle: String? = null,
     locale: Locale? = null,
 
-    public val parentContext: SlashCommandContext<*, *>,
-) : BaseButtonPaginator(extension, pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
-    init {
-        if (parentContext is EphemeralSlashCommandContext<*>) {
-            error("Paginators cannot operate with ephemeral interactions.")
-        }
-    }
-
-    override var components: Components = Components(extension, parentContext)
-
-    /** Follow-up message containing all of the buttons. **/
+    public val interaction: PublicInteractionResponseBehavior,
+) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
     public var embedInteraction: PublicFollowupMessage? = null
 
     override suspend fun send() {
-        components.stop()
-
         if (embedInteraction == null) {
             setup()
 
-            TODO()
+            embedInteraction = interaction.followUp {
+                embed { applyPage() }
 
-//            embedInteraction = parentContext.respond {
-//                embed { applyPage() }
-//
-//                with(this@InteractionButtonPaginator.components) {
-//                    this@publicFollowUp.setup(timeoutSeconds)
-//                }
-//            }
+                with(this@PublicFollowUpPaginator.components) {
+                    this@followUp.applyToMessage()
+                }
+            }
         } else {
             updateButtons()
 
             embedInteraction!!.edit {
                 embed { applyPage() }
 
-                with(this@InteractionButtonPaginator.components) {
-                    this@edit.setup(timeoutSeconds)
+                with(this@PublicFollowUpPaginator.components) {
+                    this@edit.applyToMessage()
                 }
             }
         }
     }
 
     override suspend fun destroy() {
+        super.destroy()
+
         if (!active) {
             return
         }
@@ -82,34 +69,30 @@ public class InteractionButtonPaginator(
         active = false
 
         if (!keepEmbed) {
-            embedInteraction!!.delete()
+            embedInteraction?.delete()
         } else {
-            embedInteraction!!.edit {
+            embedInteraction?.edit {
                 embed { applyPage() }
 
                 this.components = mutableListOf()
             }
         }
-
-        runTimeoutCallbacks()
-        components.stop()
     }
 }
 
 /** Convenience function for creating an interaction button paginator from a paginator builder. **/
 @Suppress("FunctionNaming")  // Factory function
-public fun InteractionButtonPaginator(
+public fun PublicFollowUpPaginator(
     builder: PaginatorBuilder,
-    parentContext: SlashCommandContext<*, *>
-): InteractionButtonPaginator = InteractionButtonPaginator(
-    extension = builder.extension,
+    interaction: PublicInteractionResponseBehavior
+): PublicFollowUpPaginator = PublicFollowUpPaginator(
     pages = builder.pages,
     owner = builder.owner,
     timeoutSeconds = builder.timeoutSeconds,
     keepEmbed = builder.keepEmbed,
     bundle = builder.bundle,
     locale = builder.locale,
-    parentContext = parentContext,
+    interaction = interaction,
 
     switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 )

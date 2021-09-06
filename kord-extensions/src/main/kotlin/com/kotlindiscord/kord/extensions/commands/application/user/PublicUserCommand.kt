@@ -3,8 +3,8 @@
 package com.kotlindiscord.kord.extensions.commands.application.user
 
 import com.kotlindiscord.kord.extensions.CommandException
-import com.kotlindiscord.kord.extensions.commands.application.respond
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.interactions.respond
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder

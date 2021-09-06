@@ -11,6 +11,7 @@ import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
+import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
@@ -63,6 +64,9 @@ public open class ExtensibleBotBuilder {
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
@@ -103,6 +107,16 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public suspend fun cache(builder: suspend CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
+    }
+
+    /**
+     * DSL function used to configure the bot's components system.
+     *
+     * @see ComponentsBuilder
+     */
+    @BotBuilderDSL
+    public suspend fun components(builder: suspend ComponentsBuilder.() -> Unit) {
+        builder(componentsBuilder)
     }
 
     /**
@@ -228,6 +242,7 @@ public open class ExtensibleBotBuilder {
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
+        loadModule { single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class }
 
         loadModule {
             single {
@@ -310,6 +325,21 @@ public open class ExtensibleBotBuilder {
         /** DSL function allowing you to interact with Kord's [DataCache] before it connects to Discord. **/
         public fun transformCache(builder: suspend Kord.(cache: DataCache) -> Unit) {
             this.dataCacheBuilder = builder
+        }
+    }
+
+    /** Builder used to configure the bot's components settings. **/
+    @BotBuilderDSL
+    public class ComponentsBuilder {
+        /** @suppress Component registry builder. **/
+        public var registryBuilder: () -> ComponentRegistry = ::ComponentRegistry
+
+        /**
+         * Register a builder (usually a constructor) returning a [ComponentRegistry] instance, which may be useful
+         * if you need to register a custom subclass.
+         */
+        public fun registry(builder: () -> ComponentRegistry) {
+            registryBuilder = builder
         }
     }
 

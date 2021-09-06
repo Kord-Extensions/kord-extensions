@@ -87,12 +87,28 @@ public class Task(
         removeFromParent()
     }
 
-    /** Like [cancel], but blocks until the cancellation has been applied.. **/
+    /** Like [cancel], but blocks .. **/
     public suspend fun cancelAndJoin() {
         job?.cancelAndJoin()
         job = null
 
         removeFromParent()
+    }
+
+    /** If the task is running, cancel it and restart it. **/
+    public fun restart() {
+        job?.cancel()
+        job = null
+
+        start()
+    }
+
+    /** Like [restart], but blocks until the cancellation has been applied. **/
+    public suspend fun restartJoining() {
+        job?.cancelAndJoin()
+        job = null
+
+        start()
     }
 
     /** Join the running [job], if any. **/

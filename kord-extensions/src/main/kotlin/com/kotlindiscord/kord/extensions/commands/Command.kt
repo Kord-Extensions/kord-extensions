@@ -21,9 +21,9 @@ public abstract class Command(public val extension: Extension) {
     public open lateinit var name: String
 
     /**
-     * An internal function used to ensure that all of a command's required arguments are present.
+     * An internal function used to ensure that all of a command's required arguments are present and correct.
      *
-     * @throws InvalidCommandException Thrown when a required argument hasn't been set.
+     * @throws InvalidCommandException Thrown when a required argument hasn't been set or is invalid.
      */
     @Throws(InvalidCommandException::class)
     public open fun validate() {
