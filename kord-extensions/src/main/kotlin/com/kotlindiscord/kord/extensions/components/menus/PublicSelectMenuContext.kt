@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.interactions.PublicInteractionContext
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
+/** Class representing the execution context for a public-only select (dropdown) menu. **/
 public class PublicSelectMenuContext(
     override val component: Component,
     override val event: SelectMenuInteractionCreateEvent,

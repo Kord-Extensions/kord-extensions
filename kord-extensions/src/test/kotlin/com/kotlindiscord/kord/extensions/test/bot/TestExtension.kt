@@ -209,7 +209,6 @@ class TestExtension : Extension() {
                             }
                         }
 
-
                         page("Expanded") {
                             description = "Expanded page $it, expanded page $it\n" +
                                 "Expanded page $it, expanded page $it"

@@ -27,6 +27,7 @@ public class EphemeralResponsePaginator(
 
     public val interaction: EphemeralInteractionResponseBehavior,
 ) : BaseButtonPaginator(pages, owner, timeoutSeconds, true, switchEmoji, bundle, locale) {
+    /** Whether this paginator has been set up for the first time. **/
     public var isSetup: Boolean = false
 
     override suspend fun send() {

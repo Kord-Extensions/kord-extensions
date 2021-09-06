@@ -28,6 +28,7 @@ public const val PLACEHOLDER_MAX: Int = 100
 /** Maximum length for an option's value. **/
 public const val VALUE_MAX: Int = 100
 
+/** Abstract class representing a select (dropdown) menu component. **/
 public abstract class SelectMenu<C : SelectMenuContext> : ComponentWithAction<SelectMenuInteractionCreateEvent, C>() {
     internal val logger: KLogger = KotlinLogging.logger {}
 
@@ -43,15 +44,17 @@ public abstract class SelectMenu<C : SelectMenuContext> : ComponentWithAction<Se
     /** Placeholder text to show before the user has selected any options. **/
     public var placeholder: String? = null
 
+    @Suppress("MagicNumber")  // WHY DO YOU THINK I ASSIGN IT HERE
     override val unitWidth: Int = 5
 
     /** Add an option to this select menu. **/
+    @Suppress("UnnecessaryParentheses")  // Disagrees with IDEA, amusingly.
     public open suspend fun option(label: String, value: String, body: suspend SelectOptionBuilder.() -> Unit = {}) {
         val builder = SelectOptionBuilder(label, value)
 
         body(builder)
 
-        if (builder.description?.length ?: 0 > DESCRIPTION_MAX) {
+        if ((builder.description?.length ?: 0) > DESCRIPTION_MAX) {
             error("Option descriptions must not be longer than $DESCRIPTION_MAX characters.")
         }
 
@@ -79,6 +82,7 @@ public abstract class SelectMenu<C : SelectMenuContext> : ComponentWithAction<Se
         }
     }
 
+    @Suppress("UnnecessaryParentheses")  // Disagrees with IDEA, amusingly.
     override fun validate() {
         super.validate()
 
@@ -90,7 +94,7 @@ public abstract class SelectMenu<C : SelectMenuContext> : ComponentWithAction<Se
             error("Menu components must not have more than $OPTIONS_MAX options.")
         }
 
-        if (this.placeholder?.length ?: 0 > PLACEHOLDER_MAX) {
+        if ((this.placeholder?.length ?: 0) > PLACEHOLDER_MAX) {
             error("Menu components must not have a placeholder longer than $PLACEHOLDER_MAX characters.")
         }
     }

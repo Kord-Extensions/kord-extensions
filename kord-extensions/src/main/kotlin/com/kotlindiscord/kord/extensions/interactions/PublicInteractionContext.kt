@@ -12,7 +12,7 @@ import dev.kord.rest.builder.message.create.PublicFollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.PublicInteractionResponseModifyBuilder
 import java.util.*
 
-/** Interface representing a public-only application command context. **/
+/** Interface representing a public-only interaction action context. **/
 public interface PublicInteractionContext {
     /** Response created by acknowledging the interaction publicly. **/
     public val interactionResponse: PublicInteractionResponseBehavior
@@ -30,6 +30,7 @@ public suspend inline fun PublicInteractionContext.edit(
     builder: PublicInteractionResponseModifyBuilder.() -> Unit
 ): Message = interactionResponse.edit(builder)
 
+/** Create a paginator that edits the original interaction. **/
 public suspend inline fun PublicInteractionContext.editingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
@@ -42,6 +43,7 @@ public suspend inline fun PublicInteractionContext.editingPaginator(
     return PublicResponsePaginator(pages, interactionResponse)
 }
 
+/** Create a paginator that creates a follow-up message, and edits that. **/
 public suspend inline fun PublicInteractionContext.respondingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,

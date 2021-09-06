@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught")
+
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.CommandException
@@ -9,8 +11,15 @@ import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBu
 public typealias InitialEphemeralSelectMenuResponseBuilder =
     (suspend EphemeralInteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
+/** Class representing an ephemeral-only select (dropdown) menu. **/
 public open class EphemeralSelectMenu : SelectMenu<EphemeralSelectMenuContext>() {
+    /** @suppress Initial response builder. **/
     public open var initialResponseBuilder: InitialEphemeralSelectMenuResponseBuilder = null
+
+    /** Call this to open with a response, omit it to ack instead. **/
+    public fun initialResponse(body: InitialEphemeralSelectMenuResponseBuilder) {
+        initialResponseBuilder = body
+    }
 
     override suspend fun call(event: SelectMenuInteractionCreateEvent) {
         try {

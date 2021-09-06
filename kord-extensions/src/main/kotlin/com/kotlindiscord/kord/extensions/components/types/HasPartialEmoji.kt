@@ -5,6 +5,10 @@ import dev.kord.common.entity.optional.optional
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.entity.ReactionEmoji
 
+/**
+ * Interface representing a button type that has a partial emoji property. This is used to keep the [emoji]
+ * function DRY.
+ */
 public interface HasPartialEmoji {
     /**
      * A partial emoji object, either a guild or Unicode emoji. Optional if you've got a label.

@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught")
+
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.CommandException
@@ -9,8 +11,15 @@ import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuild
 public typealias InitialPublicSelectMenuResponseBuilder =
     (suspend PublicInteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
+/** Class representing a public-only select (dropdown) menu. **/
 public open class PublicSelectMenu : SelectMenu<PublicSelectMenuContext>() {
+    /** @suppress Initial response builder. **/
     public open var initialResponseBuilder: InitialPublicSelectMenuResponseBuilder = null
+
+    /** Call this to open with a response, omit it to ack instead. **/
+    public fun initialResponse(body: InitialPublicSelectMenuResponseBuilder) {
+        initialResponseBuilder = body
+    }
 
     override suspend fun call(event: SelectMenuInteractionCreateEvent) {
         try {

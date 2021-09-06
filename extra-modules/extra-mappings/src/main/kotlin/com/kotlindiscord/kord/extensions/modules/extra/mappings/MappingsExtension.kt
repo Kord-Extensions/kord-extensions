@@ -518,7 +518,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -583,7 +582,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -652,7 +650,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -718,7 +715,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -812,7 +808,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -878,7 +873,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -994,7 +988,6 @@ class MappingsExtension : Extension() {
         }
 
         val paginator = MessageButtonPaginator(
-            extension = this@MappingsExtension,
             targetMessage = event.message,
             pages = pagesObj,
             keepEmbed = true,
@@ -1103,7 +1096,6 @@ class MappingsExtension : Extension() {
         }
 
         val paginator = MessageButtonPaginator(
-            extension = this@MappingsExtension,
             targetMessage = event.message,
             pages = pagesObj,
             keepEmbed = true,
@@ -1212,7 +1204,6 @@ class MappingsExtension : Extension() {
         }
 
         val paginator = MessageButtonPaginator(
-            extension = this@MappingsExtension,
             targetMessage = event.message,
             pages = pagesObj,
             keepEmbed = true,

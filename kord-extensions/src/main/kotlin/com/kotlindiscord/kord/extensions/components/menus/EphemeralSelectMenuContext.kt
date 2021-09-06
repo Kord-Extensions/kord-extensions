@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.interactions.EphemeralInteractionContex
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
+/** Class representing the execution context for an ephemeral-only select (dropdown) menu. **/
 public class EphemeralSelectMenuContext(
     override val component: Component,
     override val event: SelectMenuInteractionCreateEvent,

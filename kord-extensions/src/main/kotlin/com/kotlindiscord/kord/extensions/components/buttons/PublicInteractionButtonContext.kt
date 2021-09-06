@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.interactions.PublicInteractionContext
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 
+/** Class representing the execution context for a public-only button. **/
 public class PublicInteractionButtonContext(
     component: PublicInteractionButton,
     event: ButtonInteractionCreateEvent,

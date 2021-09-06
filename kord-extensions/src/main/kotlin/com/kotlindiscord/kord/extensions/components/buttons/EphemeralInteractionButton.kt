@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught")
+
 package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.CommandException
@@ -11,9 +13,18 @@ import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBu
 public typealias InitialEphemeralButtonResponseBuilder =
     (suspend EphemeralInteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
 
+/** Class representing an ephemeral-only interaction button. **/
 public open class EphemeralInteractionButton : InteractionButtonWithAction<EphemeralInteractionButtonContext>() {
+    /** Button style - anything but Link is valid. **/
     public open var style: ButtonStyle = ButtonStyle.Primary
+
+    /** @suppress Initial response builder. **/
     public open var initialResponseBuilder: InitialEphemeralButtonResponseBuilder = null
+
+    /** Call this to open with a response, omit it to ack instead. **/
+    public fun initialResponse(body: InitialEphemeralButtonResponseBuilder) {
+        initialResponseBuilder = body
+    }
 
     override fun apply(builder: ActionRowBuilder) {
         builder.interactionButton(style, id) {

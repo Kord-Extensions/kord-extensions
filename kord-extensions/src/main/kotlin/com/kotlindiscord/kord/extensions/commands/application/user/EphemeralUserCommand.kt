@@ -19,7 +19,7 @@ public class EphemeralUserCommand(
     /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialEphemeralUserResponseBuilder = null
 
-    /** Call this tn open with a response, omit it to ack instead. **/
+    /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialEphemeralUserResponseBuilder) {
         initialResponseBuilder = body
     }

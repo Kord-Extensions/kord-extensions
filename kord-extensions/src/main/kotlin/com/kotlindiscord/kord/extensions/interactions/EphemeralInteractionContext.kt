@@ -10,7 +10,7 @@ import dev.kord.rest.builder.message.create.EphemeralFollowupMessageCreateBuilde
 import dev.kord.rest.builder.message.modify.EphemeralInteractionResponseModifyBuilder
 import java.util.*
 
-/** Interface representing an ephemeral-only application command context. **/
+/** Interface representing an ephemeral-only interaction action context. **/
 public interface EphemeralInteractionContext {
     /** Response created by acknowledging the interaction ephemerally. **/
     public val interactionResponse: EphemeralInteractionResponseBehavior
@@ -32,6 +32,10 @@ public suspend inline fun EphemeralInteractionContext.edit(
     builder: EphemeralInteractionResponseModifyBuilder.() -> Unit
 ): Unit = interactionResponse.edit(builder)
 
+/**
+ * Create a paginator that edits the original interaction. This is the only option for an ephemeral interaction, as
+ * it's impossible to edit an ephemeral follow-up.
+ */
 public suspend inline fun EphemeralInteractionContext.editingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,

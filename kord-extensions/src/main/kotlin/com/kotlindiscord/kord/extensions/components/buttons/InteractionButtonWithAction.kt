@@ -13,11 +13,14 @@ import io.sentry.Sentry
 import mu.KLogger
 import mu.KotlinLogging
 
-public abstract class InteractionButtonWithAction<C : InteractionButtonContext>
-    : ComponentWithAction<ButtonInteractionCreateEvent, C>(), HasPartialEmoji {
+/** Abstract class representing a button component that has a click action. **/
+public abstract class InteractionButtonWithAction<C : InteractionButtonContext> :
+    ComponentWithAction<ButtonInteractionCreateEvent, C>(), HasPartialEmoji {
     internal val logger: KLogger = KotlinLogging.logger {}
 
+    /** Button label, for display on Discord. **/
     public var label: String? = null
+
     public override var partialEmoji: DiscordPartialEmoji? = null
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/

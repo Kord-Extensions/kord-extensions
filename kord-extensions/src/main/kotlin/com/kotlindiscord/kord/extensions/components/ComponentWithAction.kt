@@ -12,16 +12,23 @@ import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
 
-public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C : ComponentContext<*>>
-    : ComponentWithID() {
+/**
+ * Abstract class representing a component with both an ID and executable action.
+ *
+ * @param E Event type that triggers interaction actions for this component type
+ * @param C Context type used for this component's execution context
+ */
+public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C : ComponentContext<*>> :
+    ComponentWithID() {
     private val logger: KLogger = KotlinLogging.logger {}
 
+    /** Whether to use a deferred ack, which will prevent Discord's "Thinking..." message. **/
     public open var deferredAck: Boolean = true
 
     /** @suppress **/
     public open val checkList: MutableList<Check<E>> = mutableListOf()
 
-    /** Permissions required to be able to run execute this component's action. **/
+    /** Bot permissions required to be able to run execute this component's action. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
 
     /** Component body, to be called when the component is interacted with. **/
@@ -93,8 +100,6 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     @Throws(CommandException::class)
     public open suspend fun runChecks(event: E): Boolean =
         runStandardChecks(event)
-
-
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(CommandException::class)

@@ -28,6 +28,7 @@ public class PublicResponsePaginator(
 
     public val interaction: PublicInteractionResponseBehavior,
 ) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
+    /** Whether this paginator has been set up for the first time. **/
     public var isSetup: Boolean = false
 
     override suspend fun send() {

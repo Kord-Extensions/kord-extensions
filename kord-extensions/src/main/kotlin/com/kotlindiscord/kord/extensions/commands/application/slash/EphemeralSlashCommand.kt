@@ -26,7 +26,7 @@ public class EphemeralSlashCommand<A : Arguments>(
     /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialEphemeralChatResponseBuilder = null
 
-    /** Call this tn open with a response, omit it to ack instead. **/
+    /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialEphemeralChatResponseBuilder) {
         initialResponseBuilder = body
     }

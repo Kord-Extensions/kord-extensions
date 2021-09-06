@@ -7,29 +7,37 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
 
+/**
+ * Component registry, keeps track of components and handles incoming interaction events, dispatching as needed to
+ * registered component actions.
+ */
 public open class ComponentRegistry {
     internal val logger: KLogger = KotlinLogging.logger {}
 
+    /** Map of registered component IDs to their components. **/
     public open val components: MutableMap<String, Component> = mutableMapOf()
 
+    /** Register a component. Only components with IDs need registering. **/
     public open fun register(component: ComponentWithID) {
         logger.debug { "Registering component with ID: ${component.id}" }
 
         components[component.id] = component
     }
 
+    /** Unregister a registered component. **/
     public open fun unregister(component: ComponentWithID): Component? =
         unregister(component.id)
 
-    public open fun unregister(id: String): Component? {
-        return components.remove(id)
-    }
+    /** Unregister a registered component, by ID. **/
+    public open fun unregister(id: String): Component? =
+        components.remove(id)
 
+    /** Dispatch a [ButtonInteractionCreateEvent] to its button component object. **/
     public suspend fun handle(event: ButtonInteractionCreateEvent) {
         val id = event.interaction.componentId
 
         when (val c = components[id]) {
-            is InteractionButtonWithAction<*> -> { c.call(event) }
+            is InteractionButtonWithAction<*> -> c.call(event)
 
             null -> logger.warn { "Button interaction received for unknown component ID: $id" }
 
@@ -40,11 +48,12 @@ public open class ComponentRegistry {
         }
     }
 
+    /** Dispatch a [SelectMenuInteractionCreateEvent] to its select (dropdown) menu component object. **/
     public suspend fun handle(event: SelectMenuInteractionCreateEvent) {
         val id = event.interaction.componentId
 
         when (val c = components[id]) {
-            is SelectMenu<*> -> { c.call(event) }
+            is SelectMenu<*> -> c.call(event)
 
             null -> logger.warn { "Select Menu interaction received for unknown component ID: $id" }
 

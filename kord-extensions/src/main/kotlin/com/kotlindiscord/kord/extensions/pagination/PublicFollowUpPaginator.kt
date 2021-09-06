@@ -15,7 +15,6 @@ import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
-
 /**
  * Class representing a button-based paginator that operates by creating and editing a follow-up message for the
  * given public interaction response.
@@ -33,6 +32,7 @@ public class PublicFollowUpPaginator(
 
     public val interaction: PublicInteractionResponseBehavior,
 ) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
+    /** Follow-up interaction to use for this paginator's embeds. Will be created by [send]. **/
     public var embedInteraction: PublicFollowupMessage? = null
 
     override suspend fun send() {

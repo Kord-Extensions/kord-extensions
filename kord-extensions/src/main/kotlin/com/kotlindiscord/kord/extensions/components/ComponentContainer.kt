@@ -1,3 +1,5 @@
+@file:Suppress("AnnotationSpacing")  // Genuinely hate having to deal with this one sometimes.
+
 package com.kotlindiscord.kord.extensions.components
 
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
@@ -7,13 +9,17 @@ import dev.kord.rest.builder.message.modify.actionRow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/** The maximum number of slots you can have in a row. **/
 public const val ROW_SIZE: Int = 5
 
+/** Class representing a single set of components that can be applied to any message. **/
 public open class ComponentContainer : KoinComponent {
     internal val registry: ComponentRegistry by inject()
 
+    /** Components that haven't been sorted into rows by [sort] yet. **/
     public open val unsortedComponents: MutableList<Component> = mutableListOf()
 
+    /** Array containing sorted rows of components. **/
     public open val rows: Array<MutableList<Component>> = arrayOf(
         // Up to 5 rows of components
 
@@ -24,6 +30,7 @@ public open class ComponentContainer : KoinComponent {
         mutableListOf(),
     )
 
+    /** Remove all components, and unregister them from the [ComponentRegistry]. **/
     public open fun removeAll() {
         rows.toList().flatten().forEach { component ->
             if (component is ComponentWithID) {
@@ -34,6 +41,7 @@ public open class ComponentContainer : KoinComponent {
         rows.forEach { it.clear() }
     }
 
+    /** Remove the given component, and unregister it from the [ComponentRegistry]. **/
     public open fun remove(component: Component): Boolean {
         if (rows.any { it.remove(component) }) {
             if (component is ComponentWithID) {
@@ -46,7 +54,8 @@ public open class ComponentContainer : KoinComponent {
         return false
     }
 
-    public open fun replace(old: Component, new: ComponentWithID): Boolean {
+    /** Given two components, replace the old component with the new one and likewise handle registration. **/
+    public open fun replace(old: Component, new: Component): Boolean {
         for (row in rows) {
             val index = row.indexOf(old)
 
@@ -54,6 +63,7 @@ public open class ComponentContainer : KoinComponent {
                 continue
             }
 
+            @Suppress("UnnecessaryParentheses")  // Yeah, but let me be paranoid. Please.
             val freeSlots = (ROW_SIZE - row.size) + old.unitWidth
 
             if (new.unitWidth > freeSlots) {
@@ -64,7 +74,10 @@ public open class ComponentContainer : KoinComponent {
             }
 
             row[index] = new
-            registry.register(new)
+
+            if (new is ComponentWithID) {
+                registry.register(new)
+            }
 
             return true
         }
@@ -72,7 +85,11 @@ public open class ComponentContainer : KoinComponent {
         return false
     }
 
-    public open fun replace(id: String, new: ComponentWithID): Boolean {
+    /**
+     * Given an old component ID and new component, replace the old component with the new one and likewise handle
+     * registration.
+     */
+    public open fun replace(id: String, new: Component): Boolean {
         for (row in rows) {
             val index = row.indexOfFirst { it is ComponentWithID && it.id == id }
 
@@ -81,7 +98,7 @@ public open class ComponentContainer : KoinComponent {
             }
 
             val old = row[index]
-            val freeSlots = (ROW_SIZE - row.size) + old.unitWidth
+            val freeSlots = old.unitWidth + (ROW_SIZE - row.size)
 
             if (new.unitWidth > freeSlots) {
                 error(
@@ -91,7 +108,10 @@ public open class ComponentContainer : KoinComponent {
             }
 
             row[index] = new
-            registry.register(new)
+
+            if (new is ComponentWithID) {
+                registry.register(new)
+            }
 
             return true
         }
@@ -99,6 +119,10 @@ public open class ComponentContainer : KoinComponent {
         return false
     }
 
+    /**
+     *  Add a component. New components will be unsorted, or placed in the numbered row denoted by [rowNum] if
+     *  possible.
+     */
     public open fun add(component: Component, rowNum: Int? = null) {
         component.validate()
 
@@ -134,11 +158,13 @@ public open class ComponentContainer : KoinComponent {
         }
     }
 
+    /** Sort all components in [unsortedComponents] by packing them into rows as tightly as possible. **/
     public open fun sort() {
         while (unsortedComponents.isNotEmpty()) {
             val component = unsortedComponents.removeFirst()
             var sorted = false
 
+            @Suppress("UnconditionalJumpStatementInLoop")  // Yes, but this is nicer to read
             for (row in rows) {
                 if (row.size >= ROW_SIZE || row.size + component.unitWidth > ROW_SIZE) {
                     continue
@@ -163,6 +189,7 @@ public open class ComponentContainer : KoinComponent {
         }
     }
 
+    /** Apply the components in this container to a message that's being created. **/
     public open fun MessageCreateBuilder.applyToMessage() {
         sort()
 
@@ -173,6 +200,7 @@ public open class ComponentContainer : KoinComponent {
         }
     }
 
+    /** Apply the components in this container to a message that's being edited. **/
     public open fun MessageModifyBuilder.applyToMessage() {
         sort()
 
@@ -184,6 +212,8 @@ public open class ComponentContainer : KoinComponent {
     }
 }
 
+/** DSL-style factory function to make component containers these by hand easier. **/
+@Suppress("FunctionNaming")  // It's a factory function, detekt...
 public suspend fun ComponentContainer(builder: suspend ComponentContainer.() -> Unit): ComponentContainer {
     val container = ComponentContainer()
 

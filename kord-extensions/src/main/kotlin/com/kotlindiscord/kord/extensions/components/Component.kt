@@ -10,6 +10,7 @@ import dev.kord.rest.builder.component.ActionRowBuilder
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+/** Abstract class representing a basic Discord component. **/
 public abstract class Component : KoinComponent {
     /** Component width, how many "slots" in one row it needs to be added to the row. **/
     public open val unitWidth: Int = 1
@@ -32,9 +33,12 @@ public abstract class Component : KoinComponent {
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 
+    /** Translation bundle, to retrieve translations from. **/
     public open var bundle: String? = null
 
+    /** Validation function, called to ensure the component is valid, throws exceptions if not. **/
     public abstract fun validate()
 
+    /** Called to apply the given component to a Kord [ActionRowBuilder]. **/
     public abstract fun apply(builder: ActionRowBuilder)
 }

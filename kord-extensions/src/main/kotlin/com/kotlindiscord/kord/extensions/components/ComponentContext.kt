@@ -17,6 +17,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
+/**
+ * Abstract class representing the execution context for a generic components.
+ *
+ * @param E Event type the component makes use of
+ * @param component Component object that's being interacted with
+ * @param event Event that triggered this execution context
+ */
 public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     public open val component: Component,
     public open val event: E
@@ -124,7 +131,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 
     /**
      * Given a translation key and possible replacements,return the translation for the given locale in the
-     * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
+     * component's configured bundle, for the locale provided by the bot's configured locale resolvers.
      */
     public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
         key,
