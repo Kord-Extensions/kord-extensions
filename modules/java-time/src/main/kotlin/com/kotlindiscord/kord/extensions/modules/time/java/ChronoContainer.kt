@@ -173,7 +173,7 @@ public class ChronoContainer {
             if (target.isSupported(unit)) {
                 result = result.plus(value, unit) as T
             } else {
-                logger.debug { "Unit $unit is not supported by $target" }
+                logger.trace { "Unit $unit is not supported by $target" }
             }
         }
 

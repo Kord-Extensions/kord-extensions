@@ -111,7 +111,7 @@ public class MessageConverter(
             }
 
             if (requireGuild && requiredGid != gid) {
-                logger.debug { "Matching guild ($requiredGid) required, but guild ($gid) doesn't match." }
+                logger.trace { "Matching guild ($requiredGid) required, but guild ($gid) doesn't match." }
 
                 errorNoMessage(arg, context)
             }
@@ -131,13 +131,13 @@ public class MessageConverter(
             val channel: GuildChannel? = kord.getGuild(gid)?.getChannel(cid)
 
             if (channel == null) {
-                logger.debug { "Unable to find channel ($cid) for guild ($gid)." }
+                logger.trace { "Unable to find channel ($cid) for guild ($gid)." }
 
                 errorNoMessage(arg, context)
             }
 
             if (channel !is GuildMessageChannel) {
-                logger.debug { "Specified channel ($cid) is not a guild message channel." }
+                logger.trace { "Specified channel ($cid) is not a guild message channel." }
 
                 errorNoMessage(arg, context)
             }
@@ -163,13 +163,13 @@ public class MessageConverter(
             val channel: ChannelBehavior? = context.getChannel()
 
             if (channel !is GuildMessageChannel && channel !is DmChannel) {
-                logger.debug { "Current channel is not a guild message channel or DM channel." }
+                logger.trace { "Current channel is not a guild message channel or DM channel." }
 
                 errorNoMessage(arg, context)
             }
 
             if (channel !is MessageChannel) {
-                logger.debug { "Current channel is not a message channel, so it can't contain messages." }
+                logger.trace { "Current channel is not a message channel, so it can't contain messages." }
 
                 errorNoMessage(arg, context)
             }

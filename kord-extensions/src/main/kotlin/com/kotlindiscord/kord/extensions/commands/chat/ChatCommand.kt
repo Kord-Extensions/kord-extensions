@@ -448,7 +448,7 @@ public open class ChatCommand<T : Arguments>(
             event.message.respond(e.toString())
         } catch (t: Throwable) {
             if (sentry.enabled) {
-                logger.debug { "Submitting error to sentry." }
+                logger.trace { "Submitting error to sentry." }
 
                 val channel = event.message.getChannelOrNull()
 
@@ -476,7 +476,7 @@ public open class ChatCommand<T : Arguments>(
                     tag("extension", extension.name)
                 }
 
-                logger.debug { "Error submitted to Sentry: $sentryId" }
+                logger.info { "Error submitted to Sentry: $sentryId" }
 
                 sentry.addEventId(sentryId)
 

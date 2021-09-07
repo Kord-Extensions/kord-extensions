@@ -19,7 +19,7 @@ public open class ComponentRegistry {
 
     /** Register a component. Only components with IDs need registering. **/
     public open fun register(component: ComponentWithID) {
-        logger.debug { "Registering component with ID: ${component.id}" }
+        logger.trace { "Registering component with ID: ${component.id}" }
 
         components[component.id] = component
     }

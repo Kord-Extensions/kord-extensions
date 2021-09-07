@@ -3,7 +3,10 @@
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.checks.types.*
+import com.kotlindiscord.kord.extensions.checks.types.ChatCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
@@ -174,7 +177,7 @@ public abstract class Extension : KoinComponent {
      * handled for you.
      */
     public open suspend fun unload() {
-        logger.debug { "Unload function not overridden." }
+        logger.trace { "Unload function not overridden." }
     }
 
     /**

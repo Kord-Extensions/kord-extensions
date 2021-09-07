@@ -37,7 +37,7 @@ public open class SlashCommandParser {
     ): T {
         val argumentsObj = builder.invoke()
 
-        logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
+        logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
         val command = context.event.interaction.command
@@ -60,11 +60,11 @@ public open class SlashCommandParser {
             currentArg = args.removeFirstOrNull()
             currentArg ?: break  // If it's null, we're out of arguments
 
-            logger.debug { "Current argument: ${currentArg.displayName}" }
+            logger.trace { "Current argument: ${currentArg.displayName}" }
 
             currentValue = values[currentArg.displayName.lowercase()]
 
-            logger.debug { "Current value: $currentValue" }
+            logger.trace { "Current value: $currentValue" }
 
             @Suppress("TooGenericExceptionCaught")
             when (val converter = currentArg.converter) {
@@ -92,7 +92,7 @@ public open class SlashCommandParser {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
                         currentValue = null
@@ -132,7 +132,7 @@ public open class SlashCommandParser {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
                         currentValue = null
@@ -159,7 +159,7 @@ public open class SlashCommandParser {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
                         currentValue = null
@@ -184,7 +184,7 @@ public open class SlashCommandParser {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
                         currentValue = null
@@ -209,7 +209,7 @@ public open class SlashCommandParser {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
                         currentValue = null
@@ -234,7 +234,7 @@ public open class SlashCommandParser {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
                         currentValue = null

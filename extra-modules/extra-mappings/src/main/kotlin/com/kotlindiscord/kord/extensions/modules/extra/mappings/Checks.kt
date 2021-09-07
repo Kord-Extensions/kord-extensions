@@ -34,11 +34,11 @@ fun allowedCategory(
     val channel = channelFor(event)
 
     if (channel == null) {
-        logger.debug { "Passing: Event is not channel-related" }
+        logger.trace { "Passing: Event is not channel-related" }
 
         pass()
     } else if (channel !is CategorizableChannel) {
-        logger.debug { "Passing: Channel is not categorizable (eg, it's a DM)" }
+        logger.trace { "Passing: Channel is not categorizable (eg, it's a DM)" }
 
         pass()
     } else {
@@ -50,7 +50,7 @@ fun allowedCategory(
 
                 fail()
             } else if (allowed.contains(parent.id)) {
-                logger.debug { "Passing: Event happened in an allowed category" }
+                logger.trace { "Passing: Event happened in an allowed category" }
 
                 pass()
             } else {
@@ -60,14 +60,14 @@ fun allowedCategory(
             }
         } else {
             if (parent == null) {
-                logger.debug {
+                logger.trace {
                     "Passing: We have no allowed categories, and the message was sent outside of a category"
                 }
 
                 pass()
             } else if (banned.isNotEmpty()) {
                 if (!banned.contains(parent.id)) {
-                    logger.debug { "Passing: Event did not happen in a banned category" }
+                    logger.trace { "Passing: Event did not happen in a banned category" }
 
                     pass()
                 } else {
@@ -76,7 +76,7 @@ fun allowedCategory(
                     fail()
                 }
             } else {
-                logger.debug { "Passing: No allowed or banned categories configured" }
+                logger.trace { "Passing: No allowed or banned categories configured" }
 
                 pass()
             }
@@ -108,16 +108,16 @@ fun allowedChannel(
     val channel = channelFor(event)
 
     if (channel == null) {
-        logger.debug { "Passing: Event is not channel-related" }
+        logger.trace { "Passing: Event is not channel-related" }
 
         pass()
     } else if (channel !is GuildChannel) {
-        logger.debug { "Passing: Message was sent privately" }
+        logger.trace { "Passing: Message was sent privately" }
 
         pass()  // It's a DM
     } else if (allowed.isNotEmpty()) {
         if (allowed.contains(channel.id)) {
-            logger.debug { "Passing: Event happened in an allowed channel" }
+            logger.trace { "Passing: Event happened in an allowed channel" }
 
             pass()
         } else {
@@ -127,7 +127,7 @@ fun allowedChannel(
         }
     } else if (banned.isNotEmpty()) {
         if (!banned.contains(channel.id)) {
-            logger.debug { "Passing: Event did not happen in a banned channel" }
+            logger.trace { "Passing: Event did not happen in a banned channel" }
 
             pass()
         } else {
@@ -136,7 +136,7 @@ fun allowedChannel(
             fail()
         }
     } else {
-        logger.debug { "Passing: No allowed or banned channels configured" }
+        logger.trace { "Passing: No allowed or banned channels configured" }
 
         pass()
     }
@@ -165,12 +165,12 @@ fun allowedGuild(
     val guild = guildFor(event)
 
     if (guild == null) {
-        logger.debug { "Passing: Event is not guild-related" }
+        logger.trace { "Passing: Event is not guild-related" }
 
         pass()
     } else if (allowed.isNotEmpty()) {
         if (allowed.contains(guild.id)) {
-            logger.debug { "Passing: Event happened in an allowed guild" }
+            logger.trace { "Passing: Event happened in an allowed guild" }
 
             pass()
         } else {
@@ -180,7 +180,7 @@ fun allowedGuild(
         }
     } else if (banned.isNotEmpty()) {
         if (!banned.contains(guild.id)) {
-            logger.debug { "Passing: Event did not happen in a banned guild" }
+            logger.trace { "Passing: Event did not happen in a banned guild" }
 
             pass()
         } else {
@@ -189,7 +189,7 @@ fun allowedGuild(
             fail()
         }
     } else {
-        logger.debug { "Passing: No allowed or banned guilds configured" }
+        logger.trace { "Passing: No allowed or banned guilds configured" }
 
         pass()
     }

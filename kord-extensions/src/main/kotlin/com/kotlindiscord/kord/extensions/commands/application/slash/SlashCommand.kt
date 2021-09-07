@@ -201,7 +201,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         logger.error(t) { "Error during execution of ${commandObj.name} slash command (${context.event})" }
 
         if (sentry.enabled) {
-            logger.debug { "Submitting error to sentry." }
+            logger.trace { "Submitting error to sentry." }
 
             val channel = context.channel
             val author = context.user.asUserOrNull()
@@ -223,7 +223,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 Sentry.captureException(t, "Slash command execution failed.")
             }
 
-            logger.debug { "Error submitted to Sentry: $sentryId" }
+            logger.info { "Error submitted to Sentry: $sentryId" }
 
             val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
                 context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))

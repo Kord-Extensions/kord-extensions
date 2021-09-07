@@ -226,7 +226,7 @@ val response = if (guild == null) {
                 toCreate.forEach {
                     val name = it.getTranslatedName(locale)
 
-                    logger.debug { "Adding/updating global ${it.type.name} command: $name" }
+                    logger.trace { "Adding/updating global ${it.type.name} command: $name" }
 
                     when (it) {
                         is MessageCommand<*> -> message(name) { this.register(locale, it) }
@@ -245,7 +245,7 @@ val response = if (guild == null) {
                 toCreate.forEach {
                     val name = it.getTranslatedName(locale)
 
-                    logger.debug { "Adding/updating guild-specific ${it.type.name} command: $name" }
+                    logger.trace { "Adding/updating guild-specific ${it.type.name} command: $name" }
 
                     when (it) {
                         is MessageCommand<*> -> message(name) { this.register(locale, it) }
@@ -272,7 +272,7 @@ val response = if (guild == null) {
 
         // Finally, we can remove anything that needs to be removed
         toRemove.forEach {
-            logger.debug { "Removing ${it.type.name} command: ${it.name}" }
+            logger.trace { "Removing ${it.type.name} command: ${it.name}" }
             it.delete()
         }
 
@@ -301,7 +301,7 @@ val response = if (guild == null) {
             kord.createGlobalApplicationCommands {
                 val name = command.getTranslatedName(locale)
 
-                logger.debug { "Adding/updating global ${command.type.name} command: $name" }
+                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
 
                 when (command) {
                     is MessageCommand<*> -> message(name) { this.register(locale, command) }
@@ -324,7 +324,7 @@ val response = if (guild == null) {
             guild.createApplicationCommands {
                 val name = command.getTranslatedName(locale)
 
-                logger.debug { "Adding/updating guild-specific ${command.type.name} command: $name" }
+                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
 
                 when (command) {
                     is MessageCommand<*> -> message(name) { this.register(locale, command) }

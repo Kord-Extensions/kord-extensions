@@ -2,7 +2,7 @@ import ch.qos.logback.core.joran.spi.ConsoleTarget
 
 def environment = System.getenv().getOrDefault("ENVIRONMENT", "production")
 
-def defaultLevel = DEBUG
+def defaultLevel = TRACE
 
 if (environment == "spam") {
     logger("dev.kord.rest.DefaultGateway", TRACE)

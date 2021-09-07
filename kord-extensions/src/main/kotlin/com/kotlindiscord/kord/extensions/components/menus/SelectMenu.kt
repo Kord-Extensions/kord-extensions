@@ -137,7 +137,7 @@ public abstract class SelectMenu<C : SelectMenuContext> : ComponentWithAction<Se
         logger.error(t) { "Error during execution of select menu (${button.id}) action (${context.event})" }
 
         if (sentry.enabled) {
-            logger.debug { "Submitting error to sentry." }
+            logger.trace { "Submitting error to sentry." }
 
             val channel = context.channel
             val author = context.user.asUserOrNull()
@@ -158,7 +158,7 @@ public abstract class SelectMenu<C : SelectMenuContext> : ComponentWithAction<Se
                 Sentry.captureException(t, "Select menu action execution failed.")
             }
 
-            logger.debug { "Error submitted to Sentry: $sentryId" }
+            logger.info { "Error submitted to Sentry: $sentryId" }
 
             val errorMessage = if (bot.extensions.containsKey("sentry")) {
                 context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))

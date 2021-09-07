@@ -239,14 +239,14 @@ public open class EventHandler<T : Event>(
             this.body(context)
         } catch (t: Throwable) {
             if (sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
-                logger.debug { "Submitting error to sentry." }
+                logger.trace { "Submitting error to sentry." }
 
                 val sentryId = context.sentry.captureException(t, "Event processing failed.") {
                     tag("event", eventName ?: "Unknown")
                     tag("extension", extension.name)
                 }
 
-                logger.debug { "Error submitted to Sentry: $sentryId" }
+                logger.info { "Error submitted to Sentry: $sentryId" }
 
                 logger.error(t) { "Error during execution of event handler ($eventName)" }
             } else {

@@ -69,7 +69,7 @@ public open class ChatCommandParser : KoinComponent {
         val argumentsObj = builder.invoke()
         val parser = context.parser!!
 
-        logger.debug { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
+        logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
         val argsMap = args.map { Pair(it.displayName.lowercase(), it) }.toMap()
@@ -82,7 +82,7 @@ public open class ChatCommandParser : KoinComponent {
             keywordArgs[name]!!.add(it.data)
         }
 
-        logger.debug { "Args map: $argsMap" }
+        logger.trace { "Args map: $argsMap" }
 
         var currentArg: Argument<*>?
 
@@ -94,8 +94,8 @@ public open class ChatCommandParser : KoinComponent {
             val kwValue = keywordArgs[currentArg.displayName.lowercase()]
             val hasKwargs = kwValue != null
 
-            logger.debug { "Current argument: ${currentArg.displayName}" }
-            logger.debug { "Keyword arg ($hasKwargs): $kwValue" }
+            logger.trace { "Current argument: ${currentArg.displayName}" }
+            logger.trace { "Keyword arg ($hasKwargs): $kwValue" }
 
             if (!parser.cursor.hasNext && !hasKwargs) {
                 continue
@@ -132,7 +132,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
 
@@ -177,7 +177,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
 
@@ -218,7 +218,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
 
                     if (parsed) {
-                        logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
 
@@ -285,7 +285,7 @@ public open class ChatCommandParser : KoinComponent {
                         converter.parseSuccess = true
                     } else {
                         if (parsedCount > 0) {
-                            logger.debug { "Argument ${currentArg.displayName} successfully filled." }
+                            logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                             converter.parseSuccess = true
 
@@ -353,7 +353,7 @@ public open class ChatCommandParser : KoinComponent {
                         converter.parseSuccess = true
                     } else {
                         if (parsedCount > 0) {
-                            logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
+                            logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
 
@@ -421,7 +421,7 @@ public open class ChatCommandParser : KoinComponent {
                         converter.parseSuccess = true
                     } else {
                         if (parsedCount > 0) {
-                            logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
+                            logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
 
@@ -489,7 +489,7 @@ public open class ChatCommandParser : KoinComponent {
                         converter.parseSuccess = true
                     } else {
                         if (parsedCount > 0) {
-                            logger.debug { "Argument '${currentArg.displayName}' successfully filled." }
+                            logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
 
@@ -538,7 +538,7 @@ public open class ChatCommandParser : KoinComponent {
         val allRequiredArgs = argsMap.count { it.value.converter.required }
         val filledRequiredArgs = argsMap.count { it.value.converter.parseSuccess && it.value.converter.required }
 
-        logger.debug { "Filled $filledRequiredArgs / $allRequiredArgs arguments." }
+        logger.trace { "Filled $filledRequiredArgs / $allRequiredArgs arguments." }
 
         if (filledRequiredArgs < allRequiredArgs) {
             if (filledRequiredArgs < 1) {

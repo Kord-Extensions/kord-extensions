@@ -144,7 +144,7 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
         logger.error(t) { "Error during execution of $name message command (${context.event})" }
 
         if (sentry.enabled) {
-            logger.debug { "Submitting error to sentry." }
+            logger.trace { "Submitting error to sentry." }
 
             val channel = context.channel
             val author = context.user.asUserOrNull()
@@ -166,7 +166,7 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
                 Sentry.captureException(t, "Message command execution failed.")
             }
 
-            logger.debug { "Error submitted to Sentry: $sentryId" }
+            logger.info { "Error submitted to Sentry: $sentryId" }
 
             val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
                 context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))

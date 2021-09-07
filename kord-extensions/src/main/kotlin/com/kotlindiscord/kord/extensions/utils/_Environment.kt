@@ -64,7 +64,7 @@ public fun env(name: String): String? {
                     continue
                 }
 
-                logger.debug { "${split[0]} -> ${split[1]}" }
+                logger.trace { "${split[0]} -> ${split[1]}" }
 
                 envMap[split[0]] = split[1]
             }
