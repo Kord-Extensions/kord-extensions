@@ -202,6 +202,8 @@ public open class ComponentContainer : KoinComponent {
 
     /** Apply the components in this container to a message that's being edited. **/
     public open fun MessageModifyBuilder.applyToMessage() {
+        this.components = mutableListOf()  // Clear 'em
+
         sort()
 
         for (row in rows.filter { it.isNotEmpty() }) {
