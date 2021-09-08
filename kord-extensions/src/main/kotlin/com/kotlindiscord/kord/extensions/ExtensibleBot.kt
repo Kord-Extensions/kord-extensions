@@ -140,8 +140,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                     getKoin().get<ApplicationCommandRegistry>().initialRegistration()
                 } else {
                     logger.info {
-                        "Slash command support is disabled - set `enabled` to `true` in the `slashCommands` builder" +
-                            " if you want to use them."
+                        "Application command support is disabled - set `enabled` to `true` in the " +
+                            "`applicationCommands` builder if you want to use them."
                     }
                 }
             }
@@ -160,6 +160,11 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         if (settings.chatCommandsBuilder.enabled) {
             on<MessageCreateEvent> {
                 getKoin().get<ChatCommandRegistry>().handleEvent(this)
+            }
+        } else {
+            logger.info {
+                "Chat command support is disabled - set `enabled` to `true` in the `chatCommands` builder" +
+                    " if you want to use them."
             }
         }
 
