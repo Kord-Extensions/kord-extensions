@@ -109,44 +109,6 @@ public open class EventHandler<T : Event>(
      */
     public fun check(check: Check<T>): Boolean = checkList.add(check)
 
-    /**
-     * Define a simple Boolean check which must pass for the event handler to be executed.
-     *
-     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
-     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
-     * the same functionality as a regular check, and cannot return a message.
-     *
-     * An event handler may have multiple checks - all checks must pass for the command to be executed.
-     * Checks will be run in the order that they're defined.
-     *
-     * This function can be used DSL-style with a given body, or it can be passed one or more
-     * predefined functions. See the samples for more information.
-     *
-     * @param checks Checks to apply to this event handler.
-     */
-    public open fun booleanCheck(vararg checks: suspend (T) -> Boolean) {
-        checks.forEach(::booleanCheck)
-    }
-
-    /**
-     * Overloaded simple Boolean check function to allow for DSL syntax.
-     *
-     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
-     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
-     * the same functionality as a regular check, and cannot return a message.
-     *
-     * @param check Check to apply to this event handler.
-     */
-    public open fun booleanCheck(check: suspend (T) -> Boolean) {
-        check {
-            if (check(event)) {
-                pass()
-            } else {
-                fail()
-            }
-        }
-    }
-
     // endregion
 
     /**

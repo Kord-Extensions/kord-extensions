@@ -6,7 +6,6 @@ import dev.kord.core.event.Event
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
-import kotlin.jvm.Throws
 
 /**
  * Class representing the context for a check. This allows the storage of check status and a message for the users.
@@ -74,6 +73,45 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
      */
     public suspend fun failIfNot(message: String? = null, callback: suspend () -> Boolean): Boolean =
         failIfNot(callback(), message)
+
+    /**
+     * If [value] is `true`, mark this check as having passed.
+     *
+     * Returns `true` if the check was marked as having passed, `false` otherwise.
+     */
+    public fun passIf(value: Boolean): Boolean {
+        if (value) {
+            pass()
+
+            return true
+        }
+
+        return false
+    }
+
+    /**
+     * If [callback] returns `true`, mark this check as having passed.
+     *
+     * Returns `true` if the check was marked as having passed, `false` otherwise.
+     */
+    public suspend fun passIf(callback: suspend () -> Boolean): Boolean =
+        passIf(callback())
+
+    /**
+     * If [value] is `true`, mark this check as having passed.
+     *
+     * Returns `true` if the check was marked as having passed, `false` otherwise.
+     */
+    public fun passIfNot(value: Boolean): Boolean =
+        passIf(!value)
+
+    /**
+     * If [callback] returns `true`, mark this check as having passed.
+     *
+     * Returns `true` if the check was marked as having passed, `false` otherwise.
+     */
+    public suspend fun passIfNot(callback: suspend () -> Boolean): Boolean =
+        passIfNot(callback())
 
     /** Call the given block if the Boolean receiver is `true`. **/
     public inline fun <T : Any> Boolean.whenTrue(body: () -> T?): T? {

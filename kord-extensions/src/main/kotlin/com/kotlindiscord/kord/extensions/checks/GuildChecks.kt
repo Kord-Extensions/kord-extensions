@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.Event
@@ -15,7 +15,11 @@ import mu.KotlinLogging
  * that fired within a guild the bot doesn't have access to, or that it can't get the GuildBehavior for (for
  * example, due to a niche Kord configuration).
  */
-public val anyGuild: Check<*> = {
+public suspend fun CheckContext<*>.anyGuild() {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.anyGuild")
 
     if (guildFor(event) != null) {
@@ -38,7 +42,11 @@ public val anyGuild: Check<*> = {
  * that fired within a guild the bot doesn't have access to, or that it can't get the GuildBehavior for (for
  * example, due to a niche Kord configuration).
  */
-public val noGuild: Check<*> = {
+public suspend fun CheckContext<*>.noGuild() {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.noGuild")
 
     if (guildFor(event) == null) {
@@ -64,7 +72,11 @@ public val noGuild: Check<*> = {
  *
  * @param builder Lambda returning the guild to compare to.
  */
-public fun <T : Event> inGuild(builder: suspend (T) -> GuildBehavior): Check<T> = {
+public suspend fun <T : Event> CheckContext<T>.inGuild(builder: suspend (T) -> GuildBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
     val eventGuild = guildFor(event)?.asGuildOrNull()
 
@@ -100,7 +112,11 @@ public fun <T : Event> inGuild(builder: suspend (T) -> GuildBehavior): Check<T> 
  *
  * @param builder Lambda returning the guild to compare to.
  */
-public fun <T : Event> notInGuild(builder: suspend (T) -> GuildBehavior): Check<T> = {
+public suspend fun <T : Event> CheckContext<T>.notInGuild(builder: suspend (T) -> GuildBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
     val eventGuild = guildFor(event)?.asGuild()
 
@@ -140,7 +156,11 @@ public fun <T : Event> notInGuild(builder: suspend (T) -> GuildBehavior): Check<
  *
  * @param id Guild snowflake to compare to.
  */
-public fun <T : Event> inGuild(id: Snowflake): Check<T> = {
+public suspend fun <T : Event> CheckContext<T>.inGuild(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
     val guild = event.kord.getGuild(id)
 
@@ -149,7 +169,7 @@ public fun <T : Event> inGuild(id: Snowflake): Check<T> = {
 
         fail()
     } else {
-        inGuild<T> { guild }()
+        inGuild { guild }
     }
 }
 
@@ -161,7 +181,11 @@ public fun <T : Event> inGuild(id: Snowflake): Check<T> = {
  *
  * @param id Guild snowflake to compare to.
  */
-public fun <T : Event> notInGuild(id: Snowflake): Check<T> = {
+public suspend fun <T : Event> CheckContext<T>.notInGuild(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
     val guild = event.kord.getGuild(id)
 
@@ -170,7 +194,7 @@ public fun <T : Event> notInGuild(id: Snowflake): Check<T> = {
 
         pass()
     } else {
-        notInGuild<T> { guild }()
+        notInGuild { guild }
     }
 }
 

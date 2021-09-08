@@ -249,44 +249,6 @@ public open class ChatCommand<T : Arguments>(
         checkList.add(check)
     }
 
-    /**
-     * Define a simple Boolean check which must pass for the command to be executed.
-     *
-     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
-     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
-     * the same functionality as a regular check, and cannot return a message.
-     *
-     * A command may have multiple checks - all checks must pass for the command to be executed.
-     * Checks will be run in the order that they're defined.
-     *
-     * This function can be used DSL-style with a given body, or it can be passed one or more
-     * predefined functions. See the samples for more information.
-     *
-     * @param checks Checks to apply to this command.
-     */
-    public open fun booleanCheck(vararg checks: suspend (MessageCreateEvent) -> Boolean) {
-        checks.forEach(::booleanCheck)
-    }
-
-    /**
-     * Overloaded simple Boolean check function to allow for DSL syntax.
-     *
-     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
-     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
-     * the same functionality as a regular check, and cannot return a message.
-     *
-     * @param check Check to apply to this command.
-     */
-    public open fun booleanCheck(check: suspend (MessageCreateEvent) -> Boolean) {
-        check {
-            if (check(event)) {
-                pass()
-            } else {
-                fail()
-            }
-        }
-    }
-
     // endregion
 
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
@@ -373,7 +335,8 @@ public open class ChatCommand<T : Arguments>(
      *
      * @param event The message creation event.
      * @param commandName The name used to invoke this command.
-     * @param args Array of command arguments.
+     * @param parser Parser used to parse the command's arguments, available for further parsing.
+     * @param argString Original string containing the command's arguments.
      * @param skipChecks Whether to skip testing the command's checks.
      */
     public open suspend fun call(

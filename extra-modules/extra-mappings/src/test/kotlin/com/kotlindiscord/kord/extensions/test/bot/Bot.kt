@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.checks.isNotbot
+import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.extMappings
 import com.kotlindiscord.kord.extensions.utils.env
 import me.shedaniel.linkie.namespaces.YarnNamespace
@@ -12,7 +12,7 @@ suspend fun main() {
         koinLogLevel = Level.DEBUG
 
         chatCommands {
-            check(isNotbot)
+            check { isNotBot() }
         }
 
         applicationCommands {

@@ -2,9 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
-import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.utils.getKoin
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.utils.hasPermission
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
@@ -12,10 +10,6 @@ import dev.kord.common.entity.Permission
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.Event
 import mu.KotlinLogging
-import java.util.*
-
-private val defaultLocale: Locale
-    get() = getKoin().get<ExtensibleBotBuilder>().i18nBuilder.defaultLocale
 
 /**
  * Check asserting that the user an [Event] fired for has a given permission, or the Administrator permission.
@@ -25,7 +19,11 @@ private val defaultLocale: Locale
  *
  * @param perm The permission to check for.
  */
-public fun hasPermission(perm: Permission): Check<*> = {
+public suspend fun CheckContext<*>.hasPermission(perm: Permission) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasPermission")
     val channel = channelFor(event) as? GuildChannel
     val member = memberFor(event)
@@ -70,7 +68,11 @@ public fun hasPermission(perm: Permission): Check<*> = {
  *
  * @param perm The permission to check for.
  */
-public fun notHasPermission(perm: Permission): Check<*> = {
+public suspend fun CheckContext<*>.notHasPermission(perm: Permission) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasPermission")
     val channel = channelFor(event) as? GuildChannel
     val member = memberFor(event)

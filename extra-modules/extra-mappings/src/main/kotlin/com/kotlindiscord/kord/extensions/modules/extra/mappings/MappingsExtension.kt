@@ -2,8 +2,8 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
-import com.kotlindiscord.kord.extensions.checks.and
 import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -22,6 +22,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.core.behavior.channel.withTyping
+import dev.kord.core.event.message.MessageCreateEvent
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.MappingsQuery
@@ -74,9 +75,17 @@ class MappingsExtension : Extension() {
 
         val patchworkEnabled = builder.config.yarnChannelEnabled(YarnChannels.PATCHWORK)
 
-        val categoryCheck = allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
-        val channelCheck = allowedGuild(builder.config.getAllowedChannels(), builder.config.getBannedChannels())
-        val guildCheck = allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
+        val categoryCheck: Check<MessageCreateEvent> = {
+            allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
+        }
+
+        val channelCheck: Check<MessageCreateEvent> = {
+            allowedGuild(builder.config.getAllowedChannels(), builder.config.getBannedChannels())
+        }
+
+        val guildCheck: Check<MessageCreateEvent> = {
+            allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
+        }
 
         val yarnChannels = YarnChannels.values().filter {
             it != YarnChannels.PATCHWORK || patchworkEnabled
@@ -95,7 +104,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
                     "`lyarn` command."
 
-                check(customChecks(name, LegacyYarnNamespace))
+                check { customChecks(name, LegacyYarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -113,7 +122,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
                     "`lyarn` command."
 
-                check(customChecks(name, LegacyYarnNamespace))
+                check { customChecks(name, LegacyYarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -131,7 +140,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
                     "`lyarn` command."
 
-                check(customChecks(name, LegacyYarnNamespace))
+                check { customChecks(name, LegacyYarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -153,7 +162,7 @@ class MappingsExtension : Extension() {
 
                     "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
 
-                check(customChecks(name, MCPNamespace))
+                check { customChecks(name, MCPNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -169,7 +178,7 @@ class MappingsExtension : Extension() {
 
                     "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
 
-                check(customChecks(name, MCPNamespace))
+                check { customChecks(name, MCPNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -185,7 +194,7 @@ class MappingsExtension : Extension() {
 
                     "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
 
-                check(customChecks(name, MCPNamespace))
+                check { customChecks(name, MCPNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -212,7 +221,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
                     "command."
 
-                check(customChecks(name, MojangNamespace))
+                check { customChecks(name, MojangNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -233,7 +242,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
                     "command."
 
-                check(customChecks(name, MojangNamespace))
+                check { customChecks(name, MojangNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -254,7 +263,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
                     "command."
 
-                check(customChecks(name, MojangNamespace))
+                check { customChecks(name, MojangNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -277,7 +286,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Plasma mappings, you can use the " +
                     "`plasma` command."
 
-                check(customChecks(name, PlasmaNamespace))
+                check { customChecks(name, PlasmaNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -294,7 +303,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Plasma mappings, you can use the " +
                     "`plasma` command."
 
-                check(customChecks(name, PlasmaNamespace))
+                check { customChecks(name, PlasmaNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -311,7 +320,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Plasma mappings, you can use the " +
                     "`plasma` command."
 
-                check(customChecks(name, PlasmaNamespace))
+                check { customChecks(name, PlasmaNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -338,7 +347,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
                     "command."
 
-                check(customChecks(name, YarnNamespace))
+                check { customChecks(name, YarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -364,7 +373,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
                     "command."
 
-                check(customChecks(name, YarnNamespace))
+                check { customChecks(name, YarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -390,7 +399,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
                     "command."
 
-                check(customChecks(name, YarnNamespace))
+                check { customChecks(name, YarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -418,7 +427,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarrn mappings, you can use the " +
                     "`yarrn` command."
 
-                check(customChecks(name, YarrnNamespace))
+                check { customChecks(name, YarrnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -435,7 +444,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarrn mappings, you can use the " +
                     "`yarrn` command."
 
-                check(customChecks(name, YarrnNamespace))
+                check { customChecks(name, YarrnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -452,7 +461,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarrn mappings, you can use the " +
                     "`yarrn` command."
 
-                check(customChecks(name, YarrnNamespace))
+                check { customChecks(name, YarrnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -472,7 +481,7 @@ class MappingsExtension : Extension() {
 
                 description = "Get information and a list of supported versions for Legacy Yarn mappings."
 
-                check(customChecks(name, LegacyYarnNamespace))
+                check { customChecks(name, LegacyYarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -537,7 +546,7 @@ class MappingsExtension : Extension() {
 
                 description = "Get information and a list of supported versions for MCP mappings."
 
-                check(customChecks(name, MCPNamespace))
+                check { customChecks(name, MCPNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -602,7 +611,7 @@ class MappingsExtension : Extension() {
 
                 description = "Get information and a list of supported versions for Mojang mappings."
 
-                check(customChecks(name, MojangNamespace))
+                check { customChecks(name, MojangNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -669,7 +678,7 @@ class MappingsExtension : Extension() {
 
                 description = "Get information and a list of supported versions for Plasma mappings."
 
-                check(customChecks(name, PlasmaNamespace))
+                check { customChecks(name, PlasmaNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -734,7 +743,7 @@ class MappingsExtension : Extension() {
 
                 description = "Get information and a list of supported versions for Yarn mappings."
 
-                check(customChecks(name, YarnNamespace))
+                check { customChecks(name, YarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -827,7 +836,7 @@ class MappingsExtension : Extension() {
 
                 description = "Get information and a list of supported versions for Yarrn mappings."
 
-                check(customChecks(name, YarrnNamespace))
+                check { customChecks(name, YarrnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -1217,18 +1226,22 @@ class MappingsExtension : Extension() {
 
     private suspend fun getTimeout() = builder.config.getTimeout()
 
-    private suspend fun customChecks(command: String, namespace: Namespace): Check<*> {
-        val allChecks = builder.commandChecks.map { it.invoke(command) }.toMutableList()
-        val allNamespaceChecks = builder.namespaceChecks.map { it.invoke(namespace) }.toMutableList()
+    private suspend fun CheckContext<MessageCreateEvent>.customChecks(command: String, namespace: Namespace) {
+        builder.commandChecks.forEach {
+            it(command)()
 
-        var rootCheck = allChecks.removeFirstOrNull()
-            ?: allNamespaceChecks.removeFirstOrNull()
-            ?: return { pass() }
+            if (!passed) {
+                return
+            }
+        }
 
-        allChecks.forEach { rootCheck = rootCheck and it }
-        allNamespaceChecks.forEach { rootCheck = rootCheck and it }
+        builder.namespaceChecks.forEach {
+            it(namespace)()
 
-        return rootCheck
+            if (!passed) {
+                return
+            }
+        }
     }
 
     companion object {

@@ -2,7 +2,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.CategorizableChannel
 import dev.kord.core.entity.channel.GuildChannel
@@ -26,10 +26,10 @@ import mu.KotlinLogging
  * @param allowed List of allowed category IDs
  * @param banned List of banned category IDs
  */
-fun allowedCategory(
+suspend fun CheckContext<MessageCreateEvent>.allowedCategory(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
-): Check<MessageCreateEvent> = {
+) {
     val logger = KotlinLogging.logger { }
     val channel = channelFor(event)
 
@@ -100,10 +100,10 @@ fun allowedCategory(
  * @param allowed List of allowed channel IDs
  * @param banned List of banned channel IDs
  */
-fun allowedChannel(
+suspend fun CheckContext<MessageCreateEvent>.allowedChannel(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
-): Check<MessageCreateEvent> = {
+) {
     val logger = KotlinLogging.logger { }
     val channel = channelFor(event)
 
@@ -157,10 +157,10 @@ fun allowedChannel(
  * @param allowed List of allowed guild IDs
  * @param banned List of banned guild IDs
  */
-fun allowedGuild(
+suspend fun CheckContext<MessageCreateEvent>.allowedGuild(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
-): Check<MessageCreateEvent> = {
+) {
     val logger = KotlinLogging.logger { }
     val guild = guildFor(event)
 
