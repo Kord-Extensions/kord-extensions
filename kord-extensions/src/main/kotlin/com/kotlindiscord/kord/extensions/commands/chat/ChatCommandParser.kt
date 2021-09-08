@@ -67,6 +67,8 @@ public open class ChatCommandParser : KoinComponent {
      */
     public open suspend fun <T : Arguments> parse(builder: () -> T, context: ChatCommandContext<*>): T {
         val argumentsObj = builder.invoke()
+        argumentsObj.validate()
+
         val parser = context.parser!!
 
         logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }

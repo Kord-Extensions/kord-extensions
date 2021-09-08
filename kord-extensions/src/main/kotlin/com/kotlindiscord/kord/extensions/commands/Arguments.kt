@@ -159,4 +159,19 @@ public open class Arguments {
 
         return converter
     }
+
+    /** Validation function that will throw an error if there's a problem with this Arguments class/subclass. **/
+    public open fun validate() {
+        val names: MutableSet<String> = mutableSetOf()
+
+        args.forEach {
+            val name = it.displayName.lowercase()
+
+            if (name in names) {
+                error("Duplicate argument name: ${it.displayName}")
+            }
+
+            names.add(name)
+        }
+    }
 }
