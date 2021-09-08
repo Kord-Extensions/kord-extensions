@@ -21,7 +21,7 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 public class UnsafeMessageCommand(
     extension: Extension
 ) : MessageCommand<UnsafeMessageCommandContext>(extension) {
-    /** @suppress **/
+    /** Initial response type. Change this to decide what happens when this message command action is executed. **/
     public var initialResponse: InitialMessageCommandResponse = InitialMessageCommandResponse.EphemeralAck
 
     override suspend fun call(event: MessageCommandInteractionCreateEvent) {

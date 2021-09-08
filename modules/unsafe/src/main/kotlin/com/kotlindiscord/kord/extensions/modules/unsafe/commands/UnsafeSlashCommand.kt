@@ -29,7 +29,7 @@ public class UnsafeSlashCommand<A : Arguments>(
     public override val parentCommand: SlashCommand<*, *>? = null,
     public override val parentGroup: SlashGroup? = null
 ) : SlashCommand<UnsafeSlashCommandContext<A>, A>(extension) {
-    /** @suppress **/
+    /** Initial response type. Change this to decide what happens when this slash command is executed. **/
     public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
 
     override suspend fun call(event: ChatInputCommandInteractionCreateEvent) {

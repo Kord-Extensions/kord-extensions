@@ -21,7 +21,7 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 public class UnsafeUserCommand(
     extension: Extension
 ) : UserCommand<UnsafeUserCommandContext>(extension) {
-    /** @suppress **/
+    /** Initial response type. Change this to decide what happens when this user command action is executed. **/
     public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
 
     override suspend fun call(event: UserCommandInteractionCreateEvent) {
