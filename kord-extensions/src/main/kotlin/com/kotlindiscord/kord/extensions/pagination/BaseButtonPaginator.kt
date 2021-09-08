@@ -83,8 +83,8 @@ public abstract class BaseButtonPaginator(
     }
 
     override suspend fun destroy() {
-        task?.cancel()
         runTimeoutCallbacks()
+        task?.cancel()
     }
 
     override suspend fun setup() {

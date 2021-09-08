@@ -56,7 +56,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
 
     override val type: ApplicationCommandType = ApplicationCommandType.ChatInput
 
-    override var guildId: Snowflake? = if (parentCommand != null && parentGroup != null) {
+    override var guildId: Snowflake? = if (parentCommand == null && parentGroup == null) {
         settings.applicationCommandsBuilder.defaultGuild
     } else {
         null
