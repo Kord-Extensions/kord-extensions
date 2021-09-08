@@ -22,6 +22,7 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.*
+import dev.kord.rest.request.KtorRequestException
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
@@ -100,6 +101,18 @@ public open class ApplicationCommandRegistry : KoinComponent {
         groupedCommands.forEach {
             try {
                 sync(removeOthers, it.key, it.value)
+            } catch (e: KtorRequestException) {
+                logger.error(e) {
+                    if (it.key == null) {
+                        "Failed to synchronise global application commands"
+                    } else {
+                        "Failed to synchronise application commands for guild with ID: ${it.key!!.asString}"
+                    } + if (e.error?.message != null) {
+                        "\n        Discord error message: ${e.error?.message}"
+                    } else {
+                        ""
+                    }
+                }
             } catch (t: Throwable) {
                 logger.error(t) {
                     if (it.key == null) {
@@ -139,6 +152,16 @@ public open class ApplicationCommandRegistry : KoinComponent {
                 } else {
                     logger.warn { "Applying permissions to global application commands is currently not supported." }
                 }
+            }
+        } catch (e: KtorRequestException) {
+            logger.error(e) {
+                "Failed to apply application command permissions - for this reason, all commands with configured" +
+                    "permissions will be disabled." +
+                    if (e.error?.message != null) {
+                        "\n        Discord error message: ${e.error?.message}"
+                    } else {
+                        ""
+                    }
             }
         } catch (t: Throwable) {
             logger.error(t) {
@@ -219,7 +242,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
         val toCreate = toAdd + toUpdate
 
         @Suppress("IfThenToElvis")  // Ultimately, this is far more readable
-val response = if (guild == null) {
+        val response = if (guild == null) {
             // We're registering global commands here, if the guild is null
 
             kord.createGlobalApplicationCommands {
@@ -357,6 +380,15 @@ val response = if (guild == null) {
             } else {
                 logger.warn { "Applying permissions to global application commands is currently not supported." }
             }
+        } catch (e: KtorRequestException) {
+            logger.error(e) {
+                "Failed to apply application command permissions. This command will not be registered." +
+                    if (e.error?.message != null) {
+                        "\n        Discord error message: ${e.error?.message}"
+                    } else {
+                        ""
+                    }
+            }
         } catch (t: Throwable) {
             logger.error(t) {
                 "Failed to apply application command permissions. This command will not be registered."
@@ -383,6 +415,17 @@ val response = if (guild == null) {
         commands.map {
             try {
                 registerGeneric(it) as MessageCommand<*>
+            } catch (e: KtorRequestException) {
+                logger.warn(e) {
+                    "Failed to register ${it.type.name} command: ${it.name}" +
+                        if (e.error?.message != null) {
+                            "\n        Discord error message: ${e.error?.message}"
+                        } else {
+                            ""
+                        }
+                }
+
+                null
             } catch (t: Throwable) {
                 logger.warn(t) { "Failed to register ${it.type.name} command: ${it.name}" }
 
@@ -395,6 +438,17 @@ val response = if (guild == null) {
         commands.map {
             try {
                 registerGeneric(it) as SlashCommand<*, *>
+            } catch (e: KtorRequestException) {
+                logger.warn(e) {
+                    "Failed to register ${it.type.name} command: ${it.name}" +
+                        if (e.error?.message != null) {
+                            "\n        Discord error message: ${e.error?.message}"
+                        } else {
+                            ""
+                        }
+                }
+
+                null
             } catch (t: Throwable) {
                 logger.warn(t) { "Failed to register ${it.type.name} command: ${it.name}" }
 
@@ -407,6 +461,17 @@ val response = if (guild == null) {
         commands.map {
             try {
                 registerGeneric(it) as UserCommand<*>
+            } catch (e: KtorRequestException) {
+                logger.warn(e) {
+                    "Failed to register ${it.type.name} command: ${it.name}" +
+                        if (e.error?.message != null) {
+                            "\n        Discord error message: ${e.error?.message}"
+                        } else {
+                            ""
+                        }
+                }
+
+                null
             } catch (t: Throwable) {
                 logger.warn(t) { "Failed to register ${it.type.name} command: ${it.name}" }
 
@@ -435,9 +500,14 @@ val response = if (guild == null) {
     // region: Unregistration functions
 
     /** Unregister a message command. **/
-    public open suspend fun unregisterGeneric(command: ApplicationCommand<*>) {
-        TODO()
-    }
+    public open suspend fun unregisterGeneric(command: ApplicationCommand<*>): ApplicationCommand<*>? =
+        when (command) {
+            is MessageCommand<*> -> unregister(command)
+            is SlashCommand<*, *> -> unregister(command)
+            is UserCommand<*> -> unregister(command)
+
+            else -> error("Unsupported application command type: ${command.type.name}")
+        }
 
     /** Unregister a message command. **/
     public open suspend fun unregister(command: MessageCommand<*>): MessageCommand<*>? {
