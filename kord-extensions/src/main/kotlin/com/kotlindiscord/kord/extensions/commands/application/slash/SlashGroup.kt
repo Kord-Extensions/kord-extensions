@@ -14,7 +14,8 @@ public class SlashGroup(
     public val name: String,
     public val parent: SlashCommand<*, *>
 ) {
-    internal val logger: KLogger = KotlinLogging.logger {}
+    /** @suppress **/
+    public val logger: KLogger = KotlinLogging.logger {}
 
     /** List of subcommands belonging to this group. **/
     public val subCommands: MutableList<SlashCommand<*, *>> = mutableListOf()

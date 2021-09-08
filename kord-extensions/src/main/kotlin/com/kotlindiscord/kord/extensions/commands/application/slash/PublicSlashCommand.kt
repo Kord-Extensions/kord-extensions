@@ -12,7 +12,7 @@ import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
 
-public typealias InitialPublicChatResponseBuilder =
+public typealias InitialPublicSlashResponseBehavior =
     (suspend PublicInteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
 
 /** Public slash command. **/
@@ -24,10 +24,10 @@ public class PublicSlashCommand<A : Arguments>(
     public override val parentGroup: SlashGroup? = null
 ) : SlashCommand<PublicSlashCommandContext<A>, A>(extension) {
     /** @suppress Internal guilder **/
-    public var initialResponseBuilder: InitialPublicChatResponseBuilder = null
+    public var initialResponseBuilder: InitialPublicSlashResponseBehavior = null
 
     /** Call this to open with a response, omit it to ack instead. **/
-    public fun initialResponse(body: InitialPublicChatResponseBuilder) {
+    public fun initialResponse(body: InitialPublicSlashResponseBehavior) {
         initialResponseBuilder = body
     }
 

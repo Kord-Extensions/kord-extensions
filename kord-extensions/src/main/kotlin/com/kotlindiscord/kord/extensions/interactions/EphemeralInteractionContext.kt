@@ -5,8 +5,11 @@ import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.core.behavior.interaction.followUpEphemeral
+import dev.kord.core.behavior.interaction.followUpPublic
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
+import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.EphemeralFollowupMessageCreateBuilder
+import dev.kord.rest.builder.message.create.PublicFollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.EphemeralInteractionResponseModifyBuilder
 import java.util.*
 
@@ -19,11 +22,18 @@ public interface EphemeralInteractionContext {
 /**
  * Respond to the current interaction with an ephemeral followup.
  *
- * **Note:** Calling this twice will result in a public followup!
+ * **Note:** Calling this twice (or at all after [edit]) will result in a public followup!
  */
 public suspend inline fun EphemeralInteractionContext.respond(
     builder: EphemeralFollowupMessageCreateBuilder.() -> Unit
 ): EphemeralFollowupMessage = interactionResponse.followUpEphemeral(builder)
+
+/**
+ * Respond to the current interaction with a public followup.
+ */
+public suspend inline fun EphemeralInteractionContext.respondPublic(
+    builder: PublicFollowupMessageCreateBuilder.() -> Unit
+): PublicFollowupMessage = interactionResponse.followUpPublic(builder)
 
 /**
  * Edit the current interaction's response.

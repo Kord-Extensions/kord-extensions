@@ -5,7 +5,7 @@
     ConverterToOptional::class
 )
 
-package com.kotlindiscord.kord.extensions.commands.converters.impl
+package com.kotlindiscord.kord.extensions.modules.unsafe.converters
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.Argument
@@ -13,12 +13,14 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import org.koin.core.component.inject
 
+@UnsafeAPI
 private typealias GenericConverter = Converter<*, *, *, *>
 
 /**
@@ -27,6 +29,7 @@ private typealias GenericConverter = Converter<*, *, *, *>
  * This converter does not support optional or defaulting converters.
  */
 @OptIn(KordPreview::class)
+@UnsafeAPI
 public class UnionConverter(
     private val converters: Collection<GenericConverter>,
 
@@ -184,6 +187,7 @@ public class UnionConverter(
  *
  * @see UnionConverter
  */
+@UnsafeAPI
 public fun Arguments.union(
     displayName: String,
     description: String,
@@ -217,6 +221,7 @@ public fun Arguments.union(
  *
  * @see UnionConverter
  */
+@UnsafeAPI
 public fun Arguments.optionalUnion(
     displayName: String,
     description: String,

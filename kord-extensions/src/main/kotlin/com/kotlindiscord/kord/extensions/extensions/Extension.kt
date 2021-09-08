@@ -43,7 +43,7 @@ public abstract class Extension : KoinComponent {
     internal val chatCommandRegistry: ChatCommandRegistry by inject()
 
     /** Slash command registry. **/
-    internal val applicationCommandRegistry: ApplicationCommandRegistry by inject()
+    public val applicationCommandRegistry: ApplicationCommandRegistry by inject()
 
     /**
      * The name of this extension.

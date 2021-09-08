@@ -36,7 +36,8 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public open val parentCommand: SlashCommand<*, *>? = null,
     public open val parentGroup: SlashGroup? = null
 ) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
-    internal val logger: KLogger = KotlinLogging.logger {}
+    /** @suppress **/
+    public val logger: KLogger = KotlinLogging.logger {}
 
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
