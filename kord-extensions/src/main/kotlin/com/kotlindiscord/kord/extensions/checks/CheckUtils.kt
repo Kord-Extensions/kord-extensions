@@ -8,7 +8,6 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
-import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.entity.interaction.GuildApplicationCommandInteraction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
@@ -80,7 +79,7 @@ public suspend fun channelFor(event: Event): ChannelBehavior? {
 public suspend fun topChannelFor(event: Event): ChannelBehavior? {
     val channel = channelFor(event) ?: return null
 
-    return if (channel is ThreadChannel) {
+    return if (channel is ThreadChannelBehavior) {
         channel.parent
     } else {
         channel
