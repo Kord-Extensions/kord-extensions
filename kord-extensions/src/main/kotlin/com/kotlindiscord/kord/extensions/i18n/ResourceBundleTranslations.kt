@@ -65,12 +65,16 @@ public class ResourceBundleTranslations(
     }
 
     override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Array<Any?>): String {
-        return try {
-            var string = get(key, locale, bundleName)
+        var string = try {
+            get(key, locale, bundleName)
+        } catch (e: MissingResourceException) {
+            key
+        }
 
+        return try {
             if (string == key && bundleName != null) {
                 // Fall through to the default bundle if the key isn't found
-                logger.trace { "$key not found in bundle $bundleName - falling through to $KORDEX_KEY" }
+                logger.trace { "'$key' not found in bundle '$bundleName' - falling through to '$KORDEX_KEY'" }
 
                 string = get(key, locale, KORDEX_KEY)
             }
@@ -79,7 +83,13 @@ public class ResourceBundleTranslations(
 
             formatter.format(replacements)
         } catch (e: MissingResourceException) {
-            logger.trace { "Unable to find translation for key '$key' in bundle '$bundleName'" }
+            logger.trace {
+                if (bundleName == null) {
+                    "Unable to find translation for key '$key' in bundle '$KORDEX_KEY'"
+                } else {
+                    "Unable to find translation for key '$key' in bundles: '$bundleName', '$KORDEX_KEY'"
+                }
+            }
 
             key
         }
