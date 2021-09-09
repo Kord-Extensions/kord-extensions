@@ -51,6 +51,7 @@ class MappingsExtension : Extension() {
                 "legacy-yarn" -> namespaces.add(LegacyYarnNamespace)
                 "mcp" -> namespaces.add(MCPNamespace)
                 "mojang" -> namespaces.add(MojangNamespace)
+                "hashed-mojang" -> namespaces.add(MojangHashedNamespace)
                 "plasma" -> namespaces.add(PlasmaNamespace)
                 "yarn" -> namespaces.add(YarnNamespace)
                 "yarrn" -> namespaces.add(YarrnNamespace)
@@ -69,6 +70,7 @@ class MappingsExtension : Extension() {
         val legacyYarnEnabled = enabledNamespaces.contains("legacy-yarn")
         val mcpEnabled = enabledNamespaces.contains("mcp")
         val mojangEnabled = enabledNamespaces.contains("mojang")
+        val hashedMojangEnabled = enabledNamespaces.contains("hashed-mojang")
         val plasmaEnabled = enabledNamespaces.contains("plasma")
         val yarnEnabled = enabledNamespaces.contains("yarn")
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
@@ -268,6 +270,75 @@ class MappingsExtension : Extension() {
 
                 action {
                     queryMethods(MojangNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                }
+            }
+        }
+
+        // endregion
+
+        // region: Hashed Mojang mappings lookups
+
+        if (hashedMojangEnabled) {
+            // Class
+            chatCommand(::HashedMojangArguments) {
+                name = "hc"
+                aliases = arrayOf("hmojc", "hmojmapc", "hmc", "qc")
+
+                description = "Look up Hashed Mojang mappings info for a class.\n\n" +
+
+                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                    "\n\n" +
+
+                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
+                    "command."
+
+                check { customChecks(name, MojangHashedNamespace) }
+                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+
+                action {
+                    queryClasses(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                }
+            }
+
+            // Field
+            chatCommand(::HashedMojangArguments) {
+                name = "hf"
+                aliases = arrayOf("hmojf", "hmojmapf", "hmf", "qf")
+
+                description = "Look up Hashed Mojang mappings info for a field.\n\n" +
+
+                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                    "\n\n" +
+
+                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
+                    "command."
+
+                check { customChecks(name, MojangHashedNamespace) }
+                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+
+                action {
+                    queryFields(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                }
+            }
+
+            // Method
+            chatCommand(::HashedMojangArguments) {
+                name = "hm"
+                aliases = arrayOf("hmojm", "hmojmapm", "hmm", "qm")
+
+                description = "Look up Hashed Mojang mappings info for a method.\n\n" +
+
+                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                    "\n\n" +
+
+                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
+                    "command."
+
+                check { customChecks(name, MojangHashedNamespace) }
+                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+
+                action {
+                    queryMethods(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
                 }
             }
         }
@@ -643,6 +714,75 @@ class MappingsExtension : Extension() {
 
                     val pagesObj = Pages()
                     val pageTitle = "Mappings info: Mojang"
+
+                    pages.forEach {
+                        pagesObj.addPage(
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
+                    }
+
+                    val paginator = MessageButtonPaginator(
+                        targetMessage = event.message,
+                        pages = pagesObj,
+                        keepEmbed = true,
+                        owner = message.author,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
+                    )
+
+                    paginator.send()
+                }
+            }
+        }
+
+        if (hashedMojangEnabled) {
+            chatCommand {
+                name = "hashed"
+                aliases = arrayOf("hashed-mojmap", "hashed-mojang", "quilt")
+
+                description = "Get information and a list of supported versions for hashed Mojang mappings."
+
+                check { customChecks(name, MojangHashedNamespace) }
+                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+
+                action {
+                    val defaultVersion = MojangHashedNamespace.getDefaultVersion()
+                    val allVersions = MojangHashedNamespace.getAllSortedVersions()
+
+                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
+                        it.joinToString("\n") { version ->
+                            if (version == defaultVersion) {
+                                "**» $version** (Default)"
+                            } else {
+                                "**»** $version"
+                            }
+                        }
+                    }.toMutableList()
+
+                    pages.add(
+                        0,
+                        "Hashed Mojang mappings are available for queries across **${allVersions.size}** " +
+                            "versions.\n\n" +
+
+                            "**Default version:** $defaultVersion\n\n" +
+
+                            "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                            "\n" +
+                            "**Commands:** `hc`, `hf`, `hm`\n\n" +
+
+                            "For a full list of supported hashed Mojang versions, please view the rest of the pages."
+                    )
+
+                    val pagesObj = Pages()
+                    val pageTitle = "Mappings info: Hashed Mojang"
 
                     pages.forEach {
                         pagesObj.addPage(
