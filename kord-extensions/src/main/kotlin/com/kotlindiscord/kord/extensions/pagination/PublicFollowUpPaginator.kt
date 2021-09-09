@@ -60,8 +60,6 @@ public class PublicFollowUpPaginator(
     }
 
     override suspend fun destroy() {
-        super.destroy()
-
         if (!active) {
             return
         }
@@ -77,6 +75,8 @@ public class PublicFollowUpPaginator(
                 this.components = mutableListOf()
             }
         }
+
+        super.destroy()
     }
 }
 

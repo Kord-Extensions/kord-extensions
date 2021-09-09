@@ -49,8 +49,6 @@ public class EphemeralResponsePaginator(
     }
 
     override suspend fun destroy() {
-        super.destroy()
-
         if (!active) {
             return
         }
@@ -62,6 +60,8 @@ public class EphemeralResponsePaginator(
 
             this.components = mutableListOf()
         }
+
+        super.destroy()
     }
 }
 

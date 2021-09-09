@@ -50,8 +50,6 @@ public class PublicResponsePaginator(
     }
 
     override suspend fun destroy() {
-        super.destroy()
-
         if (!active) {
             return
         }
@@ -63,6 +61,8 @@ public class PublicResponsePaginator(
 
             this.components = mutableListOf()
         }
+
+        super.destroy()
     }
 }
 

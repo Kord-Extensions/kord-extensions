@@ -77,8 +77,6 @@ public class MessageButtonPaginator(
     }
 
     override suspend fun destroy() {
-        super.destroy()
-
         if (!active) {
             return
         }
@@ -96,7 +94,7 @@ public class MessageButtonPaginator(
             }
         }
 
-        runTimeoutCallbacks()
+        super.destroy()
     }
 }
 
