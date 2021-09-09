@@ -123,7 +123,7 @@ public suspend fun <T : Event> CheckContext<T>.inTopChannel(id: Snowflake) {
 
         fail()
     } else {
-        inChannel { channel }
+        inTopChannel { channel }
     }
 }
 
@@ -153,7 +153,7 @@ public suspend fun <T : Event> CheckContext<T>.notInTopChannel(id: Snowflake) {
 
         pass()
     } else {
-        notInChannel { channel }
+        notInTopChannel { channel }
     }
 }
 
