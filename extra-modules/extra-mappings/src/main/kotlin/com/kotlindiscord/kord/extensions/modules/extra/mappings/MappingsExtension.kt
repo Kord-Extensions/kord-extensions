@@ -282,7 +282,7 @@ class MappingsExtension : Extension() {
             // Class
             chatCommand(::HashedMojangArguments) {
                 name = "hc"
-                aliases = arrayOf("hmojc", "hmojmapc", "hmc", "qc")
+                aliases = arrayOf("hmojc", "hmojmapc", "hmc", "qhc")
 
                 description = "Look up Hashed Mojang mappings info for a class.\n\n" +
 
@@ -303,7 +303,7 @@ class MappingsExtension : Extension() {
             // Field
             chatCommand(::HashedMojangArguments) {
                 name = "hf"
-                aliases = arrayOf("hmojf", "hmojmapf", "hmf", "qf")
+                aliases = arrayOf("hmojf", "hmojmapf", "hmf", "qhf")
 
                 description = "Look up Hashed Mojang mappings info for a field.\n\n" +
 
@@ -324,7 +324,7 @@ class MappingsExtension : Extension() {
             // Method
             chatCommand(::HashedMojangArguments) {
                 name = "hm"
-                aliases = arrayOf("hmojm", "hmojmapm", "hmm", "qm")
+                aliases = arrayOf("hmojm", "hmojmapm", "hmm", "qhm")
 
                 description = "Look up Hashed Mojang mappings info for a method.\n\n" +
 
@@ -746,7 +746,7 @@ class MappingsExtension : Extension() {
         if (hashedMojangEnabled) {
             chatCommand {
                 name = "hashed"
-                aliases = arrayOf("hashed-mojmap", "hashed-mojang", "quilt")
+                aliases = arrayOf("hashed-mojmap", "hashed-mojang", "quilt-hashed", "qh", "hm")
 
                 description = "Get information and a list of supported versions for hashed Mojang mappings."
 

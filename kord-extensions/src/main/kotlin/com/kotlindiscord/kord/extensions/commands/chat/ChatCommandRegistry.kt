@@ -10,12 +10,8 @@ import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.message.MessageCreateEvent
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.invoke
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.concurrent.Executors
 
 /**
  * A class for the registration and dispatching of message-based commands.
@@ -38,13 +34,6 @@ public open class ChatCommandRegistry : KoinComponent {
 
     /** @suppress **/
     public val botSettings: ExtensibleBotBuilder by inject()
-
-    /** @suppress **/
-    public open val commandThreadPool: ExecutorCoroutineDispatcher by lazy {
-        Executors
-            .newFixedThreadPool(botSettings.chatCommandsBuilder.threads)
-            .asCoroutineDispatcher()
-    }
 
     /**
      * Directly register a [ChatCommand] to this command registry.
@@ -236,9 +225,7 @@ public open class ChatCommandRegistry : KoinComponent {
         val command = getCommand(commandName, event)
         val parser = StringParser(content)
 
-        commandThreadPool.invoke {
-            command?.call(event, commandName, parser, content)
-        }
+        command?.call(event, commandName, parser, content)
     }
 
     /**

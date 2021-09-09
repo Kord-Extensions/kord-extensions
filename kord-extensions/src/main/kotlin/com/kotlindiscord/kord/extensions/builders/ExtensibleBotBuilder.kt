@@ -824,9 +824,6 @@ public open class ExtensibleBotBuilder {
         /** Whether to register and process chat commands. Defaults to `false`. **/
         public var enabled: Boolean = false
 
-        /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
-        public var threads: Int = Runtime.getRuntime().availableProcessors() * 2
-
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
 

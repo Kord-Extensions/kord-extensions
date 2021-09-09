@@ -21,7 +21,7 @@ banned = []
 
 [settings]
 # Which namespaces to allow lookups for - "hashed-mojang", "legacy-yarn", "plasma", "mcp", "mojang", "yarn" or "yarrn"
-namespaces = ["legacy-yarn", "plasma", "mcp", "mojang", "yarn", "yarrn"]
+namespaces = ["hashed-mojang", "legacy-yarn", "plasma", "mcp", "mojang", "yarn", "yarrn"]
 
 # How long to wait before closing mappings paginators (in seconds), defaults to 5 minutes
 # timeout = 300
