@@ -39,7 +39,7 @@ public open class ComponentRegistry {
         when (val c = components[id]) {
             is InteractionButtonWithAction<*> -> c.call(event)
 
-            null -> logger.warn { "Button interaction received for unknown component ID: $id" }
+            null -> logger.debug { "Button interaction received for unknown component ID: $id" }
 
             else -> logger.warn {
                 "Button interaction received for component ($id), but that component is not a button component with " +
@@ -55,7 +55,7 @@ public open class ComponentRegistry {
         when (val c = components[id]) {
             is SelectMenu<*> -> c.call(event)
 
-            null -> logger.warn { "Select Menu interaction received for unknown component ID: $id" }
+            null -> logger.debug { "Select Menu interaction received for unknown component ID: $id" }
 
             else -> logger.warn {
                 "Select Menu interaction received for component ($id), but that component is not a select menu"
