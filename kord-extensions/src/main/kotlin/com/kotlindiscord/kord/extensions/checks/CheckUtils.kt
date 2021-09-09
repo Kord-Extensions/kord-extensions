@@ -77,7 +77,7 @@ public suspend fun channelFor(event: Event): ChannelBehavior? {
  * @return A [ChannelBehavior] representing the channel, or null if there isn't one.
  */
 public suspend fun topChannelFor(event: Event): ChannelBehavior? {
-    val channel = channelFor(event) ?: return null
+    val channel = channelFor(event)?.asChannelOrNull() ?: return null
 
     return if (channel is ThreadChannelBehavior) {
         channel.parent
