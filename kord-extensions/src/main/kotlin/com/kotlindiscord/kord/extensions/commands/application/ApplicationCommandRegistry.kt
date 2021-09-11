@@ -233,10 +233,14 @@ public open class ApplicationCommandRegistry : KoinComponent {
         val toUpdate = commands.filter { c -> registered.any { c.matches(locale, it) } }
 
         // Registered Discord commands that haven't been provided by extensions
-        val toRemove = registered.filter { c -> commands.all { !it.matches(locale, c) } }
+        val toRemove = if (removeOthers) {
+            registered.filter { c -> commands.all { !it.matches(locale, c) } }
+        } else {
+            listOf()
+        }
 
         logger.info {
-            if (guild == null) {
+            var message = if (guild == null) {
                 "Global application commands: ${toAdd.size} to add / " +
                     "${toUpdate.size} to update / " +
                     "${toRemove.size} to remove"
@@ -245,6 +249,12 @@ public open class ApplicationCommandRegistry : KoinComponent {
                     "${toUpdate.size} to update / " +
                     "${toRemove.size} to remove"
             }
+
+            if (!removeOthers) {
+                message += "\nThe `removeOthers` parameter is `false`, so no commands will be removed."
+            }
+
+            message
         }
 
         val toCreate = toAdd + toUpdate
