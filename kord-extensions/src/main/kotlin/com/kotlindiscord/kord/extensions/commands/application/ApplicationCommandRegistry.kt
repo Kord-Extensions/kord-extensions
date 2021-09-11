@@ -22,6 +22,7 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.*
+import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
@@ -103,15 +104,22 @@ public open class ApplicationCommandRegistry : KoinComponent {
                 sync(removeOthers, it.key, it.value)
             } catch (e: KtorRequestException) {
                 logger.error(e) {
-                    if (it.key == null) {
+                    var message = if (it.key == null) {
                         "Failed to synchronise global application commands"
                     } else {
                         "Failed to synchronise application commands for guild with ID: ${it.key!!.asString}"
-                    } + if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
                     }
+
+                    if (e.error?.message != null) {
+                        message += "\n        Discord error message: ${e.error?.message}"
+                    }
+
+                    if (e.error?.code == JsonErrorCode.MissingAccess) {
+                        message += "\n        Double-check that the bot was added to this guild with the " +
+                            "`application.commands` scope enabled"
+                    }
+
+                    message
                 }
             } catch (t: Throwable) {
                 logger.error(t) {
@@ -190,7 +198,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
         val guild = if (guildId != null) {
             kord.getGuild(guildId)
-                ?: return logger.warn {
+                ?: return logger.debug {
                     "Cannot register application commands for guild ID ${guildId.asString}, " +
                         "as it seems to be missing."
                 }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `maven-publish`
     signing
@@ -26,11 +28,6 @@ dependencies {
     implementation(project(":kord-extensions"))
 }
 
-/**
- * You probably don't want to touch anything below this line. It contains mostly boilerplate, and expands variables
- * from the gradle.properties file.
- */
-
 val sourceJar = task("sourceJar", Jar::class) {
     dependsOn(tasks["classes"])
     archiveClassifier.set("sources")
@@ -42,6 +39,17 @@ detekt {
     config = rootProject.files("detekt.yml")
 
     autoCorrect = true
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_9
+    targetCompatibility = JavaVersion.VERSION_1_9
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "9"
+    }
 }
 
 sourceSets {
