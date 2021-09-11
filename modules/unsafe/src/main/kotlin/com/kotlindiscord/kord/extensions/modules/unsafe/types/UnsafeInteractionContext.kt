@@ -88,7 +88,7 @@ public suspend inline fun UnsafeInteractionContext.respondPublic(
 ): PublicFollowupMessage {
     return when (val interaction = interactionResponse) {
         is PublicInteractionResponseBehavior -> interaction.followUp(builder)
-        is EphemeralInteractionResponseBehavior -> error("Initial interaction response is not ephemeral.")
+        is EphemeralInteractionResponseBehavior -> interaction.followUpPublic(builder)
 
         null -> error("Acknowledge the interaction before trying to follow-up.")
         else -> error("Unsupported initial interaction response type - please report this.")
