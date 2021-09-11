@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.interactions.respond
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
@@ -12,7 +13,7 @@ public typealias InitialPublicSelectMenuResponseBuilder =
     (suspend PublicInteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only select (dropdown) menu. **/
-public open class PublicSelectMenu : SelectMenu<PublicSelectMenuContext>() {
+public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelectMenuContext>(timeoutTask) {
     /** @suppress Initial response builder. **/
     public open var initialResponseBuilder: InitialPublicSelectMenuResponseBuilder = null
 
@@ -22,6 +23,8 @@ public open class PublicSelectMenu : SelectMenu<PublicSelectMenuContext>() {
     }
 
     override suspend fun call(event: SelectMenuInteractionCreateEvent) {
+        super.call(event)
+
         try {
             if (!runChecks(event)) {
                 return

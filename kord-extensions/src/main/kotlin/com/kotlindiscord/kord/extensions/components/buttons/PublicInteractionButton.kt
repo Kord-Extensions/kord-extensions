@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.interactions.respond
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
@@ -14,7 +15,9 @@ public typealias InitialPublicButtonResponseBuilder =
     (suspend PublicInteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only button component. **/
-public open class PublicInteractionButton : InteractionButtonWithAction<PublicInteractionButtonContext>() {
+public open class PublicInteractionButton(
+    timeoutTask: Task?
+) : InteractionButtonWithAction<PublicInteractionButtonContext>(timeoutTask) {
     /** Button style - anything but Link is valid. **/
     public open var style: ButtonStyle = ButtonStyle.Primary
 
@@ -34,6 +37,8 @@ public open class PublicInteractionButton : InteractionButtonWithAction<PublicIn
     }
 
     override suspend fun call(event: ButtonInteractionCreateEvent) {
+        super.call(event)
+
         try {
             if (!runChecks(event)) {
                 return

@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.components.ComponentWithAction
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
@@ -29,7 +30,9 @@ public const val PLACEHOLDER_MAX: Int = 100
 public const val VALUE_MAX: Int = 100
 
 /** Abstract class representing a select (dropdown) menu component. **/
-public abstract class SelectMenu<C : SelectMenuContext> : ComponentWithAction<SelectMenuInteractionCreateEvent, C>() {
+public abstract class SelectMenu<C : SelectMenuContext>(
+    timeoutTask: Task?
+) : ComponentWithAction<SelectMenuInteractionCreateEvent, C>(timeoutTask) {
     internal val logger: KLogger = KotlinLogging.logger {}
 
     /** List of options for the user to choose from. **/

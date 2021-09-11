@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
 import dev.kord.core.entity.channel.GuildChannel
@@ -17,9 +18,13 @@ import mu.KotlinLogging
  *
  * @param E Event type that triggers interaction actions for this component type
  * @param C Context type used for this component's execution context
+ *
+ * @param timeoutTask Timeout task that will be restarted when [call] is run, if any. This is intended to be used to
+ * in the timeout mechanism for the [ComponentContainer] that contains this component.
  */
-public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C : ComponentContext<*>> :
-    ComponentWithID() {
+public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C : ComponentContext<*>>(
+    public open val timeoutTask: Task?
+) : ComponentWithID() {
     private val logger: KLogger = KotlinLogging.logger {}
 
     /** Whether to use a deferred ack, which will prevent Discord's "Thinking..." message. **/
@@ -126,5 +131,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     }
 
     /** Override this to implement your component's calling logic. Check subtypes for examples! **/
-    public abstract suspend fun call(event: E)
+    public open suspend fun call(event: E) {
+        timeoutTask?.restart()
+    }
 }

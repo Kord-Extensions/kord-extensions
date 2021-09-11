@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.components.buttons.InteractionButtonWithAction
 import com.kotlindiscord.kord.extensions.components.menus.SelectMenu
+import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import mu.KLogger
@@ -13,6 +14,9 @@ import mu.KotlinLogging
  */
 public open class ComponentRegistry {
     internal val logger: KLogger = KotlinLogging.logger {}
+
+    /** Scheduler that can be used to schedule timeout tasks. All [ComponentContainer] objects use this scheduler. **/
+    public open val scheduler: Scheduler = Scheduler()
 
     /** Map of registered component IDs to their components. **/
     public open val components: MutableMap<String, Component> = mutableMapOf()

@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.components.types.HasPartialEmoji
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
@@ -14,8 +15,8 @@ import mu.KLogger
 import mu.KotlinLogging
 
 /** Abstract class representing a button component that has a click action. **/
-public abstract class InteractionButtonWithAction<C : InteractionButtonContext> :
-    ComponentWithAction<ButtonInteractionCreateEvent, C>(), HasPartialEmoji {
+public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(timeoutTask: Task?) :
+    ComponentWithAction<ButtonInteractionCreateEvent, C>(timeoutTask), HasPartialEmoji {
     internal val logger: KLogger = KotlinLogging.logger {}
 
     /** Button label, for display on Discord. **/

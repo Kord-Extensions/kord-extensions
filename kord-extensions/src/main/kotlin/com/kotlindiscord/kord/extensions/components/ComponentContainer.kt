@@ -1,20 +1,55 @@
-@file:Suppress("AnnotationSpacing")  // Genuinely hate having to deal with this one sometimes.
+@file:Suppress("AnnotationSpacing")
+// Genuinely hate having to deal with this one sometimes.
+@file:OptIn(ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.components
 
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 import dev.kord.rest.builder.message.modify.actionRow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /** The maximum number of slots you can have in a row. **/
 public const val ROW_SIZE: Int = 5
 
-/** Class representing a single set of components that can be applied to any message. **/
-public open class ComponentContainer : KoinComponent {
+/**
+ * Class representing a single set of components that can be applied to any message.
+ *
+ * A timeout is supported by this class. If a [timeout] is provided, the components stored within this container will
+ * be unregistered from the [ComponentRegistry]. If this container contains actionable components, the timeout will be
+ * reset whenever an actionable component is interacted with.
+ *
+ * The `startTimeoutNow` parameter defaults to `false`, but will be set to `true` automatically if you're using a
+ * `components` DSL function provided in the message creation/modification builders. When this is `true`, the timeout
+ * task will be started immediately - when it's `false`, you'll have to call the [timeoutTask] `start` function
+ * yourself.
+ *
+ * @param timeout Optional timeout duration.
+ * @param startTimeoutNow Whether to start the timeout immediately.
+ */
+public open class ComponentContainer(
+    public val timeout: Duration? = null,
+    startTimeoutNow: Boolean = false
+) : KoinComponent {
     internal val registry: ComponentRegistry by inject()
+
+    /** If a [timeout] was provided, the scheduled timeout task will be stored here. **/
+    public open val timeoutTask: Task? = if (timeout != null) {
+        registry.scheduler.schedule(timeout, startNow = startTimeoutNow) {
+            removeAll()
+            timeoutCallback?.invoke(this)
+        }
+    } else {
+        null
+    }
+
+    /** Extra callback to run when this container times out, if any. **/
+    public open var timeoutCallback: (suspend (ComponentContainer).() -> Unit)? = null
 
     /** Components that haven't been sorted into rows by [sort] yet. **/
     public open val unsortedComponents: MutableList<Component> = mutableListOf()
@@ -29,6 +64,11 @@ public open class ComponentContainer : KoinComponent {
         mutableListOf(),
         mutableListOf(),
     )
+
+    /** Register an additional callback to be run when this container times out, assuming a timeout is configured. **/
+    public open fun onTimeout(callback: suspend (ComponentContainer).() -> Unit) {
+        timeoutCallback = callback
+    }
 
     /** Remove all components, and unregister them from the [ComponentRegistry]. **/
     public open fun removeAll() {
@@ -216,8 +256,12 @@ public open class ComponentContainer : KoinComponent {
 
 /** DSL-style factory function to make component containers these by hand easier. **/
 @Suppress("FunctionNaming")  // It's a factory function, detekt...
-public suspend fun ComponentContainer(builder: suspend ComponentContainer.() -> Unit): ComponentContainer {
-    val container = ComponentContainer()
+public suspend fun ComponentContainer(
+    timeout: Duration? = null,
+    startTimeoutNow: Boolean = false,
+    builder: suspend ComponentContainer.() -> Unit
+): ComponentContainer {
+    val container = ComponentContainer(timeout, startTimeoutNow)
 
     builder(container)
 

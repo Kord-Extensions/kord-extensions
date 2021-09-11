@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.interactions.respond
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
@@ -14,7 +15,9 @@ public typealias InitialEphemeralButtonResponseBuilder =
     (suspend EphemeralInteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
 
 /** Class representing an ephemeral-only interaction button. **/
-public open class EphemeralInteractionButton : InteractionButtonWithAction<EphemeralInteractionButtonContext>() {
+public open class EphemeralInteractionButton(
+    timeoutTask: Task?
+) : InteractionButtonWithAction<EphemeralInteractionButtonContext>(timeoutTask) {
     /** Button style - anything but Link is valid. **/
     public open var style: ButtonStyle = ButtonStyle.Primary
 
@@ -34,6 +37,8 @@ public open class EphemeralInteractionButton : InteractionButtonWithAction<Ephem
     }
 
     override suspend fun call(event: ButtonInteractionCreateEvent) {
+        super.call(event)
+
         try {
             if (!runChecks(event)) {
                 return

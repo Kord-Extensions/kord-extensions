@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.interactions.respond
+import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
@@ -12,7 +13,7 @@ public typealias InitialEphemeralSelectMenuResponseBuilder =
     (suspend EphemeralInteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing an ephemeral-only select (dropdown) menu. **/
-public open class EphemeralSelectMenu : SelectMenu<EphemeralSelectMenuContext>() {
+public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<EphemeralSelectMenuContext>(timeoutTask) {
     /** @suppress Initial response builder. **/
     public open var initialResponseBuilder: InitialEphemeralSelectMenuResponseBuilder = null
 
@@ -22,6 +23,8 @@ public open class EphemeralSelectMenu : SelectMenu<EphemeralSelectMenuContext>()
     }
 
     override suspend fun call(event: SelectMenuInteractionCreateEvent) {
+        super.call(event)
+
         try {
             if (!runChecks(event)) {
                 return
