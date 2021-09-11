@@ -4,14 +4,17 @@ import com.kotlindiscord.kord.extensions.commands.application.message.InitialEph
 import com.kotlindiscord.kord.extensions.commands.application.message.InitialPublicMessageResponseBuilder
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 
-@UnsafeAPI
 /** Sealed class representing the initial response types for an unsafe message command. **/
+@UnsafeAPI
 public sealed class InitialMessageCommandResponse {
     /** Respond with an ephemeral ack, without any content. **/
     public object EphemeralAck : InitialMessageCommandResponse()
 
     /** Respond with a public ack, without any content. **/
     public object PublicAck : InitialMessageCommandResponse()
+
+    /** Don't respond. Warning: You may not be able to respond in time! **/
+    public object None : InitialMessageCommandResponse()
 
     /**
      * Respond with an ephemeral ack, including message content.

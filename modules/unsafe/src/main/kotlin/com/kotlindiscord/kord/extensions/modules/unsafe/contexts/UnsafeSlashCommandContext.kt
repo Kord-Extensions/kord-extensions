@@ -13,5 +13,5 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 public class UnsafeSlashCommandContext<A : Arguments>(
     override val event: ChatInputCommandInteractionCreateEvent,
     override val command: UnsafeSlashCommand<A>,
-    override val interactionResponse: InteractionResponseBehavior
+    override var interactionResponse: InteractionResponseBehavior?
 ) : SlashCommandContext<UnsafeSlashCommandContext<A>, A>(event, command), UnsafeInteractionContext

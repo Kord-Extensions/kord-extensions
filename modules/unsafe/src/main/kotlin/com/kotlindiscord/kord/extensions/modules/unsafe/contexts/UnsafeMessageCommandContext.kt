@@ -12,5 +12,5 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 public class UnsafeMessageCommandContext(
     override val event: MessageCommandInteractionCreateEvent,
     override val command: MessageCommand<UnsafeMessageCommandContext>,
-    override val interactionResponse: InteractionResponseBehavior,
+    override var interactionResponse: InteractionResponseBehavior?,
 ) : MessageCommandContext<UnsafeMessageCommandContext>(event, command), UnsafeInteractionContext

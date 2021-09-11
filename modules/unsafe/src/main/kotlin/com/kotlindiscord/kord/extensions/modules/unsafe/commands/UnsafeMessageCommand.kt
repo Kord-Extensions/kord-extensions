@@ -57,6 +57,8 @@ public class UnsafeMessageCommand(
             is InitialMessageCommandResponse.PublicResponse -> event.interaction.respondPublic {
                 r.builder!!(event)
             }
+
+            is InitialMessageCommandResponse.None -> null
         }
 
         val context = UnsafeMessageCommandContext(event, this, response)

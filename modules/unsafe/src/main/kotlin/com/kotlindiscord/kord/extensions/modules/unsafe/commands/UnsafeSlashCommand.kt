@@ -92,6 +92,8 @@ public class UnsafeSlashCommand<A : Arguments>(
             is InitialSlashCommandResponse.PublicResponse -> event.interaction.respondPublic {
                 r.builder!!(event)
             }
+
+            is InitialSlashCommandResponse.None -> null
         }
 
         val context = UnsafeSlashCommandContext(event, this, response)

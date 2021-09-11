@@ -1,3 +1,5 @@
+@file:Suppress("StringLiteralDuplication")
+
 package com.kotlindiscord.kord.extensions.modules.unsafe.types
 
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
@@ -10,8 +12,11 @@ import dev.kord.core.behavior.interaction.*
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
+import dev.kord.core.event.interaction.ApplicationInteractionCreateEvent
 import dev.kord.rest.builder.message.create.EphemeralFollowupMessageCreateBuilder
+import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.create.PublicFollowupMessageCreateBuilder
+import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.modify.EphemeralInteractionResponseModifyBuilder
 import dev.kord.rest.builder.message.modify.PublicInteractionResponseModifyBuilder
 import java.util.*
@@ -20,7 +25,60 @@ import java.util.*
 @UnsafeAPI
 public interface UnsafeInteractionContext {
     /** Response created by acknowledging the interaction. Generic. **/
-    public val interactionResponse: InteractionResponseBehavior
+    public var interactionResponse: InteractionResponseBehavior?
+
+    /** Original interaction event object, for manual acks. **/
+    public val event: ApplicationInteractionCreateEvent
+}
+
+/** Send an ephemeral ack, if the interaction hasn't been acknowledged yet. **/
+@UnsafeAPI
+public suspend fun UnsafeInteractionContext.ackEphemeral(
+    builder: (suspend EphemeralInteractionResponseCreateBuilder.() -> Unit)? = null
+): EphemeralInteractionResponseBehavior {
+    if (interactionResponse != null) {
+        error("The interaction has already been acknowledged.")
+    }
+
+    interactionResponse = if (builder == null) {
+        event.interaction.acknowledgeEphemeral()
+    } else {
+        event.interaction.respondEphemeral { builder() }
+    }
+
+    return interactionResponse as EphemeralInteractionResponseBehavior
+}
+
+/** Send a public ack, if the interaction hasn't been acknowledged yet. **/
+@UnsafeAPI
+public suspend fun UnsafeInteractionContext.ackPublic(
+    builder: (suspend PublicInteractionResponseCreateBuilder.() -> Unit)? = null
+): PublicInteractionResponseBehavior {
+    if (interactionResponse != null) {
+        error("The interaction has already been acknowledged.")
+    }
+
+    interactionResponse = if (builder == null) {
+        event.interaction.acknowledgePublic()
+    } else {
+        event.interaction.respondPublic { builder() }
+    }
+
+    return interactionResponse as PublicInteractionResponseBehavior
+}
+
+/** Respond to the current interaction with an ephemeral followup, or throw if it isn't ephemeral. **/
+@UnsafeAPI
+public suspend inline fun UnsafeInteractionContext.respondEphemeral(
+    builder: EphemeralFollowupMessageCreateBuilder.() -> Unit
+): EphemeralFollowupMessage {
+    return when (val interaction = interactionResponse) {
+        is EphemeralInteractionResponseBehavior -> interaction.followUpEphemeral(builder)
+        is PublicInteractionResponseBehavior -> error("Initial interaction response is not public.")
+
+        null -> error("Acknowledge the interaction before trying to follow-up.")
+        else -> error("Unsupported initial interaction response type - please report this.")
+    }
 }
 
 /** Respond to the current interaction with a public followup. **/
@@ -30,22 +88,11 @@ public suspend inline fun UnsafeInteractionContext.respondPublic(
 ): PublicFollowupMessage {
     return when (val interaction = interactionResponse) {
         is PublicInteractionResponseBehavior -> interaction.followUp(builder)
-        is EphemeralInteractionResponseBehavior -> interaction.followUpPublic(builder)
+        is EphemeralInteractionResponseBehavior -> error("Initial interaction response is not ephemeral.")
 
+        null -> error("Acknowledge the interaction before trying to follow-up.")
         else -> error("Unsupported initial interaction response type - please report this.")
     }
-}
-
-/** Respond to the current interaction with an ephemeral followup, or throw if it isn't ephemeral. **/
-@UnsafeAPI
-public suspend inline fun UnsafeInteractionContext.respondEphemeral(
-    builder: EphemeralFollowupMessageCreateBuilder.() -> Unit
-): EphemeralFollowupMessage {
-    val interaction = interactionResponse as? EphemeralInteractionResponseBehavior ?: error(
-        "Initial interaction response is not public."
-    )
-
-    return interaction.followUpEphemeral(builder)
 }
 
 /**
@@ -59,6 +106,7 @@ public suspend inline fun UnsafeInteractionContext.editPublic(
     return when (val interaction = interactionResponse) {
         is PublicInteractionResponseBehavior -> interaction.edit(builder)
 
+        null -> error("Acknowledge the interaction before trying to edit it.")
         else -> error("Initial interaction response was not public.")
     }
 }
@@ -74,6 +122,7 @@ public suspend inline fun UnsafeInteractionContext.editEphemeral(
     when (val interaction = interactionResponse) {
         is EphemeralInteractionResponseBehavior -> interaction.edit(builder)
 
+        null -> error("Acknowledge the interaction before trying to edit it.")
         else -> error("Initial interaction response was not ephemeral.")
     }
 }
@@ -93,6 +142,7 @@ public suspend inline fun UnsafeInteractionContext.editingPaginator(
         is PublicInteractionResponseBehavior -> PublicResponsePaginator(pages, interaction)
         is EphemeralInteractionResponseBehavior -> EphemeralResponsePaginator(pages, interaction)
 
+        null -> error("Acknowledge the interaction before trying to edit it.")
         else -> error("Unsupported initial interaction response type - please report this.")
     }
 }
@@ -112,6 +162,7 @@ public suspend inline fun UnsafeInteractionContext.respondingPaginator(
     return when (val interaction = interactionResponse) {
         is PublicInteractionResponseBehavior -> PublicFollowUpPaginator(pages, interaction)
 
+        null -> error("Acknowledge the interaction before trying to follow-up.")
         else -> error("Initial interaction response was not public.")
     }
 }

@@ -58,6 +58,8 @@ public class UnsafeUserCommand(
             is InitialUserCommandResponse.PublicResponse -> event.interaction.respondPublic {
                 r.builder!!(event)
             }
+
+            is InitialUserCommandResponse.None -> null
         }
 
         val context = UnsafeUserCommandContext(event, this, response)
