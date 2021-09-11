@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.interactions.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -54,20 +55,38 @@ public class EphemeralSlashCommand<A : Arguments>(
             else -> this
         }
 
+        commandObj.run(event)
+    }
+
+    override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
+        emitEventAsync(EphemeralSlashCommandInvocationEvent(this, event))
+
         try {
-            if (!commandObj.runChecks(event)) {
+            if (!runChecks(event)) {
+                emitEventAsync(
+                    EphemeralSlashCommandFailedChecksEvent(
+                        this,
+                        event,
+                        "Checks failed without a message."
+                    )
+                )
+
                 return
             }
         } catch (e: CommandException) {
             event.interaction.respondEphemeral { content = e.reason }
 
+            emitEventAsync(
+                EphemeralSlashCommandFailedChecksEvent(
+                    this,
+                    event,
+                    e.reason
+                )
+            )
+
             return
         }
 
-        commandObj.run(event)
-    }
-
-    override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
         } else {
@@ -82,19 +101,46 @@ public class EphemeralSlashCommand<A : Arguments>(
 
         try {
             checkBotPerms(context)
+        } catch (e: CommandException) {
+            respondText(context, e.reason)
 
-            if (arguments != null) {
+            emitEventAsync(
+                EphemeralSlashCommandFailedChecksEvent(
+                    this,
+                    event,
+                    e.reason
+                )
+            )
+
+            return
+        }
+        if (arguments != null) {
+            try {
                 val args = registry.argumentParser.parse(arguments, context)
 
                 context.populateArgs(args)
+            } catch (e: CommandException) {
+                respondText(context, e.reason)
+                emitEventAsync(EphemeralSlashCommandFailedParsingEvent(this, event, e.reason))
+
+                return
+            }
+        }
+
+        try {
+            body(context)
+        } catch (t: Throwable) {
+            if (t is CommandException) {
+                respondText(context, t.reason)
             }
 
-            body(context)
-        } catch (e: CommandException) {
-            respondText(context, e.reason)
-        } catch (t: Throwable) {
+            emitEventAsync(EphemeralSlashCommandFailedWithExceptionEvent(this, event, t))
             handleError(context, t, this)
+
+            return
         }
+
+        emitEventAsync(EphemeralSlashCommandSucceededEvent(this, event))
     }
 
     override suspend fun respondText(context: EphemeralSlashCommandContext<A>, message: String) {

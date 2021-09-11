@@ -3,6 +3,10 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.commands.events.PublicMessageCommandFailedChecksEvent
+import com.kotlindiscord.kord.extensions.commands.events.PublicMessageCommandFailedWithExceptionEvent
+import com.kotlindiscord.kord.extensions.commands.events.PublicMessageCommandInvocationEvent
+import com.kotlindiscord.kord.extensions.commands.events.PublicMessageCommandSucceededEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.interactions.respond
 import dev.kord.core.behavior.interaction.respondPublic
@@ -25,12 +29,24 @@ public class PublicMessageCommand(
     }
 
     override suspend fun call(event: MessageCommandInteractionCreateEvent) {
+        emitEventAsync(PublicMessageCommandInvocationEvent(this, event))
+
         try {
             if (!runChecks(event)) {
+                emitEventAsync(
+                    PublicMessageCommandFailedChecksEvent(
+                        this,
+                        event,
+                        "Checks failed without a message."
+                    )
+                )
+
                 return
             }
         } catch (e: CommandException) {
             event.interaction.respondPublic { content = e.reason }
+
+            emitEventAsync(PublicMessageCommandFailedChecksEvent(this, event, e.reason))
 
             return
         }
@@ -49,12 +65,27 @@ public class PublicMessageCommand(
 
         try {
             checkBotPerms(context)
-            body(context)
         } catch (e: CommandException) {
             respondText(context, e.reason)
-        } catch (t: Throwable) {
-            handleError(context, t)
+            emitEventAsync(PublicMessageCommandFailedChecksEvent(this, event, e.reason))
+
+            return
         }
+
+        try {
+            body(context)
+        } catch (t: Throwable) {
+            if (t is CommandException) {
+                respondText(context, t.reason)
+            }
+
+            emitEventAsync(PublicMessageCommandFailedWithExceptionEvent(this, event, t))
+            handleError(context, t)
+
+            return
+        }
+
+        emitEventAsync(PublicMessageCommandSucceededEvent(this, event))
     }
 
     override suspend fun respondText(context: PublicMessageCommandContext, message: String) {

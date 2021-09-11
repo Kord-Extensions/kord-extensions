@@ -4,6 +4,7 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.CommandException
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.interactions.respond
 import dev.kord.core.behavior.interaction.respondPublic
@@ -54,20 +55,32 @@ public class PublicSlashCommand<A : Arguments>(
             else -> this
         }
 
+        commandObj.run(event)
+    }
+
+    override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
+        emitEventAsync(PublicSlashCommandInvocationEvent(this, event))
+
         try {
-            if (!commandObj.runChecks(event)) {
+            if (!runChecks(event)) {
+                emitEventAsync(
+                    PublicSlashCommandFailedChecksEvent(
+                        this,
+                        event,
+                        "Checks failed without a message."
+                    )
+                )
+
                 return
             }
         } catch (e: CommandException) {
             event.interaction.respondPublic { content = e.reason }
 
+            emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
+
             return
         }
 
-        commandObj.run(event)
-    }
-
-    override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
         } else {
@@ -82,19 +95,39 @@ public class PublicSlashCommand<A : Arguments>(
 
         try {
             checkBotPerms(context)
+        } catch (e: CommandException) {
+            respondText(context, e.reason)
+            emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
 
-            if (arguments != null) {
+            return
+        }
+        if (arguments != null) {
+            try {
                 val args = registry.argumentParser.parse(arguments, context)
 
                 context.populateArgs(args)
+            } catch (e: CommandException) {
+                respondText(context, e.reason)
+                emitEventAsync(PublicSlashCommandFailedParsingEvent(this, event, e.reason))
+
+                return
+            }
+        }
+
+        try {
+            body(context)
+        } catch (t: Throwable) {
+            if (t is CommandException) {
+                respondText(context, t.reason)
             }
 
-            body(context)
-        } catch (e: CommandException) {
-            respondText(context, e.reason)
-        } catch (t: Throwable) {
+            emitEventAsync(PublicSlashCommandFailedWithExceptionEvent(this, event, t))
             handleError(context, t, this)
+
+            return
         }
+
+        emitEventAsync(PublicSlashCommandSucceededEvent(this, event))
     }
 
     override suspend fun respondText(context: PublicSlashCommandContext<A>, message: String) {

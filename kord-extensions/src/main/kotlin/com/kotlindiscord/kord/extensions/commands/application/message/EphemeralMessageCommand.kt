@@ -3,6 +3,10 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandFailedChecksEvent
+import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandFailedWithExceptionEvent
+import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandInvocationEvent
+import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandSucceededEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.interactions.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -25,12 +29,24 @@ public class EphemeralMessageCommand(
     }
 
     override suspend fun call(event: MessageCommandInteractionCreateEvent) {
+        emitEventAsync(EphemeralMessageCommandInvocationEvent(this, event))
+
         try {
             if (!runChecks(event)) {
+                emitEventAsync(
+                    EphemeralMessageCommandFailedChecksEvent(
+                        this,
+                        event,
+                        "Checks failed without a message."
+                    )
+                )
+
                 return
             }
         } catch (e: CommandException) {
             event.interaction.respondEphemeral { content = e.reason }
+
+            emitEventAsync(EphemeralMessageCommandFailedChecksEvent(this, event, e.reason))
 
             return
         }
@@ -49,12 +65,27 @@ public class EphemeralMessageCommand(
 
         try {
             checkBotPerms(context)
-            body(context)
         } catch (e: CommandException) {
             respondText(context, e.reason)
-        } catch (t: Throwable) {
-            handleError(context, t)
+            emitEventAsync(EphemeralMessageCommandFailedChecksEvent(this, event, e.reason))
+
+            return
         }
+
+        try {
+            body(context)
+        } catch (t: Throwable) {
+            if (t is CommandException) {
+                respondText(context, t.reason)
+            }
+
+            emitEventAsync(EphemeralMessageCommandFailedWithExceptionEvent(this, event, t))
+            handleError(context, t)
+
+            return
+        }
+
+        emitEventAsync(EphemeralMessageCommandSucceededEvent(this, event))
     }
 
     override suspend fun respondText(context: EphemeralMessageCommandContext, message: String) {

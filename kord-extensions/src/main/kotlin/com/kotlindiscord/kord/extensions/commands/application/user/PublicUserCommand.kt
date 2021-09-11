@@ -3,6 +3,10 @@
 package com.kotlindiscord.kord.extensions.commands.application.user
 
 import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandFailedChecksEvent
+import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandFailedWithExceptionEvent
+import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandInvocationEvent
+import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandSucceededEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.interactions.respond
 import dev.kord.core.behavior.interaction.respondPublic
@@ -25,12 +29,24 @@ public class PublicUserCommand(
     }
 
     override suspend fun call(event: UserCommandInteractionCreateEvent) {
+        emitEventAsync(PublicUserCommandInvocationEvent(this, event))
+
         try {
             if (!runChecks(event)) {
+                emitEventAsync(
+                    PublicUserCommandFailedChecksEvent(
+                        this,
+                        event,
+                        "Checks failed without a message."
+                    )
+                )
+
                 return
             }
         } catch (e: CommandException) {
             event.interaction.respondPublic { content = e.reason }
+
+            emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
             return
         }
@@ -49,12 +65,25 @@ public class PublicUserCommand(
 
         try {
             checkBotPerms(context)
-            body(context)
         } catch (e: CommandException) {
             respondText(context, e.reason)
+            emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
+
+            return
+        }
+
+        try {
+            body(context)
         } catch (t: Throwable) {
+            if (t is CommandException) {
+                respondText(context, t.reason)
+            }
+
+            emitEventAsync(PublicUserCommandFailedWithExceptionEvent(this, event, t))
             handleError(context, t)
         }
+
+        emitEventAsync(PublicUserCommandSucceededEvent(this, event))
     }
 
     override suspend fun respondText(context: PublicUserCommandContext, message: String) {

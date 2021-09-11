@@ -55,20 +55,32 @@ public class UnsafeSlashCommand<A : Arguments>(
             else -> this
         }
 
+        commandObj.run(event)
+    }
+
+    override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
+        emitEventAsync(UnsafeSlashCommandInvocationEvent(this, event))
+
         try {
-            if (!commandObj.runChecks(event)) {
+            if (!runChecks(event)) {
+                emitEventAsync(
+                    UnsafeSlashCommandFailedChecksEvent(
+                        this,
+                        event,
+                        "Checks failed without a message."
+                    )
+                )
+
                 return
             }
         } catch (e: CommandException) {
             event.interaction.respondPublic { content = e.reason }
 
+            emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
+
             return
         }
 
-        commandObj.run(event)
-    }
-
-    override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
         val response = when (val r = initialResponse) {
             is InitialSlashCommandResponse.EphemeralAck -> event.interaction.acknowledgeEphemeral()
             is InitialSlashCommandResponse.PublicAck -> event.interaction.acknowledgePublic()
@@ -90,19 +102,40 @@ public class UnsafeSlashCommand<A : Arguments>(
 
         try {
             checkBotPerms(context)
+        } catch (e: CommandException) {
+            respondText(context, e.reason)
+            emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
 
+            return
+        }
+
+        try {
             if (arguments != null) {
                 val args = registry.argumentParser.parse(arguments, context)
 
                 context.populateArgs(args)
             }
-
-            body(context)
         } catch (e: CommandException) {
             respondText(context, e.reason)
-        } catch (t: Throwable) {
-            handleError(context, t, this)
+            emitEventAsync(UnsafeSlashCommandFailedParsingEvent(this, event, e.reason))
+
+            return
         }
+
+        try {
+            body(context)
+        } catch (t: Throwable) {
+            if (t is CommandException) {
+                respondText(context, t.reason)
+            }
+
+            emitEventAsync(UnsafeSlashCommandFailedWithExceptionEvent(this, event, t))
+            handleError(context, t, this)
+
+            return
+        }
+
+        emitEventAsync(UnsafeSlashCommandSucceededEvent(this, event))
     }
 
     override suspend fun respondText(context: UnsafeSlashCommandContext<A>, message: String) {

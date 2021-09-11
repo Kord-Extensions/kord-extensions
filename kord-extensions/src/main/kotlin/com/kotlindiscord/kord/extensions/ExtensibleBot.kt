@@ -7,7 +7,7 @@ import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
-import com.kotlindiscord.kord.extensions.events.ExtensionEvent
+import com.kotlindiscord.kord.extensions.events.KordExEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
@@ -199,7 +199,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * Subscribe to an event. You shouldn't need to use this directly, but it's here just in case.
      *
      * You can subscribe to any type, realistically - but this is intended to be used only with Kord
-     * [Event] subclasses, and our own [ExtensionEvent]s.
+     * [Event] subclasses, and our own [KordExEvent]s.
      *
      * @param T Types of event to subscribe to.
      * @param scope Coroutine scope to run the body of your callback under.

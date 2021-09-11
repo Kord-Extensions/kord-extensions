@@ -25,12 +25,24 @@ public class UnsafeUserCommand(
     public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
 
     override suspend fun call(event: UserCommandInteractionCreateEvent) {
+        emitEventAsync(UnsafeUserCommandInvocationEvent(this, event))
+
         try {
             if (!runChecks(event)) {
+                emitEventAsync(
+                    UnsafeUserCommandFailedChecksEvent(
+                        this,
+                        event,
+                        "Checks failed without a message."
+                    )
+                )
+
                 return
             }
         } catch (e: CommandException) {
             event.interaction.respondPublic { content = e.reason }
+
+            emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
 
             return
         }
@@ -56,12 +68,27 @@ public class UnsafeUserCommand(
 
         try {
             checkBotPerms(context)
-            body(context)
         } catch (e: CommandException) {
             respondText(context, e.reason)
-        } catch (t: Throwable) {
-            handleError(context, t)
+            emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
+
+            return
         }
+
+        try {
+            body(context)
+        } catch (t: Throwable) {
+            if (t is CommandException) {
+                respondText(context, t.reason)
+            }
+
+            emitEventAsync(UnsafeUserCommandFailedWithExceptionEvent(this, event, t))
+            handleError(context, t)
+
+            return
+        }
+
+        emitEventAsync(UnsafeUserCommandSucceededEvent(this, event))
     }
 
     override suspend fun respondText(context: UnsafeUserCommandContext, message: String) {

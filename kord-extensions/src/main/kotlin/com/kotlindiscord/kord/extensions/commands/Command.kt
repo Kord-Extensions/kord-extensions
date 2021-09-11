@@ -4,7 +4,10 @@ package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.commands.events.CommandEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 /**
  * Abstract base class representing the few things that command objects can have in common.
@@ -31,4 +34,10 @@ public abstract class Command(public val extension: Extension) {
             throw InvalidCommandException(null, "No command name given.")
         }
     }
+
+    /** Quick shortcut for emitting a command event without blocking. **/
+    public open suspend fun emitEventAsync(event: CommandEvent<*, *>): Job =
+        event.kord.launch {
+            extension.bot.send(event)
+        }
 }

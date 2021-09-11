@@ -1,4 +1,4 @@
-@file:Suppress("StringLiteralDuplication")
+@file:Suppress("StringLiteralDuplication", "TooGenericExceptionCaught")
 
 package com.kotlindiscord.kord.extensions.commands.chat
 
@@ -9,6 +9,7 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -323,6 +324,29 @@ public open class ChatCommand<T : Arguments>(
         return true
     }
 
+    /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
+    @Throws(CommandException::class)
+    public open suspend fun checkBotPerms(context: ChatCommandContext<T>) {
+        if (context.guild != null) {
+            val perms = (context.channel.asChannel() as GuildChannel)
+                .permissionsForMember(kord.selfId)
+
+            val missingPerms = requiredPerms.filter { !perms.contains(it) }
+
+            if (missingPerms.isNotEmpty()) {
+                throw CommandException(
+                    context.translate(
+                        "commands.error.missingBotPermissions",
+                        null,
+                        replacements = arrayOf(
+                            missingPerms.map { it.translate(context) }.joinToString(", ")
+                        )
+                    )
+                )
+            }
+        }
+    }
+
     /**
      * Execute this command, given a [MessageCreateEvent].
      *
@@ -346,7 +370,24 @@ public open class ChatCommand<T : Arguments>(
         argString: String,
         skipChecks: Boolean = false
     ) {
-        if (!skipChecks && !runChecks(event)) {
+        emitEventAsync(ChatCommandInvocationEvent(this, event))
+
+        try {
+            if (!skipChecks && !runChecks(event)) {
+                emitEventAsync(
+                    ChatCommandFailedChecksEvent(
+                        this,
+                        event,
+                        "Checks failed without a message."
+                    )
+                )
+
+                return
+            }
+        } catch (e: CommandException) {
+            emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
+            event.message.respond(e.reason)
+
             return
         }
 
@@ -380,36 +421,36 @@ public open class ChatCommand<T : Arguments>(
             }
         }
 
-        @Suppress("TooGenericExceptionCaught")  // Anything could happen here
         try {
-            if (context.guild != null) {
-                val perms = (context.channel.asChannel() as GuildChannel)
-                    .permissionsForMember(kord.selfId)
+            checkBotPerms(context)
+        } catch (e: CommandException) {
+            event.message.respond(e.reason)
+            emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
 
-                val missingPerms = requiredPerms.filter { !perms.contains(it) }
+            return
+        }
 
-                if (missingPerms.isNotEmpty()) {
-                    throw CommandException(
-                        context.translate(
-                            "commands.error.missingBotPermissions",
-                            null,
-                            replacements = arrayOf(
-                                missingPerms.map { it.translate(context) }.joinToString(", ")
-                            )
-                        )
-                    )
-                }
-            }
-
-            if (this.arguments != null) {
+        if (this.arguments != null) {
+            try {
                 val parsedArgs = registry.parser.parse(this.arguments!!, context)
                 context.populateArgs(parsedArgs)
+            } catch (e: CommandException) {
+                event.message.respond(e.reason)
+                emitEventAsync(ChatCommandFailedParsingEvent(this, event, e.reason))
+
+                return
+            }
+        }
+
+        try {
+            this.body(context)
+        } catch (t: Throwable) {
+            if (t is CommandException) {
+                event.message.respond(t.reason)
             }
 
-            this.body(context)
-        } catch (e: CommandException) {
-            event.message.respond(e.toString())
-        } catch (t: Throwable) {
+            emitEventAsync(ChatCommandFailedWithExceptionEvent(this, event, t))
+
             if (sentry.enabled) {
                 logger.trace { "Submitting error to sentry." }
 
@@ -470,6 +511,10 @@ public open class ChatCommand<T : Arguments>(
                     context.translate("commands.error.user", null)
                 )
             }
+
+            return
         }
+
+        emitEventAsync(ChatCommandSucceededEvent(this, event))
     }
 }
