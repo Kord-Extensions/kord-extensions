@@ -14,6 +14,7 @@ public object SupportedLocales {
     public val FINNISH: Locale = Locale("fi", "fi")
     public val FRENCH: Locale = Locale("fr", "fr")
     public val GERMAN: Locale = Locale("de", "de")
+    public val PORTUGUESE: Locale = Locale("pt", "pt")
 
     public val ALL_LOCALES: Map<String, Locale> = mapOf(
         "中文" to CHINESE_SIMPLIFIED,
@@ -46,5 +47,11 @@ public object SupportedLocales {
         "german" to GERMAN,
         "de" to GERMAN,
         "de_de" to GERMAN,
+
+        "português" to PORTUGUESE,
+        "portugues" to PORTUGUESE,
+        "portuguese" to PORTUGUESE,
+        "pt" to PORTUGUESE,
+        "pt_pt" to PORTUGUESE,
     )
 }
