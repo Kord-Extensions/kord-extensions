@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.components
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.utils.getLocale
@@ -82,7 +82,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     }
 
     /** Runs standard checks that can be handled in a generic way, without worrying about subclass-specific checks. **/
-    @Throws(CommandException::class)
+    @Throws(DiscordRelayedException::class)
     public open suspend fun runStandardChecks(event: E): Boolean {
         val locale = event.getLocale()
 
@@ -102,12 +102,12 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     }
 
     /** Override this in order to implement any subclass-specific checks. **/
-    @Throws(CommandException::class)
+    @Throws(DiscordRelayedException::class)
     public open suspend fun runChecks(event: E): Boolean =
         runStandardChecks(event)
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(CommandException::class)
+    @Throws(DiscordRelayedException::class)
     public open suspend fun checkBotPerms(context: C) {
         if (context.guild != null) {
             val perms = (context.channel.asChannel() as GuildChannel)
@@ -116,7 +116,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
             val missingPerms = requiredPerms.filter { !perms.contains(it) }
 
             if (missingPerms.isNotEmpty()) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate(
                         "commands.error.missingBotPermissions",
                         null,

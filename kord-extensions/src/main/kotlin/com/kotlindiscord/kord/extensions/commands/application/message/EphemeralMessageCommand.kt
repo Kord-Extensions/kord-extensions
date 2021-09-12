@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.message
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandFailedChecksEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandFailedWithExceptionEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandInvocationEvent
@@ -43,7 +43,7 @@ public class EphemeralMessageCommand(
 
                 return
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral { content = e.reason }
 
             emitEventAsync(EphemeralMessageCommandFailedChecksEvent(this, event, e.reason))
@@ -65,7 +65,7 @@ public class EphemeralMessageCommand(
 
         try {
             checkBotPerms(context)
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             respondText(context, e.reason)
             emitEventAsync(EphemeralMessageCommandFailedChecksEvent(this, event, e.reason))
 
@@ -75,7 +75,7 @@ public class EphemeralMessageCommand(
         try {
             body(context)
         } catch (t: Throwable) {
-            if (t is CommandException) {
+            if (t is DiscordRelayedException) {
                 respondText(context, t.reason)
             }
 

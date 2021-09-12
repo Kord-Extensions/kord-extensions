@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import dev.kord.common.annotation.KordPreview
 
 /**
@@ -19,10 +19,10 @@ import dev.kord.common.annotation.KordPreview
  * You can create a coalescing converter of your own by extending this class.
  *
  * @property shouldThrow Intended only for use if this converter is the last one in a set of arguments, if this is
- * `true` then the converter should throw a [CommandException] when an argument can't be parsed, instead of just
+ * `true` then the converter should throw a [DiscordRelayedException] when an argument can't be parsed, instead of just
  * stopping and allowing parsing to continue.
  *
- * @property validator Validation lambda, which may throw a [CommandException] if required.
+ * @property validator Validation lambda, which may throw a [DiscordRelayedException] if required.
  */
 public abstract class CoalescingConverter<T : Any>(
     public open val shouldThrow: Boolean = false,
@@ -54,8 +54,8 @@ public abstract class CoalescingConverter<T : Any>(
      * provides.
      *
      * @param outputError Optionally, provide `true` to fail parsing and return errors if the converter throws a
-     * [CommandException], instead of continuing. You probably only want to set this if the converter is the last one
-     * in a set of arguments.
+     * [DiscordRelayedException], instead of continuing. You probably only want to set this if the converter is the
+     * last one in a set of arguments.
      */
     @ConverterToOptional
     public open fun toOptional(

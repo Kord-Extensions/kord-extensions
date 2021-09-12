@@ -9,7 +9,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -47,14 +47,14 @@ public class ColorConverter(
                 arg.startsWith("0x") -> this.parsed = Color(arg.substring(2).toInt(16))
                 arg.all { it.isDigit() } -> this.parsed = Color(arg.toInt())
 
-                else -> this.parsed = ColorParser.parse(arg, context.getLocale()) ?: throw CommandException(
+                else -> this.parsed = ColorParser.parse(arg, context.getLocale()) ?: throw DiscordRelayedException(
                     context.translate("converters.color.error.unknown", replacements = arrayOf(arg))
                 )
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             throw e
         } catch (t: Throwable) {
-            throw CommandException(
+            throw DiscordRelayedException(
                 context.translate("converters.color.error.unknownOrFailed", replacements = arrayOf(arg))
             )
         }

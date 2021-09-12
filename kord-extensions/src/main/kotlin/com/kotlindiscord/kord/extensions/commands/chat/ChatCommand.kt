@@ -2,7 +2,8 @@
 
 package com.kotlindiscord.kord.extensions.commands.chat
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
@@ -325,7 +326,7 @@ public open class ChatCommand<T : Arguments>(
     }
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(CommandException::class)
+    @Throws(DiscordRelayedException::class)
     public open suspend fun checkBotPerms(context: ChatCommandContext<T>) {
         if (context.guild != null) {
             val perms = (context.channel.asChannel() as GuildChannel)
@@ -334,7 +335,7 @@ public open class ChatCommand<T : Arguments>(
             val missingPerms = requiredPerms.filter { !perms.contains(it) }
 
             if (missingPerms.isNotEmpty()) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate(
                         "commands.error.missingBotPermissions",
                         null,
@@ -384,7 +385,7 @@ public open class ChatCommand<T : Arguments>(
 
                 return
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
             event.message.respond(e.reason)
 
@@ -423,7 +424,7 @@ public open class ChatCommand<T : Arguments>(
 
         try {
             checkBotPerms(context)
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             event.message.respond(e.reason)
             emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
 
@@ -434,9 +435,9 @@ public open class ChatCommand<T : Arguments>(
             try {
                 val parsedArgs = registry.parser.parse(this.arguments!!, context)
                 context.populateArgs(parsedArgs)
-            } catch (e: CommandException) {
+            } catch (e: ArgumentParsingException) {
                 event.message.respond(e.reason)
-                emitEventAsync(ChatCommandFailedParsingEvent(this, event, e.reason))
+                emitEventAsync(ChatCommandFailedParsingEvent(this, event, e))
 
                 return
             }
@@ -445,7 +446,7 @@ public open class ChatCommand<T : Arguments>(
         try {
             this.body(context)
         } catch (t: Throwable) {
-            if (t is CommandException) {
+            if (t is DiscordRelayedException) {
                 event.message.respond(t.reason)
             }
 

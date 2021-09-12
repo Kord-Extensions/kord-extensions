@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.events
 
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import dev.kord.core.event.message.MessageCreateEvent
 
@@ -26,7 +27,7 @@ public data class ChatCommandFailedChecksEvent(
 public data class ChatCommandFailedParsingEvent(
     override val command: ChatCommand<*>,
     override val event: MessageCreateEvent,
-    override val reason: String,
+    override val exception: ArgumentParsingException,
 ) : CommandFailedParsingEvent<ChatCommand<*>, MessageCreateEvent>
 
 /** Event emitted when a chat command's invocation fails with an exception. **/

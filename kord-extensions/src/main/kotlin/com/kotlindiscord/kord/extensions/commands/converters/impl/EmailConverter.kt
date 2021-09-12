@@ -7,7 +7,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -37,7 +37,7 @@ public class EmailConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         if (!EmailValidator.getInstance().isValid(arg)) {
-            throw CommandException(
+            throw DiscordRelayedException(
                 context.translate("converters.email.error.invalid", replacements = arrayOf(arg))
             )
         }

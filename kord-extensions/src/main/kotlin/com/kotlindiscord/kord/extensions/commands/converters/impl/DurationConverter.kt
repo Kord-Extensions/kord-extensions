@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
@@ -52,7 +52,7 @@ public class DurationConverter(
                 val applied: Instant = now.plus(result, TimeZone.UTC)
 
                 if (now > applied) {
-                    throw CommandException(context.translate("converters.duration.error.positiveOnly"))
+                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
                 }
             }
 
@@ -63,9 +63,9 @@ public class DurationConverter(
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw CommandException(message)
+            throw DiscordRelayedException(message)
         } catch (e: DurationParserException) {
-            throw CommandException(e.error)
+            throw DiscordRelayedException(e.error)
         }
 
         return true

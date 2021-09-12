@@ -15,7 +15,7 @@ import dev.kord.common.annotation.KordPreview
  *
  * You can create a single converter of your own by extending this class.
  *
- * @property validator Validation lambda, which may throw a CommandException if required.
+ * @property validator Validation lambda, which may throw a DiscordRelayedException if required.
  */
 public abstract class SingleConverter<T : Any>(
     override var validator: Validator<T> = null
@@ -82,7 +82,7 @@ public abstract class SingleConverter<T : Any>(
      * provides.
      *
      * @param outputError Optionally, provide `true` to fail parsing and return errors if the converter throws a
-     * [CommandException], instead of continuing.
+     * [DiscordRelayedException] (instead of continuing).
      */
     @ConverterToOptional
     public open fun toOptional(

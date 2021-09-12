@@ -5,7 +5,8 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -80,7 +81,7 @@ public open class SlashCommandParser {
                     }
 
                     if (converter.required && !parsed) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
                                 replacements = arrayOf(
@@ -88,7 +89,13 @@ public open class SlashCommandParser {
                                     converter.getErrorString(context),
                                     currentValue
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.invalidValue",
+
+                            currentArg,
+                            argumentsObj,
+                            null
                         )
                     }
 
@@ -100,9 +107,16 @@ public open class SlashCommandParser {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required) {
-                        throw CommandException(converter.handleError(e, context))
+                        throw ArgumentParsingException(
+                            converter.handleError(e, context),
+                            null,
+
+                            currentArg,
+                            argumentsObj,
+                            null
+                        )
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -120,7 +134,7 @@ public open class SlashCommandParser {
                     }
 
                     if (converter.required && !parsed) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
                                 replacements = arrayOf(
@@ -128,7 +142,13 @@ public open class SlashCommandParser {
                                     converter.getErrorString(context),
                                     currentValue
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.invalidValue",
+
+                            currentArg,
+                            argumentsObj,
+                            null
                         )
                     }
 
@@ -140,9 +160,16 @@ public open class SlashCommandParser {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required) {
-                        throw CommandException(converter.handleError(e, context))
+                        throw ArgumentParsingException(
+                            converter.handleError(e, context),
+                            null,
+
+                            currentArg,
+                            argumentsObj,
+                            null
+                        )
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
@@ -167,10 +194,15 @@ public open class SlashCommandParser {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
-                        throw CommandException(
-                            converter.handleError(e, context)
+                        throw ArgumentParsingException(
+                            converter.handleError(e, context),
+                            null,
+
+                            currentArg,
+                            argumentsObj,
+                            null
                         )
                     }
                 } catch (t: Throwable) {
@@ -192,10 +224,15 @@ public open class SlashCommandParser {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
-                        throw CommandException(
-                            converter.handleError(e, context)
+                        throw ArgumentParsingException(
+                            converter.handleError(e, context),
+                            null,
+
+                            currentArg,
+                            argumentsObj,
+                            null
                         )
                     }
                 } catch (t: Throwable) {
@@ -217,10 +254,15 @@ public open class SlashCommandParser {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
-                        throw CommandException(
-                            converter.handleError(e, context)
+                        throw ArgumentParsingException(
+                            converter.handleError(e, context),
+                            null,
+
+                            currentArg,
+                            argumentsObj,
+                            null
                         )
                     }
                 } catch (t: Throwable) {
@@ -242,10 +284,15 @@ public open class SlashCommandParser {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
-                        throw CommandException(
-                            converter.handleError(e, context)
+                        throw ArgumentParsingException(
+                            converter.handleError(e, context),
+                            null,
+
+                            currentArg,
+                            argumentsObj,
+                            null
                         )
                     }
                 } catch (t: Throwable) {

@@ -9,7 +9,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -45,7 +45,7 @@ public class SupportedLocale(
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        this.parsed = SupportedLocales.ALL_LOCALES[arg.lowercase().trim()] ?: throw CommandException(
+        this.parsed = SupportedLocales.ALL_LOCALES[arg.lowercase().trim()] ?: throw DiscordRelayedException(
             context.translate("converters.supportedLocale.error.unknown", replacements = arrayOf(arg))
         )
 

@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.converters
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
@@ -35,14 +35,14 @@ class MappingsVersionConverter(
             val version = namespace.getProvider(arg).getOrNull()
 
 //            if (version == null) {
-//                throw CommandException("Invalid ${namespace.id} version: `$arg`")
+//                throw DiscordRelayedException("Invalid ${namespace.id} version: `$arg`")
 //
 //                val created = namespace.createAndAdd(arg)
 //
 //                if (created != null) {
 //                    this.parsed = created
 //                } else {
-//                    throw CommandException("Invalid ${namespace.id} version: `$arg`")
+//                    throw DiscordRelayedException("Invalid ${namespace.id} version: `$arg`")
 //                }
 //            } else {
 //                this.parsed = version
@@ -55,7 +55,7 @@ class MappingsVersionConverter(
             }
         }
 
-        throw CommandException("Invalid ${namespace.id} version: `$arg`")
+        throw DiscordRelayedException("Invalid ${namespace.id} version: `$arg`")
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =

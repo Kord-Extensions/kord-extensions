@@ -7,7 +7,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -48,7 +48,7 @@ public class IntConverter(
                 context.translate("converters.number.error.invalid.otherBase", replacements = arrayOf(arg, radix))
             }
 
-            throw CommandException(errorString)
+            throw DiscordRelayedException(errorString)
         }
 
         return true

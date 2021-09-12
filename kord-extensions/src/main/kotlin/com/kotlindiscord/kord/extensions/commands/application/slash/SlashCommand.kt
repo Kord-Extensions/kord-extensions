@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -109,7 +109,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public abstract suspend fun run(event: ChatInputCommandInteractionCreateEvent)
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(CommandException::class)
+    @Throws(DiscordRelayedException::class)
     public open suspend fun checkBotPerms(context: C) {
         if (context.guild != null) {
             val perms = (context.channel.asChannel() as GuildChannel)
@@ -118,7 +118,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
             val missingPerms = requiredPerms.filter { !perms.contains(it) }
 
             if (missingPerms.isNotEmpty()) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate(
                         "commands.error.missingBotPermissions",
                         null,

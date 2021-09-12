@@ -7,7 +7,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
@@ -96,7 +96,7 @@ public class MessageConverter(
 
             @Suppress("MagicNumber")
             if (split.size < 3) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate("converters.message.error.invalidUrl", replacements = arrayOf(arg))
                 )
             }
@@ -105,7 +105,7 @@ public class MessageConverter(
             val gid: Snowflake = try {
                 Snowflake(split[0])
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate("converters.message.error.invalidGuildId", replacements = arrayOf(split[0]))
                 )
             }
@@ -120,7 +120,7 @@ public class MessageConverter(
             val cid: Snowflake = try {
                 Snowflake(split[1])
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate(
                         "converters.message.error.invalidChannelId",
                         replacements = arrayOf(split[1])
@@ -146,7 +146,7 @@ public class MessageConverter(
             val mid: Snowflake = try {
                 Snowflake(split[2])
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate(
                         "converters.message.error.invalidMessageId",
                         replacements = arrayOf(split[2])
@@ -177,7 +177,7 @@ public class MessageConverter(
             try {
                 channel.getMessage(Snowflake(arg))
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate(
                         "converters.message.error.invalidMessageId",
                         replacements = arrayOf(arg)
@@ -193,6 +193,8 @@ public class MessageConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     private suspend fun errorNoMessage(arg: String, context: CommandContext): Nothing {
-        throw CommandException(context.translate("converters.message.error.missing", replacements = arrayOf(arg)))
+        throw DiscordRelayedException(
+            context.translate("converters.message.error.missing", replacements = arrayOf(arg))
+        )
     }
 }

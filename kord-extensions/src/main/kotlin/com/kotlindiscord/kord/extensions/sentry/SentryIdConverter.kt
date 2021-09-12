@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.sentry
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
@@ -27,7 +27,7 @@ public class SentryIdConverter : SingleConverter<SentryId>() {
         try {
             this.parsed = SentryId(arg)
         } catch (e: IllegalArgumentException) {
-            throw CommandException(
+            throw DiscordRelayedException(
                 context.translate("extensions.sentry.converter.error.invalid", replacements = arrayOf(arg))
             )
         }

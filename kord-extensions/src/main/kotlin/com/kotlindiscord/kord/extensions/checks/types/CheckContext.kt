@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.checks.types
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.core.event.Event
 import org.koin.core.component.KoinComponent
@@ -135,11 +135,13 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
     public fun translate(key: String, bundle: String? = null, replacements: Array<Any?> = arrayOf()): String =
         translations.translate(key, locale, bundleName = bundle, replacements = replacements)
 
-    /** If this check has failed and a message is set, throw a `CommandException` with the translated message. **/
-    @Throws(CommandException::class)
+    /**
+     * If this check has failed and a message is set, throw a [DiscordRelayedException] with the translated message.
+     */
+    @Throws(DiscordRelayedException::class)
     public fun throwIfFailedWithMessage() {
         if (passed.not() && message != null) {
-            throw CommandException(
+            throw DiscordRelayedException(
                 translate("checks.responseTemplate", replacements = arrayOf(message))
             )
         }

@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.events
 
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.commands.application.slash.EphemeralSlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.PublicSlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
@@ -77,14 +78,14 @@ public interface SlashCommandFailedParsingEvent<C : SlashCommand<*, *>> :
 public data class EphemeralSlashCommandFailedParsingEvent(
     override val command: EphemeralSlashCommand<*>,
     override val event: ChatInputCommandInteractionCreateEvent,
-    override val reason: String,
+    override val exception: ArgumentParsingException,
 ) : SlashCommandFailedParsingEvent<EphemeralSlashCommand<*>>
 
 /** Event emitted when a public slash command's argument parsing fails'. **/
 public data class PublicSlashCommandFailedParsingEvent(
     override val command: PublicSlashCommand<*>,
     override val event: ChatInputCommandInteractionCreateEvent,
-    override val reason: String,
+    override val exception: ArgumentParsingException,
 ) : SlashCommandFailedParsingEvent<PublicSlashCommand<*>>
 
 /** Basic event emitted when a slash command invocation fails with an exception. **/

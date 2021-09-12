@@ -2,7 +2,8 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -73,7 +74,7 @@ public class PublicSlashCommand<A : Arguments>(
 
                 return
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             event.interaction.respondPublic { content = e.reason }
 
             emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
@@ -95,7 +96,7 @@ public class PublicSlashCommand<A : Arguments>(
 
         try {
             checkBotPerms(context)
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             respondText(context, e.reason)
             emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
 
@@ -106,9 +107,9 @@ public class PublicSlashCommand<A : Arguments>(
                 val args = registry.argumentParser.parse(arguments, context)
 
                 context.populateArgs(args)
-            } catch (e: CommandException) {
+            } catch (e: ArgumentParsingException) {
                 respondText(context, e.reason)
-                emitEventAsync(PublicSlashCommandFailedParsingEvent(this, event, e.reason))
+                emitEventAsync(PublicSlashCommandFailedParsingEvent(this, event, e))
 
                 return
             }
@@ -117,7 +118,7 @@ public class PublicSlashCommand<A : Arguments>(
         try {
             body(context)
         } catch (t: Throwable) {
-            if (t is CommandException) {
+            if (t is DiscordRelayedException) {
                 respondText(context, t.reason)
             }
 

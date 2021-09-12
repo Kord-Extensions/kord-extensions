@@ -2,7 +2,8 @@
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashGroup
@@ -73,7 +74,7 @@ public class UnsafeSlashCommand<A : Arguments>(
 
                 return
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             event.interaction.respondPublic { content = e.reason }
 
             emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
@@ -104,7 +105,7 @@ public class UnsafeSlashCommand<A : Arguments>(
 
         try {
             checkBotPerms(context)
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             respondText(context, e.reason)
             emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
 
@@ -117,9 +118,9 @@ public class UnsafeSlashCommand<A : Arguments>(
 
                 context.populateArgs(args)
             }
-        } catch (e: CommandException) {
+        } catch (e: ArgumentParsingException) {
             respondText(context, e.reason)
-            emitEventAsync(UnsafeSlashCommandFailedParsingEvent(this, event, e.reason))
+            emitEventAsync(UnsafeSlashCommandFailedParsingEvent(this, event, e))
 
             return
         }
@@ -127,7 +128,7 @@ public class UnsafeSlashCommand<A : Arguments>(
         try {
             body(context)
         } catch (t: Throwable) {
-            if (t is CommandException) {
+            if (t is DiscordRelayedException) {
                 respondText(context, t.reason)
             }
 

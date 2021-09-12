@@ -7,7 +7,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
@@ -71,7 +71,7 @@ public class MemberConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         parsed = findMember(arg, context)
-            ?: throw CommandException(
+            ?: throw DiscordRelayedException(
                 context.translate("converters.member.error.missing", replacements = arrayOf(arg))
             )
 
@@ -85,7 +85,7 @@ public class MemberConverter(
             try {
                 kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate("converters.member.error.invalid", replacements = arrayOf(id))
                 )
             }

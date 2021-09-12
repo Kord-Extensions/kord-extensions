@@ -13,7 +13,7 @@ import dev.kord.common.annotation.KordPreview
  * You can create a defaulting converter of your own by extending this class.
  *
  * @property outputError Whether the argument parser should output parsing errors on invalid arguments.
- * @property validator Validation lambda, which may throw a CommandException if required.
+ * @property validator Validation lambda, which may throw a DiscordRelayedException if required.
  */
 public abstract class DefaultingConverter<T : Any>(
     defaultValue: T,

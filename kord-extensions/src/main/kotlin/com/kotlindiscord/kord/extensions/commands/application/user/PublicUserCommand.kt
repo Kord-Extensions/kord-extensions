@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.user
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandFailedChecksEvent
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandFailedWithExceptionEvent
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandInvocationEvent
@@ -43,7 +43,7 @@ public class PublicUserCommand(
 
                 return
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             event.interaction.respondPublic { content = e.reason }
 
             emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
@@ -65,7 +65,7 @@ public class PublicUserCommand(
 
         try {
             checkBotPerms(context)
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             respondText(context, e.reason)
             emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
@@ -75,7 +75,7 @@ public class PublicUserCommand(
         try {
             body(context)
         } catch (t: Throwable) {
-            if (t is CommandException) {
+            if (t is DiscordRelayedException) {
                 respondText(context, t.reason)
             }
 

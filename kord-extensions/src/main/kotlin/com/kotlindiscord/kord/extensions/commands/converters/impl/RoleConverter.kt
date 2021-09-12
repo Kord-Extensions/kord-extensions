@@ -7,7 +7,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -51,7 +51,7 @@ public class RoleConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         parsed = findRole(arg, context)
-            ?: throw CommandException(
+            ?: throw DiscordRelayedException(
                 context.translate("converters.role.error.missing", replacements = arrayOf(arg))
             )
 
@@ -74,7 +74,7 @@ public class RoleConverter(
             try {
                 guild.getRole(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate("converters.role.error.invalid", replacements = arrayOf(id))
                 )
             }

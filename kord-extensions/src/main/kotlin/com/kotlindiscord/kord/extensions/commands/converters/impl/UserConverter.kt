@@ -7,7 +7,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
@@ -66,7 +66,7 @@ public class UserConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         this.parsed = findUser(arg, context)
-            ?: throw CommandException(
+            ?: throw DiscordRelayedException(
                 context.translate("converters.user.error.missing", replacements = arrayOf(arg))
             )
 
@@ -80,7 +80,7 @@ public class UserConverter(
             try {
                 kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate("converters.user.error.invalid", replacements = arrayOf(id))
                 )
             }

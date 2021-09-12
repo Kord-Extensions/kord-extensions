@@ -7,7 +7,7 @@
 )
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -58,7 +58,7 @@ public class ChannelConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         val channel: Channel = findChannel(arg, context)
-            ?: throw CommandException(
+            ?: throw DiscordRelayedException(
                 context.translate(
                     "converters.channel.error.missing",
                     replacements = arrayOf(arg)
@@ -76,7 +76,7 @@ public class ChannelConverter(
             try {
                 kord.getChannel(Snowflake(id.toLong()))
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate(
                         "converters.channel.error.invalid",
                         replacements = arrayOf(id)

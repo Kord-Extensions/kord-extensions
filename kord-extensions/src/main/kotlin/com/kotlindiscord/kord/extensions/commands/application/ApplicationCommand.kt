@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.application
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
@@ -198,7 +198,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     }
 
     /** Runs standard checks that can be handled in a generic way, without worrying about subclass-specific checks. **/
-    @Throws(CommandException::class)
+    @Throws(DiscordRelayedException::class)
     public open suspend fun runStandardChecks(event: E): Boolean {
         val locale = event.getLocale()
 
@@ -230,7 +230,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     }
 
     /** Override this in order to implement any subclass-specific checks. **/
-    @Throws(CommandException::class)
+    @Throws(DiscordRelayedException::class)
     public open suspend fun runChecks(event: E): Boolean =
         runStandardChecks(event)
 

@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.application.user
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
@@ -51,7 +51,7 @@ public abstract class UserCommand<C : UserCommandContext<*>>(
     public abstract suspend fun respondText(context: C, message: String)
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(CommandException::class)
+    @Throws(DiscordRelayedException::class)
     public open suspend fun checkBotPerms(context: C) {
         if (context.guild != null) {
             val perms = (context.channel.asChannel() as GuildChannel)
@@ -60,7 +60,7 @@ public abstract class UserCommand<C : UserCommandContext<*>>(
             val missingPerms = requiredPerms.filter { !perms.contains(it) }
 
             if (missingPerms.isNotEmpty()) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate(
                         "commands.error.missingBotPermissions",
                         null,

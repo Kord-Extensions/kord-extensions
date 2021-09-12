@@ -1,5 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.events
 
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.events.KordExEvent
 import dev.kord.core.event.Event
@@ -35,8 +36,8 @@ public sealed interface CommandFailedChecksEvent<C : Command, E : Event> : Comma
 
 /** Basic event emitted when a command's argument parsing fails. **/
 public sealed interface CommandFailedParsingEvent<C : Command, E : Event> : CommandFailedEvent<C, E> {
-    /** Human-readable failure reason. **/
-    public val reason: String
+    /** Argument parsing exception object. **/
+    public val exception: ArgumentParsingException
 }
 
 /** Basic event emitted when a command's body invocation fails with an exception. **/

@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
@@ -39,7 +39,7 @@ public class UnsafeUserCommand(
 
                 return
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             event.interaction.respondPublic { content = e.reason }
 
             emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
@@ -70,7 +70,7 @@ public class UnsafeUserCommand(
 
         try {
             checkBotPerms(context)
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             respondText(context, e.reason)
             emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
 
@@ -80,7 +80,7 @@ public class UnsafeUserCommand(
         try {
             body(context)
         } catch (t: Throwable) {
-            if (t is CommandException) {
+            if (t is DiscordRelayedException) {
                 respondText(context, t.reason)
             }
 

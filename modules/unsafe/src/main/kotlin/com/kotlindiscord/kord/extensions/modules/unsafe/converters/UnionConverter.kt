@@ -7,7 +7,7 @@
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.converters
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
@@ -163,7 +163,7 @@ public class UnionConverter(
                     if (shouldThrow) throw t
                 }
 
-                else -> throw CommandException(
+                else -> throw DiscordRelayedException(
                     context.translate(
                         "converters.union.error.unknownConverterType",
                         replacements = arrayOf(converter)

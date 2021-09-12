@@ -7,7 +7,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -46,7 +46,7 @@ public class GuildConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         this.parsed = findGuild(arg)
-            ?: throw CommandException(
+            ?: throw DiscordRelayedException(
                 context.translate("converters.guild.error.missing", replacements = arrayOf(arg))
             )
 

@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.components.buttons
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.interactions.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.ButtonStyle
@@ -43,7 +43,7 @@ public open class EphemeralInteractionButton(
             if (!runChecks(event)) {
                 return
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral { content = e.reason }
 
             return
@@ -68,7 +68,7 @@ public open class EphemeralInteractionButton(
         try {
             checkBotPerms(context)
             body(context)
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             respondText(context, e.reason)
         } catch (t: Throwable) {
             handleError(context, t, this)

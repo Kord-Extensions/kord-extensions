@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.components.menus
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.interactions.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.behavior.interaction.respondPublic
@@ -29,7 +29,7 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
             if (!runChecks(event)) {
                 return
             }
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             event.interaction.respondPublic { content = e.reason }
 
             return
@@ -54,7 +54,7 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
         try {
             checkBotPerms(context)
             body(context)
-        } catch (e: CommandException) {
+        } catch (e: DiscordRelayedException) {
             respondText(context, e.reason)
         } catch (t: Throwable) {
             handleError(context, t, this)

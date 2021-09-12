@@ -2,6 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
@@ -63,7 +64,7 @@ public data class UnsafeSlashCommandFailedChecksEvent(
 public data class UnsafeSlashCommandFailedParsingEvent(
     override val command: UnsafeSlashCommand<*>,
     override val event: ChatInputCommandInteractionCreateEvent,
-    override val reason: String
+    override val exception: ArgumentParsingException,
 ) : SlashCommandFailedParsingEvent<UnsafeSlashCommand<*>>
 
 /** Event emitted when an unsafe slash command invocation fails with an exception. **/

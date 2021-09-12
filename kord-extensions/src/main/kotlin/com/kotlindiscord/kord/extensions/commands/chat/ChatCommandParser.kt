@@ -7,7 +7,8 @@
 
 package com.kotlindiscord.kord.extensions.commands.chat
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.ArgumentParsingException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -63,7 +64,7 @@ public open class ChatCommandParser : KoinComponent {
      * @param context MessageCommand context for this command invocation.
      *
      * @return Built [Arguments] object, with converters filled.
-     * @throws CommandException Thrown based on a lot of possible cases. This is intended for display on Discord.
+     * @throws DiscordRelayedException Thrown based on a lot of possible cases. This is intended for display on Discord.
      */
     public open suspend fun <T : Arguments> parse(builder: () -> T, context: ChatCommandContext<*>): T {
         val argumentsObj = builder.invoke()
@@ -107,11 +108,17 @@ public open class ChatCommandParser : KoinComponent {
                 is SingleConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
-                            throw CommandException(
+                            throw ArgumentParsingException(
                                 context.translate(
                                     "argumentParser.error.requiresOneValue",
                                     replacements = arrayOf(currentArg.displayName, kwValue.size)
-                                )
+                                ),
+
+                                "argumentParser.error.requiresOneValue",
+
+                                currentArg,
+                                argumentsObj,
+                                parser
                             )
                         }
 
@@ -121,7 +128,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
 
                     if ((converter.required || hasKwargs) && !parsed) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
 
@@ -129,7 +136,13 @@ public open class ChatCommandParser : KoinComponent {
                                     currentArg.displayName,
                                     converter.getErrorString(context),
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.invalidValue",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
 
@@ -140,9 +153,9 @@ public open class ChatCommandParser : KoinComponent {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || hasKwargs) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.errorInArgument",
 
@@ -151,7 +164,13 @@ public open class ChatCommandParser : KoinComponent {
 
                                     converter.handleError(e, context)
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.errorInArgument",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
                 } catch (t: Throwable) {
@@ -165,11 +184,17 @@ public open class ChatCommandParser : KoinComponent {
                 is DefaultingConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
-                            throw CommandException(
+                            throw ArgumentParsingException(
                                 context.translate(
                                     "argumentParser.error.requiresOneValue",
                                     replacements = arrayOf(currentArg.displayName, kwValue.size)
-                                )
+                                ),
+
+                                "argumentParser.error.requiresOneValue",
+
+                                currentArg,
+                                argumentsObj,
+                                parser
                             )
                         }
 
@@ -185,9 +210,9 @@ public open class ChatCommandParser : KoinComponent {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.errorInArgument",
 
@@ -196,7 +221,13 @@ public open class ChatCommandParser : KoinComponent {
 
                                     converter.handleError(e, context)
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.errorInArgument",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
                 } catch (t: Throwable) {
@@ -206,11 +237,17 @@ public open class ChatCommandParser : KoinComponent {
                 is OptionalConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
-                            throw CommandException(
+                            throw ArgumentParsingException(
                                 context.translate(
                                     "argumentParser.error.requiresOneValue",
                                     replacements = arrayOf(currentArg.displayName, kwValue.size)
-                                )
+                                ),
+
+                                "argumentParser.error.requiresOneValue",
+
+                                currentArg,
+                                argumentsObj,
+                                parser
                             )
                         }
 
@@ -226,9 +263,9 @@ public open class ChatCommandParser : KoinComponent {
 
                         converter.validate(context)
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.errorInArgument",
 
@@ -237,7 +274,13 @@ public open class ChatCommandParser : KoinComponent {
 
                                     converter.handleError(e, context)
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.errorInArgument",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
                 } catch (t: Throwable) {
@@ -256,7 +299,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
 
@@ -264,13 +307,19 @@ public open class ChatCommandParser : KoinComponent {
                                     currentArg.displayName,
                                     converter.getErrorString(context)
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.invalidValue",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
-                            throw CommandException(
+                            throw ArgumentParsingException(
                                 context.translate(
                                     "argumentParser.error.notAllValid",
 
@@ -280,7 +329,13 @@ public open class ChatCommandParser : KoinComponent {
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
                                     )
-                                )
+                                ),
+
+                                "argumentParser.error.notAllValid",
+
+                                currentArg,
+                                argumentsObj,
+                                parser
                             )
                         }
 
@@ -294,9 +349,9 @@ public open class ChatCommandParser : KoinComponent {
                             converter.validate(context)
                         }
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.errorInArgument",
 
@@ -305,7 +360,13 @@ public open class ChatCommandParser : KoinComponent {
 
                                     converter.handleError(e, context)
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.errorInArgument",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
                 } catch (t: Throwable) {
@@ -324,7 +385,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
 
@@ -332,13 +393,19 @@ public open class ChatCommandParser : KoinComponent {
                                     currentArg.displayName,
                                     converter.getErrorString(context),
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.invalidValue",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
-                            throw CommandException(
+                            throw ArgumentParsingException(
                                 context.translate(
                                     "argumentParser.error.notAllValid",
 
@@ -348,7 +415,13 @@ public open class ChatCommandParser : KoinComponent {
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
                                     )
-                                )
+                                ),
+
+                                "argumentParser.error.notAllValid",
+
+                                currentArg,
+                                argumentsObj,
+                                parser
                             )
                         }
 
@@ -362,9 +435,9 @@ public open class ChatCommandParser : KoinComponent {
                             converter.validate(context)
                         }
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.errorInArgument",
 
@@ -373,7 +446,13 @@ public open class ChatCommandParser : KoinComponent {
 
                                     converter.handleError(e, context)
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.errorInArgument",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
                 } catch (t: Throwable) {
@@ -392,7 +471,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
 
@@ -400,13 +479,19 @@ public open class ChatCommandParser : KoinComponent {
                                     currentArg.displayName,
                                     converter.getErrorString(context),
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.invalidValue",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
-                            throw CommandException(
+                            throw ArgumentParsingException(
                                 context.translate(
                                     "argumentParser.error.notAllValid",
 
@@ -416,7 +501,13 @@ public open class ChatCommandParser : KoinComponent {
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
                                     )
-                                )
+                                ),
+
+                                "argumentParser.error.notAllValid",
+
+                                currentArg,
+                                argumentsObj,
+                                parser
                             )
                         }
 
@@ -430,9 +521,9 @@ public open class ChatCommandParser : KoinComponent {
                             converter.validate(context)
                         }
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.errorInArgument",
 
@@ -441,7 +532,13 @@ public open class ChatCommandParser : KoinComponent {
 
                                     converter.handleError(e, context)
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.errorInArgument",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
                 } catch (t: Throwable) {
@@ -460,7 +557,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
 
                     if ((converter.required || hasKwargs) && parsedCount <= 0) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
 
@@ -468,13 +565,19 @@ public open class ChatCommandParser : KoinComponent {
                                     currentArg.displayName,
                                     converter.getErrorString(context),
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.invalidValue",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
 
                     if (hasKwargs) {
                         if (parsedCount < kwValue!!.size) {
-                            throw CommandException(
+                            throw ArgumentParsingException(
                                 context.translate(
                                     "argumentParser.error.notAllValid",
 
@@ -484,7 +587,13 @@ public open class ChatCommandParser : KoinComponent {
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
                                     )
-                                )
+                                ),
+
+                                "argumentParser.error.notAllValid",
+
+                                currentArg,
+                                argumentsObj,
+                                parser
                             )
                         }
 
@@ -498,9 +607,9 @@ public open class ChatCommandParser : KoinComponent {
                             converter.validate(context)
                         }
                     }
-                } catch (e: CommandException) {
+                } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
-                        throw CommandException(
+                        throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.errorInArgument",
 
@@ -509,7 +618,13 @@ public open class ChatCommandParser : KoinComponent {
 
                                     converter.handleError(e, context)
                                 )
-                            )
+                            ),
+
+                            "argumentParser.error.errorInArgument",
+
+                            currentArg,
+                            argumentsObj,
+                            parser
                         )
                     }
                 } catch (t: Throwable) {
@@ -520,7 +635,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
                 }
 
-                else -> throw CommandException(
+                else -> throw ArgumentParsingException(
                     context.translate(
                         "argumentParser.error.errorInArgument",
 
@@ -532,7 +647,13 @@ public open class ChatCommandParser : KoinComponent {
                                 replacements = arrayOf(currentArg.converter)
                             )
                         )
-                    )
+                    ),
+
+                    "argumentParser.error.errorInArgument",
+
+                    currentArg,
+                    argumentsObj,
+                    parser
                 )
             }
         }
@@ -544,17 +665,23 @@ public open class ChatCommandParser : KoinComponent {
 
         if (filledRequiredArgs < allRequiredArgs) {
             if (filledRequiredArgs < 1) {
-                throw CommandException(
+                throw ArgumentParsingException(
                     context.translate(
                         "argumentParser.error.noFilledArguments",
 
                         replacements = arrayOf(
                             allRequiredArgs
                         )
-                    )
+                    ),
+
+                    "argumentParser.error.noFilledArguments",
+
+                    null,
+                    argumentsObj,
+                    parser
                 )
             } else {
-                throw CommandException(
+                throw ArgumentParsingException(
                     context.translate(
                         "argumentParser.error.someFilledArguments",
 
@@ -562,7 +689,13 @@ public open class ChatCommandParser : KoinComponent {
                             allRequiredArgs,
                             filledRequiredArgs
                         )
-                    )
+                    ),
+
+                    "argumentParser.error.someFilledArguments",
+
+                    null,
+                    argumentsObj,
+                    parser
                 )
             }
         }
