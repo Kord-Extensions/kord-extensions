@@ -44,7 +44,7 @@ public abstract class BaseButtonPaginator(
         null
     }
 
-    private val lastRowNumber = components.rows.size - 1
+    private val lastRowNumber by lazy { components.rows.size - 1 }
     private val secondRowNumber = 1
 
     /** Button builder representing the button that switches to the first page. **/
@@ -67,7 +67,7 @@ public abstract class BaseButtonPaginator(
 
     /** Whether it's possible for us to have a row of group-switching buttons. **/
     @Suppress("MagicNumber")
-    public val canUseSwitchingButtons: Boolean = allGroups.size in 3..5 && "" !in allGroups
+    public val canUseSwitchingButtons: Boolean by lazy { allGroups.size in 3..5 && "" !in allGroups }
 
     /** A button-oriented check function that matches based on the [owner] property. **/
     public val defaultCheck: Check<ComponentInteractionCreateEvent> = {
