@@ -38,25 +38,25 @@ public open class ApplicationCommandRegistry : KoinComponent {
     public open val bot: ExtensibleBot by inject()
 
     /** Kord instance, backing the ExtensibleBot. **/
-    public val kord: Kord by inject()
+    public open val kord: Kord by inject()
 
     /** Command parser to use for slash commands. **/
     public open val argumentParser: SlashCommandParser = SlashCommandParser()
 
     /** Translations provider, for retrieving translations. **/
-    public val translationsProvider: TranslationsProvider by inject()
+    public open val translationsProvider: TranslationsProvider by inject()
 
     /** Mapping of Discord-side command ID to a message command object. **/
-    public val messageCommands: MutableMap<Snowflake, MessageCommand<*>> = mutableMapOf()
+    public open val messageCommands: MutableMap<Snowflake, MessageCommand<*>> = mutableMapOf()
 
     /** Mapping of Discord-side command ID to a slash command object. **/
-    public val slashCommands: MutableMap<Snowflake, SlashCommand<*, *>> = mutableMapOf()
+    public open val slashCommands: MutableMap<Snowflake, SlashCommand<*, *>> = mutableMapOf()
 
     /** Mapping of Discord-side command ID to a user command object. **/
-    public val userCommands: MutableMap<Snowflake, UserCommand<*>> = mutableMapOf()
+    public open val userCommands: MutableMap<Snowflake, UserCommand<*>> = mutableMapOf()
 
     /** Whether the initial sync has been finished, and commands should be registered directly. **/
-    public var initialised: Boolean = false
+    public open var initialised: Boolean = false
 
     /** Quick access to the human-readable name for a Discord application command type. **/
     public val ApplicationCommandType.name: String
@@ -69,7 +69,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
         }
 
     /** Handles the initial registration of commands, after extensions have been loaded. **/
-    public suspend fun initialRegistration() {
+    public open suspend fun initialRegistration() {
         if (!bot.settings.applicationCommandsBuilder.register) {
             logger.debug {
                 "Application command registration is disabled, pairing existing commands with extension commands"
@@ -556,7 +556,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     // region: Event handlers
 
     /** Event handler for message commands. **/
-    public suspend fun handle(event: MessageCommandInteractionCreateEvent) {
+    public open suspend fun handle(event: MessageCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
         val command = messageCommands[commandId]
 
@@ -566,7 +566,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     }
 
     /** Event handler for slash commands. **/
-    public suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
+    public open suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
         val commandId = event.interaction.command.rootId
         val command = slashCommands[commandId]
 
@@ -576,7 +576,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     }
 
     /** Event handler for user commands. **/
-    public suspend fun handle(event: UserCommandInteractionCreateEvent) {
+    public open suspend fun handle(event: UserCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
         val command = userCommands[commandId]
 
@@ -590,7 +590,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     // region: Extensions
 
     /** Registration logic for slash commands, extracted for clarity. **/
-    public suspend fun ChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
+    public open suspend fun ChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
         this.defaultPermission = command.guildId == null || command.allowByDefault
 
         if (command.hasBody) {
@@ -667,18 +667,18 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
     /** Registration logic for message commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public fun MessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
+    public open fun MessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
         this.defaultPermission = command.guildId == null || command.allowByDefault
     }
 
     /** Registration logic for user commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public fun UserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
+    public open fun UserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
         this.defaultPermission = command.guildId == null || command.allowByDefault
     }
 
     /** Check whether the type and name of an extension-registered application command matches a Discord one. **/
-    public fun ApplicationCommand<*>.matches(
+    public open fun ApplicationCommand<*>.matches(
         locale: Locale,
         other: dev.kord.core.entity.application.ApplicationCommand
     ): Boolean = getTranslatedName(locale) == other.name && type == other.type
