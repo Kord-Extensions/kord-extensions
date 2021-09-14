@@ -23,6 +23,8 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.event.message.MessageCreateEvent
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.MappingsQuery
@@ -1045,7 +1047,7 @@ class MappingsExtension : Extension() {
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
-    ) {
+    ) = withContext(newSingleThreadContext("c: $givenQuery")) {
         val provider = if (version == null) {
             if (channel != null) {
                 namespace.getProvider(
@@ -1078,7 +1080,7 @@ class MappingsExtension : Extension() {
                 )
             } catch (e: NullPointerException) {
                 message.respond(e.localizedMessage)
-                return@queryClasses
+                return@withContext
             }
 
             pages = classesToPages(namespace, result)
@@ -1086,7 +1088,7 @@ class MappingsExtension : Extension() {
 
         if (pages.isEmpty()) {
             message.respond("No results found")
-            return
+            return@withContext
         }
 
         val meta = provider.get()
@@ -1153,7 +1155,7 @@ class MappingsExtension : Extension() {
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
-    ) {
+    ) = withContext(newSingleThreadContext("f: $givenQuery")) {
         val provider = if (version == null) {
             if (channel != null) {
                 namespace.getProvider(
@@ -1186,7 +1188,7 @@ class MappingsExtension : Extension() {
                 )
             } catch (e: NullPointerException) {
                 message.respond(e.localizedMessage)
-                return@queryFields
+                return@withContext
             }
 
             pages = fieldsToPages(namespace, provider.get(), result)
@@ -1194,7 +1196,7 @@ class MappingsExtension : Extension() {
 
         if (pages.isEmpty()) {
             message.respond("No results found")
-            return
+            return@withContext
         }
 
         val meta = provider.get()
@@ -1261,7 +1263,7 @@ class MappingsExtension : Extension() {
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
-    ) {
+    ) = withContext(newSingleThreadContext("m: $givenQuery")) {
         val provider = if (version == null) {
             if (channel != null) {
                 namespace.getProvider(
@@ -1294,7 +1296,7 @@ class MappingsExtension : Extension() {
                 )
             } catch (e: NullPointerException) {
                 message.respond(e.localizedMessage)
-                return@queryMethods
+                return@withContext
             }
 
             pages = methodsToPages(namespace, provider.get(), result)
@@ -1302,7 +1304,7 @@ class MappingsExtension : Extension() {
 
         if (pages.isEmpty()) {
             message.respond("No results found")
-            return
+            return@withContext
         }
 
         val meta = provider.get()
