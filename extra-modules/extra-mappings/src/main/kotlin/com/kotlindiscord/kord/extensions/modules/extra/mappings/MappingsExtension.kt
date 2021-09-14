@@ -1047,107 +1047,115 @@ class MappingsExtension : Extension() {
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
-    ) = withContext(newSingleThreadContext("c: $givenQuery")) {
-        val provider = if (version == null) {
-            if (channel != null) {
-                namespace.getProvider(
-                    namespace.getDefaultVersion { channel }
+    ) {
+        val context = newSingleThreadContext("c: $givenQuery")
+
+        try {
+            withContext(context) {
+                val provider = if (version == null) {
+                    if (channel != null) {
+                        namespace.getProvider(
+                            namespace.getDefaultVersion { channel }
+                        )
+                    } else {
+                        MappingsProvider.empty(namespace)
+                    }
+                } else {
+                    namespace.getProvider(version.version)
+                }
+
+                provider.injectDefaultVersion(
+                    namespace.getDefaultProvider {
+                        channel ?: namespace.getDefaultMappingChannel()
+                    }
                 )
-            } else {
-                MappingsProvider.empty(namespace)
-            }
-        } else {
-            namespace.getProvider(version.version)
-        }
 
-        provider.injectDefaultVersion(
-            namespace.getDefaultProvider {
-                channel ?: namespace.getDefaultMappingChannel()
-            }
-        )
+                val query = givenQuery.replace(".", "/")
+                var pages: List<Pair<String, String>>
 
-        val query = givenQuery.replace(".", "/")
-        var pages: List<Pair<String, String>>
+                message.channel.withTyping {
+                    @Suppress("TooGenericExceptionCaught")
+                    val result = try {
+                        MappingsQuery.queryClasses(
+                            QueryContext(
+                                provider = provider,
+                                searchKey = query
+                            )
+                        )
+                    } catch (e: NullPointerException) {
+                        message.respond(e.localizedMessage)
+                        return@withContext
+                    }
 
-        message.channel.withTyping {
-            @Suppress("TooGenericExceptionCaught")
-            val result = try {
-                MappingsQuery.queryClasses(
-                    QueryContext(
-                        provider = provider,
-                        searchKey = query
+                    pages = classesToPages(namespace, result)
+                }
+
+                if (pages.isEmpty()) {
+                    message.respond("No results found")
+                    return@withContext
+                }
+
+                val meta = provider.get()
+
+                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
+                val pageTitle = "List of ${meta.name} classes: ${meta.version}"
+
+                val shortPages = mutableListOf<String>()
+                val longPages = mutableListOf<String>()
+
+                pages.forEach { (short, long) ->
+                    shortPages.add(short)
+                    longPages.add(long)
+                }
+
+                shortPages.forEach {
+                    pagesObj.addPage(
+                        "${EXPAND_EMOJI.mention} for more",
+
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
                     )
-                )
-            } catch (e: NullPointerException) {
-                message.respond(e.localizedMessage)
-                return@withContext
-            }
+                }
 
-            pages = classesToPages(namespace, result)
-        }
+                if (shortPages != longPages) {
+                    longPages.forEach {
+                        pagesObj.addPage(
+                            "${EXPAND_EMOJI.mention} for less",
 
-        if (pages.isEmpty()) {
-            message.respond("No results found")
-            return@withContext
-        }
+                            Page {
+                                description = it
+                                title = pageTitle
 
-        val meta = provider.get()
-
-        val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-        val pageTitle = "List of ${meta.name} classes: ${meta.version}"
-
-        val shortPages = mutableListOf<String>()
-        val longPages = mutableListOf<String>()
-
-        pages.forEach { (short, long) ->
-            shortPages.add(short)
-            longPages.add(long)
-        }
-
-        shortPages.forEach {
-            pagesObj.addPage(
-                "${EXPAND_EMOJI.mention} for more",
-
-                Page {
-                    description = it
-                    title = pageTitle
-
-                    footer {
-                        text = PAGE_FOOTER
-                        icon = PAGE_FOOTER_ICON
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
                     }
                 }
-            )
-        }
 
-        if (shortPages != longPages) {
-            longPages.forEach {
-                pagesObj.addPage(
-                    "${EXPAND_EMOJI.mention} for less",
-
-                    Page {
-                        description = it
-                        title = pageTitle
-
-                        footer {
-                            text = PAGE_FOOTER
-                            icon = PAGE_FOOTER_ICON
-                        }
-                    }
+                val paginator = MessageButtonPaginator(
+                    targetMessage = event.message,
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = message.author,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
                 )
+
+                paginator.send()
             }
+        } finally {
+            context.close()
         }
-
-        val paginator = MessageButtonPaginator(
-            targetMessage = event.message,
-            pages = pagesObj,
-            keepEmbed = true,
-            owner = message.author,
-            timeoutSeconds = getTimeout(),
-            locale = getLocale(),
-        )
-
-        paginator.send()
     }
 
     private suspend fun ChatCommandContext<out Arguments>.queryFields(
@@ -1155,107 +1163,115 @@ class MappingsExtension : Extension() {
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
-    ) = withContext(newSingleThreadContext("f: $givenQuery")) {
-        val provider = if (version == null) {
-            if (channel != null) {
-                namespace.getProvider(
-                    namespace.getDefaultVersion { channel }
+    ) {
+        val context = newSingleThreadContext("f: $givenQuery")
+
+        try {
+            withContext(context) {
+                val provider = if (version == null) {
+                    if (channel != null) {
+                        namespace.getProvider(
+                            namespace.getDefaultVersion { channel }
+                        )
+                    } else {
+                        MappingsProvider.empty(namespace)
+                    }
+                } else {
+                    namespace.getProvider(version.version)
+                }
+
+                provider.injectDefaultVersion(
+                    namespace.getDefaultProvider {
+                        channel ?: namespace.getDefaultMappingChannel()
+                    }
                 )
-            } else {
-                MappingsProvider.empty(namespace)
-            }
-        } else {
-            namespace.getProvider(version.version)
-        }
 
-        provider.injectDefaultVersion(
-            namespace.getDefaultProvider {
-                channel ?: namespace.getDefaultMappingChannel()
-            }
-        )
+                val query = givenQuery.replace(".", "/")
+                var pages: List<Pair<String, String>>
 
-        val query = givenQuery.replace(".", "/")
-        var pages: List<Pair<String, String>>
+                message.channel.withTyping {
+                    @Suppress("TooGenericExceptionCaught")
+                    val result = try {
+                        MappingsQuery.queryFields(
+                            QueryContext(
+                                provider = provider,
+                                searchKey = query
+                            )
+                        )
+                    } catch (e: NullPointerException) {
+                        message.respond(e.localizedMessage)
+                        return@withContext
+                    }
 
-        message.channel.withTyping {
-            @Suppress("TooGenericExceptionCaught")
-            val result = try {
-                MappingsQuery.queryFields(
-                    QueryContext(
-                        provider = provider,
-                        searchKey = query
+                    pages = fieldsToPages(namespace, provider.get(), result)
+                }
+
+                if (pages.isEmpty()) {
+                    message.respond("No results found")
+                    return@withContext
+                }
+
+                val meta = provider.get()
+
+                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
+                val pageTitle = "List of ${meta.name} fields: ${meta.version}"
+
+                val shortPages = mutableListOf<String>()
+                val longPages = mutableListOf<String>()
+
+                pages.forEach { (short, long) ->
+                    shortPages.add(short)
+                    longPages.add(long)
+                }
+
+                shortPages.forEach {
+                    pagesObj.addPage(
+                        "${EXPAND_EMOJI.mention} for more",
+
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
                     )
-                )
-            } catch (e: NullPointerException) {
-                message.respond(e.localizedMessage)
-                return@withContext
-            }
+                }
 
-            pages = fieldsToPages(namespace, provider.get(), result)
-        }
+                if (shortPages != longPages) {
+                    longPages.forEach {
+                        pagesObj.addPage(
+                            "${EXPAND_EMOJI.mention} for less",
 
-        if (pages.isEmpty()) {
-            message.respond("No results found")
-            return@withContext
-        }
+                            Page {
+                                description = it
+                                title = pageTitle
 
-        val meta = provider.get()
-
-        val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-        val pageTitle = "List of ${meta.name} fields: ${meta.version}"
-
-        val shortPages = mutableListOf<String>()
-        val longPages = mutableListOf<String>()
-
-        pages.forEach { (short, long) ->
-            shortPages.add(short)
-            longPages.add(long)
-        }
-
-        shortPages.forEach {
-            pagesObj.addPage(
-                "${EXPAND_EMOJI.mention} for more",
-
-                Page {
-                    description = it
-                    title = pageTitle
-
-                    footer {
-                        text = PAGE_FOOTER
-                        icon = PAGE_FOOTER_ICON
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
                     }
                 }
-            )
-        }
 
-        if (shortPages != longPages) {
-            longPages.forEach {
-                pagesObj.addPage(
-                    "${EXPAND_EMOJI.mention} for less",
-
-                    Page {
-                        description = it
-                        title = pageTitle
-
-                        footer {
-                            text = PAGE_FOOTER
-                            icon = PAGE_FOOTER_ICON
-                        }
-                    }
+                val paginator = MessageButtonPaginator(
+                    targetMessage = event.message,
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = message.author,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
                 )
+
+                paginator.send()
             }
+        } finally {
+            context.close()
         }
-
-        val paginator = MessageButtonPaginator(
-            targetMessage = event.message,
-            pages = pagesObj,
-            keepEmbed = true,
-            owner = message.author,
-            timeoutSeconds = getTimeout(),
-            locale = getLocale(),
-        )
-
-        paginator.send()
     }
 
     private suspend fun ChatCommandContext<out Arguments>.queryMethods(
@@ -1263,107 +1279,115 @@ class MappingsExtension : Extension() {
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
-    ) = withContext(newSingleThreadContext("m: $givenQuery")) {
-        val provider = if (version == null) {
-            if (channel != null) {
-                namespace.getProvider(
-                    namespace.getDefaultVersion { channel }
+    ) {
+        val context = newSingleThreadContext("m: $givenQuery")
+
+        try {
+            withContext(context) {
+                val provider = if (version == null) {
+                    if (channel != null) {
+                        namespace.getProvider(
+                            namespace.getDefaultVersion { channel }
+                        )
+                    } else {
+                        MappingsProvider.empty(namespace)
+                    }
+                } else {
+                    namespace.getProvider(version.version)
+                }
+
+                provider.injectDefaultVersion(
+                    namespace.getDefaultProvider {
+                        channel ?: namespace.getDefaultMappingChannel()
+                    }
                 )
-            } else {
-                MappingsProvider.empty(namespace)
-            }
-        } else {
-            namespace.getProvider(version.version)
-        }
 
-        provider.injectDefaultVersion(
-            namespace.getDefaultProvider {
-                channel ?: namespace.getDefaultMappingChannel()
-            }
-        )
+                val query = givenQuery.replace(".", "/")
+                var pages: List<Pair<String, String>>
 
-        val query = givenQuery.replace(".", "/")
-        var pages: List<Pair<String, String>>
+                message.channel.withTyping {
+                    @Suppress("TooGenericExceptionCaught")
+                    val result = try {
+                        MappingsQuery.queryMethods(
+                            QueryContext(
+                                provider = provider,
+                                searchKey = query
+                            )
+                        )
+                    } catch (e: NullPointerException) {
+                        message.respond(e.localizedMessage)
+                        return@withContext
+                    }
 
-        message.channel.withTyping {
-            @Suppress("TooGenericExceptionCaught")
-            val result = try {
-                MappingsQuery.queryMethods(
-                    QueryContext(
-                        provider = provider,
-                        searchKey = query
+                    pages = methodsToPages(namespace, provider.get(), result)
+                }
+
+                if (pages.isEmpty()) {
+                    message.respond("No results found")
+                    return@withContext
+                }
+
+                val meta = provider.get()
+
+                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
+                val pageTitle = "List of ${meta.name} methods: ${meta.version}"
+
+                val shortPages = mutableListOf<String>()
+                val longPages = mutableListOf<String>()
+
+                pages.forEach { (short, long) ->
+                    shortPages.add(short)
+                    longPages.add(long)
+                }
+
+                shortPages.forEach {
+                    pagesObj.addPage(
+                        "${EXPAND_EMOJI.mention} for more",
+
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
                     )
-                )
-            } catch (e: NullPointerException) {
-                message.respond(e.localizedMessage)
-                return@withContext
-            }
+                }
 
-            pages = methodsToPages(namespace, provider.get(), result)
-        }
+                if (shortPages != longPages) {
+                    longPages.forEach {
+                        pagesObj.addPage(
+                            "${EXPAND_EMOJI.mention} for less",
 
-        if (pages.isEmpty()) {
-            message.respond("No results found")
-            return@withContext
-        }
+                            Page {
+                                description = it
+                                title = pageTitle
 
-        val meta = provider.get()
-
-        val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-        val pageTitle = "List of ${meta.name} methods: ${meta.version}"
-
-        val shortPages = mutableListOf<String>()
-        val longPages = mutableListOf<String>()
-
-        pages.forEach { (short, long) ->
-            shortPages.add(short)
-            longPages.add(long)
-        }
-
-        shortPages.forEach {
-            pagesObj.addPage(
-                "${EXPAND_EMOJI.mention} for more",
-
-                Page {
-                    description = it
-                    title = pageTitle
-
-                    footer {
-                        text = PAGE_FOOTER
-                        icon = PAGE_FOOTER_ICON
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
                     }
                 }
-            )
-        }
 
-        if (shortPages != longPages) {
-            longPages.forEach {
-                pagesObj.addPage(
-                    "${EXPAND_EMOJI.mention} for less",
-
-                    Page {
-                        description = it
-                        title = pageTitle
-
-                        footer {
-                            text = PAGE_FOOTER
-                            icon = PAGE_FOOTER_ICON
-                        }
-                    }
+                val paginator = MessageButtonPaginator(
+                    targetMessage = event.message,
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = message.author,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
                 )
+
+                paginator.send()
             }
+        } finally {
+            context.close()
         }
-
-        val paginator = MessageButtonPaginator(
-            targetMessage = event.message,
-            pages = pagesObj,
-            keepEmbed = true,
-            owner = message.author,
-            timeoutSeconds = getTimeout(),
-            locale = getLocale(),
-        )
-
-        paginator.send()
     }
 
     private suspend fun getTimeout() = builder.config.getTimeout()
