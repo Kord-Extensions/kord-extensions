@@ -40,10 +40,10 @@ public abstract class Extension : KoinComponent {
     public open val kord: Kord by inject()
 
     /** Message command registry. **/
-    internal val chatCommandRegistry: ChatCommandRegistry by inject()
+    public open val chatCommandRegistry: ChatCommandRegistry by inject()
 
     /** Slash command registry. **/
-    public val applicationCommandRegistry: ApplicationCommandRegistry by inject()
+    public open val applicationCommandRegistry: ApplicationCommandRegistry by inject()
 
     /**
      * The name of this extension.
