@@ -546,6 +546,7 @@ public open class ExtensibleBotBuilder {
          * Register a lambda to be called after all the extensions in the [ExtensionsBuilder] have been added. This
          * will be called regardless of how many were successfully set up.
          */
+        @BotBuilderDSL
         public fun afterExtensionsAdded(body: suspend ExtensibleBot.() -> Unit): Boolean =
             afterExtensionsAddedList.add(body)
 
@@ -553,6 +554,7 @@ public open class ExtensibleBotBuilder {
          * Register a lambda to be called after Koin has been set up. You can use this to register overriding modules
          * via `loadModule` before the modules are actually accessed.
          */
+        @BotBuilderDSL
         public fun afterKoinSetup(body: () -> Unit): Boolean =
             afterKoinSetupList.add(body)
 
@@ -560,18 +562,21 @@ public open class ExtensibleBotBuilder {
          * Register a lambda to be called before Koin has been set up. You can use this to register Koin modules
          * early, if needed.
          */
+        @BotBuilderDSL
         public fun beforeKoinSetup(body: () -> Unit): Boolean =
             beforeKoinSetupList.add(body)
 
         /**
          * Register a lambda to be called before all the extensions in the [ExtensionsBuilder] have been added.
          */
+        @BotBuilderDSL
         public fun beforeExtensionsAdded(body: suspend ExtensibleBot.() -> Unit): Boolean =
             beforeExtensionsAddedList.add(body)
 
         /**
          * Register a lambda to be called just before the bot tries to connect to Discord.
          */
+        @BotBuilderDSL
         public fun beforeStart(body: suspend ExtensibleBot.() -> Unit): Boolean =
             beforeStartList.add(body)
 
@@ -579,18 +584,21 @@ public open class ExtensibleBotBuilder {
          * Register a lambda to be called right after the [ExtensibleBot] object has been created, before it gets set
          * up.
          */
+        @BotBuilderDSL
         public fun created(body: suspend ExtensibleBot.() -> Unit): Boolean =
             createdList.add(body)
 
         /**
          * Register a lambda to be called after any extension is successfully added to the bot.
          */
+        @BotBuilderDSL
         public fun extensionAdded(body: suspend ExtensibleBot.(extension: Extension) -> Unit): Boolean =
             extensionAddedList.add(body)
 
         /**
          * Register a lambda to be called after the [ExtensibleBot] object has been created and set up.
          */
+        @BotBuilderDSL
         public fun setup(body: suspend ExtensibleBot.() -> Unit): Boolean =
             setupList.add(body)
 
