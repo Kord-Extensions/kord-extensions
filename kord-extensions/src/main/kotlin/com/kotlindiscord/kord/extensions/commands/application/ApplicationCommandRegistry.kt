@@ -157,6 +157,8 @@ public open class ApplicationCommandRegistry : KoinComponent {
                             }
                         }
                     }
+
+                    logger.trace { "Applied permissions for ${commands.size} commands." }
                 } else {
                     logger.warn { "Applying permissions to global application commands is currently not supported." }
                 }
@@ -395,6 +397,8 @@ public open class ApplicationCommandRegistry : KoinComponent {
                     command.allowedRoles.map { role(it, true) }
                     command.disallowedRoles.map { role(it, false) }
                 }
+
+                logger.trace { "Applied permissions for command: ${command.name} ($command)" }
             } else {
                 logger.warn { "Applying permissions to global application commands is currently not supported." }
             }
