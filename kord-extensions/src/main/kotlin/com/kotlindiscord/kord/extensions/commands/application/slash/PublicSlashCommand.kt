@@ -25,7 +25,7 @@ public class PublicSlashCommand<A : Arguments>(
     public override val parentCommand: SlashCommand<*, *>? = null,
     public override val parentGroup: SlashGroup? = null
 ) : SlashCommand<PublicSlashCommandContext<A>, A>(extension) {
-    /** @suppress Internal guilder **/
+    /** @suppress Internal builder **/
     public var initialResponseBuilder: InitialPublicSlashResponseBehavior = null
 
     /** Call this to open with a response, omit it to ack instead. **/

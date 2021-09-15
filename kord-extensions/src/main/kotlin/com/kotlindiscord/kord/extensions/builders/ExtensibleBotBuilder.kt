@@ -177,11 +177,20 @@ public open class ExtensibleBotBuilder {
     /**
      * DSL function used to configure the bot's intents.
      *
+     * @param addDefaultIntents Whether to automatically add all non-privileged intents to the builder before running
+     * the given lambda.
+     *
      * @see Intents.IntentsBuilder
      */
     @BotBuilderDSL
-    public fun intents(builder: Intents.IntentsBuilder.() -> Unit) {
-        this.intentsBuilder = builder
+    public fun intents(addDefaultIntents: Boolean = true, builder: Intents.IntentsBuilder.() -> Unit) {
+        this.intentsBuilder = {
+            if (addDefaultIntents) {
+                +Intents.nonPrivileged
+            }
+
+            builder()
+        }
     }
 
     /**

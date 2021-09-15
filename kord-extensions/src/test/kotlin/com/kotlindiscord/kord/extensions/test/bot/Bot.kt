@@ -28,6 +28,14 @@ suspend fun main() {
             defaultGuild("787452339908116521")
         }
 
+        intents {
+//            +Intent.GuildMessages
+        }
+
+        members {
+            none()
+        }
+
         extensions {
             add(::TestExtension)
 

@@ -78,6 +78,8 @@ public suspend fun <T : Arguments> SlashCommand<*, *>.ephemeralSubCommand(
 public fun <T : Arguments> SlashCommand<*, *>.ephemeralSubCommand(
     commandObj: EphemeralSlashCommand<T>
 ): EphemeralSlashCommand<T> {
+    commandObj.guildId = null
+
     if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
         throw InvalidCommandException(
             commandObj.name,
@@ -145,6 +147,8 @@ public suspend fun <T : Arguments> SlashCommand<*, *>.publicSubCommand(
 public fun <T : Arguments> SlashCommand<*, *>.publicSubCommand(
     commandObj: PublicSlashCommand<T>
 ): PublicSlashCommand<T> {
+    commandObj.guildId = null
+
     if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
         throw InvalidCommandException(
             commandObj.name,
@@ -212,6 +216,8 @@ public suspend fun <T : Arguments> SlashGroup.ephemeralSubCommand(
 public fun <T : Arguments> SlashGroup.ephemeralSubCommand(
     commandObj: EphemeralSlashCommand<T>
 ): EphemeralSlashCommand<T> {
+    commandObj.guildId = null
+
     if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
         throw InvalidCommandException(
             commandObj.name,
@@ -279,6 +285,8 @@ public suspend fun <T : Arguments> SlashGroup.publicSubCommand(
 public fun <T : Arguments> SlashGroup.publicSubCommand(
     commandObj: PublicSlashCommand<T>
 ): PublicSlashCommand<T> {
+    commandObj.guildId = null
+
     if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
         throw InvalidCommandException(
             commandObj.name,
