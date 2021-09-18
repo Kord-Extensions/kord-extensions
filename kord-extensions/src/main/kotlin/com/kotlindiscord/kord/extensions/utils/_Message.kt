@@ -377,7 +377,7 @@ public val Message.isEphemeral: Boolean
         data.flags.value?.contains(MessageFlag.Ephemeral) == true
 
 /**
- * Wait for a message, using the given timeout (in seconds) and filter function.
+ * Wait for a message, using the given timeout (in milliseconds ) and filter function.
  *
  * Will return `null` if no message is found before the timeout.
  */
@@ -392,7 +392,7 @@ public suspend fun waitForMessage(
 }
 
 /**
- * Wait for a message from a user, using the given timeout (in seconds) and extra filter function.
+ * Wait for a message from a user, using the given timeout (in milliseconds) and extra filter function.
  *
  * Will return `null` if no message is found before the timeout.
  */
@@ -410,7 +410,7 @@ public suspend fun UserBehavior.waitForMessage(
 }
 
 /**
- * Wait for a message in this channel, using the given timeout (in seconds) and extra filter function.
+ * Wait for a message in this channel, using the given timeout (in milliseconds) and extra filter function.
  *
  * Will return `null` if no message is found before the timeout.
  */
@@ -428,7 +428,7 @@ public suspend fun MessageChannelBehavior.waitForMessage(
 }
 
 /**
- * Wait for a message in reply to this one, using the given timeout (in seconds) and extra filter function.
+ * Wait for a message in reply to this one, using the given timeout (in milliseconds) and extra filter function.
  *
  * Will return `null` if no message is found before the timeout.
  */
@@ -447,7 +447,7 @@ public suspend fun MessageBehavior.waitForReply(
 
 /**
  * Wait for a message by the user that invoked this command, in the channel it was invoked in, using the given
- * timeout (in seconds) and extra filter function.
+ * timeout (in milliseconds) and extra filter function.
  *
  * Will return `null` if no message is found before the timeout.
  */
