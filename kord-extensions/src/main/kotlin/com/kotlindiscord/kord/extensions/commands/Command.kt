@@ -37,7 +37,7 @@ public abstract class Command(public val extension: Extension) {
 
     /** Quick shortcut for emitting a command event without blocking. **/
     public open suspend fun emitEventAsync(event: CommandEvent<*, *>): Job =
-        event.kord.launch {
+        event.launch {
             extension.bot.send(event)
         }
 }

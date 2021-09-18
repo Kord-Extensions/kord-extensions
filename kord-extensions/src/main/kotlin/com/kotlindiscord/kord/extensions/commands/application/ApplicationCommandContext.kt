@@ -55,7 +55,7 @@ public abstract class ApplicationCommandContext(
 
     /** Extract member information from event data, if that context is available. **/
     public override suspend fun getMember(): MemberBehavior? =
-        guild?.getMember(genericEvent.interaction.user.id)
+        guild?.getMemberOrNull(genericEvent.interaction.user.id)
 
     /** Extract user information from event data, if that context is available. **/
     public override suspend fun getUser(): UserBehavior =
