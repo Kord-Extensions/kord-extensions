@@ -196,7 +196,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @param scope Coroutine scope to run the body of your callback under.
      * @param consumer The callback to run when the event is fired.
      */
-    public inline fun <reified T : Any> on(
+    public inline fun <reified T : Event> on(
         launch: Boolean = true,
         scope: CoroutineScope = this.getKoin().get<Kord>(),
         noinline consumer: suspend T.() -> Unit
@@ -205,7 +205,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             .filterIsInstance<T>()
             .onEach {
                 runCatching {
-                    if (launch) scope.launch { consumer(it) } else consumer(it)
+                    if (launch) it.launch { consumer(it) } else consumer(it)
                 }.onFailure { logger.catching(it) }
             }.catch { logger.catching(it) }
             .launchIn(scope)
