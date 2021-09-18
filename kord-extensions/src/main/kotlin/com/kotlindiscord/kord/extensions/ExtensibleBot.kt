@@ -71,7 +71,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
     /** @suppress Function that sets up the bot early on, called by the builder. **/
     public open suspend fun setup() {
-        val kord = Kord(token) {
+        val kord = settings.kordBuilder(token) {
             cache {
                 settings.cacheBuilder.builder.invoke(this, it)
             }
@@ -88,7 +88,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
             enableShutdownHook = settings.hooksBuilder.kordShutdownHook
 
-            settings.kordBuilders.forEach { it() }
+            settings.kordHooks.forEach { it() }
         }
 
         loadModule { single { kord } bind Kord::class }

@@ -94,7 +94,12 @@ public open class ExtensibleBotBuilder {
     public val applicationCommandsBuilder: ApplicationCommandsBuilder = ApplicationCommandsBuilder()
 
     /** @suppress List of Kord builders, shouldn't be set directly by the user. **/
-    public val kordBuilders: MutableList<suspend KordBuilder.() -> Unit> = mutableListOf()
+    public val kordHooks: MutableList<suspend KordBuilder.() -> Unit> = mutableListOf()
+
+    /** @suppress Kord builder, creates a Kord instance. **/
+    public var kordBuilder: suspend (String, suspend KordBuilder.() -> Unit) -> Kord = { token, builder ->
+        Kord(token) { builder() }
+    }
 
     /** Logging level Koin should use, defaulting to ERROR. **/
     public var koinLogLevel: Level = Level.ERROR
@@ -130,8 +135,8 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
-     * DSL function allowing for additional Kord builders to be specified, allowing for direct customisation of the
-     * Kord object.
+     * DSL function allowing for additional Kord configuration builders to be specified, allowing for direct
+     * customisation of the Kord object.
      *
      * Multiple builders may be registered, and they'll be called in the order they were registered here. Builders are
      * called after Kord Extensions has applied its own builder actions - so you can override the changes it makes here
@@ -141,7 +146,19 @@ public open class ExtensibleBotBuilder {
      */
     @BotBuilderDSL
     public fun kord(builder: suspend KordBuilder.() -> Unit) {
-        kordBuilders.add(builder)
+        kordHooks.add(builder)
+    }
+
+    /**
+     * Function allowing you to specify a callable that constructs and returns a Kord instance. This can be used
+     * to specify your own Kord subclass, if you need to - but shouldn't be a replacement for registering a [kord]
+     * configuration builder.
+     *
+     * @see Kord
+     */
+    @BotBuilderDSL
+    public fun customKordBuilder(builder: suspend (String, suspend KordBuilder.() -> Unit) -> Kord) {
+        kordBuilder = builder
     }
 
     /**
@@ -300,7 +317,7 @@ public open class ExtensibleBotBuilder {
          * Number of messages to keep in the cache. Defaults to 10,000.
          *
          * To disable automatic configuration of the message cache, set this to `null` or `0`. You can configure the
-         * cache yourself using the [kord] function, and interact with the resulting [DataCache] object using the
+         * cache yourself using the [kordHook] function, and interact with the resulting [DataCache] object using the
          * [transformCache] function.
          */
         @Suppress("MagicNumber")
