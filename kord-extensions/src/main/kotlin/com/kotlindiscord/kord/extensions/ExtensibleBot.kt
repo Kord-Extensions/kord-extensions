@@ -99,7 +99,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
         addDefaultExtensions()
 
         kord.on<Event> {
-            kord.launch {
+            this.launch {
                 send(this@on)
             }
         }
