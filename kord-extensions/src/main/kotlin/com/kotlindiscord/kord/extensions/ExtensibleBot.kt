@@ -95,19 +95,20 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
+        addDefaultExtensions()
+
         kord.on<Event> {
             this.launch {
                 send(this@on)
             }
         }
-
-        registerListeners()
-        addDefaultExtensions()
     }
 
     /** Start up the bot and log into Discord. **/
     public open suspend fun start() {
         settings.hooksBuilder.runBeforeStart(this)
+
+        registerListeners()
 
         getKoin().get<Kord>().login(settings.presenceBuilder)
     }
