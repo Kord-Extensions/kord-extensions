@@ -16,7 +16,6 @@ import dev.kord.core.Kord
 import dev.kord.core.any
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -216,11 +215,23 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
         // Handle discord-side perms checks, as they can't be relied on to enforce them
 
-        val channel = event.interaction.channel.asChannelOrNull() as? GuildMessageChannel ?: return allowByDefault
-        val member = event.interaction.user.asMember(channel.guildId)
+        val guildId = event.interaction.data.guildId.value ?: return allowByDefault
+        val memberId = event.interaction.user.id
 
-        val isAllowed = member.id in allowedUsers || member.roles.any { it.id in allowedRoles }
-        val isDenied = member.id in disallowedUsers || member.roles.any { it.id in disallowedRoles }
+        var isAllowed = memberId in allowedUsers
+        var isDenied = memberId in disallowedUsers
+
+        if (allowedRoles.isNotEmpty()) {
+            val member = GuildBehavior(guildId, kord).getMember(memberId)
+
+            isAllowed = isAllowed || member.roles.any { it.id in allowedRoles }
+        }
+
+        if (disallowedRoles.isNotEmpty()) {
+            val member = GuildBehavior(guildId, kord).getMember(memberId)
+
+            isDenied = isDenied || member.roles.any { it.id in disallowedRoles }
+        }
 
         return if (allowByDefault) {
             !isDenied
