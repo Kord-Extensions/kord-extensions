@@ -70,6 +70,10 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
     /** Handles the initial registration of commands, after extensions have been loaded. **/
     public open suspend fun initialRegistration() {
+        if (initialised) {
+            return
+        }
+
         if (!bot.settings.applicationCommandsBuilder.register) {
             logger.debug {
                 "Application command registration is disabled, pairing existing commands with extension commands"

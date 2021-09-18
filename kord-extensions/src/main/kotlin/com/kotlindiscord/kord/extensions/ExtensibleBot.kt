@@ -95,14 +95,14 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
-        registerListeners()
-        addDefaultExtensions()
-
         kord.on<Event> {
             this.launch {
                 send(this@on)
             }
         }
+
+        registerListeners()
+        addDefaultExtensions()
     }
 
     /** Start up the bot and log into Discord. **/
@@ -132,23 +132,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.warn { "Disconnected: $closeCode" }
         }
 
-        on<ReadyEvent> {
-            if (!initialized) {  // We do this because a reconnection will cause this event to happen again.
-                initialized = true
-
-                if (settings.applicationCommandsBuilder.enabled) {
-                    getKoin().get<ApplicationCommandRegistry>().initialRegistration()
-                } else {
-                    logger.info {
-                        "Application command support is disabled - set `enabled` to `true` in the " +
-                            "`applicationCommands` builder if you want to use them."
-                    }
-                }
-            }
-
-            logger.info { "Ready!" }
-        }
-
         on<ButtonInteractionCreateEvent> {
             getKoin().get<ComponentRegistry>().handle(this)
         }
@@ -162,7 +145,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                 getKoin().get<ChatCommandRegistry>().handleEvent(this)
             }
         } else {
-            logger.info {
+            logger.debug {
                 "Chat command support is disabled - set `enabled` to `true` in the `chatCommands` builder" +
                     " if you want to use them."
             }
@@ -179,6 +162,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
             on<UserCommandInteractionCreateEvent> {
                 getKoin().get<ApplicationCommandRegistry>().handle(this)
+            }
+
+            getKoin().get<ApplicationCommandRegistry>().initialRegistration()
+        } else {
+            logger.debug {
+                "Application command support is disabled - set `enabled` to `true` in the " +
+                    "`applicationCommands` builder if you want to use them."
             }
         }
     }
