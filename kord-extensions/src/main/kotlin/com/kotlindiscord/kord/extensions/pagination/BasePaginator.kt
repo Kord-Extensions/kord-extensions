@@ -5,8 +5,8 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.Kord
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.core.entity.User
 import dev.kord.rest.builder.message.EmbedBuilder
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
@@ -52,7 +52,7 @@ public val EXPAND_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u2139\u
  */
 public abstract class BasePaginator(
     public open val pages: Pages,
-    public open val owner: User? = null,
+    public open val owner: UserBehavior? = null,
     public open val timeoutSeconds: Long? = null,
     public open val keepEmbed: Boolean = true,
     public open val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,

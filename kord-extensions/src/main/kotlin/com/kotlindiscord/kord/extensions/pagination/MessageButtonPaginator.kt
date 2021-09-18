@@ -5,12 +5,12 @@ package com.kotlindiscord.kord.extensions.pagination
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.core.entity.User
 import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.allowedMentions
@@ -26,7 +26,7 @@ import java.util.*
  */
 public class MessageButtonPaginator(
     pages: Pages,
-    owner: User? = null,
+    owner: UserBehavior? = null,
     timeoutSeconds: Long? = null,
     keepEmbed: Boolean = true,
     switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,

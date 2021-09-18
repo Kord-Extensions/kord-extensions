@@ -2,8 +2,8 @@ package com.kotlindiscord.kord.extensions.pagination.builders
 
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.core.entity.User
 import dev.kord.rest.builder.message.EmbedBuilder
 import java.util.*
 
@@ -22,7 +22,7 @@ public class PaginatorBuilder(
     public val pages: Pages = Pages(defaultGroup)
 
     /** Paginator owner, if only one person should be able to interact. **/
-    public var owner: User? = null
+    public var owner: UserBehavior? = null
 
     /** Paginator timeout, in seconds. When elapsed, the paginator will be destroyed. **/
     public var timeoutSeconds: Long? = null

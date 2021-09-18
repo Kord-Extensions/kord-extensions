@@ -5,11 +5,11 @@ package com.kotlindiscord.kord.extensions.pagination
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.core.entity.User
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.embed
@@ -23,7 +23,7 @@ import java.util.*
  */
 public class PublicFollowUpPaginator(
     pages: Pages,
-    owner: User? = null,
+    owner: UserBehavior? = null,
     timeoutSeconds: Long? = null,
     keepEmbed: Boolean = true,
     switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,

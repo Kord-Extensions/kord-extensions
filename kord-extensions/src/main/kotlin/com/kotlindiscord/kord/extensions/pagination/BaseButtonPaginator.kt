@@ -14,8 +14,8 @@ import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.core.entity.User
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import java.util.*
 
@@ -24,7 +24,7 @@ import java.util.*
  */
 public abstract class BaseButtonPaginator(
     pages: Pages,
-    owner: User? = null,
+    owner: UserBehavior? = null,
     timeoutSeconds: Long? = null,
     keepEmbed: Boolean = true,
     switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,

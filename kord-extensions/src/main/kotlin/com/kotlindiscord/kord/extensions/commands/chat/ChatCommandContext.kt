@@ -11,11 +11,11 @@ import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.MemberBehavior
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
-import dev.kord.core.entity.Guild
-import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
-import dev.kord.core.entity.User
 import dev.kord.core.event.message.MessageCreateEvent
 
 /**
@@ -40,13 +40,13 @@ public open class ChatCommandContext<T : Arguments>(
     public open lateinit var channel: MessageChannelBehavior
 
     /** Guild this command happened in, if any. **/
-    public open var guild: Guild? = null
+    public open var guild: GuildBehavior? = null
 
     /** Guild member responsible for executing this command, if any. **/
-    public open var member: Member? = null
+    public open var member: MemberBehavior? = null
 
     /** User responsible for executing this command, if any (if `null`, it's a webhook). **/
-    public open var user: User? = null
+    public open var user: UserBehavior? = null
 
     /** Message object containing this command invocation. **/
     public open lateinit var message: Message
@@ -68,10 +68,10 @@ public open class ChatCommandContext<T : Arguments>(
         arguments = args
     }
 
-    override suspend fun getChannel(): MessageChannelBehavior = event.message.channel.asChannel()
-    override suspend fun getGuild(): Guild? = event.getGuild()
-    override suspend fun getMember(): Member? = event.message.getAuthorAsMember()
-    override suspend fun getUser(): User? = event.message.author
+    override suspend fun getChannel(): MessageChannelBehavior = event.message.channel
+    override suspend fun getGuild(): GuildBehavior? = event.guildId?.let { GuildBehavior(it, event.kord) }
+    override suspend fun getMember(): MemberBehavior? = event.member
+    override suspend fun getUser(): UserBehavior? = event.message.author
 
     /** Extract message information from event data, if that context is available. **/
     public open suspend fun getMessage(): Message = event.message

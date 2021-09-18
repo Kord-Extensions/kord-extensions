@@ -6,7 +6,6 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.ApplicationInteractionCreateEvent
 import org.koin.core.component.inject
 
@@ -47,15 +46,15 @@ public abstract class ApplicationCommandContext(
 
     /** Extract channel information from event data, if that context is available. **/
     public override suspend fun getChannel(): MessageChannelBehavior =
-        genericEvent.interaction.getChannel()
+        genericEvent.interaction.channel
 
     /** Extract guild information from event data, if that context is available. **/
     public override suspend fun getGuild(): GuildBehavior? =
-        (channel as? GuildMessageChannel)?.guild
+        genericEvent.interaction.data.guildId.value ?.let { GuildBehavior(it, genericEvent.kord) }
 
     /** Extract member information from event data, if that context is available. **/
     public override suspend fun getMember(): MemberBehavior? =
-        guild?.getMemberOrNull(genericEvent.interaction.user.id)
+        getGuild()?.let { MemberBehavior(it.id, genericEvent.interaction.user.id, genericEvent.kord) }
 
     /** Extract user information from event data, if that context is available. **/
     public override suspend fun getUser(): UserBehavior =

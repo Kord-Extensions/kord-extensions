@@ -5,10 +5,10 @@ package com.kotlindiscord.kord.extensions.pagination
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.core.entity.User
 import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
@@ -19,7 +19,7 @@ import java.util.*
  */
 public class EphemeralResponsePaginator(
     pages: Pages,
-    owner: User? = null,
+    owner: UserBehavior? = null,
     timeoutSeconds: Long? = null,
     switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
     bundle: String? = null,
