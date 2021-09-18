@@ -4,7 +4,10 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import dev.kord.common.entity.DiscordPartialMessage
 import dev.kord.common.entity.MessageFlag
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.behavior.MessageBehavior
+import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.reply
 import dev.kord.core.cache.data.MessageData
@@ -372,3 +375,92 @@ public val Message.isUrgent: Boolean
 public val Message.isEphemeral: Boolean
     get() =
         data.flags.value?.contains(MessageFlag.Ephemeral) == true
+
+/**
+ * Wait for a message, using the given timeout (in seconds) and filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun waitForMessage(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = getKoin().get<Kord>()
+    val event = kord.waitFor(timeout, filter)
+
+    return event?.message
+}
+
+/**
+ * Wait for a message from a user, using the given timeout (in seconds) and extra filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun UserBehavior.waitForMessage(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = getKoin().get<Kord>()
+    val event = kord.waitFor<MessageCreateEvent>(timeout) {
+        message.author?.id == id &&
+            filter()
+    }
+
+    return event?.message
+}
+
+/**
+ * Wait for a message in this channel, using the given timeout (in seconds) and extra filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun MessageChannelBehavior.waitForMessage(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = getKoin().get<Kord>()
+    val event = kord.waitFor<MessageCreateEvent>(timeout) {
+        message.channelId == id &&
+            filter()
+    }
+
+    return event?.message
+}
+
+/**
+ * Wait for a message in reply to this one, using the given timeout (in seconds) and extra filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun MessageBehavior.waitForReply(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = getKoin().get<Kord>()
+    val event = kord.waitFor<MessageCreateEvent>(timeout) {
+        message.messageReference?.message?.id == id &&
+            filter()
+    }
+
+    return event?.message
+}
+
+/**
+ * Wait for a message by the user that invoked this command, in the channel it was invoked in, using the given
+ * timeout (in seconds) and extra filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun CommandContext.waitForResponse(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>()
+    val event = kord.waitFor<MessageCreateEvent>(timeout) {
+        message.author?.id == getUser()?.id &&
+            message.channelId == getChannel()?.id &&
+            filter()
+    }
+
+    return event?.message
+}
