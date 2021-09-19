@@ -543,7 +543,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
         val filtered = messageCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
-        if (delete) { deleteCommandGeneric(command, id) }
+        if (delete) { deleteGeneric(command, id) }
 
         return messageCommands.remove(id)
     }
@@ -553,7 +553,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
         val filtered = slashCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
-        if (delete) { deleteCommandGeneric(command, id) }
+        if (delete) { deleteGeneric(command, id) }
 
         return slashCommands.remove(id)
     }
@@ -563,13 +563,13 @@ public open class ApplicationCommandRegistry : KoinComponent {
         val filtered = userCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
-        if (delete) { deleteCommandGeneric(command, id) }
+        if (delete) { deleteGeneric(command, id) }
 
         return userCommands.remove(id)
     }
 
     /** @suppress Internal function used to delete the given command from Discord. Used by [unregister]. **/
-    public open suspend fun deleteCommandGeneric(
+    public open suspend fun deleteGeneric(
         command: ApplicationCommand<*>,
         discordCommandId: Snowflake,
     ) {
