@@ -526,37 +526,69 @@ public open class ApplicationCommandRegistry : KoinComponent {
     // region: Unregistration functions
 
     /** Unregister a message command. **/
-    public open suspend fun unregisterGeneric(command: ApplicationCommand<*>): ApplicationCommand<*>? =
+    public open suspend fun unregisterGeneric(
+        command: ApplicationCommand<*>,
+        delete: Boolean = true
+    ): ApplicationCommand<*>? =
         when (command) {
-            is MessageCommand<*> -> unregister(command)
-            is SlashCommand<*, *> -> unregister(command)
-            is UserCommand<*> -> unregister(command)
+            is MessageCommand<*> -> unregister(command, delete)
+            is SlashCommand<*, *> -> unregister(command, delete)
+            is UserCommand<*> -> unregister(command, delete)
 
             else -> error("Unsupported application command type: ${command.type.name}")
         }
 
     /** Unregister a message command. **/
-    public open suspend fun unregister(command: MessageCommand<*>): MessageCommand<*>? {
+    public open suspend fun unregister(command: MessageCommand<*>, delete: Boolean = true): MessageCommand<*>? {
         val filtered = messageCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
+
+        if (delete) { deleteCommandGeneric(command, id) }
 
         return messageCommands.remove(id)
     }
 
     /** Unregister a slash command. **/
-    public open suspend fun unregister(command: SlashCommand<*, *>): SlashCommand<*, *>? {
+    public open suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>? {
         val filtered = slashCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
+
+        if (delete) { deleteCommandGeneric(command, id) }
 
         return slashCommands.remove(id)
     }
 
     /** Unregister a user command. **/
-    public open suspend fun unregister(command: UserCommand<*>): UserCommand<*>? {
+    public open suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>? {
         val filtered = userCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
+        if (delete) { deleteCommandGeneric(command, id) }
+
         return userCommands.remove(id)
+    }
+
+    /** @suppress Internal function used to delete the given command from Discord. Used by [unregister]. **/
+    public open suspend fun deleteCommandGeneric(
+        command: ApplicationCommand<*>,
+        discordCommandId: Snowflake,
+    ) {
+        try {
+            if (command.guildId != null) {
+                kord.unsafe.guildApplicationCommand(command.guildId!!, kord.resources.applicationId, discordCommandId)
+            } else {
+                kord.unsafe.globalApplicationCommand(kord.resources.applicationId, discordCommandId).delete()
+            }
+        } catch (e: KtorRequestException) {
+            logger.warn(e) {
+                "Failed to delete ${command.type.name} command ${command.name}" +
+                    if (e.error?.message != null) {
+                        "\n        Discord error message: ${e.error?.message}"
+                    } else {
+                        ""
+                    }
+            }
+        }
     }
 
     // endregion
