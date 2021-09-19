@@ -22,7 +22,7 @@ private val envMap: MutableMap<String, String> = mutableMapOf()
  * @param name Environmental variable to get the value for.
  * @return The value of the environmental variable, or `null` if it doesn't exist.
  */
-public fun env(name: String): String? {
+public fun envOrNull(name: String): String? {
     if (firstLoad) {
         firstLoad = false
 
@@ -73,3 +73,23 @@ public fun env(name: String): String? {
 
     return envMap[name] ?: System.getenv()[name]
 }
+
+/**
+ * Returns the value of an environmental variable, loading from a `.env` file in the current working directory if
+ * possible.
+ *
+ * This function caches the contents of the `.env` file the first time it's called - there's no way to parse the file
+ * again later.
+ *
+ * This function will throw an exception if the environmental variable can't be found.
+ *
+ * @param name Environmental variable to get the value for.
+ *
+ * @throws RuntimeException Thrown if the environmental variable can't be found.
+ * @return The value of the environmental variable.
+ */
+public fun env(name: String): String =
+    envOrNull(name) ?: error(
+        "Missing environmental variable '$name' - please set this by adding it to a `.env` file, or using your" +
+            "system or process manager's environment management commands and tools."
+    )
