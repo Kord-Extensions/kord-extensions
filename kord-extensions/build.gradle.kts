@@ -61,8 +61,8 @@ val javadocJar = task("javadocJar", Jar::class) {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_9
-    targetCompatibility = JavaVersion.VERSION_1_9
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 kotlin {
@@ -71,7 +71,7 @@ kotlin {
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "9"
+        jvmTarget = "1.8"
     }
 }
 
