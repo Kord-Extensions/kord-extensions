@@ -18,7 +18,6 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import io.sentry.Sentry
 import mu.KLogger
 import mu.KotlinLogging
 
@@ -224,8 +223,6 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
 
                 tag("command", commandObj.name)
                 tag("extension", commandObj.extension.name)
-
-                Sentry.captureException(t, "Slash command execution failed.")
             }
 
             logger.info { "Error submitted to Sentry: $sentryId" }

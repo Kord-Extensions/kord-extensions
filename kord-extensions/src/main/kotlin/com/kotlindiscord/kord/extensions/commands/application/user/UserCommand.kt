@@ -16,7 +16,6 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
-import io.sentry.Sentry
 import mu.KLogger
 import mu.KotlinLogging
 
@@ -162,8 +161,6 @@ public abstract class UserCommand<C : UserCommandContext<*>>(
 
                 tag("command", name)
                 tag("extension", extension.name)
-
-                Sentry.captureException(t, "User command execution failed.")
             }
 
             logger.info { "Error submitted to Sentry: $sentryId" }
