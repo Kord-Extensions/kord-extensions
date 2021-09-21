@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.interactions.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.ButtonStyle
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
@@ -44,7 +45,7 @@ public open class PublicInteractionButton(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondPublic { content = e.reason }
+            event.interaction.respondEphemeral { content = e.reason }
 
             return
         }

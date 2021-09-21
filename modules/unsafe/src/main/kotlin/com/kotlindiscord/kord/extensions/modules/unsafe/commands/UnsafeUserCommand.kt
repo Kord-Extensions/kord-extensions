@@ -40,7 +40,7 @@ public class UnsafeUserCommand(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondPublic { content = e.reason }
+            event.interaction.respondEphemeral { content = e.reason }
 
             emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
 

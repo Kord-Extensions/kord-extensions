@@ -9,6 +9,7 @@ import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandInvoca
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandSucceededEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.interactions.respond
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
@@ -44,7 +45,7 @@ public class PublicUserCommand(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondPublic { content = e.reason }
+            event.interaction.respondEphemeral { content = e.reason }
 
             emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
