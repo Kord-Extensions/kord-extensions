@@ -30,7 +30,7 @@ public open class ChatCommandContext<T : Arguments>(
     public val messageCommand: ChatCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
-    public open val parser: StringParser?,
+    public open val parser: StringParser,
     public val argString: String
 ) : CommandContext(messageCommand, eventObj, commandName) {
     /** Event that triggered this command execution. **/
@@ -118,5 +118,5 @@ public open class ChatCommandContext<T : Arguments>(
         key: String,
         replacements: Array<Any?> = arrayOf(),
         useReply: Boolean = true
-    ): Message = respond(translate(key, replacements), useReply)
+    ): Message = respond(translate(key, command.extension.bundle, replacements), useReply)
 }
