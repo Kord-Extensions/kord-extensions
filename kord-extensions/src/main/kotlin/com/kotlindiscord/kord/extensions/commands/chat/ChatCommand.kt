@@ -212,7 +212,7 @@ public open class ChatCommand<T : Arguments>(
     }
 
     /** If your bot requires permissions to be able to execute the command, add them using this function. **/
-    public fun requirePermissions(vararg perms: Permission) {
+    public fun requireBotPermissions(vararg perms: Permission) {
         perms.forEach { requiredPerms.add(it) }
     }
 

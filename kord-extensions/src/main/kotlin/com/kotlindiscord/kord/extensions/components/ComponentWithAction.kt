@@ -77,7 +77,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     }
 
     /** If your bot requires permissions to be able to execute this component's body, add them using this function. **/
-    public fun requirePermissions(vararg perms: Permission) {
+    public fun requireBotPermissions(vararg perms: Permission) {
         perms.forEach { requiredPerms.add(it) }
     }
 

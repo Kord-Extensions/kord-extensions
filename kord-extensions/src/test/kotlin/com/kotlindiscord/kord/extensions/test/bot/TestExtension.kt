@@ -465,7 +465,7 @@ class TestExtension : Extension() {
             name = "requires-perms"
             description = "A command that requires some permissions"
 
-            requirePermissions(Permission.Administrator)
+            requireBotPermissions(Permission.Administrator)
 
             action {
                 message.respond("Looks like I'm an admin. Nice!")
