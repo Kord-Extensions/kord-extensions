@@ -95,8 +95,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
-        addDefaultExtensions()
-
         kord.on<Event> {
             this.launch {
                 send(this@on)
@@ -177,6 +175,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     /** This function adds all of the default extensions when the bot is being set up. **/
     public open suspend fun addDefaultExtensions() {
         val extBuilder = settings.extensionsBuilder
+
         if (extBuilder.helpExtensionBuilder.enableBundledExtension) {
             this.addExtension(::HelpExtension)
         }

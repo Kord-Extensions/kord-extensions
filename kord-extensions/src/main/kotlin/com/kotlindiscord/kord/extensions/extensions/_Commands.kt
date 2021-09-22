@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.commands.application.user.EphemeralUser
 import com.kotlindiscord.kord.extensions.commands.application.user.PublicUserCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatGroupCommand
+import dev.kord.gateway.Intent
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -454,6 +455,10 @@ public fun <T : Arguments> Extension.chatCommand(
         logger.error(e) { "Failed to register command - $e" }
     } catch (e: InvalidCommandException) {
         logger.error(e) { "Failed to register command - $e" }
+    }
+
+    if (chatCommandRegistry.enabled) {  // Don't add the intent if it won't be used
+        intents += Intent.GuildMessages
     }
 
     return commandObj

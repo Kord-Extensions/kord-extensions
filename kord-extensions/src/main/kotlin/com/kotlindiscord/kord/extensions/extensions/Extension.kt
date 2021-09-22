@@ -19,6 +19,7 @@ import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
+import dev.kord.gateway.Intent
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -131,6 +132,9 @@ public abstract class Extension : KoinComponent {
 
     /** String representing the bundle to get translations from for command names/descriptions. **/
     public open val bundle: String? = null
+
+    /** Set of intents required by this extension's event handlers and commands. **/
+    public open val intents: MutableSet<Intent> = mutableSetOf()
 
     /**
      * Override this in your subclass and use it to register your commands and event

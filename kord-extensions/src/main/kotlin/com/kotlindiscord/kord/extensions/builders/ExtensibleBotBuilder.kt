@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
 import dev.kord.common.Color
@@ -76,7 +77,15 @@ public open class ExtensibleBotBuilder {
     public val i18nBuilder: I18nBuilder = I18nBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = null
+    public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = {
+        +Intents.nonPrivileged
+
+        getKoin().get<ExtensibleBot>().extensions.values.forEach { extension ->
+            extension.intents.forEach {
+                +it
+            }
+        }
+    }
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val membersBuilder: MembersBuilder = MembersBuilder()
@@ -196,14 +205,27 @@ public open class ExtensibleBotBuilder {
      *
      * @param addDefaultIntents Whether to automatically add all non-privileged intents to the builder before running
      * the given lambda.
+     * @param addDefaultIntents Whether to automatically add the required intents defined within each loaded extension
      *
      * @see Intents.IntentsBuilder
      */
     @BotBuilderDSL
-    public fun intents(addDefaultIntents: Boolean = true, builder: Intents.IntentsBuilder.() -> Unit) {
+    public fun intents(
+        addDefaultIntents: Boolean = true,
+        addExtensionIntents: Boolean = true,
+        builder: Intents.IntentsBuilder.() -> Unit
+    ) {
         this.intentsBuilder = {
             if (addDefaultIntents) {
                 +Intents.nonPrivileged
+            }
+
+            if (addExtensionIntents) {
+                getKoin().get<ExtensibleBot>().extensions.values.forEach { extension ->
+                    extension.intents.forEach {
+                        +it
+                    }
+                }
             }
 
             builder()
@@ -300,12 +322,15 @@ public open class ExtensibleBotBuilder {
         loadModule { single { bot } bind ExtensibleBot::class }
 
         hooksBuilder.runCreated(bot)
+        hooksBuilder.runBeforeExtensionsAdded(bot)
+
+        bot.addDefaultExtensions()
+        extensionsBuilder.extensions.forEach { bot.addExtension(it) }
+
+        hooksBuilder.runAfterExtensionsAdded(bot)
+
         bot.setup()
         hooksBuilder.runSetup(bot)
-
-        hooksBuilder.runBeforeExtensionsAdded(bot)
-        extensionsBuilder.extensions.forEach { bot.addExtension(it) }
-        hooksBuilder.runAfterExtensionsAdded(bot)
 
         return bot
     }

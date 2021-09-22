@@ -35,6 +35,9 @@ public open class ChatCommandRegistry : KoinComponent {
     /** @suppress **/
     public val botSettings: ExtensibleBotBuilder by inject()
 
+    /** Whether chat commands are enabled in the bot's settings. **/
+    public open val enabled: Boolean get() = botSettings.chatCommandsBuilder.enabled
+
     /**
      * Directly register a [ChatCommand] to this command registry.
      *
