@@ -1052,10 +1052,10 @@ class MappingsExtension : Extension() {
         sentry.breadcrumb(BreadcrumbType.Query) {
             message = "Beginning class lookup"
 
-            data["channel"] = channel
+            data["channel"] = channel ?: "N/A"
             data["namespace"] = namespace.id
             data["query"] = givenQuery
-            data["version"] = version?.version
+            data["version"] = version?.version ?: "N/A"
         }
 
         val context = newSingleThreadContext("c: $givenQuery")
@@ -1083,7 +1083,7 @@ class MappingsExtension : Extension() {
                 sentry.breadcrumb(BreadcrumbType.Info) {
                     message = "Provider resolved, with injected default version"
 
-                    data["version"] = provider.version
+                    data["version"] = provider.version ?: "Unknown"
                 }
 
                 val query = givenQuery.replace(".", "/")
@@ -1199,10 +1199,10 @@ class MappingsExtension : Extension() {
         sentry.breadcrumb(BreadcrumbType.Query) {
             message = "Beginning field lookup"
 
-            data["channel"] = channel
+            data["channel"] = channel ?: "N/A"
             data["namespace"] = namespace.id
             data["query"] = givenQuery
-            data["version"] = version?.version
+            data["version"] = version?.version ?: "N/A"
         }
 
         val context = newSingleThreadContext("f: $givenQuery")
@@ -1230,7 +1230,7 @@ class MappingsExtension : Extension() {
                 sentry.breadcrumb(BreadcrumbType.Info) {
                     message = "Provider resolved, with injected default version"
 
-                    data["version"] = provider.version
+                    data["version"] = provider.version ?: "Unknown"
                 }
 
                 val query = givenQuery.replace(".", "/")
@@ -1346,10 +1346,10 @@ class MappingsExtension : Extension() {
         sentry.breadcrumb(BreadcrumbType.Query) {
             message = "Beginning method lookup"
 
-            data["channel"] = channel
+            data["channel"] = channel ?: "N/A"
             data["namespace"] = namespace.id
             data["query"] = givenQuery
-            data["version"] = version?.version
+            data["version"] = version?.version ?: "N/A"
         }
 
         val context = newSingleThreadContext("m: $givenQuery")
@@ -1377,7 +1377,7 @@ class MappingsExtension : Extension() {
                 sentry.breadcrumb(BreadcrumbType.Info) {
                     message = "Provider resolved, with injected default version"
 
-                    data["version"] = provider.version
+                    data["version"] = provider.version ?: "Unknown"
                 }
 
                 val query = givenQuery.replace(".", "/")
