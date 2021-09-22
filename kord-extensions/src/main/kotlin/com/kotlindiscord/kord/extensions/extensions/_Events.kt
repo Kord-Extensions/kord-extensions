@@ -25,8 +25,12 @@ public suspend inline fun <reified T : Event> Extension.event(
 
     try {
         eventHandler.validate()
-        eventHandler.job = bot.addEventHandler(eventHandler)
 
+        eventHandler.listenerRegistrationCallable = {
+            eventHandler.job = bot.registerListenerForHandler(eventHandler)
+        }
+
+        bot.addEventHandler(eventHandler)
         eventHandlers.add(eventHandler)
     } catch (e: EventHandlerRegistrationException) {
         logger.error(e) { "Failed to register event handler - $e" }

@@ -95,8 +95,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
-        addDefaultExtensions()
-
         kord.on<Event> {
             this.launch {
                 send(this@on)
@@ -171,6 +169,16 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                 "Application command support is disabled - set `enabled` to `true` in the " +
                     "`applicationCommands` builder if you want to use them."
             }
+        }
+
+        if (!initialized) {
+            eventHandlers.forEach { handler ->
+                handler.listenerRegistrationCallable?.invoke() ?: logger.error {
+                    "Event handler $handler does not have a listener registration callback. This should never happen!"
+                }
+            }
+
+            initialized = true
         }
     }
 
@@ -314,18 +322,38 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
      */
     @Throws(EventHandlerRegistrationException::class)
-    public inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>): Job {
+    public inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>) {
         if (eventHandlers.contains(handler)) {
             throw EventHandlerRegistrationException(
                 "Event handler already registered in '${handler.extension.name}' extension."
             )
         }
 
-        val job = on<T> { handler.call(this) }
+        if (initialized) {
+            handler.listenerRegistrationCallable?.invoke() ?: error(
+                "Event handler $handler does not have a listener registration callback. This should never happen!"
+            )
+        }
 
         eventHandlers.add(handler)
+    }
 
-        return job
+    /**
+     * Directly register an [EventHandler] to this bot.
+     *
+     * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
+     * call the [Extension.event] function in your [Extension.setup] function.
+     *
+     * This function will throw an [EventHandlerRegistrationException] if the event handler has already been registered.
+     *
+     * @param handler The event handler to be registered.
+     * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
+     */
+    @Throws(EventHandlerRegistrationException::class)
+    public inline fun <reified T : Event> registerListenerForHandler(handler: EventHandler<T>): Job {
+        return on<T> {
+            handler.call(this)
+        }
     }
 
     /**

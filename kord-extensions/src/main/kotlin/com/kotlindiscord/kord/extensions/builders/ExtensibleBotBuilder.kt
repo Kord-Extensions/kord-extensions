@@ -322,12 +322,15 @@ public open class ExtensibleBotBuilder {
         loadModule { single { bot } bind ExtensibleBot::class }
 
         hooksBuilder.runCreated(bot)
+        hooksBuilder.runBeforeExtensionsAdded(bot)
+
+        bot.addDefaultExtensions()
+        extensionsBuilder.extensions.forEach { bot.addExtension(it) }
+
+        hooksBuilder.runAfterExtensionsAdded(bot)
+
         bot.setup()
         hooksBuilder.runSetup(bot)
-
-        hooksBuilder.runBeforeExtensionsAdded(bot)
-        extensionsBuilder.extensions.forEach { bot.addExtension(it) }
-        hooksBuilder.runAfterExtensionsAdded(bot)
 
         return bot
     }
