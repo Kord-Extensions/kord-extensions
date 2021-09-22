@@ -36,10 +36,7 @@ public suspend inline fun <reified T : Event> Extension.event(
 
     val fakeBuilder = Intents.IntentsBuilder()
 
-    fakeBuilder.apply {
-        fakeBuilder.enableEvent<T>()
-    }
-
+    fakeBuilder.enableEvent<T>()
     intents += fakeBuilder.flags().values
 
     return eventHandler
