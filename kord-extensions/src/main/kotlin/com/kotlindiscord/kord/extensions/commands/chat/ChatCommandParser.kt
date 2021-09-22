@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.annotation.KordPreview
@@ -105,6 +106,8 @@ public open class ChatCommandParser : KoinComponent {
             }
 
             when (val converter = currentArg.converter) {
+                is ChoiceConverter<*> -> error("Choice converters may only be used with slash commands")
+
                 is SingleConverter<*> -> try {
                     val parsed = if (hasKwargs) {
                         if (kwValue!!.size != 1) {
