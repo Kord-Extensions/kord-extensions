@@ -95,6 +95,8 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
         settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
+        addDefaultExtensions()
+
         kord.on<Event> {
             this.launch {
                 send(this@on)
