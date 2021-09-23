@@ -543,7 +543,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
         val filtered = messageCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
-        if (delete) { deleteGeneric(command, id) }
+        if (delete) {
+            deleteGeneric(command, id)
+        }
 
         return messageCommands.remove(id)
     }
@@ -553,7 +555,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
         val filtered = slashCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
-        if (delete) { deleteGeneric(command, id) }
+        if (delete) {
+            deleteGeneric(command, id)
+        }
 
         return slashCommands.remove(id)
     }
@@ -563,7 +567,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
         val filtered = userCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
-        if (delete) { deleteGeneric(command, id) }
+        if (delete) {
+            deleteGeneric(command, id)
+        }
 
         return userCommands.remove(id)
     }
@@ -721,7 +727,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     public open fun ApplicationCommand<*>.matches(
         locale: Locale,
         other: dev.kord.core.entity.application.ApplicationCommand
-    ): Boolean = getTranslatedName(locale) == other.name && type == other.type
+    ): Boolean = type == other.type && getTranslatedName(locale).equals(other.name, true)
 
     // endregion
 }

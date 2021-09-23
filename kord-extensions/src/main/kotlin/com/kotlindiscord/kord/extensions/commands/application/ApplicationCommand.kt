@@ -97,7 +97,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
                 this.name,
                 this.extension.bundle,
                 locale
-            ).lowercase()
+            )
         }
 
         return nameTranslationCache[locale]!!

@@ -20,6 +20,7 @@ import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
+import java.util.*
 
 /**
  * Slash command, executed directly in the chat input.
@@ -89,6 +90,20 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                     "instead."
             )
         }
+    }
+
+    public override fun getTranslatedName(locale: Locale): String {
+        // Only slash commands need this to be lower-cased.
+
+        if (!nameTranslationCache.containsKey(locale)) {
+            nameTranslationCache[locale] = translationsProvider.translate(
+                this.name,
+                this.extension.bundle,
+                locale
+            ).lowercase()
+        }
+
+        return nameTranslationCache[locale]!!
     }
 
     /** Call this to supply a command [body], to be called when the command is executed. **/
