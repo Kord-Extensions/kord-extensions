@@ -12,6 +12,7 @@ import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.cache.data.toData
+import dev.kord.core.entity.Member
 import dev.kord.core.entity.interaction.GuildApplicationCommandInteraction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
@@ -289,7 +290,15 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
         event is MessageDeleteEvent -> event.message?.data?.guildId?.value
             ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
 
-        event is MessageUpdateEvent -> event.message.asMessageOrNull()?.getAuthorAsMember()
+        event is MessageUpdateEvent -> {
+            val message = event.new
+            if (message.author.value != null && message.member.value != null) {
+                val userData = message.author.value!!.toData()
+                val memberData = message.member.value!!.toData(userData.id, event.new.guildId.value!!)
+                return Member(memberData, userData, event.kord)
+            }
+            return null
+        }
         event is ReactionAddEvent -> event.userAsMember
         event is ReactionRemoveEvent -> event.userAsMember
 
