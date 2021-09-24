@@ -1,13 +1,18 @@
-@file:OptIn(KordPreview::class)
+@file:OptIn(KordPreview::class, KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.checks
 
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.utils.authorId
+import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
+import dev.kord.core.cache.data.toData
+import dev.kord.core.entity.Member
 import dev.kord.core.entity.interaction.GuildApplicationCommandInteraction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
@@ -201,7 +206,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
             if (guildId == null) {
                 null
             } else {
-                event.kord.getGuild(guildId)
+                event.kord.unsafe.guild(guildId)
             }
         }
 
@@ -281,21 +286,21 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
 
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member
+        event is MessageCreateEvent -> event.member
+        event is MessageDeleteEvent -> event.message?.data?.guildId?.value
+            ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
 
-        event is MessageCreateEvent && event.message.getGuildOrNull() != null ->
-            event.message.getAuthorAsMember()
-
-        event is MessageDeleteEvent && event.message?.getGuildOrNull() != null ->
-            event.message?.getAuthorAsMember()
-
-        event is MessageUpdateEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
-            event.getMessage().getAuthorAsMember()
-
-        event is ReactionAddEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
-            event.getUserAsMember()
-
-        event is ReactionRemoveEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
-            event.getUserAsMember()
+        event is MessageUpdateEvent -> {
+            val message = event.new
+            if (message.author.value != null && message.member.value != null) {
+                val userData = message.author.value!!.toData()
+                val memberData = message.member.value!!.toData(userData.id, event.new.guildId.value!!)
+                return Member(memberData, userData, event.kord)
+            }
+            return null
+        }
+        event is ReactionAddEvent -> event.userAsMember
+        event is ReactionRemoveEvent -> event.userAsMember
 
         event is TypingStartEvent -> if (event.guildId != null) {
             event.getGuild()!!.getMemberOrNull(event.userId)

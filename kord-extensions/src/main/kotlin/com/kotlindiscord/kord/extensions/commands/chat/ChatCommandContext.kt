@@ -1,4 +1,4 @@
-@file:OptIn(KordPreview::class)
+@file:OptIn(KordPreview::class, KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.commands.chat
 
@@ -10,7 +10,9 @@ import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.respond
+import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
@@ -69,7 +71,8 @@ public open class ChatCommandContext<T : Arguments>(
     }
 
     override suspend fun getChannel(): MessageChannelBehavior = event.message.channel
-    override suspend fun getGuild(): GuildBehavior? = event.guildId?.let { GuildBehavior(it, event.kord) }
+    override suspend fun getGuild(): GuildBehavior? = event.guildId
+        ?.let { event.kord.unsafe.guild(it) }
     override suspend fun getMember(): MemberBehavior? = event.member
     override suspend fun getUser(): UserBehavior? = event.message.author
 
