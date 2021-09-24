@@ -109,6 +109,10 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(DiscordRelayedException::class)
     public open suspend fun checkBotPerms(context: C) {
+        if (requiredPerms.isEmpty()) {
+            return  // Nothing to check, don't try to hit the cache
+        }
+
         if (context.guild != null) {
             val perms = (context.channel.asChannel() as GuildChannel)
                 .permissionsForMember(kord.selfId)

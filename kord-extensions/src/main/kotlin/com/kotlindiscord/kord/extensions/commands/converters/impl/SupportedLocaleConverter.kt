@@ -37,7 +37,7 @@ import java.util.*
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
 )
 @OptIn(KordPreview::class)
-public class SupportedLocale(
+public class SupportedLocaleConverter(
     override var validator: Validator<Locale> = null
 ) : SingleConverter<Locale>() {
     override val signatureTypeString: String = "converters.supportedLocale.signatureType"

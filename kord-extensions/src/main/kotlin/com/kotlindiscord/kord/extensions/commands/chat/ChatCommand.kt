@@ -328,6 +328,10 @@ public open class ChatCommand<T : Arguments>(
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(DiscordRelayedException::class)
     public open suspend fun checkBotPerms(context: ChatCommandContext<T>) {
+        if (requiredPerms.isEmpty()) {
+            return  // Nothing to check, don't try to hit the cache
+        }
+
         if (context.guild != null) {
             val perms = (context.channel.asChannel() as GuildChannel)
                 .permissionsForMember(kord.selfId)
@@ -339,8 +343,9 @@ public open class ChatCommand<T : Arguments>(
                     context.translate(
                         "commands.error.missingBotPermissions",
                         null,
+
                         replacements = arrayOf(
-                            missingPerms.map { it.translate(context) }.joinToString(", ")
+                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
                         )
                     )
                 )
