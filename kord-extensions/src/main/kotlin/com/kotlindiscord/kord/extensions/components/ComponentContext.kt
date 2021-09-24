@@ -1,4 +1,5 @@
 @file:OptIn(KordUnsafe::class, KordExperimental::class)
+
 package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
@@ -12,7 +13,6 @@ import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.channel.GuildChannelBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
