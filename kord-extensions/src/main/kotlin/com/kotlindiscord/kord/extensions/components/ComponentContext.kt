@@ -1,3 +1,4 @@
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
 package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
@@ -6,11 +7,14 @@ import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.GuildChannelBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
+import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import org.koin.core.component.KoinComponent
@@ -72,12 +76,12 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     /** Extract guild information from event data, if that context is available. **/
     @JvmName("getGuild1")
     public fun getGuild(): GuildBehavior? =
-        (event.interaction.channel as? GuildChannelBehavior)?.guild
+        event.interaction.data.guildId.value?.let { event.kord.unsafe.guild(it) }
 
     /** Extract member information from event data, if that context is available. **/
     @JvmName("getMember1")
     public suspend fun getMember(): MemberBehavior? =
-        this.guild?.getMember(event.interaction.user.id)
+        getGuild()?.let { Member(event.interaction.data.member.value!!, event.interaction.user.data, event.kord) }
 
     /** Extract message information from event data, if that context is available. **/
     @JvmName("getMessage1")

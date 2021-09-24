@@ -1,11 +1,16 @@
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
+
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
+import dev.kord.core.entity.interaction.GuildApplicationCommandInteraction
 import dev.kord.core.event.interaction.ApplicationInteractionCreateEvent
 import org.koin.core.component.inject
 
@@ -50,11 +55,11 @@ public abstract class ApplicationCommandContext(
 
     /** Extract guild information from event data, if that context is available. **/
     public override suspend fun getGuild(): GuildBehavior? =
-        genericEvent.interaction.data.guildId.value ?.let { GuildBehavior(it, genericEvent.kord) }
+        genericEvent.interaction.data.guildId.value?.let { genericEvent.kord.unsafe.guild(it) }
 
     /** Extract member information from event data, if that context is available. **/
     public override suspend fun getMember(): MemberBehavior? =
-        getGuild()?.let { MemberBehavior(it.id, genericEvent.interaction.user.id, genericEvent.kord) }
+        (genericEvent.interaction as? GuildApplicationCommandInteraction)?.member
 
     /** Extract user information from event data, if that context is available. **/
     public override suspend fun getUser(): UserBehavior =
