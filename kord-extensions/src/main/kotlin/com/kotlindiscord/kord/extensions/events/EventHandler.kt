@@ -42,8 +42,8 @@ public open class EventHandler<T : Event>(
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 
-    /** Kord instance, backing the ExtensibleBot. **/
-    public val kord: Kord by inject()
+    /** Current Kord instance powering the bot. **/
+    public open val kord: Kord by inject()
 
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
@@ -62,6 +62,9 @@ public open class EventHandler<T : Event>(
      * @suppress This is the job returned by `Kord#on`, which we cancel to stop listening.
      */
     public var job: Job? = null
+
+    /** @suppress Internal hack to work around logic ordering with inline functions. **/
+    public var listenerRegistrationCallable: (() -> Unit)? = null
 
     /** Cached locale variable, stored and retrieved by [getLocale]. **/
     public var resolvedLocale: Locale? = null

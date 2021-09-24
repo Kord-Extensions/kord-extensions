@@ -20,6 +20,7 @@ import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.core.behavior.channel.withTyping
 import dev.kord.core.event.message.MessageCreateEvent
@@ -1048,6 +1049,15 @@ class MappingsExtension : Extension() {
         version: MappingsContainer?,
         channel: String? = null
     ) {
+        sentry.breadcrumb(BreadcrumbType.Query) {
+            message = "Beginning class lookup"
+
+            data["channel"] = channel ?: "N/A"
+            data["namespace"] = namespace.id
+            data["query"] = givenQuery
+            data["version"] = version?.version ?: "N/A"
+        }
+
         val context = newSingleThreadContext("c: $givenQuery")
 
         try {
@@ -1070,8 +1080,20 @@ class MappingsExtension : Extension() {
                     }
                 )
 
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Provider resolved, with injected default version"
+
+                    data["version"] = provider.version ?: "Unknown"
+                }
+
                 val query = givenQuery.replace(".", "/")
                 var pages: List<Pair<String, String>>
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Attempting to run sanitized query"
+
+                    data["query"] = query
+                }
 
                 message.channel.withTyping {
                     @Suppress("TooGenericExceptionCaught")
@@ -1085,6 +1107,12 @@ class MappingsExtension : Extension() {
                     } catch (e: NullPointerException) {
                         message.respond(e.localizedMessage)
                         return@withContext
+                    }
+
+                    sentry.breadcrumb(BreadcrumbType.Info) {
+                        message = "Generating pages for results"
+
+                        data["resultCount"] = result.value.size
                     }
 
                     pages = classesToPages(namespace, result)
@@ -1142,6 +1170,10 @@ class MappingsExtension : Extension() {
                     }
                 }
 
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Creating and sending paginator to Discord"
+                }
+
                 val paginator = MessageButtonPaginator(
                     targetMessage = event.message,
                     pages = pagesObj,
@@ -1164,6 +1196,15 @@ class MappingsExtension : Extension() {
         version: MappingsContainer?,
         channel: String? = null
     ) {
+        sentry.breadcrumb(BreadcrumbType.Query) {
+            message = "Beginning field lookup"
+
+            data["channel"] = channel ?: "N/A"
+            data["namespace"] = namespace.id
+            data["query"] = givenQuery
+            data["version"] = version?.version ?: "N/A"
+        }
+
         val context = newSingleThreadContext("f: $givenQuery")
 
         try {
@@ -1186,8 +1227,20 @@ class MappingsExtension : Extension() {
                     }
                 )
 
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Provider resolved, with injected default version"
+
+                    data["version"] = provider.version ?: "Unknown"
+                }
+
                 val query = givenQuery.replace(".", "/")
                 var pages: List<Pair<String, String>>
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Attempting to run sanitized query"
+
+                    data["query"] = query
+                }
 
                 message.channel.withTyping {
                     @Suppress("TooGenericExceptionCaught")
@@ -1201,6 +1254,12 @@ class MappingsExtension : Extension() {
                     } catch (e: NullPointerException) {
                         message.respond(e.localizedMessage)
                         return@withContext
+                    }
+
+                    sentry.breadcrumb(BreadcrumbType.Info) {
+                        message = "Generating pages for results"
+
+                        data["resultCount"] = result.value.size
                     }
 
                     pages = fieldsToPages(namespace, provider.get(), result)
@@ -1258,6 +1317,10 @@ class MappingsExtension : Extension() {
                     }
                 }
 
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Creating and sending paginator to Discord"
+                }
+
                 val paginator = MessageButtonPaginator(
                     targetMessage = event.message,
                     pages = pagesObj,
@@ -1280,6 +1343,15 @@ class MappingsExtension : Extension() {
         version: MappingsContainer?,
         channel: String? = null
     ) {
+        sentry.breadcrumb(BreadcrumbType.Query) {
+            message = "Beginning method lookup"
+
+            data["channel"] = channel ?: "N/A"
+            data["namespace"] = namespace.id
+            data["query"] = givenQuery
+            data["version"] = version?.version ?: "N/A"
+        }
+
         val context = newSingleThreadContext("m: $givenQuery")
 
         try {
@@ -1302,8 +1374,20 @@ class MappingsExtension : Extension() {
                     }
                 )
 
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Provider resolved, with injected default version"
+
+                    data["version"] = provider.version ?: "Unknown"
+                }
+
                 val query = givenQuery.replace(".", "/")
                 var pages: List<Pair<String, String>>
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Attempting to run sanitized query"
+
+                    data["query"] = query
+                }
 
                 message.channel.withTyping {
                     @Suppress("TooGenericExceptionCaught")
@@ -1317,6 +1401,12 @@ class MappingsExtension : Extension() {
                     } catch (e: NullPointerException) {
                         message.respond(e.localizedMessage)
                         return@withContext
+                    }
+
+                    sentry.breadcrumb(BreadcrumbType.Info) {
+                        message = "Generating pages for results"
+
+                        data["resultCount"] = result.value.size
                     }
 
                     pages = methodsToPages(namespace, provider.get(), result)
@@ -1372,6 +1462,10 @@ class MappingsExtension : Extension() {
                             }
                         )
                     }
+                }
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Creating and sending paginator to Discord"
                 }
 
                 val paginator = MessageButtonPaginator(

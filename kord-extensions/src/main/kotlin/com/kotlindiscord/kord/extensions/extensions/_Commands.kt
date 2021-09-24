@@ -457,7 +457,8 @@ public fun <T : Arguments> Extension.chatCommand(
         logger.error(e) { "Failed to register command - $e" }
     }
 
-    if (chatCommandRegistry.enabled) {  // Don't add the intent if it won't be used
+    if (chatCommandRegistry.enabled) {  // Don't add the intents if they won't be used
+        intents += Intent.DirectMessages
         intents += Intent.GuildMessages
     }
 

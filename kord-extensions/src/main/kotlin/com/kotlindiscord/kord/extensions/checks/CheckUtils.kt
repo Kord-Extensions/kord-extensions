@@ -216,11 +216,29 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is MemberLeaveEvent -> event.guild
         is MemberUpdateEvent -> event.guild
         is MessageBulkDeleteEvent -> event.guild
-        is MessageCreateEvent -> event.message.data.guildId.value
-            ?.let { event.kord.unsafe.guild(it) }
+
+        is MessageCreateEvent -> {
+            val guildId = event.message.data.guildId.value
+
+            if (guildId == null) {
+                guildId
+            } else {
+                event.kord.unsafe.guild(guildId)
+            }
+        }
+
         is MessageDeleteEvent -> event.guild
-        is MessageUpdateEvent -> event.new.guildId.value
-            ?.let { event.kord.unsafe.guild(it) }
+
+        is MessageUpdateEvent -> {
+            val guildId = event.new.guildId.value
+
+            if (guildId == null) {
+                guildId
+            } else {
+                event.kord.unsafe.guild(guildId)
+            }
+        }
+
         is NewsChannelCreateEvent -> event.channel.guild
         is NewsChannelDeleteEvent -> event.channel.guild
         is NewsChannelUpdateEvent -> event.channel.guild
@@ -396,6 +414,7 @@ public suspend fun userFor(event: Event): UserBehavior? {
         is DMChannelCreateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelDeleteEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelUpdateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
+
         is InteractionCreateEvent -> event.interaction.user
         is MemberJoinEvent -> event.member
         is MemberLeaveEvent -> event.user

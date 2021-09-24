@@ -22,12 +22,16 @@ import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.reply
+import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.rest.builder.message.create.embed
+import mu.KotlinLogging
 
 // They're IDs
 @Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
     override val name = "test"
+
+    val logger = KotlinLogging.logger {}
 
     class ColorArgs : Arguments() {
         val color by colour("color", "Color to use for the embed")
@@ -74,6 +78,12 @@ class TestExtension : Extension() {
     }
 
     override suspend fun setup() {
+        event<GuildCreateEvent> {
+            action {
+                logger.info { "Guild created: ${event.guild.name} (${event.guild.id.asString})" }
+            }
+        }
+
         publicMessageCommand {
             name = "Raw Info"
 
