@@ -9,6 +9,7 @@ import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
+import dev.kord.core.behavior.interaction.PublicFollowupMessageBehavior
 import dev.kord.core.behavior.reply
 import dev.kord.core.cache.data.MessageData
 import dev.kord.core.entity.*
@@ -43,6 +44,19 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
 }
 
 /**
+ * Deletes a public follow-up, catching and ignoring a HTTP 404 (Not Found) exception.
+ */
+public suspend fun PublicFollowupMessageBehavior.deleteIgnoringNotFound() {
+    try {
+        delete()
+    } catch (e: RestRequestException) {
+        if (e.hasNotStatus(HttpStatusCode.NotFound)) {
+            throw e
+        }
+    }
+}
+
+/**
  * Deletes a message after a delay.
  *
  * This function **does not block**.
@@ -51,6 +65,33 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
  * @return Job spawned by the CoroutineScope.
  */
 public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
+    return kord.launch {
+        delay(millis)
+
+        try {
+            this@delete.deleteIgnoringNotFound()
+        } catch (e: RestRequestException) {
+            val message = this@delete
+
+            if (retry) {
+                logger.debug(e) { "Failed to delete message, retrying: $message" }
+                this@delete.delete(millis, false)
+            } else {
+                logger.error(e) { "Failed to delete message: $message" }
+            }
+        }
+    }
+}
+
+/**
+ * Deletes a public follow-up after a delay.
+ *
+ * This function **does not block**.
+ *
+ * @param millis The delay before deleting the message, in milliseconds.
+ * @return Job spawned by the CoroutineScope.
+ */
+public fun PublicFollowupMessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
     return kord.launch {
         delay(millis)
 
