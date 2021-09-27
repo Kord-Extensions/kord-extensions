@@ -106,6 +106,21 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         return nameTranslationCache[locale]!!
     }
 
+    /** Return this command's description translated for the given locale, cached as required. **/
+    public fun getTranslatedDescription(locale: Locale): String {
+        // Only slash commands need this to be lower-cased.
+
+        if (!descriptionTranslationCache.containsKey(locale)) {
+            descriptionTranslationCache[locale] = translationsProvider.translate(
+                this.description,
+                this.extension.bundle,
+                locale
+            ).lowercase()
+        }
+
+        return descriptionTranslationCache[locale]!!
+    }
+
     /** Call this to supply a command [body], to be called when the command is executed. **/
     public fun action(action: suspend C.() -> Unit) {
         body = action

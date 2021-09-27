@@ -90,6 +90,9 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     /** Translation cache, so we don't have to look up translations every time. **/
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
+    /** Translation cache, so we don't have to look up translations every time. **/
+    public open val descriptionTranslationCache: MutableMap<Locale, String> = mutableMapOf()
+
     /** Return this command's name translated for the given locale, cached as required. **/
     public open fun getTranslatedName(locale: Locale): String {
         if (!nameTranslationCache.containsKey(locale)) {
