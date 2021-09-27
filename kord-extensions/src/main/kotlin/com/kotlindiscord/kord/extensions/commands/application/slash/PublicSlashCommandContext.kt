@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.interactions.PublicInteractionContext
+import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 

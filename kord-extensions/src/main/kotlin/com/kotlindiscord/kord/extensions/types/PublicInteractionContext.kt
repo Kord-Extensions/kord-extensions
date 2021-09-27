@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.interactions
+package com.kotlindiscord.kord.extensions.types
 
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator

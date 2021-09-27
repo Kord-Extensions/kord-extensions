@@ -186,9 +186,9 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     }
 
     /** Called in order to execute the command. **/
-    public open suspend fun doCall(event: E) {
+    public open suspend fun doCall(event: E): Unit = withLock {
         if (!runChecks(event)) {
-            return
+            return@withLock
         }
 
         call(event)

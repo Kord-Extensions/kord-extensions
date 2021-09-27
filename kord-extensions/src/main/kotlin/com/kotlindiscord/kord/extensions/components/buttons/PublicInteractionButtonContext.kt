@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.components.buttons
 
-import com.kotlindiscord.kord.extensions.interactions.PublicInteractionContext
+import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 

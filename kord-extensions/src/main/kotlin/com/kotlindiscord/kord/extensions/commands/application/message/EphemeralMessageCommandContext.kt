@@ -1,6 +1,6 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
-import com.kotlindiscord.kord.extensions.interactions.EphemeralInteractionContext
+import com.kotlindiscord.kord.extensions.types.EphemeralInteractionContext
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 

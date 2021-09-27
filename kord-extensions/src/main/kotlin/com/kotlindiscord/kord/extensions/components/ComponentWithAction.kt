@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.components
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
@@ -10,6 +11,7 @@ import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
+import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
 import mu.KotlinLogging
 
@@ -24,7 +26,7 @@ import mu.KotlinLogging
  */
 public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C : ComponentContext<*>>(
     public open val timeoutTask: Task?
-) : ComponentWithID() {
+) : ComponentWithID(), Lockable {
     private val logger: KLogger = KotlinLogging.logger {}
 
     /** Whether to use a deferred ack, which will prevent Discord's "Thinking..." message. **/
@@ -35,6 +37,10 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
 
     /** Bot permissions required to be able to run execute this component's action. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
+
+    public override var locking: Boolean = false
+
+    override var mutex: Mutex? = null
 
     /** Component body, to be called when the component is interacted with. **/
     public lateinit var body: suspend C.() -> Unit
@@ -73,6 +79,10 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
 
         if (!::body.isInitialized) {
             error("No component body given.")
+        }
+
+        if (locking && mutex == null) {
+            mutex = Mutex()
         }
     }
 

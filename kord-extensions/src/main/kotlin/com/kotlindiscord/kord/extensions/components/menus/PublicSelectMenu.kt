@@ -3,7 +3,7 @@
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
-import com.kotlindiscord.kord.extensions.interactions.respond
+import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
@@ -23,17 +23,17 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
         initialResponseBuilder = body
     }
 
-    override suspend fun call(event: SelectMenuInteractionCreateEvent) {
+    override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
         super.call(event)
 
         try {
             if (!runChecks(event)) {
-                return
+                return@withLock
             }
         } catch (e: DiscordRelayedException) {
             event.interaction.respondEphemeral { content = e.reason }
 
-            return
+            return@withLock
         }
 
         val response = if (initialResponseBuilder != null) {

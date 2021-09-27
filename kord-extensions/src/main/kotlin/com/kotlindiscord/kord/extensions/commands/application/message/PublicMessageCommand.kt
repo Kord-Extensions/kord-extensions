@@ -8,7 +8,7 @@ import com.kotlindiscord.kord.extensions.commands.events.PublicMessageCommandFai
 import com.kotlindiscord.kord.extensions.commands.events.PublicMessageCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.PublicMessageCommandSucceededEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.interactions.respond
+import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent

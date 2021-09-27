@@ -6,8 +6,10 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.events.CommandEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.types.Lockable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 
 /**
  * Abstract base class representing the few things that command objects can have in common.
@@ -17,11 +19,16 @@ import kotlinx.coroutines.launch
  * @property extension The extension object this command belongs to.
  */
 @ExtensionDSL
-public abstract class Command(public val extension: Extension) {
+public abstract class Command(public val extension: Extension) : Lockable {
     /**
      * The name of this command, for invocation and help commands.
      */
     public open lateinit var name: String
+
+    /** Set this to `true` to lock command execution with a Mutex. **/
+    public override var locking: Boolean = false
+
+    override var mutex: Mutex? = null
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present and correct.
@@ -32,6 +39,10 @@ public abstract class Command(public val extension: Extension) {
     public open fun validate() {
         if (!::name.isInitialized || name.isEmpty()) {
             throw InvalidCommandException(null, "No command name given.")
+        }
+
+        if (locking && mutex == null) {
+            mutex = Mutex()
         }
     }
 

@@ -8,7 +8,7 @@ import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommand
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandSucceededEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.interactions.respond
+import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
