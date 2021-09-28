@@ -199,7 +199,15 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
 
     override suspend fun runChecks(event: ChatInputCommandInteractionCreateEvent): Boolean {
         val locale = event.getLocale()
-        val result = super.runChecks(event)
+        var result = super.runChecks(event)
+
+        if (result && parentCommand != null) {
+            result = parentCommand!!.runChecks(event)
+        }
+
+        if (result && parentGroup != null) {
+            result = parentGroup!!.parent.runChecks(event)
+        }
 
         if (result) {
             settings.applicationCommandsBuilder.slashCommandChecks.forEach { check ->

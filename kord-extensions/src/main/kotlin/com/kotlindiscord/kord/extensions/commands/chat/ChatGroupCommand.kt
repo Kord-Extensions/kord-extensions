@@ -45,6 +45,16 @@ public open class ChatGroupCommand<T : Arguments>(
         sendHelp()
     }
 
+    override suspend fun runChecks(event: MessageCreateEvent, sendMessage: Boolean): Boolean {
+        var result = parent?.runChecks(event, sendMessage) ?: true
+
+        if (result) {
+            result = super.runChecks(event, sendMessage)
+        }
+
+        return result
+    }
+
     /**
      * An internal function used to ensure that all of a command group's required arguments are present.
      *
