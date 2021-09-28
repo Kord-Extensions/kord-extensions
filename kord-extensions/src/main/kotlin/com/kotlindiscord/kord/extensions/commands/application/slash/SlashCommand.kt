@@ -115,7 +115,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 this.description,
                 this.extension.bundle,
                 locale
-            ).lowercase()
+            )
         }
 
         return descriptionTranslationCache[locale]!!
