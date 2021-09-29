@@ -1,20 +1,5 @@
-pluginManagement {
-    repositories {
-        google()
-        gradlePluginPortal()
-    }
-
-    plugins {
-        // NOTE: UPDATE THIS IF YOU UPDATE THE LIBS.VERSIONS.TOML
-
-        kotlin("jvm") version "1.5.30"
-        kotlin("plugin.serialization") version "1.5.30"
-
-        id("com.google.devtools.ksp") version "1.5.30-1.0.0-beta08"
-        id("io.gitlab.arturbosch.detekt") version "1.17.1"
-        id("org.jetbrains.dokka") version "1.4.10.2"
-    }
-}
+// NOTE: UPDATE THIS IF YOU UPDATE THE LIBS.VERSIONS.TOML
+// NOTE: All the plugins and plugin repositories moved to buildSrc/build.gradle.kts
 
 rootProject.name = "kord-extensions"
 

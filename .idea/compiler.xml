@@ -2,9 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
-      <module name="kord-extensions.buildSrc" target="14" />
-      <module name="kord-extensions.buildSrc.main" target="14" />
-      <module name="kord-extensions.buildSrc.test" target="14" />
       <module name="kord-extensions.docs.main" target="14" />
       <module name="kord-extensions.docs.orchid" target="14" />
       <module name="kord-extensions.docs.test" target="14" />
