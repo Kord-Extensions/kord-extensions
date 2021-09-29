@@ -25,6 +25,12 @@ import kotlin.time.ExperimentalTime
 private val logger = KotlinLogging.logger {}
 
 /**
+ * The [Duration] it takes for [MessageChannel.type()] to timeout.
+ */
+@OptIn(ExperimentalTime::class)
+public val CHANNEL_TYPING_TIMEOUT: Duration = Duration.seconds(8)
+
+/**
  * Ensure a webhook is created for the bot in a given channel, and return it.
  *
  * If a webhook already exists with the given name, it will be returned instead.
@@ -104,7 +110,7 @@ public suspend fun <T> MessageChannel.withTyping(block: suspend () -> T): T {
     return coroutineScope {
         val typing = launch {
             type()
-            delay(Duration.seconds(8))
+            delay(CHANNEL_TYPING_TIMEOUT)
         }
 
         block().also {
