@@ -1,5 +1,6 @@
 plugins {
     java
+    id("com.google.devtools.ksp")
 }
 
 sourceSets {

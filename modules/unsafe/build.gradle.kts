@@ -3,8 +3,6 @@ plugins {
     `published-module`
     `dokka-module`
     `ksp-module`
-
-    id("com.google.devtools.ksp")
 }
 
 dependencies {

@@ -1,7 +1,6 @@
 plugins {
     `kordex-module`
     `published-module`
-    `ksp-module`
     `dokka-module`
 }
 

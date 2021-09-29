@@ -13,10 +13,8 @@ plugins {
     `kordex-module`
     `published-module`
     `dokka-module`
-    `ksp-module`
     `tested-module`
-
-    id("com.google.devtools.ksp")
+    `ksp-module`
 }
 
 dependencies {
