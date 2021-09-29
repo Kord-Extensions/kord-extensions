@@ -6,12 +6,21 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createWebhook
 import dev.kord.core.entity.Webhook
 import dev.kord.core.entity.channel.GuildChannel
+import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.TopGuildChannel
 import dev.kord.core.entity.channel.TopGuildMessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 private val logger = KotlinLogging.logger {}
 
@@ -71,3 +80,35 @@ public suspend fun GuildChannel.permissionsForMember(memberId: Snowflake): Permi
  */
 public suspend fun GuildChannel.permissionsForMember(user: UserBehavior): Permissions =
     permissionsForMember(user.id)
+
+/**
+ * Calls [MessageChannel.type()] until [block] finishes running and returns the return value of [block].
+ *
+ * **Note**: Discord will only stop typing, if you send a message after finishing the task.
+ *
+ * Example usage:
+ * ```kotlin
+ * val response = channel.withTyping {
+ *  heavyDataRequest()
+ * }
+ *
+ * channel.createMessage(response)
+ * ```
+ */
+@OptIn(ExperimentalTime::class, ExperimentalContracts::class)
+public suspend fun <T> MessageChannel.withTyping(block: suspend () -> T): T {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+
+    return coroutineScope {
+        val typing = launch {
+            type()
+            delay(Duration.seconds(8))
+        }
+
+        block().also {
+            typing.cancel()
+        }
+    }
+}
