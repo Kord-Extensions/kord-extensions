@@ -28,6 +28,7 @@ private val logger = KotlinLogging.logger {}
  * The [Duration] it takes for [MessageChannel.type()] to timeout.
  */
 @OptIn(ExperimentalTime::class)
+@Suppress("MagicNumber")
 public val CHANNEL_TYPING_TIMEOUT: Duration = Duration.seconds(8)
 
 /**
