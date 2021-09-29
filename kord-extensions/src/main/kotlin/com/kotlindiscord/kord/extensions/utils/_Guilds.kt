@@ -39,6 +39,5 @@ private suspend fun GuildBehavior.botHasPermissions(channel: GuildChannel?, requ
             // slow lane: if guild was cached we fetch it to retrieve permissions field
             ?: withStrategy(EntitySupplyStrategy.rest).asGuild().permissions!!
 
-
     return requiredPermissions in effectivePermissions
 }
