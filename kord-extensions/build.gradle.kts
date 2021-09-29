@@ -50,3 +50,7 @@ val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     languageVersion = "1.5"
 }
+
+dokkaModule {
+    includes.add("packages.md")
+}
