@@ -2,6 +2,7 @@ plugins {
     `kordex-module`
     `published-module`
     `dokka-module`
+    `disable-explicit-api-mode`
 }
 
 repositories {
@@ -57,5 +58,4 @@ group = "com.kotlindiscord.kord.extensions"
 kordex {
     jvmTarget.set("9")
     javaVersion.set(JavaVersion.VERSION_1_9)
-    useExplicitApiMode.set(false)
 }

@@ -2,6 +2,7 @@ plugins {
     `kordex-module`
     `published-module`
     `dokka-module`
+    `disable-explicit-api-mode`
 
     kotlin("plugin.serialization")
 }
@@ -27,5 +28,4 @@ dependencies {
 kordex {
     jvmTarget.set("9")
     javaVersion.set(JavaVersion.VERSION_1_9)
-    useExplicitApiMode.set(false)
 }
