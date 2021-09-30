@@ -22,6 +22,9 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
      * Translation key to use for the error response message, if not the default.
      *
      * The string pointed to by this variable must accept one replacement value, which is the error message itself.
+     *
+     * **Note:** This *must* be a translation key. A bare string may not work, as the error response function uses
+     * the replacement functionality of the translations system.
      */
     public var errorResponseKey: String = "checks.responseTemplate"
 
