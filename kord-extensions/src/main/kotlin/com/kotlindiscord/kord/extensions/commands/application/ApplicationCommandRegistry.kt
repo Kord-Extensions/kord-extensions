@@ -4,6 +4,7 @@
     "AnnotationSpacing",
     "SpacingBetweenAnnotations"
 )
+@file:OptIn(ExperimentalCoroutinesApi::class)
 
 package com.kotlindiscord.kord.extensions.commands.application
 
@@ -14,6 +15,8 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.types.DefaultLocalRegistryStorage
+import com.kotlindiscord.kord.extensions.types.RegistryStorage
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -27,7 +30,8 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -50,13 +54,13 @@ public open class ApplicationCommandRegistry : KoinComponent {
     public open val translationsProvider: TranslationsProvider by inject()
 
     /** Mapping of Discord-side command ID to a message command object. **/
-    public open val messageCommands: MutableMap<Snowflake, MessageCommand<*>> = mutableMapOf()
+    public open val messageCommands: RegistryStorage<Snowflake, MessageCommand<*>> = DefaultLocalRegistryStorage()
 
     /** Mapping of Discord-side command ID to a slash command object. **/
-    public open val slashCommands: MutableMap<Snowflake, SlashCommand<*, *>> = mutableMapOf()
+    public open val slashCommands: RegistryStorage<Snowflake, SlashCommand<*, *>> = DefaultLocalRegistryStorage()
 
     /** Mapping of Discord-side command ID to a user command object. **/
-    public open val userCommands: MutableMap<Snowflake, UserCommand<*>> = mutableMapOf()
+    public open val userCommands: RegistryStorage<Snowflake, UserCommand<*>> = DefaultLocalRegistryStorage()
 
     /** Whether the initial sync has been finished, and commands should be registered directly. **/
     public open var initialised: Boolean = false
@@ -139,16 +143,16 @@ public open class ApplicationCommandRegistry : KoinComponent {
             }
         }
 
-        val commandsWithPerms = (messageCommands + slashCommands + userCommands)
-            .filterValues {
-                it.allowedRoles.isNotEmpty() ||
-                    it.allowedUsers.isNotEmpty() ||
-                    it.disallowedRoles.isNotEmpty() ||
-                    it.disallowedUsers.isNotEmpty() ||
-                    !it.allowByDefault
+        val commandsWithPerms = merge(messageCommands.entryFlow(), slashCommands.entryFlow(), userCommands.entryFlow())
+            .filter {
+                it.value.allowedRoles.isNotEmpty() ||
+                    it.value.allowedUsers.isNotEmpty() ||
+                    it.value.disallowedRoles.isNotEmpty() ||
+                    it.value.disallowedUsers.isNotEmpty() ||
+                    !it.value.allowByDefault
             }
             .toList()
-            .groupBy { it.second.guildId }
+            .groupBy { it.value.guildId }
 
         try {
             commandsWithPerms.forEach { (guildId, commands) ->
@@ -188,9 +192,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
             commandsWithPerms.forEach { (_, commands) ->
                 commands.forEach { (id, _) ->
-                    messageCommands.remove(id)
-                    slashCommands.remove(id)
-                    userCommands.remove(id)
+                    messageCommands.delete(id)
+                    slashCommands.delete(id)
+                    userCommands.delete(id)
                 }
             }
         }
@@ -225,9 +229,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
                 if (existingCommand != null) {
                     when (commandObj) {
-                        is MessageCommand<*> -> messageCommands[existingCommand.id] = commandObj
-                        is SlashCommand<*, *> -> slashCommands[existingCommand.id] = commandObj
-                        is UserCommand<*> -> userCommands[existingCommand.id] = commandObj
+                        is MessageCommand<*> -> messageCommands.create(existingCommand.id, commandObj)
+                        is SlashCommand<*, *> -> slashCommands.create(existingCommand.id, commandObj)
+                        is UserCommand<*> -> userCommands.create(existingCommand.id, commandObj)
                     }
                 }
             }
@@ -314,9 +318,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
             val match = response.first { command.matches(locale, it) }
 
             when (command) {
-                is MessageCommand<*> -> messageCommands[match.id] = command
-                is SlashCommand<*, *> -> slashCommands[match.id] = command
-                is UserCommand<*> -> userCommands[match.id] = command
+                is MessageCommand<*> -> messageCommands.create(match.id, command)
+                is SlashCommand<*, *> -> slashCommands.create(match.id, command)
+                is UserCommand<*> -> userCommands.create(match.id, command)
             }
         }
 
@@ -473,7 +477,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        messageCommands[response.id] = command
+        messageCommands.create(response.id, command)
 
         return command
     }
@@ -540,7 +544,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        slashCommands[response.id] = command
+        slashCommands.create(response.id, command)
 
         return command
     }
@@ -606,7 +610,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        userCommands[response.id] = command
+        userCommands.create(response.id, command)
 
         return command
     }
@@ -630,38 +634,41 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
     /** Unregister a message command. **/
     public open suspend fun unregister(command: MessageCommand<*>, delete: Boolean = true): MessageCommand<*>? {
-        val filtered = messageCommands.filter { it.value == command }
-        val id = filtered.keys.firstOrNull() ?: return null
+        val id = messageCommands.entryFlow()
+            .firstOrNull { it.value.name == command.name }
+            ?.key ?: return null
 
         if (delete) {
             deleteGeneric(command, id)
         }
 
-        return messageCommands.remove(id)
+        return messageCommands.delete(id)
     }
 
     /** Unregister a slash command. **/
     public open suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>? {
-        val filtered = slashCommands.filter { it.value == command }
-        val id = filtered.keys.firstOrNull() ?: return null
+        val id = messageCommands.entryFlow()
+            .firstOrNull { it.value.name == command.name }
+            ?.key ?: return null
 
         if (delete) {
             deleteGeneric(command, id)
         }
 
-        return slashCommands.remove(id)
+        return slashCommands.delete(id)
     }
 
     /** Unregister a user command. **/
     public open suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>? {
-        val filtered = userCommands.filter { it.value == command }
-        val id = filtered.keys.firstOrNull() ?: return null
+        val id = messageCommands.entryFlow()
+            .firstOrNull { it.value.name == command.name }
+            ?.key ?: return null
 
         if (delete) {
             deleteGeneric(command, id)
         }
 
-        return userCommands.remove(id)
+        return userCommands.delete(id)
     }
 
     /** @suppress Internal function used to delete the given command from Discord. Used by [unregister]. **/
@@ -698,7 +705,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for message commands. **/
     public open suspend fun handle(event: MessageCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = messageCommands[commandId]
+        val command = messageCommands.read(commandId)
 
         command ?: return logger.warn { "Received interaction for unknown message command: ${commandId.asString}" }
 
@@ -708,7 +715,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for slash commands. **/
     public open suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
         val commandId = event.interaction.command.rootId
-        val command = slashCommands[commandId]
+        val command = slashCommands.read(commandId)
 
         command ?: return logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
 
@@ -718,7 +725,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for user commands. **/
     public open suspend fun handle(event: UserCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = userCommands[commandId]
+        val command = userCommands.read(commandId)
 
         command ?: return logger.warn { "Received interaction for unknown user command: ${commandId.asString}" }
 
