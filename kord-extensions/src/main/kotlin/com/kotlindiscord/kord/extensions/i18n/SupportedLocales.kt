@@ -6,7 +6,7 @@ import java.util.*
  * List of supported locales. These are locales with **merged** translations.
  *
  * If you've written a translation, don't try to modify this using reflection or something - instead, contribute it
- * back: https://crowdin.com/project/kordex
+ * back: https://hosted.weblate.org/projects/kord-extensions/main/
  */
 public object SupportedLocales {
     public val CHINESE_SIMPLIFIED: Locale = Locale("zh", "cn")

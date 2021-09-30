@@ -30,7 +30,7 @@ import java.util.*
  * with them, rather than a more general converter.
  *
  * If the locale you want to use isn't supported yet, feel free to contribute translations for it to
- * [our CrowdIn project](https://crowdin.com/project/kordex).
+ * [our Weblate project](https://hosted.weblate.org/projects/kord-extensions/main/).
  */
 @Converter(
     "supportedLocale",
