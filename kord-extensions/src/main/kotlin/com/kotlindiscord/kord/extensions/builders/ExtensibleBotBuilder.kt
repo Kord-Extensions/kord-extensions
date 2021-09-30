@@ -69,8 +69,7 @@ public open class ExtensibleBotBuilder {
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
 
     /**
-     * Message builder responsible for formatting error responses that are sent to users during command and component
-     * body execution.
+     * @suppress Builder that shouldn't be set directly by the user.
      */
     public var errorResponseBuilder: suspend (MessageCreateBuilder).(message: String) -> Unit = { message ->
         content = message
@@ -146,6 +145,7 @@ public open class ExtensibleBotBuilder {
      * Register the message builder responsible for formatting error responses, which are sent to users during command
      * and component body execution.
      */
+    @BotBuilderDSL
     public fun errorResponse(builder: suspend (MessageCreateBuilder).(message: String) -> Unit) {
         errorResponseBuilder = builder
     }
