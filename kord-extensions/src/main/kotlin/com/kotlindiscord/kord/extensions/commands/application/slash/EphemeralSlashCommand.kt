@@ -75,7 +75,7 @@ public class EphemeralSlashCommand<A : Arguments>(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { content = e.reason }
+            event.interaction.respondEphemeral { settings.errorResponseBuilder(this, e.reason) }
 
             emitEventAsync(
                 EphemeralSlashCommandFailedChecksEvent(
@@ -145,6 +145,6 @@ public class EphemeralSlashCommand<A : Arguments>(
     }
 
     override suspend fun respondText(context: EphemeralSlashCommandContext<A>, message: String) {
-        context.respond { content = message }
+        context.respond { settings.errorResponseBuilder(this, message) }
     }
 }

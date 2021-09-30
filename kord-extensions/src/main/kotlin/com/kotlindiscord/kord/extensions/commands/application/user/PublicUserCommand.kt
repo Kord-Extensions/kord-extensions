@@ -45,7 +45,7 @@ public class PublicUserCommand(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { content = e.reason }
+            event.interaction.respondEphemeral { settings.errorResponseBuilder(this, e.reason) }
 
             emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
@@ -88,6 +88,6 @@ public class PublicUserCommand(
     }
 
     override suspend fun respondText(context: PublicUserCommandContext, message: String) {
-        context.respond { content = message }
+        context.respond { settings.errorResponseBuilder(this, message) }
     }
 }

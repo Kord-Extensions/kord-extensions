@@ -44,7 +44,7 @@ public class EphemeralUserCommand(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { content = e.reason }
+            event.interaction.respondEphemeral { settings.errorResponseBuilder(this, e.reason) }
 
             emitEventAsync(EphemeralUserCommandFailedChecksEvent(this, event, e.reason))
 
@@ -87,6 +87,6 @@ public class EphemeralUserCommand(
     }
 
     override suspend fun respondText(context: EphemeralUserCommandContext, message: String) {
-        context.respond { content = message }
+        context.respond { settings.errorResponseBuilder(this, message) }
     }
 }

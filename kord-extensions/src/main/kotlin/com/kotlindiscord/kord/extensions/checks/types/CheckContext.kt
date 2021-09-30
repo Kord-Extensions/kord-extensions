@@ -159,8 +159,16 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
     public fun throwIfFailedWithMessage() {
         if (passed.not() && message != null) {
             throw DiscordRelayedException(
-                translate(errorResponseKey, defaultBundle, replacements = arrayOf(message))
+                getTranslatedMessage()!!
             )
         }
     }
+
+    /** Get the translated check failure message, if the check has failed and a message was set. **/
+    public fun getTranslatedMessage(): String? =
+        if (passed.not() && message != null) {
+            translate(errorResponseKey, defaultBundle, replacements = arrayOf(message))
+        } else {
+            null
+        }
 }

@@ -37,6 +37,7 @@ import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
+import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.context.startKoin
@@ -66,6 +67,14 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
+
+    /**
+     * Message builder responsible for formatting error responses that are sent to users during command and component
+     * body execution.
+     */
+    public var errorResponseBuilder: suspend (MessageCreateBuilder).(message: String) -> Unit = { message ->
+        content = message
+    }
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
@@ -131,6 +140,14 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public suspend fun components(builder: suspend ComponentsBuilder.() -> Unit) {
         builder(componentsBuilder)
+    }
+
+    /**
+     * Register the message builder responsible for formatting error responses, which are sent to users during command
+     * and component body execution.
+     */
+    public fun errorResponse(builder: suspend (MessageCreateBuilder).(message: String) -> Unit) {
+        errorResponseBuilder = builder
     }
 
     /**

@@ -76,7 +76,7 @@ public class PublicSlashCommand<A : Arguments>(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { content = e.reason }
+            event.interaction.respondEphemeral { settings.errorResponseBuilder(this, e.reason) }
 
             emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
 
@@ -133,6 +133,6 @@ public class PublicSlashCommand<A : Arguments>(
     }
 
     override suspend fun respondText(context: PublicSlashCommandContext<A>, message: String) {
-        context.respond { content = message }
+        context.respond { settings.errorResponseBuilder(this, message) }
     }
 }
