@@ -27,7 +27,7 @@ public open class ComponentRegistry {
     public open suspend fun register(component: ComponentWithID) {
         logger.trace { "Registering component with ID: ${component.id}" }
 
-        storage.create(component.id, component)
+        storage.upsert(component.id, component)
     }
 
     /** Unregister a registered component. **/

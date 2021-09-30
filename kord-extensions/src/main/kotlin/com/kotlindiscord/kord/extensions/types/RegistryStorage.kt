@@ -2,15 +2,53 @@ package com.kotlindiscord.kord.extensions.types
 
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Interface for interaction based registries like ComponentRegistry and ApplicationCommandRegistry.
+ *
+ * The purpose of this interface is to provide a generic way to store Components/ApplicationCommands
+ * in a dynamic manner.
+ */
 public interface RegistryStorage<K, T> {
 
-    public suspend fun create(id: K, data: T)
+    /**
+     * Creates or updates an existing entry at the given unique key.
+     *
+     * This may deconstruct the given data and only persists a partial object.
+     */
+    public suspend fun upsert(id: K, data: T)
 
+    /**
+     * Reads a value from the registry at the given key.
+     *
+     * This may reconstruct the data from a partial object.
+     */
     public suspend fun read(id: K): T?
 
+    /**
+     * Deletes a value from the registry with the given key.
+     *
+     * The return value may be a reconstructed object from partial data.
+     */
     public suspend fun delete(id: K): T?
 
+    /**
+     * Creates a flow of all entries in this registry.
+     *
+     * The objects in this flow may be reconstructed from partial data.
+     */
     public fun entryFlow(): Flow<StorageEntry<K, T>>
 
-    public data class StorageEntry<K, V>(val key: K, val value: V)
+    /**
+     * Data class to represent an entry in the [RegistryStorage].
+     */
+    public data class StorageEntry<K, V>(
+        /**
+         * The key of this entry.
+         */
+        val key: K,
+        /**
+         * The value of this entry.
+         */
+        val value: V
+    )
 }

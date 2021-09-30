@@ -229,9 +229,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
                 if (existingCommand != null) {
                     when (commandObj) {
-                        is MessageCommand<*> -> messageCommands.create(existingCommand.id, commandObj)
-                        is SlashCommand<*, *> -> slashCommands.create(existingCommand.id, commandObj)
-                        is UserCommand<*> -> userCommands.create(existingCommand.id, commandObj)
+                        is MessageCommand<*> -> messageCommands.upsert(existingCommand.id, commandObj)
+                        is SlashCommand<*, *> -> slashCommands.upsert(existingCommand.id, commandObj)
+                        is UserCommand<*> -> userCommands.upsert(existingCommand.id, commandObj)
                     }
                 }
             }
@@ -318,9 +318,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
             val match = response.first { command.matches(locale, it) }
 
             when (command) {
-                is MessageCommand<*> -> messageCommands.create(match.id, command)
-                is SlashCommand<*, *> -> slashCommands.create(match.id, command)
-                is UserCommand<*> -> userCommands.create(match.id, command)
+                is MessageCommand<*> -> messageCommands.upsert(match.id, command)
+                is SlashCommand<*, *> -> slashCommands.upsert(match.id, command)
+                is UserCommand<*> -> userCommands.upsert(match.id, command)
             }
         }
 
@@ -477,7 +477,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        messageCommands.create(response.id, command)
+        messageCommands.upsert(response.id, command)
 
         return command
     }
@@ -544,7 +544,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        slashCommands.create(response.id, command)
+        slashCommands.upsert(response.id, command)
 
         return command
     }
@@ -610,7 +610,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        userCommands.create(response.id, command)
+        userCommands.upsert(response.id, command)
 
         return command
     }
