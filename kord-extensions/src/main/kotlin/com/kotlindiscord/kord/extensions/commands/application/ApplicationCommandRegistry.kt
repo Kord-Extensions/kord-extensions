@@ -15,8 +15,8 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.types.DefaultLocalRegistryStorage
-import com.kotlindiscord.kord.extensions.types.RegistryStorage
+import com.kotlindiscord.kord.extensions.registry.DefaultLocalRegistryStorage
+import com.kotlindiscord.kord.extensions.registry.RegistryStorage
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord

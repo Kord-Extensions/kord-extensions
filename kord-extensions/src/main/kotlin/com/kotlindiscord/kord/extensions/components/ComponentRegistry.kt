@@ -2,8 +2,8 @@ package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.components.buttons.InteractionButtonWithAction
 import com.kotlindiscord.kord.extensions.components.menus.SelectMenu
-import com.kotlindiscord.kord.extensions.types.DefaultLocalRegistryStorage
-import com.kotlindiscord.kord.extensions.types.RegistryStorage
+import com.kotlindiscord.kord.extensions.registry.DefaultLocalRegistryStorage
+import com.kotlindiscord.kord.extensions.registry.RegistryStorage
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent

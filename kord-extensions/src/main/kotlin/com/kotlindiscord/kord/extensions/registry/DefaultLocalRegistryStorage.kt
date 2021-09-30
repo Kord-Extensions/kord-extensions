@@ -1,4 +1,4 @@
-package com.kotlindiscord.kord.extensions.types
+package com.kotlindiscord.kord.extensions.registry
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
