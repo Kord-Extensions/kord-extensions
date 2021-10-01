@@ -15,21 +15,21 @@ public interface RegistryStorage<K, T> {
      *
      * This may deconstruct the given data and only persists a partial object.
      */
-    public suspend fun upsert(id: K, data: T)
+    public suspend fun set(id: K, data: T)
 
     /**
      * Reads a value from the registry at the given key.
      *
      * This may reconstruct the data from a partial object.
      */
-    public suspend fun read(id: K): T?
+    public suspend fun get(id: K): T?
 
     /**
      * Deletes a value from the registry with the given key.
      *
      * The return value may be a reconstructed object from partial data.
      */
-    public suspend fun delete(id: K): T?
+    public suspend fun remove(id: K): T?
 
     /**
      * Creates a flow of all entries in this registry.

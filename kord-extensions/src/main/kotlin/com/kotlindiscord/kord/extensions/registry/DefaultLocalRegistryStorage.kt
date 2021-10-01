@@ -12,13 +12,13 @@ public class DefaultLocalRegistryStorage<K, T> : RegistryStorage<K, T> {
 
     private val registry: MutableMap<K, T> = mutableMapOf()
 
-    override suspend fun upsert(id: K, data: T) {
+    override suspend fun set(id: K, data: T) {
         registry[id] = data
     }
 
-    override suspend fun read(id: K): T? = registry[id]
+    override suspend fun get(id: K): T? = registry[id]
 
-    override suspend fun delete(id: K): T? = registry.remove(id)
+    override suspend fun remove(id: K): T? = registry.remove(id)
 
     override fun entryFlow(): Flow<RegistryStorage.StorageEntry<K, T>> {
         return registry.entries

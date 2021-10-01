@@ -52,17 +52,17 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage :
      */
     protected abstract fun entries(): Flow<RegistryStorage.StorageEntry<String, String>>
 
-    override suspend fun upsert(id: Snowflake, data: ApplicationCommand<*>) {
+    override suspend fun set(id: Snowflake, data: ApplicationCommand<*>) {
         commandMapping[data.name] = data
         upsert(id.asString, data.name)
     }
 
-    override suspend fun read(id: Snowflake): ApplicationCommand<*>? {
+    override suspend fun get(id: Snowflake): ApplicationCommand<*>? {
         val name = read(id.asString) ?: return null
         return commandMapping[name]
     }
 
-    override suspend fun delete(id: Snowflake): ApplicationCommand<*>? {
+    override suspend fun remove(id: Snowflake): ApplicationCommand<*>? {
         val name = delete(id.asString) ?: return null
         return commandMapping[name]
     }

@@ -27,7 +27,7 @@ public open class ComponentRegistry {
     public open suspend fun register(component: ComponentWithID) {
         logger.trace { "Registering component with ID: ${component.id}" }
 
-        storage.upsert(component.id, component)
+        storage.set(component.id, component)
     }
 
     /** Unregister a registered component. **/
@@ -36,13 +36,13 @@ public open class ComponentRegistry {
 
     /** Unregister a registered component, by ID. **/
     public open suspend fun unregister(id: String): Component? =
-        storage.delete(id)
+        storage.remove(id)
 
     /** Dispatch a [ButtonInteractionCreateEvent] to its button component object. **/
     public suspend fun handle(event: ButtonInteractionCreateEvent) {
         val id = event.interaction.componentId
 
-        when (val c = storage.read(id)) {
+        when (val c = storage.get(id)) {
             is InteractionButtonWithAction<*> -> c.call(event)
 
             null -> logger.debug { "Button interaction received for unknown component ID: $id" }
@@ -58,7 +58,7 @@ public open class ComponentRegistry {
     public suspend fun handle(event: SelectMenuInteractionCreateEvent) {
         val id = event.interaction.componentId
 
-        when (val c = storage.read(id)) {
+        when (val c = storage.get(id)) {
             is SelectMenu<*> -> c.call(event)
 
             null -> logger.debug { "Select Menu interaction received for unknown component ID: $id" }

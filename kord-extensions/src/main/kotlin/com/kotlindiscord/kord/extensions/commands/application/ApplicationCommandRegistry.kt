@@ -192,9 +192,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
             commandsWithPerms.forEach { (_, commands) ->
                 commands.forEach { (id, _) ->
-                    messageCommands.delete(id)
-                    slashCommands.delete(id)
-                    userCommands.delete(id)
+                    messageCommands.remove(id)
+                    slashCommands.remove(id)
+                    userCommands.remove(id)
                 }
             }
         }
@@ -229,9 +229,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
                 if (existingCommand != null) {
                     when (commandObj) {
-                        is MessageCommand<*> -> messageCommands.upsert(existingCommand.id, commandObj)
-                        is SlashCommand<*, *> -> slashCommands.upsert(existingCommand.id, commandObj)
-                        is UserCommand<*> -> userCommands.upsert(existingCommand.id, commandObj)
+                        is MessageCommand<*> -> messageCommands.set(existingCommand.id, commandObj)
+                        is SlashCommand<*, *> -> slashCommands.set(existingCommand.id, commandObj)
+                        is UserCommand<*> -> userCommands.set(existingCommand.id, commandObj)
                     }
                 }
             }
@@ -318,9 +318,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
             val match = response.first { command.matches(locale, it) }
 
             when (command) {
-                is MessageCommand<*> -> messageCommands.upsert(match.id, command)
-                is SlashCommand<*, *> -> slashCommands.upsert(match.id, command)
-                is UserCommand<*> -> userCommands.upsert(match.id, command)
+                is MessageCommand<*> -> messageCommands.set(match.id, command)
+                is SlashCommand<*, *> -> slashCommands.set(match.id, command)
+                is UserCommand<*> -> userCommands.set(match.id, command)
             }
         }
 
@@ -477,7 +477,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        messageCommands.upsert(response.id, command)
+        messageCommands.set(response.id, command)
 
         return command
     }
@@ -544,7 +544,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        slashCommands.upsert(response.id, command)
+        slashCommands.set(response.id, command)
 
         return command
     }
@@ -610,7 +610,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        userCommands.upsert(response.id, command)
+        userCommands.set(response.id, command)
 
         return command
     }
@@ -642,7 +642,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             deleteGeneric(command, id)
         }
 
-        return messageCommands.delete(id)
+        return messageCommands.remove(id)
     }
 
     /** Unregister a slash command. **/
@@ -655,7 +655,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             deleteGeneric(command, id)
         }
 
-        return slashCommands.delete(id)
+        return slashCommands.remove(id)
     }
 
     /** Unregister a user command. **/
@@ -668,7 +668,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             deleteGeneric(command, id)
         }
 
-        return userCommands.delete(id)
+        return userCommands.remove(id)
     }
 
     /** @suppress Internal function used to delete the given command from Discord. Used by [unregister]. **/
@@ -705,7 +705,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for message commands. **/
     public open suspend fun handle(event: MessageCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = messageCommands.read(commandId)
+        val command = messageCommands.get(commandId)
 
         command ?: return logger.warn { "Received interaction for unknown message command: ${commandId.asString}" }
 
@@ -715,7 +715,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for slash commands. **/
     public open suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
         val commandId = event.interaction.command.rootId
-        val command = slashCommands.read(commandId)
+        val command = slashCommands.get(commandId)
 
         command ?: return logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
 
@@ -725,7 +725,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for user commands. **/
     public open suspend fun handle(event: UserCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = userCommands.read(commandId)
+        val command = userCommands.get(commandId)
 
         command ?: return logger.warn { "Received interaction for unknown user command: ${commandId.asString}" }
 
