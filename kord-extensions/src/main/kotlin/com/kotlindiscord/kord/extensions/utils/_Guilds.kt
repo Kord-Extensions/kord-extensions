@@ -6,7 +6,6 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.channel.GuildChannel
-import dev.kord.core.supplier.EntitySupplyStrategy
 
 /**
  * Retrieves the member of the bot itself on this [GuildBehavior].
