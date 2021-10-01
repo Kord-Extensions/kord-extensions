@@ -31,9 +31,10 @@ public suspend fun GuildBehavior.botHasPermissions(vararg requiredPermissions: P
     botHasPermissions(null, Permissions(requiredPermissions.asIterable()))
 
 private suspend fun GuildBehavior.botHasPermissions(channel: GuildChannel?, requiredPermissions: Permissions): Boolean {
+    val selfMember = selfMember()
     val effectivePermissions =
-        channel?.run { permissionsForMember(selfMember()) }
-            ?: selfMember().getPermissions()
+        channel?.run { permissionsForMember(selfMember) }
+            ?: selfMember.getPermissions()
 
     return requiredPermissions in effectivePermissions
 }
