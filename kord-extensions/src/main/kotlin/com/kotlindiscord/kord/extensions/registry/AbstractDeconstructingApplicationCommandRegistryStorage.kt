@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.mapNotNull
  *
  * For simplicity the parameter / return types of the abstract methods are all [String]s.
  */
-public abstract class AbstractDeconstructingApplicationCommandRegistryStorage :
-    RegistryStorage<Snowflake, ApplicationCommand<*>> {
+public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T : ApplicationCommand<*>> :
+    RegistryStorage<Snowflake, T> {
 
     /**
-     * Mapping of command-name to command-object.
+     * Mapping of command-key to command-object.
      */
-    private val commandMapping: MutableMap<String, ApplicationCommand<*>> = mutableMapOf()
+    private val commandMapping: MutableMap<String, T> = mutableMapOf()
 
     /**
      * Upserts simplified data.
@@ -52,21 +52,30 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage :
      */
     protected abstract fun entries(): Flow<RegistryStorage.StorageEntry<String, String>>
 
-    override suspend fun set(id: Snowflake, data: ApplicationCommand<*>) {
-        commandMapping[data.name] = data
-        upsert(id.asString, data.name)
+    protected open fun constructKey(data: T): String {
+        return "${data.name}-${data.type.value}-${data.guildId ?: 0}"
     }
 
-    override suspend fun get(id: Snowflake): ApplicationCommand<*>? {
-        val name = read(id.asString) ?: return null
-        return commandMapping[name]
+    override suspend fun register(data: T) {
+        commandMapping[constructKey(data)] = data
     }
 
-    override suspend fun remove(id: Snowflake): ApplicationCommand<*>? {
-        val name = delete(id.asString) ?: return null
-        return commandMapping[name]
+    override suspend fun set(id: Snowflake, data: T) {
+        val key = constructKey(data)
+        commandMapping[key] = data
+        upsert(id.asString, key)
     }
 
-    override fun entryFlow(): Flow<RegistryStorage.StorageEntry<Snowflake, ApplicationCommand<*>>> = entries()
+    override suspend fun get(id: Snowflake): T? {
+        val key = read(id.asString) ?: return null
+        return commandMapping[key]
+    }
+
+    override suspend fun remove(id: Snowflake): T? {
+        val key = delete(id.asString) ?: return null
+        return commandMapping[key]
+    }
+
+    override fun entryFlow(): Flow<RegistryStorage.StorageEntry<Snowflake, T>> = entries()
         .mapNotNull { commandMapping[it.value]?.let { cmd -> RegistryStorage.StorageEntry(Snowflake(it.key), cmd) } }
 }

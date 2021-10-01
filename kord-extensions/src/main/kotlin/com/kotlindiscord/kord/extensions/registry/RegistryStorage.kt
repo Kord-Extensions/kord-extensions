@@ -11,6 +11,12 @@ import kotlinx.coroutines.flow.Flow
 public interface RegistryStorage<K, T> {
 
     /**
+     * Let's the registry know about the specified type, this may store the object in a local map,
+     * which is used for reconstructing later.
+     */
+    public suspend fun register(data: T)
+
+    /**
      * Creates or updates an existing entry at the given unique key.
      *
      * This may deconstruct the given data and only persists a partial object.

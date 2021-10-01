@@ -4,7 +4,7 @@
     "AnnotationSpacing",
     "SpacingBetweenAnnotations"
 )
-@file:OptIn(ExperimentalCoroutinesApi::class)
+@file:OptIn(ExperimentalCoroutinesApi::class, KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.commands.application
 
@@ -17,6 +17,8 @@ import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConvert
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.registry.DefaultLocalRegistryStorage
 import com.kotlindiscord.kord.extensions.registry.RegistryStorage
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -24,6 +26,7 @@ import dev.kord.core.behavior.createApplicationCommands
 import dev.kord.core.behavior.createChatInputCommand
 import dev.kord.core.behavior.createMessageCommand
 import dev.kord.core.behavior.createUserCommand
+import dev.kord.core.entity.application.GuildApplicationCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -31,7 +34,10 @@ import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -108,11 +114,23 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
     /** Register multiple generic application commands. **/
     public open suspend fun syncAll(removeOthers: Boolean = false, commands: List<ApplicationCommand<*>>) {
+        // Make registry know each command
+        commands.forEach {
+            when (it) {
+                is MessageCommand<*> -> messageCommands.register(it)
+                is UserCommand<*> -> userCommands.register(it)
+                is SlashCommand<*, *> -> slashCommands.register(it)
+            }
+        }
+
+        val knownCommands = merge(messageCommands.entryFlow(), slashCommands.entryFlow(), userCommands.entryFlow())
+            .toList()
+
         val groupedCommands = commands.groupBy { it.guildId }
 
         groupedCommands.forEach {
             try {
-                sync(removeOthers, it.key, it.value)
+                sync(removeOthers, it.key, knownCommands, it.value)
             } catch (e: KtorRequestException) {
                 logger.error(e) {
                     var message = if (it.key == null) {
@@ -204,6 +222,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     public open suspend fun sync(
         removeOthers: Boolean = false,
         guildId: Snowflake?,
+        knownCommands: List<RegistryStorage.StorageEntry<Snowflake, out ApplicationCommand<*>>>,
         commands: List<ApplicationCommand<*>>
     ) {
         // NOTE: Someday, discord will make real i18n possible, we hope...
@@ -220,10 +239,10 @@ public open class ApplicationCommandRegistry : KoinComponent {
         }
 
         // Get guild commands if we're registering them (guild != null), otherwise get global commands
-        val registered = guild?.commands?.toList()
-            ?: kord.globalCommands.toList()
 
         if (!bot.settings.applicationCommandsBuilder.register) {
+            val registered = guild?.commands?.toList()
+                ?: kord.globalCommands.toList()
             commands.forEach { commandObj ->
                 val existingCommand = registered.firstOrNull { commandObj.matches(locale, it) }
 
@@ -240,14 +259,14 @@ public open class ApplicationCommandRegistry : KoinComponent {
         }
 
         // Extension commands that haven't been registered yet
-        val toAdd = commands.filter { c -> registered.all { !c.matches(locale, it) } }
+        val toAdd = commands.filter { c -> knownCommands.all { !c.matches(locale, it.value) } }
 
         // Extension commands that were previously registered
-        val toUpdate = commands.filter { c -> registered.any { c.matches(locale, it) } }
+        val toUpdate = commands.filter { c -> knownCommands.any { c.matches(locale, it.value) } }
 
         // Registered Discord commands that haven't been provided by extensions
         val toRemove = if (removeOthers) {
-            registered.filter { c -> commands.all { !it.matches(locale, c) } }
+            knownCommands.filter { c -> commands.all { !it.matches(locale, c.value) } }
         } else {
             listOf()
         }
@@ -326,8 +345,11 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
         // Finally, we can remove anything that needs to be removed
         toRemove.forEach {
-            logger.trace { "Removing ${it.type.name} command: ${it.name}" }
-            it.delete()
+            logger.trace { "Removing ${it.value.type.name} command: ${it.value.name}" }
+            when (guildId) {
+                null -> kord.unsafe.globalApplicationCommand(kord.selfId, it.key)
+                else -> kord.unsafe.guildApplicationCommand(guildId, kord.selfId, it.key)
+            }.delete()
         }
 
         logger.info {
@@ -828,7 +850,20 @@ public open class ApplicationCommandRegistry : KoinComponent {
     public open fun ApplicationCommand<*>.matches(
         locale: Locale,
         other: dev.kord.core.entity.application.ApplicationCommand
-    ): Boolean = type == other.type && getTranslatedName(locale).equals(other.name, true)
+    ): Boolean {
+        val match = type == other.type && getTranslatedName(locale).equals(other.name, true)
+
+        return when (other) {
+            is GuildApplicationCommand -> match && guildId == other.guildId
+            else -> match
+        }
+    }
+
+    /** Check whether the type and name of an extension-registered application command matches a Discord one. **/
+    public open fun ApplicationCommand<*>.matches(
+        locale: Locale,
+        other: ApplicationCommand<*>
+    ): Boolean = type == other.type && getTranslatedName(locale).equals(other.name, true) && guildId == other.guildId
 
     // endregion
 }

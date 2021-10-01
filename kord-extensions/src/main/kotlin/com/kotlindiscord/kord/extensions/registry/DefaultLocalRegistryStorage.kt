@@ -12,6 +12,10 @@ public class DefaultLocalRegistryStorage<K, T> : RegistryStorage<K, T> {
 
     private val registry: MutableMap<K, T> = mutableMapOf()
 
+    override suspend fun register(data: T) {
+        // we don't need to do anything here
+    }
+
     override suspend fun set(id: K, data: T) {
         registry[id] = data
     }
