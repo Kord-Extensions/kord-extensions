@@ -34,10 +34,7 @@ public suspend fun GuildBehavior.botHasPermissions(vararg requiredPermissions: P
 private suspend fun GuildBehavior.botHasPermissions(channel: GuildChannel?, requiredPermissions: Permissions): Boolean {
     val effectivePermissions =
         channel?.run { permissionsForMember(selfMember()) }
-        // fast lane: this guild was fetched through rest
-            ?: asGuild().permissions
-            // slow lane: if guild was cached we fetch it to retrieve permissions field
-            ?: withStrategy(EntitySupplyStrategy.rest).asGuild().permissions!!
+            ?: selfMember().getPermissions()
 
     return requiredPermissions in effectivePermissions
 }
