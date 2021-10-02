@@ -746,8 +746,13 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
                     if (this.options == null) this.options = mutableListOf()
 
-                    // TODO: It's impossible to translate these right now
-                    this.options!! += converter.toSlashOption(arg)
+                    val option = converter.toSlashOption(arg)
+
+                    option.name = translationsProvider
+                        .translate(option.name, locale, converter.bundle)
+                        .lowercase()
+
+                    this.options!! += option
                 }
             }
         } else {
@@ -759,8 +764,13 @@ public open class ApplicationCommandRegistry : KoinComponent {
                         error("Argument ${arg.displayName} does not support slash commands.")
                     }
 
-                    // TODO: It's impossible to translate these right now
-                    converter.toSlashOption(arg)
+                    val option = converter.toSlashOption(arg)
+
+                    option.name = translationsProvider
+                        .translate(option.name, locale, converter.bundle)
+                        .lowercase()
+
+                    option
                 }
 
                 this.subCommand(
@@ -785,7 +795,12 @@ public open class ApplicationCommandRegistry : KoinComponent {
                                 error("Argument ${arg.displayName} does not support slash commands.")
                             }
 
-                            // TODO: It's impossible to translate these right now
+                            val option = converter.toSlashOption(arg)
+
+                            option.name = translationsProvider
+                                .translate(option.name, locale, converter.bundle)
+                                .lowercase()
+
                             converter.toSlashOption(arg)
                         }
 
