@@ -52,9 +52,7 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T 
      */
     protected abstract fun entries(): Flow<RegistryStorage.StorageEntry<String, String>>
 
-    protected open fun constructKey(data: T): String {
-        return "${data.name}-${data.type.value}-${data.guildId ?: 0}"
-    }
+    protected open fun constructKey(data: T): String = "${data.name}-${data.type.value}-${data.guildId ?: 0}"
 
     override suspend fun register(data: T) {
         commandMapping[constructKey(data)] = data

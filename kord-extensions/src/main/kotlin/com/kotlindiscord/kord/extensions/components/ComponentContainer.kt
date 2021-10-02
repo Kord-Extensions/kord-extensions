@@ -71,7 +71,7 @@ public open class ComponentContainer(
     }
 
     /** Remove all components, and unregister them from the [ComponentRegistry]. **/
-    public open fun removeAll() {
+    public open suspend fun removeAll() {
         rows.toList().flatten().forEach { component ->
             if (component is ComponentWithID) {
                 registry.unregister(component)
@@ -82,7 +82,7 @@ public open class ComponentContainer(
     }
 
     /** Remove the given component, and unregister it from the [ComponentRegistry]. **/
-    public open fun remove(component: Component): Boolean {
+    public open suspend fun remove(component: Component): Boolean {
         if (rows.any { it.remove(component) }) {
             if (component is ComponentWithID) {
                 registry.unregister(component)
@@ -95,7 +95,7 @@ public open class ComponentContainer(
     }
 
     /** Given two components, replace the old component with the new one and likewise handle registration. **/
-    public open fun replace(old: Component, new: Component): Boolean {
+    public open suspend fun replace(old: Component, new: Component): Boolean {
         for (row in rows) {
             val index = row.indexOf(old)
 
@@ -129,7 +129,7 @@ public open class ComponentContainer(
      * Given an old component ID and new component, replace the old component with the new one and likewise handle
      * registration.
      */
-    public open fun replace(id: String, new: Component): Boolean {
+    public open suspend fun replace(id: String, new: Component): Boolean {
         for (row in rows) {
             val index = row.indexOfFirst { it is ComponentWithID && it.id == id }
 
@@ -163,7 +163,7 @@ public open class ComponentContainer(
      *  Add a component. New components will be unsorted, or placed in the numbered row denoted by [rowNum] if
      *  possible.
      */
-    public open fun add(component: Component, rowNum: Int? = null) {
+    public open suspend fun add(component: Component, rowNum: Int? = null) {
         component.validate()
 
         if (rowNum == null) {
@@ -199,7 +199,7 @@ public open class ComponentContainer(
     }
 
     /** Sort all components in [unsortedComponents] by packing them into rows as tightly as possible. **/
-    public open fun sort() {
+    public open suspend fun sort() {
         while (unsortedComponents.isNotEmpty()) {
             val component = unsortedComponents.removeFirst()
             var sorted = false
@@ -230,7 +230,7 @@ public open class ComponentContainer(
     }
 
     /** Apply the components in this container to a message that's being created. **/
-    public open fun MessageCreateBuilder.applyToMessage() {
+    public open suspend fun MessageCreateBuilder.applyToMessage() {
         sort()
 
         for (row in rows.filter { it.isNotEmpty() }) {
@@ -241,7 +241,7 @@ public open class ComponentContainer(
     }
 
     /** Apply the components in this container to a message that's being edited. **/
-    public open fun MessageModifyBuilder.applyToMessage() {
+    public open suspend fun MessageModifyBuilder.applyToMessage() {
         this.components = mutableListOf()  // Clear 'em
 
         sort()

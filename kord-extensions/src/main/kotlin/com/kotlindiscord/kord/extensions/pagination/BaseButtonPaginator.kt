@@ -275,7 +275,7 @@ public abstract class BaseButtonPaginator(
     /**
      * Convenience function that enables and disables buttons as necessary, depending on the current page number.
      */
-    public fun updateButtons() {
+    public suspend fun updateButtons() {
         if (currentPageNum <= 0) {
             setDisabledButton(firstPageButton)
             setDisabledButton(backButton)
@@ -312,7 +312,7 @@ public abstract class BaseButtonPaginator(
     }
 
     /** Replace an enabled interactive button in [components] with a disabled button of the same ID. **/
-    public fun setDisabledButton(oldButton: PublicInteractionButton?): Boolean {
+    public suspend fun setDisabledButton(oldButton: PublicInteractionButton?): Boolean {
         oldButton ?: return false
 
         val newButton = DisabledInteractionButton()
@@ -327,7 +327,7 @@ public abstract class BaseButtonPaginator(
     }
 
     /** Replace a disabled button in [components] with the given interactive button of the same ID.. **/
-    public fun setEnabledButton(newButton: PublicInteractionButton?): Boolean {
+    public suspend fun setEnabledButton(newButton: PublicInteractionButton?): Boolean {
         newButton ?: return false
 
         return components.replace(newButton.id, newButton)
