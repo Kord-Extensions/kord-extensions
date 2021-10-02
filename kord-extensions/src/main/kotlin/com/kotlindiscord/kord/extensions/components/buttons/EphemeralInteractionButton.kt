@@ -3,6 +3,7 @@
 package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.ButtonStyle
@@ -44,7 +45,9 @@ public open class EphemeralInteractionButton(
                 return@withLock
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { settings.errorResponseBuilder(this, e.reason) }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             return@withLock
         }
@@ -67,9 +70,16 @@ public open class EphemeralInteractionButton(
 
         try {
             checkBotPerms(context)
+        } catch (e: DiscordRelayedException) {
+            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+
+            return@withLock
+        }
+
+        try {
             body(context)
         } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.RelayedFailure(e))
         } catch (t: Throwable) {
             handleError(context, t, this)
         }
@@ -83,7 +93,11 @@ public open class EphemeralInteractionButton(
         }
     }
 
-    override suspend fun respondText(context: EphemeralInteractionButtonContext, message: String) {
-        context.respond { settings.errorResponseBuilder(this, message) }
+    override suspend fun respondText(
+        context: EphemeralInteractionButtonContext,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
+        context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
 }

@@ -20,6 +20,7 @@ import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.respond
@@ -272,7 +273,14 @@ public open class ChatCommand<T : Arguments>(
 
                 if (message != null && sendMessage) {
                     event.message.respond {
-                        settings.errorResponseBuilder(this, message)
+                        settings.failureResponseBuilder(
+                            this,
+                            message,
+
+                            FailureReason.ProvidedCheckFailure(
+                                DiscordRelayedException(message, context.errorResponseKey)
+                            )
+                        )
                     }
                 }
 
@@ -291,7 +299,14 @@ public open class ChatCommand<T : Arguments>(
 
                 if (message != null && sendMessage) {
                     event.message.respond {
-                        settings.errorResponseBuilder(this, message)
+                        settings.failureResponseBuilder(
+                            this,
+                            message,
+
+                            FailureReason.ProvidedCheckFailure(
+                                DiscordRelayedException(message, context.errorResponseKey)
+                            )
+                        )
                     }
                 }
 
@@ -309,7 +324,14 @@ public open class ChatCommand<T : Arguments>(
 
                 if (message != null && sendMessage) {
                     event.message.respond {
-                        settings.errorResponseBuilder(this, message)
+                        settings.failureResponseBuilder(
+                            this,
+                            message,
+
+                            FailureReason.ProvidedCheckFailure(
+                                DiscordRelayedException(message, context.errorResponseKey)
+                            )
+                        )
                     }
                 }
 
@@ -389,7 +411,7 @@ public open class ChatCommand<T : Arguments>(
             emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
 
             event.message.respond {
-                settings.errorResponseBuilder(this, e.reason)
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
             }
 
             return@withLock
@@ -429,7 +451,7 @@ public open class ChatCommand<T : Arguments>(
             checkBotPerms(context)
         } catch (e: DiscordRelayedException) {
             event.message.respond {
-                settings.errorResponseBuilder(this, e.reason)
+                settings.failureResponseBuilder(this, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
             }
 
             emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
@@ -443,7 +465,7 @@ public open class ChatCommand<T : Arguments>(
                 context.populateArgs(parsedArgs)
             } catch (e: ArgumentParsingException) {
                 event.message.respond {
-                    settings.errorResponseBuilder(this, e.reason)
+                    settings.failureResponseBuilder(this, e.reason, FailureReason.ArgumentParsingFailure(e))
                 }
 
                 emitEventAsync(ChatCommandFailedParsingEvent(this, event, e))
@@ -455,13 +477,15 @@ public open class ChatCommand<T : Arguments>(
         try {
             this.body(context)
         } catch (t: Throwable) {
+            emitEventAsync(ChatCommandFailedWithExceptionEvent(this, event, t))
+
             if (t is DiscordRelayedException) {
                 event.message.respond {
-                    settings.errorResponseBuilder(this, t.reason)
+                    settings.failureResponseBuilder(this, t.reason, FailureReason.RelayedFailure(t))
                 }
-            }
 
-            emitEventAsync(ChatCommandFailedWithExceptionEvent(this, event, t))
+                return@withLock
+            }
 
             if (sentry.enabled) {
                 logger.trace { "Submitting error to sentry." }
@@ -502,7 +526,7 @@ public open class ChatCommand<T : Arguments>(
                     val prefix = registry.getPrefix(event)
 
                     event.message.respond {
-                        settings.errorResponseBuilder(
+                        settings.failureResponseBuilder(
                             this,
 
                             context.translate(
@@ -512,14 +536,17 @@ public open class ChatCommand<T : Arguments>(
                                     prefix,
                                     sentryId
                                 )
-                            )
+                            ),
+
+                            FailureReason.ExecutionError(t)
                         )
                     }
                 } else {
                     event.message.respond {
-                        settings.errorResponseBuilder(
+                        settings.failureResponseBuilder(
                             this,
-                            context.translate("commands.error.user", null)
+                            context.translate("commands.error.user", null),
+                            FailureReason.ExecutionError(t)
                         )
                     }
                 }
@@ -527,9 +554,10 @@ public open class ChatCommand<T : Arguments>(
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
                 event.message.respond {
-                    settings.errorResponseBuilder(
+                    settings.failureResponseBuilder(
                         this,
-                        context.translate("commands.error.user", null)
+                        context.translate("commands.error.user", null),
+                        FailureReason.ExecutionError(t)
                     )
                 }
             }

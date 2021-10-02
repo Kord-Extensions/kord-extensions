@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.components.types.HasPartialEmoji
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.core.entity.channel.DmChannel
@@ -91,9 +92,13 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
                 context.translate("commands.error.user", null)
             }
 
-            respondText(context, errorMessage)
+            respondText(context, errorMessage, FailureReason.ExecutionError(t))
         } else {
-            respondText(context, context.translate("commands.error.user", null))
+            respondText(
+                context,
+                context.translate("commands.error.user", null),
+                FailureReason.ExecutionError(t)
+            )
         }
     }
 
@@ -106,5 +111,5 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
     }
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
-    public abstract suspend fun respondText(context: C, message: String)
+    public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
 }

@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.contexts.UnsafeMessageCo
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialMessageCommandResponse
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -39,7 +40,9 @@ public class UnsafeMessageCommand(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondPublic { content = e.reason }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             emitEventAsync(UnsafeMessageCommandFailedChecksEvent(this, event, e.reason))
 
@@ -69,19 +72,18 @@ public class UnsafeMessageCommand(
 
         try {
             checkBotPerms(context)
-        } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
-            emitEventAsync(UnsafeMessageCommandFailedChecksEvent(this, event, e.reason))
+        } catch (t: DiscordRelayedException) {
+            emitEventAsync(UnsafeMessageCommandFailedChecksEvent(this, event, t.reason))
+            respondText(context, t.reason, FailureReason.OwnPermissionsCheckFailure(t))
 
             return
         }
 
         try {
-            checkBotPerms(context)
             body(context)
         } catch (t: Throwable) {
             if (t is DiscordRelayedException) {
-                respondText(context, t.reason)
+                respondText(context, t.reason, FailureReason.RelayedFailure(t))
             }
 
             emitEventAsync(UnsafeMessageCommandFailedWithExceptionEvent(this, event, t))
@@ -93,10 +95,19 @@ public class UnsafeMessageCommand(
         emitEventAsync(UnsafeMessageCommandSucceededEvent(this, event))
     }
 
-    override suspend fun respondText(context: UnsafeMessageCommandContext, message: String) {
+    override suspend fun respondText(
+        context: UnsafeMessageCommandContext,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
         when (context.interactionResponse) {
-            is PublicInteractionResponseBehavior -> context.respondPublic { content = message }
-            is EphemeralInteractionResponseBehavior -> context.respondEphemeral { content = message }
+            is PublicInteractionResponseBehavior -> context.respondPublic {
+                settings.failureResponseBuilder(this, message, failureType)
+            }
+
+            is EphemeralInteractionResponseBehavior -> context.respondEphemeral {
+                settings.failureResponseBuilder(this, message, failureType)
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
@@ -76,7 +77,9 @@ public class PublicSlashCommand<A : Arguments>(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { settings.errorResponseBuilder(this, e.reason) }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
 
@@ -98,7 +101,7 @@ public class PublicSlashCommand<A : Arguments>(
         try {
             checkBotPerms(context)
         } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
             emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
 
             return
@@ -109,7 +112,7 @@ public class PublicSlashCommand<A : Arguments>(
 
                 context.populateArgs(args)
             } catch (e: ArgumentParsingException) {
-                respondText(context, e.reason)
+                respondText(context, e.reason, FailureReason.ArgumentParsingFailure(e))
                 emitEventAsync(PublicSlashCommandFailedParsingEvent(this, event, e))
 
                 return
@@ -119,11 +122,14 @@ public class PublicSlashCommand<A : Arguments>(
         try {
             body(context)
         } catch (t: Throwable) {
+            emitEventAsync(PublicSlashCommandFailedWithExceptionEvent(this, event, t))
+
             if (t is DiscordRelayedException) {
-                respondText(context, t.reason)
+                respondText(context, t.reason, FailureReason.RelayedFailure(t))
+
+                return
             }
 
-            emitEventAsync(PublicSlashCommandFailedWithExceptionEvent(this, event, t))
             handleError(context, t, this)
 
             return
@@ -132,7 +138,11 @@ public class PublicSlashCommand<A : Arguments>(
         emitEventAsync(PublicSlashCommandSucceededEvent(this, event))
     }
 
-    override suspend fun respondText(context: PublicSlashCommandContext<A>, message: String) {
-        context.respond { settings.errorResponseBuilder(this, message) }
+    override suspend fun respondText(
+        context: PublicSlashCommandContext<A>,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
+        context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
 }
