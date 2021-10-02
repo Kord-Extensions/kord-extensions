@@ -4,7 +4,6 @@
     "AnnotationSpacing",
     "SpacingBetweenAnnotations"
 )
-@file:OptIn(ExperimentalCoroutinesApi::class, KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.commands.application
 
@@ -15,10 +14,6 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.registry.DefaultLocalRegistryStorage
-import com.kotlindiscord.kord.extensions.registry.RegistryStorage
-import dev.kord.common.annotation.KordExperimental
-import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -26,17 +21,12 @@ import dev.kord.core.behavior.createApplicationCommands
 import dev.kord.core.behavior.createChatInputCommand
 import dev.kord.core.behavior.createMessageCommand
 import dev.kord.core.behavior.createUserCommand
-import dev.kord.core.entity.application.GuildApplicationCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
@@ -60,13 +50,13 @@ public open class ApplicationCommandRegistry : KoinComponent {
     public open val translationsProvider: TranslationsProvider by inject()
 
     /** Mapping of Discord-side command ID to a message command object. **/
-    public open val messageCommands: RegistryStorage<Snowflake, MessageCommand<*>> = DefaultLocalRegistryStorage()
+    public open val messageCommands: MutableMap<Snowflake, MessageCommand<*>> = mutableMapOf()
 
     /** Mapping of Discord-side command ID to a slash command object. **/
-    public open val slashCommands: RegistryStorage<Snowflake, SlashCommand<*, *>> = DefaultLocalRegistryStorage()
+    public open val slashCommands: MutableMap<Snowflake, SlashCommand<*, *>> = mutableMapOf()
 
     /** Mapping of Discord-side command ID to a user command object. **/
-    public open val userCommands: RegistryStorage<Snowflake, UserCommand<*>> = DefaultLocalRegistryStorage()
+    public open val userCommands: MutableMap<Snowflake, UserCommand<*>> = mutableMapOf()
 
     /** Whether the initial sync has been finished, and commands should be registered directly. **/
     public open var initialised: Boolean = false
@@ -114,23 +104,11 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
     /** Register multiple generic application commands. **/
     public open suspend fun syncAll(removeOthers: Boolean = false, commands: List<ApplicationCommand<*>>) {
-        // Make registry know each command
-        commands.forEach {
-            when (it) {
-                is MessageCommand<*> -> messageCommands.register(it)
-                is UserCommand<*> -> userCommands.register(it)
-                is SlashCommand<*, *> -> slashCommands.register(it)
-            }
-        }
-
-        val knownCommands = merge(messageCommands.entryFlow(), slashCommands.entryFlow(), userCommands.entryFlow())
-            .toList()
-
         val groupedCommands = commands.groupBy { it.guildId }
 
         groupedCommands.forEach {
             try {
-                sync(removeOthers, it.key, knownCommands, it.value)
+                sync(removeOthers, it.key, it.value)
             } catch (e: KtorRequestException) {
                 logger.error(e) {
                     var message = if (it.key == null) {
@@ -161,16 +139,16 @@ public open class ApplicationCommandRegistry : KoinComponent {
             }
         }
 
-        val commandsWithPerms = merge(messageCommands.entryFlow(), slashCommands.entryFlow(), userCommands.entryFlow())
-            .filter {
-                it.value.allowedRoles.isNotEmpty() ||
-                    it.value.allowedUsers.isNotEmpty() ||
-                    it.value.disallowedRoles.isNotEmpty() ||
-                    it.value.disallowedUsers.isNotEmpty() ||
-                    !it.value.allowByDefault
+        val commandsWithPerms = (messageCommands + slashCommands + userCommands)
+            .filterValues {
+                it.allowedRoles.isNotEmpty() ||
+                    it.allowedUsers.isNotEmpty() ||
+                    it.disallowedRoles.isNotEmpty() ||
+                    it.disallowedUsers.isNotEmpty() ||
+                    !it.allowByDefault
             }
             .toList()
-            .groupBy { it.value.guildId }
+            .groupBy { it.second.guildId }
 
         try {
             commandsWithPerms.forEach { (guildId, commands) ->
@@ -222,7 +200,6 @@ public open class ApplicationCommandRegistry : KoinComponent {
     public open suspend fun sync(
         removeOthers: Boolean = false,
         guildId: Snowflake?,
-        knownCommands: List<RegistryStorage.StorageEntry<Snowflake, out ApplicationCommand<*>>>,
         commands: List<ApplicationCommand<*>>
     ) {
         // NOTE: Someday, discord will make real i18n possible, we hope...
@@ -239,18 +216,18 @@ public open class ApplicationCommandRegistry : KoinComponent {
         }
 
         // Get guild commands if we're registering them (guild != null), otherwise get global commands
+        val registered = guild?.commands?.toList()
+            ?: kord.globalCommands.toList()
 
         if (!bot.settings.applicationCommandsBuilder.register) {
-            val registered = guild?.commands?.toList()
-                ?: kord.globalCommands.toList()
             commands.forEach { commandObj ->
                 val existingCommand = registered.firstOrNull { commandObj.matches(locale, it) }
 
                 if (existingCommand != null) {
                     when (commandObj) {
-                        is MessageCommand<*> -> messageCommands.set(existingCommand.id, commandObj)
-                        is SlashCommand<*, *> -> slashCommands.set(existingCommand.id, commandObj)
-                        is UserCommand<*> -> userCommands.set(existingCommand.id, commandObj)
+                        is MessageCommand<*> -> messageCommands[existingCommand.id] = commandObj
+                        is SlashCommand<*, *> -> slashCommands[existingCommand.id] = commandObj
+                        is UserCommand<*> -> userCommands[existingCommand.id] = commandObj
                     }
                 }
             }
@@ -259,14 +236,14 @@ public open class ApplicationCommandRegistry : KoinComponent {
         }
 
         // Extension commands that haven't been registered yet
-        val toAdd = commands.filter { c -> knownCommands.all { !c.matches(locale, it.value) } }
+        val toAdd = commands.filter { c -> registered.all { !c.matches(locale, it) } }
 
         // Extension commands that were previously registered
-        val toUpdate = commands.filter { c -> knownCommands.any { c.matches(locale, it.value) } }
+        val toUpdate = commands.filter { c -> registered.any { c.matches(locale, it) } }
 
         // Registered Discord commands that haven't been provided by extensions
         val toRemove = if (removeOthers) {
-            knownCommands.filter { c -> commands.all { !it.matches(locale, c.value) } }
+            registered.filter { c -> commands.all { !it.matches(locale, c) } }
         } else {
             listOf()
         }
@@ -337,19 +314,16 @@ public open class ApplicationCommandRegistry : KoinComponent {
             val match = response.first { command.matches(locale, it) }
 
             when (command) {
-                is MessageCommand<*> -> messageCommands.set(match.id, command)
-                is SlashCommand<*, *> -> slashCommands.set(match.id, command)
-                is UserCommand<*> -> userCommands.set(match.id, command)
+                is MessageCommand<*> -> messageCommands[match.id] = command
+                is SlashCommand<*, *> -> slashCommands[match.id] = command
+                is UserCommand<*> -> userCommands[match.id] = command
             }
         }
 
         // Finally, we can remove anything that needs to be removed
         toRemove.forEach {
-            logger.trace { "Removing ${it.value.type.name} command: ${it.value.name}" }
-            when (guildId) {
-                null -> kord.unsafe.globalApplicationCommand(kord.selfId, it.key)
-                else -> kord.unsafe.guildApplicationCommand(guildId, kord.selfId, it.key)
-            }.delete()
+            logger.trace { "Removing ${it.type.name} command: ${it.name}" }
+            it.delete()
         }
 
         logger.info {
@@ -499,7 +473,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        messageCommands.set(response.id, command)
+        messageCommands[response.id] = command
 
         return command
     }
@@ -566,7 +540,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        slashCommands.set(response.id, command)
+        slashCommands[response.id] = command
 
         return command
     }
@@ -632,7 +606,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
             return null
         }
 
-        userCommands.set(response.id, command)
+        userCommands[response.id] = command
 
         return command
     }
@@ -656,9 +630,8 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
     /** Unregister a message command. **/
     public open suspend fun unregister(command: MessageCommand<*>, delete: Boolean = true): MessageCommand<*>? {
-        val id = messageCommands.entryFlow()
-            .firstOrNull { it.value.name == command.name }
-            ?.key ?: return null
+        val filtered = messageCommands.filter { it.value == command }
+        val id = filtered.keys.firstOrNull() ?: return null
 
         if (delete) {
             deleteGeneric(command, id)
@@ -669,9 +642,8 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
     /** Unregister a slash command. **/
     public open suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>? {
-        val id = messageCommands.entryFlow()
-            .firstOrNull { it.value.name == command.name }
-            ?.key ?: return null
+        val filtered = slashCommands.filter { it.value == command }
+        val id = filtered.keys.firstOrNull() ?: return null
 
         if (delete) {
             deleteGeneric(command, id)
@@ -682,9 +654,8 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
     /** Unregister a user command. **/
     public open suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>? {
-        val id = messageCommands.entryFlow()
-            .firstOrNull { it.value.name == command.name }
-            ?.key ?: return null
+        val filtered = userCommands.filter { it.value == command }
+        val id = filtered.keys.firstOrNull() ?: return null
 
         if (delete) {
             deleteGeneric(command, id)
@@ -727,7 +698,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for message commands. **/
     public open suspend fun handle(event: MessageCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = messageCommands.get(commandId)
+        val command = messageCommands[commandId]
 
         command ?: return logger.warn { "Received interaction for unknown message command: ${commandId.asString}" }
 
@@ -737,7 +708,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for slash commands. **/
     public open suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
         val commandId = event.interaction.command.rootId
-        val command = slashCommands.get(commandId)
+        val command = slashCommands[commandId]
 
         command ?: return logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
 
@@ -747,7 +718,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for user commands. **/
     public open suspend fun handle(event: UserCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = userCommands.get(commandId)
+        val command = userCommands[commandId]
 
         command ?: return logger.warn { "Received interaction for unknown user command: ${commandId.asString}" }
 
@@ -865,20 +836,7 @@ public open class ApplicationCommandRegistry : KoinComponent {
     public open fun ApplicationCommand<*>.matches(
         locale: Locale,
         other: dev.kord.core.entity.application.ApplicationCommand
-    ): Boolean {
-        val match = type == other.type && getTranslatedName(locale).equals(other.name, true)
-
-        return when (other) {
-            is GuildApplicationCommand -> match && guildId == other.guildId
-            else -> match
-        }
-    }
-
-    /** Check whether the type and name of an extension-registered application command matches a Discord one. **/
-    public open fun ApplicationCommand<*>.matches(
-        locale: Locale,
-        other: ApplicationCommand<*>
-    ): Boolean = type == other.type && getTranslatedName(locale).equals(other.name, true) && guildId == other.guildId
+    ): Boolean = type == other.type && getTranslatedName(locale).equals(other.name, true)
 
     // endregion
 }
