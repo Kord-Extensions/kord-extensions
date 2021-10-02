@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Permission
+import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Role
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.toList
  * @param role Role to check for
  * @return true if the user has the given role, false otherwise
  */
-public suspend fun Member.hasRole(role: Role): Boolean = roles.toList().contains(role)
+public fun Member.hasRole(role: RoleBehavior): Boolean = roleIds.contains(role.id)
 
 /**
  * Check if the user has all of the given roles.
@@ -20,7 +21,7 @@ public suspend fun Member.hasRole(role: Role): Boolean = roles.toList().contains
  * @param roles Roles to check for.
  * @return `true` if the user has all of the given roles, `false` otherwise.
  */
-public suspend inline fun Member.hasRoles(vararg roles: Role): Boolean = hasRoles(roles.toList())
+public fun Member.hasRoles(vararg roles: RoleBehavior): Boolean = hasRoles(roles.toList())
 
 /**
  * Check if the user has all of the given roles.
@@ -28,11 +29,11 @@ public suspend inline fun Member.hasRoles(vararg roles: Role): Boolean = hasRole
  * @param roles Roles to check for.
  * @return `true` if the user has all of the given roles, `false` otherwise.
  */
-public suspend fun Member.hasRoles(roles: Collection<Role>): Boolean =
+public fun Member.hasRoles(roles: Collection<RoleBehavior>): Boolean =
     if (roles.isEmpty()) {
         true
     } else {
-        this.roles.toList().containsAll(roles)
+        this.roleIds.containsAll(roles.map { it.id })
     }
 
 /**
