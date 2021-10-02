@@ -11,5 +11,6 @@ public fun Role.canInteract(role: Role): Boolean {
     if (role.guildId != guildId) {
         throw IllegalArgumentException("canInteract can only be called within the same guild!")
     }
+
     return role.rawPosition < rawPosition
 }

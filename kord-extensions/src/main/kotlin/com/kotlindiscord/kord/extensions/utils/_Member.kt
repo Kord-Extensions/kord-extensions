@@ -97,8 +97,11 @@ public suspend fun Member.hasPermissions(perms: Collection<Permission>): Boolean
  */
 public suspend fun Member.canInteract(role: Role): Boolean {
     val guild = getGuild()
+
     if (guild.ownerId == this.id) return true
+
     val highestRole = getTopRole() ?: guild.getEveryoneRole()
+
     return highestRole.canInteract(role)
 }
 
@@ -113,9 +116,14 @@ public suspend fun Member.canInteract(role: Role): Boolean {
  */
 public suspend fun Member.canInteract(member: Member): Boolean {
     val guild = getGuild()
+
     if (isOwner()) return true
+
     if (member.isOwner()) return false
+
     val highestRole = getTopRole() ?: guild.getEveryoneRole()
+
     val otherHighestRole = member.getTopRole() ?: guild.getEveryoneRole()
+
     return highestRole.canInteract(otherHighestRole)
 }
