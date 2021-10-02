@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.commands.events.EphemeralUserCommandFai
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralUserCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralUserCommandSucceededEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -44,7 +45,9 @@ public class EphemeralUserCommand(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { settings.errorResponseBuilder(this, e.reason) }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             emitEventAsync(EphemeralUserCommandFailedChecksEvent(this, event, e.reason))
 
@@ -66,7 +69,7 @@ public class EphemeralUserCommand(
         try {
             checkBotPerms(context)
         } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
             emitEventAsync(EphemeralUserCommandFailedChecksEvent(this, event, e.reason))
 
             return
@@ -75,18 +78,25 @@ public class EphemeralUserCommand(
         try {
             body(context)
         } catch (t: Throwable) {
+            emitEventAsync(EphemeralUserCommandFailedWithExceptionEvent(this, event, t))
+
             if (t is DiscordRelayedException) {
-                respondText(context, t.reason)
+                respondText(context, t.reason, FailureReason.RelayedFailure(t))
+
+                return
             }
 
-            emitEventAsync(EphemeralUserCommandFailedWithExceptionEvent(this, event, t))
             handleError(context, t)
         }
 
         emitEventAsync(EphemeralUserCommandSucceededEvent(this, event))
     }
 
-    override suspend fun respondText(context: EphemeralUserCommandContext, message: String) {
-        context.respond { settings.errorResponseBuilder(this, message) }
+    override suspend fun respondText(
+        context: EphemeralUserCommandContext,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
+        context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
 }

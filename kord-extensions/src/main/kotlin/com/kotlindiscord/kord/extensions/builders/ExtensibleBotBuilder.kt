@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
@@ -54,6 +55,9 @@ internal typealias LocaleResolver = suspend (
     user: UserBehavior?
 ) -> Locale?
 
+internal typealias FailureResponseBuilder =
+    suspend (MessageCreateBuilder).(message: String, type: FailureReason<*>) -> Unit
+
 /**
  * Builder class used for configuring and creating an [ExtensibleBot].
  *
@@ -71,9 +75,7 @@ public open class ExtensibleBotBuilder {
     /**
      * @suppress Builder that shouldn't be set directly by the user.
      */
-    public var errorResponseBuilder: suspend (MessageCreateBuilder).(message: String) -> Unit = { message ->
-        content = message
-    }
+    public var failureResponseBuilder: FailureResponseBuilder = { message, _ -> content = message }
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
@@ -146,8 +148,8 @@ public open class ExtensibleBotBuilder {
      * and component body execution.
      */
     @BotBuilderDSL
-    public fun errorResponse(builder: suspend (MessageCreateBuilder).(message: String) -> Unit) {
-        errorResponseBuilder = builder
+    public fun errorResponse(builder: FailureResponseBuilder) {
+        failureResponseBuilder = builder
     }
 
     /**
