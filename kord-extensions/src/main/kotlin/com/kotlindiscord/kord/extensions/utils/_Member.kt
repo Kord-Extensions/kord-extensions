@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Permission
+import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Role
 import kotlinx.coroutines.flow.toList
@@ -85,3 +86,41 @@ public suspend fun Member.hasPermissions(perms: Collection<Permission>): Boolean
 
         perms.all { it in permissions }
     }
+
+/**
+ * Checks if this [Member] can interact (delete/edit/assign/..) with the specified [Role].
+ *
+ * This checks if the [Member] has any role which is higher in hierarchy than [Role].
+ * The logic also accounts for [Guild] ownership.
+ *
+ * Throws an [IllegalArgumentException] if the role is from a different guild.
+ */
+public suspend fun Member.canInteract(role: Role): Boolean {
+    val guild = getGuild()
+
+    if (guild.ownerId == this.id) return true
+
+    val highestRole = getTopRole() ?: guild.getEveryoneRole()
+    return highestRole.canInteract(role)
+}
+
+/**
+ * Checks if this [Member] can interact (kick/ban/..) with another [Member]
+ *
+ * This checks if the [Member] has any role which is higher in hierarchy than all [Role]s of the
+ * specified [Member]
+ * The logic also accounts for [Guild] ownership
+ *
+ * Throws an [IllegalArgumentException] if the member is from a different guild.
+ */
+public suspend fun Member.canInteract(member: Member): Boolean {
+    val guild = getGuild()
+
+    if (isOwner()) return true
+    if (member.isOwner()) return false
+
+    val highestRole = getTopRole() ?: guild.getEveryoneRole()
+    val otherHighestRole = member.getTopRole() ?: guild.getEveryoneRole()
+
+    return highestRole.canInteract(otherHighestRole)
+}
