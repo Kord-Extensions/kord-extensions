@@ -8,7 +8,8 @@ import dev.kord.core.entity.Role
  * Throws an [IllegalArgumentException] when the roles are not from the same guild.
  */
 public fun Role.canInteract(role: Role): Boolean {
-    if (role.guildId != guildId)
+    if (role.guildId != guildId) {
         throw IllegalArgumentException("canInteract can only be called within the same guild!")
+    }
     return role.rawPosition < rawPosition
 }
