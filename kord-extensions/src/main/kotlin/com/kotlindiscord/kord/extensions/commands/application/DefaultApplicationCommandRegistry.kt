@@ -12,9 +12,6 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.createApplicationCommands
-import dev.kord.core.behavior.createChatInputCommand
-import dev.kord.core.behavior.createMessageCommand
-import dev.kord.core.behavior.createUserCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -283,112 +280,27 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
     /** Register a message command. **/
     public override suspend fun register(command: MessageCommand<*>): MessageCommand<*>? {
-        val locale = bot.settings.i18nBuilder.defaultLocale
+        val commandId = createDiscordCommand(command) ?: return null
 
-        val guild = if (command.guildId != null) {
-            kord.getGuild(command.guildId!!)
-        } else {
-            null
-        }
-
-        val name = command.getTranslatedName(locale)
-
-        val response = if (guild == null) {
-            // We're registering global commands here, if the guild is null
-
-            kord.createGlobalMessageCommand(name) {
-                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
-
-                this.register(locale, command)
-            }
-        } else {
-            // We're registering guild-specific commands here, if the guild is available
-
-            guild.createMessageCommand(name) {
-                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
-
-                this.register(locale, command)
-            }
-        }
-
-        injectPermissions(guild, command, response.id) ?: return null
-
-        messageCommands[response.id] = command
+        messageCommands[commandId] = command
 
         return command
     }
 
     /** Register a slash command. **/
     public override suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>? {
-        val locale = bot.settings.i18nBuilder.defaultLocale
+        val commandId = createDiscordCommand(command) ?: return null
 
-        val guild = if (command.guildId != null) {
-            kord.getGuild(command.guildId!!)
-        } else {
-            null
-        }
-
-        val name = command.getTranslatedName(locale)
-        val description = command.getTranslatedDescription(locale)
-
-        val response = if (guild == null) {
-            // We're registering global commands here, if the guild is null
-
-            kord.createGlobalChatInputCommand(name, description) {
-                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
-
-                this.register(locale, command)
-            }
-        } else {
-            // We're registering guild-specific commands here, if the guild is available
-
-            guild.createChatInputCommand(name, description) {
-                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
-
-                this.register(locale, command)
-            }
-        }
-
-        injectPermissions(guild, command, response.id) ?: return null
-
-        slashCommands[response.id] = command
+        slashCommands[commandId] = command
 
         return command
     }
 
     /** Register a user command. **/
     public override suspend fun register(command: UserCommand<*>): UserCommand<*>? {
-        val locale = bot.settings.i18nBuilder.defaultLocale
+        val commandId = createDiscordCommand(command) ?: return null
 
-        val guild = if (command.guildId != null) {
-            kord.getGuild(command.guildId!!)
-        } else {
-            null
-        }
-
-        val name = command.getTranslatedName(locale)
-
-        val response = if (guild == null) {
-            // We're registering global commands here, if the guild is null
-
-            kord.createGlobalUserCommand(name) {
-                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
-
-                this.register(locale, command)
-            }
-        } else {
-            // We're registering guild-specific commands here, if the guild is available
-
-            guild.createUserCommand(name) {
-                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
-
-                this.register(locale, command)
-            }
-        }
-
-        injectPermissions(guild, command, response.id) ?: return null
-
-        userCommands[response.id] = command
+        userCommands[commandId] = command
 
         return command
     }

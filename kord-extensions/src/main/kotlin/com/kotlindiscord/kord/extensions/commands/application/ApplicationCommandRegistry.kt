@@ -22,6 +22,9 @@ import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import dev.kord.core.behavior.createChatInputCommand
+import dev.kord.core.behavior.createMessageCommand
+import dev.kord.core.behavior.createUserCommand
 import dev.kord.core.entity.Guild
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
@@ -123,6 +126,8 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
     /** Unregister a user command. **/
     public abstract suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>?
 
+    // region: Utilities
+
     /** Unregister a message command. **/
     public open suspend fun unregisterGeneric(
         command: ApplicationCommand<*>,
@@ -193,6 +198,132 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
             }
         }
 
+    /**
+     * Creates a KordEx [ApplicationCommand] as discord command and returns the created command's id as [Snowflake].
+     */
+    public open suspend fun createDiscordCommand(command: ApplicationCommand<*>): Snowflake? = when (command) {
+        is SlashCommand<*, *> -> createDiscordSlashCommand(command)
+        is UserCommand<*> -> createDiscordUserCommand(command)
+        is MessageCommand<*> -> createDiscordMessageCommand(command)
+        else -> throw IllegalArgumentException("Unknown ApplicationCommand type")
+    }
+
+    /**
+     * Creates a KordEx [SlashCommand] as discord command and returns the created command's id as [Snowflake].
+     */
+    public open suspend fun createDiscordSlashCommand(command: SlashCommand<*, *>): Snowflake? {
+        val locale = bot.settings.i18nBuilder.defaultLocale
+
+        val guild = if (command.guildId != null) {
+            kord.getGuild(command.guildId!!)
+        } else {
+            null
+        }
+
+        val name = command.getTranslatedName(locale)
+        val description = command.getTranslatedDescription(locale)
+
+        val response = if (guild == null) {
+            // We're registering global commands here, if the guild is null
+
+            kord.createGlobalChatInputCommand(name, description) {
+                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
+
+                this.register(locale, command)
+            }
+        } else {
+            // We're registering guild-specific commands here, if the guild is available
+
+            guild.createChatInputCommand(name, description) {
+                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
+
+                this.register(locale, command)
+            }
+        }
+
+        injectPermissions(guild, command, response.id) ?: return null
+
+        return response.id
+    }
+
+    /**
+     * Creates a KordEx [UserCommand] as discord command and returns the created command's id as [Snowflake].
+     */
+    public open suspend fun createDiscordUserCommand(command: UserCommand<*>): Snowflake? {
+        val locale = bot.settings.i18nBuilder.defaultLocale
+
+        val guild = if (command.guildId != null) {
+            kord.getGuild(command.guildId!!)
+        } else {
+            null
+        }
+
+        val name = command.getTranslatedName(locale)
+
+        val response = if (guild == null) {
+            // We're registering global commands here, if the guild is null
+
+            kord.createGlobalUserCommand(name) {
+                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
+
+                this.register(locale, command)
+            }
+        } else {
+            // We're registering guild-specific commands here, if the guild is available
+
+            guild.createUserCommand(name) {
+                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
+
+                this.register(locale, command)
+            }
+        }
+
+        injectPermissions(guild, command, response.id) ?: return null
+
+        return response.id
+    }
+
+    /**
+     * Creates a KordEx [MessageCommand] as discord command and returns the created command's id as [Snowflake].
+     */
+    public open suspend fun createDiscordMessageCommand(command: MessageCommand<*>): Snowflake? {
+        val locale = bot.settings.i18nBuilder.defaultLocale
+
+        val guild = if (command.guildId != null) {
+            kord.getGuild(command.guildId!!)
+        } else {
+            null
+        }
+
+        val name = command.getTranslatedName(locale)
+
+        val response = if (guild == null) {
+            // We're registering global commands here, if the guild is null
+
+            kord.createGlobalMessageCommand(name) {
+                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
+
+                this.register(locale, command)
+            }
+        } else {
+            // We're registering guild-specific commands here, if the guild is available
+
+            guild.createMessageCommand(name) {
+                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
+
+                this.register(locale, command)
+            }
+        }
+
+        injectPermissions(guild, command, response.id) ?: return null
+
+        return response.id
+    }
+
+    // endregion
+
+    // region: Permissions
+
     protected suspend fun <T : ApplicationCommand<*>> injectPermissions(
         guild: Guild?,
         command: T,
@@ -237,6 +368,8 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
         command.allowedRoles.map { builder.role(it, true) }
         command.disallowedRoles.map { builder.role(it, false) }
     }
+
+    // endregion
 
     // region: Extensions
 

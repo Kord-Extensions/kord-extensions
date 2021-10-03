@@ -44,18 +44,27 @@ public class StorageAwareApplicationCommandRegistry(
         // check unknown & sync
     }
 
-    override suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *> {
-        slashCommandStorage.register(command)
+    override suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>? {
+        val commandId = createDiscordCommand(command) ?: return null
+
+        slashCommandStorage.set(commandId, command)
+
         return command
     }
 
-    override suspend fun register(command: MessageCommand<*>): MessageCommand<*> {
-        messageCommandStorage.register(command)
+    override suspend fun register(command: MessageCommand<*>): MessageCommand<*>? {
+        val commandId = createDiscordCommand(command) ?: return null
+
+        messageCommandStorage.set(commandId, command)
+
         return command
     }
 
-    override suspend fun register(command: UserCommand<*>): UserCommand<*> {
-        userCommandStorage.register(command)
+    override suspend fun register(command: UserCommand<*>): UserCommand<*>? {
+        val commandId = createDiscordCommand(command) ?: return null
+
+        userCommandStorage.set(commandId, command)
+
         return command
     }
 
