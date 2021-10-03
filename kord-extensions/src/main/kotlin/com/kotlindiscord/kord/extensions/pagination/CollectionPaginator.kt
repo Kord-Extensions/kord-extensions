@@ -90,14 +90,14 @@ private fun <T> PaginatorBuilder.addPage(
     additionalPageConfig: suspend EmbedBuilder.() -> Unit
 ) {
     page {
-        this.title = title((myOffset + 1), pages.size)
+        this.title = title(myOffset + 1, pages.size)
 
         description =
-            items.mapIndexed { index, it ->
+            items.mapIndexed { index, item ->
                 if (enumerate) {
-                    "${index + myOffset + 1}: ${mapper(it)}"
+                    "${index + myOffset + 1}: ${mapper(item)}"
                 } else {
-                    mapper(it)
+                    mapper(item)
                 }
             }
                 .joinToString("\n")
