@@ -4,20 +4,12 @@
     "AnnotationSpacing",
     "SpacingBetweenAnnotations"
 )
-@file:OptIn(
-    KordUnsafe::class,
-    KordExperimental::class
-)
 
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
-import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
-import dev.kord.common.annotation.KordExperimental
-import dev.kord.common.annotation.KordUnsafe
-import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.createApplicationCommands
 import dev.kord.core.behavior.createChatInputCommand
@@ -26,16 +18,12 @@ import dev.kord.core.behavior.createUserCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
-import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.coroutines.flow.toList
-import mu.KotlinLogging
-import java.util.*
 
 /** Registry for all Discord application commands. **/
 public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry() {
-    private val logger = KotlinLogging.logger { }
 
     /** Mapping of Discord-side command ID to a message command object. **/
     public open val messageCommands: MutableMap<Snowflake, MessageCommand<*>> = mutableMapOf()
@@ -46,29 +34,11 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     /** Mapping of Discord-side command ID to a user command object. **/
     public open val userCommands: MutableMap<Snowflake, UserCommand<*>> = mutableMapOf()
 
-    /** Quick access to the human-readable name for a Discord application command type. **/
-    public val ApplicationCommandType.name: String
-        get() = when (this) {
-            is ApplicationCommandType.Unknown -> "unknown"
-
-            ApplicationCommandType.ChatInput -> "slash"
-            ApplicationCommandType.Message -> "message"
-            ApplicationCommandType.User -> "user"
-        }
-
-    public override suspend fun initialize() {
+    public override suspend fun initialize(commands: List<ApplicationCommand<*>>) {
         if (!bot.settings.applicationCommandsBuilder.register) {
             logger.debug {
                 "Application command registration is disabled, pairing existing commands with extension commands"
             }
-        }
-
-        val commands: MutableList<ApplicationCommand<*>> = mutableListOf()
-
-        bot.extensions.values.forEach {
-            commands += it.messageCommands
-            commands += it.slashCommands
-            commands += it.userCommands
         }
 
         try {
@@ -315,79 +285,6 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
     // endregion
 
-    // region: Typed batch registration functions
-
-    /** Register multiple message commands. **/
-    public open suspend fun registerAll(vararg commands: MessageCommand<*>): List<MessageCommand<*>> =
-        commands.map {
-            try {
-                register(it) as MessageCommand<*>
-            } catch (e: KtorRequestException) {
-                logger.warn(e) {
-                    "Failed to register ${it.type.name} command: ${it.name}" +
-                        if (e.error?.message != null) {
-                            "\n        Discord error message: ${e.error?.message}"
-                        } else {
-                            ""
-                        }
-                }
-
-                null
-            } catch (t: Throwable) {
-                logger.warn(t) { "Failed to register ${it.type.name} command: ${it.name}" }
-
-                null
-            }
-        }.filterNotNull()
-
-    /** Register multiple slash commands. **/
-    public open suspend fun registerAll(vararg commands: SlashCommand<*, *>): List<SlashCommand<*, *>> =
-        commands.map {
-            try {
-                register(it) as SlashCommand<*, *>
-            } catch (e: KtorRequestException) {
-                logger.warn(e) {
-                    "Failed to register ${it.type.name} command: ${it.name}" +
-                        if (e.error?.message != null) {
-                            "\n        Discord error message: ${e.error?.message}"
-                        } else {
-                            ""
-                        }
-                }
-
-                null
-            } catch (t: Throwable) {
-                logger.warn(t) { "Failed to register ${it.type.name} command: ${it.name}" }
-
-                null
-            }
-        }.filterNotNull()
-
-    /** Register multiple user commands. **/
-    public open suspend fun registerAll(vararg commands: UserCommand<*>): List<UserCommand<*>> =
-        commands.map {
-            try {
-                register(it) as UserCommand<*>
-            } catch (e: KtorRequestException) {
-                logger.warn(e) {
-                    "Failed to register ${it.type.name} command: ${it.name}" +
-                        if (e.error?.message != null) {
-                            "\n        Discord error message: ${e.error?.message}"
-                        } else {
-                            ""
-                        }
-                }
-
-                null
-            } catch (t: Throwable) {
-                logger.warn(t) { "Failed to register ${it.type.name} command: ${it.name}" }
-
-                null
-            }
-        }.filterNotNull()
-
-    // endregion
-
     // region: Typed registration functions
 
     /** Register a message command. **/
@@ -420,36 +317,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
             }
         }
 
-        try {
-            if (guild != null) {
-                kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, response.id) {
-                    command.allowedUsers.map { user(it, true) }
-                    command.disallowedUsers.map { user(it, false) }
-
-                    command.allowedRoles.map { role(it, true) }
-                    command.disallowedRoles.map { role(it, false) }
-                }
-
-                logger.trace { "Applied permissions for command: ${command.name} ($command)" }
-            } else {
-                logger.warn { "Applying permissions to global application commands is currently not supported." }
-            }
-        } catch (e: KtorRequestException) {
-            logger.error(e) {
-                "Failed to apply application command permissions. This command will not be registered." +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        } catch (t: Throwable) {
-            logger.error(t) {
-                "Failed to apply application command permissions. This command will not be registered."
-            }
-
-            return null
-        }
+        injectPermissions(guild, command, response.id) ?: return null
 
         messageCommands[response.id] = command
 
@@ -487,36 +355,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
             }
         }
 
-        try {
-            if (guild != null) {
-                kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, response.id) {
-                    command.allowedUsers.map { user(it, true) }
-                    command.disallowedUsers.map { user(it, false) }
-
-                    command.allowedRoles.map { role(it, true) }
-                    command.disallowedRoles.map { role(it, false) }
-                }
-
-                logger.trace { "Applied permissions for command: ${command.name} ($command)" }
-            } else {
-                logger.warn { "Applying permissions to global application commands is currently not supported." }
-            }
-        } catch (e: KtorRequestException) {
-            logger.error(e) {
-                "Failed to apply application command permissions. This command will not be registered." +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        } catch (t: Throwable) {
-            logger.error(t) {
-                "Failed to apply application command permissions. This command will not be registered."
-            }
-
-            return null
-        }
+        injectPermissions(guild, command, response.id) ?: return null
 
         slashCommands[response.id] = command
 
@@ -553,36 +392,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
             }
         }
 
-        try {
-            if (guild != null) {
-                kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, response.id) {
-                    command.allowedUsers.map { user(it, true) }
-                    command.disallowedUsers.map { user(it, false) }
-
-                    command.allowedRoles.map { role(it, true) }
-                    command.disallowedRoles.map { role(it, false) }
-                }
-
-                logger.trace { "Applied permissions for command: ${command.name} ($command)" }
-            } else {
-                logger.warn { "Applying permissions to global application commands is currently not supported." }
-            }
-        } catch (e: KtorRequestException) {
-            logger.error(e) {
-                "Failed to apply application command permissions. This command will not be registered." +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        } catch (t: Throwable) {
-            logger.error(t) {
-                "Failed to apply application command permissions. This command will not be registered."
-            }
-
-            return null
-        }
+        injectPermissions(guild, command, response.id) ?: return null
 
         userCommands[response.id] = command
 
@@ -594,20 +404,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     // region: Unregistration functions
 
     /** Unregister a message command. **/
-    public open suspend fun unregisterGeneric(
-        command: ApplicationCommand<*>,
-        delete: Boolean = true
-    ): ApplicationCommand<*>? =
-        when (command) {
-            is MessageCommand<*> -> unregister(command, delete)
-            is SlashCommand<*, *> -> unregister(command, delete)
-            is UserCommand<*> -> unregister(command, delete)
-
-            else -> error("Unsupported application command type: ${command.type.name}")
-        }
-
-    /** Unregister a message command. **/
-    public open suspend fun unregister(command: MessageCommand<*>, delete: Boolean = true): MessageCommand<*>? {
+    public override suspend fun unregister(command: MessageCommand<*>, delete: Boolean): MessageCommand<*>? {
         val filtered = messageCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
@@ -619,7 +416,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     }
 
     /** Unregister a slash command. **/
-    public open suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>? {
+    public override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? {
         val filtered = slashCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
@@ -631,7 +428,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     }
 
     /** Unregister a user command. **/
-    public open suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>? {
+    public override suspend fun unregister(command: UserCommand<*>, delete: Boolean): UserCommand<*>? {
         val filtered = userCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
@@ -640,33 +437,6 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         }
 
         return userCommands.remove(id)
-    }
-
-    /** @suppress Internal function used to delete the given command from Discord. Used by [unregister]. **/
-    public open suspend fun deleteGeneric(
-        command: ApplicationCommand<*>,
-        discordCommandId: Snowflake,
-    ) {
-        try {
-            if (command.guildId != null) {
-                kord.unsafe.guildApplicationCommand(
-                    command.guildId!!,
-                    kord.resources.applicationId,
-                    discordCommandId
-                )
-            } else {
-                kord.unsafe.globalApplicationCommand(kord.resources.applicationId, discordCommandId).delete()
-            }
-        } catch (e: KtorRequestException) {
-            logger.warn(e) {
-                "Failed to delete ${command.type.name} command ${command.name}" +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        }
     }
 
     // endregion
@@ -702,119 +472,6 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
         command.call(event)
     }
-
-    // endregion
-
-    // region: Extensions
-
-    /** Registration logic for slash commands, extracted for clarity. **/
-    public open suspend fun ChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
-        this.defaultPermission = command.guildId == null || command.allowByDefault
-
-        if (command.hasBody) {
-            val args = command.arguments?.invoke()
-
-            if (args != null) {
-                args.args.forEach { arg ->
-                    val converter = arg.converter
-
-                    if (converter !is SlashCommandConverter) {
-                        error("Argument ${arg.displayName} does not support slash commands.")
-                    }
-
-                    if (this.options == null) this.options = mutableListOf()
-
-                    val option = converter.toSlashOption(arg)
-
-                    option.name = translationsProvider
-                        .translate(option.name, locale, converter.bundle)
-                        .lowercase()
-
-                    this.options!! += option
-                }
-            }
-        } else {
-            command.subCommands.forEach {
-                val args = it.arguments?.invoke()?.args?.map { arg ->
-                    val converter = arg.converter
-
-                    if (converter !is SlashCommandConverter) {
-                        error("Argument ${arg.displayName} does not support slash commands.")
-                    }
-
-                    val option = converter.toSlashOption(arg)
-
-                    option.name = translationsProvider
-                        .translate(option.name, locale, converter.bundle)
-                        .lowercase()
-
-                    option
-                }
-
-                this.subCommand(
-                    it.name,
-                    it.getTranslatedDescription(locale)
-                ) {
-                    if (args != null) {
-                        if (this.options == null) this.options = mutableListOf()
-
-                        this.options!!.addAll(args)
-                    }
-                }
-            }
-
-            command.groups.values.forEach { group ->
-                this.group(group.name, group.getTranslatedDescription(locale)) {
-                    group.subCommands.forEach {
-                        val args = it.arguments?.invoke()?.args?.map { arg ->
-                            val converter = arg.converter
-
-                            if (converter !is SlashCommandConverter) {
-                                error("Argument ${arg.displayName} does not support slash commands.")
-                            }
-
-                            val option = converter.toSlashOption(arg)
-
-                            option.name = translationsProvider
-                                .translate(option.name, locale, converter.bundle)
-                                .lowercase()
-
-                            converter.toSlashOption(arg)
-                        }
-
-                        this.subCommand(
-                            it.name,
-                            it.getTranslatedDescription(locale)
-                        ) {
-                            if (args != null) {
-                                if (this.options == null) this.options = mutableListOf()
-
-                                this.options!!.addAll(args)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /** Registration logic for message commands, extracted for clarity. **/
-    @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun MessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
-        this.defaultPermission = command.guildId == null || command.allowByDefault
-    }
-
-    /** Registration logic for user commands, extracted for clarity. **/
-    @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun UserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
-        this.defaultPermission = command.guildId == null || command.allowByDefault
-    }
-
-    /** Check whether the type and name of an extension-registered application command matches a Discord one. **/
-    public open fun ApplicationCommand<*>.matches(
-        locale: Locale,
-        other: dev.kord.core.entity.application.ApplicationCommand
-    ): Boolean = type == other.type && getTranslatedName(locale).equals(other.name, true)
 
     // endregion
 }
