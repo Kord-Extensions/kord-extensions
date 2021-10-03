@@ -1,6 +1,9 @@
 @file:Suppress(
     "UNCHECKED_CAST"
 )
+@file:OptIn(
+    ExperimentalCoroutinesApi::class
+)
 
 package com.kotlindiscord.kord.extensions.commands.application
 
@@ -12,7 +15,9 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
 
 /**
  * ApplicationCommandRegistry which acts based off a specified storage interface.
@@ -20,34 +25,30 @@ import kotlinx.coroutines.flow.firstOrNull
  * Discord lifecycles may not be implemented in this class and require manual updating.
  */
 public class StorageAwareApplicationCommandRegistry(
-    builder: () -> RegistryStorage<Snowflake, out ApplicationCommand<*>>
+    builder: () -> RegistryStorage<Snowflake, ApplicationCommand<*>>
 ) : ApplicationCommandRegistry() {
 
-    private val slashCommandStorage: RegistryStorage<Snowflake, SlashCommand<*, *>> =
-        builder as RegistryStorage<Snowflake, SlashCommand<*, *>>
-
-    private val messageCommandStorage: RegistryStorage<Snowflake, MessageCommand<*>> =
-        builder as RegistryStorage<Snowflake, MessageCommand<*>>
-
-    private val userCommandStorage: RegistryStorage<Snowflake, UserCommand<*>> =
-        builder as RegistryStorage<Snowflake, UserCommand<*>>
+    private val commandRegistry: RegistryStorage<Snowflake, ApplicationCommand<*>> = builder.invoke()
 
     override suspend fun initialize(commands: List<ApplicationCommand<*>>) {
-        commands.forEach {
-            when (it) {
-                is SlashCommand<*, *> -> slashCommandStorage.register(it)
-                is MessageCommand<*> -> messageCommandStorage.register(it)
-                is UserCommand<*> -> userCommandStorage.register(it)
+        commands.forEach { commandRegistry.register(it) }
+
+        val registeredCommands = commandRegistry.entryFlow().toList()
+
+        commands.forEach { command ->
+            if (registeredCommands.none { it.hasCommand(command) }) {
+                val commandId = createDiscordCommand(command)
+                commandId?.let {
+                    commandRegistry.set(it, command)
+                }
             }
         }
-
-        // check unknown & sync
     }
 
     override suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>? {
         val commandId = createDiscordCommand(command) ?: return null
 
-        slashCommandStorage.set(commandId, command)
+        commandRegistry.set(commandId, command)
 
         return command
     }
@@ -55,7 +56,7 @@ public class StorageAwareApplicationCommandRegistry(
     override suspend fun register(command: MessageCommand<*>): MessageCommand<*>? {
         val commandId = createDiscordCommand(command) ?: return null
 
-        messageCommandStorage.set(commandId, command)
+        commandRegistry.set(commandId, command)
 
         return command
     }
@@ -63,14 +64,14 @@ public class StorageAwareApplicationCommandRegistry(
     override suspend fun register(command: UserCommand<*>): UserCommand<*>? {
         val commandId = createDiscordCommand(command) ?: return null
 
-        userCommandStorage.set(commandId, command)
+        commandRegistry.set(commandId, command)
 
         return command
     }
 
     override suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = slashCommandStorage.get(commandId)
+        val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
 
         command ?: return logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
 
@@ -79,7 +80,7 @@ public class StorageAwareApplicationCommandRegistry(
 
     override suspend fun handle(event: MessageCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = messageCommandStorage.get(commandId)
+        val command = commandRegistry.get(commandId) as? MessageCommand<*>
 
         command ?: return logger.warn { "Received interaction for unknown message command: ${commandId.asString}" }
 
@@ -88,7 +89,7 @@ public class StorageAwareApplicationCommandRegistry(
 
     override suspend fun handle(event: UserCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = userCommandStorage.get(commandId)
+        val command = commandRegistry.get(commandId) as? UserCommand<*>
 
         command ?: return logger.warn { "Received interaction for unknown user command: ${commandId.asString}" }
 
@@ -96,22 +97,21 @@ public class StorageAwareApplicationCommandRegistry(
     }
 
     override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? =
-        unregisterGeneric(slashCommandStorage, command, delete)
+        unregisterApplicationCommand(command, delete) as? SlashCommand<*, *>
 
     override suspend fun unregister(command: MessageCommand<*>, delete: Boolean): MessageCommand<*>? =
-        unregisterGeneric(messageCommandStorage, command, delete)
+        unregisterApplicationCommand(command, delete) as? MessageCommand<*>
 
     override suspend fun unregister(command: UserCommand<*>, delete: Boolean): UserCommand<*>? =
-        unregisterGeneric(userCommandStorage, command, delete)
+        unregisterApplicationCommand(command, delete) as? UserCommand<*>
 
-    private suspend fun <T : ApplicationCommand<*>> unregisterGeneric(
-        registry: RegistryStorage<Snowflake, T>,
-        command: T,
+    private suspend fun unregisterApplicationCommand(
+        command: ApplicationCommand<*>,
         delete: Boolean
-    ): T? {
-        val id = registry.constructUniqueIdentifier(command)
-        val snowflake = registry.entryFlow()
-            .firstOrNull { registry.constructUniqueIdentifier(it.value) == id }
+    ): ApplicationCommand<*>? {
+        val id = commandRegistry.constructUniqueIdentifier(command)
+        val snowflake = commandRegistry.entryFlow()
+            .firstOrNull { commandRegistry.constructUniqueIdentifier(it.value) == id }
             ?.key
 
         snowflake?.let {
@@ -119,9 +119,17 @@ public class StorageAwareApplicationCommandRegistry(
                 deleteGeneric(command, it)
             }
 
-            return registry.remove(it)
+            return commandRegistry.remove(it)
         }
 
         return null
+    }
+
+    private fun RegistryStorage.StorageEntry<Snowflake, ApplicationCommand<*>>.hasCommand(
+        command: ApplicationCommand<*>
+    ): Boolean {
+        val key = commandRegistry.constructUniqueIdentifier(value)
+        val other = commandRegistry.constructUniqueIdentifier(command)
+        return key == other
     }
 }
