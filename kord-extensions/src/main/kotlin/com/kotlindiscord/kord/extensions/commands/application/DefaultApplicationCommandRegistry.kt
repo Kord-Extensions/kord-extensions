@@ -103,13 +103,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                 if (guildId != null) {
                     kord.bulkEditApplicationCommandPermissions(kord.resources.applicationId, guildId) {
                         commands.forEach { (id, commandObj) ->
-                            command(id) {
-                                commandObj.allowedUsers.map { user(it, true) }
-                                commandObj.disallowedUsers.map { user(it, false) }
-
-                                commandObj.allowedRoles.map { role(it, true) }
-                                commandObj.disallowedRoles.map { role(it, false) }
-                            }
+                            command(id) { injectRawPermissions(this, commandObj) }
                         }
                     }
 

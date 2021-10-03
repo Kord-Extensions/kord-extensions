@@ -201,11 +201,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
         try {
             if (guild != null) {
                 kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, commandId) {
-                    command.allowedUsers.map { user(it, true) }
-                    command.disallowedUsers.map { user(it, false) }
-
-                    command.allowedRoles.map { role(it, true) }
-                    command.disallowedRoles.map { role(it, false) }
+                    injectRawPermissions(this, command)
                 }
 
                 logger.trace { "Applied permissions for command: ${command.name} ($command)" }
@@ -229,6 +225,17 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
             return null
         }
         return command
+    }
+
+    protected fun injectRawPermissions(
+        builder: ApplicationCommandPermissionsModifyBuilder,
+        command: ApplicationCommand<*>
+    ) {
+        command.allowedUsers.map { builder.user(it, true) }
+        command.disallowedUsers.map { builder.user(it, false) }
+
+        command.allowedRoles.map { builder.role(it, true) }
+        command.disallowedRoles.map { builder.role(it, false) }
     }
 
     // region: Extensions
