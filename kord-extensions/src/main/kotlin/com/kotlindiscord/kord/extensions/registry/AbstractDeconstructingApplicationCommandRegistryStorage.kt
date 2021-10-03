@@ -52,14 +52,14 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T 
      */
     protected abstract fun entries(): Flow<RegistryStorage.StorageEntry<String, String>>
 
-    protected open fun constructKey(data: T): String = "${data.name}-${data.type.value}-${data.guildId ?: 0}"
+    override fun constructUniqueIdentifier(data: T): String = "${data.name}-${data.type.value}-${data.guildId ?: 0}"
 
     override suspend fun register(data: T) {
-        commandMapping[constructKey(data)] = data
+        commandMapping[constructUniqueIdentifier(data)] = data
     }
 
     override suspend fun set(id: Snowflake, data: T) {
-        val key = constructKey(data)
+        val key = constructUniqueIdentifier(data)
         commandMapping[key] = data
         upsert(id.asString, key)
     }

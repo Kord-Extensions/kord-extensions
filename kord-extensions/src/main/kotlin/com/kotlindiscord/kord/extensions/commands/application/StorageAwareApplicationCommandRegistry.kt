@@ -12,6 +12,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
+import kotlinx.coroutines.flow.firstOrNull
 
 /**
  * ApplicationCommandRegistry which acts based off a specified storage interface.
@@ -85,18 +86,33 @@ public class StorageAwareApplicationCommandRegistry(
         command.call(event)
     }
 
-    @Suppress("StringLiteralDuplication")
-    override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? {
-        TODO("Not yet implemented")
-    }
+    override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? =
+        unregisterGeneric(slashCommandStorage, command, delete)
 
-    @Suppress("StringLiteralDuplication")
-    override suspend fun unregister(command: MessageCommand<*>, delete: Boolean): MessageCommand<*>? {
-        TODO("Not yet implemented")
-    }
+    override suspend fun unregister(command: MessageCommand<*>, delete: Boolean): MessageCommand<*>? =
+        unregisterGeneric(messageCommandStorage, command, delete)
 
-    @Suppress("StringLiteralDuplication")
-    override suspend fun unregister(command: UserCommand<*>, delete: Boolean): UserCommand<*>? {
-        TODO("Not yet implemented")
+    override suspend fun unregister(command: UserCommand<*>, delete: Boolean): UserCommand<*>? =
+        unregisterGeneric(userCommandStorage, command, delete)
+
+    private suspend fun <T : ApplicationCommand<*>> unregisterGeneric(
+        registry: RegistryStorage<Snowflake, T>,
+        command: T,
+        delete: Boolean
+    ): T? {
+        val id = registry.constructUniqueIdentifier(command)
+        val snowflake = registry.entryFlow()
+            .firstOrNull { registry.constructUniqueIdentifier(it.value) == id }
+            ?.key
+
+        snowflake?.let {
+            if (delete) {
+                deleteGeneric(command, it)
+            }
+
+            return registry.remove(it)
+        }
+
+        return null
     }
 }

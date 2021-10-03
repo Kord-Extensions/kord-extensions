@@ -45,6 +45,11 @@ public interface RegistryStorage<K, T> {
     public fun entryFlow(): Flow<StorageEntry<K, T>>
 
     /**
+     * Constructs a unique key for the given data.
+     */
+    public fun constructUniqueIdentifier(data: T): String
+
+    /**
      * Data class to represent an entry in the [RegistryStorage].
      */
     public data class StorageEntry<K, V>(

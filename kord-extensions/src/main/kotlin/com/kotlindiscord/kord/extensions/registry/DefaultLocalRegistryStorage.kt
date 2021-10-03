@@ -29,4 +29,6 @@ public class DefaultLocalRegistryStorage<K, T> : RegistryStorage<K, T> {
             .asFlow()
             .map { RegistryStorage.StorageEntry(it.key, it.value) }
     }
+
+    override fun constructUniqueIdentifier(data: T): String = data.hashCode().toString()
 }
