@@ -92,14 +92,14 @@ public suspend fun ComponentContainer.publicSelectMenu(
 }
 
 /** Convenience function for applying the components in a [ComponentContainer] to a message you're creating. **/
-public fun MessageCreateBuilder.applyComponents(components: ComponentContainer) {
+public suspend fun MessageCreateBuilder.applyComponents(components: ComponentContainer) {
     with(components) {
         applyToMessage()
     }
 }
 
 /** Convenience function for applying the components in a [ComponentContainer] to a message you're editing. **/
-public fun MessageModifyBuilder.applyComponents(components: ComponentContainer) {
+public suspend fun MessageModifyBuilder.applyComponents(components: ComponentContainer) {
     with(components) {
         applyToMessage()
     }

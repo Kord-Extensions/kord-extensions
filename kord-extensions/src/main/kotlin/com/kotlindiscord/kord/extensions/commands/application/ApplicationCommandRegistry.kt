@@ -1,8 +1,11 @@
 @file:Suppress(
+    "UNCHECKED_CAST",
     "TooGenericExceptionCaught",
     "StringLiteralDuplication",
-    "AnnotationSpacing",
-    "SpacingBetweenAnnotations"
+)
+@file:OptIn(
+    KordUnsafe::class,
+    KordExperimental::class
 )
 
 package com.kotlindiscord.kord.extensions.commands.application
@@ -14,28 +17,37 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.behavior.createApplicationCommands
 import dev.kord.core.behavior.createChatInputCommand
 import dev.kord.core.behavior.createMessageCommand
 import dev.kord.core.behavior.createUserCommand
+import dev.kord.core.entity.Guild
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.*
-import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
-import kotlinx.coroutines.flow.toList
+import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
-/** Registry for all Discord application commands. **/
-public open class ApplicationCommandRegistry : KoinComponent {
-    private val logger = KotlinLogging.logger { }
+/**
+ * Abstract class representing common behavior for application command registries.
+ *
+ * Deals with the registration and syncing of, and dispatching to, all application commands.
+ * Subtypes should build their functionality on top of this type.
+ *
+ * @see DefaultApplicationCommandRegistry
+ */
+public abstract class ApplicationCommandRegistry : KoinComponent {
+
+    protected val logger: KLogger = KotlinLogging.logger { }
 
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
@@ -43,23 +55,14 @@ public open class ApplicationCommandRegistry : KoinComponent {
     /** Kord instance, backing the ExtensibleBot. **/
     public open val kord: Kord by inject()
 
-    /** Command parser to use for slash commands. **/
-    public open val argumentParser: SlashCommandParser = SlashCommandParser()
-
     /** Translations provider, for retrieving translations. **/
     public open val translationsProvider: TranslationsProvider by inject()
 
-    /** Mapping of Discord-side command ID to a message command object. **/
-    public open val messageCommands: MutableMap<Snowflake, MessageCommand<*>> = mutableMapOf()
-
-    /** Mapping of Discord-side command ID to a slash command object. **/
-    public open val slashCommands: MutableMap<Snowflake, SlashCommand<*, *>> = mutableMapOf()
-
-    /** Mapping of Discord-side command ID to a user command object. **/
-    public open val userCommands: MutableMap<Snowflake, UserCommand<*>> = mutableMapOf()
+    /** Command parser to use for slash commands. **/
+    public val argumentParser: SlashCommandParser = SlashCommandParser()
 
     /** Whether the initial sync has been finished, and commands should be registered directly. **/
-    public open var initialised: Boolean = false
+    public var initialised: Boolean = false
 
     /** Quick access to the human-readable name for a Discord application command type. **/
     public val ApplicationCommandType.name: String
@@ -72,15 +75,9 @@ public open class ApplicationCommandRegistry : KoinComponent {
         }
 
     /** Handles the initial registration of commands, after extensions have been loaded. **/
-    public open suspend fun initialRegistration() {
+    public suspend fun initialRegistration() {
         if (initialised) {
             return
-        }
-
-        if (!bot.settings.applicationCommandsBuilder.register) {
-            logger.debug {
-                "Application command registration is disabled, pairing existing commands with extension commands"
-            }
         }
 
         val commands: MutableList<ApplicationCommand<*>> = mutableListOf()
@@ -92,281 +89,109 @@ public open class ApplicationCommandRegistry : KoinComponent {
         }
 
         try {
-            syncAll(true, commands)
+            initialize(commands)
         } catch (t: Throwable) {
-            logger.error(t) { "Failed to synchronise application commands" }
+            logger.error(t) { "Failed to initialize registry" }
         }
 
         initialised = true
     }
 
-    // region: Untyped sync functions
+    /** Called once the initial registration started and all extensions are loaded. **/
+    protected abstract suspend fun initialize(commands: List<ApplicationCommand<*>>)
 
-    /** Register multiple generic application commands. **/
-    public open suspend fun syncAll(removeOthers: Boolean = false, commands: List<ApplicationCommand<*>>) {
-        val groupedCommands = commands.groupBy { it.guildId }
+    /** Register a [SlashCommand] to the registry.
+     *
+     * This method is only called after the [initialize] method and allows runtime modifications.
+     */
+    public abstract suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>?
 
-        groupedCommands.forEach {
-            try {
-                sync(removeOthers, it.key, it.value)
-            } catch (e: KtorRequestException) {
-                logger.error(e) {
-                    var message = if (it.key == null) {
-                        "Failed to synchronise global application commands"
-                    } else {
-                        "Failed to synchronise application commands for guild with ID: ${it.key!!.asString}"
-                    }
+    /**
+     * Register a [MessageCommand] to the registry.
+     *
+     * This method is only called after the [initialize] method and allows runtime modifications.
+     */
+    public abstract suspend fun register(command: MessageCommand<*>): MessageCommand<*>?
 
-                    if (e.error?.message != null) {
-                        message += "\n        Discord error message: ${e.error?.message}"
-                    }
+    /** Register a [UserCommand] to the registry.
+     *
+     * This method is only called after the [initialize] method and allows runtime modifications.
+     */
+    public abstract suspend fun register(command: UserCommand<*>): UserCommand<*>?
 
-                    if (e.error?.code == JsonErrorCode.MissingAccess) {
-                        message += "\n        Double-check that the bot was added to this guild with the " +
-                            "`application.commands` scope enabled"
-                    }
+    /** Event handler for slash commands. **/
+    public abstract suspend fun handle(event: ChatInputCommandInteractionCreateEvent)
 
-                    message
-                }
-            } catch (t: Throwable) {
-                logger.error(t) {
-                    if (it.key == null) {
-                        "Failed to synchronise global application commands"
-                    } else {
-                        "Failed to synchronise application commands for guild with ID: ${it.key!!.asString}"
-                    }
-                }
-            }
+    /** Event handler for message commands. **/
+    public abstract suspend fun handle(event: MessageCommandInteractionCreateEvent)
+
+    /** Event handler for user commands. **/
+    public abstract suspend fun handle(event: UserCommandInteractionCreateEvent)
+
+    /** Unregister a slash command. **/
+    public abstract suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>?
+
+    /** Unregister a message command. **/
+    public abstract suspend fun unregister(command: MessageCommand<*>, delete: Boolean = true): MessageCommand<*>?
+
+    /** Unregister a user command. **/
+    public abstract suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>?
+
+    // region: Utilities
+
+    /** Unregister a generic [ApplicationCommand]. **/
+    public open suspend fun unregisterGeneric(
+        command: ApplicationCommand<*>,
+        delete: Boolean = true,
+    ): ApplicationCommand<*>? =
+        when (command) {
+            is MessageCommand<*> -> unregister(command, delete)
+            is SlashCommand<*, *> -> unregister(command, delete)
+            is UserCommand<*> -> unregister(command, delete)
+
+            else -> error("Unsupported application command type: ${command.type.name}")
         }
 
-        val commandsWithPerms = (messageCommands + slashCommands + userCommands)
-            .filterValues {
-                it.allowedRoles.isNotEmpty() ||
-                    it.allowedUsers.isNotEmpty() ||
-                    it.disallowedRoles.isNotEmpty() ||
-                    it.disallowedUsers.isNotEmpty() ||
-                    !it.allowByDefault
-            }
-            .toList()
-            .groupBy { it.second.guildId }
-
+    /** @suppress Internal function used to delete the given command from Discord. Used by [unregister]. **/
+    public open suspend fun deleteGeneric(
+        command: ApplicationCommand<*>,
+        discordCommandId: Snowflake,
+    ) {
         try {
-            commandsWithPerms.forEach { (guildId, commands) ->
-                if (guildId != null) {
-                    kord.bulkEditApplicationCommandPermissions(kord.resources.applicationId, guildId) {
-                        commands.forEach { (id, commandObj) ->
-                            command(id) {
-                                commandObj.allowedUsers.map { user(it, true) }
-                                commandObj.disallowedUsers.map { user(it, false) }
-
-                                commandObj.allowedRoles.map { role(it, true) }
-                                commandObj.disallowedRoles.map { role(it, false) }
-                            }
-                        }
-                    }
-
-                    logger.trace { "Applied permissions for ${commands.size} commands." }
-                } else {
-                    logger.warn { "Applying permissions to global application commands is currently not supported." }
-                }
+            if (command.guildId != null) {
+                kord.unsafe.guildApplicationCommand(
+                    command.guildId!!,
+                    kord.resources.applicationId,
+                    discordCommandId
+                ).delete()
+            } else {
+                kord.unsafe.globalApplicationCommand(kord.resources.applicationId, discordCommandId).delete()
             }
         } catch (e: KtorRequestException) {
-            logger.error(e) {
-                "Failed to apply application command permissions - for this reason, all commands with configured" +
-                    "permissions will be disabled." +
+            logger.warn(e) {
+                "Failed to delete ${command.type.name} command ${command.name}" +
                     if (e.error?.message != null) {
                         "\n        Discord error message: ${e.error?.message}"
                     } else {
                         ""
                     }
             }
-        } catch (t: Throwable) {
-            logger.error(t) {
-                "Failed to apply application command permissions - for this reason, all commands with configured" +
-                    "permissions will be disabled."
-            }
-
-            commandsWithPerms.forEach { (_, commands) ->
-                commands.forEach { (id, _) ->
-                    messageCommands.remove(id)
-                    slashCommands.remove(id)
-                    userCommands.remove(id)
-                }
-            }
         }
     }
-
-    /** Register multiple generic application commands. **/
-    public open suspend fun sync(
-        removeOthers: Boolean = false,
-        guildId: Snowflake?,
-        commands: List<ApplicationCommand<*>>
-    ) {
-        // NOTE: Someday, discord will make real i18n possible, we hope...
-        val locale = bot.settings.i18nBuilder.defaultLocale
-
-        val guild = if (guildId != null) {
-            kord.getGuild(guildId)
-                ?: return logger.debug {
-                    "Cannot register application commands for guild ID ${guildId.asString}, " +
-                        "as it seems to be missing."
-                }
-        } else {
-            null
-        }
-
-        // Get guild commands if we're registering them (guild != null), otherwise get global commands
-        val registered = guild?.commands?.toList()
-            ?: kord.globalCommands.toList()
-
-        if (!bot.settings.applicationCommandsBuilder.register) {
-            commands.forEach { commandObj ->
-                val existingCommand = registered.firstOrNull { commandObj.matches(locale, it) }
-
-                if (existingCommand != null) {
-                    when (commandObj) {
-                        is MessageCommand<*> -> messageCommands[existingCommand.id] = commandObj
-                        is SlashCommand<*, *> -> slashCommands[existingCommand.id] = commandObj
-                        is UserCommand<*> -> userCommands[existingCommand.id] = commandObj
-                    }
-                }
-            }
-
-            return  // We're only syncing them up, there's no other API work to do
-        }
-
-        // Extension commands that haven't been registered yet
-        val toAdd = commands.filter { c -> registered.all { !c.matches(locale, it) } }
-
-        // Extension commands that were previously registered
-        val toUpdate = commands.filter { c -> registered.any { c.matches(locale, it) } }
-
-        // Registered Discord commands that haven't been provided by extensions
-        val toRemove = if (removeOthers) {
-            registered.filter { c -> commands.all { !it.matches(locale, c) } }
-        } else {
-            listOf()
-        }
-
-        logger.info {
-            var message = if (guild == null) {
-                "Global application commands: ${toAdd.size} to add / " +
-                    "${toUpdate.size} to update / " +
-                    "${toRemove.size} to remove"
-            } else {
-                "Application commands for guild ${guild.name}: ${toAdd.size} to add / " +
-                    "${toUpdate.size} to update / " +
-                    "${toRemove.size} to remove"
-            }
-
-            if (!removeOthers) {
-                message += "\nThe `removeOthers` parameter is `false`, so no commands will be removed."
-            }
-
-            message
-        }
-
-        val toCreate = toAdd + toUpdate
-
-        @Suppress("IfThenToElvis")  // Ultimately, this is far more readable
-        val response = if (guild == null) {
-            // We're registering global commands here, if the guild is null
-
-            kord.createGlobalApplicationCommands {
-                toCreate.forEach {
-                    val name = it.getTranslatedName(locale)
-
-                    logger.trace { "Adding/updating global ${it.type.name} command: $name" }
-
-                    when (it) {
-                        is MessageCommand<*> -> message(name) { this.register(locale, it) }
-                        is UserCommand<*> -> user(name) { this.register(locale, it) }
-
-                        is SlashCommand<*, *> -> input(
-                            name, it.getTranslatedDescription(locale)
-                        ) { this.register(locale, it) }
-                    }
-                }
-            }.toList()
-        } else {
-            // We're registering guild-specific commands here, if the guild is available
-
-            guild.createApplicationCommands {
-                toCreate.forEach {
-                    val name = it.getTranslatedName(locale)
-
-                    logger.trace { "Adding/updating guild-specific ${it.type.name} command: $name" }
-
-                    when (it) {
-                        is MessageCommand<*> -> message(name) { this.register(locale, it) }
-                        is UserCommand<*> -> user(name) { this.register(locale, it) }
-
-                        is SlashCommand<*, *> -> input(
-                            name, it.getTranslatedDescription(locale)
-                        ) { this.register(locale, it) }
-                    }
-                }
-            }.toList()
-        }
-
-        // Next, we need to associate all the commands we just registered with the commands in our extensions
-        toCreate.forEach { command ->
-            val match = response.first { command.matches(locale, it) }
-
-            when (command) {
-                is MessageCommand<*> -> messageCommands[match.id] = command
-                is SlashCommand<*, *> -> slashCommands[match.id] = command
-                is UserCommand<*> -> userCommands[match.id] = command
-            }
-        }
-
-        // Finally, we can remove anything that needs to be removed
-        toRemove.forEach {
-            logger.trace { "Removing ${it.type.name} command: ${it.name}" }
-            it.delete()
-        }
-
-        logger.info {
-            if (guild == null) {
-                "Finished synchronising global application commands"
-            } else {
-                "Finished synchronising application commands for guild ${guild.name}"
-            }
-        }
-    }
-
-    // endregion
-
-    // region: Typed batch registration functions
-
-    /** Register multiple message commands. **/
-    public open suspend fun registerAll(vararg commands: MessageCommand<*>): List<MessageCommand<*>> =
-        commands.map {
-            try {
-                register(it) as MessageCommand<*>
-            } catch (e: KtorRequestException) {
-                logger.warn(e) {
-                    "Failed to register ${it.type.name} command: ${it.name}" +
-                        if (e.error?.message != null) {
-                            "\n        Discord error message: ${e.error?.message}"
-                        } else {
-                            ""
-                        }
-                }
-
-                null
-            } catch (t: Throwable) {
-                logger.warn(t) { "Failed to register ${it.type.name} command: ${it.name}" }
-
-                null
-            }
-        }.filterNotNull()
 
     /** Register multiple slash commands. **/
-    public open suspend fun registerAll(vararg commands: SlashCommand<*, *>): List<SlashCommand<*, *>> =
-        commands.map {
+    public open suspend fun <T : ApplicationCommand<*>> registerAll(vararg commands: T): List<T> =
+        commands.mapNotNull {
             try {
-                register(it) as SlashCommand<*, *>
+                when (it) {
+                    is SlashCommand<*, *> -> register(it) as T
+                    is MessageCommand<*> -> register(it) as T
+                    is UserCommand<*> -> register(it) as T
+
+                    else -> throw IllegalArgumentException(
+                        "The registry does not know about this type of ApplicationCommand"
+                    )
+                }
             } catch (e: KtorRequestException) {
                 logger.warn(e) {
                     "Failed to register ${it.type.name} command: ${it.name}" +
@@ -383,103 +208,23 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
                 null
             }
-        }.filterNotNull()
-
-    /** Register multiple user commands. **/
-    public open suspend fun registerAll(vararg commands: UserCommand<*>): List<UserCommand<*>> =
-        commands.map {
-            try {
-                register(it) as UserCommand<*>
-            } catch (e: KtorRequestException) {
-                logger.warn(e) {
-                    "Failed to register ${it.type.name} command: ${it.name}" +
-                        if (e.error?.message != null) {
-                            "\n        Discord error message: ${e.error?.message}"
-                        } else {
-                            ""
-                        }
-                }
-
-                null
-            } catch (t: Throwable) {
-                logger.warn(t) { "Failed to register ${it.type.name} command: ${it.name}" }
-
-                null
-            }
-        }.filterNotNull()
-
-    // endregion
-
-    // region: Typed registration functions
-
-    /** Register a message command. **/
-    public open suspend fun register(command: MessageCommand<*>): MessageCommand<*>? {
-        val locale = bot.settings.i18nBuilder.defaultLocale
-
-        val guild = if (command.guildId != null) {
-            kord.getGuild(command.guildId!!)
-        } else {
-            null
         }
 
-        val name = command.getTranslatedName(locale)
+    /**
+     * Creates a KordEx [ApplicationCommand] as discord command and returns the created command's id as [Snowflake].
+     */
+    public open suspend fun createDiscordCommand(command: ApplicationCommand<*>): Snowflake? = when (command) {
+        is SlashCommand<*, *> -> createDiscordSlashCommand(command)
+        is UserCommand<*> -> createDiscordUserCommand(command)
+        is MessageCommand<*> -> createDiscordMessageCommand(command)
 
-        val response = if (guild == null) {
-            // We're registering global commands here, if the guild is null
-
-            kord.createGlobalMessageCommand(name) {
-                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
-
-                this.register(locale, command)
-            }
-        } else {
-            // We're registering guild-specific commands here, if the guild is available
-
-            guild.createMessageCommand(name) {
-                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
-
-                this.register(locale, command)
-            }
-        }
-
-        try {
-            if (guild != null) {
-                kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, response.id) {
-                    command.allowedUsers.map { user(it, true) }
-                    command.disallowedUsers.map { user(it, false) }
-
-                    command.allowedRoles.map { role(it, true) }
-                    command.disallowedRoles.map { role(it, false) }
-                }
-
-                logger.trace { "Applied permissions for command: ${command.name} ($command)" }
-            } else {
-                logger.warn { "Applying permissions to global application commands is currently not supported." }
-            }
-        } catch (e: KtorRequestException) {
-            logger.error(e) {
-                "Failed to apply application command permissions. This command will not be registered." +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        } catch (t: Throwable) {
-            logger.error(t) {
-                "Failed to apply application command permissions. This command will not be registered."
-            }
-
-            return null
-        }
-
-        messageCommands[response.id] = command
-
-        return command
+        else -> throw IllegalArgumentException("Unknown ApplicationCommand type")
     }
 
-    /** Register a slash command. **/
-    public open suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>? {
+    /**
+     * Creates a KordEx [SlashCommand] as discord command and returns the created command's id as [Snowflake].
+     */
+    public open suspend fun createDiscordSlashCommand(command: SlashCommand<*, *>): Snowflake? {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
@@ -509,44 +254,15 @@ public open class ApplicationCommandRegistry : KoinComponent {
             }
         }
 
-        try {
-            if (guild != null) {
-                kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, response.id) {
-                    command.allowedUsers.map { user(it, true) }
-                    command.disallowedUsers.map { user(it, false) }
+        injectPermissions(guild, command, response.id) ?: return null
 
-                    command.allowedRoles.map { role(it, true) }
-                    command.disallowedRoles.map { role(it, false) }
-                }
-
-                logger.trace { "Applied permissions for command: ${command.name} ($command)" }
-            } else {
-                logger.warn { "Applying permissions to global application commands is currently not supported." }
-            }
-        } catch (e: KtorRequestException) {
-            logger.error(e) {
-                "Failed to apply application command permissions. This command will not be registered." +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        } catch (t: Throwable) {
-            logger.error(t) {
-                "Failed to apply application command permissions. This command will not be registered."
-            }
-
-            return null
-        }
-
-        slashCommands[response.id] = command
-
-        return command
+        return response.id
     }
 
-    /** Register a user command. **/
-    public open suspend fun register(command: UserCommand<*>): UserCommand<*>? {
+    /**
+     * Creates a KordEx [UserCommand] as discord command and returns the created command's id as [Snowflake].
+     */
+    public open suspend fun createDiscordUserCommand(command: UserCommand<*>): Snowflake? {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
@@ -575,14 +291,61 @@ public open class ApplicationCommandRegistry : KoinComponent {
             }
         }
 
+        injectPermissions(guild, command, response.id) ?: return null
+
+        return response.id
+    }
+
+    /**
+     * Creates a KordEx [MessageCommand] as discord command and returns the created command's id as [Snowflake].
+     */
+    public open suspend fun createDiscordMessageCommand(command: MessageCommand<*>): Snowflake? {
+        val locale = bot.settings.i18nBuilder.defaultLocale
+
+        val guild = if (command.guildId != null) {
+            kord.getGuild(command.guildId!!)
+        } else {
+            null
+        }
+
+        val name = command.getTranslatedName(locale)
+
+        val response = if (guild == null) {
+            // We're registering global commands here, if the guild is null
+
+            kord.createGlobalMessageCommand(name) {
+                logger.trace { "Adding/updating global ${command.type.name} command: $name" }
+
+                this.register(locale, command)
+            }
+        } else {
+            // We're registering guild-specific commands here, if the guild is available
+
+            guild.createMessageCommand(name) {
+                logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
+
+                this.register(locale, command)
+            }
+        }
+
+        injectPermissions(guild, command, response.id) ?: return null
+
+        return response.id
+    }
+
+    // endregion
+
+    // region: Permissions
+
+    protected suspend fun <T : ApplicationCommand<*>> injectPermissions(
+        guild: Guild?,
+        command: T,
+        commandId: Snowflake
+    ): T? {
         try {
             if (guild != null) {
-                kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, response.id) {
-                    command.allowedUsers.map { user(it, true) }
-                    command.disallowedUsers.map { user(it, false) }
-
-                    command.allowedRoles.map { role(it, true) }
-                    command.disallowedRoles.map { role(it, false) }
+                kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, commandId) {
+                    injectRawPermissions(this, command)
                 }
 
                 logger.trace { "Applied permissions for command: ${command.name} ($command)" }
@@ -605,124 +368,18 @@ public open class ApplicationCommandRegistry : KoinComponent {
 
             return null
         }
-
-        userCommands[response.id] = command
-
         return command
     }
 
-    // endregion
-
-    // region: Unregistration functions
-
-    /** Unregister a message command. **/
-    public open suspend fun unregisterGeneric(
-        command: ApplicationCommand<*>,
-        delete: Boolean = true
-    ): ApplicationCommand<*>? =
-        when (command) {
-            is MessageCommand<*> -> unregister(command, delete)
-            is SlashCommand<*, *> -> unregister(command, delete)
-            is UserCommand<*> -> unregister(command, delete)
-
-            else -> error("Unsupported application command type: ${command.type.name}")
-        }
-
-    /** Unregister a message command. **/
-    public open suspend fun unregister(command: MessageCommand<*>, delete: Boolean = true): MessageCommand<*>? {
-        val filtered = messageCommands.filter { it.value == command }
-        val id = filtered.keys.firstOrNull() ?: return null
-
-        if (delete) {
-            deleteGeneric(command, id)
-        }
-
-        return messageCommands.remove(id)
-    }
-
-    /** Unregister a slash command. **/
-    public open suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>? {
-        val filtered = slashCommands.filter { it.value == command }
-        val id = filtered.keys.firstOrNull() ?: return null
-
-        if (delete) {
-            deleteGeneric(command, id)
-        }
-
-        return slashCommands.remove(id)
-    }
-
-    /** Unregister a user command. **/
-    public open suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>? {
-        val filtered = userCommands.filter { it.value == command }
-        val id = filtered.keys.firstOrNull() ?: return null
-
-        if (delete) {
-            deleteGeneric(command, id)
-        }
-
-        return userCommands.remove(id)
-    }
-
-    /** @suppress Internal function used to delete the given command from Discord. Used by [unregister]. **/
-    public open suspend fun deleteGeneric(
-        command: ApplicationCommand<*>,
-        discordCommandId: Snowflake,
+    protected fun injectRawPermissions(
+        builder: ApplicationCommandPermissionsModifyBuilder,
+        command: ApplicationCommand<*>
     ) {
-        try {
-            if (command.guildId != null) {
-                kord.unsafe.guildApplicationCommand(
-                    command.guildId!!,
-                    kord.resources.applicationId,
-                    discordCommandId
-                ).delete()
-            } else {
-                kord.unsafe.globalApplicationCommand(kord.resources.applicationId, discordCommandId).delete()
-            }
-        } catch (e: KtorRequestException) {
-            logger.warn(e) {
-                "Failed to delete ${command.type.name} command ${command.name}" +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        }
-    }
+        command.allowedUsers.map { builder.user(it, true) }
+        command.disallowedUsers.map { builder.user(it, false) }
 
-    // endregion
-
-    // region: Event handlers
-
-    /** Event handler for message commands. **/
-    public open suspend fun handle(event: MessageCommandInteractionCreateEvent) {
-        val commandId = event.interaction.invokedCommandId
-        val command = messageCommands[commandId]
-
-        command ?: return logger.warn { "Received interaction for unknown message command: ${commandId.asString}" }
-
-        command.call(event)
-    }
-
-    /** Event handler for slash commands. **/
-    public open suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
-        val commandId = event.interaction.command.rootId
-        val command = slashCommands[commandId]
-
-        command ?: return logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
-
-        command.call(event)
-    }
-
-    /** Event handler for user commands. **/
-    public open suspend fun handle(event: UserCommandInteractionCreateEvent) {
-        val commandId = event.interaction.invokedCommandId
-        val command = userCommands[commandId]
-
-        command ?: return logger.warn { "Received interaction for unknown user command: ${commandId.asString}" }
-
-        command.call(event)
+        command.allowedRoles.map { builder.role(it, true) }
+        command.disallowedRoles.map { builder.role(it, false) }
     }
 
     // endregion

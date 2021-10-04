@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -973,7 +974,7 @@ public open class ExtensibleBotBuilder {
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var applicationCommandRegistryBuilder: () -> ApplicationCommandRegistry =
-            { ApplicationCommandRegistry() }
+            { DefaultApplicationCommandRegistry() }
 
         /**
          * List of message command checks.

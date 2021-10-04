@@ -2,6 +2,8 @@ package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.components.buttons.InteractionButtonWithAction
 import com.kotlindiscord.kord.extensions.components.menus.SelectMenu
+import com.kotlindiscord.kord.extensions.registry.DefaultLocalRegistryStorage
+import com.kotlindiscord.kord.extensions.registry.RegistryStorage
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
@@ -19,28 +21,28 @@ public open class ComponentRegistry {
     public open val scheduler: Scheduler = Scheduler()
 
     /** Map of registered component IDs to their components. **/
-    public open val components: MutableMap<String, Component> = mutableMapOf()
+    public open val storage: RegistryStorage<String, Component> = DefaultLocalRegistryStorage()
 
     /** Register a component. Only components with IDs need registering. **/
-    public open fun register(component: ComponentWithID) {
+    public open suspend fun register(component: ComponentWithID) {
         logger.trace { "Registering component with ID: ${component.id}" }
 
-        components[component.id] = component
+        storage.set(component.id, component)
     }
 
     /** Unregister a registered component. **/
-    public open fun unregister(component: ComponentWithID): Component? =
+    public open suspend fun unregister(component: ComponentWithID): Component? =
         unregister(component.id)
 
     /** Unregister a registered component, by ID. **/
-    public open fun unregister(id: String): Component? =
-        components.remove(id)
+    public open suspend fun unregister(id: String): Component? =
+        storage.remove(id)
 
     /** Dispatch a [ButtonInteractionCreateEvent] to its button component object. **/
     public suspend fun handle(event: ButtonInteractionCreateEvent) {
         val id = event.interaction.componentId
 
-        when (val c = components[id]) {
+        when (val c = storage.get(id)) {
             is InteractionButtonWithAction<*> -> c.call(event)
 
             null -> logger.debug { "Button interaction received for unknown component ID: $id" }
@@ -56,7 +58,7 @@ public open class ComponentRegistry {
     public suspend fun handle(event: SelectMenuInteractionCreateEvent) {
         val id = event.interaction.componentId
 
-        when (val c = components[id]) {
+        when (val c = storage.get(id)) {
             is SelectMenu<*> -> c.call(event)
 
             null -> logger.debug { "Select Menu interaction received for unknown component ID: $id" }
