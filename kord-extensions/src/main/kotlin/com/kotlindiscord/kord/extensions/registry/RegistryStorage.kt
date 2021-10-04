@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 public interface RegistryStorage<K, T> {
 
     /**
-     * Let's the registry know about the specified type, this may store the object in a local map,
+     * Lets the registry know about the specified type [T], this may store the object in a local map,
      * which is used for reconstructing later.
      */
     public suspend fun register(data: T)

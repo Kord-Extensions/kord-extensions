@@ -20,15 +20,15 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 
 /**
- * ApplicationCommandRegistry which acts based off a specified storage interface.
+ * [ApplicationCommandRegistry] which acts based off a specified storage interface.
  *
  * Discord lifecycles may not be implemented in this class and require manual updating.
  */
-public class StorageAwareApplicationCommandRegistry(
+public open class StorageAwareApplicationCommandRegistry(
     builder: () -> RegistryStorage<Snowflake, ApplicationCommand<*>>
 ) : ApplicationCommandRegistry() {
 
-    private val commandRegistry: RegistryStorage<Snowflake, ApplicationCommand<*>> = builder.invoke()
+    protected open val commandRegistry: RegistryStorage<Snowflake, ApplicationCommand<*>> = builder.invoke()
 
     override suspend fun initialize(commands: List<ApplicationCommand<*>>) {
         commands.forEach { commandRegistry.register(it) }
@@ -38,6 +38,7 @@ public class StorageAwareApplicationCommandRegistry(
         commands.forEach { command ->
             if (registeredCommands.none { it.hasCommand(command) }) {
                 val commandId = createDiscordCommand(command)
+
                 commandId?.let {
                     commandRegistry.set(it, command)
                 }
@@ -105,11 +106,12 @@ public class StorageAwareApplicationCommandRegistry(
     override suspend fun unregister(command: UserCommand<*>, delete: Boolean): UserCommand<*>? =
         unregisterApplicationCommand(command, delete) as? UserCommand<*>
 
-    private suspend fun unregisterApplicationCommand(
+    protected open suspend fun unregisterApplicationCommand(
         command: ApplicationCommand<*>,
         delete: Boolean
     ): ApplicationCommand<*>? {
         val id = commandRegistry.constructUniqueIdentifier(command)
+
         val snowflake = commandRegistry.entryFlow()
             .firstOrNull { commandRegistry.constructUniqueIdentifier(it.value) == id }
             ?.key
@@ -125,11 +127,12 @@ public class StorageAwareApplicationCommandRegistry(
         return null
     }
 
-    private fun RegistryStorage.StorageEntry<Snowflake, ApplicationCommand<*>>.hasCommand(
+    protected open fun RegistryStorage.StorageEntry<Snowflake, ApplicationCommand<*>>.hasCommand(
         command: ApplicationCommand<*>
     ): Boolean {
         val key = commandRegistry.constructUniqueIdentifier(value)
         val other = commandRegistry.constructUniqueIdentifier(command)
+
         return key == other
     }
 }

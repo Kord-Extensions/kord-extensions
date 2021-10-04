@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.map
  * Default "local" implementation of [RegistryStorage] which internally
  * uses a mutableMap.
  */
-public class DefaultLocalRegistryStorage<K, T> : RegistryStorage<K, T> {
+public open class DefaultLocalRegistryStorage<K, T> : RegistryStorage<K, T> {
 
-    private val registry: MutableMap<K, T> = mutableMapOf()
+    protected open val registry: MutableMap<K, T> = mutableMapOf()
 
     override suspend fun register(data: T) {
         // we don't need to do anything here

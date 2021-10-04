@@ -38,9 +38,12 @@ import org.koin.core.component.inject
 import java.util.*
 
 /**
- * Abstraction layer between the [ExtensibleBot] and it's event handling.
+ * Abstract class representing common behavior for application command registries.
  *
- * An implementing class is supposed register all commands and handle their discord events and lifecycles.
+ * Deals with the registration and syncing of, and dispatching to, all application commands.
+ * Subtypes should build their functionality on top of this type.
+ *
+ * @see DefaultApplicationCommandRegistry
  */
 public abstract class ApplicationCommandRegistry : KoinComponent {
 
@@ -76,13 +79,21 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
         if (initialised) {
             return
         }
+
         val commands: MutableList<ApplicationCommand<*>> = mutableListOf()
+
         bot.extensions.values.forEach {
             commands += it.messageCommands
             commands += it.slashCommands
             commands += it.userCommands
         }
-        initialize(commands)
+
+        try {
+            initialize(commands)
+        } catch (ex: Throwable) {
+            logger.error(ex) { "Failed to execute initialize method on ${javaClass.name}" }
+        }
+
         initialised = true
     }
 
@@ -91,20 +102,20 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
     /** Register a [SlashCommand] to the registry.
      *
-     * This method is only called after the [initialize] method and scopes to allow runtime modifications.
+     * This method is only called after the [initialize] method and allows runtime modifications.
      */
     public abstract suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>?
 
     /**
      * Register a [MessageCommand] to the registry.
      *
-     * This method is only called after the [initialize] method and scopes to allow runtime modifications.
+     * This method is only called after the [initialize] method and allows runtime modifications.
      */
     public abstract suspend fun register(command: MessageCommand<*>): MessageCommand<*>?
 
     /** Register a [UserCommand] to the registry.
      *
-     * This method is only called after the [initialize] method and scopes to allow runtime modifications.
+     * This method is only called after the [initialize] method and allows runtime modifications.
      */
     public abstract suspend fun register(command: UserCommand<*>): UserCommand<*>?
 
@@ -128,7 +139,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
     // region: Utilities
 
-    /** Unregister a message command. **/
+    /** Unregister a generic [ApplicationCommand]. **/
     public open suspend fun unregisterGeneric(
         command: ApplicationCommand<*>,
         delete: Boolean = true,
@@ -176,6 +187,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                     is SlashCommand<*, *> -> register(it) as T
                     is MessageCommand<*> -> register(it) as T
                     is UserCommand<*> -> register(it) as T
+
                     else -> throw IllegalArgumentException(
                         "The registry does not know about this type of ApplicationCommand"
                     )
@@ -205,6 +217,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
         is SlashCommand<*, *> -> createDiscordSlashCommand(command)
         is UserCommand<*> -> createDiscordUserCommand(command)
         is MessageCommand<*> -> createDiscordMessageCommand(command)
+
         else -> throw IllegalArgumentException("Unknown ApplicationCommand type")
     }
 

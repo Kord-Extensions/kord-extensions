@@ -17,7 +17,7 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T 
     /**
      * Mapping of command-key to command-object.
      */
-    private val commandMapping: MutableMap<String, T> = mutableMapOf()
+    protected open val commandMapping: MutableMap<String, T> = mutableMapOf()
 
     /**
      * Upserts simplified data.
