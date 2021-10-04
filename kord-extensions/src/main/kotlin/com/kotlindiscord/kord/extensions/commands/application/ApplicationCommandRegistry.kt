@@ -152,7 +152,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                     command.guildId!!,
                     kord.resources.applicationId,
                     discordCommandId
-                )
+                ).delete()
             } else {
                 kord.unsafe.globalApplicationCommand(kord.resources.applicationId, discordCommandId).delete()
             }
