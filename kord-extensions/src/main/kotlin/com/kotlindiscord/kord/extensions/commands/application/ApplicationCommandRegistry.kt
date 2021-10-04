@@ -90,8 +90,8 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
         try {
             initialize(commands)
-        } catch (ex: Throwable) {
-            logger.error(ex) { "Failed to execute initialize method on ${javaClass.name}" }
+        } catch (t: Throwable) {
+            logger.error(t) { "Failed to initialize registry" }
         }
 
         initialised = true
