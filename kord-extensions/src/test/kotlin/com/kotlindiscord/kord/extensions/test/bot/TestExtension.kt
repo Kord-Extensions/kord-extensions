@@ -77,10 +77,23 @@ class TestExtension : Extension() {
         val message by message("target", "Target message")
     }
 
+    class UserArgs : Arguments() {
+        val user by user("target", "Target user")
+    }
+
     override suspend fun setup() {
         event<GuildCreateEvent> {
             action {
                 logger.info { "Guild created: ${event.guild.name} (${event.guild.id.asString})" }
+            }
+        }
+
+        publicSlashCommand(::UserArgs) {
+            name = "slap"
+            description = "Slap someone!"
+
+            action {
+                respond { content = "*slaps ${arguments.user.mention}*" }
             }
         }
 

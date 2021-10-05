@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.parsers.DurationParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.datetime.*
@@ -139,9 +140,6 @@ public class DurationCoalescingConverter(
         return durations.size
     }
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
-
     private suspend fun throwIfNecessary(
         e: Exception,
         context: CommandContext,
@@ -163,5 +161,38 @@ public class DurationCoalescingConverter(
         }
     } else {
         logger.debug(e) { "Error thrown during duration parsing" }
+    }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+
+        try {
+            val result: DateTimePeriod = DurationParser.parse(optionValue, context.getLocale())
+
+            if (positiveOnly) {
+                val now: Instant = Clock.System.now()
+                val applied: Instant = now.plus(result, TimeZone.UTC)
+
+                if (now > applied) {
+                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+                }
+            }
+
+            parsed = result
+        } catch (e: InvalidTimeUnitException) {
+            val message: String = context.translate(
+                "converters.duration.error.invalidUnit",
+                replacements = arrayOf(e.unit)
+            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+
+            throw DiscordRelayedException(message)
+        } catch (e: DurationParserException) {
+            throw DiscordRelayedException(e.error)
+        }
+
+        return true
     }
 }

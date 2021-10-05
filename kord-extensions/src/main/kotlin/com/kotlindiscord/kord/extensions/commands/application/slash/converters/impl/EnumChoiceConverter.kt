@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.converters.C
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
@@ -51,6 +52,18 @@ public class EnumChoiceConverter<E>(
 
             this@EnumChoiceConverter.choices.forEach { choice(it.key, it.value.name) }
         }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val stringOption = option as? OptionValue.StringOptionValue ?: return false
+
+        try {
+            parsed = getter.invoke(stringOption.value) ?: return false
+        } catch (e: IllegalArgumentException) {
+            return false
+        }
+
+        return true
+    }
 }
 
 /**

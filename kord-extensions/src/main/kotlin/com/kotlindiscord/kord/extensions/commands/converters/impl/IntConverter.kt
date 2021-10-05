@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.IntChoiceBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -56,76 +57,11 @@ public class IntConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         IntChoiceBuilder(arg.displayName, arg.description).apply { required = true }
-}
 
-// /**
-// * Create an integer converter, for single arguments.
-// *
-// * @see IntConverter
-// */
-// public fun Arguments.int(
-//    displayName: String,
-//    description: String,
-//    radix: Int = 10,
-//    validator: Validator<Int> = null,
-// ): SingleConverter<Int> =
-//    arg(displayName, description, IntConverter(radix, validator))
-//
-// /**
-// * Create an optional integer converter, for single arguments.
-// *
-// * @see IntConverter
-// */
-// public fun Arguments.optionalInt(
-//    displayName: String,
-//    description: String,
-//    outputError: Boolean = false,
-//    radix: Int = 10,
-//    validator: Validator<Int?> = null,
-// ): OptionalConverter<Int?> =
-//    arg(
-//        displayName,
-//        description,
-//        IntConverter(radix)
-//            .toOptional(outputError = outputError, nestedValidator = validator)
-//    )
-//
-// /**
-// * Create a defaulting integer converter, for single arguments.
-// *
-// * @see IntConverter
-// */
-// public fun Arguments.defaultingInt(
-//    displayName: String,
-//    description: String,
-//    defaultValue: Int,
-//    radix: Int = 10,
-//    validator: Validator<Int> = null,
-// ): DefaultingConverter<Int> =
-//    arg(
-//        displayName,
-//        description,
-//        IntConverter(radix)
-//            .toDefaulting(defaultValue, nestedValidator = validator)
-//    )
-//
-// /**
-// * Create an integer converter, for lists of arguments.
-// *
-// * @param required Whether command parsing should fail if no arguments could be converted.
-// *
-// * @see IntConverter
-// */
-// public fun Arguments.intList(
-//    displayName: String,
-//    description: String,
-//    required: Boolean = true,
-//    radix: Int = 10,
-//    validator: Validator<List<Int>> = null,
-// ): MultiConverter<Int> =
-//    arg(
-//        displayName,
-//        description,
-//        IntConverter(radix)
-//            .toMulti(required, signatureTypeString = "numbers", nestedValidator = validator)
-//    )
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.IntOptionValue)?.value ?: return false
+        this.parsed = optionValue
+
+        return true
+    }
+}

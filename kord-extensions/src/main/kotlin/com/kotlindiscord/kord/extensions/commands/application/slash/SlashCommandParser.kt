@@ -11,16 +11,13 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import dev.kord.common.annotation.KordPreview
-import dev.kord.core.entity.KordEntity
+import dev.kord.core.entity.interaction.OptionValue
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
 /**
  * Parser in charge of dealing with the arguments for slash commands.
- *
- * This doesn't do anything special with the rich types provided by Discord, as they're useless in most cases.
- * Instead, it transforms them to a string and puts them through the usual parsing machinery.
  *
  * This parser does not support multi converters, as there's no good way to represent them with
  * Discord's API. Coalescing converters will act like single converters.
@@ -45,17 +42,15 @@ public open class SlashCommandParser {
         val command = context.event.interaction.command
 
         val values = command.options.mapValues {
-            val option = it.value.value
-
-            if (option is KordEntity) {
-                option.id.asString
+            if (it.value is OptionValue.StringOptionValue) {
+                OptionValue.StringOptionValue((it.value.value as String).trim())
             } else {
-                option.toString()
-            }.trim()
-        }
+                it.value
+            }
+        } as Map<String, OptionValue<*>>
 
         var currentArg: Argument<*>?
-        var currentValue: String?
+        var currentValue: OptionValue<*>?
 
         @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
         while (true) {
@@ -75,7 +70,7 @@ public open class SlashCommandParser {
 
                 is SingleConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(null, context, currentValue)
+                        converter.parseOption(context, currentValue)
                     } else {
                         false
                     }
@@ -128,7 +123,7 @@ public open class SlashCommandParser {
 
                 is CoalescingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(null, context, listOf(currentValue)) > 0
+                        converter.parseOption(context, currentValue)
                     } else {
                         false
                     }
@@ -181,7 +176,7 @@ public open class SlashCommandParser {
 
                 is OptionalConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(null, context, currentValue)
+                        converter.parseOption(context, currentValue)
                     } else {
                         false
                     }
@@ -211,7 +206,7 @@ public open class SlashCommandParser {
 
                 is OptionalCoalescingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(null, context, listOf(currentValue)) > 0
+                        converter.parseOption(context, currentValue)
                     } else {
                         false
                     }
@@ -241,7 +236,7 @@ public open class SlashCommandParser {
 
                 is DefaultingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(null, context, currentValue)
+                        converter.parseOption(context, currentValue)
                     } else {
                         false
                     }
@@ -271,7 +266,7 @@ public open class SlashCommandParser {
 
                 is DefaultingCoalescingConverter<*> -> try {
                     val parsed = if (currentValue != null) {
-                        converter.parse(null, context, listOf(currentValue)) > 0
+                        converter.parseOption(context, currentValue)
                     } else {
                         false
                     }
