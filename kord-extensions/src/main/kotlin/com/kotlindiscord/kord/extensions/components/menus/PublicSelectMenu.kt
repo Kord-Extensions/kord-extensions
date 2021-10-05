@@ -3,6 +3,7 @@
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.components.callbacks.PublicMenuCallback
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
@@ -22,6 +23,17 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialPublicSelectMenuResponseBuilder) {
         initialResponseBuilder = body
+    }
+
+    override fun useCallback(id: String) {
+        action {
+            val callback: PublicMenuCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            with(callback) {
+                invoke()
+            }
+        }
     }
 
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {

@@ -3,6 +3,7 @@
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.components.callbacks.EphemeralMenuCallback
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
@@ -21,6 +22,17 @@ public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<Ephemeral
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialEphemeralSelectMenuResponseBuilder) {
         initialResponseBuilder = body
+    }
+
+    override fun useCallback(id: String) {
+        action {
+            val callback: EphemeralMenuCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            with(callback) {
+                invoke()
+            }
+        }
     }
 
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {

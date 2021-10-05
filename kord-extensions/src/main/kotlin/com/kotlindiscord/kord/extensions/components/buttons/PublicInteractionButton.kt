@@ -3,6 +3,7 @@
 package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.components.callbacks.PublicButtonCallback
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
@@ -29,6 +30,17 @@ public open class PublicInteractionButton(
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialPublicButtonResponseBuilder) {
         initialResponseBuilder = body
+    }
+
+    override fun useCallback(id: String) {
+        action {
+            val callback: PublicButtonCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            with(callback) {
+                invoke()
+            }
+        }
     }
 
     override fun apply(builder: ActionRowBuilder) {
