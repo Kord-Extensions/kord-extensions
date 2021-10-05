@@ -49,7 +49,11 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
     /** Register multiple generic application commands. **/
     public open suspend fun syncAll(removeOthers: Boolean = false, commands: List<ApplicationCommand<*>>) {
-        val groupedCommands = commands.groupBy { it.guildId }
+        val groupedCommands = commands.groupBy { it.guildId }.toMutableMap()
+
+        if (removeOthers && !groupedCommands.containsKey(null)) {
+            groupedCommands[null] = listOf()
+        }
 
         groupedCommands.forEach {
             try {
@@ -175,14 +179,14 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         }
 
         // Extension commands that haven't been registered yet
-        val toAdd = commands.filter { c -> registered.all { !c.matches(locale, it) } }
+        val toAdd = commands.filter { aC -> registered.all { dC -> !aC.matches(locale, dC) } }
 
         // Extension commands that were previously registered
-        val toUpdate = commands.filter { c -> registered.any { c.matches(locale, it) } }
+        val toUpdate = commands.filter { aC -> registered.any { dC -> aC.matches(locale, dC) } }
 
         // Registered Discord commands that haven't been provided by extensions
         val toRemove = if (removeOthers) {
-            registered.filter { c -> commands.all { !it.matches(locale, c) } }
+            registered.filter { dC -> commands.all { aC -> !aC.matches(locale, dC) } }
         } else {
             listOf()
         }
