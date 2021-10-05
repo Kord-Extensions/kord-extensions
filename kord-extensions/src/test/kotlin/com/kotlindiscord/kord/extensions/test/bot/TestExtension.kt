@@ -1,4 +1,4 @@
-@file:OptIn(KordPreview::class)
+@file:OptIn(KordPreview::class, ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.test.bot
 
@@ -25,6 +25,7 @@ import dev.kord.core.behavior.reply
 import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.rest.builder.message.create.embed
 import mu.KotlinLogging
+import kotlin.time.ExperimentalTime
 
 // They're IDs
 @Suppress("UnderscoresInNumericLiterals")

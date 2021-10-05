@@ -30,9 +30,14 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
             val callback: PublicMenuCallback = callbackRegistry.getOfTypeOrNull(id)
                 ?: error("Callback \"$id\" is either missing or is the wrong type.")
 
-            with(callback) {
-                invoke()
-            }
+            callback.call(this)
+        }
+
+        check {
+            val callback: PublicMenuCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            passed = callback.runChecks(event)
         }
     }
 

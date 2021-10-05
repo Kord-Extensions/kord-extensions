@@ -29,9 +29,14 @@ public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<Ephemeral
             val callback: EphemeralMenuCallback = callbackRegistry.getOfTypeOrNull(id)
                 ?: error("Callback \"$id\" is either missing or is the wrong type.")
 
-            with(callback) {
-                invoke()
-            }
+            callback.call(this)
+        }
+
+        check {
+            val callback: EphemeralMenuCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            passed = callback.runChecks(event)
         }
     }
 

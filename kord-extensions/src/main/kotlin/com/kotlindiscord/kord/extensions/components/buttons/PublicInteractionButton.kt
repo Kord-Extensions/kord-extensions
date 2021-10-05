@@ -37,9 +37,14 @@ public open class PublicInteractionButton(
             val callback: PublicButtonCallback = callbackRegistry.getOfTypeOrNull(id)
                 ?: error("Callback \"$id\" is either missing or is the wrong type.")
 
-            with(callback) {
-                invoke()
-            }
+            callback.call(this)
+        }
+
+        check {
+            val callback: PublicButtonCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            passed = callback.runChecks(event)
         }
     }
 
