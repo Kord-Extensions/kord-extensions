@@ -35,7 +35,7 @@ jobs:
 
         with:
           name: JARs (Extra Modules)
-          path: extra/*/build/libs/*.jar
+          path: extra-modules/*/build/libs/*.jar
 
       - name: Upload artifact (Main JARs)
         uses: actions/upload-artifact@v2

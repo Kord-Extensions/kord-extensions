@@ -20,6 +20,7 @@ include("kord-extensions")
 
 include("extra-modules:extra-common")
 include("extra-modules:extra-mappings")
+include("extra-modules:extra-phishing")
 
 include("modules:java-time")
 include("modules:time4j")
