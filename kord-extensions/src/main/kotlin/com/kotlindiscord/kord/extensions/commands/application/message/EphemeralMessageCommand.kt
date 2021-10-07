@@ -12,10 +12,10 @@ import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
-import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialEphemeralMessageResponseBuilder =
-    (suspend EphemeralInteractionResponseCreateBuilder.(MessageCommandInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(MessageCommandInteractionCreateEvent) -> Unit)?
 
 /** Ephemeral message command. **/
 public class EphemeralMessageCommand(

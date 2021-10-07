@@ -13,10 +13,10 @@ import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialEphemeralSlashResponseBuilder =
-    (suspend EphemeralInteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
 
 /** Ephemeral slash command. **/
 public class EphemeralSlashCommand<A : Arguments>(

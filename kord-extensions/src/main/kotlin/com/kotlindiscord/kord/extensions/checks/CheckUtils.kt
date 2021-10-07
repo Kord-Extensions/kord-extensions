@@ -102,7 +102,7 @@ public suspend fun topChannelFor(event: Event): ChannelBehavior? {
  * @param event The event concerning to the channel to retrieve.
  * @return A [Long] representing the channel ID, or null if there isn't one.
  */
-public suspend fun channelIdFor(event: Event): Long? {
+public suspend fun channelIdFor(event: Event): ULong? {
     return when (event) {
         is ChannelCreateEvent -> event.channel.id.value
         is ChannelDeleteEvent -> event.channel.id.value

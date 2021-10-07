@@ -40,16 +40,16 @@ private const val DEFAULT_RADIX = 10
 public
 class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
-    choices: Map<String, Int>,
-    override var validator: Validator<Int> = null
-) : ChoiceConverter<Int>(choices) {
+    choices: Map<String, Long>,
+    override var validator: Validator<Long> = null
+) : ChoiceConverter<Long>(choices) {
     override val signatureTypeString: String = "converters.number.signatureType"
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
-            this.parsed = arg.toInt(radix)
+            this.parsed = arg.toLong(radix)
         } catch (e: NumberFormatException) {
             val errorString = if (radix == DEFAULT_RADIX) {
                 context.translate("converters.number.error.invalid.defaultBase", replacements = arrayOf(arg))
@@ -67,7 +67,7 @@ class NumberChoiceConverter(
         IntChoiceBuilder(arg.displayName, arg.description).apply {
             required = true
 
-            this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
+            this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value.toInt()) }
         }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {

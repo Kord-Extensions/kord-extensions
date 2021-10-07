@@ -11,10 +11,10 @@ import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
-import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialEphemeralButtonResponseBuilder =
-    (suspend EphemeralInteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
 
 /** Class representing an ephemeral-only interaction button. **/
 public open class EphemeralInteractionButton(
@@ -73,9 +73,9 @@ public open class EphemeralInteractionButton(
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
         } else {
             if (!deferredAck) {
-                event.interaction.acknowledgeEphemeralDeferredMessageUpdate()
-            } else {
                 event.interaction.acknowledgeEphemeral()
+            } else {
+                event.interaction.acknowledgeEphemeralDeferredMessageUpdate()
             }
         }
 

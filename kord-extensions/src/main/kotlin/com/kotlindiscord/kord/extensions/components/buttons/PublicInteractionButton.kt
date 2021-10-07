@@ -12,10 +12,10 @@ import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
-import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicButtonResponseBuilder =
-    (suspend PublicInteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only button component. **/
 public open class PublicInteractionButton(

@@ -14,10 +14,10 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicSlashResponseBehavior =
-    (suspend PublicInteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
 
 /** Public slash command. **/
 public class PublicSlashCommand<A : Arguments>(

@@ -344,7 +344,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
     ): T? {
         try {
             if (guild != null) {
-                kord.editApplicationCommandPermissions(kord.resources.applicationId, guild.id, commandId) {
+                kord.editApplicationCommandPermissions(guild.id, commandId) {
                     injectRawPermissions(this, command)
                 }
 

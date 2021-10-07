@@ -60,7 +60,7 @@ public class IntConverter(
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
         val optionValue = (option as? OptionValue.IntOptionValue)?.value ?: return false
-        this.parsed = optionValue
+        this.parsed = optionValue.toInt()
 
         return true
     }

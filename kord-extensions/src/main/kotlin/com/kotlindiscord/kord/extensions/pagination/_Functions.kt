@@ -10,12 +10,12 @@ public suspend inline fun PublicInteractionResponseBehavior.editingPaginator(
     locale: Locale? = null,
     defaultGroup: String = "",
     builder: (PaginatorBuilder).() -> Unit
-): PublicResponsePaginator {
+): ResponsePaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
     builder(pages)
 
-    return PublicResponsePaginator(pages, this)
+    return ResponsePaginator(pages, this)
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
@@ -39,10 +39,10 @@ public suspend inline fun EphemeralInteractionResponseBehavior.editingPaginator(
     locale: Locale? = null,
     defaultGroup: String = "",
     builder: (PaginatorBuilder).() -> Unit
-): EphemeralResponsePaginator {
+): ResponsePaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
     builder(pages)
 
-    return EphemeralResponsePaginator(pages, this)
+    return ResponsePaginator(pages, this)
 }

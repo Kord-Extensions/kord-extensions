@@ -13,10 +13,10 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
-import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicUserResponseBuilder =
-    (suspend PublicInteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
 
 /** Public user command. **/
 public class PublicUserCommand(

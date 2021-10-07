@@ -12,10 +12,10 @@ import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
-import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialEphemeralUserResponseBuilder =
-    (suspend EphemeralInteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
 
 /** Ephemeral user command. **/
 public class EphemeralUserCommand(

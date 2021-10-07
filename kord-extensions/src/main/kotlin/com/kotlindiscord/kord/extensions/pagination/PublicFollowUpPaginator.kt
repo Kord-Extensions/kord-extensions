@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.InteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.ReactionEmoji
@@ -30,7 +30,7 @@ public class PublicFollowUpPaginator(
     bundle: String? = null,
     locale: Locale? = null,
 
-    public val interaction: PublicInteractionResponseBehavior,
+    public val interaction: InteractionResponseBehavior,
 ) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
     /** Follow-up interaction to use for this paginator's embeds. Will be created by [send]. **/
     public var embedInteraction: PublicFollowupMessage? = null
@@ -84,7 +84,7 @@ public class PublicFollowUpPaginator(
 @Suppress("FunctionNaming")  // Factory function
 public fun PublicFollowUpPaginator(
     builder: PaginatorBuilder,
-    interaction: PublicInteractionResponseBehavior
+    interaction: InteractionResponseBehavior
 ): PublicFollowUpPaginator = PublicFollowUpPaginator(
     pages = builder.pages,
     owner = builder.owner,

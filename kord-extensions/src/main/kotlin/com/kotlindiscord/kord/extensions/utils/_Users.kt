@@ -23,7 +23,7 @@ public val User.profileLink: String
  * The user's creation timestamp.
  */
 public val User.createdAt: Instant
-    get() = this.id.timeStamp
+    get() = this.id.timestamp
 
 /**
  * Send a private message to a user, if they have their DMs enabled.
