@@ -97,13 +97,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             }
         }
 
-        registerListeners()
         addDefaultExtensions()
     }
 
     /** Start up the bot and log into Discord. **/
     public open suspend fun start() {
         settings.hooksBuilder.runBeforeStart(this)
+        registerListeners()
 
         getKoin().get<Kord>().login {
             this.presence(settings.presenceBuilder)
