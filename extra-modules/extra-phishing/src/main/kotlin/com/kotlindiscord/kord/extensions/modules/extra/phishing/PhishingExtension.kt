@@ -284,7 +284,13 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         logger.trace { "Updating domains..." }
 
         // An extra 30 seconds for safety
-        domainCache.addAll(api.getRecentDomains(settings.updateDelay.inWholeSeconds + 30))
+        api.getRecentDomains(settings.updateDelay.inWholeSeconds + 30).forEach {
+            when (it.type) {
+                DomainChangeType.Add -> domainCache.addAll(it.domains)
+                DomainChangeType.Delete -> domainCache.removeAll(it.domains)
+            }
+        }
+
         checkTask?.restart()  // Off we go again
     }
 

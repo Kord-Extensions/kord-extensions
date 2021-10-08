@@ -3,6 +3,8 @@ plugins {
     `published-module`
     `dokka-module`
     `disable-explicit-api-mode`
+
+    kotlin("plugin.serialization")
 }
 
 repositories {
