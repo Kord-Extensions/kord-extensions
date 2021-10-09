@@ -32,4 +32,23 @@ public sealed class TimestampType(public val string: String?) {
 
     /** Format the given [Long] value according to the current timestamp type. **/
     public fun format(value: Long): String = "<t:$value${string ?: ""}>"
+
+    public companion object {
+        /**
+         * Parse Discord's format specifiers to a specific format.
+         */
+        public fun fromFormatSpecifier(string: String?): TimestampType? {
+            return when (string) {
+                "f" -> ShortDateTime
+                "F" -> LongDateTime
+                "d" -> ShortDate
+                "D" -> LongDate
+                "t" -> ShortTime
+                "T" -> LongTime
+                "R" -> RelativeTime
+                null -> Default
+                else -> null
+            }
+        }
+    }
 }
