@@ -22,4 +22,19 @@ internal class TimestampConverterTest {
         assertEquals(Instant.fromEpochSeconds(1_420_070_400), parsed.instant)
         assertEquals(TimestampType.RelativeTime, parsed.format)
     }
+
+    @Test
+    fun `empty timestamp`() {
+        val timestamp = "<t::>"
+        val parsed = TimestampConverter().parseFromString(timestamp)
+        assertNull(parsed)
+    }
+
+    @Test
+    fun `timestamp with empty format`() {
+        val timestamp = "<t:1420070400:>"
+        val parsed = TimestampConverter().parseFromString(timestamp)
+        assertNull(parsed)
+    }
+
 }
