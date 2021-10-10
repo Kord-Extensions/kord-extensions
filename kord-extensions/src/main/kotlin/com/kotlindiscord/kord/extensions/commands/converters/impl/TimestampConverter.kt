@@ -33,21 +33,6 @@ public class TimestampConverter(
 ) : SingleConverter<FormattedTimestamp>() {
     override val signatureTypeString: String = "converters.timestamp.signatureType"
 
-    internal fun parseFromString(string: String): FormattedTimestamp? {
-        if (string.startsWith(TIMESTAMP_PREFIX) && string.endsWith(TIMESTAMP_SUFFIX)) {
-            val inner = string.removeSurrounding(TIMESTAMP_PREFIX, TIMESTAMP_SUFFIX).split(":")
-            val epochSeconds = inner.getOrNull(0)
-            val format = inner.getOrNull(1)
-
-            return FormattedTimestamp(
-                Instant.fromEpochSeconds(epochSeconds?.toLongOrNull() ?: return null),
-                TimestampType.fromFormatSpecifier(format) ?: return null
-            )
-        } else {
-            return null
-        }
-    }
-
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
         this.parsed = parseFromString(arg) ?: throw DiscordRelayedException(
@@ -73,6 +58,23 @@ public class TimestampConverter(
         )
 
         return true
+    }
+
+    internal companion object {
+        internal fun parseFromString(string: String): FormattedTimestamp? {
+            if (string.startsWith(TIMESTAMP_PREFIX) && string.endsWith(TIMESTAMP_SUFFIX)) {
+                val inner = string.removeSurrounding(TIMESTAMP_PREFIX, TIMESTAMP_SUFFIX).split(":")
+                val epochSeconds = inner.getOrNull(0)
+                val format = inner.getOrNull(1)
+
+                return FormattedTimestamp(
+                    Instant.fromEpochSeconds(epochSeconds?.toLongOrNull() ?: return null),
+                    TimestampType.fromFormatSpecifier(format) ?: return null
+                )
+            } else {
+                return null
+            }
+        }
     }
 }
 

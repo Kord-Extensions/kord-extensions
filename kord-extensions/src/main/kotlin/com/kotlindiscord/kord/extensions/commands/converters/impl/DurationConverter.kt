@@ -16,10 +16,12 @@ import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.datetime.*
+import kotlin.time.ExperimentalTime
 
 /**
  * Argument converter for Kotlin [DateTimePeriod] arguments. You can apply these to an `Instant` using `plus` and a
  * timezone.
+ * Also accepts discord-formatted timestamps, in which case the DateTimePeriod will be the time until the timestamp.
  *
  * @param longHelp Whether to send the user a long help message with specific information on how to specify durations.
  * @param positiveOnly Whether a positive duration is required - `true` by default.
@@ -34,7 +36,7 @@ import kotlinx.datetime.*
         "positiveOnly: Boolean = true"
     ],
 )
-@OptIn(KordPreview::class)
+@OptIn(KordPreview::class, ExperimentalTime::class)
 public class DurationConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,
@@ -46,7 +48,13 @@ public class DurationConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
-            val result: DateTimePeriod = DurationParser.parse(arg, context.getLocale())
+            // Check if it's a discord-formatted timestamp first
+            val timestamp = TimestampConverter.parseFromString(arg)
+            val result: DateTimePeriod = if (timestamp == null) {
+                DurationParser.parse(arg, context.getLocale())
+            } else {
+                (timestamp.instant - Clock.System.now()).toDateTimePeriod()
+            }
 
             if (positiveOnly) {
                 val now: Instant = Clock.System.now()

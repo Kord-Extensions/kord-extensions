@@ -36,5 +36,4 @@ internal class TimestampConverterTest {
         val parsed = TimestampConverter().parseFromString(timestamp)
         assertNull(parsed)
     }
-
 }
