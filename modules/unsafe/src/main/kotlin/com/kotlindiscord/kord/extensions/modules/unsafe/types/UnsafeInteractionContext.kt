@@ -3,10 +3,11 @@
 package com.kotlindiscord.kord.extensions.modules.unsafe.types
 
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
+import com.kotlindiscord.kord.extensions.pagination.BaseButtonPaginator
+import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
-import com.kotlindiscord.kord.extensions.pagination.ResponsePaginator
+import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
-import com.kotlindiscord.kord.extensions.utils.ephemeralFollowup
 import dev.kord.core.behavior.interaction.*
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
@@ -110,13 +111,14 @@ public suspend inline fun UnsafeInteractionContext.editingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
-): ResponsePaginator {
+): BaseButtonPaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
     builder(pages)
 
     return when (val interaction = interactionResponse) {
-        is InteractionResponseBehavior -> ResponsePaginator(pages, interaction)
+        is PublicInteractionResponseBehavior -> PublicResponsePaginator(pages, interaction)
+        is EphemeralInteractionResponseBehavior -> EphemeralResponsePaginator(pages, interaction)
 
         null -> error("Acknowledge the interaction before trying to edit it.")
         else -> error("Unsupported initial interaction response type - please report this.")
@@ -126,19 +128,19 @@ public suspend inline fun UnsafeInteractionContext.editingPaginator(
 /** Create a paginator that creates a follow-up message, and edits that. **/
 @Suppress("UseIfInsteadOfWhen")
 @UnsafeAPI
-public suspend inline fun UnsafeInteractionContext.publicRespondingPaginator(
+public suspend inline fun UnsafeInteractionContext.respondingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
-): PublicFollowUpPaginator {
+): BaseButtonPaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
     builder(pages)
 
     return when (val interaction = interactionResponse) {
-        is InteractionResponseBehavior -> PublicFollowUpPaginator(pages, interaction)
+        is PublicInteractionResponseBehavior -> PublicFollowUpPaginator(pages, interaction)
 
         null -> error("Acknowledge the interaction before trying to follow-up.")
-        else -> error("Unsupported initial interaction response type $interaction - please report this.")
+        else -> error("Initial interaction response was not public.")
     }
 }

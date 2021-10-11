@@ -103,7 +103,7 @@ class TestExtension : Extension() {
 
             check {
                 failIf("This message command only supports non-webhook, non-interaction messages.") {
-                    event.interaction.messages?.values?.firstOrNull()?.author == null
+                    event.interaction.messages.values.firstOrNull()?.author == null
                 }
             }
 
@@ -125,7 +125,7 @@ class TestExtension : Extension() {
 
             check {
                 failIf("That's me, you can't make me ping myself!") {
-                    event.interaction.users?.values?.firstOrNull()?.id == kord.selfId
+                    event.interaction.users.values.firstOrNull()?.id == kord.selfId
                 }
             }
 

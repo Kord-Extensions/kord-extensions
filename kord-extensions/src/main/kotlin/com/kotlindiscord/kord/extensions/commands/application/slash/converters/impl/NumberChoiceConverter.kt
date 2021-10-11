@@ -67,7 +67,7 @@ class NumberChoiceConverter(
         IntChoiceBuilder(arg.displayName, arg.description).apply {
             required = true
 
-            this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value.toInt()) }
+            this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
         }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {

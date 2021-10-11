@@ -1,11 +1,11 @@
 package com.kotlindiscord.kord.extensions.types
 
+import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
-import com.kotlindiscord.kord.extensions.pagination.ResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
-import com.kotlindiscord.kord.extensions.utils.ephemeralFollowup
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
+import dev.kord.core.behavior.interaction.ephemeralFollowup
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
@@ -28,12 +28,10 @@ public suspend inline fun EphemeralInteractionContext.respond(
     builder: FollowupMessageCreateBuilder.() -> Unit
 ): EphemeralFollowupMessage = interactionResponse.ephemeralFollowup(builder)
 
-/**
- * Respond to the current interaction with a public followup.
- */
-public suspend inline fun EphemeralInteractionContext.respondPublic(
+/** Respond to the current interaction with a public followup. **/
+public suspend inline fun PublicInteractionContext.respondPublic(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): PublicFollowupMessage = interactionResponse.followUp(builder = builder)
+): PublicFollowupMessage = interactionResponse.followUp(builder)
 
 /**
  * Edit the current interaction's response.
@@ -50,15 +48,15 @@ public suspend inline fun EphemeralInteractionContext.editingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
-): ResponsePaginator {
+): EphemeralResponsePaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
     builder(pages)
 
-    return ResponsePaginator(pages, interactionResponse)
+    return EphemeralResponsePaginator(pages, interactionResponse)
 }
 
-/** Create a paginator that creates a **public** follow-up message, and edits that. **/
+/** Create a paginator that creates a follow-up message, and edits that. **/
 public suspend inline fun EphemeralInteractionContext.publicRespondingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,

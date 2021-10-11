@@ -1,11 +1,11 @@
 package com.kotlindiscord.kord.extensions.types
 
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
-import com.kotlindiscord.kord.extensions.pagination.ResponsePaginator
+import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
-import com.kotlindiscord.kord.extensions.utils.ephemeralFollowup
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
+import dev.kord.core.behavior.interaction.ephemeralFollowup
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
@@ -22,9 +22,9 @@ public interface PublicInteractionContext {
 /** Respond to the current interaction with a public followup. **/
 public suspend inline fun PublicInteractionContext.respond(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): PublicFollowupMessage = interactionResponse.followUp(builder = builder)
+): PublicFollowupMessage = interactionResponse.followUp(builder)
 
-/** Respond to the current interaction with an ephemeral followup. **/
+/** Respond to the current interaction with a public followup. **/
 public suspend inline fun PublicInteractionContext.respondEphemeral(
     builder: FollowupMessageCreateBuilder.() -> Unit
 ): EphemeralFollowupMessage = interactionResponse.ephemeralFollowup(builder)
@@ -41,12 +41,12 @@ public suspend inline fun PublicInteractionContext.editingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
-): ResponsePaginator {
+): PublicResponsePaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
     builder(pages)
 
-    return ResponsePaginator(pages, interactionResponse)
+    return PublicResponsePaginator(pages, interactionResponse)
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
