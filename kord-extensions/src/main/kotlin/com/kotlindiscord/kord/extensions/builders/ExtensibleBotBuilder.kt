@@ -851,7 +851,7 @@ public open class ExtensibleBotBuilder {
          * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
          */
         @JvmName("fillLongs")  // These are the same for the JVM
-        public fun fill(ids: Collection<Long>): Boolean? =
+        public fun fill(ids: Collection<ULong>): Boolean? =
             guildsToFill?.addAll(ids.map { Snowflake(it) })
 
         /**
@@ -876,7 +876,7 @@ public open class ExtensibleBotBuilder {
          *
          * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
          */
-        public fun fill(id: Long): Boolean? =
+        public fun fill(id: ULong): Boolean? =
             guildsToFill?.add(Snowflake(id))
 
         /**
@@ -1016,7 +1016,7 @@ public open class ExtensibleBotBuilder {
         }
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: Long) {
+        public fun defaultGuild(id: ULong) {
             defaultGuild = Snowflake(id)
         }
 
