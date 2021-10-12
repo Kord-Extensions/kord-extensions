@@ -5,8 +5,8 @@ import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
-import dev.kord.core.behavior.interaction.ephemeralFollowup
 import dev.kord.core.behavior.interaction.followUp
+import dev.kord.core.behavior.interaction.followUpEphemeral
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
@@ -27,7 +27,7 @@ public suspend inline fun PublicInteractionContext.respond(
 /** Respond to the current interaction with a public followup. **/
 public suspend inline fun PublicInteractionContext.respondEphemeral(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): EphemeralFollowupMessage = interactionResponse.ephemeralFollowup(builder)
+): EphemeralFollowupMessage = interactionResponse.followUpEphemeral(builder)
 
 /**
  * Edit the current interaction's response.
