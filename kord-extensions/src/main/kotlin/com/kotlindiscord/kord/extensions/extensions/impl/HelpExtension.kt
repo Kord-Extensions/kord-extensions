@@ -3,11 +3,12 @@
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.commands.*
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.chat.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.stringList
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
+import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.pagination.BasePaginator
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
@@ -43,7 +44,7 @@ public class HelpExtension : HelpProvider, Extension() {
     public val translationsProvider: TranslationsProvider by inject()
 
     /** Message command registry. **/
-    public val messageCommandsRegistry: MessageCommandRegistry by inject()
+    public val messageCommandsRegistry: ChatCommandRegistry by inject()
 
     /** Bot settings. **/
     public val botSettings: ExtensibleBotBuilder by inject()
@@ -53,7 +54,7 @@ public class HelpExtension : HelpProvider, Extension() {
         botSettings.extensionsBuilder.helpExtensionBuilder
 
     override suspend fun setup() {
-        command(::HelpArguments) {
+        chatCommand(::HelpArguments) {
             name = "extensions.help.commandName"
             aliasKey = "extensions.help.commandAliases"
             description = "extensions.help.commandDescription"
@@ -148,7 +149,6 @@ public class HelpExtension : HelpProvider, Extension() {
         }
 
         return MessageButtonPaginator(
-            extension = this,
             keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale,
             owner = event.message.author,
@@ -174,13 +174,16 @@ public class HelpExtension : HelpProvider, Extension() {
         args: List<String>
     ): BasePaginator = getCommandHelpPaginator(event, prefix, getCommand(event, args))
 
-    override suspend fun getCommandHelpPaginator(context: MessageCommandContext<*>, args: List<String>): BasePaginator =
+    override suspend fun getCommandHelpPaginator(
+        context: ChatCommandContext<*>,
+        args: List<String>
+    ): BasePaginator =
         getCommandHelpPaginator(context, getCommand(context.event, args))
 
     override suspend fun getCommandHelpPaginator(
         event: MessageCreateEvent,
         prefix: String,
-        command: MessageCommand<out Arguments>?
+        command: ChatCommand<out Arguments>?
     ): BasePaginator {
         val pages = Pages(COMMANDS_GROUP)
         val locale = event.getLocale()
@@ -206,9 +209,9 @@ public class HelpExtension : HelpProvider, Extension() {
         } else {
             val (openingLine, desc, arguments) = formatCommandHelp(prefix, event, command, longDescription = true)
 
-            val commandName = if (command is MessageSubCommand) {
+            val commandName = if (command is ChatSubCommand) {
                 command.getFullTranslatedName(locale)
-            } else if (command is GroupCommand) {
+            } else if (command is ChatGroupCommand) {
                 command.getFullTranslatedName(locale)
             } else {
                 command.getTranslatedName(locale)
@@ -231,7 +234,6 @@ public class HelpExtension : HelpProvider, Extension() {
         }
 
         return MessageButtonPaginator(
-            extension = this,
             keepEmbed = settings.deletePaginatorOnTimeout.not(),
             locale = locale,
             owner = event.message.author,
@@ -251,7 +253,7 @@ public class HelpExtension : HelpProvider, Extension() {
         }
     }
 
-    override suspend fun gatherCommands(event: MessageCreateEvent): List<MessageCommand<out Arguments>> =
+    override suspend fun gatherCommands(event: MessageCreateEvent): List<ChatCommand<out Arguments>> =
         messageCommandsRegistry.commands
             .filter { !it.hidden && it.enabled && it.runChecks(event, false) }
             .sortedBy { it.name }
@@ -259,15 +261,15 @@ public class HelpExtension : HelpProvider, Extension() {
     override suspend fun formatCommandHelp(
         prefix: String,
         event: MessageCreateEvent,
-        command: MessageCommand<out Arguments>,
+        command: ChatCommand<out Arguments>,
         longDescription: Boolean
     ): Triple<String, String, String> {
         val locale = event.getLocale()
         val defaultLocale = botSettings.i18nBuilder.defaultLocale
 
-        val commandName = if (command is MessageSubCommand) {
+        val commandName = if (command is ChatSubCommand) {
             command.getFullTranslatedName(locale)
-        } else if (command is GroupCommand) {
+        } else if (command is ChatGroupCommand) {
             command.getFullTranslatedName(locale)
         } else {
             command.getTranslatedName(locale)
@@ -307,7 +309,7 @@ public class HelpExtension : HelpProvider, Extension() {
             }
         }
 
-        if (command is GroupCommand) {
+        if (command is ChatGroupCommand) {
             val subCommands = command.commands.filter { it.runChecks(event, false) }
 
             if (subCommands.isNotEmpty()) {
@@ -379,7 +381,10 @@ public class HelpExtension : HelpProvider, Extension() {
         return Triple(openingLine.trim('\n'), description.trim('\n'), arguments.trim('\n'))
     }
 
-    override suspend fun getCommand(event: MessageCreateEvent, args: List<String>): MessageCommand<out Arguments>? {
+    override suspend fun getCommand(
+        event: MessageCreateEvent,
+        args: List<String>
+    ): ChatCommand<out Arguments>? {
         val firstArg = args.first()
         var command = messageCommandsRegistry.getCommand(firstArg, event)
 
@@ -388,8 +393,8 @@ public class HelpExtension : HelpProvider, Extension() {
         }
 
         args.drop(1).forEach {
-            if (command is GroupCommand<out Arguments>) {
-                val gc = command as GroupCommand<out Arguments>
+            if (command is ChatGroupCommand<out Arguments>) {
+                val gc = command as ChatGroupCommand<out Arguments>
 
                 command = if (gc.runChecks(event, false)) {
                     gc.getCommand(it, event)

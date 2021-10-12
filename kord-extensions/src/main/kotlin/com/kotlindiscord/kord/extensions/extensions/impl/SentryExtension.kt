@@ -1,15 +1,17 @@
-@file:OptIn(KordPreview::class, TranslationNotSupported::class)
+@file:OptIn(KordPreview::class)
 
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescedString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.chatCommand
+import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.sentryId
+import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
 import io.sentry.Sentry
@@ -26,25 +28,25 @@ public class SentryExtension : Extension() {
     override val name: String = "sentry"
 
     /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentry: SentryAdapter by inject()
+    public val sentryAdapter: SentryAdapter by inject()
 
     /** Bot settings. **/
     public val botSettings: ExtensibleBotBuilder by inject()
 
     /** Sentry extension settings, from the bot builder. **/
-    public val settings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
+    public val sentrySettings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
         botSettings.extensionsBuilder.sentryExtensionBuilder
 
     @Suppress("StringLiteralDuplication")  // It's the command name
     override suspend fun setup() {
-        if (sentry.enabled) {
-            slashCommand(::FeedbackSlashArgs) {
+        if (sentryAdapter.enabled) {
+            ephemeralSlashCommand(::FeedbackSlashArgs) {
                 name = "extensions.sentry.commandName"
                 description = "extensions.sentry.commandDescription.short"
 
                 action {
-                    if (!sentry.hasEventId(arguments.id)) {
-                        ephemeralFollowUp {
+                    if (!sentryAdapter.hasEventId(arguments.id)) {
+                        respond {
                             content = translate("extensions.sentry.error.invalidId")
                         }
 
@@ -59,25 +61,25 @@ public class SentryExtension : Extension() {
                     )
 
                     Sentry.captureUserFeedback(feedback)
-                    sentry.removeEventId(arguments.id)
+                    sentryAdapter.removeEventId(arguments.id)
 
-                    ephemeralFollowUp {
+                    respond {
                         content = translate("extensions.sentry.thanks")
                     }
                 }
             }
 
-            command(::FeedbackMessageArgs) {
+            chatCommand(::FeedbackMessageArgs) {
                 name = "extensions.sentry.commandName"
                 description = "extensions.sentry.commandDescription.long"
 
                 aliasKey = "extensions.sentry.commandAliases"
 
                 action {
-                    if (!sentry.hasEventId(arguments.id)) {
+                    if (!sentryAdapter.hasEventId(arguments.id)) {
                         message.respond(
                             translate("extensions.sentry.error.invalidId"),
-                            pingInReply = settings.pingInReply
+                            pingInReply = sentrySettings.pingInReply
                         )
 
                         return@action
@@ -92,7 +94,7 @@ public class SentryExtension : Extension() {
                     )
 
                     Sentry.captureUserFeedback(feedback)
-                    sentry.removeEventId(arguments.id)
+                    sentryAdapter.removeEventId(arguments.id)
 
                     message.respond(
                         translate("extensions.sentry.thanks")

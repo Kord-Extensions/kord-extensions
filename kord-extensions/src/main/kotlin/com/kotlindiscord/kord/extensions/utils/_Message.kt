@@ -4,8 +4,12 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import dev.kord.common.entity.DiscordPartialMessage
 import dev.kord.common.entity.MessageFlag
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.behavior.MessageBehavior
+import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
+import dev.kord.core.behavior.interaction.PublicFollowupMessageBehavior
 import dev.kord.core.behavior.reply
 import dev.kord.core.cache.data.MessageData
 import dev.kord.core.entity.*
@@ -18,8 +22,6 @@ import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import mu.KotlinLogging
-import org.apache.commons.text.StringTokenizer
-import org.apache.commons.text.matcher.StringMatcherFactory
 
 private val logger = KotlinLogging.logger {}
 
@@ -40,6 +42,19 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
 }
 
 /**
+ * Deletes a public follow-up, catching and ignoring a HTTP 404 (Not Found) exception.
+ */
+public suspend fun PublicFollowupMessageBehavior.deleteIgnoringNotFound() {
+    try {
+        delete()
+    } catch (e: RestRequestException) {
+        if (e.hasNotStatus(HttpStatusCode.NotFound)) {
+            throw e
+        }
+    }
+}
+
+/**
  * Deletes a message after a delay.
  *
  * This function **does not block**.
@@ -48,6 +63,33 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
  * @return Job spawned by the CoroutineScope.
  */
 public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
+    return kord.launch {
+        delay(millis)
+
+        try {
+            this@delete.deleteIgnoringNotFound()
+        } catch (e: RestRequestException) {
+            val message = this@delete
+
+            if (retry) {
+                logger.debug(e) { "Failed to delete message, retrying: $message" }
+                this@delete.delete(millis, false)
+            } else {
+                logger.error(e) { "Failed to delete message: $message" }
+            }
+        }
+    }
+}
+
+/**
+ * Deletes a public follow-up after a delay.
+ *
+ * This function **does not block**.
+ *
+ * @param millis The delay before deleting the message, in milliseconds.
+ * @return Job spawned by the CoroutineScope.
+ */
+public fun PublicFollowupMessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
     return kord.launch {
         delay(millis)
 
@@ -126,29 +168,6 @@ public val MessageData.authorId: Snowflake
 /** Whether the message author is a bot. **/
 public val MessageData.authorIsBot: Boolean
     get() = author.bot.discordBoolean
-
-/**
- * Takes a [Message] object and parses it using a [StringTokenizer].
- *
- * This tokenizes a string, splitting it into an array of strings using whitespace as a
- * delimiter, but supporting quoted tokens (strings between quotes are treated as individual
- * arguments).
- *
- * This is used to create an array of arguments for a command's input.
- *
- * @param delimiters An array of delimiters to split with, if not just a space
- * @param quotes An array of quote characters, if you need something other than just `'` and `"`
- *
- * @return An array of parsed arguments
- */
-public fun Message.parse(
-    delimiters: CharArray = charArrayOf(' '),
-    quotes: CharArray = charArrayOf('\'', '"')
-): Array<String> =
-    StringTokenizer(content)
-        .setDelimiterMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(delimiters.joinToString()))
-        .setQuoteMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(quotes.joinToString()))
-        .tokenArray
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
@@ -372,3 +391,92 @@ public val Message.isUrgent: Boolean
 public val Message.isEphemeral: Boolean
     get() =
         data.flags.value?.contains(MessageFlag.Ephemeral) == true
+
+/**
+ * Wait for a message, using the given timeout (in milliseconds ) and filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun waitForMessage(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = getKoin().get<Kord>()
+    val event = kord.waitFor(timeout, filter)
+
+    return event?.message
+}
+
+/**
+ * Wait for a message from a user, using the given timeout (in milliseconds) and extra filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun UserBehavior.waitForMessage(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = getKoin().get<Kord>()
+    val event = kord.waitFor<MessageCreateEvent>(timeout) {
+        message.author?.id == id &&
+            filter()
+    }
+
+    return event?.message
+}
+
+/**
+ * Wait for a message in this channel, using the given timeout (in milliseconds) and extra filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun MessageChannelBehavior.waitForMessage(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = getKoin().get<Kord>()
+    val event = kord.waitFor<MessageCreateEvent>(timeout) {
+        message.channelId == id &&
+            filter()
+    }
+
+    return event?.message
+}
+
+/**
+ * Wait for a message in reply to this one, using the given timeout (in milliseconds) and extra filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun MessageBehavior.waitForReply(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = getKoin().get<Kord>()
+    val event = kord.waitFor<MessageCreateEvent>(timeout) {
+        message.messageReference?.message?.id == id &&
+            filter()
+    }
+
+    return event?.message
+}
+
+/**
+ * Wait for a message by the user that invoked this command, in the channel it was invoked in, using the given
+ * timeout (in milliseconds) and extra filter function.
+ *
+ * Will return `null` if no message is found before the timeout.
+ */
+public suspend fun CommandContext.waitForResponse(
+    timeout: Long,
+    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+): Message? {
+    val kord = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>()
+    val event = kord.waitFor<MessageCreateEvent>(timeout) {
+        message.author?.id == getUser()?.id &&
+            message.channelId == getChannel()?.id &&
+            filter()
+    }
+
+    return event?.message
+}

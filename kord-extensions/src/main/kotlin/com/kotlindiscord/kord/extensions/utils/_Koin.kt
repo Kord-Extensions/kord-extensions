@@ -21,4 +21,5 @@ public fun loadModule(
 }
 
 /** Retrieve the current [Koin] instance. **/
-public fun getKoin(): Koin = KoinPlatformTools.defaultContext().get()
+public fun getKoin(): Koin =
+    KoinPlatformTools.defaultContext().get()

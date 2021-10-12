@@ -4,10 +4,8 @@ import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.core.event.Event
-import io.sentry.Breadcrumb
-import io.sentry.SentryLevel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -27,11 +25,8 @@ public open class EventContext<T : Event>(
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 
-    /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentry: SentryAdapter by inject()
-
-    /** A list of Sentry breadcrumbs created during event processing. **/
-    public open val breadcrumbs: MutableList<Breadcrumb> = mutableListOf()
+    /** Current Sentry context, containing breadcrumbs and other goodies. **/
+    public val sentry: SentryContext = SentryContext()
 
     /**
      * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
@@ -73,26 +68,4 @@ public open class EventContext<T : Event>(
         key: String,
         replacements: Array<Any?> = arrayOf()
     ): String = translate(key, eventHandler.extension.bundle, replacements)
-
-    /**
-     * Add a Sentry breadcrumb to this event context.
-     *
-     * This should be used for the purposes of tracing what exactly is happening during your
-     * event processing. If the bot administrator decides to enable Sentry integration, the
-     * breadcrumbs will be sent to Sentry when there's an event processing error.
-     */
-    public fun breadcrumb(
-        category: String? = null,
-        level: SentryLevel? = null,
-        message: String? = null,
-        type: String? = null,
-
-        data: Map<String, Any> = mapOf()
-    ): Breadcrumb {
-        val crumb = sentry.createBreadcrumb(category, level, message, type, data)
-
-        breadcrumbs.add(crumb)
-
-        return crumb
-    }
 }

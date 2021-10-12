@@ -24,11 +24,13 @@ public class Scheduler : CoroutineScope {
     /** Convenience function to schedule a [Task] using [seconds] instead of a [Duration]. **/
     public fun schedule(
         seconds: Long,
+        startNow: Boolean = true,
         name: String? = null,
         pollingSeconds: Long = 1,
         callback: suspend () -> Unit
     ): Task = schedule(
         delay = Duration.seconds(seconds),
+        startNow = startNow,
         name = name,
         pollingSeconds = pollingSeconds,
         callback = callback,
@@ -38,12 +40,14 @@ public class Scheduler : CoroutineScope {
      * Schedule a [Task] using the given [delay] and [callback]. A name will be generated if not provided.
      *
      * @param delay [Duration] object representing the time to wait for.
+     * @param startNow Whether to start the task now - `false` if you want to start it yourself.
      * @param name Optional task name, used in logging.
      * @param pollingSeconds How often to check whether enough time has passed - `1` by default.
      * @param callback Callback to run when the task has waited for long enough.
      */
     public fun schedule(
         delay: Duration,
+        startNow: Boolean = true,
         name: String? = null,
         pollingSeconds: Long = 1,
         callback: suspend () -> Unit
@@ -60,7 +64,10 @@ public class Scheduler : CoroutineScope {
         )
 
         tasks.add(task)
-        task.start()
+
+        if (startNow) {
+            task.start()
+        }
 
         return task
     }

@@ -1,6 +1,8 @@
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Permission
+import dev.kord.core.behavior.RoleBehavior
+import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Role
 import kotlinx.coroutines.flow.toList
@@ -11,7 +13,7 @@ import kotlinx.coroutines.flow.toList
  * @param role Role to check for
  * @return true if the user has the given role, false otherwise
  */
-public suspend fun Member.hasRole(role: Role): Boolean = roles.toList().contains(role)
+public fun Member.hasRole(role: RoleBehavior): Boolean = roleIds.contains(role.id)
 
 /**
  * Check if the user has all of the given roles.
@@ -19,7 +21,7 @@ public suspend fun Member.hasRole(role: Role): Boolean = roles.toList().contains
  * @param roles Roles to check for.
  * @return `true` if the user has all of the given roles, `false` otherwise.
  */
-public suspend inline fun Member.hasRoles(vararg roles: Role): Boolean = hasRoles(roles.toList())
+public fun Member.hasRoles(vararg roles: RoleBehavior): Boolean = hasRoles(roles.toList())
 
 /**
  * Check if the user has all of the given roles.
@@ -27,11 +29,11 @@ public suspend inline fun Member.hasRoles(vararg roles: Role): Boolean = hasRole
  * @param roles Roles to check for.
  * @return `true` if the user has all of the given roles, `false` otherwise.
  */
-public suspend fun Member.hasRoles(roles: Collection<Role>): Boolean =
+public fun Member.hasRoles(roles: Collection<RoleBehavior>): Boolean =
     if (roles.isEmpty()) {
         true
     } else {
-        this.roles.toList().containsAll(roles)
+        this.roleIds.containsAll(roles.map { it.id })
     }
 
 /**
@@ -85,3 +87,41 @@ public suspend fun Member.hasPermissions(perms: Collection<Permission>): Boolean
 
         perms.all { it in permissions }
     }
+
+/**
+ * Checks if this [Member] can interact (delete/edit/assign/..) with the specified [Role].
+ *
+ * This checks if the [Member] has any role which is higher in hierarchy than [Role].
+ * The logic also accounts for [Guild] ownership.
+ *
+ * Throws an [IllegalArgumentException] if the role is from a different guild.
+ */
+public suspend fun Member.canInteract(role: Role): Boolean {
+    val guild = getGuild()
+
+    if (guild.ownerId == this.id) return true
+
+    val highestRole = getTopRole() ?: guild.getEveryoneRole()
+    return highestRole.canInteract(role)
+}
+
+/**
+ * Checks if this [Member] can interact (kick/ban/..) with another [Member]
+ *
+ * This checks if the [Member] has any role which is higher in hierarchy than all [Role]s of the
+ * specified [Member]
+ * The logic also accounts for [Guild] ownership
+ *
+ * Throws an [IllegalArgumentException] if the member is from a different guild.
+ */
+public suspend fun Member.canInteract(member: Member): Boolean {
+    val guild = getGuild()
+
+    if (isOwner()) return true
+    if (member.isOwner()) return false
+
+    val highestRole = getTopRole() ?: guild.getEveryoneRole()
+    val otherHighestRole = member.getTopRole() ?: guild.getEveryoneRole()
+
+    return highestRole.canInteract(otherHighestRole)
+}

@@ -10,7 +10,7 @@ import dev.kord.common.annotation.KordPreview
  * This works just like [SingleConverter], but the value can be nullable and it can never be required.
  *
  * @property outputError Whether the argument parser should output parsing errors on invalid arguments.
- * @property validator Validation lambda, which may throw a CommandException if required.
+ * @property validator Validation lambda, which may throw a DiscordRelayedException if required.
  */
 public abstract class OptionalConverter<T : Any?>(
     public val outputError: Boolean = false,

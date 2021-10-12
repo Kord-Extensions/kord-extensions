@@ -2,7 +2,7 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.CategoryBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
@@ -21,7 +21,11 @@ import mu.KotlinLogging
  *
  * @param builder Lambda returning the channel to compare to.
  */
-public fun inChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.inChannel(builder: suspend (T) -> ChannelBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
     val eventChannel = channelFor(event)
 
@@ -30,7 +34,7 @@ public fun inChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
 
         fail()
     } else {
-        val channel = builder()
+        val channel = builder(event)
 
         if (eventChannel.id == channel.id) {
             logger.passed()
@@ -57,7 +61,11 @@ public fun inChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
  *
  * @param builder Lambda returning the channel to compare to.
  */
-public fun notInChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.notInChannel(builder: suspend (T) -> ChannelBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
     val eventChannel = channelFor(event)
 
@@ -66,7 +74,7 @@ public fun notInChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
 
         pass()
     } else {
-        val channel = builder()
+        val channel = builder(event)
 
         if (eventChannel.id != channel.id) {
             logger.passed()
@@ -93,7 +101,11 @@ public fun notInChannel(builder: suspend () -> ChannelBehavior): Check<*> = {
  *
  * @param builder Lambda returning the category to compare to.
  */
-public fun inCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.inCategory(builder: suspend (T) -> CategoryBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inCategory")
     val eventChannel = topChannelFor(event)
 
@@ -102,7 +114,7 @@ public fun inCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
 
         fail()
     } else {
-        val category = builder()
+        val category = builder(event)
         val channels = category.channels.toList().map { it.id }
 
         if (channels.contains(eventChannel.id)) {
@@ -130,7 +142,11 @@ public fun inCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
  *
  * @param builder Lambda returning the category to compare to.
  */
-public fun notInCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.notInCategory(builder: suspend (T) -> CategoryBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInCategory")
     val eventChannel = topChannelFor(event)
 
@@ -139,7 +155,7 @@ public fun notInCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
 
         pass()
     } else {
-        val category = builder()
+        val category = builder(event)
         val channels = category.channels.toList().map { it.id }
 
         if (channels.contains(eventChannel.id)) {
@@ -167,7 +183,11 @@ public fun notInCategory(builder: suspend () -> CategoryBehavior): Check<*> = {
  *
  * @param builder Lambda returning the channel to compare to.
  */
-public fun channelHigher(builder: suspend () -> ChannelBehavior): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.channelHigher(builder: suspend (T) -> ChannelBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelHigher")
     val eventChannel = channelFor(event)
 
@@ -176,7 +196,7 @@ public fun channelHigher(builder: suspend () -> ChannelBehavior): Check<*> = {
 
         fail()
     } else {
-        val channel = builder()
+        val channel = builder(event)
 
         if (eventChannel > channel) {
             logger.passed()
@@ -203,7 +223,11 @@ public fun channelHigher(builder: suspend () -> ChannelBehavior): Check<*> = {
  *
  * @param builder Lambda returning the channel to compare to.
  */
-public fun channelLower(builder: suspend () -> ChannelBehavior): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.channelLower(builder: suspend (T) -> ChannelBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelLower")
     val eventChannel = channelFor(event)
 
@@ -212,7 +236,7 @@ public fun channelLower(builder: suspend () -> ChannelBehavior): Check<*> = {
 
         fail()
     } else {
-        val channel = builder()
+        val channel = builder(event)
 
         if (eventChannel < channel) {
             logger.passed()
@@ -239,7 +263,11 @@ public fun channelLower(builder: suspend () -> ChannelBehavior): Check<*> = {
  *
  * @param builder Lambda returning the channel to compare to.
  */
-public fun channelHigherOrEqual(builder: suspend () -> ChannelBehavior): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.channelHigherOrEqual(builder: suspend (T) -> ChannelBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelHigherOrEqual")
     val eventChannel = channelFor(event)
 
@@ -248,7 +276,7 @@ public fun channelHigherOrEqual(builder: suspend () -> ChannelBehavior): Check<*
 
         fail()
     } else {
-        val channel = builder()
+        val channel = builder(event)
 
         if (eventChannel >= channel) {
             logger.passed()
@@ -275,7 +303,11 @@ public fun channelHigherOrEqual(builder: suspend () -> ChannelBehavior): Check<*
  *
  * @param builder Lambda returning the channel to compare to.
  */
-public fun channelLowerOrEqual(builder: suspend () -> ChannelBehavior): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.channelLowerOrEqual(builder: suspend (T) -> ChannelBehavior) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelLowerOrEqual")
     val eventChannel = channelFor(event)
 
@@ -284,7 +316,7 @@ public fun channelLowerOrEqual(builder: suspend () -> ChannelBehavior): Check<*>
 
         fail()
     } else {
-        val channel = builder()
+        val channel = builder(event)
 
         if (eventChannel <= channel) {
             logger.passed()
@@ -316,7 +348,11 @@ public fun channelLowerOrEqual(builder: suspend () -> ChannelBehavior): Check<*>
  *
  * @param id Channel snowflake to compare to.
  */
-public fun inChannel(id: Snowflake): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.inChannel(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
     val channel = event.kord.getChannel(id)
 
@@ -325,7 +361,7 @@ public fun inChannel(id: Snowflake): Check<*> = {
 
         fail()
     } else {
-        inChannel { channel }()
+        inChannel { channel }
     }
 }
 
@@ -337,7 +373,11 @@ public fun inChannel(id: Snowflake): Check<*> = {
  *
  * @param id Channel snowflake to compare to.
  */
-public fun notInChannel(id: Snowflake): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.notInChannel(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
     val channel = event.kord.getChannel(id)
 
@@ -346,7 +386,7 @@ public fun notInChannel(id: Snowflake): Check<*> = {
 
         pass()
     } else {
-        notInChannel { channel }()
+        notInChannel { channel }
     }
 }
 
@@ -358,7 +398,11 @@ public fun notInChannel(id: Snowflake): Check<*> = {
  *
  * @param id Category snowflake to compare to.
  */
-public fun inCategory(id: Snowflake): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.inCategory(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inCategory")
     val category = event.kord.getChannelOf<Category>(id)
 
@@ -367,7 +411,7 @@ public fun inCategory(id: Snowflake): Check<*> = {
 
         fail()
     } else {
-        inCategory { category }()
+        inCategory { category }
     }
 }
 
@@ -379,7 +423,11 @@ public fun inCategory(id: Snowflake): Check<*> = {
  *
  * @param id Category snowflake to compare to.
  */
-public fun notInCategory(id: Snowflake): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.notInCategory(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInCategory")
     val category = event.kord.getChannelOf<Category>(id)
 
@@ -388,7 +436,7 @@ public fun notInCategory(id: Snowflake): Check<*> = {
 
         pass()
     } else {
-        notInCategory { category }()
+        notInCategory { category }
     }
 }
 
@@ -400,7 +448,11 @@ public fun notInCategory(id: Snowflake): Check<*> = {
  *
  * @param id Channel snowflake to compare to.
  */
-public fun channelHigher(id: Snowflake): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.channelHigher(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelHigher")
     val channel = event.kord.getChannel(id)
 
@@ -409,7 +461,7 @@ public fun channelHigher(id: Snowflake): Check<*> = {
 
         fail()
     } else {
-        channelHigher { channel }()
+        channelHigher { channel }
     }
 }
 
@@ -421,7 +473,11 @@ public fun channelHigher(id: Snowflake): Check<*> = {
  *
  * @param id Channel snowflake to compare to.
  */
-public fun channelLower(id: Snowflake): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.channelLower(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelLower")
     val channel = event.kord.getChannel(id)
 
@@ -430,7 +486,7 @@ public fun channelLower(id: Snowflake): Check<*> = {
 
         fail()
     } else {
-        channelLower { channel }()
+        channelLower { channel }
     }
 }
 
@@ -442,7 +498,11 @@ public fun channelLower(id: Snowflake): Check<*> = {
  *
  * @param id Channel snowflake to compare to.
  */
-public fun channelHigherOrEqual(id: Snowflake): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.channelHigherOrEqual(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelHigherOrEqual")
     val channel = event.kord.getChannel(id)
 
@@ -451,7 +511,7 @@ public fun channelHigherOrEqual(id: Snowflake): Check<*> = {
 
         fail()
     } else {
-        channelHigherOrEqual { channel }()
+        channelHigherOrEqual { channel }
     }
 }
 
@@ -463,7 +523,11 @@ public fun channelHigherOrEqual(id: Snowflake): Check<*> = {
  *
  * @param id Channel snowflake to compare to.
  */
-public fun channelLowerOrEqual(id: Snowflake): Check<*> = {
+public suspend fun <T : Event> CheckContext<T>.channelLowerOrEqual(id: Snowflake) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelLowerOrEqual")
     val channel = event.kord.getChannel(id)
 
@@ -472,7 +536,7 @@ public fun channelLowerOrEqual(id: Snowflake): Check<*> = {
 
         fail()
     } else {
-        channelLowerOrEqual { channel }()
+        channelLowerOrEqual { channel }
     }
 }
 

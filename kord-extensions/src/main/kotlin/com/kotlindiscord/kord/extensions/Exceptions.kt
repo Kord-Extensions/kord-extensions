@@ -1,8 +1,11 @@
 package com.kotlindiscord.kord.extensions
 
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.parser.StringParser
 import kotlin.reflect.KClass
 
 /**
@@ -50,10 +53,10 @@ public class EventHandlerRegistrationException(public val reason: String) : Exte
 }
 
 /**
- * Thrown when a [MessageCommand] could not be validated.
+ * Thrown when a [ChatCommand] could not be validated.
  *
- * @param name The [MessageCommand] name
- * @param reason Why this [MessageCommand] is considered invalid.
+ * @param name The [ChatCommand] name
+ * @param reason Why this [ChatCommand] is considered invalid.
  */
 public class InvalidCommandException(public val name: String?, public val reason: String) : ExtensionsException() {
     override fun toString(): String {
@@ -66,10 +69,10 @@ public class InvalidCommandException(public val name: String?, public val reason
 }
 
 /**
- * Thrown when an attempt to register a [MessageCommand] fails.
+ * Thrown when an attempt to register a [ChatCommand] fails.
  *
- * @param name The [MessageCommand] name
- * @param reason Why this [MessageCommand] could not be registered.
+ * @param name The [ChatCommand] name
+ * @param reason Why this [ChatCommand] could not be registered.
  */
 public class CommandRegistrationException(public val name: String?, public val reason: String) : ExtensionsException() {
     override fun toString(): String {
@@ -82,14 +85,40 @@ public class CommandRegistrationException(public val name: String?, public val r
 }
 
 /**
- * Thrown when something bad happens during command processing.
+ * Thrown when something exceptional happens that the actioning user on Discord needs to be aware of.
  *
  * Provided [reason] will be returned to the user verbatim.
  *
- * @param reason Human-readable reason for the failure.
+ * @param reason Human-readable reason for the failure. May be translated.
+ * @param translationKey Translation key used to create the [reason] string, if any.
  */
-public open class CommandException(public var reason: String) : ExtensionsException() {
-    public constructor(other: CommandException) : this(other.reason)
+public open class DiscordRelayedException(
+    public open val reason: String,
+    public open val translationKey: String? = null
+) : ExtensionsException() {
+    public constructor(other: DiscordRelayedException) : this(other.reason)
+
+    override fun toString(): String = reason
+}
+
+/**
+ * Thrown when something happens during argument parsing.
+ *
+ * @param reason Human-readable reason for the failure. May be translated.
+ * @param translationKey Translation key used to create the [reason] string, if any.
+ * @param argument Current Argument object, if any.
+ * @param arguments Arguments object for the command.
+ * @param parser Tokenizing string parser used for this parse attempt, if this was a chat command.
+ */
+public open class ArgumentParsingException(
+    public override val reason: String,
+    public override val translationKey: String?,
+    public val argument: Argument<*>?,
+    public val arguments: Arguments,
+    public val parser: StringParser?
+) : DiscordRelayedException(reason, translationKey) {
+    public constructor(other: ArgumentParsingException) :
+        this(other.reason, other.translationKey, other.argument, other.arguments, other.parser)
 
     override fun toString(): String = reason
 }

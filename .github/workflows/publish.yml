@@ -18,17 +18,30 @@ jobs:
         with:
           java-version: 1.14
 
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v3
+
+        with:
+          gpg-private-key: ${{ secrets.GPG_KEY }}
+          passphrase: ${{ secrets.GPG_PASSWORD }}
+
       - name: Set up Gradle properties
         run: |
           mkdir -p ~/.gradle
           echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
           echo -e "\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
+          echo -e "\nsigning.gnupg.keyName=BFAAD5D6093EF5E62BC9A16A10DB8C6B4AE61C2F" >> ~/.gradle/gradle.properties
+          echo -e "\nsigning.gnupg.passphrase=${{ secrets.GPG_PASSWORD }}" >> ~/.gradle/gradle.properties
 
       - name: Gradle (Build)
-        run: sh gradlew build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
 
       - name: Gradle (Publish)
-        run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} publish
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }}
 
       - name: Upload artifact (Extra Module JARs)
         uses: actions/upload-artifact@v2

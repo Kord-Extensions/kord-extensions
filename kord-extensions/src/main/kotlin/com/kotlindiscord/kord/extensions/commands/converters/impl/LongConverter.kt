@@ -7,14 +7,15 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.IntChoiceBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -48,7 +49,7 @@ public class LongConverter(
                 context.translate("converters.number.error.invalid.otherBase", replacements = arrayOf(arg, radix))
             }
 
-            throw CommandException(errorString)
+            throw DiscordRelayedException(errorString)
         }
 
         return true
@@ -56,4 +57,11 @@ public class LongConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         IntChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.IntOptionValue)?.value ?: return false
+        this.parsed = optionValue.toLong()
+
+        return true
+    }
 }

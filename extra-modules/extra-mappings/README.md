@@ -14,15 +14,19 @@ If you're looking for older versions (and older tags), you can find them
 
 * **Maven repo:** `https://maven.kotlindiscord.com/repository/maven-public/`
 * **Maven coordinates:** `com.kotlindiscord.kord.extensions:extra-mappings:VERSION`
-* If Fabric dependencies fail to resolve, you may also need to add their Maven repo: `https://maven.fabricmc.net`
+
+* Some extra Maven repos are required:
+    * **FabricMC**: `https://maven.fabricmc.net/`
+    * **QuiltMC (Releases)**: `https://maven.quiltmc.org/repository/release/`
+    * **QuiltMC (Snapshots)**: `https://maven.quiltmc.org/repository/snapshot/`
 
 At its simplest, you can add this extension directly to your bot with no further configuration. For example:
 
 ```kotlin
 suspend fun main() {
     val bot = ExtensibleBot(System.getenv("TOKEN")) {
-        commands {
-            defaultPrefix = "!"
+        chatCommands {
+            enabled = true
         }
 
         extensions {
@@ -42,8 +46,9 @@ they're detailed below.
 
 This extension provides a number of commands for use on Discord.
 
-* Commands for retrieving information about mappings namespaces: `legacy-yarn`, `mcp`, `mojang`, `plasma`, `yarn`
+* Commands for retrieving information about mappings namespaces: `hashed`, `legacy-yarn`, `mcp`, `mojang`, `plasma`, `yarn`
   and `yarrn`
+* Hashed Mojang-specific lookup commands: `hc`, `hf` and `hm`
 * Legacy Yarn-specific lookup commands: `lyc`, `lyf` and `lym`
 * MCP-specific lookup commands: `mcpc`, `mcpf` and `mcpm`
 * Mojang-specific lookup commands: `mmc`, `mmf` and `mmm`
@@ -80,7 +85,7 @@ following configuration keys are available:
   other guilds. This setting takes priority over `guilds.banned`.
 * `guilds.banned`: List of guilds mappings commands may **not** be run within. When set, mappings commands may not be
   run within the given guilds.
-* `settings.namespaces`: List of enabled namespaces. Currently, `legacy-yarn`, `mcp`, `mojang`, `plasma`, `yarn`
+* `settings.namespaces`: List of enabled namespaces. Currently, `hashed-mojang`, `legacy-yarn`, `mcp`, `mojang`, `plasma`, `yarn`
   and `yarrn` are supported, and they will all be enabled by default.
 * `settings.timeout`: Time (in seconds) to wait before destroying mappings paginators, defaulting to 5 minutes (300
   seconds). Be careful when setting this value to something high - a busy bot may end up running out of memory if

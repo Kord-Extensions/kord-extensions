@@ -1,6 +1,0 @@
-files:
-  - source: /kord-extensions/src/main/resources/translations/kordex/strings.properties
-    translation: >-
-      /kord-extensions/src/main/resources/translations/kordex/%file_name%_%locale_with_underscore%.%file_extension%
-
-"commit_message": "[ci skip]"

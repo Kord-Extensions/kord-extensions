@@ -61,5 +61,15 @@
       <option name="name" value="Shedaniel" />
       <option name="url" value="https://maven.shedaniel.me" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="QuiltMC (Snapshots)" />
+      <option name="name" value="QuiltMC (Snapshots)" />
+      <option name="url" value="https://maven.quiltmc.org/repository/snapshot/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="QuiltMC (Releases)" />
+      <option name="name" value="QuiltMC (Releases)" />
+      <option name="url" value="https://maven.quiltmc.org/repository/release/" />
+    </remote-repository>
   </component>
 </project>

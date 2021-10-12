@@ -7,16 +7,17 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.coroutines.flow.firstOrNull
@@ -46,7 +47,7 @@ public class GuildConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         this.parsed = findGuild(arg)
-            ?: throw CommandException(
+            ?: throw DiscordRelayedException(
                 context.translate("converters.guild.error.missing", replacements = arrayOf(arg))
             )
 
@@ -64,4 +65,15 @@ public class GuildConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+
+        this.parsed = findGuild(optionValue)
+            ?: throw DiscordRelayedException(
+                context.translate("converters.guild.error.missing", replacements = arrayOf(optionValue))
+            )
+
+        return true
+    }
 }

@@ -7,10 +7,11 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -19,6 +20,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.UserBuilder
 import kotlinx.coroutines.flow.firstOrNull
@@ -54,8 +56,8 @@ public class MemberConverter(
     override val signatureTypeString: String = "converters.member.signatureType"
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        if (useReply) {
-            val messageReference = context.getMessage()?.asMessage()?.messageReference
+        if (useReply && context is ChatCommandContext<*>) {
+            val messageReference = context.message.asMessage().messageReference
 
             if (messageReference != null) {
                 val member = messageReference.message?.asMessage()?.getAuthorAsMember()
@@ -70,7 +72,7 @@ public class MemberConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         parsed = findMember(arg, context)
-            ?: throw CommandException(
+            ?: throw DiscordRelayedException(
                 context.translate("converters.member.error.missing", replacements = arrayOf(arg))
             )
 
@@ -84,7 +86,7 @@ public class MemberConverter(
             try {
                 kord.getUser(Snowflake(id))
             } catch (e: NumberFormatException) {
-                throw CommandException(
+                throw DiscordRelayedException(
                     context.translate("converters.member.error.invalid", replacements = arrayOf(id))
                 )
             }
@@ -113,4 +115,11 @@ public class MemberConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         UserBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.MemberOptionValue)?.value as? Member ?: return false
+        this.parsed = optionValue
+
+        return true
+    }
 }

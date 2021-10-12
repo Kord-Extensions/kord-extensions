@@ -228,7 +228,7 @@ public class ConverterProcessor(
                 
                 // Imports that all converters need
                 import com.kotlindiscord.kord.extensions.commands.converters.*
-                import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+                import com.kotlindiscord.kord.extensions.commands.Arguments
                 import dev.kord.common.annotation.KordPreview
 
 

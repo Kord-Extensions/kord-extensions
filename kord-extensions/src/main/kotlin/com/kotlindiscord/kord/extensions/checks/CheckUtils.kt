@@ -1,15 +1,19 @@
-@file:OptIn(KordPreview::class)
+@file:OptIn(KordPreview::class, KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.checks
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.utils.authorId
+import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
-import dev.kord.core.entity.channel.thread.ThreadChannel
-import dev.kord.core.entity.interaction.GuildInteraction
+import dev.kord.core.cache.data.toData
+import dev.kord.core.entity.Member
+import dev.kord.core.entity.interaction.GuildApplicationCommandInteraction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
 import dev.kord.core.event.channel.thread.*
@@ -78,9 +82,9 @@ public suspend fun channelFor(event: Event): ChannelBehavior? {
  * @return A [ChannelBehavior] representing the channel, or null if there isn't one.
  */
 public suspend fun topChannelFor(event: Event): ChannelBehavior? {
-    val channel = channelFor(event) ?: return null
+    val channel = channelFor(event)?.asChannelOrNull() ?: return null
 
-    return if (channel is ThreadChannel) {
+    return if (channel is ThreadChannelBehavior) {
         channel.parent
     } else {
         channel
@@ -98,7 +102,7 @@ public suspend fun topChannelFor(event: Event): ChannelBehavior? {
  * @param event The event concerning to the channel to retrieve.
  * @return A [Long] representing the channel ID, or null if there isn't one.
  */
-public suspend fun channelIdFor(event: Event): Long? {
+public suspend fun channelIdFor(event: Event): ULong? {
     return when (event) {
         is ChannelCreateEvent -> event.channel.id.value
         is ChannelDeleteEvent -> event.channel.id.value
@@ -202,7 +206,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
             if (guildId == null) {
                 null
             } else {
-                event.kord.getGuild(guildId)
+                event.kord.unsafe.guild(guildId)
             }
         }
 
@@ -213,9 +217,29 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is MemberLeaveEvent -> event.guild
         is MemberUpdateEvent -> event.guild
         is MessageBulkDeleteEvent -> event.guild
-        is MessageCreateEvent -> event.message.getGuildOrNull()
+
+        is MessageCreateEvent -> {
+            val guildId = event.message.data.guildId.value
+
+            if (guildId == null) {
+                guildId
+            } else {
+                event.kord.unsafe.guild(guildId)
+            }
+        }
+
         is MessageDeleteEvent -> event.guild
-        is MessageUpdateEvent -> event.getMessage().getGuildOrNull()
+
+        is MessageUpdateEvent -> {
+            val guildId = event.new.guildId.value
+
+            if (guildId == null) {
+                guildId
+            } else {
+                event.kord.unsafe.guild(guildId)
+            }
+        }
+
         is NewsChannelCreateEvent -> event.channel.guild
         is NewsChannelDeleteEvent -> event.channel.guild
         is NewsChannelUpdateEvent -> event.channel.guild
@@ -258,25 +282,25 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
     return when {
-        event is InteractionCreateEvent -> (event.interaction as? GuildInteraction)?.member
+        event is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.member
 
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member
+        event is MessageCreateEvent -> event.member
+        event is MessageDeleteEvent -> event.message?.data?.guildId?.value
+            ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
 
-        event is MessageCreateEvent && event.message.getGuildOrNull() != null ->
-            event.message.getAuthorAsMember()
-
-        event is MessageDeleteEvent && event.message?.getGuildOrNull() != null ->
-            event.message?.getAuthorAsMember()
-
-        event is MessageUpdateEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
-            event.getMessage().getAuthorAsMember()
-
-        event is ReactionAddEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
-            event.getUserAsMember()
-
-        event is ReactionRemoveEvent && event.message.asMessageOrNull()?.getGuildOrNull() != null ->
-            event.getUserAsMember()
+        event is MessageUpdateEvent -> {
+            val message = event.new
+            if (message.author.value != null && message.member.value != null) {
+                val userData = message.author.value!!.toData()
+                val memberData = message.member.value!!.toData(userData.id, event.new.guildId.value!!)
+                return Member(memberData, userData, event.kord)
+            }
+            return null
+        }
+        event is ReactionAddEvent -> event.userAsMember
+        event is ReactionRemoveEvent -> event.userAsMember
 
         event is TypingStartEvent -> if (event.guildId != null) {
             event.getGuild()!!.getMemberOrNull(event.userId)
@@ -399,6 +423,7 @@ public suspend fun userFor(event: Event): UserBehavior? {
         is DMChannelCreateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelDeleteEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelUpdateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
+
         is InteractionCreateEvent -> event.interaction.user
         is MemberJoinEvent -> event.member
         is MemberLeaveEvent -> event.user
@@ -423,9 +448,7 @@ public suspend fun userFor(event: Event): UserBehavior? {
     }
 }
 
-/** Wrap an existing check, calling it but ensuring that no message is produced. **/
-public suspend fun Check<*>.silenced(): Check<*> = {
-    this@silenced()
-
+/** Silence the current check by removing any message it may have set. **/
+public fun CheckContext<*>.silence() {
     message = null
 }

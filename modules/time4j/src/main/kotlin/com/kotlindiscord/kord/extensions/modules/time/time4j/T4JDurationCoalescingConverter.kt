@@ -7,16 +7,17 @@
 
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.RegexCoalescingConverter
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import mu.KotlinLogging
@@ -124,9 +125,6 @@ public class T4JDurationCoalescingConverter(
         return durations.size
     }
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
-
     private suspend fun throwIfNecessary(
         e: Exception,
         context: CommandContext,
@@ -139,15 +137,37 @@ public class T4JDurationCoalescingConverter(
                     replacements = arrayOf(e.unit)
                 ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-                throw CommandException(message)
+                throw DiscordRelayedException(message)
             }
 
-            is DurationParserException -> throw CommandException(e.error)
+            is DurationParserException -> throw DiscordRelayedException(e.error)
 
             else -> throw e
         }
     } else {
         logger.debug(e) { "Error thrown during duration parsing" }
+    }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val arg = (option as? OptionValue.StringOptionValue)?.value ?: return false
+
+        try {
+            this.parsed = T4JDurationParser.parse(arg, context.getLocale())
+        } catch (e: InvalidTimeUnitException) {
+            val message = context.translate(
+                "converters.duration.error.invalidUnit",
+                replacements = arrayOf(e.unit)
+            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+
+            throw DiscordRelayedException(message)
+        } catch (e: DurationParserException) {
+            throw DiscordRelayedException(e.error)
+        }
+
+        return true
     }
 }
 

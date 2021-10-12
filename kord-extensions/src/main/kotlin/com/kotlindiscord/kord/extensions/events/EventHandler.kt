@@ -7,20 +7,18 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.utils.getKoin
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.Event
-import io.sentry.Sentry
 import kotlinx.coroutines.Job
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.io.Serializable
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -44,8 +42,8 @@ public open class EventHandler<T : Event>(
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 
-    /** Kord instance, backing the ExtensibleBot. **/
-    public val kord: Kord by inject()
+    /** Current Kord instance powering the bot. **/
+    public open val kord: Kord by inject()
 
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
@@ -64,6 +62,9 @@ public open class EventHandler<T : Event>(
      * @suppress This is the job returned by `Kord#on`, which we cancel to stop listening.
      */
     public var job: Job? = null
+
+    /** @suppress Internal hack to work around logic ordering with inline functions. **/
+    public var listenerRegistrationCallable: (() -> Unit)? = null
 
     /** Cached locale variable, stored and retrieved by [getLocale]. **/
     public var resolvedLocale: Locale? = null
@@ -111,44 +112,6 @@ public open class EventHandler<T : Event>(
      */
     public fun check(check: Check<T>): Boolean = checkList.add(check)
 
-    /**
-     * Define a simple Boolean check which must pass for the event handler to be executed.
-     *
-     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
-     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
-     * the same functionality as a regular check, and cannot return a message.
-     *
-     * An event handler may have multiple checks - all checks must pass for the command to be executed.
-     * Checks will be run in the order that they're defined.
-     *
-     * This function can be used DSL-style with a given body, or it can be passed one or more
-     * predefined functions. See the samples for more information.
-     *
-     * @param checks Checks to apply to this event handler.
-     */
-    public open fun booleanCheck(vararg checks: suspend (T) -> Boolean) {
-        checks.forEach(::booleanCheck)
-    }
-
-    /**
-     * Overloaded simple Boolean check function to allow for DSL syntax.
-     *
-     * Boolean checks are simple wrappers around the regular check system, allowing you to define a basic check that
-     * takes an event object and returns a [Boolean] representing whether it passed. This style of check does not have
-     * the same functionality as a regular check, and cannot return a message.
-     *
-     * @param check Check to apply to this event handler.
-     */
-    public open fun booleanCheck(check: suspend (T) -> Boolean) {
-        check {
-            if (check(event)) {
-                pass()
-            } else {
-                fail()
-            }
-        }
-    }
-
     // endregion
 
     /**
@@ -175,17 +138,17 @@ public open class EventHandler<T : Event>(
         val context = EventContext(this, event)
         val eventName = event::class.simpleName
 
-        val firstBreadcrumb = if (sentry.enabled) {
-            val data = mutableMapOf<String, Serializable>()
+        if (sentry.enabled) {
+            context.sentry.breadcrumb(BreadcrumbType.Info) {
+                category = "event"
+                message = "Event \"$eventName\" fired."
 
-            val channelId = channelIdFor(event)
-            val guildBehavior = guildFor(event)
-            val messageBehavior = messageFor(event)
-            val roleBehavior = roleFor(event)
-            val userBehavior = userFor(event)
-
-            if (channelId != null) {
-                val channel = kord.getChannel(Snowflake(channelId))
+                val channel = topChannelFor(event)
+                val guildBehavior = guildFor(event)
+                val messageBehavior = messageFor(event)
+                val roleBehavior = roleFor(event)
+                val thread = threadFor(event)?.asChannel()
+                val userBehavior = userFor(event)
 
                 if (channel != null) {
                     data["channel"] = when (channel) {
@@ -194,53 +157,46 @@ public open class EventHandler<T : Event>(
 
                         else -> channel.id.asString
                     }
-                } else {
-                    data["channel"] = channelId
+                }
+
+                if (thread != null) {
+                    data["thread"] = "#${thread.name} (${thread.id.asString})"
+                }
+
+                if (guildBehavior != null) {
+                    val guild = guildBehavior.asGuildOrNull()
+
+                    data["guild"] = if (guild != null) {
+                        "${guild.name} (${guild.id.asString})"
+                    } else {
+                        guildBehavior.id.asString
+                    }
+                }
+
+                if (messageBehavior != null) {
+                    data["message"] = messageBehavior.id.asString
+                }
+
+                if (roleBehavior != null) {
+                    val role = roleBehavior.guild.getRoleOrNull(roleBehavior.id)
+
+                    data["role"] = if (role != null) {
+                        "@${role.name} (${role.id.asString})"
+                    } else {
+                        roleBehavior.id.asString
+                    }
+                }
+
+                if (userBehavior != null) {
+                    val user = userBehavior.asUserOrNull()
+
+                    data["user"] = if (user != null) {
+                        "${user.tag} (${user.id.asString})"
+                    } else {
+                        userBehavior.id.asString
+                    }
                 }
             }
-
-            if (guildBehavior != null) {
-                val guild = guildBehavior.asGuildOrNull()
-
-                data["guild"] = if (guild != null) {
-                    "${guild.name} (${guild.id.asString})"
-                } else {
-                    guildBehavior.id.asString
-                }
-            }
-
-            if (messageBehavior != null) {
-                data["message"] = messageBehavior.id.asString
-            }
-
-            if (roleBehavior != null) {
-                val role = roleBehavior.guild.getRoleOrNull(roleBehavior.id)
-
-                data["role"] = if (role != null) {
-                    "@${role.name} (${role.id.asString})"
-                } else {
-                    roleBehavior.id.asString
-                }
-            }
-
-            if (userBehavior != null) {
-                val user = userBehavior.asUserOrNull()
-
-                data["user"] = if (user != null) {
-                    "${user.tag} (${user.id.asString})"
-                } else {
-                    userBehavior.id.asString
-                }
-            }
-
-            sentry.createBreadcrumb(
-                category = "event",
-                type = "info",
-                message = "Event \"$eventName\" fired.",
-                data = data
-            )
-        } else {
-            null
         }
 
         @Suppress("TooGenericExceptionCaught")  // Anything could happen here
@@ -248,20 +204,14 @@ public open class EventHandler<T : Event>(
             this.body(context)
         } catch (t: Throwable) {
             if (sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
-                logger.debug { "Submitting error to sentry." }
+                logger.trace { "Submitting error to sentry." }
 
-                Sentry.withScope {
-                    it.tag("event", eventName ?: "Unknown")
-                    it.tag("extension", extension.name)
-
-                    it.addBreadcrumb(firstBreadcrumb!!)
-
-                    context.breadcrumbs.forEach { breadcrumb -> it.addBreadcrumb(breadcrumb) }
-
-                    val sentryId = Sentry.captureException(t, "Event processing failed.")
-
-                    logger.debug { "Error submitted to Sentry: $sentryId" }
+                val sentryId = context.sentry.captureException(t, "Event processing failed.") {
+                    tag("event", eventName ?: "Unknown")
+                    tag("extension", extension.name)
                 }
+
+                logger.info { "Error submitted to Sentry: $sentryId" }
 
                 logger.error(t) { "Error during execution of event handler ($eventName)" }
             } else {

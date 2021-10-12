@@ -1,8 +1,8 @@
 package com.kotlindiscord.kordex.ext.common.extensions
 
 import com.kotlindiscord.kord.extensions.checks.inGuild
-import com.kotlindiscord.kord.extensions.checks.or
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kordex.ext.common.builders.ExtCommonBuilder
 import com.kotlindiscord.kordex.ext.common.configuration.emoji.EmojiConfig
 import com.kotlindiscord.kordex.ext.common.emoji.NamedEmoji
@@ -24,19 +24,15 @@ class EmojiExtension : Extension() {
         }
 
         event<EmojisUpdateEvent> {
-            check(
-                or(
-                    // No configured guilds? Do them all.
-                    { config.getGuilds().isEmpty() },
-
-                    {
-                        config.getGuilds()
-                            .mapNotNull { kord.getGuild(it) }
-                            .map { inGuild { it } }
-                            .any()
-                    }
-                )
-            )
+            check {
+                failIfNot {
+                    config.getGuilds().isEmpty() ||
+                    config.getGuilds()
+                        .mapNotNull { kord.getGuild(it) }
+                        .map { guild -> inGuild { guild } }
+                        .any()
+                }
+            }
 
             action { populateEmojis(event.guildId) }
         }

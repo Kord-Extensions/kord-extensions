@@ -2,22 +2,24 @@
 
 package com.kotlindiscord.kord.extensions.extensions
 
-import com.kotlindiscord.kord.extensions.*
-import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.commands.GroupCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommand
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
+import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.checks.types.ChatCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
+import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
-import dev.kord.core.event.interaction.InteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.gateway.Intent
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -39,10 +41,10 @@ public abstract class Extension : KoinComponent {
     public open val kord: Kord by inject()
 
     /** Message command registry. **/
-    private val messageCommandsRegistry: MessageCommandRegistry by inject()
+    public open val chatCommandRegistry: ChatCommandRegistry by inject()
 
     /** Slash command registry. **/
-    private val slashCommandsRegistry: SlashCommandRegistry by inject()
+    public open val applicationCommandRegistry: ApplicationCommandRegistry by inject()
 
     /**
      * The name of this extension.
@@ -73,7 +75,7 @@ public abstract class Extension : KoinComponent {
      *
      * When an extension is unloaded, all the commands are removed from the bot.
      */
-    public open val commands: MutableList<MessageCommand<out Arguments>> = mutableListOf()
+    public open val chatCommands: MutableList<ChatCommand<out Arguments>> = mutableListOf()
 
     /**
      * List of registered slash commands.
@@ -81,26 +83,58 @@ public abstract class Extension : KoinComponent {
      * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
      * belong to unloaded extensions will not execute.
      */
-    public open val slashCommands: MutableList<SlashCommand<out Arguments>> = mutableListOf()
+    public open val messageCommands: MutableList<MessageCommand<*>> = mutableListOf()
+
+    /**
+     * List of registered slash commands.
+     *
+     * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
+     * belong to unloaded extensions will not execute.
+     */
+    public open val slashCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
+
+    /**
+     * List of registered slash commands.
+     *
+     * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
+     * belong to unloaded extensions will not execute.
+     */
+    public open val userCommands: MutableList<UserCommand<*>> = mutableListOf()
+
+    /**
+     * List of chat command checks.
+     *
+     * These checks will be checked against all chat commands in this extension.
+     */
+    public open val chatCommandChecks: MutableList<ChatCommandCheck> =
+        mutableListOf()
 
     /**
      * List of message command checks.
      *
-     * These checks will be checked against all commands in this extension.
+     * These checks will be checked against all message commands in this extension.
      */
-    public open val commandChecks: MutableList<Check<MessageCreateEvent>> =
-        mutableListOf()
+    public val messageCommandChecks: MutableList<MessageCommandCheck> = mutableListOf()
 
     /**
      * List of slash command checks.
      *
      * These checks will be checked against all slash commands in this extension.
      */
-    public open val slashCommandChecks: MutableList<Check<InteractionCreateEvent>> =
-        mutableListOf()
+    public val slashCommandChecks: MutableList<SlashCommandCheck> = mutableListOf()
+
+    /**
+     * List of user command checks.
+     *
+     * These checks will be checked against all user commands in this extension.
+     */
+    public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
 
     /** String representing the bundle to get translations from for command names/descriptions. **/
     public open val bundle: String? = null
+
+    /** Set of intents required by this extension's event handlers and commands. **/
+    public open val intents: MutableSet<Intent> = mutableSetOf()
 
     /**
      * Override this in your subclass and use it to register your commands and event
@@ -140,160 +174,6 @@ public abstract class Extension : KoinComponent {
     }
 
     /**
-     * DSL function for easily registering a command.
-     *
-     * Use this in your setup function to register a command that may be executed on Discord.
-     *
-     * @param body Builder lambda used for setting up the command object.
-     */
-    @ExtensionDSL
-    public open suspend fun <T : Arguments> command(
-        arguments: () -> T,
-        body: suspend MessageCommand<T>.() -> Unit
-    ): MessageCommand<T> {
-        val commandObj = MessageCommand(this, arguments)
-        body.invoke(commandObj)
-
-        return command(commandObj)
-    }
-
-    /**
-     * DSL function for easily registering a command, without arguments.
-     *
-     * Use this in your setup function to register a command that may be executed on Discord.
-     *
-     * @param body Builder lambda used for setting up the command object.
-     */
-    @ExtensionDSL
-    public open suspend fun command(
-        body: suspend MessageCommand<Arguments>.() -> Unit
-    ): MessageCommand<Arguments> {
-        val commandObj = MessageCommand<Arguments>(this)
-        body.invoke(commandObj)
-
-        return command(commandObj)
-    }
-
-    /**
-     * Function for registering a custom command object.
-     *
-     * You can use this if you have a custom command subclass you need to register.
-     *
-     * @param commandObj MessageCommand object to register.
-     */
-    public open suspend fun <T : Arguments> command(commandObj: MessageCommand<T>): MessageCommand<T> {
-        try {
-            commandObj.validate()
-            messageCommandsRegistry.add(commandObj)
-            commands.add(commandObj)
-        } catch (e: CommandRegistrationException) {
-            logger.error(e) { "Failed to register command - $e" }
-        } catch (e: InvalidCommandException) {
-            logger.error(e) { "Failed to register command - $e" }
-        }
-
-        return commandObj
-    }
-
-    /**
-     * DSL function for easily registering a slash command, with arguments.
-     *
-     * Use this in your setup function to register a slash command that may be executed on Discord.
-     *
-     * @param arguments Arguments builder (probably a reference to the class constructor).
-     * @param body Builder lambda used for setting up the slash command object.
-     */
-    @ExtensionDSL
-    public open suspend fun <T : Arguments> slashCommand(
-        arguments: () -> T,
-        body: suspend SlashCommand<T>.() -> Unit
-    ): SlashCommand<T> {
-        val commandObj = SlashCommand(this, arguments)
-        body.invoke(commandObj)
-
-        return slashCommand(commandObj)
-    }
-
-    /**
-     * DSL function for easily registering a slash command, without arguments.
-     *
-     * Use this in your setup function to register a slash command that may be executed on Discord.
-     *
-     * @param body Builder lambda used for setting up the slash command object.
-     */
-    @ExtensionDSL
-    public open suspend fun slashCommand(
-        body: suspend SlashCommand<out Arguments>.() -> Unit
-    ): SlashCommand<out Arguments> {
-        val commandObj = SlashCommand<Arguments>(this, null)
-        body.invoke(commandObj)
-
-        return slashCommand(commandObj)
-    }
-
-    /**
-     * Function for registering a custom slash command object.
-     *
-     * You can use this if you have a custom slash command subclass you need to register.
-     *
-     * @param commandObj SlashCommand object to register.
-     */
-    public open suspend fun <T : Arguments> slashCommand(
-        commandObj: SlashCommand<T>
-    ): SlashCommand<T> {
-        try {
-            commandObj.validate()
-            slashCommands.add(commandObj)
-            slashCommandsRegistry.register(commandObj, commandObj.guild)
-        } catch (e: CommandRegistrationException) {
-            logger.error(e) { "Failed to register slash command - $e" }
-        } catch (e: InvalidCommandException) {
-            logger.error(e) { "Failed to register slash command - $e" }
-        }
-
-        return commandObj
-    }
-
-    /**
-     * DSL function for easily registering a grouped command.
-     *
-     * Use this in your setup function to register a group of commands.
-     *
-     * The body of the grouped command will be executed if there is no
-     * matching subcommand.
-     *
-     * @param body Builder lambda used for setting up the command object.
-     */
-    @ExtensionDSL
-    public open suspend fun <T : Arguments> group(
-        arguments: () -> T,
-        body: suspend GroupCommand<T>.() -> Unit
-    ): GroupCommand<T> {
-        val commandObj = GroupCommand(this, arguments)
-        body.invoke(commandObj)
-
-        return command(commandObj) as GroupCommand
-    }
-
-    /**
-     * DSL function for easily registering a grouped command, without its own arguments.
-     *
-     * Use this in your setup function to register a group of commands.
-     *
-     * The body of the grouped command will be executed if there is no
-     * matching subcommand.
-     *
-     * @param body Builder lambda used for setting up the command object.
-     */
-    @ExtensionDSL
-    public open suspend fun group(body: suspend GroupCommand<Arguments>.() -> Unit): GroupCommand<Arguments> {
-        val commandObj = GroupCommand<Arguments>(this)
-        body.invoke(commandObj)
-
-        return command(commandObj) as GroupCommand
-    }
-
-    /**
      * If you need to, override this function and use it to clean up your extension when
      * it's unloaded.
      *
@@ -301,7 +181,7 @@ public abstract class Extension : KoinComponent {
      * handled for you.
      */
     public open suspend fun unload() {
-        logger.debug { "Unload function not overridden." }
+        logger.trace { "Unload function not overridden." }
     }
 
     /**
@@ -331,99 +211,17 @@ public abstract class Extension : KoinComponent {
             bot.removeEventHandler(handler)
         }
 
-        for (command in commands) {
-            messageCommandsRegistry.remove(command)
+        for (command in chatCommands) {
+            chatCommandRegistry.remove(command)
         }
 
         eventHandlers.clear()
-        commands.clear()
+        chatCommands.clear()
 
         if (error != null) {
             throw error
         }
 
         this.setState(ExtensionState.UNLOADED)
-    }
-
-    /**
-     * DSL function for easily registering an event handler.
-     *
-     * Use this in your setup function to register an event handler that reacts to a given event.
-     *
-     * @param body Builder lambda used for setting up the event handler object.
-     */
-    public suspend inline fun <reified T : Event> event(
-        noinline body: suspend EventHandler<T>.() -> Unit
-    ): EventHandler<T> {
-        val eventHandler = EventHandler<T>(this)
-        val logger = KotlinLogging.logger {}
-
-        body.invoke(eventHandler)
-
-        try {
-            eventHandler.validate()
-            eventHandler.job = bot.addEventHandler(eventHandler)
-
-            eventHandlers.add(eventHandler)
-        } catch (e: EventHandlerRegistrationException) {
-            logger.error(e) { "Failed to register event handler - $e" }
-        } catch (e: InvalidEventHandlerException) {
-            logger.error(e) { "Failed to register event handler - $e" }
-        }
-
-        return eventHandler
-    }
-
-    /**
-     * Define a check which must pass for the command to be executed. This check will be applied to all
-     * slash commands in this extension.
-     *
-     * A command may have multiple checks - all checks must pass for the command to be executed.
-     * Checks will be run in the order that they're defined.
-     *
-     * This function can be used DSL-style with a given body, or it can be passed one or more
-     * predefined functions. See the samples for more information.
-     *
-     * @param checks Checks to apply to all slash commands in this extension.
-     */
-    public open fun slashCheck(vararg checks: Check<InteractionCreateEvent>) {
-        checks.forEach { slashCommandChecks.add(it) }
-    }
-
-    /**
-     * Overloaded check function to allow for DSL syntax.
-     *
-     * @param check Check to apply to all slash commands in this extension.
-     */
-    @ExtensionDSL
-    public open fun slashCheck(check: Check<InteractionCreateEvent>) {
-        slashCommandChecks.add(check)
-    }
-
-    /**
-     * Define a check which must pass for the command to be executed. This check will be applied to all commands
-     * in this extension.
-     *
-     * A command may have multiple checks - all checks must pass for the command to be executed.
-     * Checks will be run in the order that they're defined.
-     *
-     * This function can be used DSL-style with a given body, or it can be passed one or more
-     * predefined functions. See the samples for more information.
-     *
-     * @param checks Checks to apply to all commands in this extension.
-     */
-    @ExtensionDSL
-    public open fun check(vararg checks: Check<MessageCreateEvent>) {
-        checks.forEach { commandChecks.add(it) }
-    }
-
-    /**
-     * Overloaded check function to allow for DSL syntax.
-     *
-     * @param check Check to apply to all commands in this extension.
-     */
-    @ExtensionDSL
-    public open fun check(check: Check<MessageCreateEvent>) {
-        commandChecks.add(check)
     }
 }

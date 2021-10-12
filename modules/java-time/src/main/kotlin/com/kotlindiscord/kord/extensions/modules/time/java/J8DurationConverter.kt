@@ -7,15 +7,16 @@
 
 package com.kotlindiscord.kord.extensions.modules.time.java
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import java.time.Duration
@@ -50,7 +51,7 @@ public class J8DurationConverter(
                 normalized.normalize(LocalDateTime.now())
 
                 if (!normalized.isPositive()) {
-                    throw CommandException(context.translate("converters.duration.error.positiveOnly"))
+                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
                 }
             }
 
@@ -61,9 +62,9 @@ public class J8DurationConverter(
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw CommandException(message)
+            throw DiscordRelayedException(message)
         } catch (e: DurationParserException) {
-            throw CommandException(e.error)
+            throw DiscordRelayedException(e.error)
         }
 
         return true
@@ -71,6 +72,37 @@ public class J8DurationConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val arg = (option as? OptionValue.StringOptionValue)?.value ?: return false
+
+        try {
+            val result = J8DurationParser.parse(arg, context.getLocale())
+
+            if (positiveOnly) {
+                val normalized = result.clone()
+
+                normalized.normalize(LocalDateTime.now())
+
+                if (!normalized.isPositive()) {
+                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+                }
+            }
+
+            parsed = result
+        } catch (e: InvalidTimeUnitException) {
+            val message = context.translate(
+                "converters.duration.error.invalidUnit",
+                replacements = arrayOf(e.unit)
+            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+
+            throw DiscordRelayedException(message)
+        } catch (e: DurationParserException) {
+            throw DiscordRelayedException(e.error)
+        }
+
+        return true
+    }
 }
 
 /**

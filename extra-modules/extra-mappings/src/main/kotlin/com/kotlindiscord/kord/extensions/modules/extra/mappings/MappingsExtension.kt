@@ -2,11 +2,12 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
-import com.kotlindiscord.kord.extensions.checks.and
 import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.commands.MessageCommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.builders.ExtMappingsBuilder
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
@@ -19,8 +20,12 @@ import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.core.behavior.channel.withTyping
+import dev.kord.core.event.message.MessageCreateEvent
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.MappingsQuery
@@ -49,6 +54,7 @@ class MappingsExtension : Extension() {
                 "legacy-yarn" -> namespaces.add(LegacyYarnNamespace)
                 "mcp" -> namespaces.add(MCPNamespace)
                 "mojang" -> namespaces.add(MojangNamespace)
+                "hashed-mojang" -> namespaces.add(MojangHashedNamespace)
                 "plasma" -> namespaces.add(PlasmaNamespace)
                 "yarn" -> namespaces.add(YarnNamespace)
                 "yarrn" -> namespaces.add(YarrnNamespace)
@@ -67,15 +73,24 @@ class MappingsExtension : Extension() {
         val legacyYarnEnabled = enabledNamespaces.contains("legacy-yarn")
         val mcpEnabled = enabledNamespaces.contains("mcp")
         val mojangEnabled = enabledNamespaces.contains("mojang")
+        val hashedMojangEnabled = enabledNamespaces.contains("hashed-mojang")
         val plasmaEnabled = enabledNamespaces.contains("plasma")
         val yarnEnabled = enabledNamespaces.contains("yarn")
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
 
         val patchworkEnabled = builder.config.yarnChannelEnabled(YarnChannels.PATCHWORK)
 
-        val categoryCheck = allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
-        val channelCheck = allowedGuild(builder.config.getAllowedChannels(), builder.config.getBannedChannels())
-        val guildCheck = allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
+        val categoryCheck: Check<MessageCreateEvent> = {
+            allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
+        }
+
+        val channelCheck: Check<MessageCreateEvent> = {
+            allowedGuild(builder.config.getAllowedChannels(), builder.config.getBannedChannels())
+        }
+
+        val guildCheck: Check<MessageCreateEvent> = {
+            allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
+        }
 
         val yarnChannels = YarnChannels.values().filter {
             it != YarnChannels.PATCHWORK || patchworkEnabled
@@ -85,7 +100,7 @@ class MappingsExtension : Extension() {
 
         if (legacyYarnEnabled) {
             // Class
-            command(::LegacyYarnArguments) {
+            chatCommand(::LegacyYarnArguments) {
                 name = "lyc"
                 aliases = arrayOf("lyarnc", "legacy-yarnc", "legacyyarnc", "legacyarnc")
 
@@ -94,7 +109,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
                     "`lyarn` command."
 
-                check(customChecks(name, LegacyYarnNamespace))
+                check { customChecks(name, LegacyYarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -103,7 +118,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::LegacyYarnArguments) {
+            chatCommand(::LegacyYarnArguments) {
                 name = "lyf"
                 aliases = arrayOf("lyarnf", "legacy-yarnf", "legacyyarnf", "legacyarnf")
 
@@ -112,7 +127,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
                     "`lyarn` command."
 
-                check(customChecks(name, LegacyYarnNamespace))
+                check { customChecks(name, LegacyYarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -121,7 +136,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::LegacyYarnArguments) {
+            chatCommand(::LegacyYarnArguments) {
                 name = "lym"
                 aliases = arrayOf("lyarnm", "legacy-yarnm", "legacyyarnm", "legacyarnm")
 
@@ -130,7 +145,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
                     "`lyarn` command."
 
-                check(customChecks(name, LegacyYarnNamespace))
+                check { customChecks(name, LegacyYarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -145,14 +160,14 @@ class MappingsExtension : Extension() {
 
         if (mcpEnabled) {
             // Class
-            command(::MCPArguments) {
+            chatCommand(::MCPArguments) {
                 name = "mcpc"
 
                 description = "Look up MCP mappings info for a class.\n\n" +
 
                     "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
 
-                check(customChecks(name, MCPNamespace))
+                check { customChecks(name, MCPNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -161,14 +176,14 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::MCPArguments) {
+            chatCommand(::MCPArguments) {
                 name = "mcpf"
 
                 description = "Look up MCP mappings info for a field.\n\n" +
 
                     "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
 
-                check(customChecks(name, MCPNamespace))
+                check { customChecks(name, MCPNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -177,14 +192,14 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::MCPArguments) {
+            chatCommand(::MCPArguments) {
                 name = "mcpm"
 
                 description = "Look up MCP mappings info for a method.\n\n" +
 
                     "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
 
-                check(customChecks(name, MCPNamespace))
+                check { customChecks(name, MCPNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -199,7 +214,7 @@ class MappingsExtension : Extension() {
 
         if (mojangEnabled) {
             // Class
-            command(::MojangArguments) {
+            chatCommand(::MojangArguments) {
                 name = "mmc"
                 aliases = arrayOf("mojc", "mojmapc")
 
@@ -211,7 +226,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
                     "command."
 
-                check(customChecks(name, MojangNamespace))
+                check { customChecks(name, MojangNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -220,7 +235,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::MojangArguments) {
+            chatCommand(::MojangArguments) {
                 name = "mmf"
                 aliases = arrayOf("mojf", "mojmapf")
 
@@ -232,7 +247,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
                     "command."
 
-                check(customChecks(name, MojangNamespace))
+                check { customChecks(name, MojangNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -241,7 +256,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::MojangArguments) {
+            chatCommand(::MojangArguments) {
                 name = "mmm"
                 aliases = arrayOf("mojm", "mojmapm")
 
@@ -253,7 +268,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
                     "command."
 
-                check(customChecks(name, MojangNamespace))
+                check { customChecks(name, MojangNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -264,11 +279,80 @@ class MappingsExtension : Extension() {
 
         // endregion
 
+        // region: Hashed Mojang mappings lookups
+
+        if (hashedMojangEnabled) {
+            // Class
+            chatCommand(::HashedMojangArguments) {
+                name = "hc"
+                aliases = arrayOf("hmojc", "hmojmapc", "hmc", "qhc")
+
+                description = "Look up Hashed Mojang mappings info for a class.\n\n" +
+
+                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                    "\n\n" +
+
+                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
+                    "command."
+
+                check { customChecks(name, MojangHashedNamespace) }
+                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+
+                action {
+                    queryClasses(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                }
+            }
+
+            // Field
+            chatCommand(::HashedMojangArguments) {
+                name = "hf"
+                aliases = arrayOf("hmojf", "hmojmapf", "hmf", "qhf")
+
+                description = "Look up Hashed Mojang mappings info for a field.\n\n" +
+
+                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                    "\n\n" +
+
+                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
+                    "command."
+
+                check { customChecks(name, MojangHashedNamespace) }
+                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+
+                action {
+                    queryFields(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                }
+            }
+
+            // Method
+            chatCommand(::HashedMojangArguments) {
+                name = "hm"
+                aliases = arrayOf("hmojm", "hmojmapm", "hmm", "qhm")
+
+                description = "Look up Hashed Mojang mappings info for a method.\n\n" +
+
+                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                    "\n\n" +
+
+                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
+                    "command."
+
+                check { customChecks(name, MojangHashedNamespace) }
+                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+
+                action {
+                    queryMethods(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                }
+            }
+        }
+
+        // endregion
+
         // region: Plasma mappings lookups
 
         if (plasmaEnabled) {
             // Class
-            command(::PlasmaArguments) {
+            chatCommand(::PlasmaArguments) {
                 name = "pc"
 
                 description = "Look up Plasma mappings info for a class.\n\n" +
@@ -276,7 +360,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Plasma mappings, you can use the " +
                     "`plasma` command."
 
-                check(customChecks(name, PlasmaNamespace))
+                check { customChecks(name, PlasmaNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -285,7 +369,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::PlasmaArguments) {
+            chatCommand(::PlasmaArguments) {
                 name = "pf"
 
                 description = "Look up Plasma mappings info for a field.\n\n" +
@@ -293,7 +377,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Plasma mappings, you can use the " +
                     "`plasma` command."
 
-                check(customChecks(name, PlasmaNamespace))
+                check { customChecks(name, PlasmaNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -302,7 +386,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::PlasmaArguments) {
+            chatCommand(::PlasmaArguments) {
                 name = "pm"
 
                 description = "Look up Plasma mappings info for a method.\n\n" +
@@ -310,7 +394,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Plasma mappings, you can use the " +
                     "`plasma` command."
 
-                check(customChecks(name, PlasmaNamespace))
+                check { customChecks(name, PlasmaNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -325,7 +409,7 @@ class MappingsExtension : Extension() {
 
         if (yarnEnabled) {
             // Class
-            command({ YarnArguments(patchworkEnabled) }) {
+            chatCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "yc"
                 aliases = arrayOf("yarnc")
 
@@ -337,7 +421,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
                     "command."
 
-                check(customChecks(name, YarnNamespace))
+                check { customChecks(name, YarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -351,7 +435,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command({ YarnArguments(patchworkEnabled) }) {
+            chatCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "yf"
                 aliases = arrayOf("yarnf")
 
@@ -363,7 +447,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
                     "command."
 
-                check(customChecks(name, YarnNamespace))
+                check { customChecks(name, YarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -377,7 +461,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command({ YarnArguments(patchworkEnabled) }) {
+            chatCommand({ YarnArguments(patchworkEnabled) }) {
                 name = "ym"
                 aliases = arrayOf("yarnm")
 
@@ -389,7 +473,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
                     "command."
 
-                check(customChecks(name, YarnNamespace))
+                check { customChecks(name, YarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -409,7 +493,7 @@ class MappingsExtension : Extension() {
 
         if (yarrnEnabled) {
             // Class
-            command(::YarrnArguments) {
+            chatCommand(::YarrnArguments) {
                 name = "yrc"
 
                 description = "Look up Yarrn mappings info for a class.\n\n" +
@@ -417,7 +501,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarrn mappings, you can use the " +
                     "`yarrn` command."
 
-                check(customChecks(name, YarrnNamespace))
+                check { customChecks(name, YarrnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -426,7 +510,7 @@ class MappingsExtension : Extension() {
             }
 
             // Field
-            command(::YarrnArguments) {
+            chatCommand(::YarrnArguments) {
                 name = "yrf"
 
                 description = "Look up Yarrn mappings info for a field.\n\n" +
@@ -434,7 +518,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarrn mappings, you can use the " +
                     "`yarrn` command."
 
-                check(customChecks(name, YarrnNamespace))
+                check { customChecks(name, YarrnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -443,7 +527,7 @@ class MappingsExtension : Extension() {
             }
 
             // Method
-            command(::YarrnArguments) {
+            chatCommand(::YarrnArguments) {
                 name = "yrm"
 
                 description = "Look up Yarrn mappings info for a method.\n\n" +
@@ -451,7 +535,7 @@ class MappingsExtension : Extension() {
                     "For more information or a list of versions for Yarrn mappings, you can use the " +
                     "`yarrn` command."
 
-                check(customChecks(name, YarrnNamespace))
+                check { customChecks(name, YarrnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -465,13 +549,13 @@ class MappingsExtension : Extension() {
         // region: Mappings info commands
 
         if (legacyYarnEnabled) {
-            command {
+            chatCommand {
                 name = "lyarn"
                 aliases = arrayOf("legacy-yarn", "legacyyarn", "legacyarn")
 
                 description = "Get information and a list of supported versions for Legacy Yarn mappings."
 
-                check(customChecks(name, LegacyYarnNamespace))
+                check { customChecks(name, LegacyYarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -517,7 +601,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -532,12 +615,12 @@ class MappingsExtension : Extension() {
         }
 
         if (mcpEnabled) {
-            command {
+            chatCommand {
                 name = "mcp"
 
                 description = "Get information and a list of supported versions for MCP mappings."
 
-                check(customChecks(name, MCPNamespace))
+                check { customChecks(name, MCPNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -582,7 +665,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -597,13 +679,13 @@ class MappingsExtension : Extension() {
         }
 
         if (mojangEnabled) {
-            command {
+            chatCommand {
                 name = "mojang"
                 aliases = arrayOf("mojmap")
 
                 description = "Get information and a list of supported versions for Mojang mappings."
 
-                check(customChecks(name, MojangNamespace))
+                check { customChecks(name, MojangNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -651,7 +733,75 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
+                        targetMessage = event.message,
+                        pages = pagesObj,
+                        keepEmbed = true,
+                        owner = message.author,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
+                    )
+
+                    paginator.send()
+                }
+            }
+        }
+
+        if (hashedMojangEnabled) {
+            chatCommand {
+                name = "hashed"
+                aliases = arrayOf("hashed-mojmap", "hashed-mojang", "quilt-hashed", "qh", "hm")
+
+                description = "Get information and a list of supported versions for hashed Mojang mappings."
+
+                check { customChecks(name, MojangHashedNamespace) }
+                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+
+                action {
+                    val defaultVersion = MojangHashedNamespace.getDefaultVersion()
+                    val allVersions = MojangHashedNamespace.getAllSortedVersions()
+
+                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
+                        it.joinToString("\n") { version ->
+                            if (version == defaultVersion) {
+                                "**» $version** (Default)"
+                            } else {
+                                "**»** $version"
+                            }
+                        }
+                    }.toMutableList()
+
+                    pages.add(
+                        0,
+                        "Hashed Mojang mappings are available for queries across **${allVersions.size}** " +
+                            "versions.\n\n" +
+
+                            "**Default version:** $defaultVersion\n\n" +
+
+                            "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                            "\n" +
+                            "**Commands:** `hc`, `hf`, `hm`\n\n" +
+
+                            "For a full list of supported hashed Mojang versions, please view the rest of the pages."
+                    )
+
+                    val pagesObj = Pages()
+                    val pageTitle = "Mappings info: Hashed Mojang"
+
+                    pages.forEach {
+                        pagesObj.addPage(
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
+                    }
+
+                    val paginator = MessageButtonPaginator(
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -666,12 +816,12 @@ class MappingsExtension : Extension() {
         }
 
         if (plasmaEnabled) {
-            command {
+            chatCommand {
                 name = "plasma"
 
                 description = "Get information and a list of supported versions for Plasma mappings."
 
-                check(customChecks(name, PlasmaNamespace))
+                check { customChecks(name, PlasmaNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -717,7 +867,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -732,12 +881,12 @@ class MappingsExtension : Extension() {
         }
 
         if (yarnEnabled) {
-            command {
+            chatCommand {
                 name = "yarn"
 
                 description = "Get information and a list of supported versions for Yarn mappings."
 
-                check(customChecks(name, YarnNamespace))
+                check { customChecks(name, YarnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -811,7 +960,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -826,12 +974,12 @@ class MappingsExtension : Extension() {
         }
 
         if (yarrnEnabled) {
-            command {
+            chatCommand {
                 name = "yarrn"
 
                 description = "Get information and a list of supported versions for Yarrn mappings."
 
-                check(customChecks(name, YarrnNamespace))
+                check { customChecks(name, YarrnNamespace) }
                 check(categoryCheck, channelCheck, guildCheck)  // Default checks
 
                 action {
@@ -877,7 +1025,6 @@ class MappingsExtension : Extension() {
                     }
 
                     val paginator = MessageButtonPaginator(
-                        extension = this@MappingsExtension,
                         targetMessage = event.message,
                         pages = pagesObj,
                         keepEmbed = true,
@@ -896,347 +1043,465 @@ class MappingsExtension : Extension() {
         logger.info { "Mappings extension set up - namespaces: " + enabledNamespaces.joinToString(", ") }
     }
 
-    private suspend fun MessageCommandContext<out Arguments>.queryClasses(
+    private suspend fun ChatCommandContext<out Arguments>.queryClasses(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
     ) {
-        val provider = if (version == null) {
-            if (channel != null) {
-                namespace.getProvider(
-                    namespace.getDefaultVersion { channel }
-                )
-            } else {
-                MappingsProvider.empty(namespace)
-            }
-        } else {
-            namespace.getProvider(version.version)
+        sentry.breadcrumb(BreadcrumbType.Query) {
+            message = "Beginning class lookup"
+
+            data["channel"] = channel ?: "N/A"
+            data["namespace"] = namespace.id
+            data["query"] = givenQuery
+            data["version"] = version?.version ?: "N/A"
         }
 
-        provider.injectDefaultVersion(
-            namespace.getDefaultProvider {
-                channel ?: namespace.getDefaultMappingChannel()
-            }
-        )
+        val context = newSingleThreadContext("c: $givenQuery")
 
-        val query = givenQuery.replace(".", "/")
-        var pages: List<Pair<String, String>>
+        try {
+            withContext(context) {
+                val provider = if (version == null) {
+                    if (channel != null) {
+                        namespace.getProvider(
+                            namespace.getDefaultVersion { channel }
+                        )
+                    } else {
+                        MappingsProvider.empty(namespace)
+                    }
+                } else {
+                    namespace.getProvider(version.version)
+                }
 
-        message.channel.withTyping {
-            @Suppress("TooGenericExceptionCaught")
-            val result = try {
-                MappingsQuery.queryClasses(
-                    QueryContext(
-                        provider = provider,
-                        searchKey = query
+                provider.injectDefaultVersion(
+                    namespace.getDefaultProvider {
+                        channel ?: namespace.getDefaultMappingChannel()
+                    }
+                )
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Provider resolved, with injected default version"
+
+                    data["version"] = provider.version ?: "Unknown"
+                }
+
+                val query = givenQuery.replace(".", "/")
+                var pages: List<Pair<String, String>>
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Attempting to run sanitized query"
+
+                    data["query"] = query
+                }
+
+                message.channel.withTyping {
+                    @Suppress("TooGenericExceptionCaught")
+                    val result = try {
+                        MappingsQuery.queryClasses(
+                            QueryContext(
+                                provider = provider,
+                                searchKey = query
+                            )
+                        )
+                    } catch (e: NullPointerException) {
+                        message.respond(e.localizedMessage)
+                        return@withContext
+                    }
+
+                    sentry.breadcrumb(BreadcrumbType.Info) {
+                        message = "Generating pages for results"
+
+                        data["resultCount"] = result.value.size
+                    }
+
+                    pages = classesToPages(namespace, result)
+                }
+
+                if (pages.isEmpty()) {
+                    message.respond("No results found")
+                    return@withContext
+                }
+
+                val meta = provider.get()
+
+                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
+                val pageTitle = "List of ${meta.name} classes: ${meta.version}"
+
+                val shortPages = mutableListOf<String>()
+                val longPages = mutableListOf<String>()
+
+                pages.forEach { (short, long) ->
+                    shortPages.add(short)
+                    longPages.add(long)
+                }
+
+                shortPages.forEach {
+                    pagesObj.addPage(
+                        "${EXPAND_EMOJI.mention} for more",
+
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
                     )
-                )
-            } catch (e: NullPointerException) {
-                message.respond(e.localizedMessage)
-                return@queryClasses
-            }
+                }
 
-            pages = classesToPages(namespace, result)
-        }
+                if (shortPages != longPages) {
+                    longPages.forEach {
+                        pagesObj.addPage(
+                            "${EXPAND_EMOJI.mention} for less",
 
-        if (pages.isEmpty()) {
-            message.respond("No results found")
-            return
-        }
+                            Page {
+                                description = it
+                                title = pageTitle
 
-        val meta = provider.get()
-
-        val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-        val pageTitle = "List of ${meta.name} classes: ${meta.version}"
-
-        val shortPages = mutableListOf<String>()
-        val longPages = mutableListOf<String>()
-
-        pages.forEach { (short, long) ->
-            shortPages.add(short)
-            longPages.add(long)
-        }
-
-        shortPages.forEach {
-            pagesObj.addPage(
-                "${EXPAND_EMOJI.mention} for more",
-
-                Page {
-                    description = it
-                    title = pageTitle
-
-                    footer {
-                        text = PAGE_FOOTER
-                        icon = PAGE_FOOTER_ICON
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
                     }
                 }
-            )
-        }
 
-        if (shortPages != longPages) {
-            longPages.forEach {
-                pagesObj.addPage(
-                    "${EXPAND_EMOJI.mention} for less",
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Creating and sending paginator to Discord"
+                }
 
-                    Page {
-                        description = it
-                        title = pageTitle
-
-                        footer {
-                            text = PAGE_FOOTER
-                            icon = PAGE_FOOTER_ICON
-                        }
-                    }
+                val paginator = MessageButtonPaginator(
+                    targetMessage = event.message,
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = message.author,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
                 )
+
+                paginator.send()
             }
+        } finally {
+            context.close()
         }
-
-        val paginator = MessageButtonPaginator(
-            extension = this@MappingsExtension,
-            targetMessage = event.message,
-            pages = pagesObj,
-            keepEmbed = true,
-            owner = message.author,
-            timeoutSeconds = getTimeout(),
-            locale = getLocale(),
-        )
-
-        paginator.send()
     }
 
-    private suspend fun MessageCommandContext<out Arguments>.queryFields(
+    private suspend fun ChatCommandContext<out Arguments>.queryFields(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
     ) {
-        val provider = if (version == null) {
-            if (channel != null) {
-                namespace.getProvider(
-                    namespace.getDefaultVersion { channel }
-                )
-            } else {
-                MappingsProvider.empty(namespace)
-            }
-        } else {
-            namespace.getProvider(version.version)
+        sentry.breadcrumb(BreadcrumbType.Query) {
+            message = "Beginning field lookup"
+
+            data["channel"] = channel ?: "N/A"
+            data["namespace"] = namespace.id
+            data["query"] = givenQuery
+            data["version"] = version?.version ?: "N/A"
         }
 
-        provider.injectDefaultVersion(
-            namespace.getDefaultProvider {
-                channel ?: namespace.getDefaultMappingChannel()
-            }
-        )
+        val context = newSingleThreadContext("f: $givenQuery")
 
-        val query = givenQuery.replace(".", "/")
-        var pages: List<Pair<String, String>>
+        try {
+            withContext(context) {
+                val provider = if (version == null) {
+                    if (channel != null) {
+                        namespace.getProvider(
+                            namespace.getDefaultVersion { channel }
+                        )
+                    } else {
+                        MappingsProvider.empty(namespace)
+                    }
+                } else {
+                    namespace.getProvider(version.version)
+                }
 
-        message.channel.withTyping {
-            @Suppress("TooGenericExceptionCaught")
-            val result = try {
-                MappingsQuery.queryFields(
-                    QueryContext(
-                        provider = provider,
-                        searchKey = query
+                provider.injectDefaultVersion(
+                    namespace.getDefaultProvider {
+                        channel ?: namespace.getDefaultMappingChannel()
+                    }
+                )
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Provider resolved, with injected default version"
+
+                    data["version"] = provider.version ?: "Unknown"
+                }
+
+                val query = givenQuery.replace(".", "/")
+                var pages: List<Pair<String, String>>
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Attempting to run sanitized query"
+
+                    data["query"] = query
+                }
+
+                message.channel.withTyping {
+                    @Suppress("TooGenericExceptionCaught")
+                    val result = try {
+                        MappingsQuery.queryFields(
+                            QueryContext(
+                                provider = provider,
+                                searchKey = query
+                            )
+                        )
+                    } catch (e: NullPointerException) {
+                        message.respond(e.localizedMessage)
+                        return@withContext
+                    }
+
+                    sentry.breadcrumb(BreadcrumbType.Info) {
+                        message = "Generating pages for results"
+
+                        data["resultCount"] = result.value.size
+                    }
+
+                    pages = fieldsToPages(namespace, provider.get(), result)
+                }
+
+                if (pages.isEmpty()) {
+                    message.respond("No results found")
+                    return@withContext
+                }
+
+                val meta = provider.get()
+
+                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
+                val pageTitle = "List of ${meta.name} fields: ${meta.version}"
+
+                val shortPages = mutableListOf<String>()
+                val longPages = mutableListOf<String>()
+
+                pages.forEach { (short, long) ->
+                    shortPages.add(short)
+                    longPages.add(long)
+                }
+
+                shortPages.forEach {
+                    pagesObj.addPage(
+                        "${EXPAND_EMOJI.mention} for more",
+
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
                     )
-                )
-            } catch (e: NullPointerException) {
-                message.respond(e.localizedMessage)
-                return@queryFields
-            }
+                }
 
-            pages = fieldsToPages(namespace, provider.get(), result)
-        }
+                if (shortPages != longPages) {
+                    longPages.forEach {
+                        pagesObj.addPage(
+                            "${EXPAND_EMOJI.mention} for less",
 
-        if (pages.isEmpty()) {
-            message.respond("No results found")
-            return
-        }
+                            Page {
+                                description = it
+                                title = pageTitle
 
-        val meta = provider.get()
-
-        val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-        val pageTitle = "List of ${meta.name} fields: ${meta.version}"
-
-        val shortPages = mutableListOf<String>()
-        val longPages = mutableListOf<String>()
-
-        pages.forEach { (short, long) ->
-            shortPages.add(short)
-            longPages.add(long)
-        }
-
-        shortPages.forEach {
-            pagesObj.addPage(
-                "${EXPAND_EMOJI.mention} for more",
-
-                Page {
-                    description = it
-                    title = pageTitle
-
-                    footer {
-                        text = PAGE_FOOTER
-                        icon = PAGE_FOOTER_ICON
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
                     }
                 }
-            )
-        }
 
-        if (shortPages != longPages) {
-            longPages.forEach {
-                pagesObj.addPage(
-                    "${EXPAND_EMOJI.mention} for less",
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Creating and sending paginator to Discord"
+                }
 
-                    Page {
-                        description = it
-                        title = pageTitle
-
-                        footer {
-                            text = PAGE_FOOTER
-                            icon = PAGE_FOOTER_ICON
-                        }
-                    }
+                val paginator = MessageButtonPaginator(
+                    targetMessage = event.message,
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = message.author,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
                 )
+
+                paginator.send()
             }
+        } finally {
+            context.close()
         }
-
-        val paginator = MessageButtonPaginator(
-            extension = this@MappingsExtension,
-            targetMessage = event.message,
-            pages = pagesObj,
-            keepEmbed = true,
-            owner = message.author,
-            timeoutSeconds = getTimeout(),
-            locale = getLocale(),
-        )
-
-        paginator.send()
     }
 
-    private suspend fun MessageCommandContext<out Arguments>.queryMethods(
+    private suspend fun ChatCommandContext<out Arguments>.queryMethods(
         namespace: Namespace,
         givenQuery: String,
         version: MappingsContainer?,
         channel: String? = null
     ) {
-        val provider = if (version == null) {
-            if (channel != null) {
-                namespace.getProvider(
-                    namespace.getDefaultVersion { channel }
-                )
-            } else {
-                MappingsProvider.empty(namespace)
-            }
-        } else {
-            namespace.getProvider(version.version)
+        sentry.breadcrumb(BreadcrumbType.Query) {
+            message = "Beginning method lookup"
+
+            data["channel"] = channel ?: "N/A"
+            data["namespace"] = namespace.id
+            data["query"] = givenQuery
+            data["version"] = version?.version ?: "N/A"
         }
 
-        provider.injectDefaultVersion(
-            namespace.getDefaultProvider {
-                channel ?: namespace.getDefaultMappingChannel()
-            }
-        )
+        val context = newSingleThreadContext("m: $givenQuery")
 
-        val query = givenQuery.replace(".", "/")
-        var pages: List<Pair<String, String>>
+        try {
+            withContext(context) {
+                val provider = if (version == null) {
+                    if (channel != null) {
+                        namespace.getProvider(
+                            namespace.getDefaultVersion { channel }
+                        )
+                    } else {
+                        MappingsProvider.empty(namespace)
+                    }
+                } else {
+                    namespace.getProvider(version.version)
+                }
 
-        message.channel.withTyping {
-            @Suppress("TooGenericExceptionCaught")
-            val result = try {
-                MappingsQuery.queryMethods(
-                    QueryContext(
-                        provider = provider,
-                        searchKey = query
+                provider.injectDefaultVersion(
+                    namespace.getDefaultProvider {
+                        channel ?: namespace.getDefaultMappingChannel()
+                    }
+                )
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Provider resolved, with injected default version"
+
+                    data["version"] = provider.version ?: "Unknown"
+                }
+
+                val query = givenQuery.replace(".", "/")
+                var pages: List<Pair<String, String>>
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Attempting to run sanitized query"
+
+                    data["query"] = query
+                }
+
+                message.channel.withTyping {
+                    @Suppress("TooGenericExceptionCaught")
+                    val result = try {
+                        MappingsQuery.queryMethods(
+                            QueryContext(
+                                provider = provider,
+                                searchKey = query
+                            )
+                        )
+                    } catch (e: NullPointerException) {
+                        message.respond(e.localizedMessage)
+                        return@withContext
+                    }
+
+                    sentry.breadcrumb(BreadcrumbType.Info) {
+                        message = "Generating pages for results"
+
+                        data["resultCount"] = result.value.size
+                    }
+
+                    pages = methodsToPages(namespace, provider.get(), result)
+                }
+
+                if (pages.isEmpty()) {
+                    message.respond("No results found")
+                    return@withContext
+                }
+
+                val meta = provider.get()
+
+                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
+                val pageTitle = "List of ${meta.name} methods: ${meta.version}"
+
+                val shortPages = mutableListOf<String>()
+                val longPages = mutableListOf<String>()
+
+                pages.forEach { (short, long) ->
+                    shortPages.add(short)
+                    longPages.add(long)
+                }
+
+                shortPages.forEach {
+                    pagesObj.addPage(
+                        "${EXPAND_EMOJI.mention} for more",
+
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
                     )
-                )
-            } catch (e: NullPointerException) {
-                message.respond(e.localizedMessage)
-                return@queryMethods
-            }
+                }
 
-            pages = methodsToPages(namespace, provider.get(), result)
-        }
+                if (shortPages != longPages) {
+                    longPages.forEach {
+                        pagesObj.addPage(
+                            "${EXPAND_EMOJI.mention} for less",
 
-        if (pages.isEmpty()) {
-            message.respond("No results found")
-            return
-        }
+                            Page {
+                                description = it
+                                title = pageTitle
 
-        val meta = provider.get()
-
-        val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-        val pageTitle = "List of ${meta.name} methods: ${meta.version}"
-
-        val shortPages = mutableListOf<String>()
-        val longPages = mutableListOf<String>()
-
-        pages.forEach { (short, long) ->
-            shortPages.add(short)
-            longPages.add(long)
-        }
-
-        shortPages.forEach {
-            pagesObj.addPage(
-                "${EXPAND_EMOJI.mention} for more",
-
-                Page {
-                    description = it
-                    title = pageTitle
-
-                    footer {
-                        text = PAGE_FOOTER
-                        icon = PAGE_FOOTER_ICON
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
                     }
                 }
-            )
-        }
 
-        if (shortPages != longPages) {
-            longPages.forEach {
-                pagesObj.addPage(
-                    "${EXPAND_EMOJI.mention} for less",
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Creating and sending paginator to Discord"
+                }
 
-                    Page {
-                        description = it
-                        title = pageTitle
-
-                        footer {
-                            text = PAGE_FOOTER
-                            icon = PAGE_FOOTER_ICON
-                        }
-                    }
+                val paginator = MessageButtonPaginator(
+                    targetMessage = event.message,
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = message.author,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
                 )
+
+                paginator.send()
             }
+        } finally {
+            context.close()
         }
-
-        val paginator = MessageButtonPaginator(
-            extension = this@MappingsExtension,
-            targetMessage = event.message,
-            pages = pagesObj,
-            keepEmbed = true,
-            owner = message.author,
-            timeoutSeconds = getTimeout(),
-            locale = getLocale(),
-        )
-
-        paginator.send()
     }
 
     private suspend fun getTimeout() = builder.config.getTimeout()
 
-    private suspend fun customChecks(command: String, namespace: Namespace): Check<*> {
-        val allChecks = builder.commandChecks.map { it.invoke(command) }.toMutableList()
-        val allNamespaceChecks = builder.namespaceChecks.map { it.invoke(namespace) }.toMutableList()
+    private suspend fun CheckContext<MessageCreateEvent>.customChecks(command: String, namespace: Namespace) {
+        builder.commandChecks.forEach {
+            it(command)()
 
-        var rootCheck = allChecks.removeFirstOrNull()
-            ?: allNamespaceChecks.removeFirstOrNull()
-            ?: return { pass() }
+            if (!passed) {
+                return
+            }
+        }
 
-        allChecks.forEach { rootCheck = rootCheck and it }
-        allNamespaceChecks.forEach { rootCheck = rootCheck and it }
+        builder.namespaceChecks.forEach {
+            it(namespace)()
 
-        return rootCheck
+            if (!passed) {
+                return
+            }
+        }
     }
 
     companion object {

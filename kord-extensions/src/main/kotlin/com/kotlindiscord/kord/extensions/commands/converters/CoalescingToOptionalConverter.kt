@@ -2,10 +2,11 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
@@ -55,5 +56,15 @@ public class CoalescingToOptionalConverter<T : Any>(
         option.required = false
 
         return option
+    }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val result = coalescingConverter.parseOption(context, option)
+
+        if (result) {
+            this.parsed = coalescingConverter.parsed
+        }
+
+        return result
     }
 }

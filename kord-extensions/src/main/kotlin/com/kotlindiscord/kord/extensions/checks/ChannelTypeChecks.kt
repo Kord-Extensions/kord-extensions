@@ -2,18 +2,11 @@
 
 package com.kotlindiscord.kord.extensions.checks
 
-import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.utils.getKoin
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.ChannelType
 import dev.kord.core.event.Event
 import mu.KotlinLogging
-import java.util.*
-
-private val defaultLocale: Locale
-    get() =
-        getKoin().get<ExtensibleBotBuilder>().i18nBuilder.defaultLocale
 
 /**
  * Check asserting that the channel an [Event] fired in is of a given set of types.
@@ -23,7 +16,11 @@ private val defaultLocale: Locale
  *
  * @param channelTypes The channel types to compare to.
  */
-public fun channelType(vararg channelTypes: ChannelType): Check<*> = {
+public suspend fun CheckContext<*>.channelType(vararg channelTypes: ChannelType) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelType")
     val eventChannel = channelFor(event)
 
@@ -59,7 +56,11 @@ public fun channelType(vararg channelTypes: ChannelType): Check<*> = {
  *
  * @param channelTypes The channel types to compare to.
  */
-public fun notChannelType(vararg channelTypes: ChannelType): Check<*> = {
+public suspend fun CheckContext<*>.notChannelType(vararg channelTypes: ChannelType) {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notChannelType")
     val eventChannel = channelFor(event)
 

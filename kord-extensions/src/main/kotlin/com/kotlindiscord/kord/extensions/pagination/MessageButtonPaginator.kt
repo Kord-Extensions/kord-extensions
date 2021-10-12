@@ -2,17 +2,15 @@
 
 package com.kotlindiscord.kord.extensions.pagination
 
-import com.kotlindiscord.kord.extensions.components.Components
-import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.core.entity.User
 import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.allowedMentions
@@ -27,9 +25,8 @@ import java.util.*
  * @param targetChannel Target channel to send the paginator to, if [targetMessage] isn't provided.
  */
 public class MessageButtonPaginator(
-    extension: Extension,
     pages: Pages,
-    owner: User? = null,
+    owner: UserBehavior? = null,
     timeoutSeconds: Long? = null,
     keepEmbed: Boolean = true,
     switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
@@ -39,14 +36,12 @@ public class MessageButtonPaginator(
     public val pingInReply: Boolean = true,
     public val targetChannel: MessageChannelBehavior? = null,
     public val targetMessage: Message? = null,
-) : BaseButtonPaginator(extension, pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
+) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
     init {
         if (targetChannel == null && targetMessage == null) {
             throw IllegalArgumentException("Must provide either a target channel or target message")
         }
     }
-
-    override var components: Components = Components(extension)
 
     /** Specific channel to send the paginator to. **/
     public val channel: MessageChannelBehavior = targetMessage?.channel ?: targetChannel!!
@@ -55,8 +50,6 @@ public class MessageButtonPaginator(
     public var message: Message? = null
 
     override suspend fun send() {
-        components.stop()
-
         if (message == null) {
             setup()
 
@@ -67,7 +60,7 @@ public class MessageButtonPaginator(
                 embed { applyPage() }
 
                 with(this@MessageButtonPaginator.components) {
-                    this@createMessage.setup(timeoutSeconds)
+                    this@createMessage.applyToMessage()
                 }
             }
         } else {
@@ -77,7 +70,7 @@ public class MessageButtonPaginator(
                 embed { applyPage() }
 
                 with(this@MessageButtonPaginator.components) {
-                    this@edit.setup(timeoutSeconds)
+                    this@edit.applyToMessage()
                 }
             }
         }
@@ -101,8 +94,7 @@ public class MessageButtonPaginator(
             }
         }
 
-        runTimeoutCallbacks()
-        components.stop()
+        super.destroy()
     }
 }
 
@@ -116,7 +108,6 @@ public fun MessageButtonPaginator(
     builder: PaginatorBuilder
 ): MessageButtonPaginator =
     MessageButtonPaginator(
-        extension = builder.extension,
         pages = builder.pages,
         owner = builder.owner,
         timeoutSeconds = builder.timeoutSeconds,

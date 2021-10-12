@@ -1,29 +1,38 @@
-@file:OptIn(KordPreview::class, TranslationNotSupported::class)
+@file:OptIn(KordPreview::class, ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.test.bot
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.enumChoice
+import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.group
+import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.AutoAckType
-import com.kotlindiscord.kord.extensions.commands.slash.TranslationNotSupported
-import com.kotlindiscord.kord.extensions.commands.slash.converters.impl.enumChoice
-import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.pagination.InteractionButtonPaginator
+import com.kotlindiscord.kord.extensions.components.*
+import com.kotlindiscord.kord.extensions.components.types.emoji
+import com.kotlindiscord.kord.extensions.extensions.*
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.types.editingPaginator
+import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.reply
+import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.rest.builder.message.create.embed
+import mu.KotlinLogging
+import kotlin.time.ExperimentalTime
 
 // They're IDs
 @Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
     override val name = "test"
+
+    val logger = KotlinLogging.logger {}
 
     class ColorArgs : Arguments() {
         val color by colour("color", "Color to use for the embed")
@@ -69,8 +78,67 @@ class TestExtension : Extension() {
         val message by message("target", "Target message")
     }
 
+    class UserArgs : Arguments() {
+        val user by user("target", "Target user")
+    }
+
     override suspend fun setup() {
-        command(::ColorArgs) {
+        event<GuildCreateEvent> {
+            action {
+                logger.info { "Guild created: ${event.guild.name} (${event.guild.id.asString})" }
+            }
+        }
+
+        publicSlashCommand(::UserArgs) {
+            name = "slap"
+            description = "Slap someone!"
+
+            action {
+                respond { content = "*slaps ${arguments.user.mention}*" }
+            }
+        }
+
+        publicMessageCommand {
+            name = "Raw Info"
+
+            check {
+                failIf("This message command only supports non-webhook, non-interaction messages.") {
+                    event.interaction.messages.values.firstOrNull()?.author == null
+                }
+            }
+
+            action {
+                val message = targetMessages.firstOrNull() ?: return@action
+
+                respond {
+                    content = "**Message command:** Raw content for message sent by ${message.author!!.mention}"
+
+                    embed {
+                        description = "```markdown\n${message.content}```"
+                    }
+                }
+            }
+        }
+
+        publicUserCommand {
+            name = "ping"
+
+            check {
+                failIf("That's me, you can't make me ping myself!") {
+                    event.interaction.users.values.firstOrNull()?.id == kord.selfId
+                }
+            }
+
+            action {
+                val user = targetUsers.firstOrNull() ?: return@action
+
+                respond {
+                    content = "Let's ping ${user.mention} for no reason. <3"
+                }
+            }
+        }
+
+        chatCommand(::ColorArgs) {
             name = "color"
             aliases = arrayOf("colour")
             description = "Get an embed with a set color"
@@ -86,7 +154,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command(::MessageArgs) {
+        chatCommand(::MessageArgs) {
             name = "msg"
             description = "Message argument test"
 
@@ -97,7 +165,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command(::CoalescedArgs) {
+        chatCommand(::CoalescedArgs) {
             name = "coalesce"
             description = "Coalesce me, baby"
 
@@ -115,7 +183,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        chatCommand {
             name = "dropdown"
             description = "Dropdown test!"
 
@@ -123,9 +191,8 @@ class TestExtension : Extension() {
                 message.respond {
                     content = "Here's a dropdown."
 
-                    components(60) {
-                        menu {
-                            autoAck = AutoAckType.PUBLIC
+                    components {
+                        publicSelectMenu {
                             maximumChoices = null
 
                             option("Option 1", "one")
@@ -133,7 +200,7 @@ class TestExtension : Extension() {
                             option("Option 3", "three")
 
                             action {
-                                publicFollowUp {
+                                respond {
                                     content = "You picked the following options: " + selected.joinToString {
                                         "`$it`"
                                     }
@@ -145,31 +212,28 @@ class TestExtension : Extension() {
             }
         }
 
-        slashCommand {
+        ephemeralSlashCommand {
             name = "pages"
             description = "Pages!"
-            autoAck = AutoAckType.PUBLIC
 
             guild(787452339908116521)
 
             action {
-                val pages = Pages()
+                editingPaginator("short") {
+                    owner = event.interaction.user.asUser()
+                    timeoutSeconds = 60
+                    keepEmbed = false
 
-                (0..2).forEach {
-                    pages.addPage(
-                        Page {
+                    (0..2).forEach {
+                        page {
                             description = "Short page $it."
 
                             footer {
                                 text = "Footer text ($it)"
                             }
                         }
-                    )
 
-                    pages.addPage(
-                        "Expanded",
-
-                        Page {
+                        page("Expanded") {
                             description = "Expanded page $it, expanded page $it\n" +
                                 "Expanded page $it, expanded page $it"
 
@@ -177,12 +241,8 @@ class TestExtension : Extension() {
                                 text = "Footer text ($it)"
                             }
                         }
-                    )
 
-                    pages.addPage(
-                        "MASSIVE GROUP",
-
-                        Page {
+                        page("MASSIVE GROUP") {
                             description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
                                 "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
                                 "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
@@ -193,47 +253,36 @@ class TestExtension : Extension() {
                                 text = "Footer text ($it)"
                             }
                         }
-                    )
-                }
-
-                val paginator = InteractionButtonPaginator(
-                    extension = this@TestExtension,
-                    pages = pages,
-                    owner = event.interaction.user.asUser(),
-                    timeoutSeconds = 60,
-                    parentContext = this,
-                    keepEmbed = false
-                )
-
-                paginator.send()
+                    }
+                }.send()
             }
         }
 
-        slashCommand {
+        ephemeralSlashCommand {
             name = "buttons"
             description = "Buttons!"
 
             guild(787452339908116521) // Our test server
 
             action {
-                ephemeralFollowUp {
+                respond {
                     content = "Buttons!"
 
-                    components(60) {
-                        interactiveButton {
+                    components {
+                        ephemeralButton {
                             label = "Button one!"
 
                             action {
-                                respond("Button one pressed!")
+                                respond { content = "Button one pressed!" }
                             }
                         }
 
-                        interactiveButton {
+                        ephemeralButton {
                             label = "Button two!"
                             style = ButtonStyle.Secondary
 
                             action {
-                                respond("Button two pressed!")
+                                respond { content = "Button two pressed!" }
                             }
                         }
 
@@ -252,40 +301,37 @@ class TestExtension : Extension() {
             }
         }
 
-        slashCommand {
+        publicSlashCommand {
             name = "test-noack"
             description = "Don't auto-ack this one"
-            autoAck = AutoAckType.NONE
 
             guild(787452339908116521) // Our test server
 
-            action {
-                ack(false)  // Public ack
-
-                publicFollowUp {
-                    embed {
-                        title = "An embed!"
-                        description = "With a description, and without a content string!"
-                    }
+            initialResponse {
+                embed {
+                    title = "An embed!"
+                    description = "With a description, and without a content string!"
                 }
+            }
+
+            action {
             }
         }
 
-        slashCommand(::SlashChoiceArgs) {
+        publicSlashCommand(::SlashChoiceArgs) {
             name = "choice"
             description = "Choice-based"
-            autoAck = AutoAckType.PUBLIC
 
             guild(787452339908116521) // Our test server
 
             action {
-                publicFollowUp {
+                respond {
                     content = "Your choice: ${arguments.arg.readableName} -> ${arguments.arg.name}"
                 }
             }
         }
 
-        slashCommand {
+        ephemeralSlashCommand {
             name = "group"
             description = "Test command, please ignore"
 
@@ -294,14 +340,12 @@ class TestExtension : Extension() {
             group("one") {
                 description = "Group one"
 
-                subCommand(::SlashArgs) {
+                publicSubCommand(::SlashArgs) {
                     name = "test"
                     description = "Test command, please ignore"
 
-                    autoAck = AutoAckType.PUBLIC
-
                     action {
-                        publicFollowUp {
+                        respond {
                             content = "Some content"
 
                             embed {
@@ -333,12 +377,12 @@ class TestExtension : Extension() {
                     }
                 }
 
-                subCommand {
+                ephemeralSubCommand {
                     name = "test-two"
                     description = "Test command, please ignore"
 
                     action {
-                        ephemeralFollowUp {
+                        respond {
                             content = "Some content"
                         }
                     }
@@ -346,7 +390,7 @@ class TestExtension : Extension() {
             }
         }
 
-        slashCommand {
+        ephemeralSlashCommand {
             name = "guild-embed"
             description = "Test command, please ignore"
 
@@ -355,14 +399,12 @@ class TestExtension : Extension() {
             group("first") {
                 description = "First group."
 
-                subCommand(::SlashArgs) {
+                publicSubCommand(::SlashArgs) {
                     name = "inner-test"
                     description = "Test command, please ignore"
 
-                    autoAck = AutoAckType.PUBLIC
-
                     action {
-                        publicFollowUp {
+                        respond {
                             embed {
                                 title = "Guild response"
                                 description = "Guild description"
@@ -394,17 +436,16 @@ class TestExtension : Extension() {
             }
         }
 
-        slashCommand(::SlashArgs) {
+        publicSlashCommand(::SlashArgs) {
             name = "test-embed"
             description = "Test command, please ignore\n\n" +
 
                 "Now with some newlines in the description!"
 
-            autoAck = AutoAckType.PUBLIC
             guild(787452339908116521) // Our test server
 
             action {
-                publicFollowUp {
+                respond {
                     embed {
                         title = "Test response"
                         description = "Test description"
@@ -434,7 +475,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        chatCommand {
             name = "translation-test"
             description = "Let's test translations."
 
@@ -444,18 +485,18 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        chatCommand {
             name = "requires-perms"
             description = "A command that requires some permissions"
 
-            requirePermissions(Permission.Administrator)
+            requireBotPermissions(Permission.Administrator)
 
             action {
                 message.respond("Looks like I'm an admin. Nice!")
             }
         }
 
-        command(::TestArgs) {
+        chatCommand(::TestArgs) {
             name = "test"
             description = "Test command, please ignore\n\n" +
 
@@ -496,7 +537,7 @@ class TestExtension : Extension() {
             }
         }
 
-        command(::TestArgs) {
+        chatCommand(::TestArgs) {
             name = "test-help"
             description = "Sends help for this command.\n\n" +
 
@@ -507,68 +548,63 @@ class TestExtension : Extension() {
             }
         }
 
-        command {
+        chatCommand {
             name = "page"
             description = "Paginator test"
 
             action {
-                val pages = Pages(defaultGroup = "short")
-
-                (0..2).forEach {
-                    pages.addPage(
-                        "short",
-
-                        Page {
-                            description = "Short page $it."
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-
-                    pages.addPage(
-                        "expanded",
-
-                        Page {
-                            description = "Expanded page $it, expanded page $it\n" +
-                                "Expanded page $it, expanded page $it"
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-
-                    pages.addPage(
-                        "massive",
-
-                        Page {
-                            description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
-                                "MASSIVE PAGE $it, MASSIVE PAGE $it"
-
-                            footer {
-                                text = "Footer text ($it)"
-                            }
-                        }
-                    )
-                }
-
-                MessageButtonPaginator(
-                    extension = this@TestExtension,
-                    targetMessage = event.message,
-                    pages = pages,
-                    keepEmbed = true,
-                    owner = user,
+                paginator("short", targetMessage = event.message) {
+                    keepEmbed = true
+                    owner = user
                     locale = getLocale()
-                ).send()
+
+                    (0..2).forEach {
+                        page(
+                            "short",
+
+                            Page {
+                                description = "Short page $it."
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+
+                        page(
+                            "expanded",
+
+                            Page {
+                                description = "Expanded page $it, expanded page $it\n" +
+                                    "Expanded page $it, expanded page $it"
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+
+                        page(
+                            "massive",
+
+                            Page {
+                                description = "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it\n" +
+                                    "MASSIVE PAGE $it, MASSIVE PAGE $it"
+
+                                footer {
+                                    text = "Footer text ($it)"
+                                }
+                            }
+                        )
+                    }
+                }.send()
             }
         }
 
-        command {
+        chatCommand {
             name = "page2"
             description = "Paginator test 2"
 
@@ -601,7 +637,6 @@ class TestExtension : Extension() {
                 }
 
                 MessageButtonPaginator(
-                    extension = this@TestExtension,
                     targetMessage = event.message,
                     pages = pages,
                     keepEmbed = false,
@@ -611,11 +646,11 @@ class TestExtension : Extension() {
             }
         }
 
-        group {
+        chatGroupCommand {
             name = "group"
             description = "Command group"
 
-            command {
+            chatCommand {
                 name = "one"
                 description = "one"
 
@@ -624,7 +659,7 @@ class TestExtension : Extension() {
                 }
             }
 
-            command {
+            chatCommand {
                 name = "two"
                 description = "two"
 
@@ -633,7 +668,7 @@ class TestExtension : Extension() {
                 }
             }
 
-            command {
+            chatCommand {
                 name = "three"
                 description = "three"
 

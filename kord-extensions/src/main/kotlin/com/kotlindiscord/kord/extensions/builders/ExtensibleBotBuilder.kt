@@ -6,13 +6,21 @@ import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
 import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
+import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
+import com.kotlindiscord.kord.extensions.components.ComponentRegistry
+import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
 import dev.kord.common.Color
@@ -25,14 +33,14 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.builder.kord.KordBuilder
-import dev.kord.core.builder.kord.Shards
 import dev.kord.core.cache.KordCacheBuilder
-import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
+import dev.kord.gateway.builder.Shards
+import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.context.startKoin
@@ -49,6 +57,9 @@ internal typealias LocaleResolver = suspend (
     user: UserBehavior?
 ) -> Locale?
 
+internal typealias FailureResponseBuilder =
+    suspend (MessageCreateBuilder).(message: String, type: FailureReason<*>) -> Unit
+
 /**
  * Builder class used for configuring and creating an [ExtensibleBot].
  *
@@ -61,6 +72,14 @@ public open class ExtensibleBotBuilder {
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
+
+    /**
+     * @suppress Builder that shouldn't be set directly by the user.
+     */
+    public var failureResponseBuilder: FailureResponseBuilder = { message, _ -> content = message }
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
@@ -70,13 +89,21 @@ public open class ExtensibleBotBuilder {
     public val i18nBuilder: I18nBuilder = I18nBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = null
+    public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = {
+        +Intents.nonPrivileged
+
+        getKoin().get<ExtensibleBot>().extensions.values.forEach { extension ->
+            extension.intents.forEach {
+                +it
+            }
+        }
+    }
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val membersBuilder: MembersBuilder = MembersBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val messageCommandsBuilder: MessageCommandsBuilder = MessageCommandsBuilder()
+    public val chatCommandsBuilder: ChatCommandsBuilder = ChatCommandsBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var presenceBuilder: PresenceBuilder.() -> Unit = { status = PresenceStatus.Online }
@@ -85,10 +112,15 @@ public open class ExtensibleBotBuilder {
     public var shardingBuilder: ((recommended: Int) -> Shards)? = null
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val slashCommandsBuilder: SlashCommandsBuilder = SlashCommandsBuilder()
+    public val applicationCommandsBuilder: ApplicationCommandsBuilder = ApplicationCommandsBuilder()
 
     /** @suppress List of Kord builders, shouldn't be set directly by the user. **/
-    public val kordBuilders: MutableList<suspend KordBuilder.() -> Unit> = mutableListOf()
+    public val kordHooks: MutableList<suspend KordBuilder.() -> Unit> = mutableListOf()
+
+    /** @suppress Kord builder, creates a Kord instance. **/
+    public var kordBuilder: suspend (String, suspend KordBuilder.() -> Unit) -> Kord = { token, builder ->
+        Kord(token) { builder() }
+    }
 
     /** Logging level Koin should use, defaulting to ERROR. **/
     public var koinLogLevel: Level = Level.ERROR
@@ -104,6 +136,25 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
+     * DSL function used to configure the bot's components system.
+     *
+     * @see ComponentsBuilder
+     */
+    @BotBuilderDSL
+    public suspend fun components(builder: suspend ComponentsBuilder.() -> Unit) {
+        builder(componentsBuilder)
+    }
+
+    /**
+     * Register the message builder responsible for formatting error responses, which are sent to users during command
+     * and component body execution.
+     */
+    @BotBuilderDSL
+    public fun errorResponse(builder: FailureResponseBuilder) {
+        failureResponseBuilder = builder
+    }
+
+    /**
      * DSL function used to insert code at various points in the bot's lifecycle.
      *
      * @see HooksBuilder
@@ -114,8 +165,8 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
-     * DSL function allowing for additional Kord builders to be specified, allowing for direct customisation of the
-     * Kord object.
+     * DSL function allowing for additional Kord configuration builders to be specified, allowing for direct
+     * customisation of the Kord object.
      *
      * Multiple builders may be registered, and they'll be called in the order they were registered here. Builders are
      * called after Kord Extensions has applied its own builder actions - so you can override the changes it makes here
@@ -125,27 +176,39 @@ public open class ExtensibleBotBuilder {
      */
     @BotBuilderDSL
     public fun kord(builder: suspend KordBuilder.() -> Unit) {
-        kordBuilders.add(builder)
+        kordHooks.add(builder)
     }
 
     /**
-     * DSL function used to configure the bot's message command options.
+     * Function allowing you to specify a callable that constructs and returns a Kord instance. This can be used
+     * to specify your own Kord subclass, if you need to - but shouldn't be a replacement for registering a [kord]
+     * configuration builder.
      *
-     * @see MessageCommandsBuilder
+     * @see Kord
      */
     @BotBuilderDSL
-    public suspend fun messageCommands(builder: suspend MessageCommandsBuilder.() -> Unit) {
-        builder(messageCommandsBuilder)
+    public fun customKordBuilder(builder: suspend (String, suspend KordBuilder.() -> Unit) -> Kord) {
+        kordBuilder = builder
     }
 
     /**
-     * DSL function used to configure the bot's slash command options.
+     * DSL function used to configure the bot's chat command options.
      *
-     * @see SlashCommandsBuilder
+     * @see ChatCommandsBuilder
      */
     @BotBuilderDSL
-    public suspend fun slashCommands(builder: suspend SlashCommandsBuilder.() -> Unit) {
-        builder(slashCommandsBuilder)
+    public suspend fun chatCommands(builder: suspend ChatCommandsBuilder.() -> Unit) {
+        builder(chatCommandsBuilder)
+    }
+
+    /**
+     * DSL function used to configure the bot's application command options.
+     *
+     * @see ApplicationCommandsBuilder
+     */
+    @BotBuilderDSL
+    public suspend fun applicationCommands(builder: suspend ApplicationCommandsBuilder.() -> Unit) {
+        builder(applicationCommandsBuilder)
     }
 
     /**
@@ -161,11 +224,33 @@ public open class ExtensibleBotBuilder {
     /**
      * DSL function used to configure the bot's intents.
      *
+     * @param addDefaultIntents Whether to automatically add all non-privileged intents to the builder before running
+     * the given lambda.
+     * @param addDefaultIntents Whether to automatically add the required intents defined within each loaded extension
+     *
      * @see Intents.IntentsBuilder
      */
     @BotBuilderDSL
-    public fun intents(builder: Intents.IntentsBuilder.() -> Unit) {
-        this.intentsBuilder = builder
+    public fun intents(
+        addDefaultIntents: Boolean = true,
+        addExtensionIntents: Boolean = true,
+        builder: Intents.IntentsBuilder.() -> Unit
+    ) {
+        this.intentsBuilder = {
+            if (addDefaultIntents) {
+                +Intents.nonPrivileged
+            }
+
+            if (addExtensionIntents) {
+                getKoin().get<ExtensibleBot>().extensions.values.forEach { extension ->
+                    extension.intents.forEach {
+                        +it
+                    }
+                }
+            }
+
+            builder()
+        }
     }
 
     /**
@@ -225,8 +310,15 @@ public open class ExtensibleBotBuilder {
 
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
-        loadModule { single { messageCommandsBuilder.registryBuilder() } bind MessageCommandRegistry::class }
-        loadModule { single { slashCommandsBuilder.slashRegistryBuilder() } bind SlashCommandRegistry::class }
+        loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
+        loadModule { single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class }
+        loadModule { single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class }
+
+        loadModule {
+            single {
+                applicationCommandsBuilder.applicationCommandRegistryBuilder()
+            } bind ApplicationCommandRegistry::class
+        }
 
         loadModule {
             single {
@@ -252,11 +344,14 @@ public open class ExtensibleBotBuilder {
         loadModule { single { bot } bind ExtensibleBot::class }
 
         hooksBuilder.runCreated(bot)
-        bot.setup()
-        hooksBuilder.runSetup(bot)
 
+        bot.setup()
+
+        hooksBuilder.runSetup(bot)
         hooksBuilder.runBeforeExtensionsAdded(bot)
+
         extensionsBuilder.extensions.forEach { bot.addExtension(it) }
+
         hooksBuilder.runAfterExtensionsAdded(bot)
 
         return bot
@@ -269,7 +364,7 @@ public open class ExtensibleBotBuilder {
          * Number of messages to keep in the cache. Defaults to 10,000.
          *
          * To disable automatic configuration of the message cache, set this to `null` or `0`. You can configure the
-         * cache yourself using the [kord] function, and interact with the resulting [DataCache] object using the
+         * cache yourself using the [kordHook] function, and interact with the resulting [DataCache] object using the
          * [transformCache] function.
          */
         @Suppress("MagicNumber")
@@ -306,6 +401,32 @@ public open class ExtensibleBotBuilder {
         }
     }
 
+    /** Builder used to configure the bot's components settings. **/
+    @BotBuilderDSL
+    public class ComponentsBuilder {
+        /** @suppress Component callback registry builder. **/
+        public var callbackRegistryBuilder: () -> ComponentCallbackRegistry = ::ComponentCallbackRegistry
+
+        /** @suppress Component registry builder. **/
+        public var registryBuilder: () -> ComponentRegistry = ::ComponentRegistry
+
+        /**
+         * Register a builder (usually a constructor) returning a [ComponentCallbackRegistry] instance, which may
+         * be useful if you need to register a custom subclass.
+         */
+        public fun callbackRegistry(builder: () -> ComponentCallbackRegistry) {
+            callbackRegistryBuilder = builder
+        }
+
+        /**
+         * Register a builder (usually a constructor) returning a [ComponentRegistry] instance, which may be useful
+         * if you need to register a custom subclass.
+         */
+        public fun registry(builder: () -> ComponentRegistry) {
+            registryBuilder = builder
+        }
+    }
+
     /** Builder used for configuring the bot's extension options, and registering custom extensions. **/
     @BotBuilderDSL
     public open class ExtensionsBuilder {
@@ -317,14 +438,6 @@ public open class ExtensibleBotBuilder {
 
         /** @suppress Sentry extension builder. **/
         public open val sentryExtensionBuilder: SentryExtensionBuilder = SentryExtensionBuilder()
-
-        /** Whether to enable the bundled Sentry extension. Defaults to `true`. **/
-        @Deprecated("Use the sentry { } builder instead.", level = DeprecationLevel.ERROR)
-        public var sentry: Boolean
-            get() = sentryExtensionBuilder.debug
-            set(value) {
-                sentryExtensionBuilder.debug = value
-            }
 
         /** Add a custom extension to the bot via a builder - probably the extension constructor. **/
         public open fun add(builder: () -> Extension) {
@@ -517,6 +630,7 @@ public open class ExtensibleBotBuilder {
          * Register a lambda to be called after all the extensions in the [ExtensionsBuilder] have been added. This
          * will be called regardless of how many were successfully set up.
          */
+        @BotBuilderDSL
         public fun afterExtensionsAdded(body: suspend ExtensibleBot.() -> Unit): Boolean =
             afterExtensionsAddedList.add(body)
 
@@ -524,6 +638,7 @@ public open class ExtensibleBotBuilder {
          * Register a lambda to be called after Koin has been set up. You can use this to register overriding modules
          * via `loadModule` before the modules are actually accessed.
          */
+        @BotBuilderDSL
         public fun afterKoinSetup(body: () -> Unit): Boolean =
             afterKoinSetupList.add(body)
 
@@ -531,18 +646,21 @@ public open class ExtensibleBotBuilder {
          * Register a lambda to be called before Koin has been set up. You can use this to register Koin modules
          * early, if needed.
          */
+        @BotBuilderDSL
         public fun beforeKoinSetup(body: () -> Unit): Boolean =
             beforeKoinSetupList.add(body)
 
         /**
          * Register a lambda to be called before all the extensions in the [ExtensionsBuilder] have been added.
          */
+        @BotBuilderDSL
         public fun beforeExtensionsAdded(body: suspend ExtensibleBot.() -> Unit): Boolean =
             beforeExtensionsAddedList.add(body)
 
         /**
          * Register a lambda to be called just before the bot tries to connect to Discord.
          */
+        @BotBuilderDSL
         public fun beforeStart(body: suspend ExtensibleBot.() -> Unit): Boolean =
             beforeStartList.add(body)
 
@@ -550,18 +668,21 @@ public open class ExtensibleBotBuilder {
          * Register a lambda to be called right after the [ExtensibleBot] object has been created, before it gets set
          * up.
          */
+        @BotBuilderDSL
         public fun created(body: suspend ExtensibleBot.() -> Unit): Boolean =
             createdList.add(body)
 
         /**
          * Register a lambda to be called after any extension is successfully added to the bot.
          */
+        @BotBuilderDSL
         public fun extensionAdded(body: suspend ExtensibleBot.(extension: Extension) -> Unit): Boolean =
             extensionAddedList.add(body)
 
         /**
          * Register a lambda to be called after the [ExtensibleBot] object has been created and set up.
          */
+        @BotBuilderDSL
         public fun setup(body: suspend ExtensibleBot.() -> Unit): Boolean =
             setupList.add(body)
 
@@ -730,7 +851,7 @@ public open class ExtensibleBotBuilder {
          * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
          */
         @JvmName("fillLongs")  // These are the same for the JVM
-        public fun fill(ids: Collection<Long>): Boolean? =
+        public fun fill(ids: Collection<ULong>): Boolean? =
             guildsToFill?.addAll(ids.map { Snowflake(it) })
 
         /**
@@ -755,7 +876,7 @@ public open class ExtensibleBotBuilder {
          *
          * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
          */
-        public fun fill(id: Long): Boolean? =
+        public fun fill(id: ULong): Boolean? =
             guildsToFill?.add(Snowflake(id))
 
         /**
@@ -783,26 +904,23 @@ public open class ExtensibleBotBuilder {
         }
     }
 
-    /** Builder used for configuring the bot's message command options. **/
+    /** Builder used for configuring the bot's chat command options. **/
     @BotBuilderDSL
-    public class MessageCommandsBuilder {
-        /** Whether to invoke commands on bot mentions, in addition to using message prefixes. Defaults to `true`. **/
+    public class ChatCommandsBuilder {
+        /** Whether to invoke commands on bot mentions, in addition to using chat prefixes. Defaults to `true`. **/
         public var invokeOnMention: Boolean = true
 
         /** Prefix to require for command invocations on Discord. Defaults to `"!"`. **/
         public var defaultPrefix: String = "!"
 
-        /** Whether to register and process message commands. Defaults to `true`. **/
-        public var enabled: Boolean = true
-
-        /** Number of threads to use for command execution. Defaults to twice the number of CPU threads. **/
-        public var threads: Int = Runtime.getRuntime().availableProcessors() * 2
+        /** Whether to register and process chat commands. Defaults to `false`. **/
+        public var enabled: Boolean = false
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var prefixCallback: suspend (MessageCreateEvent).(String) -> String = { defaultPrefix }
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var registryBuilder: () -> MessageCommandRegistry = { MessageCommandRegistry() }
+        public var registryBuilder: () -> ChatCommandRegistry = { ChatCommandRegistry() }
 
         /**
          * List of command checks.
@@ -815,7 +933,7 @@ public open class ExtensibleBotBuilder {
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
          * command prefix to be made use of for that message event.
          *
-         * This is intended to allow for different message command prefixes in different contexts - for example,
+         * This is intended to allow for different chat command prefixes in different contexts - for example,
          * guild-specific prefixes.
          */
         public fun prefix(builder: suspend (MessageCreateEvent).(String) -> String) {
@@ -823,10 +941,10 @@ public open class ExtensibleBotBuilder {
         }
 
         /**
-         * Register the builder used to create the [MessageCommandRegistry]. You can change this if you need to make
-         * use of a subclass.
+         * Register the builder used to create the [ChatCommandRegistry]. You can change this if you need to
+         * make use of a subclass.
          */
-        public fun registry(builder: () -> MessageCommandRegistry) {
+        public fun registry(builder: () -> ChatCommandRegistry) {
             registryBuilder = builder
         }
 
@@ -855,39 +973,54 @@ public open class ExtensibleBotBuilder {
         }
     }
 
-    /** Builder used for configuring the bot's slash command options. **/
+    /** Builder used for configuring the bot's application command options. **/
     @BotBuilderDSL
-    public class SlashCommandsBuilder {
-        /** Whether to register and process slash commands. Defaults to `false`. **/
-        public var enabled: Boolean = false
+    public class ApplicationCommandsBuilder {
+        /** Whether to register and process application commands. Defaults to `true`. **/
+        public var enabled: Boolean = true
 
-        /** The guild ID to use for all global slash commands. Intended for testing. **/
+        /** The guild ID to use for all global application commands. Intended for testing. **/
         public var defaultGuild: Snowflake? = null
 
-        /** Whether to attempt to register the bot's slash commands. Intended for multi-instance sharded bots. **/
+        /** Whether to attempt to register the bot's application commands. Intended for multi-instance sharded bots. **/
         public var register: Boolean = true
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
-        public var slashRegistryBuilder: () -> SlashCommandRegistry = { SlashCommandRegistry() }
+        public var applicationCommandRegistryBuilder: () -> ApplicationCommandRegistry =
+            { DefaultApplicationCommandRegistry() }
+
+        /**
+         * List of message command checks.
+         *
+         * These checks will be checked against all message commands.
+         */
+        public val messageCommandChecks: MutableList<MessageCommandCheck> = mutableListOf()
 
         /**
          * List of slash command checks.
          *
          * These checks will be checked against all slash commands.
          */
-        public val checkList: MutableList<Check<InteractionCreateEvent>> = mutableListOf()
+        public val slashCommandChecks: MutableList<SlashCommandCheck> = mutableListOf()
 
-        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        /**
+         * List of user command checks.
+         *
+         * These checks will be checked against all user commands.
+         */
+        public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
+
+        /** Set a guild ID to use for all global application commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake) {
             defaultGuild = id
         }
 
-        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
-        public fun defaultGuild(id: Long) {
+        /** Set a guild ID to use for all global application commands. Intended for testing. **/
+        public fun defaultGuild(id: ULong) {
             defaultGuild = Snowflake(id)
         }
 
-        /** Set a guild ID to use for all global slash commands. Intended for testing. **/
+        /** Set a guild ID to use for all global application commands. Intended for testing. **/
         public fun defaultGuild(id: String) {
             defaultGuild = Snowflake(id)
         }
@@ -896,15 +1029,15 @@ public open class ExtensibleBotBuilder {
          * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
          * use of a subclass.
          */
-        public fun slashRegistry(builder: () -> SlashCommandRegistry) {
-            slashRegistryBuilder = builder
+        public fun applicationCommandRegistry(builder: () -> ApplicationCommandRegistry) {
+            applicationCommandRegistryBuilder = builder
         }
 
         /**
-         * Define a check which must pass for a command to be executed. This check will be applied to all
-         * slash commands.
+         * Define a check which must pass for a message command to be executed. This check will be applied to all
+         * message commands.
          *
-         * A command may have multiple checks - all checks must pass for the command to be executed.
+         * A message command may have multiple checks - all checks must pass for the command to be executed.
          * Checks will be run in the order that they're defined.
          *
          * This function can be used DSL-style with a given body, or it can be passed one or more
@@ -912,17 +1045,67 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all slash commands.
          */
-        public fun check(vararg checks: Check<InteractionCreateEvent>) {
-            checks.forEach { checkList.add(it) }
+        public fun messageCommandCheck(vararg checks: MessageCommandCheck) {
+            checks.forEach { messageCommandChecks.add(it) }
         }
 
         /**
-         * Overloaded check function to allow for DSL syntax.
+         * Overloaded message command check function to allow for DSL syntax.
          *
          * @param check Check to apply to all slash commands.
          */
-        public fun check(check: Check<InteractionCreateEvent>) {
-            checkList.add(check)
+        public fun messageCommandCheck(check: MessageCommandCheck) {
+            messageCommandChecks.add(check)
+        }
+
+        /**
+         * Define a check which must pass for a slash command to be executed. This check will be applied to all
+         * slash commands.
+         *
+         * A slash command may have multiple checks - all checks must pass for the command to be executed.
+         * Checks will be run in the order that they're defined.
+         *
+         * This function can be used DSL-style with a given body, or it can be passed one or more
+         * predefined functions. See the samples for more information.
+         *
+         * @param checks Checks to apply to all slash commands.
+         */
+        public fun slashCommandCheck(vararg checks: SlashCommandCheck) {
+            checks.forEach { slashCommandChecks.add(it) }
+        }
+
+        /**
+         * Overloaded slash command check function to allow for DSL syntax.
+         *
+         * @param check Check to apply to all slash commands.
+         */
+        public fun slashCommandCheck(check: SlashCommandCheck) {
+            slashCommandChecks.add(check)
+        }
+
+        /**
+         * Define a check which must pass for a user command to be executed. This check will be applied to all
+         * user commands.
+         *
+         * A user command may have multiple checks - all checks must pass for the command to be executed.
+         * Checks will be run in the order that they're defined.
+         *
+         * This function can be used DSL-style with a given body, or it can be passed one or more
+         * predefined functions. See the samples for more information.
+         *
+         * @param checks Checks to apply to all slash commands.
+         */
+        public fun userCommandCheck(vararg checks: UserCommandCheck) {
+            checks.forEach { userCommandChecks.add(it) }
+        }
+
+        /**
+         * Overloaded user command check function to allow for DSL syntax.
+         *
+         * @param check Check to apply to all slash commands.
+         */
+        public fun userCommandCheck(check: UserCommandCheck) {
+            userCommandChecks.add(check)
         }
     }
 }

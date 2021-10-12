@@ -1,17 +1,18 @@
 package com.kotlindiscord.kord.extensions.checks
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.event.Event
 import mu.KotlinLogging
-import java.util.*
 
 /**
  * Check asserting the user for an [Event] is a bot. Will fail if the event doesn't concern a user.
- *
- * @param event Event object to check.
  */
-public val isBot: Check<*> = {
+public suspend fun CheckContext<*>.isBot() {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isBot")
     val user = userFor(event)?.asUserOrNull()
 
@@ -34,10 +35,12 @@ public val isBot: Check<*> = {
 
 /**
  * Check asserting the user for an [Event] is **not** a bot. Will fail if the event doesn't concern a user.
- *
- * @param event Event object to check.
  */
-public val isNotbot: Check<*> = {
+public suspend fun CheckContext<*>.isNotBot() {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotBot")
     val user = userFor(event)?.asUserOrNull()
 
@@ -61,7 +64,11 @@ public val isNotbot: Check<*> = {
 /**
  * Check asserting that the event was triggered within a thread.
  */
-public val isInThread: Check<*> = {
+public suspend fun CheckContext<*>.isInThread() {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isInThread")
     val channel = channelFor(event)?.asChannelOrNull()
 
@@ -86,7 +93,11 @@ public val isInThread: Check<*> = {
  * Check asserting that the event was **not** triggered within a thread, including events that don't concern any
  * specific channel.
  */
-public val isNotInThread: Check<*> = {
+public suspend fun CheckContext<*>.isNotInThread() {
+    if (!passed) {
+        return
+    }
+
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotInThread")
     val channel = channelFor(event)?.asChannelOrNull()
 

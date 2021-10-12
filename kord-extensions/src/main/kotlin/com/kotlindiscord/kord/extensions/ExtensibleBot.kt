@@ -3,12 +3,11 @@
 package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.commands.MessageCommand
-import com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry
-import com.kotlindiscord.kord.extensions.commands.parser.Arguments
-import com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
+import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
-import com.kotlindiscord.kord.extensions.events.ExtensionEvent
+import com.kotlindiscord.kord.extensions.events.KordExEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
@@ -20,7 +19,7 @@ import dev.kord.core.event.Event
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
-import dev.kord.core.event.interaction.InteractionCreateEvent
+import dev.kord.core.event.interaction.*
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
@@ -33,7 +32,6 @@ import kotlinx.coroutines.launch
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koin.dsl.bind
 
 /**
@@ -49,50 +47,6 @@ import org.koin.dsl.bind
  * @param token Token for connecting to Discord.
  */
 public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, private val token: String) : KoinComponent {
-    /**
-     * @suppress
-     */
-    @Deprecated(
-        "Use Koin to get this instead. This will be private in future.",
-
-        ReplaceWith(
-            "getKoin().get<Kord>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "dev.kord.core.Kord"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public val kord: Kord by inject()
-
-    /** Message command registry, keeps track of and executes message commands. **/
-    @Deprecated(
-        "Use Koin to get this instead. This will be made private in future.",
-
-        ReplaceWith(
-            "getKoin().get<MessageCommandRegistry>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.MessageCommandRegistry"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public open val messageCommands: MessageCommandRegistry by inject()
-
-    /** Slash command registry, keeps track of and executes slash commands. **/
-    @Deprecated(
-        "Use Koin to get this instead. This will be made private in future.",
-
-        ReplaceWith(
-            "getKoin().get<SlashCommandRegistry>()",
-
-            "com.kotlindiscord.kord.extensions.utils.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.slash.SlashCommandRegistry"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public open val slashCommands: SlashCommandRegistry by inject()
-
     /**
      * A list of all registered event handlers.
      */
@@ -117,16 +71,12 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
     /** @suppress Function that sets up the bot early on, called by the builder. **/
     public open suspend fun setup() {
-        val kord = Kord(token) {
+        val kord = settings.kordBuilder(token) {
             cache {
                 settings.cacheBuilder.builder.invoke(this, it)
             }
 
             defaultStrategy = settings.cacheBuilder.defaultStrategy
-
-            if (settings.intentsBuilder != null) {
-                this.intents = Intents(settings.intentsBuilder!!)
-            }
 
             if (settings.shardingBuilder != null) {
                 sharding(settings.shardingBuilder!!)
@@ -134,28 +84,31 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
             enableShutdownHook = settings.hooksBuilder.kordShutdownHook
 
-            settings.kordBuilders.forEach { it() }
+            settings.kordHooks.forEach { it() }
         }
 
         loadModule { single { kord } bind Kord::class }
 
         settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
-        registerListeners()
-        addDefaultExtensions()
-
         kord.on<Event> {
-            kord.launch {
+            this.launch {
                 send(this@on)
             }
         }
+
+        addDefaultExtensions()
     }
 
     /** Start up the bot and log into Discord. **/
     public open suspend fun start() {
         settings.hooksBuilder.runBeforeStart(this)
+        registerListeners()
 
-        getKoin().get<Kord>().login(settings.presenceBuilder)
+        getKoin().get<Kord>().login {
+            this.presence(settings.presenceBuilder)
+            this.intents = Intents(settings.intentsBuilder!!)
+        }
     }
 
     /** This function sets up all of the bot's default event listeners. **/
@@ -178,39 +131,61 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             logger.warn { "Disconnected: $closeCode" }
         }
 
-        on<ReadyEvent> {
-            if (!initialized) {  // We do this because a reconnect will cause this event to happen again.
-                initialized = true
+        on<ButtonInteractionCreateEvent> {
+            getKoin().get<ComponentRegistry>().handle(this)
+        }
 
-                if (settings.slashCommandsBuilder.enabled) {
-                    getKoin().get<SlashCommandRegistry>().syncAll()
-                } else {
-                    logger.info {
-                        "Slash command support is disabled - set `enabled` to `true` in the `slashCommands` builder" +
-                            " if you want to use them."
-                    }
+        on<SelectMenuInteractionCreateEvent> {
+            getKoin().get<ComponentRegistry>().handle(this)
+        }
+
+        if (settings.chatCommandsBuilder.enabled) {
+            on<MessageCreateEvent> {
+                getKoin().get<ChatCommandRegistry>().handleEvent(this)
+            }
+        } else {
+            logger.debug {
+                "Chat command support is disabled - set `enabled` to `true` in the `chatCommands` builder" +
+                    " if you want to use them."
+            }
+        }
+
+        if (settings.applicationCommandsBuilder.enabled) {
+            on<ChatInputCommandInteractionCreateEvent> {
+                getKoin().get<ApplicationCommandRegistry>().handle(this)
+            }
+
+            on<MessageCommandInteractionCreateEvent> {
+                getKoin().get<ApplicationCommandRegistry>().handle(this)
+            }
+
+            on<UserCommandInteractionCreateEvent> {
+                getKoin().get<ApplicationCommandRegistry>().handle(this)
+            }
+
+            getKoin().get<ApplicationCommandRegistry>().initialRegistration()
+        } else {
+            logger.debug {
+                "Application command support is disabled - set `enabled` to `true` in the " +
+                    "`applicationCommands` builder if you want to use them."
+            }
+        }
+
+        if (!initialized) {
+            eventHandlers.forEach { handler ->
+                handler.listenerRegistrationCallable?.invoke() ?: logger.error {
+                    "Event handler $handler does not have a listener registration callback. This should never happen!"
                 }
             }
 
-            logger.info { "Ready!" }
-        }
-
-        if (settings.messageCommandsBuilder.enabled) {
-            on<MessageCreateEvent> {
-                getKoin().get<MessageCommandRegistry>().handleEvent(this)
-            }
-        }
-
-        if (settings.slashCommandsBuilder.enabled) {
-            on<InteractionCreateEvent> {
-                getKoin().get<SlashCommandRegistry>().handle(this)
-            }
+            initialized = true
         }
     }
 
     /** This function adds all of the default extensions when the bot is being set up. **/
     public open suspend fun addDefaultExtensions() {
         val extBuilder = settings.extensionsBuilder
+
         if (extBuilder.helpExtensionBuilder.enableBundledExtension) {
             this.addExtension(::HelpExtension)
         }
@@ -224,13 +199,13 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * Subscribe to an event. You shouldn't need to use this directly, but it's here just in case.
      *
      * You can subscribe to any type, realistically - but this is intended to be used only with Kord
-     * [Event] subclasses, and our own [ExtensionEvent]s.
+     * [Event] subclasses, and our own [KordExEvent]s.
      *
      * @param T Types of event to subscribe to.
      * @param scope Coroutine scope to run the body of your callback under.
      * @param consumer The callback to run when the event is fired.
      */
-    public inline fun <reified T : Any> on(
+    public inline fun <reified T : Event> on(
         launch: Boolean = true,
         scope: CoroutineScope = this.getKoin().get<Kord>(),
         noinline consumer: suspend T.() -> Unit
@@ -239,7 +214,7 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
             .filterIsInstance<T>()
             .onEach {
                 runCatching {
-                    if (launch) scope.launch { consumer(it) } else consumer(it)
+                    if (launch) it.launch { consumer(it) } else consumer(it)
                 }.onFailure { logger.catching(it) }
             }.catch { logger.catching(it) }
             .launchIn(scope)
@@ -336,55 +311,32 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     }
 
     /**
-     * Directly register a [MessageCommand] to this bot.
+     * Directly register an [EventHandler] to this bot.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
-     * call the [Extension.command] function in your [Extension.setup] function.
+     * call the [Extension.event] function in your [Extension.setup] function.
      *
-     * This function will throw a [CommandRegistrationException] if the command has already been registered, if
-     * a command with the same name exists, or if a command with one of the same aliases exists.
+     * This function will throw an [EventHandlerRegistrationException] if the event handler has already been registered.
      *
-     * @param command The command to be registered.
-     * @throws CommandRegistrationException Thrown if the command could not be registered.
+     * @param handler The event handler to be registered.
+     * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
      */
-    @Deprecated(
-        "Use the equivalent function within `MessageCommandRegistry` instead.",
+    @Throws(EventHandlerRegistrationException::class)
+    public inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>) {
+        if (eventHandlers.contains(handler)) {
+            throw EventHandlerRegistrationException(
+                "Event handler already registered in '${handler.extension.name}' extension."
+            )
+        }
 
-        ReplaceWith(
-            "getKoin().get<MessageCommandRegistry>().add(command)",
+        if (initialized) {
+            handler.listenerRegistrationCallable?.invoke() ?: error(
+                "Event handler $handler does not have a listener registration callback. This should never happen!"
+            )
+        }
 
-            "org.koin.core.component.KoinComponent.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.MessageCommand"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    @Throws(CommandRegistrationException::class)
-    public open fun addCommand(command: MessageCommand<out Arguments>): Unit = getKoin()
-        .get<MessageCommandRegistry>()
-        .add(command)
-
-    /**
-     * Directly remove a registered [MessageCommand] from this bot.
-     *
-     * This function is used when extensions are unloaded, in order to clear out their commands.
-     * No exception is thrown if the command wasn't registered.
-     *
-     * @param command The command to be removed.
-     */
-    @Deprecated(
-        "Use the equivalent function within `MessageCommandRegistry` instead.",
-
-        ReplaceWith(
-            "getKoin().get<MessageCommandRegistry>().remove(command)",
-
-            "org.koin.core.component.KoinComponent.getKoin",
-            "com.kotlindiscord.kord.extensions.commands.MessageCommand"
-        ),
-        level = DeprecationLevel.ERROR
-    )
-    public open fun removeCommand(command: MessageCommand<out Arguments>): Boolean = getKoin()
-        .get<MessageCommandRegistry>()
-        .remove(command)
+        eventHandlers.add(handler)
+    }
 
     /**
      * Directly register an [EventHandler] to this bot.
@@ -398,18 +350,10 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
      * @throws EventHandlerRegistrationException Thrown if the event handler could not be registered.
      */
     @Throws(EventHandlerRegistrationException::class)
-    public inline fun <reified T : Event> addEventHandler(handler: EventHandler<T>): Job {
-        if (eventHandlers.contains(handler)) {
-            throw EventHandlerRegistrationException(
-                "Event handler already registered in '${handler.extension.name}' extension."
-            )
+    public inline fun <reified T : Event> registerListenerForHandler(handler: EventHandler<T>): Job {
+        return on<T> {
+            handler.call(this)
         }
-
-        val job = on<T> { handler.call(this) }
-
-        eventHandlers.add(handler)
-
-        return job
     }
 
     /**

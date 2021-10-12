@@ -7,16 +7,17 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
-import com.kotlindiscord.kord.extensions.CommandException
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import com.kotlindiscord.kord.extensions.commands.parser.Argument
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.rest.builder.interaction.NumberChoiceBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
-import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
 /**
  * Argument converter for decimal arguments, converting them into [Double].
@@ -41,7 +42,7 @@ public class DecimalConverter(
         try {
             this.parsed = arg.toDouble()
         } catch (e: NumberFormatException) {
-            throw CommandException(
+            throw DiscordRelayedException(
                 context.translate("converters.decimal.error.invalid", replacements = arrayOf(arg))
             )
         }
@@ -50,5 +51,12 @@ public class DecimalConverter(
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+        NumberChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.NumberOptionValue)?.value ?: return false
+        this.parsed = optionValue
+
+        return true
+    }
 }

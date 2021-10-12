@@ -170,7 +170,7 @@ exceptions:
     active: true
     methodNames: [toString, hashCode, equals, finalize]
   InstanceOfCheckForException:
-    active: true
+    active: false  # It does often make things more readable
     excludes: ['**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt']
   NotImplementedDeclaration:
     active: false

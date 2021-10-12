@@ -26,12 +26,14 @@ public class ResourceBundleTranslations(
     )
 
     private val bundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
+    private val overrideBundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 
     public override fun hasKey(key: String, locale: Locale, bundleName: String?): Boolean {
         return try {
-            val bundleObj = getBundle(locale, bundleName)
+            val (bundle, _) = getBundles(locale, bundleName)
 
-            bundleObj.keys.toList().contains(key)
+            // Overrides aren't for adding keys, so we don't check them
+            bundle.keys.toList().contains(key)
         } catch (e: MissingResourceException) {
             logger.trace { "Failed to get bundle $bundleName for locale $locale" }
 
@@ -40,7 +42,7 @@ public class ResourceBundleTranslations(
     }
 
     @Throws(MissingResourceException::class)
-    private fun getBundle(locale: Locale, bundleName: String?): ResourceBundle {
+    private fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
         var bundle = "translations." + (bundleName ?: KORDEX_KEY)
 
         if (bundle.count { it == '.' } < 2) {
@@ -49,15 +51,28 @@ public class ResourceBundleTranslations(
 
         val bundleKey = bundle to locale
 
-        logger.trace { "Getting bundle $bundleKey for locale $locale" }
-        bundles[bundleKey] = bundles[bundleKey] ?: ResourceBundle.getBundle(bundle, locale, Control)
+        if (bundles[bundleKey] == null) {
+            logger.trace { "Getting bundle $bundle for locale $locale" }
+            bundles[bundleKey] = ResourceBundle.getBundle(bundle, locale, Control)
 
-        return bundles[bundleKey]!!
+            try {
+                val overrideBundle = bundle + "_override"
+
+                logger.trace { "Getting override bundle $overrideBundle for locale $locale" }
+
+                overrideBundles[bundleKey] = ResourceBundle.getBundle(overrideBundle, locale, Control)
+            } catch (e: MissingResourceException) {
+                logger.trace { "No override bundle found." }
+            }
+        }
+
+        return bundles[bundleKey]!! to overrideBundles[bundleKey]
     }
 
     @Throws(MissingResourceException::class)
     public override fun get(key: String, locale: Locale, bundleName: String?): String {
-        val result = getBundle(locale, bundleName).getString(key)
+        val (bundle, overrideBundle) = getBundles(locale, bundleName)
+        val result = overrideBundle?.getStringOrNull(key) ?: bundle.getString(key)
 
         logger.trace { "Result: $key -> $result" }
 
@@ -65,12 +80,16 @@ public class ResourceBundleTranslations(
     }
 
     override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Array<Any?>): String {
-        return try {
-            var string = get(key, locale, bundleName)
+        var string = try {
+            get(key, locale, bundleName)
+        } catch (e: MissingResourceException) {
+            key
+        }
 
+        return try {
             if (string == key && bundleName != null) {
                 // Fall through to the default bundle if the key isn't found
-                logger.trace { "$key not found in bundle $bundleName - falling through to $KORDEX_KEY" }
+                logger.trace { "'$key' not found in bundle '$bundleName' - falling through to '$KORDEX_KEY'" }
 
                 string = get(key, locale, KORDEX_KEY)
             }
@@ -79,9 +98,23 @@ public class ResourceBundleTranslations(
 
             formatter.format(replacements)
         } catch (e: MissingResourceException) {
-            logger.trace { "Unable to find translation for key '$key' in bundle '$bundleName'" }
+            logger.trace {
+                if (bundleName == null) {
+                    "Unable to find translation for key '$key' in bundle '$KORDEX_KEY'"
+                } else {
+                    "Unable to find translation for key '$key' in bundles: '$bundleName', '$KORDEX_KEY'"
+                }
+            }
 
             key
+        }
+    }
+
+    private fun ResourceBundle.getStringOrNull(key: String): String? {
+        return try {
+            getString(key)
+        } catch (e: MissingResourceException) {
+            null
         }
     }
 

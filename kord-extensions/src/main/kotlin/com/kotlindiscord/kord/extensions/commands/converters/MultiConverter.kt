@@ -14,7 +14,7 @@ import dev.kord.common.annotation.KordPreview
  *
  * You can create a multi converter of your own by extending this class.
  *
- * @property validator Validation lambda, which may throw a CommandException if required.
+ * @property validator Validation lambda, which may throw a DiscordRelayedException if required.
  */
 public abstract class MultiConverter<T : Any>(
     required: Boolean = true,

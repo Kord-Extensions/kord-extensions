@@ -12,18 +12,18 @@ class ExtMappingsBuilder {
     var config: MappingsConfigAdapter = TomlMappingsConfig()
 
     /** List of checks to apply against the name of the command. **/
-    val commandChecks: MutableList<suspend (String) -> Check<*>> = mutableListOf()
+    val commandChecks: MutableList<suspend (String) -> Check<MessageCreateEvent>> = mutableListOf()
 
     /** List of checks to apply against the namespace corresponding with the command. **/
-    val namespaceChecks: MutableList<suspend (Namespace) -> Check<*>> = mutableListOf()
+    val namespaceChecks: MutableList<suspend (Namespace) -> Check<MessageCreateEvent>> = mutableListOf()
 
     /** Register a check that applies against the name of a command, and its message creation event. **/
     fun commandCheck(check: suspend (String) -> Check<MessageCreateEvent>) {
-        commandChecks.add(check as (suspend (String) -> Check<*>))
+        commandChecks.add(check)
     }
 
     /** Register a check that applies against the mappings namespace for a command, and its message creation event. **/
     fun namespaceCheck(check: suspend (Namespace) -> Check<MessageCreateEvent>) {
-        namespaceChecks.add(check as (suspend (Namespace) -> Check<*>))
+        namespaceChecks.add(check)
     }
 }
