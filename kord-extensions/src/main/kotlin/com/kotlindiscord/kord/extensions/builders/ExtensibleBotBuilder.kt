@@ -1011,18 +1011,18 @@ public open class ExtensibleBotBuilder {
         public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: Snowflake) {
+        public fun defaultGuild(id: Snowflake?) {
             defaultGuild = id
         }
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: ULong) {
-            defaultGuild = Snowflake(id)
+        public fun defaultGuild(id: ULong?) {
+            defaultGuild = id?.let { Snowflake(it) }
         }
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: String) {
-            defaultGuild = Snowflake(id)
+        public fun defaultGuild(id: String?) {
+            defaultGuild = id?.let { Snowflake(it) }
         }
 
         /**
