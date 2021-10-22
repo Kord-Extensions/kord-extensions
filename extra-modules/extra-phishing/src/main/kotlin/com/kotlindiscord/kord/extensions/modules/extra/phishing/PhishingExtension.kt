@@ -266,6 +266,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                 found = found.split("/", limit = 2).first()
             }
 
+            found = found.filter { it.isLetterOrDigit() || it in "-+&@#%?=~_|!:,.;" }
+
             domains.add(found)
         }
 
