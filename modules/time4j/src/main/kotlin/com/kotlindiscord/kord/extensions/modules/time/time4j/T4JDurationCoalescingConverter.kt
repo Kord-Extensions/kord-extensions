@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.converters.impl.RegexCoalescingConverter
+import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
@@ -45,7 +46,11 @@ public class T4JDurationCoalescingConverter(
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val durations = mutableListOf<String>()
-        val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
+
+        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
+            .split(",")
+            .toMutableList()
+            .apply { remove(EMPTY_VALUE_STRING) }
 
         var skipNext = false
 

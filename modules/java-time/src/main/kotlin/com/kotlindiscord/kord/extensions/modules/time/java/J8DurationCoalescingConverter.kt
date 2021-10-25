@@ -46,7 +46,11 @@ public class J8DurationCoalescingConverter(
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val durations = mutableListOf<String>()
-        val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
+
+        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
+            .split(",")
+            .toMutableList()
+            .apply { remove(EMPTY_VALUE_STRING) }
 
         var skipNext = false
 
