@@ -266,7 +266,14 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         // Finally, we can remove anything that needs to be removed
         toRemove.forEach {
             logger.trace { "Removing ${it.type.name} command: ${it.name}" }
-            it.delete()
+
+            try {
+                it.delete()
+            } catch (e: KtorRequestException) {
+                if (e.status.code != 404) {
+                    throw e
+                }
+            }
         }
 
         logger.info {
