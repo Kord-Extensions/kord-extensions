@@ -267,6 +267,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         toRemove.forEach {
             logger.trace { "Removing ${it.type.name} command: ${it.name}" }
 
+            @Suppress("MagicNumber")  // not today, Detekt
             try {
                 it.delete()
             } catch (e: KtorRequestException) {
