@@ -52,7 +52,8 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T 
      */
     protected abstract fun entries(): Flow<RegistryStorage.StorageEntry<String, String>>
 
-    override fun constructUniqueIdentifier(data: T): String = "${data.name}-${data.type.value}-${data.guildId ?: 0}"
+    override fun constructUniqueIdentifier(data: T): String =
+        "${data.name}-${data.type.value}-${data.guildId?.value ?: 0}"
 
     override suspend fun register(data: T) {
         commandMapping[constructUniqueIdentifier(data)] = data
