@@ -78,10 +78,6 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
 
             defaultStrategy = settings.cacheBuilder.defaultStrategy
 
-            if (settings.intentsBuilder != null) {
-                this.intents = Intents(settings.intentsBuilder!!)
-            }
-
             if (settings.shardingBuilder != null) {
                 sharding(settings.shardingBuilder!!)
             }
@@ -100,15 +96,19 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
                 send(this@on)
             }
         }
+
+        addDefaultExtensions()
     }
 
     /** Start up the bot and log into Discord. **/
     public open suspend fun start() {
         settings.hooksBuilder.runBeforeStart(this)
-
         registerListeners()
 
-        getKoin().get<Kord>().login(settings.presenceBuilder)
+        getKoin().get<Kord>().login {
+            this.presence(settings.presenceBuilder)
+            this.intents = Intents(settings.intentsBuilder!!)
+        }
     }
 
     /** This function sets up all of the bot's default event listeners. **/

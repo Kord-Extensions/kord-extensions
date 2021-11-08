@@ -19,6 +19,7 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.IntChoiceBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -39,16 +40,16 @@ private const val DEFAULT_RADIX = 10
 public
 class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
-    choices: Map<String, Int>,
-    override var validator: Validator<Int> = null
-) : ChoiceConverter<Int>(choices) {
+    choices: Map<String, Long>,
+    override var validator: Validator<Long> = null
+) : ChoiceConverter<Long>(choices) {
     override val signatureTypeString: String = "converters.number.signatureType"
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
-            this.parsed = arg.toInt(radix)
+            this.parsed = arg.toLong(radix)
         } catch (e: NumberFormatException) {
             val errorString = if (radix == DEFAULT_RADIX) {
                 context.translate("converters.number.error.invalid.defaultBase", replacements = arrayOf(arg))
@@ -68,4 +69,11 @@ class NumberChoiceConverter(
 
             this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
         }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.IntOptionValue)?.value ?: return false
+        this.parsed = optionValue
+
+        return true
+    }
 }

@@ -1,4 +1,4 @@
-@file:OptIn(KordPreview::class)
+@file:OptIn(KordPreview::class, ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.test.bot
 
@@ -25,6 +25,7 @@ import dev.kord.core.behavior.reply
 import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.rest.builder.message.create.embed
 import mu.KotlinLogging
+import kotlin.time.ExperimentalTime
 
 // They're IDs
 @Suppress("UnderscoresInNumericLiterals")
@@ -77,10 +78,23 @@ class TestExtension : Extension() {
         val message by message("target", "Target message")
     }
 
+    class UserArgs : Arguments() {
+        val user by user("target", "Target user")
+    }
+
     override suspend fun setup() {
         event<GuildCreateEvent> {
             action {
                 logger.info { "Guild created: ${event.guild.name} (${event.guild.id.asString})" }
+            }
+        }
+
+        publicSlashCommand(::UserArgs) {
+            name = "slap"
+            description = "Slap someone!"
+
+            action {
+                respond { content = "*slaps ${arguments.user.mention}*" }
             }
         }
 
@@ -89,7 +103,7 @@ class TestExtension : Extension() {
 
             check {
                 failIf("This message command only supports non-webhook, non-interaction messages.") {
-                    event.interaction.messages?.values?.firstOrNull()?.author == null
+                    event.interaction.messages.values.firstOrNull()?.author == null
                 }
             }
 
@@ -111,7 +125,7 @@ class TestExtension : Extension() {
 
             check {
                 failIf("That's me, you can't make me ping myself!") {
-                    event.interaction.users?.values?.firstOrNull()?.id == kord.selfId
+                    event.interaction.users.values.firstOrNull()?.id == kord.selfId
                 }
             }
 

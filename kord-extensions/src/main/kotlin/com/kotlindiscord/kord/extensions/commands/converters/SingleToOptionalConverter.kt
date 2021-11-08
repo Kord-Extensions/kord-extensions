@@ -4,6 +4,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
@@ -59,5 +60,15 @@ public class SingleToOptionalConverter<T : Any>(
         option.required = false
 
         return option
+    }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val result = singleConverter.parseOption(context, option)
+
+        if (result) {
+            this.parsed = singleConverter.parsed
+        }
+
+        return result
     }
 }

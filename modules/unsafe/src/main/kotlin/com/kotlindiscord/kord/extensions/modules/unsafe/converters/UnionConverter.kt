@@ -4,6 +4,7 @@
     ConverterToMulti::class,
     ConverterToOptional::class
 )
+@file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.converters
 
@@ -16,6 +17,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import org.koin.core.component.inject
@@ -177,6 +179,107 @@ public class UnionConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        for (converter in converters) {
+            @Suppress("TooGenericExceptionCaught")
+            when (converter) {
+                is SingleConverter<*> -> try {
+                    val result: Boolean = converter.parseOption(context, option)
+
+                    if (result) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
+
+                        return true
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is DefaultingConverter<*> -> try {
+                    val result: Boolean = converter.parseOption(context, option)
+
+                    if (result) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
+
+                        return true
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is OptionalConverter<*> -> try {
+                    val result: Boolean = converter.parseOption(context, option)
+
+                    if (result && converter.parsed != null) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed!!
+
+                        return true
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is MultiConverter<*> -> throw DiscordRelayedException(
+                    context.translate(
+                        "converters.union.error.unknownConverterType",
+                        replacements = arrayOf(converter)
+                    )
+                )
+
+                is CoalescingConverter<*> -> try {
+                    val result: Boolean = converter.parseOption(context, option)
+
+                    if (result) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
+
+                        return true
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is DefaultingCoalescingConverter<*> -> try {
+                    val result: Boolean = converter.parseOption(context, option)
+
+                    if (result) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed
+
+                        return true
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                is OptionalCoalescingConverter<*> -> try {
+                    val result: Boolean = converter.parseOption(context, option)
+
+                    if (result && converter.parsed != null) {
+                        converter.parseSuccess = true
+                        this.parsed = converter.parsed!!
+
+                        return result
+                    }
+                } catch (t: Throwable) {
+                    if (shouldThrow) throw t
+                }
+
+                else -> throw DiscordRelayedException(
+                    context.translate(
+                        "converters.union.error.unknownConverterType",
+                        replacements = arrayOf(converter)
+                    )
+                )
+            }
+        }
+
+        return false
+    }
 }
 
 /**

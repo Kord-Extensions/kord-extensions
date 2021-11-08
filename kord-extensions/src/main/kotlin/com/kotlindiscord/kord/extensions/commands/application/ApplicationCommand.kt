@@ -176,7 +176,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      * @param checks Checks to apply to this command.
      */
     public open fun check(vararg checks: Check<E>) {
-        checks.forEach { checkList.add(it) }
+        checkList.addAll(checks)
     }
 
     /**

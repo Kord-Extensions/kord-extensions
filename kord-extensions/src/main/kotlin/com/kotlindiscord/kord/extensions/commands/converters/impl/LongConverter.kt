@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.IntChoiceBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -56,4 +57,11 @@ public class LongConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         IntChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.IntOptionValue)?.value ?: return false
+        this.parsed = optionValue.toLong()
+
+        return true
+    }
 }

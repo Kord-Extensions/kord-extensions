@@ -9,6 +9,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
@@ -130,7 +131,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public abstract override suspend fun call(event: ChatInputCommandInteractionCreateEvent)
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
-    public abstract suspend fun respondText(context: C, message: String)
+    public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
 
     /**
      * Override this to implement the final calling logic, including creating the command context and running with it.
@@ -271,9 +272,13 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 context.translate("commands.error.user", null)
             }
 
-            respondText(context, errorMessage)
+            respondText(context, errorMessage, FailureReason.ExecutionError(t))
         } else {
-            respondText(context, context.translate("commands.error.user", null))
+            respondText(
+                context,
+                context.translate("commands.error.user", null),
+                FailureReason.ExecutionError(t)
+            )
         }
     }
 }

@@ -2,8 +2,8 @@ package com.kotlindiscord.kord.extensions.utils.deltas
 
 import dev.kord.common.entity.UserFlags
 import dev.kord.common.entity.optional.Optional
+import dev.kord.core.entity.Icon
 import dev.kord.core.entity.Member
-import dev.kord.core.entity.User
 import kotlinx.datetime.Instant
 import kotlin.contracts.contract
 
@@ -18,7 +18,7 @@ import kotlin.contracts.contract
  */
 @Suppress("UndocumentedPublicProperty")
 public class MemberDelta(
-    avatar: Optional<User.Avatar>,
+    avatar: Optional<Icon?>,
     username: Optional<String>,
     discriminator: Optional<String>,
     flags: Optional<UserFlags?>,

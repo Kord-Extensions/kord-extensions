@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.utils.env
 import org.koin.core.logger.Level
 
 suspend fun main() {
-    val bot = ExtensibleBot(env("TOKEN")!!) {
+    val bot = ExtensibleBot(env("TOKEN")) {
         koinLogLevel = Level.DEBUG
 
         chatCommands {

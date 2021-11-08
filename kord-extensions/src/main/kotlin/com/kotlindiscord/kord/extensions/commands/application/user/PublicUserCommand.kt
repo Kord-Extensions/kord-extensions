@@ -8,14 +8,15 @@ import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandFailed
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandSucceededEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
-import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicUserResponseBuilder =
-    (suspend PublicInteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
 
 /** Public user command. **/
 public class PublicUserCommand(
@@ -45,7 +46,9 @@ public class PublicUserCommand(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { content = e.reason }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
@@ -67,7 +70,7 @@ public class PublicUserCommand(
         try {
             checkBotPerms(context)
         } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
             emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
             return
@@ -76,18 +79,25 @@ public class PublicUserCommand(
         try {
             body(context)
         } catch (t: Throwable) {
+            emitEventAsync(PublicUserCommandFailedWithExceptionEvent(this, event, t))
+
             if (t is DiscordRelayedException) {
-                respondText(context, t.reason)
+                respondText(context, t.reason, FailureReason.RelayedFailure(t))
+
+                return
             }
 
-            emitEventAsync(PublicUserCommandFailedWithExceptionEvent(this, event, t))
             handleError(context, t)
         }
 
         emitEventAsync(PublicUserCommandSucceededEvent(this, event))
     }
 
-    override suspend fun respondText(context: PublicUserCommandContext, message: String) {
-        context.respond { content = message }
+    override suspend fun respondText(
+        context: PublicUserCommandContext,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
+        context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
 }

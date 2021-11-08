@@ -3,14 +3,16 @@
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.components.callbacks.EphemeralMenuCallback
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import dev.kord.rest.builder.message.create.EphemeralInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialEphemeralSelectMenuResponseBuilder =
-    (suspend EphemeralInteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing an ephemeral-only select (dropdown) menu. **/
 public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<EphemeralSelectMenuContext>(timeoutTask) {
@@ -22,6 +24,22 @@ public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<Ephemeral
         initialResponseBuilder = body
     }
 
+    override fun useCallback(id: String) {
+        action {
+            val callback: EphemeralMenuCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            callback.call(this)
+        }
+
+        check {
+            val callback: EphemeralMenuCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            passed = callback.runChecks(event)
+        }
+    }
+
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
         super.call(event)
 
@@ -30,7 +48,9 @@ public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<Ephemeral
                 return@withLock
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { content = e.reason }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             return@withLock
         }
@@ -39,9 +59,9 @@ public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<Ephemeral
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
         } else {
             if (!deferredAck) {
-                event.interaction.acknowledgeEphemeralDeferredMessageUpdate()
-            } else {
                 event.interaction.acknowledgeEphemeral()
+            } else {
+                event.interaction.acknowledgeEphemeralDeferredMessageUpdate()
             }
         }
 
@@ -53,15 +73,26 @@ public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<Ephemeral
 
         try {
             checkBotPerms(context)
+        } catch (e: DiscordRelayedException) {
+            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+
+            return@withLock
+        }
+
+        try {
             body(context)
         } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.RelayedFailure(e))
         } catch (t: Throwable) {
             handleError(context, t, this)
         }
     }
 
-    override suspend fun respondText(context: EphemeralSelectMenuContext, message: String) {
-        context.respond { content = message }
+    override suspend fun respondText(
+        context: EphemeralSelectMenuContext,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
+        context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
 }

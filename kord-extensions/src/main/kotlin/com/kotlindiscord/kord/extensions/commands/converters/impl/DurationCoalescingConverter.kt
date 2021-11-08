@@ -5,6 +5,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -13,10 +14,12 @@ import com.kotlindiscord.kord.extensions.parsers.DurationParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.datetime.*
 import mu.KotlinLogging
+import kotlin.time.ExperimentalTime
 
 /**
  * Argument converter for Kotlin [DateTimePeriod] arguments. You can apply these to an `Instant` using `plus` and a
@@ -36,7 +39,7 @@ import mu.KotlinLogging
         "shouldThrow: Boolean = false"
     ],
 )
-@OptIn(KordPreview::class)
+@OptIn(KordPreview::class, ExperimentalTime::class)
 public class DurationCoalescingConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,
@@ -47,10 +50,27 @@ public class DurationCoalescingConverter(
     private val logger = KotlinLogging.logger {}
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
-        val durations: MutableList<String> = mutableListOf<String>()
-        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords").split(",")
+        // Check if it's a discord-formatted timestamp first
+        val timestamp =
+            (named?.getOrNull(0) ?: parser?.peekNext()?.data)?.let { TimestampConverter.parseFromString(it) }
+        if (timestamp != null) {
+            val result = (timestamp.instant - Clock.System.now()).toDateTimePeriod()
 
-        var skipNext: Boolean = false
+            checkPositive(context, result, positiveOnly)
+
+            this.parsed = result
+
+            return 1
+        }
+
+        val durations = mutableListOf<String>()
+
+        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
+            .split(",")
+            .toMutableList()
+            .apply { remove(EMPTY_VALUE_STRING) }
+
+        var skipNext = false
 
         val args: List<String> = named ?: parser?.run {
             val tokens: MutableList<String> = mutableListOf()
@@ -120,14 +140,7 @@ public class DurationCoalescingConverter(
                 context.getLocale()
             )
 
-            if (positiveOnly) {
-                val now: Instant = Clock.System.now()
-                val applied: Instant = now.plus(result, TimeZone.UTC)
-
-                if (now > applied) {
-                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
-                }
-            }
+            checkPositive(context, result, positiveOnly)
 
             parsed = result
         } catch (e: InvalidTimeUnitException) {
@@ -138,9 +151,6 @@ public class DurationCoalescingConverter(
 
         return durations.size
     }
-
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     private suspend fun throwIfNecessary(
         e: Exception,
@@ -163,5 +173,49 @@ public class DurationCoalescingConverter(
         }
     } else {
         logger.debug(e) { "Error thrown during duration parsing" }
+    }
+
+    private suspend inline fun checkPositive(context: CommandContext, result: DateTimePeriod, positiveOnly: Boolean) {
+        if (positiveOnly) {
+            val now: Instant = Clock.System.now()
+            val applied: Instant = now.plus(result, TimeZone.UTC)
+
+            if (now > applied) {
+                throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+            }
+        }
+    }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+
+        try {
+            val result: DateTimePeriod = DurationParser.parse(optionValue, context.getLocale())
+
+            if (positiveOnly) {
+                val now: Instant = Clock.System.now()
+                val applied: Instant = now.plus(result, TimeZone.UTC)
+
+                if (now > applied) {
+                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+                }
+            }
+
+            parsed = result
+        } catch (e: InvalidTimeUnitException) {
+            val message: String = context.translate(
+                "converters.duration.error.invalidUnit",
+                replacements = arrayOf(e.unit)
+            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+
+            throw DiscordRelayedException(message)
+        } catch (e: DurationParserException) {
+            throw DiscordRelayedException(e.error)
+        }
+
+        return true
     }
 }

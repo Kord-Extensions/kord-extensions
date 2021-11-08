@@ -6,6 +6,7 @@ import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -19,6 +20,7 @@ import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.respond
@@ -53,6 +55,9 @@ public open class ChatCommand<T : Arguments>(
 ) : Command(extension), KoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
+
+    /** Bot settings object. **/
+    public val settings: ExtensibleBotBuilder by inject()
 
     /** Message command registry. **/
     public val registry: ChatCommandRegistry by inject()
@@ -264,15 +269,19 @@ public open class ChatCommand<T : Arguments>(
             check(context)
 
             if (!context.passed) {
-                val message = context.message
+                val message = context.getTranslatedMessage()
 
                 if (message != null && sendMessage) {
-                    event.message.respond(
-                        translationsProvider.translate(
-                            "checks.responseTemplate",
-                            replacements = arrayOf(message)
+                    event.message.respond {
+                        settings.failureResponseBuilder(
+                            this,
+                            message,
+
+                            FailureReason.ProvidedCheckFailure(
+                                DiscordRelayedException(message, context.errorResponseKey)
+                            )
                         )
-                    )
+                    }
                 }
 
                 return false
@@ -289,12 +298,16 @@ public open class ChatCommand<T : Arguments>(
                 val message = context.message
 
                 if (message != null && sendMessage) {
-                    event.message.respond(
-                        translationsProvider.translate(
-                            "checks.responseTemplate",
-                            replacements = arrayOf(message)
+                    event.message.respond {
+                        settings.failureResponseBuilder(
+                            this,
+                            message,
+
+                            FailureReason.ProvidedCheckFailure(
+                                DiscordRelayedException(message, context.errorResponseKey)
+                            )
                         )
-                    )
+                    }
                 }
 
                 return false
@@ -310,12 +323,16 @@ public open class ChatCommand<T : Arguments>(
                 val message = context.message
 
                 if (message != null && sendMessage) {
-                    event.message.respond(
-                        translationsProvider.translate(
-                            "checks.responseTemplate",
-                            replacements = arrayOf(message)
+                    event.message.respond {
+                        settings.failureResponseBuilder(
+                            this,
+                            message,
+
+                            FailureReason.ProvidedCheckFailure(
+                                DiscordRelayedException(message, context.errorResponseKey)
+                            )
                         )
-                    )
+                    }
                 }
 
                 return false
@@ -392,7 +409,10 @@ public open class ChatCommand<T : Arguments>(
             }
         } catch (e: DiscordRelayedException) {
             emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
-            event.message.respond(e.reason)
+
+            event.message.respond {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             return@withLock
         }
@@ -430,7 +450,10 @@ public open class ChatCommand<T : Arguments>(
         try {
             checkBotPerms(context)
         } catch (e: DiscordRelayedException) {
-            event.message.respond(e.reason)
+            event.message.respond {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+            }
+
             emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
 
             return@withLock
@@ -441,7 +464,10 @@ public open class ChatCommand<T : Arguments>(
                 val parsedArgs = registry.parser.parse(this.arguments!!, context)
                 context.populateArgs(parsedArgs)
             } catch (e: ArgumentParsingException) {
-                event.message.respond(e.reason)
+                event.message.respond {
+                    settings.failureResponseBuilder(this, e.reason, FailureReason.ArgumentParsingFailure(e))
+                }
+
                 emitEventAsync(ChatCommandFailedParsingEvent(this, event, e))
 
                 return@withLock
@@ -451,11 +477,15 @@ public open class ChatCommand<T : Arguments>(
         try {
             this.body(context)
         } catch (t: Throwable) {
-            if (t is DiscordRelayedException) {
-                event.message.respond(t.reason)
-            }
-
             emitEventAsync(ChatCommandFailedWithExceptionEvent(this, event, t))
+
+            if (t is DiscordRelayedException) {
+                event.message.respond {
+                    settings.failureResponseBuilder(this, t.reason, FailureReason.RelayedFailure(t))
+                }
+
+                return@withLock
+            }
 
             if (sentry.enabled) {
                 logger.trace { "Submitting error to sentry." }
@@ -495,27 +525,41 @@ public open class ChatCommand<T : Arguments>(
                 if (extension.bot.extensions.containsKey("sentry")) {
                     val prefix = registry.getPrefix(event)
 
-                    event.message.respond(
-                        context.translate(
-                            "commands.error.user.sentry.message",
-                            null,
-                            replacements = arrayOf(
-                                prefix,
-                                sentryId
-                            )
+                    event.message.respond {
+                        settings.failureResponseBuilder(
+                            this,
+
+                            context.translate(
+                                "commands.error.user.sentry.message",
+                                null,
+                                replacements = arrayOf(
+                                    prefix,
+                                    sentryId
+                                )
+                            ),
+
+                            FailureReason.ExecutionError(t)
                         )
-                    )
+                    }
                 } else {
-                    event.message.respond(
-                        context.translate("commands.error.user", null)
-                    )
+                    event.message.respond {
+                        settings.failureResponseBuilder(
+                            this,
+                            context.translate("commands.error.user", null),
+                            FailureReason.ExecutionError(t)
+                        )
+                    }
                 }
             } else {
                 logger.error(t) { "Error during execution of $name command ($event)" }
 
-                event.message.respond(
-                    context.translate("commands.error.user", null)
-                )
+                event.message.respond {
+                    settings.failureResponseBuilder(
+                        this,
+                        context.translate("commands.error.user", null),
+                        FailureReason.ExecutionError(t)
+                    )
+                }
             }
 
             return@withLock

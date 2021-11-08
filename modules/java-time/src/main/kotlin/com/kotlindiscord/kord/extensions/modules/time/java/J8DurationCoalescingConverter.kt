@@ -12,10 +12,12 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import mu.KotlinLogging
@@ -45,7 +47,11 @@ public class J8DurationCoalescingConverter(
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val durations = mutableListOf<String>()
-        val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
+
+        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
+            .split(",")
+            .toMutableList()
+            .apply { remove(EMPTY_VALUE_STRING) }
 
         var skipNext = false
 
@@ -137,9 +143,6 @@ public class J8DurationCoalescingConverter(
         return durations.size
     }
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
-
     private suspend fun throwIfNecessary(
         e: Exception,
         context: CommandContext,
@@ -161,6 +164,40 @@ public class J8DurationCoalescingConverter(
         }
     } else {
         logger.debug(e) { "Error thrown during duration parsing" }
+    }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val arg = (option as? OptionValue.StringOptionValue)?.value ?: return false
+
+        try {
+            val result = J8DurationParser.parse(arg, context.getLocale())
+
+            if (positiveOnly) {
+                val normalized = result.clone()
+
+                normalized.normalize(LocalDateTime.now())
+
+                if (!normalized.isPositive()) {
+                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+                }
+            }
+
+            parsed = result
+        } catch (e: InvalidTimeUnitException) {
+            val message = context.translate(
+                "converters.duration.error.invalidUnit",
+                replacements = arrayOf(e.unit)
+            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+
+            throw DiscordRelayedException(message)
+        } catch (e: DurationParserException) {
+            throw DiscordRelayedException(e.error)
+        }
+
+        return true
     }
 }
 

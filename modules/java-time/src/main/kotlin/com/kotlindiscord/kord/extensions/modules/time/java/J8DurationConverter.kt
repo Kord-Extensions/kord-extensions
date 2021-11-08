@@ -16,6 +16,7 @@ import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import java.time.Duration
@@ -71,6 +72,37 @@ public class J8DurationConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val arg = (option as? OptionValue.StringOptionValue)?.value ?: return false
+
+        try {
+            val result = J8DurationParser.parse(arg, context.getLocale())
+
+            if (positiveOnly) {
+                val normalized = result.clone()
+
+                normalized.normalize(LocalDateTime.now())
+
+                if (!normalized.isPositive()) {
+                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+                }
+            }
+
+            parsed = result
+        } catch (e: InvalidTimeUnitException) {
+            val message = context.translate(
+                "converters.duration.error.invalidUnit",
+                replacements = arrayOf(e.unit)
+            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+
+            throw DiscordRelayedException(message)
+        } catch (e: DurationParserException) {
+            throw DiscordRelayedException(e.error)
+        }
+
+        return true
+    }
 }
 
 /**

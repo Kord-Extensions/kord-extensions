@@ -43,10 +43,14 @@ jobs:
           token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Gradle (Build)
-        run: sh gradlew build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
 
       - name: Gradle (Publish)
-        run: sh gradlew -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }} publish
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }}
 
       - name: Create release description
         run: kotlin .github/tag.main.kts

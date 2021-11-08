@@ -23,6 +23,7 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -189,12 +190,20 @@ public class MessageConverter(
         }
     }
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
-
     private suspend fun errorNoMessage(arg: String, context: CommandContext): Nothing {
         throw DiscordRelayedException(
             context.translate("converters.message.error.missing", replacements = arrayOf(arg))
         )
+    }
+
+    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+
+        parsed = findMessage(optionValue, context)
+
+        return true
     }
 }

@@ -10,13 +10,16 @@ import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
+import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
@@ -30,13 +33,14 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.builder.kord.KordBuilder
-import dev.kord.core.builder.kord.Shards
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
+import dev.kord.gateway.builder.Shards
+import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.context.startKoin
@@ -53,6 +57,9 @@ internal typealias LocaleResolver = suspend (
     user: UserBehavior?
 ) -> Locale?
 
+internal typealias FailureResponseBuilder =
+    suspend (MessageCreateBuilder).(message: String, type: FailureReason<*>) -> Unit
+
 /**
  * Builder class used for configuring and creating an [ExtensibleBot].
  *
@@ -66,6 +73,11 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
+
+    /**
+     * @suppress Builder that shouldn't be set directly by the user.
+     */
+    public var failureResponseBuilder: FailureResponseBuilder = { message, _ -> content = message }
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
@@ -131,6 +143,15 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public suspend fun components(builder: suspend ComponentsBuilder.() -> Unit) {
         builder(componentsBuilder)
+    }
+
+    /**
+     * Register the message builder responsible for formatting error responses, which are sent to users during command
+     * and component body execution.
+     */
+    @BotBuilderDSL
+    public fun errorResponse(builder: FailureResponseBuilder) {
+        failureResponseBuilder = builder
     }
 
     /**
@@ -291,6 +312,7 @@ public open class ExtensibleBotBuilder {
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
         loadModule { single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class }
+        loadModule { single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class }
 
         loadModule {
             single {
@@ -322,15 +344,15 @@ public open class ExtensibleBotBuilder {
         loadModule { single { bot } bind ExtensibleBot::class }
 
         hooksBuilder.runCreated(bot)
+
+        bot.setup()
+
+        hooksBuilder.runSetup(bot)
         hooksBuilder.runBeforeExtensionsAdded(bot)
 
-        bot.addDefaultExtensions()
         extensionsBuilder.extensions.forEach { bot.addExtension(it) }
 
         hooksBuilder.runAfterExtensionsAdded(bot)
-
-        bot.setup()
-        hooksBuilder.runSetup(bot)
 
         return bot
     }
@@ -382,8 +404,19 @@ public open class ExtensibleBotBuilder {
     /** Builder used to configure the bot's components settings. **/
     @BotBuilderDSL
     public class ComponentsBuilder {
+        /** @suppress Component callback registry builder. **/
+        public var callbackRegistryBuilder: () -> ComponentCallbackRegistry = ::ComponentCallbackRegistry
+
         /** @suppress Component registry builder. **/
         public var registryBuilder: () -> ComponentRegistry = ::ComponentRegistry
+
+        /**
+         * Register a builder (usually a constructor) returning a [ComponentCallbackRegistry] instance, which may
+         * be useful if you need to register a custom subclass.
+         */
+        public fun callbackRegistry(builder: () -> ComponentCallbackRegistry) {
+            callbackRegistryBuilder = builder
+        }
 
         /**
          * Register a builder (usually a constructor) returning a [ComponentRegistry] instance, which may be useful
@@ -818,7 +851,7 @@ public open class ExtensibleBotBuilder {
          * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
          */
         @JvmName("fillLongs")  // These are the same for the JVM
-        public fun fill(ids: Collection<Long>): Boolean? =
+        public fun fill(ids: Collection<ULong>): Boolean? =
             guildsToFill?.addAll(ids.map { Snowflake(it) })
 
         /**
@@ -843,7 +876,7 @@ public open class ExtensibleBotBuilder {
          *
          * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
          */
-        public fun fill(id: Long): Boolean? =
+        public fun fill(id: ULong): Boolean? =
             guildsToFill?.add(Snowflake(id))
 
         /**
@@ -954,7 +987,7 @@ public open class ExtensibleBotBuilder {
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var applicationCommandRegistryBuilder: () -> ApplicationCommandRegistry =
-            { ApplicationCommandRegistry() }
+            { DefaultApplicationCommandRegistry() }
 
         /**
          * List of message command checks.
@@ -978,18 +1011,18 @@ public open class ExtensibleBotBuilder {
         public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: Snowflake) {
+        public fun defaultGuild(id: Snowflake?) {
             defaultGuild = id
         }
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: Long) {
-            defaultGuild = Snowflake(id)
+        public fun defaultGuild(id: ULong?) {
+            defaultGuild = id?.let { Snowflake(it) }
         }
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: String) {
-            defaultGuild = Snowflake(id)
+        public fun defaultGuild(id: String?) {
+            defaultGuild = id?.let { Snowflake(it) }
         }
 
         /**

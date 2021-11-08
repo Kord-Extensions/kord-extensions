@@ -18,6 +18,19 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
     /** Translations provider. **/
     public val translations: TranslationsProvider by inject()
 
+    /**
+     * Translation key to use for the error response message, if not the default.
+     *
+     * The string pointed to by this variable must accept one replacement value, which is the error message itself.
+     *
+     * **Note:** This *must* be a translation key. A bare string may not work, as the error response function uses
+     * the replacement functionality of the translations system.
+     */
+    public var errorResponseKey: String = "checks.responseTemplate"
+
+    /** Translation bundle used by [translate] by default and the error response translation, if not the default. **/
+    public var defaultBundle: String? = null
+
     /** Human-readable message for the user, if any. **/
     public var message: String? = null
 
@@ -132,7 +145,11 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
     }
 
     /** Quick access to translate strings using this check context's [locale]. **/
-    public fun translate(key: String, bundle: String? = null, replacements: Array<Any?> = arrayOf()): String =
+    public fun translate(
+        key: String,
+        bundle: String? = defaultBundle,
+        replacements: Array<Any?> = arrayOf()
+    ): String =
         translations.translate(key, locale, bundleName = bundle, replacements = replacements)
 
     /**
@@ -142,8 +159,16 @@ public class CheckContext<out T : Event>(public val event: T, public val locale:
     public fun throwIfFailedWithMessage() {
         if (passed.not() && message != null) {
             throw DiscordRelayedException(
-                translate("checks.responseTemplate", replacements = arrayOf(message))
+                getTranslatedMessage()!!
             )
         }
     }
+
+    /** Get the translated check failure message, if the check has failed and a message was set. **/
+    public fun getTranslatedMessage(): String? =
+        if (passed.not() && message != null) {
+            translate(errorResponseKey, defaultBundle, replacements = arrayOf(message))
+        } else {
+            null
+        }
 }

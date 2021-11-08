@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.contexts.UnsafeSlashComm
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialSlashCommandResponse
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -75,7 +76,9 @@ public class UnsafeSlashCommand<A : Arguments>(
                 return
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondPublic { content = e.reason }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
 
@@ -106,7 +109,7 @@ public class UnsafeSlashCommand<A : Arguments>(
         try {
             checkBotPerms(context)
         } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
             emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
 
             return
@@ -119,7 +122,7 @@ public class UnsafeSlashCommand<A : Arguments>(
                 context.populateArgs(args)
             }
         } catch (e: ArgumentParsingException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.ArgumentParsingFailure(e))
             emitEventAsync(UnsafeSlashCommandFailedParsingEvent(this, event, e))
 
             return
@@ -129,7 +132,7 @@ public class UnsafeSlashCommand<A : Arguments>(
             body(context)
         } catch (t: Throwable) {
             if (t is DiscordRelayedException) {
-                respondText(context, t.reason)
+                respondText(context, t.reason, FailureReason.RelayedFailure(t))
             }
 
             emitEventAsync(UnsafeSlashCommandFailedWithExceptionEvent(this, event, t))
@@ -141,10 +144,19 @@ public class UnsafeSlashCommand<A : Arguments>(
         emitEventAsync(UnsafeSlashCommandSucceededEvent(this, event))
     }
 
-    override suspend fun respondText(context: UnsafeSlashCommandContext<A>, message: String) {
+    override suspend fun respondText(
+        context: UnsafeSlashCommandContext<A>,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
         when (context.interactionResponse) {
-            is PublicInteractionResponseBehavior -> context.respondPublic { content = message }
-            is EphemeralInteractionResponseBehavior -> context.respondEphemeral { content = message }
+            is PublicInteractionResponseBehavior -> context.respondPublic {
+                settings.failureResponseBuilder(this, message, failureType)
+            }
+
+            is EphemeralInteractionResponseBehavior -> context.respondEphemeral {
+                settings.failureResponseBuilder(this, message, failureType)
+            }
         }
     }
 }

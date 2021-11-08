@@ -34,7 +34,7 @@ public class SentryExtension : Extension() {
     public val botSettings: ExtensibleBotBuilder by inject()
 
     /** Sentry extension settings, from the bot builder. **/
-    public val settings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
+    public val sentrySettings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
         botSettings.extensionsBuilder.sentryExtensionBuilder
 
     @Suppress("StringLiteralDuplication")  // It's the command name
@@ -79,7 +79,7 @@ public class SentryExtension : Extension() {
                     if (!sentryAdapter.hasEventId(arguments.id)) {
                         message.respond(
                             translate("extensions.sentry.error.invalidId"),
-                            pingInReply = settings.pingInReply
+                            pingInReply = sentrySettings.pingInReply
                         )
 
                         return@action

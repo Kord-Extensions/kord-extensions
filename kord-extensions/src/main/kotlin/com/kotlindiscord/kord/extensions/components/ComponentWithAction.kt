@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.components
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
@@ -14,6 +15,7 @@ import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.inject
 
 /**
  * Abstract class representing a component with both an ID and executable action.
@@ -28,6 +30,9 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     public open val timeoutTask: Task?
 ) : ComponentWithID(), Lockable {
     private val logger: KLogger = KotlinLogging.logger {}
+
+    /** Quick access to the callback registry. **/
+    protected val callbackRegistry: ComponentCallbackRegistry by inject()
 
     /** Whether to use a deferred ack, which will prevent Discord's "Thinking..." message. **/
     public open var deferredAck: Boolean = true
@@ -44,6 +49,9 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
 
     /** Component body, to be called when the component is interacted with. **/
     public lateinit var body: suspend C.() -> Unit
+
+    /** Use a registered callback instead of a provided [action]. Not evaluated until execution happens. **/
+    public abstract fun useCallback(id: String)
 
     /** Call this to supply a component [body], to be called when the component is interacted with. **/
     public fun action(action: suspend C.() -> Unit) {

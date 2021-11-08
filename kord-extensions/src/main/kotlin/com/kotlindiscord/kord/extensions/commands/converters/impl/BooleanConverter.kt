@@ -9,6 +9,7 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.parseBoolean
 import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.BooleanBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -40,4 +41,11 @@ public class BooleanConverter(
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         BooleanBuilder(arg.displayName, arg.description).apply { required = true }
+
+    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+        val optionValue = (option as? OptionValue.BooleanOptionValue)?.value ?: return false
+        this.parsed = optionValue
+
+        return true
+    }
 }

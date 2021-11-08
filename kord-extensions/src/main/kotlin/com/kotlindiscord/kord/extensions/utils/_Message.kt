@@ -22,8 +22,6 @@ import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.coroutines.*
 import mu.KotlinLogging
-import org.apache.commons.text.StringTokenizer
-import org.apache.commons.text.matcher.StringMatcherFactory
 
 private val logger = KotlinLogging.logger {}
 
@@ -170,29 +168,6 @@ public val MessageData.authorId: Snowflake
 /** Whether the message author is a bot. **/
 public val MessageData.authorIsBot: Boolean
     get() = author.bot.discordBoolean
-
-/**
- * Takes a [Message] object and parses it using a [StringTokenizer].
- *
- * This tokenizes a string, splitting it into an array of strings using whitespace as a
- * delimiter, but supporting quoted tokens (strings between quotes are treated as individual
- * arguments).
- *
- * This is used to create an array of arguments for a command's input.
- *
- * @param delimiters An array of delimiters to split with, if not just a space
- * @param quotes An array of quote characters, if you need something other than just `'` and `"`
- *
- * @return An array of parsed arguments
- */
-public fun Message.parse(
-    delimiters: CharArray = charArrayOf(' '),
-    quotes: CharArray = charArrayOf('\'', '"')
-): Array<String> =
-    StringTokenizer(content)
-        .setDelimiterMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(delimiters.joinToString()))
-        .setQuoteMatcher(StringMatcherFactory.INSTANCE.charSetMatcher(quotes.joinToString()))
-        .tokenArray
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.

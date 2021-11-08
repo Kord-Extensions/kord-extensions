@@ -3,15 +3,17 @@
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.components.callbacks.PublicMenuCallback
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicSelectMenuResponseBuilder =
-    (suspend PublicInteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only select (dropdown) menu. **/
 public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelectMenuContext>(timeoutTask) {
@@ -23,6 +25,22 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
         initialResponseBuilder = body
     }
 
+    override fun useCallback(id: String) {
+        action {
+            val callback: PublicMenuCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            callback.call(this)
+        }
+
+        check {
+            val callback: PublicMenuCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            passed = callback.runChecks(event)
+        }
+    }
+
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
         super.call(event)
 
@@ -31,7 +49,9 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
                 return@withLock
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { content = e.reason }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             return@withLock
         }
@@ -54,15 +74,26 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
 
         try {
             checkBotPerms(context)
+        } catch (e: DiscordRelayedException) {
+            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+
+            return@withLock
+        }
+
+        try {
             body(context)
         } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.RelayedFailure(e))
         } catch (t: Throwable) {
             handleError(context, t, this)
         }
     }
 
-    override suspend fun respondText(context: PublicSelectMenuContext, message: String) {
-        context.respond { content = message }
+    override suspend fun respondText(
+        context: PublicSelectMenuContext,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
+        context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
 }

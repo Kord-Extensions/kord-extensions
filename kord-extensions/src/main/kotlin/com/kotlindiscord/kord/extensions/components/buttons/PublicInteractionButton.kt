@@ -3,6 +3,8 @@
 package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.components.callbacks.PublicButtonCallback
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.ButtonStyle
@@ -10,10 +12,10 @@ import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
-import dev.kord.rest.builder.message.create.PublicInteractionResponseCreateBuilder
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicButtonResponseBuilder =
-    (suspend PublicInteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
+    (suspend InteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only button component. **/
 public open class PublicInteractionButton(
@@ -28,6 +30,22 @@ public open class PublicInteractionButton(
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialPublicButtonResponseBuilder) {
         initialResponseBuilder = body
+    }
+
+    override fun useCallback(id: String) {
+        action {
+            val callback: PublicButtonCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            callback.call(this)
+        }
+
+        check {
+            val callback: PublicButtonCallback = callbackRegistry.getOfTypeOrNull(id)
+                ?: error("Callback \"$id\" is either missing or is the wrong type.")
+
+            passed = callback.runChecks(event)
+        }
     }
 
     override fun apply(builder: ActionRowBuilder) {
@@ -45,7 +63,9 @@ public open class PublicInteractionButton(
                 return@withLock
             }
         } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral { content = e.reason }
+            event.interaction.respondEphemeral {
+                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+            }
 
             return@withLock
         }
@@ -68,9 +88,16 @@ public open class PublicInteractionButton(
 
         try {
             checkBotPerms(context)
+        } catch (e: DiscordRelayedException) {
+            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+
+            return@withLock
+        }
+
+        try {
             body(context)
         } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason)
+            respondText(context, e.reason, FailureReason.RelayedFailure(e))
         } catch (t: Throwable) {
             handleError(context, t, this)
         }
@@ -84,7 +111,11 @@ public open class PublicInteractionButton(
         }
     }
 
-    override suspend fun respondText(context: PublicInteractionButtonContext, message: String) {
-        context.respond { content = message }
+    override suspend fun respondText(
+        context: PublicInteractionButtonContext,
+        message: String,
+        failureType: FailureReason<*>
+    ) {
+        context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
 }

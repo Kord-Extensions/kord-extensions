@@ -8,6 +8,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
+import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
@@ -47,7 +48,7 @@ public abstract class UserCommand<C : UserCommandContext<*>>(
     public abstract override suspend fun call(event: UserCommandInteractionCreateEvent)
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
-    public abstract suspend fun respondText(context: C, message: String)
+    public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(DiscordRelayedException::class)
@@ -175,9 +176,13 @@ public abstract class UserCommand<C : UserCommandContext<*>>(
                 context.translate("commands.error.user", null)
             }
 
-            respondText(context, errorMessage)
+            respondText(context, errorMessage, FailureReason.ExecutionError(t))
         } else {
-            respondText(context, context.translate("commands.error.user", null))
+            respondText(
+                context,
+                context.translate("commands.error.user", null),
+                FailureReason.ExecutionError(t)
+            )
         }
     }
 }
