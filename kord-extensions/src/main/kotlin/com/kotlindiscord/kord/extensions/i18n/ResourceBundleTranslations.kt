@@ -18,7 +18,7 @@ import java.util.*
  * With a `bundleName` of `null`, this means the bundle will be named `translations.kordex.strings`, which will resolve
  * to `translations/kordex/strings${_locale ?: ""}.properties` in the resources.
  */
-public class ResourceBundleTranslations(
+public open class ResourceBundleTranslations(
     defaultLocaleBuilder: () -> Locale
 ) : TranslationsProvider(defaultLocaleBuilder) {
     private val logger: KLogger = KotlinLogging.logger(
@@ -41,8 +41,11 @@ public class ResourceBundleTranslations(
         }
     }
 
+    /**
+     * Retrieves a pair of the [ResourceBundle] and the overide resource bundle for [bundleName] in locale.
+     */
     @Throws(MissingResourceException::class)
-    private fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
+    protected open fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
         var bundle = "translations." + (bundleName ?: KORDEX_KEY)
 
         if (bundle.count { it == '.' } < 2) {
