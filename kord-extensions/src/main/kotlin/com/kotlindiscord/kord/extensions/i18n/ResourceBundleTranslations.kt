@@ -18,7 +18,7 @@ import java.util.*
  * With a `bundleName` of `null`, this means the bundle will be named `translations.kordex.strings`, which will resolve
  * to `translations/kordex/strings${_locale ?: ""}.properties` in the resources.
  */
-public class ResourceBundleTranslations(
+public open class ResourceBundleTranslations(
     defaultLocaleBuilder: () -> Locale
 ) : TranslationsProvider(defaultLocaleBuilder) {
     private val logger: KLogger = KotlinLogging.logger(
