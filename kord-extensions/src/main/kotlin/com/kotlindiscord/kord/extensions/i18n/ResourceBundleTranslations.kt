@@ -42,7 +42,7 @@ public open class ResourceBundleTranslations(
     }
 
     @Throws(MissingResourceException::class)
-    private fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
+    protected open fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
         var bundle = "translations." + (bundleName ?: KORDEX_KEY)
 
         if (bundle.count { it == '.' } < 2) {
