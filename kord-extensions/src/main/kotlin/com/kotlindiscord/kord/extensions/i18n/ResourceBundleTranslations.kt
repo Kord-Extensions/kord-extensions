@@ -41,14 +41,16 @@ public open class ResourceBundleTranslations(
         }
     }
 
-
     /**
      * Loads the [ResourceBundle] called [bundle] for [locale].
-     * 
+     *
      * @see ResourceBundle.getBundle
      */
-    protected open fun getResourceBundle(bundle: String, locale: Locale, control: ResourceBundle.Control): ResourceBundle =
-        ResourceBundle.getBundle(bundle, locale, Control)
+    protected open fun getResourceBundle(
+        bundle: String,
+        locale: Locale,
+        control: ResourceBundle.Control
+    ): ResourceBundle = ResourceBundle.getBundle(bundle, locale, Control)
 
     /**
      * Retrieves a pair of the [ResourceBundle] and the overide resource bundle for [bundleName] in locale.
@@ -80,7 +82,6 @@ public open class ResourceBundleTranslations(
 
         return bundles[bundleKey]!! to overrideBundles[bundleKey]
     }
-
 
     @Throws(MissingResourceException::class)
     public override fun get(key: String, locale: Locale, bundleName: String?): String {
