@@ -41,6 +41,15 @@ public open class ResourceBundleTranslations(
         }
     }
 
+
+    /**
+     * Loads the [ResourceBundle] called [bundle] for [locale].
+     * 
+     * @see ResourceBundle.getBundle
+     */
+    protected open fun getResourceBundle(bundle: String, locale: Locale, control: ResourceBundle.Control): ResourceBundle =
+        ResourceBundle.getBundle(bundle, locale, Control)
+
     /**
      * Retrieves a pair of the [ResourceBundle] and the overide resource bundle for [bundleName] in locale.
      */
@@ -56,14 +65,14 @@ public open class ResourceBundleTranslations(
 
         if (bundles[bundleKey] == null) {
             logger.trace { "Getting bundle $bundle for locale $locale" }
-            bundles[bundleKey] = ResourceBundle.getBundle(bundle, locale, Control)
+            bundles[bundleKey] = getResourceBundle(bundle, locale, Control)
 
             try {
                 val overrideBundle = bundle + "_override"
 
                 logger.trace { "Getting override bundle $overrideBundle for locale $locale" }
 
-                overrideBundles[bundleKey] = ResourceBundle.getBundle(overrideBundle, locale, Control)
+                overrideBundles[bundleKey] = getResourceBundle(overrideBundle, locale, Control)
             } catch (e: MissingResourceException) {
                 logger.trace { "No override bundle found." }
             }
@@ -71,6 +80,7 @@ public open class ResourceBundleTranslations(
 
         return bundles[bundleKey]!! to overrideBundles[bundleKey]
     }
+
 
     @Throws(MissingResourceException::class)
     public override fun get(key: String, locale: Locale, bundleName: String?): String {
