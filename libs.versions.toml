@@ -6,6 +6,7 @@ kotlin = "1.5.30"  # Note: Plugin versions must be updated in the settings.gradl
 commons-validator = "1.7"
 groovy = "3.0.8"
 icu4j = "69.1"
+jsoup = "1.14.3"
 junit = "5.6.2"
 koin = "3.0.2"
 konf = "0.23.0"
@@ -27,6 +28,7 @@ commons-validator = { module = "commons-validator:commons-validator", version.re
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
 icu4j = { module = "com.ibm.icu:icu4j", version.ref = "icu4j" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

@@ -25,11 +25,19 @@ import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.rest.builder.message.create.embed
+import io.ktor.client.*
+import io.ktor.client.features.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import org.jsoup.Jsoup
 import kotlin.time.ExperimentalTime
+
+/** The maximum number of redirects to attempt to follow for a URL. **/
+const val MAX_REDIRECTS = 5
 
 /** Phishing extension, responsible for checking for phishing domains in messages. **/
 class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() {
@@ -41,6 +49,10 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
     private val scheduler = Scheduler()
     private var checkTask: Task? = null
+
+    private val httpClient = HttpClient {
+        followRedirects = false
+    }
 
     override suspend fun setup() {
         domainCache.addAll(api.getAllDomains())
@@ -88,8 +100,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
             action {
                 for (message in targetMessages) {
-                    val domains = parseDomains(message.content.lowercase())
-                    val matches = domains intersect domainCache
+                    val matches = parseDomains(message.content)
 
                     respond {
                         content = if (matches.isNotEmpty()) {
@@ -125,8 +136,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     }
 
     internal suspend fun handleMessage(message: Message) {
-        val domains = parseDomains(message.content.lowercase())
-        val matches = domains intersect domainCache
+        val matches = parseDomains(message.content)
 
         if (matches.isNotEmpty()) {
             logger.debug { "Found a message with ${matches.size} phishing domains." }
@@ -256,24 +266,91 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         }
     }
 
-    internal fun parseDomains(content: String): MutableSet<String> {
+    internal suspend fun parseDomains(content: String): MutableSet<String> {
         val domains: MutableSet<String> = mutableSetOf()
 
         for (match in settings.urlRegex.findAll(content)) {
-            var found = match.groups[1]!!.value.trim('/')
+            val found = match.groups[1]!!.value.trim('/')
+            var domain = found
 
-            if ("/" in found) {
-                found = found.split("/", limit = 2).first()
+            if ("/" in domain) {
+                domain = domain
+                    .split("/", limit = 2)
+                    .first()
+                    .lowercase()
             }
 
-            found = found.filter { it.isLetterOrDigit() || it in "-+&@#%?=~_|!:,.;" }
+            domain = domain.filter { it.isLetterOrDigit() || it in "-+&@#%?=~_|!:,.;" }
 
-            domains.add(found)
+            if (domain in domainCache) {
+                domains.add(domain)
+            } else {
+                val result = followRedirects(match.value)
+                    ?.split("://")
+                    ?.lastOrNull()
+                    ?.split("/")
+                    ?.first()
+                    ?.lowercase()
+
+                if (result in domainCache) {
+                    domains.add(result!!)
+                }
+            }
         }
 
         logger.debug { "Found ${domains.size} domains: ${domains.joinToString()}" }
 
         return domains
+    }
+
+    internal suspend fun followRedirects(url: String, count: Int = 0): String? {
+        if (count >= MAX_REDIRECTS) {
+            logger.warn { "Maximum redirect count reached for URL: $url" }
+
+            return url
+        }
+
+        val response: HttpResponse = try {
+            httpClient.get(url)
+        } catch (e: RedirectResponseException) {
+            e.response
+        }
+
+        if (response.headers.contains("Location")) {
+            val newUrl = response.headers["Location"]!!
+
+            if (url.trim('/') == newUrl.trim('/')) {
+                return null  // Results in the same URL
+            }
+
+            return followRedirects(newUrl, count + 1)
+        } else {
+            val soup = Jsoup.connect(url).get()
+
+            val element = soup.head()
+                .getElementsByAttributeValue("http-equiv", "refresh")
+                .first()
+
+            if (element != null) {
+                val content = element.attributes().get("content")
+
+                val newUrl = content
+                    .split(";")
+                    .firstOrNull { it.startsWith("URL=", true) }
+                    ?.split("=", limit = 2)
+                    ?.lastOrNull()
+
+                if (newUrl != null) {
+                    if (url.trim('/') == newUrl.trim('/')) {
+                        return null  // Results in the same URL
+                    }
+
+                    return followRedirects(newUrl, count + 1)
+                }
+            }
+        }
+
+        return url
     }
 
     override suspend fun unload() {

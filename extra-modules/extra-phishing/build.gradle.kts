@@ -17,6 +17,8 @@ repositories {
 dependencies {
     detektPlugins(libs.detekt)
 
+    implementation(libs.jsoup)
+
     implementation(libs.logging)
     implementation(libs.kotlin.stdlib)
     implementation(libs.ktor.logging)
