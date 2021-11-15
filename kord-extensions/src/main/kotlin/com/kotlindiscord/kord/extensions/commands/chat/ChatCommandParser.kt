@@ -71,7 +71,7 @@ public open class ChatCommandParser : KoinComponent {
         val argumentsObj = builder.invoke()
         argumentsObj.validate()
 
-        val parser = context.parser!!
+        val parser = context.parser
 
         logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 

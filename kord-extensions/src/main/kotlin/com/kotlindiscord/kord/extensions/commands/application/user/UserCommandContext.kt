@@ -15,5 +15,5 @@ public abstract class UserCommandContext<C : UserCommandContext<C>>(
     public override val command: UserCommand<C>
 ) : ApplicationCommandContext(event, command) {
     /** Messages that this message command is being executed against. **/
-    public val targetUsers: Collection<User> by lazy { event.interaction.users?.values ?: listOf() }
+    public val targetUsers: Collection<User> by lazy { event.interaction.users.values }
 }

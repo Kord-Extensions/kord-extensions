@@ -181,7 +181,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
     /** Register multiple slash commands. **/
     public open suspend fun <T : ApplicationCommand<*>> registerAll(vararg commands: T): List<T> =
-        commands.mapNotNull {
+        commands.sortedByDescending { it.name }.mapNotNull {
             try {
                 when (it) {
                     is SlashCommand<*, *> -> register(it) as T
@@ -413,7 +413,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                 }
             }
         } else {
-            command.subCommands.forEach {
+            command.subCommands.sortedByDescending { it.name }.forEach {
                 val args = it.arguments?.invoke()?.args?.map { arg ->
                     val converter = arg.converter
 
@@ -442,9 +442,9 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                 }
             }
 
-            command.groups.values.forEach { group ->
+            command.groups.values.sortedByDescending { it.name }.forEach { group ->
                 this.group(group.name, group.getTranslatedDescription(locale)) {
-                    group.subCommands.forEach {
+                    group.subCommands.sortedByDescending { it.name }.forEach {
                         val args = it.arguments?.invoke()?.args?.map { arg ->
                             val converter = arg.converter
 
