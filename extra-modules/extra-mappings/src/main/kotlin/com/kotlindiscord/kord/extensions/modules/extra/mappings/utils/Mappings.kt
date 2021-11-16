@@ -4,10 +4,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings.utils
 
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.linkie.mapIfNotNullOrNotEquals
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.linkie.stringPairs
-import me.shedaniel.linkie.MappingsContainer
-import me.shedaniel.linkie.Namespace
-import me.shedaniel.linkie.getMappedDesc
-import me.shedaniel.linkie.optimumName
+import me.shedaniel.linkie.*
 import me.shedaniel.linkie.utils.*
 
 private const val PAGE_SIZE = 3
@@ -15,10 +12,9 @@ private const val PAGE_SIZE = 3
 /** Given a set of result classes, format them into a list of pages for the paginator. **/
 fun classesToPages(
     namespace: Namespace,
-    queryResult: QueryResult<MappingsContainer, ClassResultList>
+    classes: List<Class>
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
-    val classes = queryResult.map { it.map { inner -> inner.value }.toList() }.value
 
     classes.chunked(PAGE_SIZE).forEach { result ->
         val shortPage = result.joinToString("\n\n") { clazz ->
@@ -110,14 +106,19 @@ fun classesToPages(
     return pages
 }
 
+fun classesToPages(
+    namespace: Namespace,
+    queryResult: QueryResult<MappingsContainer, ClassResultList>
+) =
+    classesToPages(namespace, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
+
 /** Given a set of result fields, format them into a list of pages for the paginator. **/
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    queryResult: QueryResult<MappingsContainer, FieldResultList>
+    fields: List<Pair<Class, Field>>
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
-    val fields = queryResult.map { it.map { inner -> inner.value }.toList() }.value
 
     fields.chunked(PAGE_SIZE).forEach { result ->
         val shortPage = result.joinToString("\n\n") {
@@ -237,14 +238,20 @@ fun fieldsToPages(
     return pages
 }
 
+fun fieldsToPages(
+    namespace: Namespace,
+    mappings: MappingsContainer,
+    queryResult: QueryResult<MappingsContainer, FieldResultList>
+) =
+    fieldsToPages(namespace, mappings, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
+
 /** Given a set of result methods, format them into a list of pages for the paginator. **/
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    queryResult: QueryResult<MappingsContainer, MethodResultList>
+    methods: List<Pair<Class, Method>>
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
-    val methods = queryResult.map { it.map { inner -> inner.value }.toList() }.value
 
     methods.chunked(PAGE_SIZE).forEach { result ->
         val shortPage = result.joinToString("\n\n") {
@@ -349,6 +356,87 @@ fun methodsToPages(
         }
 
         pages.add(Pair(shortPage, longPage))
+    }
+
+    return pages
+}
+
+fun methodsToPages(
+    namespace: Namespace,
+    mappings: MappingsContainer,
+    queryResult: QueryResult<MappingsContainer, MethodResultList>
+) = methodsToPages(namespace, mappings, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
+
+fun classMatchesToPages(
+    matches: List<Pair<Class, Class>>
+): List<String> {
+    val pages = mutableListOf<String>()
+
+    for (match in matches) {
+        val (input, output) = match
+
+        val inputName = input.mappedName ?: input.optimumName
+        val outputName = output.mappedName ?: output.optimumName
+
+        val text = "**Class:** `$inputName` -> `$outputName`"
+
+        pages.add(text)
+    }
+
+    return pages
+}
+
+fun fieldMatchesToPages(
+    outputContainer: MappingsContainer,
+    matches: List<Pair<Field, Field>>
+): List<String> {
+    val pages = mutableListOf<String>()
+
+    for (match in matches.chunked(PAGE_SIZE)) {
+        val page = match.joinToString("\n\n") {
+            val (input, output) = it
+            val mappedDesc = output.getMappedDesc(outputContainer)
+
+            val inputName = input.mappedName ?: input.optimumName
+            val outputName = output.mappedName ?: output.optimumName
+
+            var text = "**Field:** `$inputName` -> `$outputName`"
+
+            if (Namespaces[outputContainer.namespace].supportsFieldDescription()) {
+                text += "\n"
+                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
+            }
+
+            text
+        }
+        pages.add(page)
+    }
+
+    return pages
+}
+
+fun methodMatchesToPages(
+    outputContainer: MappingsContainer,
+    matches: List<Pair<Method, Method>>
+): List<String> {
+    val pages = mutableListOf<String>()
+
+    for (match in matches.chunked(PAGE_SIZE)) {
+        val page = match.joinToString("\n\n") {
+            val (input, output) = it
+            val mappedDesc = output.getMappedDesc(outputContainer)
+
+            val inputName = input.mappedName ?: input.optimumName
+            val outputName = output.mappedName ?: output.optimumName
+
+            var text = "**Method:** `$inputName` -> `$outputName`"
+
+            text += "\n" +
+                "**Description:** `$mappedDesc`"
+
+            text
+        }
+        pages.add(page)
     }
 
     return pages
