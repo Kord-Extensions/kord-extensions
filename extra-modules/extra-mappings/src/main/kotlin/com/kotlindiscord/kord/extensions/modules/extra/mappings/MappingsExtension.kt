@@ -1035,13 +1035,23 @@ class MappingsExtension : Extension() {
                 }
 
                 val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
-                    Namespaces[arguments.inputNamespace]
+                    if (arguments.inputNamespace == "hashed-mojang") {
+                        // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
+                        MojangHashedNamespace
+                    } else {
+                        Namespaces[arguments.inputNamespace]
+                    }
                 } else {
                     returnError("Input namespace is not enabled or available")
                     return@withContext
                 }
                 val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
-                    Namespaces[arguments.outputNamespace]
+                    if (arguments.inputNamespace == "hashed-mojang") {
+                        // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
+                        MojangHashedNamespace
+                    } else {
+                        Namespaces[arguments.outputNamespace]
+                    }
                 } else {
                     returnError("Output namespace is not enabled or available")
                     return@withContext
@@ -1209,13 +1219,23 @@ class MappingsExtension : Extension() {
                 }
 
                 val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
-                    Namespaces[arguments.inputNamespace]
+                    if (arguments.inputNamespace == "hashed-mojang") {
+                        // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
+                        MojangHashedNamespace
+                    } else {
+                        Namespaces[arguments.inputNamespace]
+                    }
                 } else {
                     returnError("Input namespace is not enabled or available")
                     return@withContext
                 }
                 val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
-                    Namespaces[arguments.outputNamespace]
+                    if (arguments.inputNamespace == "hashed-mojang") {
+                        // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
+                        MojangHashedNamespace
+                    } else {
+                        Namespaces[arguments.outputNamespace]
+                    }
                 } else {
                     returnError("Output namespace is not enabled or available")
                     return@withContext
@@ -1384,13 +1404,23 @@ class MappingsExtension : Extension() {
                 }
 
                 val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
-                    Namespaces[arguments.inputNamespace]
+                                        if (arguments.inputNamespace == "hashed-mojang") {
+                        // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
+                        MojangHashedNamespace
+                    } else {
+                        Namespaces[arguments.inputNamespace]
+                    }
                 } else {
                     returnError("Input namespace is not enabled or available")
                     return@withContext
                 }
                 val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
-                    Namespaces[arguments.outputNamespace]
+                    if (arguments.inputNamespace == "hashed-mojang") {
+                        // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
+                        MojangHashedNamespace
+                    } else {
+                        Namespaces[arguments.outputNamespace]
+                    }
                 } else {
                     returnError("Output namespace is not enabled or available")
                     return@withContext
