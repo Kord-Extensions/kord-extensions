@@ -24,7 +24,10 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
-import me.shedaniel.linkie.*
+import me.shedaniel.linkie.LinkieConfig
+import me.shedaniel.linkie.MappingsProvider
+import me.shedaniel.linkie.Namespace
+import me.shedaniel.linkie.Namespaces
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.MappingsQuery
 import me.shedaniel.linkie.utils.QueryContext
@@ -1031,7 +1034,7 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
                 val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
-                    if (arguments.inputNamespace == "hashed-mojang") {
+                    if (arguments.outputNamespace == "hashed-mojang") {
                         // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
                         MojangHashedNamespace
                     } else {
@@ -1215,7 +1218,7 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
                 val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
-                    if (arguments.inputNamespace == "hashed-mojang") {
+                    if (arguments.outputNamespace == "hashed-mojang") {
                         // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
                         MojangHashedNamespace
                     } else {
@@ -1286,7 +1289,7 @@ class MappingsExtension : Extension() {
                 @Suppress("TooGenericExceptionCaught")
                 val outputResults = outputQueries.mapValues {
                     try {
-                        MappingsQuery.queryClasses(
+                        val classes = MappingsQuery.queryClasses(
                             QueryContext(
                                 provider = outputProvider,
                                 searchKey = it.key.first.obfName.let { obf ->
@@ -1294,15 +1297,17 @@ class MappingsExtension : Extension() {
                                 }!!
                             )
                         )
-                            .value.first { clazz -> clazz.value.obfName == it.key.first.obfName }
-                            .value.fields.first { field -> field.obfName.let { obf ->
+                        val clazz = classes.value
+                            .first { clazz -> clazz.value.obfName == it.key.first.obfName }
+                            .value
+                        val field = clazz.fields.first { field -> field.obfName.let { obf ->
                                 obf.merged ?: obf.client ?: obf.server
                             } == it.value }
+                        clazz to field
                     } catch (e: NullPointerException) {
                         null
                     }
                 }
-                    .mapKeys { it.key.second }
                     .filter { it.value != null }
                     .map { it.key to it.value!! }
 
@@ -1400,7 +1405,7 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
                 val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
-                    if (arguments.inputNamespace == "hashed-mojang") {
+                    if (arguments.outputNamespace == "hashed-mojang") {
                         // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
                         MojangHashedNamespace
                     } else {
@@ -1471,7 +1476,7 @@ class MappingsExtension : Extension() {
                 @Suppress("TooGenericExceptionCaught")
                 val outputResults = outputQueries.mapValues {
                     try {
-                        MappingsQuery.queryClasses(
+                        val classes = MappingsQuery.queryClasses(
                             QueryContext(
                                 provider = outputProvider,
                                 searchKey = it.key.first.obfName.let { obf ->
@@ -1479,13 +1484,17 @@ class MappingsExtension : Extension() {
                                 }!!
                             )
                         )
-                            .value.first { clazz -> clazz.value.obfName == it.key.first.obfName }
-                            .value.getMethodByObfName(it.value)
+                        val clazz = classes.value
+                            .first { clazz -> clazz.value.obfName == it.key.first.obfName }
+                            .value
+                        val method = clazz.methods.first { method -> method.obfName.let { obf ->
+                            obf.merged ?: obf.client ?: obf.server
+                        } == it.value }
+                        clazz to method
                     } catch (e: NullPointerException) {
                         null
                     }
                 }
-                    .mapKeys { it.key.second }
                     .filter { it.value != null }
                     .map { it.key to it.value!! }
 
