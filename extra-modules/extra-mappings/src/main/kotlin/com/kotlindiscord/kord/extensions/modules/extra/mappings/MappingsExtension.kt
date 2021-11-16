@@ -92,7 +92,7 @@ class MappingsExtension : Extension() {
 
         val yarnChannels = YarnChannels.values().filter {
             it != YarnChannels.PATCHWORK || patchworkEnabled
-        }.joinToString(", ") { "`${it.str}`" }
+        }.joinToString(", ") { "`${it.readableName}`" }
 
         suspend fun <T : MappingArguments> slashCommand(
             parentName: String,
@@ -114,9 +114,9 @@ class MappingsExtension : Extension() {
 
                 action {
                     val channel = when (val args = this.arguments) {
-                        is HashedMojangArguments -> args.channel?.str
-                        is MojangArguments -> args.channel?.str
-                        is YarnArguments -> args.channel?.str
+                        is HashedMojangArguments -> args.channel?.readableName
+                        is MojangArguments -> args.channel?.readableName
+                        is YarnArguments -> args.channel?.readableName
                         else -> null
                     }
                     queryClasses(channel)
@@ -133,9 +133,9 @@ class MappingsExtension : Extension() {
 
                 action {
                     val channel = when (val args = this.arguments) {
-                        is HashedMojangArguments -> args.channel?.str
-                        is MojangArguments -> args.channel?.str
-                        is YarnArguments -> args.channel?.str
+                        is HashedMojangArguments -> args.channel?.readableName
+                        is MojangArguments -> args.channel?.readableName
+                        is YarnArguments -> args.channel?.readableName
                         else -> null
                     }
                     queryFields(channel)
@@ -152,9 +152,9 @@ class MappingsExtension : Extension() {
 
                 action {
                     val channel = when (val args = this.arguments) {
-                        is HashedMojangArguments -> args.channel?.str
-                        is MojangArguments -> args.channel?.str
-                        is YarnArguments -> args.channel?.str
+                        is HashedMojangArguments -> args.channel?.readableName
+                        is MojangArguments -> args.channel?.readableName
+                        is YarnArguments -> args.channel?.readableName
                         else -> null
                     }
                     queryMethods(channel)
@@ -280,7 +280,7 @@ class MappingsExtension : Extension() {
 
                         "**Default version:** $defaultVersion\n\n" +
 
-                        "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                        "**Channels:** " + Channels.values().joinToString(", ") { "`${it.readableName}`" } +
                         "\n" +
                         "**Commands:** `/mojang class`, `/mojang field`, `/mojang method`\n\n" +
 
@@ -347,7 +347,7 @@ class MappingsExtension : Extension() {
 
                         "**Default version:** $defaultVersion\n\n" +
 
-                        "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
+                        "**Channels:** " + Channels.values().joinToString(", ") { "`${it.readableName}`" } +
                         "\n" +
                         "**Commands:** `/hashed class`, `/hashed field`, `/hashed method`\n\n" +
 
@@ -409,13 +409,13 @@ class MappingsExtension : Extension() {
                 { YarnArguments(patchworkEnabled) }
             ) {
                 val defaultPatchworkVersion = if (patchworkEnabled) {
-                    YarnNamespace.getDefaultVersion { YarnChannels.PATCHWORK.str }
+                    YarnNamespace.getDefaultVersion { YarnChannels.PATCHWORK.readableName }
                 } else {
                     ""
                 }
 
                 val defaultVersion = YarnNamespace.getDefaultVersion()
-                val defaultSnapshotVersion = YarnNamespace.getDefaultVersion { YarnChannels.SNAPSHOT.str }
+                val defaultSnapshotVersion = YarnNamespace.getDefaultVersion { YarnChannels.SNAPSHOT.readableName }
                 val allVersions = YarnNamespace.getAllSortedVersions()
 
                 val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
