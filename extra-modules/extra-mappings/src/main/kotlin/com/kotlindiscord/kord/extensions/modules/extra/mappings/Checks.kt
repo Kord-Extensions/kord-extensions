@@ -6,7 +6,7 @@ import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.CategorizableChannel
 import dev.kord.core.entity.channel.GuildChannel
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KotlinLogging
 
 /**
@@ -26,7 +26,7 @@ import mu.KotlinLogging
  * @param allowed List of allowed category IDs
  * @param banned List of banned category IDs
  */
-suspend fun CheckContext<MessageCreateEvent>.allowedCategory(
+suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.allowedCategory(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
 ) {
@@ -100,7 +100,7 @@ suspend fun CheckContext<MessageCreateEvent>.allowedCategory(
  * @param allowed List of allowed channel IDs
  * @param banned List of banned channel IDs
  */
-suspend fun CheckContext<MessageCreateEvent>.allowedChannel(
+suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.allowedChannel(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
 ) {
@@ -157,7 +157,7 @@ suspend fun CheckContext<MessageCreateEvent>.allowedChannel(
  * @param allowed List of allowed guild IDs
  * @param banned List of banned guild IDs
  */
-suspend fun CheckContext<MessageCreateEvent>.allowedGuild(
+suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.allowedGuild(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
 ) {
