@@ -113,12 +113,7 @@ class MappingsExtension : Extension() {
                 check(categoryCheck, channelCheck, guildCheck)
 
                 action {
-                    val channel = when (val args = this.arguments) {
-                        is HashedMojangArguments -> args.channel?.readableName
-                        is MojangArguments -> args.channel?.readableName
-                        is YarnArguments -> args.channel?.readableName
-                        else -> null
-                    }
+                    val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
                     queryClasses(channel)
                 }
             }
@@ -132,12 +127,7 @@ class MappingsExtension : Extension() {
                 check(categoryCheck, channelCheck, guildCheck)
 
                 action {
-                    val channel = when (val args = this.arguments) {
-                        is HashedMojangArguments -> args.channel?.readableName
-                        is MojangArguments -> args.channel?.readableName
-                        is YarnArguments -> args.channel?.readableName
-                        else -> null
-                    }
+                    val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
                     queryFields(channel)
                 }
             }
@@ -151,12 +141,7 @@ class MappingsExtension : Extension() {
                 check(categoryCheck, channelCheck, guildCheck)
 
                 action {
-                    val channel = when (val args = this.arguments) {
-                        is HashedMojangArguments -> args.channel?.readableName
-                        is MojangArguments -> args.channel?.readableName
-                        is YarnArguments -> args.channel?.readableName
-                        else -> null
-                    }
+                    val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
                     queryMethods(channel)
                 }
             }
@@ -406,7 +391,7 @@ class MappingsExtension : Extension() {
                 "yarn",
                 "Yarn",
                 YarnNamespace,
-                { YarnArguments(patchworkEnabled) }
+                { if (patchworkEnabled) YarnWithPatchworkArguments() else YarnWithoutPatchworkArguments() }
             ) {
                 val defaultPatchworkVersion = if (patchworkEnabled) {
                     YarnNamespace.getDefaultVersion { YarnChannels.PATCHWORK.readableName }
