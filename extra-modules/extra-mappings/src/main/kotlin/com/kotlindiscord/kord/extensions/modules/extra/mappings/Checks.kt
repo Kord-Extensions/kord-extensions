@@ -6,27 +6,27 @@ import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.CategorizableChannel
 import dev.kord.core.entity.channel.GuildChannel
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KotlinLogging
 
 /**
- * Check ensuring that a message was sent within an allowed category, or not within a banned one.
+ * Check ensuring that a command was sent within an allowed category, or not within a banned one.
  *
  * Passes when:
- * * Message doesn't happen in a channel
- * * Message happens in a channel that can't be in a category (eg, DMs)
- * * Message happens in an allowed category
- * * If there are no allowed categories, message doesn't happen in a banned category
+ * * Command doesn't happen in a channel
+ * * Command happens in a channel that can't be in a category (eg, DMs)
+ * * Command happens in an allowed category
+ * * If there are no allowed categories, command doesn't happen in a banned category
  *
  * Fails when:
- * * Message happens outside of a category, when allowed categories are configured
- * * If there are allowed categories, message doesn't happen in an allowed category
- * * Message happens in a banned category
+ * * Command happens outside a category, when allowed categories are configured
+ * * If there are allowed categories, command doesn't happen in an allowed category
+ * * Command happens in a banned category
  *
  * @param allowed List of allowed category IDs
  * @param banned List of banned category IDs
  */
-suspend fun CheckContext<MessageCreateEvent>.allowedCategory(
+suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.allowedCategory(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
 ) {
@@ -46,7 +46,7 @@ suspend fun CheckContext<MessageCreateEvent>.allowedCategory(
 
         if (allowed.isNotEmpty()) {
             if (parent == null) {
-                logger.debug { "Failing: We have allowed categories, but the message was sent outside of a category" }
+                logger.debug { "Failing: We have allowed categories, but the command was sent outside of a category" }
 
                 fail()
             } else if (allowed.contains(parent.id)) {
@@ -61,7 +61,7 @@ suspend fun CheckContext<MessageCreateEvent>.allowedCategory(
         } else {
             if (parent == null) {
                 logger.trace {
-                    "Passing: We have no allowed categories, and the message was sent outside of a category"
+                    "Passing: We have no allowed categories, and the command was sent outside of a category"
                 }
 
                 pass()
@@ -85,22 +85,22 @@ suspend fun CheckContext<MessageCreateEvent>.allowedCategory(
 }
 
 /**
- * Check ensuring that a message was sent within an allowed channel, or not within a banned one.
+ * Check ensuring that a command was sent within an allowed channel, or not within a banned one.
  *
  * Passes when:
- * * Message doesn't happen in a channel
- * * Message happens in a channel that can't be in a guild (eg, DMs)
- * * Message happens in an allowed channel
- * * If there are no allowed channels, message doesn't happen in a banned channel
+ * * Command doesn't happen in a channel
+ * * Command happens in a channel that can't be in a guild (eg, DMs)
+ * * Command happens in an allowed channel
+ * * If there are no allowed channels, command doesn't happen in a banned channel
  *
  * Fails when:
- * * If there are allowed channels, message doesn't happen in an allowed channel
- * * Message happens in a banned channel
+ * * If there are allowed channels, command doesn't happen in an allowed channel
+ * * Command happens in a banned channel
  *
  * @param allowed List of allowed channel IDs
  * @param banned List of banned channel IDs
  */
-suspend fun CheckContext<MessageCreateEvent>.allowedChannel(
+suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.allowedChannel(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
 ) {
@@ -112,7 +112,7 @@ suspend fun CheckContext<MessageCreateEvent>.allowedChannel(
 
         pass()
     } else if (channel !is GuildChannel) {
-        logger.trace { "Passing: Message was sent privately" }
+        logger.trace { "Passing: Command was sent privately" }
 
         pass()  // It's a DM
     } else if (allowed.isNotEmpty()) {
@@ -143,21 +143,21 @@ suspend fun CheckContext<MessageCreateEvent>.allowedChannel(
 }
 
 /**
- * Check ensuring that a message was sent within an allowed guild, or not within a banned one.
+ * Check ensuring that a command was sent within an allowed guild, or not within a banned one.
  *
  * Passes when:
- * * Message doesn't happen in a guild
- * * Message happens in an allowed guild
- * * If there are no allowed guilds, message doesn't happen in a banned guild
+ * * Command doesn't happen in a guild
+ * * Command happens in an allowed guild
+ * * If there are no allowed guilds, command doesn't happen in a banned guild
  *
  * Fails when:
- * * If there are allowed guilds, message doesn't happen in an allowed guild
- * * Message happens in a banned guild
+ * * If there are allowed guilds, command doesn't happen in an allowed guild
+ * * Command happens in a banned guild
  *
  * @param allowed List of allowed guild IDs
  * @param banned List of banned guild IDs
  */
-suspend fun CheckContext<MessageCreateEvent>.allowedGuild(
+suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.allowedGuild(
     allowed: List<Snowflake>,
     banned: List<Snowflake>
 ) {
