@@ -5,6 +5,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings.utils
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.linkie.mapIfNotNullOrNotEquals
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.linkie.stringPairs
 import me.shedaniel.linkie.*
+import me.shedaniel.linkie.namespaces.MojangHashedNamespace
 import me.shedaniel.linkie.utils.*
 
 private const val PAGE_SIZE = 3
@@ -376,14 +377,14 @@ fun classMatchesToPages(
 ): List<String> {
     val pages = mutableListOf<String>()
 
-    for (match in matches) {
-        val (input, output) = match
+    for (match in matches.chunked(PAGE_SIZE)) {
+        val text = match.joinToString("\n\n") { (input, output) ->
 
-        val inputName = input.mappedName ?: input.optimumName
-        val outputName = output.mappedName ?: output.optimumName
+            val inputName = input.mappedName ?: input.optimumName
+            val outputName = output.mappedName ?: output.optimumName
 
-        val text = "**Class:** `$inputName` -> `$outputName`"
-
+            "**Class:** `$inputName` -> `$outputName`"
+        }
         pages.add(text)
     }
 
@@ -393,21 +394,31 @@ fun classMatchesToPages(
 /** Given a set of field mapping matches, format them into a list of pages for the paginator. **/
 fun fieldMatchesToPages(
     outputContainer: MappingsContainer,
-    matches: List<Pair<Field, Field>>
+    matches: List<Pair<Pair<Class, Field>, Pair<Class, Field>>>
 ): List<String> {
     val pages = mutableListOf<String>()
 
     for (match in matches.chunked(PAGE_SIZE)) {
         val page = match.joinToString("\n\n") {
-            val (input, output) = it
-            val mappedDesc = output.getMappedDesc(outputContainer)
+            val (inputClass, inputField) = it.first
+            val (outputClass, outputField) = it.second
+            val mappedDesc = outputField.getMappedDesc(outputContainer)
 
-            val inputName = input.mappedName ?: input.optimumName
-            val outputName = output.mappedName ?: output.optimumName
+            val inputName = inputField.mappedName ?: inputField.optimumName
+            val outputName = outputField.mappedName ?: outputField.optimumName
+            val inputClassName = inputClass.mappedName ?: inputClass.optimumName
+            val outputClassName = outputClass.mappedName ?: outputClass.optimumName
 
-            var text = "**Field:** `$inputName` -> `$outputName`"
+            var text = "**Field:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`"
 
-            if (Namespaces[outputContainer.namespace].supportsFieldDescription()) {
+            val namespace = if (outputContainer.namespace == "hashed-mojmap") {
+                // thanks linkie you're ruining everything
+                MojangHashedNamespace
+            } else {
+                Namespaces[outputContainer.namespace]
+            }
+
+            if (namespace.supportsFieldDescription()) {
                 text += "\n"
                 text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
             }
@@ -423,19 +434,22 @@ fun fieldMatchesToPages(
 /** Given a set of method mapping matches, format them into a list of pages for the paginator. **/
 fun methodMatchesToPages(
     outputContainer: MappingsContainer,
-    matches: List<Pair<Method, Method>>
+    matches: List<Pair<Pair<Class, Method>, Pair<Class, Method>>>
 ): List<String> {
     val pages = mutableListOf<String>()
 
     for (match in matches.chunked(PAGE_SIZE)) {
         val page = match.joinToString("\n\n") {
-            val (input, output) = it
-            val mappedDesc = output.getMappedDesc(outputContainer)
+            val (inputClass, inputMethod) = it.first
+            val (outputClass, outputMethod) = it.second
+            val mappedDesc = outputMethod.getMappedDesc(outputContainer)
 
-            val inputName = input.mappedName ?: input.optimumName
-            val outputName = output.mappedName ?: output.optimumName
+            val inputName = inputMethod.mappedName ?: inputMethod.optimumName
+            val outputName = outputMethod.mappedName ?: outputMethod.optimumName
+            val inputClassName = inputClass.mappedName ?: inputClass.optimumName
+            val outputClassName = outputClass.mappedName ?: outputClass.optimumName
 
-            var text = "**Method:** `$inputName` -> `$outputName`"
+            var text = "**Method:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`"
 
             text += "\n" +
                 "**Description:** `$mappedDesc`"
