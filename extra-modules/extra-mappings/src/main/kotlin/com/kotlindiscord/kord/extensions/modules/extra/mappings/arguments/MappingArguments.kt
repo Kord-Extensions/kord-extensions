@@ -5,6 +5,10 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.converters.optionalMappingsVersion
 import me.shedaniel.linkie.Namespace
 
+/**
+ * Arguments base for mapping commands.
+ */
+@Suppress("UndocumentedPublicProperty")
 open class MappingArguments(val namespace: Namespace) : Arguments() {
     val query by string("query", "Name to query mappings for")
 

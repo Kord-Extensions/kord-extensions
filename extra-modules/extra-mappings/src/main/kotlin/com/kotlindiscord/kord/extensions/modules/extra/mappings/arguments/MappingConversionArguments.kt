@@ -5,6 +5,10 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.converters.i
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 
+/**
+ * Arguments for class, field, and method conversion commands.
+ */
+@Suppress("UndocumentedPublicProperty")
 class MappingConversionArguments(enabledNamespaces: Map<String, String>) : Arguments() {
     val query by string("query", "Name to query mappings for")
     val inputNamespace by stringChoice("input", "The namespace to convert from", enabledNamespaces)

@@ -106,6 +106,7 @@ fun classesToPages(
     return pages
 }
 
+/** Given a set of result classes, format them into a list of pages for the paginator. **/
 fun classesToPages(
     namespace: Namespace,
     queryResult: QueryResult<MappingsContainer, ClassResultList>
@@ -238,6 +239,7 @@ fun fieldsToPages(
     return pages
 }
 
+/** Given a set of result fields, format them into a list of pages for the paginator. **/
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
@@ -361,12 +363,14 @@ fun methodsToPages(
     return pages
 }
 
+/** Given a set of result methods, format them into a list of pages for the paginator. **/
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
     queryResult: QueryResult<MappingsContainer, MethodResultList>
 ) = methodsToPages(namespace, mappings, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
 
+/** Given a set of class mapping matches, format them into a list of pages for the paginator. **/
 fun classMatchesToPages(
     matches: List<Pair<Class, Class>>
 ): List<String> {
@@ -386,6 +390,7 @@ fun classMatchesToPages(
     return pages
 }
 
+/** Given a set of field mapping matches, format them into a list of pages for the paginator. **/
 fun fieldMatchesToPages(
     outputContainer: MappingsContainer,
     matches: List<Pair<Field, Field>>
@@ -415,6 +420,7 @@ fun fieldMatchesToPages(
     return pages
 }
 
+/** Given a set of method mapping matches, format them into a list of pages for the paginator. **/
 fun methodMatchesToPages(
     outputContainer: MappingsContainer,
     matches: List<Pair<Method, Method>>

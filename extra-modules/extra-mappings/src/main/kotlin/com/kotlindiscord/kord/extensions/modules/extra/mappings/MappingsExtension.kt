@@ -183,9 +183,10 @@ class MappingsExtension : Extension() {
                         }
                     }.toMutableList()
 
+                    val versionSize = allVersions.size
                     pages.add(
                         0,
-                        "$friendlyName mappings are available for queries across **${allVersions.size}** versions.\n\n" +
+                        "$friendlyName mappings are available for queries across **$versionSize** versions.\n\n" +
 
                             "**Default version:** $defaultVersion\n" +
                             "**Commands:** `/$parentName class`, `/$parentName field`, `/$parentName method`\n\n" +
@@ -640,6 +641,7 @@ class MappingsExtension : Extension() {
                     data["query"] = query
                 }
 
+                @Suppress("TooGenericExceptionCaught")
                 val result = try {
                     MappingsQuery.queryClasses(
                         QueryContext(
@@ -778,6 +780,7 @@ class MappingsExtension : Extension() {
                     data["query"] = query
                 }
 
+                @Suppress("TooGenericExceptionCaught")
                 val result = try {
                     MappingsQuery.queryFields(
                         QueryContext(
@@ -916,6 +919,7 @@ class MappingsExtension : Extension() {
                     data["query"] = query
                 }
 
+                @Suppress("TooGenericExceptionCaught")
                 val result = try {
                     MappingsQuery.queryMethods(
                         QueryContext(
@@ -1080,6 +1084,7 @@ class MappingsExtension : Extension() {
                     data["query"] = query
                 }
 
+                @Suppress("TooGenericExceptionCaught")
                 val inputResult = try {
                     MappingsQuery.queryClasses(QueryContext(
                         provider = inputProvider,
@@ -1099,6 +1104,7 @@ class MappingsExtension : Extension() {
                     .filter { it.second != null }
                     .associate { it.first to it.second!! }
 
+                @Suppress("TooGenericExceptionCaught")
                 val outputResults = outputQueries.mapValues {
                     try {
                         MappingsQuery.queryClasses(
@@ -1136,7 +1142,10 @@ class MappingsExtension : Extension() {
                 val outputContainer = outputProvider.get()
 
                 val pagesObj = Pages("")
-                val pageTitle = "List of ${inputContainer.name} -> ${outputContainer.name} class mappings: ${inputContainer.version}"
+                val inputName = inputContainer.name
+                val outputName = outputContainer.name
+                val versionName = inputProvider.version ?: outputProvider.version ?: "Unknown"
+                val pageTitle = "List of $inputName -> $outputName class mappings: $versionName"
 
                 val shortPages = mutableListOf<String>()
 
@@ -1249,6 +1258,7 @@ class MappingsExtension : Extension() {
                     data["query"] = query
                 }
 
+                @Suppress("TooGenericExceptionCaught")
                 val inputResult = try {
                     MappingsQuery.queryFields(QueryContext(
                         provider = inputProvider,
@@ -1268,6 +1278,7 @@ class MappingsExtension : Extension() {
                     .filter { it.second != null }
                     .associate { it.first to it.second!! }
 
+                @Suppress("TooGenericExceptionCaught")
                 val outputResults = outputQueries.mapValues {
                     try {
                         MappingsQuery.queryClasses(
@@ -1306,7 +1317,10 @@ class MappingsExtension : Extension() {
                 }
 
                 val pagesObj = Pages("")
-                val pageTitle = "List of ${inputContainer.name} -> ${outputContainer.name} class mappings: ${inputContainer.version}"
+                val inputName = inputContainer.name
+                val outputName = outputContainer.name
+                val versionName = inputProvider.version ?: outputProvider.version ?: "Unknown"
+                val pageTitle = "List of $inputName -> $outputName field mappings: $versionName"
 
                 val shortPages = mutableListOf<String>()
 
@@ -1419,6 +1433,7 @@ class MappingsExtension : Extension() {
                     data["query"] = query
                 }
 
+                @Suppress("TooGenericExceptionCaught")
                 val inputResult = try {
                     MappingsQuery.queryMethods(QueryContext(
                         provider = inputProvider,
@@ -1438,6 +1453,7 @@ class MappingsExtension : Extension() {
                     .filter { it.second != null }
                     .associate { it.first to it.second!! }
 
+                @Suppress("TooGenericExceptionCaught")
                 val outputResults = outputQueries.mapValues {
                     try {
                         MappingsQuery.queryClasses(
@@ -1474,7 +1490,10 @@ class MappingsExtension : Extension() {
                 }
 
                 val pagesObj = Pages("")
-                val pageTitle = "List of ${inputContainer.name} -> ${outputContainer.name} class mappings: ${inputContainer.version}"
+                val inputName = inputContainer.name
+                val outputName = outputContainer.name
+                val versionName = inputProvider.version ?: outputProvider.version ?: "Unknown"
+                val pageTitle = "List of $inputName -> $outputName method mappings: $versionName"
 
                 val shortPages = mutableListOf<String>()
 
@@ -1517,7 +1536,10 @@ class MappingsExtension : Extension() {
 
     private suspend fun getTimeout() = builder.config.getTimeout()
 
-    private suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.customChecks(command: String, namespace: Namespace) {
+    private suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.customChecks(
+        command: String,
+        namespace: Namespace
+    ) {
         builder.commandChecks.forEach {
             it(command)()
 
