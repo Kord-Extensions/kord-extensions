@@ -1457,8 +1457,14 @@ class MappingsExtension : Extension() {
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
 
-                val inputContainer = inputProvider.get()
-                val outputContainer = outputProvider.get()
+                val inputContainer = inputProvider.getOrNull() ?: run {
+                    returnError("Input mapping is not available ($version probably isn't supported)")
+                    return@withContext
+                }
+                val outputContainer = outputProvider.getOrNull() ?: run {
+                    returnError("Output mapping is not available ($version probably isn't supported)")
+                    return@withContext
+                }
 
                 inputProvider.injectDefaultVersion(
                     inputNamespace.getDefaultProvider {
