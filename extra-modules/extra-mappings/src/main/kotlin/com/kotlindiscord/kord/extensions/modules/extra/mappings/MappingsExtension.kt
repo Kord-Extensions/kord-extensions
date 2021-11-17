@@ -24,10 +24,7 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
-import me.shedaniel.linkie.LinkieConfig
-import me.shedaniel.linkie.MappingsProvider
-import me.shedaniel.linkie.Namespace
-import me.shedaniel.linkie.Namespaces
+import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.MappingsQuery
 import me.shedaniel.linkie.utils.QueryContext
@@ -1052,7 +1049,18 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val version = arguments.version ?: newestCommonVersion
+                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
+                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+
+                // try the command-provided version first
+                val version = arguments.version
+                // then try the default version for the output namespace
+                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    // then try the default version for the input namespace
+                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    // and if all else fails, use the newest common version
+                    ?: newestCommonVersion
+
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
 
@@ -1236,7 +1244,18 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val version = arguments.version ?: newestCommonVersion
+                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
+                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+
+                // try the command-provided version first
+                val version = arguments.version
+                // then try the default version for the output namespace
+                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    // then try the default version for the input namespace
+                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    // and if all else fails, use the newest common version
+                    ?: newestCommonVersion
+
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
 
@@ -1423,9 +1442,29 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val version = arguments.version ?: newestCommonVersion
+                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
+                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+
+                // try the command-provided version first
+                val version = arguments.version
+                    // then try the default version for the output namespace
+                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    // then try the default version for the input namespace
+                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    // and if all else fails, use the newest common version
+                    ?: newestCommonVersion
+
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
+
+                val inputContainer = inputProvider.getOrNull() ?: run {
+                    returnError("Input mapping is not available ($version probably isn't supported)")
+                    return@withContext
+                }
+                val outputContainer = outputProvider.getOrNull() ?: run {
+                    returnError("Output mapping is not available ($version probably isn't supported)")
+                    return@withContext
+                }
 
                 inputProvider.injectDefaultVersion(
                     inputNamespace.getDefaultProvider {
@@ -1487,12 +1526,35 @@ class MappingsExtension : Extension() {
                         val clazz = classes.value
                             .first { clazz -> clazz.value.obfName == it.key.first.obfName }
                             .value
-                        val method = clazz.methods.first { method -> method.obfName.let { obf ->
-                            obf.merged ?: obf.client ?: obf.server
-                        } == it.value }
+                        val possibilities = clazz.methods.filter { method ->
+                            method.obfName.let { obf ->
+                                obf.merged ?: obf.client ?: obf.server
+                            } == it.value
+                        }
+                        val useMerged = it.key.second.obfName.isMerged()
+                        val useClient = it.key.second.obfName.client != null
+                        val useServer = it.key.second.obfName.server != null
+
+                        val inputMethodDesc = when {
+                            useMerged -> it.key.second.getObfMergedDesc(inputContainer)
+                            useClient -> it.key.second.getObfClientDesc(inputContainer)
+                            useServer -> it.key.second.getObfServerDesc(inputContainer)
+                            else -> throw NullPointerException() // escape try block
+                        }
+
+                        val method = possibilities.find { method ->
+                            val desc = when {
+                                useMerged -> method.getObfMergedDesc(outputContainer)
+                                useClient -> method.getObfClientDesc(outputContainer)
+                                useServer -> method.getObfServerDesc(outputContainer)
+                                else -> throw NullPointerException() // escape try block
+                            }
+                            desc == inputMethodDesc
+                        }!! // also escape try block
+
                         clazz to method
                     } catch (e: NullPointerException) {
-                        null
+                        null // just skip this one
                     }
                 }
                     .filter { it.value != null }
@@ -1503,9 +1565,6 @@ class MappingsExtension : Extension() {
 
                     data["resultCount"] = outputResults.size
                 }
-
-                val inputContainer = inputProvider.get()
-                val outputContainer = outputProvider.get()
 
                 pages = methodMatchesToPages(outputContainer, outputResults)
                 if (pages.isEmpty()) {
