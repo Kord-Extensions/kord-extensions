@@ -1049,7 +1049,18 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val version = arguments.version ?: newestCommonVersion
+                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
+                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+
+                // try the command-provided version first
+                val version = arguments.version
+                // then try the default version for the output namespace
+                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    // then try the default version for the input namespace
+                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    // and if all else fails, use the newest common version
+                    ?: newestCommonVersion
+
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
 
@@ -1233,7 +1244,18 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val version = arguments.version ?: newestCommonVersion
+                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
+                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+
+                // try the command-provided version first
+                val version = arguments.version
+                // then try the default version for the output namespace
+                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    // then try the default version for the input namespace
+                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    // and if all else fails, use the newest common version
+                    ?: newestCommonVersion
+
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
 
@@ -1420,7 +1442,18 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val version = arguments.version ?: newestCommonVersion
+                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
+                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+
+                // try the command-provided version first
+                val version = arguments.version
+                    // then try the default version for the output namespace
+                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    // then try the default version for the input namespace
+                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    // and if all else fails, use the newest common version
+                    ?: newestCommonVersion
+
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
 
