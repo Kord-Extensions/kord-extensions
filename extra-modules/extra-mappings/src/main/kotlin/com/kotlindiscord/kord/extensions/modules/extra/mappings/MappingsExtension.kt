@@ -719,7 +719,8 @@ class MappingsExtension : Extension() {
             }
 
             val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-            val pageTitle = "List of ${container.name} ${type}s: ${container.version}"
+            val plural = if (type == "class") "es" else "s"
+            val pageTitle = "List of ${container.name} $type$plural: ${container.version}"
 
             val shortPages = mutableListOf<String>()
             val longPages = mutableListOf<String>()
