@@ -50,7 +50,7 @@ class MappingsExtension : Extension() {
         enabledNamespaces.forEach {
             when (it) {
                 "legacy-yarn" -> namespaces.add(LegacyYarnNamespace)
-                "mcp" -> namespaces.add(MCPNamespace)
+                "mcp" -> namespaces.add(McpNamespaceReplacement)
                 "mojang" -> namespaces.add(MojangNamespace)
                 "hashed-mojang" -> namespaces.add(MojangHashedNamespace)
                 "plasma" -> namespaces.add(PlasmaNamespace)
@@ -230,7 +230,7 @@ class MappingsExtension : Extension() {
             slashCommand(
                 "mcp",
                 "MCP",
-                MCPNamespace,
+                McpNamespaceReplacement,
                 ::MCPArguments
             )
         }
@@ -532,7 +532,11 @@ class MappingsExtension : Extension() {
                     pages.add(
                         "Mapping conversions are available for any Minecraft version with multiple mapping sets.\n\n" +
 
-                        "**Default version:** the latest version between the two mapping versions\n\n" +
+                        "The version of the output is determined in this order:\n" +
+                        "\u2022 The version specified by the command, \n" +
+                        "\u2022 The default version of the output mapping set, \n" +
+                        "\u2022 The default version of the input mapping set, or\n" +
+                        "\u2022 The latest version supported by both mapping sets.\n\n" +
 
                         "For a list of available mappings, see the next page."
                     )
@@ -545,7 +549,7 @@ class MappingsExtension : Extension() {
                     )
 
                     val pagesObj = Pages()
-                    val pageTitle = "Mappings info: Convert"
+                    val pageTitle = "Mapping conversion info"
 
                     pages.forEach {
                         pagesObj.addPage(
@@ -1013,12 +1017,6 @@ class MappingsExtension : Extension() {
 
         newSingleThreadContext("/convertc: ${arguments.query}").use { context ->
             withContext(context) {
-                val returnError: suspend (String) -> Unit = { error ->
-                    respond {
-                        content = error
-                    }
-                }
-
                 val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
                     if (arguments.inputNamespace == "hashed-mojang") {
                         // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
@@ -1049,20 +1047,37 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
-                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+                val inputDefault = inputNamespace.getDefaultVersion {
+                    arguments.inputChannel ?: inputNamespace.getDefaultMappingChannel()
+                }
+                val outputDefault = outputNamespace.getDefaultVersion {
+                    arguments.outputChannel ?: outputNamespace.getDefaultMappingChannel()
+                }
 
                 // try the command-provided version first
                 val version = arguments.version
                 // then try the default version for the output namespace
-                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    ?: outputDefault.takeIf { it in inputNamespace.getAllSortedVersions() }
                     // then try the default version for the input namespace
-                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    ?: inputDefault.takeIf { it in outputNamespace.getAllSortedVersions() }
                     // and if all else fails, use the newest common version
                     ?: newestCommonVersion
 
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
+
+                val inputContainer = inputProvider.getOrNull() ?: run {
+                    returnError(
+                        "Input mapping is not available ($version probably isn't supported by ${inputNamespace.id})"
+                    )
+                    return@withContext
+                }
+                val outputContainer = outputProvider.getOrNull() ?: run {
+                    returnError(
+                        "Output mapping is not available ($version probably isn't supported by ${outputNamespace.id})"
+                    )
+                    return@withContext
+                }
 
                 inputProvider.injectDefaultVersion(
                     inputNamespace.getDefaultProvider {
@@ -1144,9 +1159,6 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val inputContainer = inputProvider.get()
-                val outputContainer = outputProvider.get()
-
                 val pagesObj = Pages("")
                 val inputName = inputContainer.name
                 val outputName = outputContainer.name
@@ -1208,12 +1220,6 @@ class MappingsExtension : Extension() {
 
         newSingleThreadContext("/convertf: ${arguments.query}").use { context ->
             withContext(context) {
-                val returnError: suspend (String) -> Unit = { error ->
-                    respond {
-                        content = error
-                    }
-                }
-
                 val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
                     if (arguments.inputNamespace == "hashed-mojang") {
                         // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
@@ -1244,20 +1250,37 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
-                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+                val inputDefault = inputNamespace.getDefaultVersion {
+                    arguments.inputChannel ?: inputNamespace.getDefaultMappingChannel()
+                }
+                val outputDefault = outputNamespace.getDefaultVersion {
+                    arguments.outputChannel ?: outputNamespace.getDefaultMappingChannel()
+                }
 
                 // try the command-provided version first
                 val version = arguments.version
                 // then try the default version for the output namespace
-                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    ?: outputDefault.takeIf { it in inputNamespace.getAllSortedVersions() }
                     // then try the default version for the input namespace
-                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    ?: inputDefault.takeIf { it in outputNamespace.getAllSortedVersions() }
                     // and if all else fails, use the newest common version
                     ?: newestCommonVersion
 
                 val inputProvider = inputNamespace.getProvider(version)
                 val outputProvider = outputNamespace.getProvider(version)
+
+                val inputContainer = inputProvider.getOrNull() ?: run {
+                    returnError(
+                        "Input mapping is not available ($version probably isn't supported by ${inputNamespace.id})"
+                    )
+                    return@withContext
+                }
+                val outputContainer = outputProvider.getOrNull() ?: run {
+                    returnError(
+                        "Output mapping is not available ($version probably isn't supported by ${outputNamespace.id})"
+                    )
+                    return@withContext
+                }
 
                 inputProvider.injectDefaultVersion(
                     inputNamespace.getDefaultProvider {
@@ -1336,9 +1359,6 @@ class MappingsExtension : Extension() {
                     data["resultCount"] = outputResults.size
                 }
 
-                val inputContainer = inputProvider.get()
-                val outputContainer = outputProvider.get()
-
                 pages = fieldMatchesToPages(outputContainer, outputResults)
                 if (pages.isEmpty()) {
                     returnError("No results found")
@@ -1406,14 +1426,8 @@ class MappingsExtension : Extension() {
 
         newSingleThreadContext("/convertm: ${arguments.query}").use { context ->
             withContext(context) {
-                val returnError: suspend (String) -> Unit = { error ->
-                    respond {
-                        content = error
-                    }
-                }
-
                 val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
-                                        if (arguments.inputNamespace == "hashed-mojang") {
+                    if (arguments.inputNamespace == "hashed-mojang") {
                         // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
                         MojangHashedNamespace
                     } else {
@@ -1442,15 +1456,19 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val inputDefault = arguments.inputChannel?.let { inputNamespace.getDefaultVersion { it } }
-                val outputDefault = arguments.outputChannel?.let { outputNamespace.getDefaultVersion { it } }
+                val inputDefault = inputNamespace.getDefaultVersion {
+                    arguments.inputChannel ?: inputNamespace.getDefaultMappingChannel()
+                }
+                val outputDefault = outputNamespace.getDefaultVersion {
+                    arguments.outputChannel ?: outputNamespace.getDefaultMappingChannel()
+                }
 
                 // try the command-provided version first
                 val version = arguments.version
                     // then try the default version for the output namespace
-                    ?: outputDefault?.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    ?: outputDefault.takeIf { it in inputNamespace.getAllSortedVersions() }
                     // then try the default version for the input namespace
-                    ?: inputDefault?.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    ?: inputDefault.takeIf { it in outputNamespace.getAllSortedVersions() }
                     // and if all else fails, use the newest common version
                     ?: newestCommonVersion
 
@@ -1458,11 +1476,15 @@ class MappingsExtension : Extension() {
                 val outputProvider = outputNamespace.getProvider(version)
 
                 val inputContainer = inputProvider.getOrNull() ?: run {
-                    returnError("Input mapping is not available ($version probably isn't supported)")
+                    returnError(
+                        "Input mapping is not available ($version probably isn't supported by ${inputNamespace.id})"
+                    )
                     return@withContext
                 }
                 val outputContainer = outputProvider.getOrNull() ?: run {
-                    returnError("Output mapping is not available ($version probably isn't supported)")
+                    returnError(
+                        "Output mapping is not available ($version probably isn't supported by ${outputNamespace.id})"
+                    )
                     return@withContext
                 }
 
@@ -1614,6 +1636,12 @@ class MappingsExtension : Extension() {
 
                 paginator.send()
             }
+        }
+    }
+
+    private suspend fun PublicSlashCommandContext<*>.returnError(errorMessage: String) {
+        respond {
+            content = errorMessage
         }
     }
 
