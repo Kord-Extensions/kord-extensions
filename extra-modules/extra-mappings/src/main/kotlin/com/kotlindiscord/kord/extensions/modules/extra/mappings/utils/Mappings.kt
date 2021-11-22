@@ -1,4 +1,6 @@
-@file:Suppress("StringLiteralDuplication")
+@file:Suppress("StringLiteralDuplication", "UNUSED_PARAMETER")
+
+// UNUSED_PARAMETER is suppressed in order to make code more abstract :pineapple:
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.utils
 
@@ -9,6 +11,9 @@ import me.shedaniel.linkie.namespaces.MojangHashedNamespace
 import me.shedaniel.linkie.utils.*
 
 private const val PAGE_SIZE = 3
+
+private typealias ClassResults = QueryResult<MappingsContainer, ClassResultList>
+private typealias Matches<T> = Map<T, T>
 
 /** Given a set of result classes, format them into a list of pages for the paginator. **/
 fun classesToPages(
@@ -113,6 +118,14 @@ fun classesToPages(
     queryResult: QueryResult<MappingsContainer, ClassResultList>
 ) =
     classesToPages(namespace, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
+
+/**
+ * A convenience function variable for having an unused MappingsContainer argument.
+ * This is to allow a more general function to be used for all queries.
+ */
+val classesToPages = { namespace: Namespace, _: MappingsContainer, classes: ClassResults ->
+    classesToPages(namespace, classes)
+}
 
 /** Given a set of result fields, format them into a list of pages for the paginator. **/
 fun fieldsToPages(
@@ -391,6 +404,11 @@ fun classMatchesToPages(
     return pages
 }
 
+/** Convienence function for making code more generalized. */
+val classMatchesToPages = { _: MappingsContainer, classMatches: Matches<Class> ->
+    classMatchesToPages(classMatches.toList())
+}
+
 /** Given a set of field mapping matches, format them into a list of pages for the paginator. **/
 fun fieldMatchesToPages(
     outputContainer: MappingsContainer,
@@ -431,6 +449,11 @@ fun fieldMatchesToPages(
     return pages
 }
 
+/** Convienence function for making code more generalized. */
+val fieldMatchesToPages = { outputContainer: MappingsContainer, fieldMatches: Matches<Pair<Class, Field>> ->
+    fieldMatchesToPages(outputContainer, fieldMatches.toList())
+}
+
 /** Given a set of method mapping matches, format them into a list of pages for the paginator. **/
 fun methodMatchesToPages(
     outputContainer: MappingsContainer,
@@ -461,3 +484,12 @@ fun methodMatchesToPages(
 
     return pages
 }
+
+/** Convienence function for making code more generalized. */
+val methodMatchesToPages = { outputContainer: MappingsContainer, methodMatches: Matches<Pair<Class, Method>> ->
+    methodMatchesToPages(outputContainer, methodMatches.toList())
+}
+
+/** Attempt to get an obfuscated name from three possible states. */
+val Obf.preferredName: String?
+    get() = merged ?: client ?: server
