@@ -1,7 +1,7 @@
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments
 
-import me.shedaniel.linkie.namespaces.MCPNamespace
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.McpNamespaceReplacement
 
 /** Arguments for MCP mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
-class MCPArguments : MappingArguments(MCPNamespace)
+class MCPArguments : MappingArguments(McpNamespaceReplacement)
