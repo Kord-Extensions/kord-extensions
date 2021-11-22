@@ -24,8 +24,6 @@ import java.net.URL
  * being down indefinitely.
  */
 object McpNamespaceReplacement : Namespace("mcp") {
-    private const val tmpMcpVersionsUrl =
-        "https://gist.githubusercontent.com/shedaniel/afc2748c6d5dd827d4cde161a49687ec/raw/mcp_versions.json"
     private const val forgeMaven = "http://maven.minecraftforge.net/de/oceanlabs/mcp"
     private const val mcpArchive = "https://raw.githubusercontent.com/ModCoderPack/MCPMappingsArchive/master"
     private val mcpConfigSnapshots = mutableMapOf<Version, MutableList<String>>()
@@ -94,7 +92,7 @@ object McpNamespaceReplacement : Namespace("mcp") {
         newMcpVersions.clear()
         val tmpMcpVersionsJson = json.decodeFromString(
             MapSerializer(String.serializer(), MCPVersion.serializer()),
-            URL(tmpMcpVersionsUrl).readText()
+            URL(MCPNamespace.tmpMcpVersionsUrl).readText()
         )
 
         tmpMcpVersionsJson.forEach { (mcVersion, mcpVersion) ->
