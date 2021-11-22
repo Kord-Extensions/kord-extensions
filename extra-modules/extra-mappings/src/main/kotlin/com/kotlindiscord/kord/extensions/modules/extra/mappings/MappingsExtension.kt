@@ -122,8 +122,8 @@ class MappingsExtension : Extension() {
                     queryMapping(
                         "class",
                         channel,
-                        MappingsQuery::queryClasses,
-                        classesToPages
+                        queryProvider = MappingsQuery::queryClasses,
+                        pageGenerationMethod = classesToPages
                     )
                 }
             }
@@ -141,8 +141,8 @@ class MappingsExtension : Extension() {
                     queryMapping(
                         "field",
                         channel,
-                        MappingsQuery::queryFields,
-                        ::fieldsToPages
+                        queryProvider = MappingsQuery::queryFields,
+                        pageGenerationMethod = ::fieldsToPages
                     )
                 }
             }
@@ -160,8 +160,8 @@ class MappingsExtension : Extension() {
                     queryMapping(
                         "method",
                         channel,
-                        MappingsQuery::queryMethods,
-                        ::methodsToPages
+                        queryProvider = MappingsQuery::queryMethods,
+                        pageGenerationMethod = ::methodsToPages
                     )
                 }
             }
@@ -526,9 +526,9 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryClasses,
                         classMatchesToPages,
                         enabledNamespaces,
-                        { it.obfName.preferredName },
-                        { it.obfName.preferredName!! },
-                        { null }
+                        obfNameProvider = { it.obfName.preferredName },
+                        classNameProvider = { it.obfName.preferredName!! },
+                        descProvider = { null }
                     )
                 }
             }
@@ -543,9 +543,9 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryFields,
                         fieldMatchesToPages,
                         enabledNamespaces,
-                        { it.second.obfName.preferredName },
-                        { it.first.obfName.preferredName!! },
-                        {
+                        obfNameProvider = { it.second.obfName.preferredName },
+                        classNameProvider = { it.first.obfName.preferredName!! },
+                        descProvider = {
                             when {
                                 second.obfName.isMerged() -> second.getObfMergedDesc(it)
                                 second.obfName.client != null -> second.getObfClientDesc(it)
@@ -567,9 +567,9 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryMethods,
                         methodMatchesToPages,
                         enabledNamespaces,
-                        { it.second.obfName.preferredName },
-                        { it.first.obfName.preferredName!! },
-                        {
+                        obfNameProvider = { it.second.obfName.preferredName },
+                        classNameProvider = { it.first.obfName.preferredName!! },
+                        descProvider = {
                             when {
                                 second.obfName.isMerged() -> second.getObfMergedDesc(it)
                                 second.obfName.client != null -> second.getObfClientDesc(it)
@@ -694,7 +694,10 @@ class MappingsExtension : Extension() {
 
             @Suppress("TooGenericExceptionCaught")
             val result = try {
-                queryProvider(QueryContext(provider = provider, searchKey = query))
+                queryProvider(QueryContext(
+                    provider = provider,
+                    searchKey = query
+                ))
             } catch (e: NullPointerException) {
                 respond {
                     content = e.localizedMessage
@@ -710,15 +713,22 @@ class MappingsExtension : Extension() {
 
             val container = provider.get()
 
-            pages = pageGenerationMethod(arguments.namespace, container, result)
+            pages = pageGenerationMethod(
+                arguments.namespace,
+                container,
+                result
+            )
+
             if (pages.isEmpty()) {
                 respond {
                     content = "No results found"
                 }
+
                 return@withContext
             }
 
             val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
+
             val plural = if (type == "class") "es" else "s"
             val pageTitle = "List of ${container.name} $type$plural: ${container.version}"
 
@@ -816,6 +826,7 @@ class MappingsExtension : Extension() {
                     returnError("Input namespace is not enabled or available")
                     return@withContext
                 }
+
                 val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
                     if (arguments.outputNamespace == "hashed-mojang") {
                         // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
@@ -838,6 +849,7 @@ class MappingsExtension : Extension() {
                 val inputDefault = inputNamespace.getDefaultVersion {
                     arguments.inputChannel ?: inputNamespace.getDefaultMappingChannel()
                 }
+
                 val outputDefault = outputNamespace.getDefaultVersion {
                     arguments.outputChannel ?: outputNamespace.getDefaultMappingChannel()
                 }
@@ -860,6 +872,7 @@ class MappingsExtension : Extension() {
                     )
                     return@withContext
                 }
+
                 val outputContainer = outputProvider.getOrNull() ?: run {
                     returnError(
                         "Output mapping is not available ($version probably isn't supported by ${outputNamespace.id})"
@@ -872,6 +885,7 @@ class MappingsExtension : Extension() {
                         arguments.inputChannel ?: inputNamespace.getDefaultMappingChannel()
                     }
                 )
+
                 outputProvider.injectDefaultVersion(
                     outputNamespace.getDefaultProvider {
                         arguments.outputChannel ?: outputNamespace.getDefaultMappingChannel()
@@ -906,7 +920,9 @@ class MappingsExtension : Extension() {
 
                 val outputQueries = inputResult.value.map {
                     it.value to obfNameProvider(it.value)
-                }.filter { it.second != null }.associate { it.first to it.second!! }
+                }
+                    .filter { it.second != null }
+                    .associate { it.first to it.second!! }
 
                 @Suppress("TooGenericExceptionCaught")
                 val outputResults = outputQueries.mapValues {
@@ -917,31 +933,33 @@ class MappingsExtension : Extension() {
                                 searchKey = classNameProvider(it.key)
                             )
                         )
+
                         val clazz = classes.value.first { clazz ->
-                            clazz.value.obfName.let { obf ->
-                                obf.merged ?: obf.client ?: obf.server!!
-                            } == classNameProvider(it.key)
-                        }.value
+                            clazz.value.obfName.preferredName!! == classNameProvider(it.key)
+                        }
+                            .value
 
                         val possibilities = when (type) {
                             "class" -> return@mapValues clazz
                             "method" -> clazz.methods
                             "field" -> clazz.fields
                             else -> error("`$type` isn't `class`, `field`, or `method`?????")
-                        }.filter { mapping ->
-                            mapping.obfName.let { obf ->
-                                obf.merged ?: obf.client ?: obf.server!!
-                            } == it.value
                         }
+                            .filter { mapping ->
+                                mapping.obfName.preferredName == it.value
+                            }
 
                         // NPE escapes the try block so it's ok
                         val inputDesc = it.key.descProvider(inputContainer)!!
 
                         val result = possibilities.find { member ->
-                            val desc = runCatching { member.getObfMergedDesc(outputContainer) }.getOrNull()
-                                ?: runCatching { member.getObfClientDesc(outputContainer) }.getOrNull()
-                                ?: runCatching { member.getObfServerDesc(outputContainer) }.getOrNull()
-                                ?: return@find false
+                            val desc = runCatching { member.getObfMergedDesc(outputContainer) }
+                                .recoverCatching { member.getObfClientDesc(outputContainer) }
+                                .recoverCatching { member.getObfServerDesc(outputContainer) }
+                                .getOrElse {
+                                    return@find false
+                                }
+
                             desc == inputDesc
                         }!!
 
@@ -969,9 +987,12 @@ class MappingsExtension : Extension() {
                 }
 
                 val pagesObj = Pages("")
+
                 val inputName = inputContainer.name
                 val outputName = outputContainer.name
+
                 val versionName = inputProvider.version ?: outputProvider.version ?: "Unknown"
+
                 val pageTitle = "List of $inputName -> $outputName $type mappings: $versionName"
 
                 pages.forEach {
