@@ -16,10 +16,10 @@ import mu.KLogger
 import mu.KotlinLogging
 
 /** Maximum length for an option's description. **/
-public const val DESCRIPTION_MAX: Int = 50
+public const val DESCRIPTION_MAX: Int = 100
 
 /** Maximum length for an option's label. **/
-public const val LABEL_MAX: Int = 25
+public const val LABEL_MAX: Int = 100
 
 /** Maximum number of options for a menu. **/
 public const val OPTIONS_MAX: Int = 25
