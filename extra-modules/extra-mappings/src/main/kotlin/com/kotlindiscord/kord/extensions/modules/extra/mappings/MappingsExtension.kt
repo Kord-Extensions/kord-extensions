@@ -119,6 +119,7 @@ class MappingsExtension : Extension() {
 
                 action {
                     val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
+
                     queryMapping(
                         "class",
                         channel,
@@ -138,6 +139,7 @@ class MappingsExtension : Extension() {
 
                 action {
                     val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
+
                     queryMapping(
                         "field",
                         channel,
@@ -157,6 +159,7 @@ class MappingsExtension : Extension() {
 
                 action {
                     val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
+
                     queryMapping(
                         "method",
                         channel,
@@ -642,12 +645,12 @@ class MappingsExtension : Extension() {
         logger.info { "Mappings extension set up - namespaces: " + enabledNamespaces.joinToString(", ") }
     }
 
-    private suspend fun <A : MappingsMetadata, B : List<*>> MappingSlashCommand.queryMapping(
+    private suspend fun <A, B> MappingSlashCommand.queryMapping(
         type: String,
         channel: String? = null,
         queryProvider: suspend (QueryContext) -> QueryResult<A, B>,
         pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>) -> List<Pair<String, String>>
-    ) {
+    ) where A : MappingsMetadata, B : List<*> {
     sentry.breadcrumb(BreadcrumbType.Query) {
         message = "Beginning mapping lookup"
 
@@ -661,6 +664,7 @@ class MappingsExtension : Extension() {
     newSingleThreadContext("/query $type: ${arguments.query}").use { context ->
         withContext(context) {
             val version = arguments.version?.version
+
             val provider = if (version != null) {
                 arguments.namespace.getProvider(version)
             } else {
@@ -791,8 +795,7 @@ class MappingsExtension : Extension() {
     }
 }
 
-    private suspend fun <A : MappingsMetadata, B, T : List<ResultHolder<B>>>
-    ConversionSlashCommand.convertMapping(
+    private suspend fun <A, B, T> ConversionSlashCommand.convertMapping(
         type: String,
         queryProvider: suspend (QueryContext) -> QueryResult<A, T>,
         pageGenerationMethod: (MappingsContainer, Map<B, B>) -> List<String>,
@@ -800,7 +803,7 @@ class MappingsExtension : Extension() {
         obfNameProvider: (B) -> String?,
         classNameProvider: (B) -> String,
         descProvider: B.(MappingsContainer) -> String?,
-    ) {
+    ) where A : MappingsMetadata, T : List<ResultHolder<B>> {
         sentry.breadcrumb(BreadcrumbType.Query) {
             message = "Beginning mapping conversion"
 
