@@ -20,6 +20,7 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.KickMembers -> "permission.kickMembers"
     Permission.ManageChannels -> "permission.manageChannels"
     Permission.ManageEmojis -> "permission.manageEmojis"
+    Permission.ManageEvents -> "permission.manageEvents"
     Permission.ManageGuild -> "permission.manageGuild"
     Permission.ManageMessages -> "permission.manageMessages"
     Permission.ManageNicknames -> "permission.manageNicknames"
