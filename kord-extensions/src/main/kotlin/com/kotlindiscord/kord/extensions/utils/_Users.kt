@@ -17,7 +17,7 @@ private const val DISCORD_USERS_URI = "https://discord.com/users"
  * The user's Discord profile URL.
  */
 public val User.profileLink: String
-    get() = "$DISCORD_USERS_URI/${id.asString}/"
+    get() = "$DISCORD_USERS_URI/$id/"
 
 /**
  * The user's creation timestamp.

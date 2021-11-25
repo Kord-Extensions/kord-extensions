@@ -56,7 +56,7 @@ public class SentryExtension : Extension() {
                     val feedback = UserFeedback(
                         arguments.id,
                         member!!.asMember().tag,
-                        member!!.id.asString,
+                        member!!.id.toString(),
                         arguments.feedback
                     )
 
@@ -89,7 +89,7 @@ public class SentryExtension : Extension() {
                     val feedback = UserFeedback(
                         arguments.id,
                         author.tag,
-                        author.id.asString,
+                        author.id.toString(),
                         arguments.feedback
                     )
 

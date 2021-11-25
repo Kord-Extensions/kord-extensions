@@ -85,7 +85,7 @@ class TestExtension : Extension() {
     override suspend fun setup() {
         event<GuildCreateEvent> {
             action {
-                logger.info { "Guild created: ${event.guild.name} (${event.guild.id.asString})" }
+                logger.info { "Guild created: ${event.guild.name} (${event.guild.id})" }
             }
         }
 

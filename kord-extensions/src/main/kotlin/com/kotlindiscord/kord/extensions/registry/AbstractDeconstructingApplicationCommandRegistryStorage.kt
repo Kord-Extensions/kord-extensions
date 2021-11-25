@@ -62,16 +62,16 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T 
     override suspend fun set(id: Snowflake, data: T) {
         val key = constructUniqueIdentifier(data)
         commandMapping[key] = data
-        upsert(id.asString, key)
+        upsert(id.toString(), key)
     }
 
     override suspend fun get(id: Snowflake): T? {
-        val key = read(id.asString) ?: return null
+        val key = read(id.toString()) ?: return null
         return commandMapping[key]
     }
 
     override suspend fun remove(id: Snowflake): T? {
-        val key = delete(id.asString) ?: return null
+        val key = delete(id.toString()) ?: return null
         return commandMapping[key]
     }
 

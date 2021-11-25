@@ -3,7 +3,10 @@ package com.kotlindiscord.kord.extensions.test.bot
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.utils.env
+import dev.kord.common.entity.Snowflake
 import org.koin.core.logger.Level
+
+val TEST_SERVER_ID = Snowflake(787452339908116521UL)
 
 suspend fun main() {
     val bot = ExtensibleBot(env("TOKEN")) {
@@ -28,7 +31,7 @@ suspend fun main() {
             defaultPrefix = "?"
 
             prefix { default ->
-                if (guildId?.asString == "787452339908116521") {
+                if (guildId == TEST_SERVER_ID) {
                     "!"
                 } else {
                     default  // "?"

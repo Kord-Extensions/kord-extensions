@@ -74,7 +74,7 @@ public open class StorageAwareApplicationCommandRegistry(
         val commandId = event.interaction.invokedCommandId
         val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
 
-        command ?: return logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
 
         command.call(event)
     }
@@ -83,7 +83,7 @@ public open class StorageAwareApplicationCommandRegistry(
         val commandId = event.interaction.invokedCommandId
         val command = commandRegistry.get(commandId) as? MessageCommand<*>
 
-        command ?: return logger.warn { "Received interaction for unknown message command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown message command: $commandId" }
 
         command.call(event)
     }
@@ -92,7 +92,7 @@ public open class StorageAwareApplicationCommandRegistry(
         val commandId = event.interaction.invokedCommandId
         val command = commandRegistry.get(commandId) as? UserCommand<*>
 
-        command ?: return logger.warn { "Received interaction for unknown user command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
         command.call(event)
     }

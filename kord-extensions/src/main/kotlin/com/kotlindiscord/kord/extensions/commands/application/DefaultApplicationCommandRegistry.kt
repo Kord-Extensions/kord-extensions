@@ -63,7 +63,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                     var message = if (it.key == null) {
                         "Failed to synchronise global application commands"
                     } else {
-                        "Failed to synchronise application commands for guild with ID: ${it.key!!.asString}"
+                        "Failed to synchronise application commands for guild with ID: ${it.key}"
                     }
 
                     if (e.error?.message != null) {
@@ -82,7 +82,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                     if (it.key == null) {
                         "Failed to synchronise global application commands"
                     } else {
-                        "Failed to synchronise application commands for guild with ID: ${it.key!!.asString}"
+                        "Failed to synchronise application commands for guild with ID: ${it.key}"
                     }
                 }
             }
@@ -151,7 +151,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         val guild = if (guildId != null) {
             kord.getGuild(guildId)
                 ?: return logger.debug {
-                    "Cannot register application commands for guild ID ${guildId.asString}, " +
+                    "Cannot register application commands for guild ID $guildId, " +
                         "as it seems to be missing."
                 }
         } else {
@@ -366,7 +366,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         val commandId = event.interaction.invokedCommandId
         val command = messageCommands[commandId]
 
-        command ?: return logger.warn { "Received interaction for unknown message command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown message command: $commandId" }
 
         command.call(event)
     }
@@ -376,7 +376,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         val commandId = event.interaction.command.rootId
         val command = slashCommands[commandId]
 
-        command ?: return logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
 
         command.call(event)
     }
@@ -386,7 +386,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         val commandId = event.interaction.invokedCommandId
         val command = userCommands[commandId]
 
-        command ?: return logger.warn { "Received interaction for unknown user command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
         command.call(event)
     }

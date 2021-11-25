@@ -158,7 +158,7 @@ public class MessageConverter(
             try {
                 channel.getMessage(mid)
             } catch (e: EntityNotFoundException) {
-                errorNoMessage(mid.asString, context)
+                errorNoMessage(mid.toString(), context)
             }
         } else { // Try a message ID
             val channel: ChannelBehavior? = context.getChannel()

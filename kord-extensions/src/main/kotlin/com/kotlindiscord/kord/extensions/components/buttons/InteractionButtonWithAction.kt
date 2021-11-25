@@ -40,19 +40,19 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
 
                 if (channel != null) {
                     data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id.asString})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                        is DmChannel -> "Private Message (${channel.id})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
 
-                        else -> channel.id.asString
+                        else -> channel.id.toString()
                     }
                 }
 
                 if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id.asString})"
+                    data["guild"] = "${guild.name} (${guild.id})"
                 }
 
                 if (message != null) {
-                    data["message"] = message.id.asString
+                    data["message"] = message.id.toString()
                 }
             }
         }
