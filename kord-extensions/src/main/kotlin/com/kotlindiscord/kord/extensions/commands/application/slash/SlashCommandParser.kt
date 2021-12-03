@@ -43,7 +43,7 @@ public open class SlashCommandParser {
 
         val values = command.options.mapValues {
             if (it.value is OptionValue.StringOptionValue) {
-                OptionValue.StringOptionValue((it.value.value as String).trim())
+                OptionValue.StringOptionValue((it.value.value as String).trim(), focused = it.value.focused)
             } else {
                 it.value
             }

@@ -118,7 +118,8 @@ fun classesToPages(
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    fields: List<Pair<Class, Field>>
+    fields: List<Pair<Class, Field>>,
+    mapDescriptors: Boolean = true,
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
 
@@ -126,6 +127,7 @@ fun fieldsToPages(
         val shortPage = result.joinToString("\n\n") {
             val (clazz, field) = it
             val mappedDesc = field.getMappedDesc(mappings)
+            val desc = if (mapDescriptors) mappedDesc else field.intermediaryDesc
 
             var text = ""
 
@@ -161,7 +163,7 @@ fun fieldsToPages(
 
             if (namespace.supportsFieldDescription()) {
                 text += "\n"
-                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
+                text += "**Types:** `${desc.localiseFieldDesc()}`"
             }
 
             text
@@ -170,6 +172,7 @@ fun fieldsToPages(
         val longPage = result.joinToString("\n\n") {
             val (clazz, field) = it
             val mappedDesc = field.getMappedDesc(mappings)
+            val desc = if (mapDescriptors) mappedDesc else field.intermediaryDesc
 
             var text = ""
 
@@ -205,7 +208,7 @@ fun fieldsToPages(
 
             if (namespace.supportsFieldDescription()) {
                 text += "\n"
-                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
+                text += "**Types:** `${desc.localiseFieldDesc()}`"
             }
 
             text += "\n"
@@ -217,7 +220,7 @@ fun fieldsToPages(
                     "L${clazz.optimumName};" +
                     field.optimumName +
                     ":" +
-                    mappedDesc +
+                    desc +
                     "`"
             }
 
@@ -228,7 +231,7 @@ fun fieldsToPages(
             } else if (namespace.supportsAW()) {
                 text += "\n"
 
-                text += "**Access Widener:** `accessible field ${clazz.optimumName} ${field.optimumName} $mappedDesc`"
+                text += "**Access Widener:** `accessible field ${clazz.optimumName} ${field.optimumName} $desc`"
             }
 
             text.trimEnd('\n')
@@ -244,15 +247,17 @@ fun fieldsToPages(
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    queryResult: QueryResult<MappingsContainer, FieldResultList>
+    queryResult: QueryResult<MappingsContainer, FieldResultList>,
+    mapDescriptors: Boolean = true,
 ) =
-    fieldsToPages(namespace, mappings, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
+    fieldsToPages(namespace, mappings, queryResult.map { it.map { res -> res.value }.toList() }.value, mapDescriptors)
 
 /** Given a set of result methods, format them into a list of pages for the paginator. **/
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    methods: List<Pair<Class, Method>>
+    methods: List<Pair<Class, Method>>,
+    mapDescriptors: Boolean = true,
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
 
@@ -297,6 +302,7 @@ fun methodsToPages(
         val longPage = result.joinToString("\n\n") {
             val (clazz, method) = it
             val mappedDesc = method.getMappedDesc(mappings)
+            val desc = if (mapDescriptors) mappedDesc else method.intermediaryDesc
 
             var text = ""
 
@@ -338,7 +344,7 @@ fun methodsToPages(
                 text += "**Mixin Target** `" +
                     "L${clazz.optimumName};" +
                     method.optimumName +
-                    mappedDesc +
+                    desc +
                     "`"
             }
 
@@ -347,12 +353,12 @@ fun methodsToPages(
 
                 text += "**Access Transformer** `public" + clazz.optimumName.replace('/', '.') +
                     method.intermediaryName +
-                    mappedDesc +
+                    desc +
                     " # ${method.optimumName}`"
             } else if (namespace.supportsAW()) {
                 text += "\n"
 
-                text += "**Access Widener** `accessible method ${clazz.optimumName} ${method.optimumName} $mappedDesc`"
+                text += "**Access Widener** `accessible method ${clazz.optimumName} ${method.optimumName} $desc`"
             }
 
             text.trimEnd('\n')
@@ -368,8 +374,10 @@ fun methodsToPages(
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    queryResult: QueryResult<MappingsContainer, MethodResultList>
-) = methodsToPages(namespace, mappings, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
+    queryResult: QueryResult<MappingsContainer, MethodResultList>,
+    mapDescriptors: Boolean = true,
+) =
+    methodsToPages(namespace, mappings, queryResult.map { it.map { res -> res.value }.toList() }.value, mapDescriptors)
 
 /** Given a set of class mapping matches, format them into a list of pages for the paginator. **/
 fun classMatchesToPages(

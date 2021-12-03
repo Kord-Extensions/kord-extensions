@@ -790,7 +790,7 @@ class MappingsExtension : Extension() {
                     data["resultCount"] = result.value.size
                 }
 
-                pages = fieldsToPages(arguments.namespace, provider.get(), result)
+                pages = fieldsToPages(arguments.namespace, provider.get(), result, arguments.mapDescriptors)
                 if (pages.isEmpty()) {
                     respond {
                         content = "No results found"
@@ -929,7 +929,7 @@ class MappingsExtension : Extension() {
                     data["resultCount"] = result.value.size
                 }
 
-                pages = methodsToPages(arguments.namespace, provider.get(), result)
+                pages = methodsToPages(arguments.namespace, provider.get(), result, arguments.mapDescriptors)
                 if (pages.isEmpty()) {
                     respond {
                         content = "No results found"
