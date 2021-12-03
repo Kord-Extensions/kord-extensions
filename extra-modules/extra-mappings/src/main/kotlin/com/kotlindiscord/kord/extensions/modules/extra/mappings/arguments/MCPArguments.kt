@@ -4,4 +4,7 @@ import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.McpNamespa
 
 /** Arguments for MCP mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
-class MCPArguments : MappingArguments(McpNamespaceReplacement)
+class MCPArguments : MappingArguments(McpNamespaceReplacement) {
+    // MCP doesn't support intermediary descriptors
+    override val mapDescriptors = true
+}

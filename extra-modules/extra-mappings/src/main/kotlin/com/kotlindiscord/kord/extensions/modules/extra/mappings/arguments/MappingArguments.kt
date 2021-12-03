@@ -1,6 +1,7 @@
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.converters.impl.defaultingBoolean
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.converters.optionalMappingsVersion
 import me.shedaniel.linkie.Namespace
@@ -17,5 +18,11 @@ open class MappingArguments(val namespace: Namespace) : Arguments() {
         "Minecraft version to use for this query",
         true,
         namespace
+    )
+
+    open val mapDescriptors by defaultingBoolean(
+        "mapDescriptors",
+        "Whether to map descriptors to named instead of intermediary/hashed",
+        true
     )
 }

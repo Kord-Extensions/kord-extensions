@@ -649,7 +649,7 @@ class MappingsExtension : Extension() {
         type: String,
         channel: String? = null,
         queryProvider: suspend (QueryContext) -> QueryResult<A, B>,
-        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>) -> List<Pair<String, String>>
+        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>
     ) where A : MappingsMetadata, B : List<*> {
     sentry.breadcrumb(BreadcrumbType.Query) {
         message = "Beginning mapping lookup"
@@ -720,7 +720,8 @@ class MappingsExtension : Extension() {
             pages = pageGenerationMethod(
                 arguments.namespace,
                 container,
-                result
+                result,
+                arguments.mapDescriptors
             )
 
             if (pages.isEmpty()) {
