@@ -13,6 +13,8 @@ plugins {
     `maven-publish`
 
     kotlin("jvm")
+
+    id("com.github.jakemarsden.git-hooks")
 }
 
 val projectVersion: String by project
@@ -22,6 +24,10 @@ version = projectVersion
 
 val printVersion = task("printVersion") {
     print(version.toString())
+}
+
+gitHooks {
+    setHooks(mapOf("pre-commit" to "licenseFormat detekt"))
 }
 
 repositories {

@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("StringLiteralDuplication", "UNUSED_PARAMETER")
 
 // UNUSED_PARAMETER is suppressed in order to make code more abstract :pineapple:
