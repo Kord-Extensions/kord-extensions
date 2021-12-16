@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.events.KordExEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
+import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
@@ -35,6 +36,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
@@ -52,7 +54,14 @@ import org.koin.dsl.bind
  * @param settings Bot builder object containing the bot's settings.
  * @param token Token for connecting to Discord.
  */
-public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, private val token: String) : KoinComponent {
+public open class ExtensibleBot(
+    public val settings: ExtensibleBotBuilder,
+    private val token: String
+) : KoinComponent, Lockable {
+
+    override var mutex: Mutex? = Mutex()
+    override var locking: Boolean = settings.membersBuilder.lockMemberRequests
+
     /**
      * A list of all registered event handlers.
      */
@@ -120,16 +129,18 @@ public open class ExtensibleBot(public val settings: ExtensibleBotBuilder, priva
     /** This function sets up all of the bot's default event listeners. **/
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
-            if (
-                settings.membersBuilder.guildsToFill == null ||
-                settings.membersBuilder.guildsToFill!!.contains(guild.id)
-            ) {
-                logger.info { "Requesting members for guild: ${guild.name}" }
+            withLock {  // If configured, this won't be concurrent, saving larger bots from spammy rate limits
+                if (
+                    settings.membersBuilder.guildsToFill == null ||
+                    settings.membersBuilder.guildsToFill!!.contains(guild.id)
+                ) {
+                    logger.info { "Requesting members for guild: ${guild.name}" }
 
-                guild.requestMembers {
-                    presences = settings.membersBuilder.fillPresences
-                    requestAllMembers()
-                }.collect()
+                    guild.requestMembers {
+                        presences = settings.membersBuilder.fillPresences
+                        requestAllMembers()
+                    }.collect()
+                }
             }
         }
 

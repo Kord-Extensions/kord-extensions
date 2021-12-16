@@ -843,6 +843,13 @@ public open class ExtensibleBotBuilder {
         public var fillPresences: Boolean? = null
 
         /**
+         * Whether to lock when requesting members from guilds, preventing concurrent requests from being processed
+         * at once. This will slow down filling the cache with members, but may avoid hitting rate limits for larger
+         * bots.
+         */
+        public var lockMemberRequests: Boolean = false
+
+        /**
          * Add a list of guild IDs to request members for.
          *
          * Requires the `GUILD_MEMBERS` privileged intent. Make sure you've enabled it for your bot!
