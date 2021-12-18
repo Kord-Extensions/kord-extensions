@@ -211,4 +211,13 @@ public class SentryContext : KoinComponent {
 
         return id
     }
+
+    /** Make a copy of this Sentry context, bringing the breadcrumbs over into a new list. **/
+    public fun copy(): SentryContext {
+        val new = SentryContext()
+
+        new.breadcrumbs.addAll(this.breadcrumbs)
+
+        return new
+    }
 }
