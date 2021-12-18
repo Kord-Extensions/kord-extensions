@@ -8,7 +8,6 @@ package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import io.ktor.client.*
 import io.ktor.client.features.json.*
-import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
 
 internal const val ALL_PATH = "https://phish.sinking.yachts/v2/all"
@@ -20,10 +19,6 @@ internal const val SIZE_PATH = "https://phish.sinking.yachts/v2/dbsize"
 class PhishingApi(internal val appName: String) {
     internal val client = HttpClient {
         install(JsonFeature)
-
-        install(Logging) {
-            level = LogLevel.INFO
-        }
     }
 
     internal suspend inline fun <reified T> get(url: String): T = client.get(url) {

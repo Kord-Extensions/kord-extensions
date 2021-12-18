@@ -368,8 +368,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     internal suspend fun updateDomains() {
         logger.trace { "Updating domains..." }
 
-        // An extra 30 seconds for safety
-        api.getRecentDomains(settings.updateDelay.inWholeSeconds + 30).forEach {
+        // An extra 30 seconds for safety, doubled to make sure we didn't miss any from an outage
+        api.getRecentDomains((settings.updateDelay.inWholeSeconds + 30) * 2).forEach {
             when (it.type) {
                 DomainChangeType.Add -> domainCache.addAll(it.domains)
                 DomainChangeType.Delete -> domainCache.removeAll(it.domains)
