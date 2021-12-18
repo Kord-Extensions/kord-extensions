@@ -93,8 +93,10 @@ public open class Task(
             } catch (t: Throwable) {
                 logger.error(t) { "Error running scheduled callback." }
 
-                sentryContext.captureException(t, "Error running scheduled callback") {
-                    tag("task", name)
+                if (sentry.enabled) {
+                    sentryContext.captureException(t, "Error running scheduled callback") {
+                        tag("task", name)
+                    }
                 }
             }
 
