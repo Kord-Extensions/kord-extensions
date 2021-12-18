@@ -91,11 +91,15 @@ public open class Task(
             try {
                 callback()
             } catch (t: Throwable) {
-                logger.error(t) { "Error running scheduled callback." }
+                if (t is CancellationException && t.cause == null) {
+                    logger.trace { "Task cancelled." }
+                } else {
+                    logger.error(t) { "Error running scheduled callback." }
 
-                if (sentry.enabled) {
-                    sentryContext.captureException(t, "Error running scheduled callback") {
-                        tag("task", name)
+                    if (sentry.enabled) {
+                        sentryContext.captureException(t, "Error running scheduled callback") {
+                            tag("task", name)
+                        }
                     }
                 }
             }
