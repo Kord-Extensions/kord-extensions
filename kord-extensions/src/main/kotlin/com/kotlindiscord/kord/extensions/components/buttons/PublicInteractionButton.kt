@@ -58,6 +58,8 @@ public open class PublicInteractionButton(
         builder.interactionButton(style, id) {
             emoji = partialEmoji
             label = this@PublicInteractionButton.label
+
+            disabled = this@PublicInteractionButton.disabled
         }
     }
 

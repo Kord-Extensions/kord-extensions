@@ -29,7 +29,21 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
     /** Button label, for display on Discord. **/
     public var label: String? = null
 
+    /** Whether this button is disabled. **/
+    public open var disabled: Boolean = false
+        protected set
+
     public override var partialEmoji: DiscordPartialEmoji? = null
+
+    /** Mark this button as disabled. **/
+    public open fun disable() {
+        disabled = true
+    }
+
+    /** Mark this button as enabled. **/
+    public open fun enable() {
+        disabled = false
+    }
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
     public open suspend fun firstSentryBreadcrumb(context: C, button: InteractionButtonWithAction<*>) {

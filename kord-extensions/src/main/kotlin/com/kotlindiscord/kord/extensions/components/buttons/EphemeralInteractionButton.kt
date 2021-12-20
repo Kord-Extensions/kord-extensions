@@ -57,6 +57,8 @@ public open class EphemeralInteractionButton(
         builder.interactionButton(style, id) {
             emoji = partialEmoji
             label = this@EphemeralInteractionButton.label
+
+            disabled = this@EphemeralInteractionButton.disabled
         }
     }
 

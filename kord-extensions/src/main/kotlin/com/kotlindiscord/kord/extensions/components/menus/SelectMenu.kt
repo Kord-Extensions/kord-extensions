@@ -57,6 +57,20 @@ public abstract class SelectMenu<C : SelectMenuContext>(
     @Suppress("MagicNumber")  // WHY DO YOU THINK I ASSIGN IT HERE
     override val unitWidth: Int = 5
 
+    /** Whether this select menu is disabled. **/
+    public open var disabled: Boolean? = null
+        protected set
+
+    /** Mark this select menu as disabled. **/
+    public open fun disable() {
+        disabled = true
+    }
+
+    /** Mark this select menu as enabled. **/
+    public open fun enable() {
+        disabled = null  // Don't ask me why this is
+    }
+
     /** Add an option to this select menu. **/
     @Suppress("UnnecessaryParentheses")  // Disagrees with IDEA, amusingly.
     public open suspend fun option(label: String, value: String, body: suspend SelectOptionBuilder.() -> Unit = {}) {
@@ -89,6 +103,8 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
             this.options.addAll(this@SelectMenu.options)
             this.placeholder = this@SelectMenu.placeholder
+
+            this.disabled = this@SelectMenu.disabled
         }
     }
 
