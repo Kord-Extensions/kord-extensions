@@ -59,7 +59,6 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
     /** Whether this select menu is disabled. **/
     public open var disabled: Boolean? = null
-        protected set
 
     /** Mark this select menu as disabled. **/
     public open fun disable() {

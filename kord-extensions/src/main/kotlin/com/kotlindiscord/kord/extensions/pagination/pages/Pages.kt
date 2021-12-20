@@ -15,9 +15,6 @@ public open class Pages(public open var defaultGroup: String = "") {
     /** All groups of pages stored in this class. **/
     public open val groups: LinkedHashMap<String, MutableList<Page>> = linkedMapOf()
 
-    /** Number of pages in a single group - this *must* be the same for all groups! **/
-    public open val size: Int get() = groups.values.first().size
-
     /** Add a page to the default group. **/
     public open fun addPage(page: Page): Unit = addPage(defaultGroup, page)
 
@@ -37,6 +34,8 @@ public open class Pages(public open var defaultGroup: String = "") {
             throw NoSuchElementException("No such group: $group")
         }
 
+        val size = groups[group]!!.size
+
         if (page > size) {
             throw IndexOutOfBoundsException("Page out of range: $page ($size pages)")
         }
@@ -49,12 +48,6 @@ public open class Pages(public open var defaultGroup: String = "") {
         if (groups.isEmpty()) {
             throw IllegalArgumentException(
                 "Invalid pages supplied: At least one page is required"
-            )
-        }
-
-        if (!groups.values.all { it.size == size }) {
-            throw IllegalArgumentException(
-                "Invalid pages supplied: Not all groups have the same number of pages"
             )
         }
     }

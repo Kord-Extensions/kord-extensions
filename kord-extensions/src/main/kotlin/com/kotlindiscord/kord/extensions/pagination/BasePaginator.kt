@@ -109,7 +109,7 @@ public abstract class BasePaginator(
         currentPage.build(
             localeObj,
             currentPageNum,
-            pages.size,
+            pages.groups[currentGroup]!!.size,
             groupEmoji,
             allGroups.indexOf(currentGroup),
             allGroups.size
@@ -133,7 +133,7 @@ public abstract class BasePaginator(
 
     /** Convenience function to go to call [goToPage] with the next page number, if we're not at the last page. **/
     public open suspend fun nextPage() {
-        if (currentPageNum < pages.size - 1) {
+        if (currentPageNum < pages.groups[currentGroup]!!.size - 1) {
             goToPage(currentPageNum + 1)
         }
     }

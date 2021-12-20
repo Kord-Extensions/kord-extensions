@@ -31,7 +31,6 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
 
     /** Whether this button is disabled. **/
     public open var disabled: Boolean = false
-        protected set
 
     public override var partialEmoji: DiscordPartialEmoji? = null
 
