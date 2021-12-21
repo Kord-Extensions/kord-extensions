@@ -19,7 +19,7 @@ kx-ser = "1.3.0"
 linkie = "1.0.88"
 logback = "1.2.3"
 logging = "2.0.11"
-sentry = "5.0.0"
+sentry = "5.5.2"
 time4j-base = "5.8"
 time4j-tzdata = "5.0-2021a"
 
