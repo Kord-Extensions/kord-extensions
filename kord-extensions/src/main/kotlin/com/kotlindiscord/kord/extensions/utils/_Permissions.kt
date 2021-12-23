@@ -43,6 +43,7 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.SendTTSMessages -> "permission.sendTTSMessages"
     Permission.Speak -> "permission.speak"
     Permission.Stream -> "permission.stream"
+    Permission.ModerateMembers -> "permission.timeoutMembers"
     Permission.UseExternalEmojis -> "permission.useExternalEmojis"
     Permission.UseSlashCommands -> "permission.useSlashCommands"
     Permission.UseVAD -> "permission.useVAD"
