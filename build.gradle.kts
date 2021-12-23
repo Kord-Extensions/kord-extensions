@@ -12,7 +12,7 @@ buildscript {
 plugins {
     `maven-publish`
 
-    kotlin("jvm")
+    kotlin("jvm") apply false
 
     id("com.github.jakemarsden.git-hooks")
 }
