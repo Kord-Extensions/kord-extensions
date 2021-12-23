@@ -8,6 +8,13 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.CommandContext
+import dev.kord.core.behavior.interaction.suggest
+import dev.kord.core.behavior.interaction.suggestInt
+import dev.kord.core.behavior.interaction.suggestNumber
+import dev.kord.core.behavior.interaction.suggestString
+import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
 
 /** Types alias representing a validator callable. Keeps things relatively maintainable. **/
@@ -15,3 +22,12 @@ public typealias Validator<T> = (suspend ValidationContext<T>.() -> Unit)?
 
  /** Types alias representing a mutator callable. Keeps things relatively maintainable. **/
  public typealias Mutator<T> = ((T) -> T)?
+
+/**
+ * Type alias representing a slash command auto complete callable, which may calls [suggest].
+ *
+ * @see suggestInt
+ * @see suggestNumber
+ * @see suggestString
+ */
+public typealias AutoCompleter<T> = (suspend AutoCompleteInteraction.(arg: Argument<*>, value: T?) -> Unit)

@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.registry.RegistryStorage
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -101,6 +102,15 @@ public open class StorageAwareApplicationCommandRegistry(
         command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
         command.call(event)
+    }
+
+    override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {
+        val commandId = event.interaction.command.rootId
+        val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
+
+        command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
+
+        command.autoComplete(event)
     }
 
     override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? =

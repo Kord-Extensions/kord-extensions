@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.createApplicationCommands
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -397,5 +398,16 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         command.call(event)
     }
 
+    /**
+     * Event handler for auto complete.
+     */
+    override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {
+        val commandId = event.interaction.command.rootId
+        val command = slashCommands[commandId]
+
+        command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
+
+        command.autoComplete(event)
+    }
     // endregion
 }

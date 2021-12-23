@@ -25,7 +25,7 @@ import dev.kord.common.annotation.KordPreview
  * @property validator Validation lambda, which may throw a DiscordRelayedException if required.
  */
 public abstract class SingleConverter<T : Any>(
-    override var validator: Validator<T> = null
+    override var validator: Validator<T> = null,
 ) : Converter<T, T, String, Boolean>(true), SlashCommandConverter {
     /**
      * The parsed value.

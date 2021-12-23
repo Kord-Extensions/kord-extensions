@@ -11,6 +11,7 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.commands.converters.Converter
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -24,7 +25,9 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import kotlinx.serialization.InternalSerializationApi
 import mu.KLogger
 import mu.KotlinLogging
 import java.util.*
@@ -135,6 +138,32 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
 
     /** Override this to implement your command's calling logic. Check subtypes for examples! **/
     public abstract override suspend fun call(event: ChatInputCommandInteractionCreateEvent)
+
+    /**
+     * Handles an [AutoCompleteInteractionCreateEvent] for this command.
+     */
+    @OptIn(InternalSerializationApi::class)
+    public open suspend fun autoComplete(event: AutoCompleteInteractionCreateEvent) {
+        val (name, option) = event.interaction.command.options.toList()
+            .first { (_, value) -> value.focused }
+
+        val builtArguments = arguments?.invoke()
+        val focusedArgument = builtArguments?.args?.firstOrNull { it.displayName == name }
+        val notFoundMessage =
+            { "Got auto-complete request for command ${event.interaction.command.rootName} " +
+                "on non auto-completed option $name" }
+        checkNotNull(focusedArgument, notFoundMessage)
+        checkNotNull(focusedArgument.converter.autoCompleter, notFoundMessage)
+
+        // utility method to catch generic type
+        @Suppress("RedundantSuspendModifier") // it is not redundant
+        suspend fun <I : Any> Converter<*, *, I, *>.autoComplete(value: Any?) {
+            @Suppress("UNCHECKED_CAST")
+            autoCompleter!!(event.interaction, focusedArgument, value as I)
+        }
+
+        focusedArgument.converter.autoComplete(option.value)
+    }
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
     public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)

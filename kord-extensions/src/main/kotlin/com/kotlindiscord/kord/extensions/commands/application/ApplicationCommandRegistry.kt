@@ -32,6 +32,7 @@ import dev.kord.core.behavior.createChatInputCommand
 import dev.kord.core.behavior.createMessageCommand
 import dev.kord.core.behavior.createUserCommand
 import dev.kord.core.entity.Guild
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -133,6 +134,9 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
     /** Event handler for user commands. **/
     public abstract suspend fun handle(event: UserCommandInteractionCreateEvent)
+
+    /** Event handler for auto complete. **/
+    public abstract suspend fun handle(event: AutoCompleteInteractionCreateEvent)
 
     /** Unregister a slash command. **/
     public abstract suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>?
@@ -409,7 +413,14 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
                     if (this.options == null) this.options = mutableListOf()
 
-                    val option = converter.toSlashOption(arg)
+                    val option = converter.toSlashOption(arg).apply {
+                        check((this as? BaseChoiceBuilder<*>)?.choices?.isEmpty() != true) {
+                            "Argument ${arg.displayName} provided both choices and autocomplete"
+                        }
+                        if (arg.converter.hasAutoComplete) {
+                            autocomplete = true
+                        }
+                    }
 
                     option.name = translationsProvider
                         .translate(option.name, locale, converter.bundle)

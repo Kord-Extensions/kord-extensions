@@ -180,6 +180,10 @@ public open class ExtensibleBot(
                 getKoin().get<ApplicationCommandRegistry>().handle(this)
             }
 
+            on<AutoCompleteInteractionCreateEvent> {
+                getKoin().get<ApplicationCommandRegistry>().handle(this)
+            }
+
             getKoin().get<ApplicationCommandRegistry>().initialRegistration()
         } else {
             logger.debug {
