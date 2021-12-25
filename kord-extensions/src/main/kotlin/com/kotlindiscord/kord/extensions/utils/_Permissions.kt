@@ -60,6 +60,10 @@ public fun Permission.toTranslationKey(): String = when (this) {
 public val Permission.Video: Permission.Stream
     inline get() = Permission.Stream
 
+/** Because it hasn't been called "Moderate Members" since the DMD testing finished. **/
+public val Permission.TimeoutMembers: Permission.ModerateMembers
+    inline get() = Permission.ModerateMembers
+
 /** Given a [CommandContext], translate the [Permission] to a human-readable string based on the context's locale. **/
 public suspend fun Permission.translate(context: CommandContext): String =
     context.translate(toTranslationKey())

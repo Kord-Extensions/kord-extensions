@@ -11,7 +11,20 @@ import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Role
+import dev.kord.rest.builder.member.MemberModifyBuilder
 import kotlinx.coroutines.flow.toList
+import kotlinx.datetime.Instant
+
+/** A more sensible name than `communicationDisabledUntil`. **/
+public val Member.timeoutUntil: Instant?
+    inline get() = this.communicationDisabledUntil
+
+/** A more sensible name than `communicationDisabledUntil`. **/
+public var MemberModifyBuilder.timeoutUntil: Instant?
+    inline get() = this.communicationDisabledUntil
+    inline set(value) {
+        this.communicationDisabledUntil = value
+    }
 
 /**
  * Check if the user has the given [Role].
