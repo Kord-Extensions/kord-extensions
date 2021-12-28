@@ -4,7 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.joran.spi.ConsoleTarget
 
