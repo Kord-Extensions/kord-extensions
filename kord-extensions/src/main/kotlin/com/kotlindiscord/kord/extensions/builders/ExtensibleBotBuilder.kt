@@ -302,7 +302,14 @@ public open class ExtensibleBotBuilder {
     /** @suppress Internal function used to initially set up Koin. **/
     public open fun setupKoin() {
         startKoin {
-            slf4jLogger(koinLogLevel)
+            var logLevel = koinLogLevel
+
+            if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
+                // NOTE: Temporary workaround for Koin not supporting Kotlin 1.6
+                logLevel = Level.ERROR
+            }
+
+            slf4jLogger(logLevel)
 //            environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
 
             if (File("koin.properties").exists()) {

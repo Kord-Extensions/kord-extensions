@@ -13,6 +13,7 @@ import mu.KotlinLogging
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 private val logger = KotlinLogging.logger {}
@@ -35,7 +36,7 @@ public class Scheduler : CoroutineScope {
         pollingSeconds: Long = 1,
         callback: suspend () -> Unit
     ): Task = schedule(
-        delay = Duration.seconds(seconds),
+        delay = seconds.seconds,
         startNow = startNow,
         name = name,
         pollingSeconds = pollingSeconds,

@@ -26,6 +26,7 @@ private const val DAYS_IN_WEEK = 7
 public object DurationParser : KoinComponent {
     private val translations: TranslationsProvider by inject()
 
+    /** Check whether the given character is a valid duration unit character. **/
     public fun charValid(char: Char, locale: Locale): Boolean =
         char.isDigit() ||
             char == ' ' ||

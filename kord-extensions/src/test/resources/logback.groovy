@@ -4,13 +4,18 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder
+import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.FileAppender
 import ch.qos.logback.core.joran.spi.ConsoleTarget
 
 def environment = System.getenv().getOrDefault("ENVIRONMENT", "production")
-
 def defaultLevel = TRACE
 
 if (environment == "spam") {
+    statusListener(OnConsoleStatusListener)
+
     logger("dev.kord.rest.DefaultGateway", TRACE)
 } else {
     // Silence warning about missing native PRNG

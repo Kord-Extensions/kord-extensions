@@ -30,6 +30,7 @@ public object ColorCache : KoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, ColorMap> = mutableMapOf()
 
+    /** Return a mapping of all translated colour names to Color objects, based on the given locale. **/
     public fun getColors(locale: Locale): ColorMap {
         if (valueCache[locale] == null) {
             val colorMap: ColorMap = linkedMapOf()

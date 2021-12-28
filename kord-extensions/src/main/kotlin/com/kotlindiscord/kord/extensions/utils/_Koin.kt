@@ -16,10 +16,9 @@ import org.koin.mp.KoinPlatformTools
 /** Wrapper for [org.koin.dsl.module] that immediately loads the module for the current [Koin] instance. **/
 public fun loadModule(
     createdAtStart: Boolean = false,
-    override: Boolean = false,
     moduleDeclaration: ModuleDeclaration
 ): Module {
-    val moduleObj = module(createdAtStart, override, moduleDeclaration)
+    val moduleObj = module(createdAtStart, moduleDeclaration)
 
     loadKoinModules(moduleObj)
 

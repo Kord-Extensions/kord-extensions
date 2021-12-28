@@ -31,6 +31,7 @@ public object TimeUnitCache : KoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
 
+    /** Return a mapping of all translated unit names to DateTimeUnit objects, based on the given locale. **/
     public fun getUnits(locale: Locale): UnitMap {
         if (valueCache[locale] == null) {
             val unitMap: UnitMap = linkedMapOf()

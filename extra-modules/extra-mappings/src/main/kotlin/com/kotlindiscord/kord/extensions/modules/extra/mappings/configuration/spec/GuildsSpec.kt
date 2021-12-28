@@ -11,6 +11,9 @@ import dev.kord.common.entity.Snowflake
 
 /** @suppress **/
 object GuildsSpec : ConfigSpec() {
+    /** @suppress **/
     val allowed by required<List<Snowflake>>()
+
+    /** @suppress **/
     val banned by required<List<Snowflake>>()
 }

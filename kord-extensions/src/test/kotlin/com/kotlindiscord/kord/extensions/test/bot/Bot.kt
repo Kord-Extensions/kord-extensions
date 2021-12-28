@@ -49,7 +49,7 @@ suspend fun main() {
             add(::TestExtension)
 
             help {
-                paginatorTimeout = 5
+                paginatorTimeout = 30
             }
         }
     }

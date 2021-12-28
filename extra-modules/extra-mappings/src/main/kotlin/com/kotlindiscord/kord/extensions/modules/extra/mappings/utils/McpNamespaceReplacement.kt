@@ -73,9 +73,11 @@ object McpNamespaceReplacement : Namespace("mcp") {
         }
     }
 
+    /** @suppress **/
+    fun getAllBotVersions(): Sequence<String> = mcpConfigSnapshots.keys.asSequence().map { it.toString() }
+
     override fun supportsFieldDescription(): Boolean = false
     override fun getDefaultLoadedVersions(): List<String> = listOf(getDefaultVersion())
-    fun getAllBotVersions(): Sequence<String> = mcpConfigSnapshots.keys.asSequence().map { it.toString() }
     override fun getAllVersions(): Sequence<String> = getAllBotVersions() + newMcpVersions.keys.map(Version::toString)
 
     override fun supportsAT(): Boolean = true
@@ -106,6 +108,7 @@ object McpNamespaceReplacement : Namespace("mcp") {
         }
     }
 
+    /** @suppress **/
     suspend fun MappingsBuilder.loadTsrgFromURLZip(url: URL) {
         url.toAsyncZip().forEachEntry { path, entry ->
             if (!entry.isDirectory && path.split("/").lastOrNull() == "joined.tsrg") {
@@ -114,6 +117,7 @@ object McpNamespaceReplacement : Namespace("mcp") {
         }
     }
 
+    /** @suppress **/
     suspend fun MappingsBuilder.loadSrgFromURLZip(url: URL) {
         url.toAsyncZip().forEachEntry { path, entry ->
             if (!entry.isDirectory && path.split("/").lastOrNull() == "joined.srg") {
@@ -138,6 +142,7 @@ object McpNamespaceReplacement : Namespace("mcp") {
         )
     }
 
+    /** @suppress **/
     suspend fun MappingsBuilder.loadMCPFromURLZip(url: URL) {
         url.toAsyncZip().forEachEntry { path, entry ->
             if (!entry.isDirectory) {

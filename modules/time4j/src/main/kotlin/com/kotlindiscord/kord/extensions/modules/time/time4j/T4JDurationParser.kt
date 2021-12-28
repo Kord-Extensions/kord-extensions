@@ -22,6 +22,7 @@ import java.util.*
 public object T4JDurationParser : KoinComponent {
     private val translations: TranslationsProvider by inject()
 
+    /** Check whether the given character is a valid duration unit character. **/
     public fun charValid(char: Char, locale: Locale): Boolean =
         char.isDigit() ||
             char == ' ' ||

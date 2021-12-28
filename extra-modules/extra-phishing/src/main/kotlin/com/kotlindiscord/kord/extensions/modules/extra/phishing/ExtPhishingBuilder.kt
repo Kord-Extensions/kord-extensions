@@ -12,7 +12,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.phishing
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import dev.kord.common.entity.Permission
 import dev.kord.core.event.Event
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 /** Builder used to configure the phishing extension. **/
@@ -21,7 +21,7 @@ class ExtPhishingBuilder {
     lateinit var appName: String
 
     /** Delay between domain update checks, 5 minutes at minimum. **/
-    var updateDelay = Duration.minutes(15)
+    var updateDelay = 15.minutes
 
     /**
      * Regular expression used to extract domains from messages.
@@ -84,7 +84,7 @@ class ExtPhishingBuilder {
             error("Application name must be provided")
         }
 
-        if (updateDelay < Duration.minutes(5)) {
+        if (updateDelay < 5.minutes) {
             error("The update delay must be at least five minutes - don't spam the API!")
         }
     }

@@ -11,6 +11,9 @@ import dev.kord.common.entity.Snowflake
 
 /** @suppress **/
 object EmojiSpec : ConfigSpec() {
+    /** @suppress **/
     val guilds by required<List<Snowflake>>()
+
+    /** @suppress **/
     val overrides by required<Map<String, Snowflake>>()
 }

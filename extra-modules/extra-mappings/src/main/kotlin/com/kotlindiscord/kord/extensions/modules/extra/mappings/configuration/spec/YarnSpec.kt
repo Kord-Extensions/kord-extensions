@@ -11,5 +11,6 @@ import com.uchuhimo.konf.ConfigSpec
 
 /** @suppress **/
 object YarnSpec : ConfigSpec() {
+    /** @suppress **/
     val channels by required<List<YarnChannels>>()
 }

@@ -12,6 +12,9 @@ private const val DEFAULT_TIMEOUT = 300L
 
 /** @suppress **/
 object SettingsSpec : ConfigSpec() {
+    /** @suppress **/
     val namespaces by required<List<String>>()
+
+    /** @suppress **/
     val timeout by optional(DEFAULT_TIMEOUT)
 }
