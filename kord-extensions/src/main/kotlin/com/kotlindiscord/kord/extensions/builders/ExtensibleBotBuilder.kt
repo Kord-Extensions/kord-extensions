@@ -47,6 +47,7 @@ import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
 import dev.kord.gateway.builder.Shards
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import io.ktor.utils.io.*
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.context.startKoin
@@ -524,6 +525,18 @@ public open class ExtensibleBotBuilder {
             /** Register a builder used to construct a [SentryAdapter] instance, usually the constructor. **/
             public fun builder(body: () -> SentryAdapter) {
                 builder = body
+            }
+
+            /**
+             * Convenience function to enable and set the DSN, but only if the supplied DSN isn't null.
+             *
+             * Intended for use with `envOrNull`.
+             */
+            public fun enableIfDSN(sentryDSN: String?) {
+                if (sentryDSN != null) {
+                    dsn = sentryDSN
+                    enable = true
+                }
             }
 
             /**
