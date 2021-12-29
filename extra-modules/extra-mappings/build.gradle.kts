@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.kotlin.stdlib)
 
     testImplementation(libs.groovy)  // For logback config
+    testImplementation(libs.jansi)
     testImplementation(libs.logback)
 
     implementation(project(":kord-extensions"))

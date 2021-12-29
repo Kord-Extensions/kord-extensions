@@ -21,10 +21,12 @@ if (environment == "spam") {
 
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
-        pattern = "%d{yyyy-MM-dd HH:mm:ss:SSS Z} | %5level | %40.40logger{40} | %msg%n"
+        pattern = "%boldGreen(%d{yyyy-MM-dd}) %boldYellow(%d{HH:mm:ss}) %gray(|) %highlight(%5level) %gray(|) %boldMagenta(%40.40logger{40}) %gray(|) %msg%n"
+
+        withJansi = true
     }
 
-    target = ConsoleTarget.SystemErr
+    target = ConsoleTarget.SystemOut
 }
 
 appender("FILE", FileAppender) {
