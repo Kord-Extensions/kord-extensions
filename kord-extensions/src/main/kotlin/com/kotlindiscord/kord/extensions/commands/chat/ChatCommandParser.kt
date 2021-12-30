@@ -553,7 +553,7 @@ public open class ChatCommandParser : KoinComponent {
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (converter.required || hasKwargs) {
+                    if (converter.required || converter.outputError || hasKwargs) {
                         throw t
                     }
                 }
@@ -639,7 +639,7 @@ public open class ChatCommandParser : KoinComponent {
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (converter.required) {
+                    if (converter.required || converter.outputError) {
                         throw t
                     }
                 }

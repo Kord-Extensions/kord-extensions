@@ -88,10 +88,25 @@ class TestExtension : Extension() {
         val user by user("target", "Target user")
     }
 
+    class OptionalDurationArgs : Arguments() {
+        val duration by optionalDuration("duration", "duration", required = true)
+    }
+
     override suspend fun setup() {
         event<GuildCreateEvent> {
             action {
                 logger.info { "Guild created: ${event.guild.name} (${event.guild.id})" }
+            }
+        }
+
+        chatCommand(::OptionalDurationArgs) {
+            name = "duration"
+            description = "Optional duration test"
+
+            action {
+                message.respond {
+                    content = arguments.duration.toString()
+                }
             }
         }
 
