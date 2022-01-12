@@ -112,7 +112,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
         val user = userFor(event)
 
         for (resolver in settings.i18nBuilder.localeResolvers) {
-            val result = resolver(guild, channel, user)
+            val result = resolver(guild, channel, user, event.interaction)
 
             if (result != null) {
                 locale = result

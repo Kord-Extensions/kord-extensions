@@ -20,6 +20,7 @@ import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.cache.data.toData
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.interaction.GuildApplicationCommandInteraction
+import dev.kord.core.entity.interaction.Interaction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
 import dev.kord.core.event.channel.thread.*
@@ -458,3 +459,16 @@ public suspend fun userFor(event: Event): UserBehavior? {
 public fun CheckContext<*>.silence() {
     message = null
 }
+
+/**
+ * Retrieves an interaction that is the subject of a given event, if possible.
+ *
+ * This function only supports a specific set of events - any unsupported events will
+ * simply result in a `null` value. Please note that some events may support a
+ * null value for this type of object, and this will also be reflected in the return
+ * value.
+ *
+ * @param event The event concerning to the interaction to retrieve.
+ * @return A [Interaction] representing the interaction, or null if there isn't one.
+ */
+public fun interactionFor(event: Event): Interaction? = (event as? InteractionCreateEvent)?.interaction
