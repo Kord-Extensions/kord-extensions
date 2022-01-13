@@ -14,7 +14,6 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.google.devtools.ksp.validate
-import com.kotlindiscord.kord.extensions.modules.annotations.*
 import java.util.*
 
 /**
@@ -59,12 +58,14 @@ public class ConverterProcessor(
                 .associate { it.name?.getShortName() to it.value }
                 .filterKeys { it != null }
 
-            val names = arguments["names"]!! as ArrayList<String>
-            val types = (arguments["types"]!! as ArrayList<KSType>).map { it.declaration.simpleName.asString() }
-            val extraImports = arguments["imports"] as ArrayList<String>?
             val extraArguments = arguments["arguments"] as ArrayList<String>? ?: arrayListOf()
-
+            val extraImports = arguments["imports"] as ArrayList<String>?
+            val names = arguments["names"]!! as ArrayList<String>
             var generic = arguments["generic"] as String?
+
+            val types = (arguments["types"]!! as ArrayList<KSType>).mapNotNull {
+                ConverterType.fromName(it.declaration.simpleName.asString())
+            }
 
             if (generic?.isEmpty() == true) {
                 generic = null
@@ -90,8 +91,8 @@ public class ConverterProcessor(
 
             val typeParam = typeParams.first().type!!.resolve().declaration
             val typeParamName = typeParam.simpleName.asString()
-            val isChoice: Boolean = types.contains(ConverterType.CHOICE.name)
-            val isCoalescing: Boolean = types.contains(ConverterType.COALESCING.name)
+            val isChoice: Boolean = types.contains(ConverterType.CHOICE)
+            val isCoalescing: Boolean = types.contains(ConverterType.COALESCING)
 
             if (isChoice && isCoalescing) {
                 error(
@@ -105,7 +106,7 @@ public class ConverterProcessor(
                     logger.info("Current type: $it")
 
                     val func = when (it) {
-                        ConverterType.SINGLE.name -> when {
+                        ConverterType.SINGLE -> when {
                             isChoice -> singleChoiceConverter(
                                 classDeclaration,
                                 name,
@@ -131,7 +132,7 @@ public class ConverterProcessor(
                             )
                         }
 
-                        ConverterType.OPTIONAL.name -> when {
+                        ConverterType.OPTIONAL -> when {
                             isChoice -> optionalChoiceConverter(
                                 classDeclaration,
                                 name,
@@ -157,7 +158,7 @@ public class ConverterProcessor(
                             )
                         }
 
-                        ConverterType.DEFAULTING.name -> when {
+                        ConverterType.DEFAULTING -> when {
                             isChoice -> defaultingChoiceConverter(
                                 classDeclaration,
                                 name,
@@ -183,7 +184,7 @@ public class ConverterProcessor(
                             )
                         }
 
-                        ConverterType.LIST.name -> when {
+                        ConverterType.LIST -> when {
                             isChoice -> listChoiceConverter(
                                 classDeclaration,
                                 name,
@@ -209,8 +210,8 @@ public class ConverterProcessor(
                             )
                         }
 
-                        ConverterType.CHOICE.name -> ""  // Done in the converter functions
-                        ConverterType.COALESCING.name -> ""  // Done in the converter functions
+                        ConverterType.CHOICE -> ""  // Done in the converter functions
+                        ConverterType.COALESCING -> ""  // Done in the converter functions
 
                         else -> "// UNSUPPPORTED: $it"
                     }.trim('\n')

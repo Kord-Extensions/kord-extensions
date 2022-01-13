@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
@@ -102,7 +103,13 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 
     /** Call the validator lambda, if one was provided. **/
     public open suspend fun validate(context: CommandContext) {
-        validator?.let { it(context, this.argumentObj, parsed) }
+        validator?.let { actualValidator ->
+            val validationContext = ValidationContext(parsed, context)
+
+            actualValidator.invoke(validationContext)
+
+            validationContext.throwIfFailed()
+        }
     }
 
     /**

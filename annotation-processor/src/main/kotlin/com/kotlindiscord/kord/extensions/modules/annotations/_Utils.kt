@@ -45,3 +45,11 @@ public fun String.maybe(bool: Boolean, callback: (String) -> String): String = i
 }
 
 public fun String.maybe(predicate: () -> Boolean, callback: (String) -> String): String = maybe(predicate(), callback)
+
+public fun <T> Collection<T>.containsAny(vararg items: T): Boolean {
+    items.forEach {
+        if (this.contains(it)) return true
+    }
+
+    return false
+}

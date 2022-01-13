@@ -2,7 +2,6 @@ import org.gradle.api.publish.maven.MavenPublication
 
 plugins {
     `maven-publish`
-    signing
 }
 
 val sourceJar: Task by tasks.getting
@@ -37,9 +36,4 @@ publishing {
             artifact(javadocJar)
         }
     }
-}
-
-signing {
-    useGpgCmd()
-    sign(publishing.publications["maven"])
 }

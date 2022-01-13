@@ -26,5 +26,5 @@ kordex {
 }
 
 dokkaModule {
-   moduleName.set("Kord Extensions: Java Time")
+    moduleName.set("Kord Extensions: Java Time")
 }

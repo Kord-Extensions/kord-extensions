@@ -9,7 +9,7 @@ package com.kotlindiscord.kord.extensions.modules.annotations.converters
 /**
  * Mark the class as a converter class, allowing converter functions to be generated.
  *
- * @property names Converter names, used to generate the functions. Multiple names will generate multiple set of
+ * @property names Converter names, used to generate the functions. Multiple names will generate multiple sets of
  * functions - surprise surprise.
 
  * @property types Converter function types to generate.

@@ -33,7 +33,7 @@ public open class MessageDelta(
     public val mentionedUserIds: Optional<Set<Snowflake>>,
     public val mentionsEveryone: Optional<Boolean>,
     public val reactions: Optional<Set<Reaction>>,
-    public val stickers: Optional<List<MessageSticker>>
+    public val stickers: Optional<List<StickerItem>>
 ) {
     /**
      * A Set representing the values that have changes. Each value is represented by a human-readable string.

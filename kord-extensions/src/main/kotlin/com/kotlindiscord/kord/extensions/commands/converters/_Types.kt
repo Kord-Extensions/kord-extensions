@@ -8,8 +8,10 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters
 
-import com.kotlindiscord.kord.extensions.commands.Argument
-import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
 
 /** Types alias representing a validator callable. Keeps things relatively maintainable. **/
-public typealias Validator<T> = (suspend CommandContext.(arg: Argument<*>, value: T) -> Unit)?
+public typealias Validator<T> = (suspend ValidationContext<T>.() -> Unit)?
+
+/** Types alias representing a mutator callable. Keeps things relatively maintainable. **/
+public typealias Mutator<T> = (suspend (T) -> T)?
