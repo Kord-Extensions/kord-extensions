@@ -52,9 +52,10 @@ import kotlinx.coroutines.flow.firstOrNull
 
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["dev.kord.common.entity.Snowflake"],
-    arguments = [
-        "requiredGuild: (suspend () -> Snowflake)? = null",
-        "useReply: Boolean = true",
+
+    builderFields = [
+        "public var requiredGuild: (suspend () -> Snowflake)? = null",
+        "public var useReply: Boolean = true",
     ]
 )
 @OptIn(KordPreview::class)

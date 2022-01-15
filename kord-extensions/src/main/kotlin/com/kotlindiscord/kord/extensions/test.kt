@@ -58,6 +58,14 @@ public class EnumConverterBuilder<E : Enum<E>>(
             )
         )
     }
+
+    override fun validateArgument() {
+        super.validateArgument()
+
+        if (!this::typeName.isInitialized) {
+            throw InvalidArgumentException(this, "Required field not provided: typeName")
+        }
+    }
 }
 
 public inline fun <reified E : Enum<E>> Arguments.enum(

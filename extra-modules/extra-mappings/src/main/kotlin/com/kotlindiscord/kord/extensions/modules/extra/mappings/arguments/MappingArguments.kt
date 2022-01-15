@@ -16,7 +16,10 @@ import me.shedaniel.linkie.Namespace
  */
 @Suppress("UndocumentedPublicProperty")
 open class MappingArguments(val namespace: Namespace) : Arguments() {
-    val query by string("query", "Name to query mappings for")
+    val query by string {
+        name = "query"
+        description = "Name to query mappings for"
+    }
 
     val version by optionalMappingsVersion(
         "version",

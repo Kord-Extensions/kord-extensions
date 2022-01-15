@@ -112,7 +112,7 @@ public fun Arguments.optionalT4jDuration(
     longHelp: Boolean = true,
     outputError: Boolean = false,
     validator: Validator<Duration<IsoUnit>?> = null,
-): OptionalConverter<Duration<IsoUnit>?> =
+): OptionalConverter<Duration<IsoUnit>> =
     arg(
         displayName,
         description,
@@ -152,10 +152,10 @@ public fun Arguments.t4jDurationList(
     longHelp: Boolean = true,
     required: Boolean = true,
     validator: Validator<List<Duration<IsoUnit>>> = null,
-): MultiConverter<Duration<IsoUnit>> =
+): ListConverter<Duration<IsoUnit>> =
     arg(
         displayName,
         description,
         T4JDurationConverter(longHelp = longHelp)
-            .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
+            .toList(required, signatureTypeString = "durations", nestedValidator = validator)
     )

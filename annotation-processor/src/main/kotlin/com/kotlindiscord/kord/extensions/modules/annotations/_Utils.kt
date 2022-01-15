@@ -53,3 +53,36 @@ public fun <T> Collection<T>.containsAny(vararg items: T): Boolean {
 
     return false
 }
+
+public fun String?.orNull(): String? =
+    if (this.isNullOrEmpty()) {
+        null
+    } else {
+        this
+    }
+
+// Credit: https://stackoverflow.com/a/59737650
+public fun <T> List<T>.permutations(): Set<List<T>> {
+    if (this.isEmpty()) {
+        return emptySet()
+    }
+
+    val permutationInstructions = this.toSet()
+        .map { it to this.count { x -> x == it } }
+        .fold(listOf(setOf<Pair<T, Int>>())) { acc, (value, valueCount) ->
+            mutableListOf<Set<Pair<T, Int>>>().apply {
+                for (set in acc) for (retainIndex in 0 until valueCount) add(set + (value to retainIndex))
+            }
+        }
+
+    return mutableSetOf<List<T>>().also { outSet ->
+        for (instructionSet in permutationInstructions) {
+            outSet += this.toMutableList().apply {
+                for ((value, retainIndex) in instructionSet) {
+                    repeat(retainIndex) { removeAt(indexOfFirst { it == value }) }
+                    repeat(count { it == value } - 1) { removeAt(indexOfLast { it == value }) }
+                }
+            }
+        }
+    }
+}

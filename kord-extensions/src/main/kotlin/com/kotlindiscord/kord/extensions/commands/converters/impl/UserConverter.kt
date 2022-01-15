@@ -49,9 +49,7 @@ import kotlinx.coroutines.flow.firstOrNull
     "user",
 
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    arguments = [
-        "useReply: Boolean = true",
-    ]
+    builderFields = ["public var useReply: Boolean = true", ]
 )
 @OptIn(KordPreview::class)
 public class UserConverter(

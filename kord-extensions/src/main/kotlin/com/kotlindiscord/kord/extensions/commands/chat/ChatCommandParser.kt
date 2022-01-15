@@ -300,7 +300,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
                 }
 
-                is MultiConverter<*> -> try {
+                is ListConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
                         converter.parse(parser, context, kwValue!!)
                     } else {
@@ -748,7 +748,7 @@ public open class ChatCommandParser : KoinComponent {
                 }
             }
 
-            if (it.converter is MultiConverter<*>) {
+            if (it.converter is ListConverter<*>) {
                 signature += "..."
             }
 

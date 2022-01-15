@@ -34,7 +34,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * Please note that user-provided regular expressions are not safe - they can take down your entire bot.
  *
  * As there is no way to validate individual segments of regex, the multi version of this converter
- * (via [toMulti]) will consume all remaining arguments.
+ * (via [toList]) will consume all remaining arguments.
  *
  * @param options Optional set of [RegexOption]s to pass to the regex parser.
  */
@@ -43,7 +43,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["kotlin.text.RegexOption"],
-    arguments = ["options: Set<RegexOption> = setOf()"]
+    builderFields = ["public var options: Set<RegexOption> = setOf()"]
 )
 @OptIn(KordPreview::class)
 public class RegexConverter(

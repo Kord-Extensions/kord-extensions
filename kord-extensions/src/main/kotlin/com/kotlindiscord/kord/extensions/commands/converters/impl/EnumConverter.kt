@@ -42,13 +42,27 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
     "enum",
 
     types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.LIST],
-
-    generic = "E: Enum<E>",
     imports = ["com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum"],
-    arguments = [
-        "typeName: String",
-        "noinline getter: suspend (String) -> E? = { getEnum<E>(it) }",
-        "bundle: String? = null",
+
+//    arguments = [
+//        "typeName: String",
+//        "noinline getter: suspend (String) -> E? = { getEnum<E>(it) }",
+//        "bundle: String? = null",
+//    ],
+
+    builderGeneric = "E: Enum<E>",
+    builderConstructorArguments = [
+        "public var getter: suspend (String) -> E?"
+    ],
+
+    builderFields = [
+        "public lateinit var typeName: String",
+        "public var bundle: String? = null"
+    ],
+
+    functionGeneric = "E: Enum<E>",
+    functionBuilderArguments = [
+        "getter = { getEnum(it) }",
     ]
 )
 @OptIn(KordPreview::class)

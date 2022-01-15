@@ -43,9 +43,9 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @Converter(
     "regex",
 
-    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL,],
     imports = ["kotlin.text.RegexOption"],
-    arguments = ["options: Set<RegexOption> = setOf()"]
+    builderFields = ["public var options: Set<RegexOption> = setOf()"]
 )
 public class RegexCoalescingConverter(
     private val options: Set<RegexOption> = setOf(),

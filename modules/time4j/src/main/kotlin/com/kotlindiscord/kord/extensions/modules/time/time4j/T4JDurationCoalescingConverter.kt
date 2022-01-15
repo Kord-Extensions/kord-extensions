@@ -211,7 +211,7 @@ public fun Arguments.optionalCoalescedT4jDuration(
     longHelp: Boolean = true,
     outputError: Boolean = false,
     validator: Validator<Duration<IsoUnit>?> = null,
-): OptionalCoalescingConverter<Duration<IsoUnit>?> =
+): OptionalCoalescingConverter<Duration<IsoUnit>> =
     arg(
         displayName,
         description,

@@ -70,7 +70,7 @@ public abstract class CoalescingConverter<T : Any>(
         errorTypeString: String? = null,
         outputError: Boolean = false,
         nestedValidator: Validator<T?> = null
-    ): OptionalCoalescingConverter<T?> = CoalescingToOptionalConverter(
+    ): OptionalCoalescingConverter<T> = CoalescingToOptionalConverter(
         this,
         signatureTypeString,
         showTypeInSignature,

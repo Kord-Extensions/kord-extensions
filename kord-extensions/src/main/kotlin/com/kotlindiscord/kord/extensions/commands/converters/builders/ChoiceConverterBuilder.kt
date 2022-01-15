@@ -9,10 +9,15 @@ package com.kotlindiscord.kord.extensions.commands.converters.builders
 /** Converter builder for choice converters. **/
 public interface ChoiceConverterBuilder<T> {
     /** List of possible choices, if any. **/
-    public val choices: MutableMap<String, T>
+    public var choices: MutableMap<String, T>
 
     /** Add a choice to the list of possible choices. **/
     public fun choice(key: String, value: T) {
         choices[key] = value
+    }
+
+    /** Add a choice to the list of possible choices. **/
+    public fun choices(all: Map<String, T>) {
+        choices = all.toMutableMap()
     }
 }

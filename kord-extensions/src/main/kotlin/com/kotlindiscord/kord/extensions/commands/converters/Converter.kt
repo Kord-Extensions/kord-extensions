@@ -143,7 +143,7 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
      * vowel.
      */
     public open suspend fun getErrorString(context: CommandContext): String = when (this) {
-        is MultiConverter<*> -> context.translate(errorTypeString ?: signatureTypeString)
+        is ListConverter<*> -> context.translate(errorTypeString ?: signatureTypeString)
         is CoalescingConverter<*> -> context.translate(errorTypeString ?: signatureTypeString)
 
         else -> if (errorTypeString != null) {

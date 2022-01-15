@@ -33,7 +33,7 @@ public fun Arguments.sentryId(displayName: String, description: String): SingleC
  *
  * @see SentryIdConverter
  */
-public fun Arguments.optionalSentryId(displayName: String, description: String): OptionalConverter<SentryId?> =
+public fun Arguments.optionalSentryId(displayName: String, description: String): OptionalConverter<SentryId> =
     arg(displayName, description, SentryIdConverter().toOptional())
 
 /**
@@ -45,5 +45,5 @@ public fun Arguments.sentryIdList(
     displayName: String,
     description: String,
     required: Boolean = true
-): MultiConverter<SentryId> =
-    arg(displayName, description, SentryIdConverter().toMulti(required))
+): ListConverter<SentryId> =
+    arg(displayName, description, SentryIdConverter().toList(required))

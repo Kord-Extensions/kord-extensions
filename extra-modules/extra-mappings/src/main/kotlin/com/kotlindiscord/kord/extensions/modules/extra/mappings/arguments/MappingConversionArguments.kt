@@ -16,14 +16,37 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
  */
 @Suppress("UndocumentedPublicProperty")
 class MappingConversionArguments(enabledNamespaces: Map<String, String>) : Arguments() {
-    val query by string("query", "Name to query mappings for")
-    val inputNamespace by stringChoice("input", "The namespace to convert from", enabledNamespaces)
-    val outputNamespace by stringChoice("output", "The namespace to convert to", enabledNamespaces)
-    val version by optionalString(
-        "version",
-        "Minecraft version to use for this query",
-    )
+    val query by string {
+        name = "query"
+        description = "Name to query mappings for"
+    }
 
-    val inputChannel by optionalString("inputChannel", "The mappings channel to use for input")
-    val outputChannel by optionalString("outputChannel", "The mappings channel to use for output")
+    val inputNamespace by stringChoice {
+        name = "input"
+        description = "The namespace to convert from"
+
+        choices(enabledNamespaces)
+    }
+
+    val outputNamespace by stringChoice {
+        name = "output"
+        description = "The namespace to convert to"
+
+        choices(enabledNamespaces)
+    }
+
+    val version by optionalString {
+        name = "version"
+        description = "Minecraft version to use for this query"
+    }
+
+    val inputChannel by optionalString {
+        name = "inputChannel"
+        description = "The mappings channel to use for input"
+    }
+
+    val outputChannel by optionalString {
+        name = "outputChannel"
+        description = "The mappings channel to use for output"
+    }
 }

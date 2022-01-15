@@ -53,10 +53,12 @@ import kotlinx.coroutines.flow.toList
 
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["dev.kord.common.entity.Snowflake"],
-    arguments = [
-        "requireSameGuild: Boolean = true",
-        "requiredGuild: (suspend () -> Snowflake)? = null"
-    ]
+
+    builderFields = [
+        "public var requireSameGuild: Boolean = true",
+        "public var requiredGuild: (suspend () -> Snowflake)? = null"
+    ],
+
 )
 @OptIn(KordPreview::class)
 public class ChannelConverter(

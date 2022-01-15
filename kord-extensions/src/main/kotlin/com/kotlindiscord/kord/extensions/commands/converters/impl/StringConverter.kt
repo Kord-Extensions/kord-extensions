@@ -21,7 +21,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 /**
  * Coalescing argument that simply returns the argument as it was given.
  *
- * The multi version of this converter (via [toMulti]) will consume all remaining arguments.
+ * The multi version of this converter (via [toList]) will consume all remaining arguments.
  */
 @Converter(
     "string",

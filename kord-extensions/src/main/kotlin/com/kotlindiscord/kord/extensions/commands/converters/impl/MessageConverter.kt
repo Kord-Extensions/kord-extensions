@@ -58,10 +58,11 @@ private val logger = KotlinLogging.logger {}
 
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["dev.kord.common.entity.Snowflake"],
-    arguments = [
-        "requireGuild: Boolean = false",
-        "requiredGuild: (suspend () -> Snowflake)? = null",
-        "useReply: Boolean = true",
+
+    builderFields = [
+        "public var requireGuild: Boolean = false",
+        "public var requiredGuild: (suspend () -> Snowflake)? = null",
+        "public var useReply: Boolean = true",
     ]
 )
 @OptIn(KordPreview::class)

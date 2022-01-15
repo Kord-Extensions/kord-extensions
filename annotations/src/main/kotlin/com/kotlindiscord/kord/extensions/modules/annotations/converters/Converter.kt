@@ -7,28 +7,33 @@
 package com.kotlindiscord.kord.extensions.modules.annotations.converters
 
 /**
- * Mark the class as a converter class, allowing converter functions to be generated.
+ * Mark the class as a converter class, allowing converter builders and their functions to be generated.
  *
  * @property names Converter names, used to generate the functions. Multiple names will generate multiple sets of
  * functions - surprise surprise.
 
- * @property types Converter function types to generate.
+ * @property types Converter types to generate builders and functions for.
  * @property imports Extra imports required for generated code to be valid.
  *
- * @property arguments Extra argument lines to add to every generated function, without the trailing comma. These will
- * be added as extra function arguments, and they'll also be passed into the class as matching named arguments- so
- * your converter's constructor must have the same names!
+ * @property builderConstructorArguments Arguments to add to the builder's constructor, if any.
+ * @property builderGeneric Generic typevar that the builder should take, if any.
+ * @property builderFields Extra fields to add to the builder, if any. Use `lateinit var` for required values.
  *
- * @property generic Generic typevar to be made accessible in your converter functions. The function will be marked
- * inline and the typevar will be reified - if you have custom callable arguments, you'll probably need to mark them
- * `noinline`. Typevars should be specified without the angle brackets - eg, "T : Any".
+ * @property functionBuilderArguments Arguments to pass into the builder's constructor, if any.
+ * @property functionGeneric Generic typevar that the builder should take, if any. Will be `reified`.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 public annotation class Converter(
     public vararg val names: String,
+
     public val types: Array<ConverterType>,
     public val imports: Array<String> = [],
-    public val arguments: Array<String> = [],
-    public val generic: String = ""
+
+    public val builderConstructorArguments: Array<String> = [],
+    public val builderGeneric: String = "",
+    public val builderFields: Array<String> = [],
+
+    public val functionBuilderArguments: Array<String> = [],
+    public val functionGeneric: String = "",
 )

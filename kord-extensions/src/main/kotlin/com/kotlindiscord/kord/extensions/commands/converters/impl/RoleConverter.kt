@@ -49,7 +49,7 @@ import kotlinx.coroutines.flow.firstOrNull
 
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["dev.kord.common.entity.Snowflake"],
-    arguments = ["requiredGuild: (suspend () -> Snowflake)? = null"]
+    builderFields = ["public var requiredGuild: (suspend () -> Snowflake)? = null"]
 )
 @OptIn(KordPreview::class)
 public class RoleConverter(

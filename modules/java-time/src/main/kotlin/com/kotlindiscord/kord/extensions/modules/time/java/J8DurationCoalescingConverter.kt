@@ -243,7 +243,7 @@ public fun Arguments.optionalCoalescedJ8Duration(
     longHelp: Boolean = true,
     outputError: Boolean = false,
     validator: Validator<ChronoContainer?> = null,
-): OptionalCoalescingConverter<ChronoContainer?> =
+): OptionalCoalescingConverter<ChronoContainer> =
     arg(
         displayName,
         description,

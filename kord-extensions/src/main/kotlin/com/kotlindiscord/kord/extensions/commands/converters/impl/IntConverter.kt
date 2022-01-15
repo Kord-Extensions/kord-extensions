@@ -38,7 +38,7 @@ private const val DEFAULT_RADIX = 10
     "int",
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    arguments = ["radix: Int = $DEFAULT_RADIX"]
+    builderFields = ["public var radix: Int = $DEFAULT_RADIX"]
 )
 @OptIn(KordPreview::class)
 public class IntConverter(

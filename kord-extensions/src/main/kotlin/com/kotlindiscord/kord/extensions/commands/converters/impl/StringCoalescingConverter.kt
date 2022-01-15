@@ -38,7 +38,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @Converter(
     "string",
 
-    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE]
+    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL]
 )
 public class StringCoalescingConverter(
     shouldThrow: Boolean = false,

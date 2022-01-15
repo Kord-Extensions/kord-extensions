@@ -100,7 +100,7 @@ public inline fun <reified T> Arguments.optionalEnumChoice(
     typeName: String,
     noinline validator: Validator<T?> = null,
     bundle: String? = null,
-): OptionalConverter<T?> where T : Enum<T>, T : ChoiceEnum = arg(
+): OptionalConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
     displayName,
     description,
     EnumChoiceConverter<T>(typeName, ::getEnum, enumValues(), bundle = bundle)

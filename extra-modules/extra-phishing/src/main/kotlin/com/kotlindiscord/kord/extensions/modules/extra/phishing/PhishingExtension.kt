@@ -381,8 +381,13 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     /** Arguments class for domain-relevant commands. **/
     inner class DomainArgs : Arguments() {
         /** Targeted domain string. **/
-        val domain by string("domain", "Domain to check") {
-            failIf("Please provide the domain name only, without the protocol or a path.") { "/" in value }
+        val domain by string {
+            name = "domain"
+            description = "Domain to check"
+
+            validate {
+                failIf("Please provide the domain name only, without the protocol or a path.") { "/" in value }
+            }
         }
     }
 }

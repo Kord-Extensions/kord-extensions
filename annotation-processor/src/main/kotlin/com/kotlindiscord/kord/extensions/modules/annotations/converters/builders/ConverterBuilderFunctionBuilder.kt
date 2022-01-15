@@ -21,11 +21,11 @@ public class ConverterBuilderFunctionBuilder : KoinComponent {
     /** Comment to prepend to the function definition. **/
     public var comment: String? = null
 
-    /** Builder function generic arguments. Omit the `<>`. **/
-    public var generic: String? = null
-
     /** Builder class generic arguments. Omit the `<>`. **/
     public var builderGeneric: String? = null
+
+    /** Builder function generic arguments. Omit the `<>`. **/
+    public var functionGeneric: String? = null
 
     internal val builderArguments: MutableList<String> = mutableListOf()
 
@@ -65,14 +65,14 @@ public class ConverterBuilderFunctionBuilder : KoinComponent {
 
         builder.append("public ")
 
-        if (generic != null) {
+        if (functionGeneric != null) {
             builder.append("inline ")
         }
 
         builder.append("fun ")
 
-        if (generic != null) {
-            builder.append("<reified $generic> ")
+        if (functionGeneric != null) {
+            builder.append("<reified $functionGeneric> ")
         }
 
         builder.append("Arguments.$name(\n")
@@ -134,7 +134,7 @@ public fun builderFunction(body: ConverterBuilderFunctionBuilder.() -> Unit): St
 public fun main() {
     println(
         builderFunction {
-            generic = "E: Enum<E>"
+            functionGeneric = "E: Enum<E>"
             builderGeneric = "E: Enum<E>"
 
             argumentType = "E"

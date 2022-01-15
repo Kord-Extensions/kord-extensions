@@ -12,6 +12,7 @@ package com.kotlindiscord.kord.extensions.modules.annotations.converters.builder
 
 import com.kotlindiscord.kord.extensions.modules.annotations.containsAny
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.toCapitalized
 import org.koin.core.component.KoinComponent
 
 /**
@@ -48,6 +49,7 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     internal val types: MutableSet<ConverterType> = mutableSetOf()
 
     internal var converterType: String = ""
+    internal var functionSuffix: String = ""
     internal var builderType: String = ""
 
     /** The ultimate result, the final string created after calling [build]. **/
@@ -68,6 +70,11 @@ public class ConverterBuilderClassBuilder : KoinComponent {
 
     /** Specify the converter types that this builder concerns. **/
     public fun types(vararg types: ConverterType) {
+        types(types.toList())
+    }
+
+    /** Specify the converter types that this builder concerns. **/
+    public fun types(types: Collection<ConverterType>) {
         this.types.addAll(types)
     }
 
@@ -102,7 +109,16 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             }
         }
 
-        builderType = "${converterType}${name}ConverterBuilder"
+        builderType = converterType +
+            name +
+
+            if (ConverterType.CHOICE in types) {
+                "Choice"
+            } else {
+                ""
+            } +
+
+            "ConverterBuilder"
 
         builder.append(builderType)
 
@@ -135,7 +151,7 @@ public class ConverterBuilderClassBuilder : KoinComponent {
         builder.append(" {\n")
 
         if (ConverterType.CHOICE in types) {
-            builder.append("    override val choices = mutableMapOf()\n\n")
+            builder.append("    override var choices: MutableMap<String, $argumentType> = mutableMapOf()\n\n")
         }
 
         if (builderFields.isNotEmpty()) {
@@ -153,8 +169,12 @@ public class ConverterBuilderClassBuilder : KoinComponent {
         builder.append("\n")
         builder.append("            converter = $converterClass(\n")
 
-        if (!types.containsAny(ConverterType.LIST, ConverterType.COALESCING, ConverterType.DEFAULTING)) {
+        if (!types.containsAny(ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.DEFAULTING)) {
             builder.append("                validator = validator,\n")
+        }
+
+        if (ConverterType.CHOICE in types) {
+            builder.append("                choices = choices,\n")
         }
 
         builderArgumentNames.forEach {
@@ -179,7 +199,7 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             builder.append("                nestedValidator = validator,\n")
             builder.append("            )")
         } else if (types.contains(ConverterType.LIST)) {
-            builder.append(".toMulti(\n")
+            builder.append(".toList(\n")
             builder.append("                required = !ignoreErrors,\n")
             builder.append("                nestedValidator = validator,\n")
             builder.append("            )")
@@ -188,11 +208,83 @@ public class ConverterBuilderClassBuilder : KoinComponent {
         builder.append("\n")
         builder.append("        )\n")
         builder.append("    }\n")
+
+        val lateInit = builderFields
+            .filter { it.contains("lateinit var") }
+            .map { it.split(":").first() }
+            .map { it.split(" ").last() }
+
+        if (lateInit.isNotEmpty()) {
+            builder.append("\n")
+
+            builder.append("    override fun validateArgument() {\n")
+            builder.append("        super.validateArgument()\n")
+
+            lateInit.forEach {
+                builder.append("\n")
+                builder.append("        if (!this::$it.isInitialized) {\n")
+
+                builder.append(
+                    "            throw InvalidArgumentException(this, " +
+                        "\"Required field not provided: $it\")\n"
+                )
+
+                builder.append("        }\n")
+            }
+
+            builder.append("    }\n")
+        }
+
         builder.append("}\n")
 
         result = builder.toString()
 
+        functionSuffix = converterType.removeSuffix("Converter")
+
         return result!!
+    }
+
+    internal fun getFunctionName(givenName: String): String {
+        val before: MutableList<String> = mutableListOf()
+        val after: MutableList<String> = mutableListOf()
+
+        for (type in types) {
+            when (type) {
+                ConverterType.DEFAULTING -> before.add("defaulting")
+                ConverterType.LIST -> after.add("list")
+                ConverterType.OPTIONAL -> before.add("optional")
+                ConverterType.COALESCING -> before.add("coalescing")
+                ConverterType.CHOICE -> after.add("choice")
+
+                ConverterType.SINGLE -> { /* Don't add anything */ }
+            }
+        }
+
+        val capitalizeName = before.isNotEmpty()
+
+        var resultString = ""
+        var firstString = true
+
+        before.forEach {
+            if (firstString) {
+                resultString += it
+                firstString = false
+            } else {
+                resultString += it.toCapitalized()
+            }
+        }
+
+        resultString += if (capitalizeName) {
+            givenName.toCapitalized()
+        } else {
+            givenName
+        }
+
+        after.forEach {
+            resultString += it.toCapitalized()
+        }
+
+        return resultString
     }
 }
 
@@ -211,7 +303,7 @@ public fun builderClass(body: ConverterBuilderClassBuilder.() -> Unit): Converte
 public fun main() {
     println(
         builderClass {
-            name = "Enum"
+            name = "enum"
             converterClass = "EnumConverter"
             argumentType = "E"
 

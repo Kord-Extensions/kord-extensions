@@ -12,10 +12,10 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
 
 /**
- * A special [MultiConverter] that wraps a [SingleConverter], effectively turning it into a list-handling converter
+ * A special [ListConverter] that wraps a [SingleConverter], effectively turning it into a list-handling converter
  * with the same logic.
  *
- * The behaviours specified in [MultiConverter] also apply to this converter, so it's worth reading about it.
+ * The behaviours specified in [ListConverter] also apply to this converter, so it's worth reading about it.
  *
  * @param singleConverter The [SingleConverter] to wrap.
  *
@@ -24,7 +24,7 @@ import com.kotlindiscord.kord.extensions.parser.StringParser
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
-public class SingleToMultiConverter<T : Any>(
+public class SingleToListConverter<T : Any>(
     required: Boolean = true,
     public val singleConverter: SingleConverter<T>,
 
@@ -33,7 +33,7 @@ public class SingleToMultiConverter<T : Any>(
     newErrorTypeString: String? = null,
 
     override var validator: Validator<List<T>> = null
-) : MultiConverter<T>(required) {
+) : ListConverter<T>(required) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString

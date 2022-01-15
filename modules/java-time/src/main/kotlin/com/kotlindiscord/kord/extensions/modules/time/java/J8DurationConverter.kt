@@ -145,7 +145,7 @@ public fun Arguments.optionalJ8Duration(
     longHelp: Boolean = true,
     outputError: Boolean = false,
     validator: Validator<ChronoContainer?> = null,
-): OptionalConverter<ChronoContainer?> =
+): OptionalConverter<ChronoContainer> =
     arg(
         displayName,
         description,
@@ -187,10 +187,10 @@ public fun Arguments.j8DurationList(
     longHelp: Boolean = true,
     required: Boolean = true,
     validator: Validator<List<ChronoContainer>> = null,
-): MultiConverter<ChronoContainer> =
+): ListConverter<ChronoContainer> =
     arg(
         displayName,
         description,
         J8DurationConverter(longHelp = longHelp, positiveOnly = requirePositive)
-            .toMulti(required, signatureTypeString = "durations", nestedValidator = validator)
+            .toList(required, signatureTypeString = "durations", nestedValidator = validator)
     )
