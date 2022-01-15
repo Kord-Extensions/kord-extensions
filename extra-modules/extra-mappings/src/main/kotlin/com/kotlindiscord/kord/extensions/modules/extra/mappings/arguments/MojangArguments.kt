@@ -13,9 +13,10 @@ import me.shedaniel.linkie.namespaces.MojangNamespace
 /** Arguments for Mojang mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
 class MojangArguments : MappingWithChannelArguments(MojangNamespace) {
-    override val channel by optionalEnumChoice<Channels>(
-        displayName = "channel",
-        description = "Mappings channel to use for this query",
+    override val channel by optionalEnumChoice<Channels> {
+        name = "channel"
+        description = "Mappings channel to use for this query"
+
         typeName = "official/snapshot"
-    )
+    }
 }

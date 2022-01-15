@@ -102,7 +102,12 @@ class TestExtension : Extension() {
     }
 
     class SlashChoiceArgs : Arguments() {
-        val arg by enumChoice<TestChoiceEnum>("choice", "Enum Choice", "test")
+        val arg by enumChoice<TestChoiceEnum> {
+            name = "choice"
+            description = "Enum Choice"
+
+            typeName = "test"
+        }
     }
 
     class CoalescedArgs : Arguments() {

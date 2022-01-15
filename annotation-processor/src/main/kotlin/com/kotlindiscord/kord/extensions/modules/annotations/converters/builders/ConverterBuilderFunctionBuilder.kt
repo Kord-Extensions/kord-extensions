@@ -27,6 +27,9 @@ public class ConverterBuilderFunctionBuilder : KoinComponent {
     /** Builder function generic arguments. Omit the `<>`. **/
     public var functionGeneric: String? = null
 
+    /** Extra generic bounds to place after `where` in the function signature. **/
+    public var whereSuffix: String? = null
+
     internal val builderArguments: MutableList<String> = mutableListOf()
 
     /** Argument function name, `"Arguments.$name"`. **/
@@ -88,7 +91,13 @@ public class ConverterBuilderFunctionBuilder : KoinComponent {
 
         builder.append(".() -> Unit\n")
 
-        builder.append("): $converterType<$argumentType> {\n")
+        builder.append("): $converterType<$argumentType>")
+
+        if (whereSuffix != null) {
+            builder.append(" where $whereSuffix")
+        }
+
+        builder.append(" {\n")
         builder.append("    val builder = $builderType")
 
         if (splitBuilderGeneric != null) {

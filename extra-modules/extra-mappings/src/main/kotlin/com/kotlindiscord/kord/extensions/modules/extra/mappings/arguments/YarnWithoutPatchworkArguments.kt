@@ -13,10 +13,10 @@ import me.shedaniel.linkie.namespaces.YarnNamespace
 /** Arguments for Yarn mappings lookup commands when the Patchwork channel is disabled. **/
 @Suppress("UndocumentedPublicProperty")
 class YarnWithoutPatchworkArguments : MappingWithChannelArguments(YarnNamespace) {
-    override val channel by optionalEnumChoice<Channels>(
-        displayName = "channel",
-        description = "Mappings channel to use for this query",
+    override val channel by optionalEnumChoice<Channels> {
+        name = "channel"
+        description = "Mappings channel to use for this query"
 
         typeName = "official/snapshot"
-    )
+    }
 }

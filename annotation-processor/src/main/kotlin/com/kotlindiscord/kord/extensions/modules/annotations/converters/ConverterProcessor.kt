@@ -145,9 +145,6 @@ public class ConverterProcessor(
                 import com.kotlindiscord.kord.extensions.commands.converters.*
                 import com.kotlindiscord.kord.extensions.commands.converters.builders.*
                 import dev.kord.common.annotation.KordPreview
-
-                // Converter type params
-                
             """.trimIndent()
 
             val ignoredGenerics = listOfNotNull(
@@ -155,9 +152,16 @@ public class ConverterProcessor(
                 arguments.functionGeneric?.split(":")?.first()
             )
 
-            typeVars.forEach {
-                if (it.simpleName.getShortName() !in ignoredGenerics) {
-                    outputText += "import ${it.qualifiedName!!.asString()}\n"
+            val typeImports = typeVars.filter { it.simpleName.getShortName() !in ignoredGenerics }
+
+            if (typeImports.isNotEmpty()) {
+                outputText += """
+                    
+                    // Converter type params
+                """.trimIndent()
+
+                typeImports.forEach {
+                    outputText += "\nimport ${it.qualifiedName!!.asString()}"
                 }
             }
 
@@ -201,13 +205,11 @@ public class ConverterProcessor(
 
             builderGeneric = arguments.builderGeneric
 
-            arguments.builderConstructorArguments.forEach {
-                builderArg(it)
-            }
+            arguments.builderConstructorArguments.forEach(this::builderArg)
+            arguments.builderFields.forEach(this::builderField)
+            arguments.builderInitStatements.forEach(this::builderInitStatement)
 
-            arguments.builderFields.forEach {
-                builderField(it)
-            }
+            whereSuffix = arguments.builderSuffixedWhere
 
             types(types)
         }
@@ -228,16 +230,16 @@ public class ConverterProcessor(
             builderType = classBuilder.builderType
             converterType = classBuilder.converterType
 
-            arguments.functionBuilderArguments.forEach {
-                builderArg(it)
-            }
+            whereSuffix = arguments.functionSuffixedWhere
+
+            arguments.functionBuilderArguments.forEach(this::builderArg)
         }
 
         return """
-            ${classBuilder.result!!.trim()}
-            
-            ${function.trim()}
-        """.trimIndent().trim('\n', ' ')
+           |${classBuilder.result!!.trim('\n', ' ')}
+
+           |${function.trim('\n', ' ')}
+        """.trimMargin().trim('\n', ' ')
     }
 
     internal fun classComment(name: String, see: String): String = """
@@ -247,7 +249,7 @@ public class ConverterProcessor(
     """.trimIndent()
 
     internal fun functionComment(name: String, type: String, see: String): String = """
-        Creates a $name $type converter.
+        Converter creation function: $name $type
         
         @see $see
     """.trimIndent()

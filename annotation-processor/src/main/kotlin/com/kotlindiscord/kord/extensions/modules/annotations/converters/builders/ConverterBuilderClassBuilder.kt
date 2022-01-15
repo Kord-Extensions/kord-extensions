@@ -40,11 +40,16 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     /** Builder generic params, if any. Omit the `<>`. **/
     public var builderGeneric: String? = null
 
+    /** Extra generic bounds to place after `where` in the builder signature. **/
+    public var whereSuffix: String? = null
+
     internal val builderArguments: MutableList<String> = mutableListOf()
     internal val builderArgumentNames: MutableList<String> = mutableListOf()
 
     internal val builderFields: MutableList<String> = mutableListOf()
     internal val builderFieldNames: MutableList<String> = mutableListOf()
+
+    internal val builderInitStatements: MutableList<String> = mutableListOf()
 
     internal val types: MutableSet<ConverterType> = mutableSetOf()
 
@@ -59,13 +64,21 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     /** Add a builder constructor argument. **/
     public fun builderArg(arg: String) {
         builderArguments.add(arg)
-        builderArgumentNames.add(arg.split(":").first().split(" ").last())
+
+        if (!arg.startsWith("!!")) {
+            builderArgumentNames.add(arg.split(":").first().split(" ").last())
+        }
     }
 
     /** Add a builder field. **/
     public fun builderField(field: String) {
         builderFields.add(field)
         builderFieldNames.add(field.split(":").first().split(" ").last())
+    }
+
+    /** Add a builder init statement. **/
+    public fun builderInitStatement(line: String) {
+        builderInitStatements.add(line)
     }
 
     /** Specify the converter types that this builder concerns. **/
@@ -132,7 +145,7 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             builder.append("\n")
 
             builderArguments.forEach {
-                builder.append("    $it,\n")
+                builder.append("    ${it.trim('!', ' ')},\n")
             }
         }
 
@@ -148,7 +161,21 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             builder.append(", ChoiceConverterBuilder<$argumentType>")
         }
 
+        if (whereSuffix != null) {
+            builder.append(" where $whereSuffix")
+        }
+
         builder.append(" {\n")
+
+        if (builderInitStatements.isNotEmpty()) {
+            builder.append("    init {\n")
+
+            builderInitStatements.forEach {
+                builder.append("        $it\n")
+            }
+
+            builder.append("    }\n\n")
+        }
 
         if (ConverterType.CHOICE in types) {
             builder.append("    override var choices: MutableMap<String, $argumentType> = mutableMapOf()\n\n")

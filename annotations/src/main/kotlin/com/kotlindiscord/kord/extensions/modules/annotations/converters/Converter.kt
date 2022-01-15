@@ -18,9 +18,12 @@ package com.kotlindiscord.kord.extensions.modules.annotations.converters
  * @property builderConstructorArguments Arguments to add to the builder's constructor, if any.
  * @property builderGeneric Generic typevar that the builder should take, if any.
  * @property builderFields Extra fields to add to the builder, if any. Use `lateinit var` for required values.
+ * @property builderInitStatements Extra lines of code to add to the builder's `init { }` block.
+ * @property builderSuffixedWhere Extra generic bounds to place after `where` in the builder's signature.
  *
  * @property functionBuilderArguments Arguments to pass into the builder's constructor, if any.
  * @property functionGeneric Generic typevar that the builder should take, if any. Will be `reified`.
+ * @property functionSuffixedWhere Extra generic bounds to place after `where` in the function's signature.
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
@@ -33,7 +36,11 @@ public annotation class Converter(
     public val builderConstructorArguments: Array<String> = [],
     public val builderGeneric: String = "",
     public val builderFields: Array<String> = [],
+    public val builderSuffixedWhere: String = "",
+
+    public val builderInitStatements: Array<String> = [],
 
     public val functionBuilderArguments: Array<String> = [],
     public val functionGeneric: String = "",
+    public val functionSuffixedWhere: String = "",
 )

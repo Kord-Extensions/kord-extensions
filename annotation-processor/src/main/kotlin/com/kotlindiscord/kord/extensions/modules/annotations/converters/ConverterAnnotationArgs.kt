@@ -49,10 +49,22 @@ public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
         argMap["builderFields"] as ArrayList<String>? ?: arrayListOf()
 
     /** @suppress **/
+    public val builderInitStatements: ArrayList<String> =
+        argMap["builderInitStatements"] as ArrayList<String>? ?: arrayListOf()
+
+    /** @suppress **/
+    public val builderSuffixedWhere: String? =
+        (argMap["builderSuffixedWhere"] as String).orNull()
+
+    /** @suppress **/
     public val functionGeneric: String? =
         (argMap["functionGeneric"] as String).orNull()
 
     /** @suppress **/
     public val functionBuilderArguments: ArrayList<String> =
         argMap["functionBuilderArguments"] as ArrayList<String>? ?: arrayListOf()
+
+    /** @suppress **/
+    public val functionSuffixedWhere: String? =
+        (argMap["functionSuffixedWhere"] as String).orNull()
 }
