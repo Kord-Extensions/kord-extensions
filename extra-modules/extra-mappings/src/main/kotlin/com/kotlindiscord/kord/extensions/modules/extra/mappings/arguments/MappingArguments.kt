@@ -21,10 +21,10 @@ open class MappingArguments(val namespace: Namespace) : Arguments() {
         description = "Name to query mappings for"
     }
 
-    val version by optionalMappingsVersion(
-        "version",
-        "Minecraft version to use for this query",
-        true,
-        namespace
-    )
+    val version by optionalMappingsVersion {
+        name = "version"
+        description = "Minecraft version to use for this query"
+
+        namespace(namespace)
+    }
 }

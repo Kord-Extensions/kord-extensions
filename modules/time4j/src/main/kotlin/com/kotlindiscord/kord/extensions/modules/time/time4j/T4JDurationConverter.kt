@@ -15,9 +15,10 @@ package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
@@ -40,6 +41,15 @@ import net.time4j.IsoUnit
  * @see parseT4JDuration
  */
 @OptIn(KordPreview::class)
+@Converter(
+    names = ["t4JDuration"],
+    types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    imports = ["net.time4j.*"],
+
+    builderFields = [
+        "public var longHelp: Boolean = true",
+    ],
+)
 public class T4JDurationConverter(
     public val longHelp: Boolean = true,
     override var validator: Validator<Duration<IsoUnit>> = null
@@ -87,75 +97,3 @@ public class T4JDurationConverter(
         return true
     }
 }
-
-/**
- * Create a Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.t4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    validator: Validator<Duration<IsoUnit>> = null,
-): SingleConverter<Duration<IsoUnit>> =
-    arg(displayName, description, T4JDurationConverter(longHelp = longHelp, validator = validator))
-
-/**
- * Create an optional Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.optionalT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: Validator<Duration<IsoUnit>?> = null,
-): OptionalConverter<Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting Time4J Duration converter, for single arguments.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.defaultingT4jDuration(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    defaultValue: Duration<IsoUnit>,
-    validator: Validator<Duration<IsoUnit>> = null,
-): DefaultingConverter<Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create a Time4J Duration converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see T4JDurationConverter
- */
-public fun Arguments.t4jDurationList(
-    displayName: String,
-    description: String,
-    longHelp: Boolean = true,
-    required: Boolean = true,
-    validator: Validator<List<Duration<IsoUnit>>> = null,
-): ListConverter<Duration<IsoUnit>> =
-    arg(
-        displayName,
-        description,
-        T4JDurationConverter(longHelp = longHelp)
-            .toList(required, signatureTypeString = "durations", nestedValidator = validator)
-    )

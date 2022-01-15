@@ -15,9 +15,10 @@ package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
@@ -37,6 +38,16 @@ import java.time.LocalDateTime
  * @param longHelp Whether to send the user a long help message with specific information on how to specify durations.
  * @param positiveOnly Whether a positive duration is required - `true` by default.
  */
+@Converter(
+    names = ["j8Duration"],
+    types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+    imports = ["java.time.*"],
+
+    builderFields = [
+        "public var longHelp: Boolean = true",
+        "public var positiveOnly: Boolean = true",
+    ],
+)
 @OptIn(KordPreview::class)
 public class J8DurationConverter(
     public val longHelp: Boolean = true,
@@ -110,87 +121,3 @@ public class J8DurationConverter(
         return true
     }
 }
-
-/**
- * Create a Java 8 Duration converter, for single arguments.
- *
- * @see J8DurationConverter
- */
-public fun Arguments.j8Duration(
-    displayName: String,
-    description: String,
-    requirePositive: Boolean = true,
-    longHelp: Boolean = true,
-    validator: Validator<ChronoContainer> = null,
-): SingleConverter<ChronoContainer> =
-    arg(
-        displayName,
-        description,
-        J8DurationConverter(
-            longHelp = longHelp,
-            positiveOnly = requirePositive,
-            validator = validator
-        )
-    )
-
-/**
- * Create an optional Java 8 Duration converter, for single arguments.
- *
- * @see J8DurationConverter
- */
-public fun Arguments.optionalJ8Duration(
-    displayName: String,
-    description: String,
-    requirePositive: Boolean = true,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: Validator<ChronoContainer?> = null,
-): OptionalConverter<ChronoContainer> =
-    arg(
-        displayName,
-        description,
-        J8DurationConverter(longHelp = longHelp, positiveOnly = requirePositive)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting Java 8 Duration converter, for single arguments.
- *
- * @see J8DurationConverter
- */
-public fun Arguments.defaultingJ8Duration(
-    displayName: String,
-    description: String,
-    requirePositive: Boolean = true,
-    longHelp: Boolean = true,
-    defaultValue: ChronoContainer,
-    validator: Validator<ChronoContainer> = null,
-): DefaultingConverter<ChronoContainer> =
-    arg(
-        displayName,
-        description,
-        J8DurationConverter(longHelp = longHelp, positiveOnly = requirePositive)
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )
-
-/**
- * Create a Java 8 Duration converter, for lists of arguments.
- *
- * @param required Whether command parsing should fail if no arguments could be converted.
- *
- * @see J8DurationConverter
- */
-public fun Arguments.j8DurationList(
-    displayName: String,
-    description: String,
-    requirePositive: Boolean = true,
-    longHelp: Boolean = true,
-    required: Boolean = true,
-    validator: Validator<List<ChronoContainer>> = null,
-): ListConverter<ChronoContainer> =
-    arg(
-        displayName,
-        description,
-        J8DurationConverter(longHelp = longHelp, positiveOnly = requirePositive)
-            .toList(required, signatureTypeString = "durations", nestedValidator = validator)
-    )

@@ -9,7 +9,11 @@ plugins {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
+
     implementation(project(":kord-extensions"))
+    implementation(project(":annotations"))
+
+    ksp(project(":annotation-processor"))
 
     detektPlugins(libs.detekt)
 

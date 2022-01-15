@@ -49,6 +49,7 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     internal val builderFields: MutableList<String> = mutableListOf()
     internal val builderFieldNames: MutableList<String> = mutableListOf()
 
+    internal val builderExtraStatements: MutableList<String> = mutableListOf()
     internal val builderInitStatements: MutableList<String> = mutableListOf()
 
     internal val types: MutableSet<ConverterType> = mutableSetOf()
@@ -74,6 +75,11 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     public fun builderField(field: String) {
         builderFields.add(field)
         builderFieldNames.add(field.split(":").first().split(" ").last())
+    }
+
+    /** Add a builder init statement. **/
+    public fun builderExtraStatement(line: String) {
+        builderExtraStatements.add(line)
     }
 
     /** Add a builder init statement. **/
@@ -183,6 +189,14 @@ public class ConverterBuilderClassBuilder : KoinComponent {
 
         if (builderFields.isNotEmpty()) {
             builderFields.forEach {
+                builder.append("    $it\n")
+            }
+
+            builder.append("\n")
+        }
+
+        if (builderExtraStatements.isNotEmpty()) {
+            builderExtraStatements.forEach {
                 builder.append("    $it\n")
             }
 

@@ -9,7 +9,7 @@ package com.kotlindiscord.kord.extensions.test.bot
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.chatCommand
-import com.kotlindiscord.kord.extensions.modules.time.time4j.coalescedT4jDuration
+import com.kotlindiscord.kord.extensions.modules.time.time4j.coalescingT4JDuration
 import com.kotlindiscord.kord.extensions.modules.time.time4j.toHuman
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
@@ -21,11 +21,10 @@ class TestExtension : Extension() {
     override val name = "test"
 
     class TestArgs : Arguments() {
-        val duration by coalescedT4jDuration(
-            "duration",
-            "Duration argument",
-            shouldThrow = true
-        )
+        val duration by coalescingT4JDuration {
+            name = "duration"
+            description = "Duration argument"
+        }
     }
 
     override suspend fun setup() {

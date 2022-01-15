@@ -75,7 +75,18 @@ public class ConverterProcessor(
             )
 
             val typeVars = typeParams.map { it.type!!.resolve().declaration }
-            val typeVarName = typeVars.first().simpleName.asString()
+            val firstTypeVar = typeVars.first()
+            var typeVarName = firstTypeVar.simpleName.asString()
+
+            if (firstTypeVar.typeParameters.isNotEmpty()) {
+                typeVarName += "<"
+
+                typeVarName += firstTypeVar.typeParameters.joinToString {
+                    it.bounds.joinToString { bound -> bound.resolve().declaration.simpleName.asString() }
+                }
+
+                typeVarName += ">"
+            }
 
             val strings: MutableList<String> = mutableListOf()
 
@@ -155,10 +166,8 @@ public class ConverterProcessor(
             val typeImports = typeVars.filter { it.simpleName.getShortName() !in ignoredGenerics }
 
             if (typeImports.isNotEmpty()) {
-                outputText += """
-                    
-                    // Converter type params
-                """.trimIndent()
+                outputText += "\n\n" +
+                    "// Converter type params"
 
                 typeImports.forEach {
                     outputText += "\nimport ${it.qualifiedName!!.asString()}"
@@ -207,6 +216,7 @@ public class ConverterProcessor(
 
             arguments.builderConstructorArguments.forEach(this::builderArg)
             arguments.builderFields.forEach(this::builderField)
+            arguments.builderExtraStatements.forEach(this::builderExtraStatement)
             arguments.builderInitStatements.forEach(this::builderInitStatement)
 
             whereSuffix = arguments.builderSuffixedWhere

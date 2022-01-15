@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("UncheckedCast")
+
 package com.kotlindiscord.kord.extensions.modules.annotations.converters
 
 import com.google.devtools.ksp.symbol.KSAnnotation
@@ -47,6 +49,10 @@ public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
     /** @suppress **/
     public val builderFields: ArrayList<String> =
         argMap["builderFields"] as ArrayList<String>? ?: arrayListOf()
+
+    /** @suppress **/
+    public val builderExtraStatements: ArrayList<String> =
+        argMap["builderExtraStatements"] as ArrayList<String>? ?: arrayListOf()
 
     /** @suppress **/
     public val builderInitStatements: ArrayList<String> =
