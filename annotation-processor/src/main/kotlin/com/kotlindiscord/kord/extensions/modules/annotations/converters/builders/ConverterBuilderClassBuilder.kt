@@ -173,16 +173,6 @@ public class ConverterBuilderClassBuilder : KoinComponent {
 
         builder.append(" {\n")
 
-        if (builderInitStatements.isNotEmpty()) {
-            builder.append("    init {\n")
-
-            builderInitStatements.forEach {
-                builder.append("        $it\n")
-            }
-
-            builder.append("    }\n\n")
-        }
-
         if (ConverterType.CHOICE in types) {
             builder.append("    override var choices: MutableMap<String, $argumentType> = mutableMapOf()\n\n")
         }
@@ -193,6 +183,16 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             }
 
             builder.append("\n")
+        }
+
+        if (builderInitStatements.isNotEmpty()) {
+            builder.append("    init {\n")
+
+            builderInitStatements.forEach {
+                builder.append("        $it\n")
+            }
+
+            builder.append("    }\n\n")
         }
 
         if (builderExtraStatements.isNotEmpty()) {

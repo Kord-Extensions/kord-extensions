@@ -111,9 +111,10 @@ public class EnumChoiceConverter<E>(
 }
 
 /**
- * The default enum value getter - matches enums based on a case-insensitive string comparison with the name.
+ * The default choice enum value getter - matches choice enums via a case-insensitive string comparison with the names.
  */
-public inline fun <reified T : Enum<T>> getEnum(arg: String): T? =
-    enumValues<T>().firstOrNull {
+public inline fun <reified E> getEnum(arg: String): E? where E : Enum<E>, E : ChoiceEnum =
+    enumValues<E>().firstOrNull {
+        it.readableName.equals(arg, true) ||
         it.name.equals(arg, true)
     }
