@@ -39,10 +39,10 @@ import kotlin.time.ExperimentalTime
     types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL],
     imports = ["kotlinx.datetime.*"],
 
-    arguments = [
-        "longHelp: Boolean = true",
-        "positiveOnly: Boolean = true",
-        "shouldThrow: Boolean = false"
+    builderFields = [
+        "public var longHelp: Boolean = true",
+        "public var positiveOnly: Boolean = true",
+        "public var shouldThrow: Boolean = false"
     ],
 )
 @OptIn(KordPreview::class, ExperimentalTime::class)

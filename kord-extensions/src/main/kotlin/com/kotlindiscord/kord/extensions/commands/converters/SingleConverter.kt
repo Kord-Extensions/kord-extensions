@@ -8,6 +8,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import dev.kord.common.annotation.KordPreview
 
 /**
@@ -17,7 +18,7 @@ import dev.kord.common.annotation.KordPreview
  * are always required.
  *
  * You can convert a [SingleConverter] instance to a defaulting, optional or multi converter
- * using [toDefaulting]. [toMulti] or [toOptional] respectively.
+ * using [toDefaulting]. [toList] or [toOptional] respectively.
  *
  * You can create a single converter of your own by extending this class.
  *
@@ -33,9 +34,22 @@ public abstract class SingleConverter<T : Any>(
      */
     public override lateinit var parsed: T
 
+    /** Access to the converter builder, perhaps a bit more hacky than it should be but whatever. **/
+    public open lateinit var builder: ConverterBuilder<T>
+
+    /** @suppress Internal function used by converter builders. **/
+    public open fun withBuilder(
+        builder: ConverterBuilder<T>
+    ): SingleConverter<T> {
+        this.builder = builder
+        this.genericBuilder = builder
+
+        return this
+    }
+
     /**
-     * Wrap this single converter with a [SingleToMultiConverter], which is a special converter that will act like a
-     * [MultiConverter] using the same logic of this converter.
+     * Wrap this single converter with a [SingleToListConverter], which is a special converter that will act like a
+     * [ListConverter] using the same logic of this converter.
      *
      * Your converter should be designed with this pattern in mind. If that's not possible, please override this
      * function and throw an exception in the body.
@@ -54,13 +68,13 @@ public abstract class SingleConverter<T : Any>(
      * provides.
      */
     @ConverterToMulti
-    public open fun toMulti(
+    public open fun toList(
         required: Boolean = true,
         signatureTypeString: String? = null,
         showTypeInSignature: Boolean? = null,
         errorTypeString: String? = null,
         nestedValidator: Validator<List<T>> = null
-    ): MultiConverter<T> = SingleToMultiConverter(
+    ): ListConverter<T> = SingleToListConverter(
         required,
         this,
         signatureTypeString,
@@ -97,7 +111,7 @@ public abstract class SingleConverter<T : Any>(
         errorTypeString: String? = null,
         outputError: Boolean = false,
         nestedValidator: Validator<T?> = null
-    ): OptionalConverter<T?> = SingleToOptionalConverter(
+    ): OptionalConverter<T> = SingleToOptionalConverter(
         this,
         signatureTypeString,
         showTypeInSignature,

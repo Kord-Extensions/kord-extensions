@@ -15,7 +15,11 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
+import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -38,13 +42,21 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
     "enum",
 
     types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.LIST],
-
-    generic = "E: Enum<E>",
     imports = ["com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum"],
-    arguments = [
-        "typeName: String",
-        "noinline getter: suspend (String) -> E? = { getEnum<E>(it) }",
-        "bundle: String? = null",
+
+    builderGeneric = "E: Enum<E>",
+    builderConstructorArguments = [
+        "public var getter: suspend (String) -> E?"
+    ],
+
+    builderFields = [
+        "public lateinit var typeName: String",
+        "public var bundle: String? = null"
+    ],
+
+    functionGeneric = "E: Enum<E>",
+    functionBuilderArguments = [
+        "getter = { getEnum(it) }",
     ]
 )
 @OptIn(KordPreview::class)

@@ -415,11 +415,16 @@ public class HelpExtension : HelpProvider, Extension() {
 
     /** Help command arguments class. **/
     public class HelpArguments : Arguments() {
+//        public val command: List<String> by stringList(
+//            "command",
+//            "extensions.help.commandArguments.command",
+//            false
+//        )
+
         /** Command to get help for. **/
-        public val command: List<String> by stringList(
-            "command",
-            "extensions.help.commandArguments.command",
-            false
-        )
+        public val command: List<String> by stringList {
+            name = "command"
+            description = "extensions.help.commandArguments.command"
+        }
     }
 }

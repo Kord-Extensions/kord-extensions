@@ -36,7 +36,7 @@ public class SingleToOptionalConverter<T : Any>(
     outputError: Boolean = false,
 
     override var validator: Validator<T?> = null
-) : OptionalConverter<T?>(outputError) {
+) : OptionalConverter<T>(outputError) {
     override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString

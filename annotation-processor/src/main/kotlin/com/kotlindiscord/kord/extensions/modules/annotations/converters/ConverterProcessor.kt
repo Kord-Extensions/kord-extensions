@@ -11,10 +11,10 @@ package com.kotlindiscord.kord.extensions.modules.annotations.converters
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSVisitorVoid
 import com.google.devtools.ksp.validate
-import com.kotlindiscord.kord.extensions.modules.annotations.*
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.builders.builderClass
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.builders.builderFunction
 import java.util.*
 
 /**
@@ -51,26 +51,12 @@ public class ConverterProcessor(
 
             logger.info("Found annotation", annotation)
 
+            val arguments = ConverterAnnotationArgs(annotation)
+
             logger.info("Arguments: \n" + annotation.arguments.joinToString("\n") {
                 "    ${it.name?.getShortName()} : ${it.value}"
             })
 
-            val arguments = annotation.arguments
-                .associate { it.name?.getShortName() to it.value }
-                .filterKeys { it != null }
-
-            val names = arguments["names"]!! as ArrayList<String>
-            val types = (arguments["types"]!! as ArrayList<KSType>).map { it.declaration.simpleName.asString() }
-            val extraImports = arguments["imports"] as ArrayList<String>?
-            val extraArguments = arguments["arguments"] as ArrayList<String>? ?: arrayListOf()
-
-            var generic = arguments["generic"] as String?
-
-            if (generic?.isEmpty() == true) {
-                generic = null
-            }
-
-            val functions: MutableList<String> = mutableListOf()
             val superTypes = classDeclaration.superTypes.map { it.resolve() }.toList()
 
             logger.info(
@@ -88,134 +74,66 @@ public class ConverterProcessor(
                 }
             )
 
-            val typeParam = typeParams.first().type!!.resolve().declaration
-            val typeParamName = typeParam.simpleName.asString()
-            val isChoice: Boolean = types.contains(ConverterType.CHOICE.name)
-            val isCoalescing: Boolean = types.contains(ConverterType.COALESCING.name)
+            val typeVars = typeParams.map { it.type!!.resolve().declaration }
+            val firstTypeVar = typeVars.first()
+            var typeVarName = firstTypeVar.simpleName.asString()
 
-            if (isChoice && isCoalescing) {
-                error(
-                    "Choice converters are not compatible with coalescing converters. Converter: " +
-                        classDeclaration.simpleName.asString()
-                )
+            if (firstTypeVar.typeParameters.isNotEmpty()) {
+                typeVarName += "<"
+
+                typeVarName += firstTypeVar.typeParameters.joinToString {
+                    it.bounds.joinToString { bound -> bound.resolve().declaration.simpleName.asString() }
+                }
+
+                typeVarName += ">"
             }
 
-            for (name in names) {
-                types.sorted().forEach {
-                    logger.info("Current type: $it")
+            val strings: MutableList<String> = mutableListOf()
 
-                    val func = when (it) {
-                        ConverterType.SINGLE.name -> when {
-                            isChoice -> singleChoiceConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
+            for (name in arguments.names) {
+                if (arguments.types.count { type -> type.order == 1 } != 1) {
+                    error(
+                        "Types list must contain exactly one of COALESCING or SINGLE. Convreter: " +
+                            classDeclaration.simpleName.asString()
+                    )
+                }
 
-                            isCoalescing -> singleCoalescingConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
+                val primaryType = arguments.types.first { type -> type.order == 1 }  // Order 1 is single/coalescing
+                val isChoice = ConverterType.CHOICE in arguments.types
 
-                            else -> singleConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
+                val baseTypes = arguments.types
+                    .filter { it.order == 0 }
+
+                strings.add(
+                    generate(
+                        classDeclaration,
+                        arguments,
+                        name,
+                        typeVarName,
+
+                        if (isChoice) {
+                            listOf(primaryType, ConverterType.CHOICE)
+                        } else {
+                            listOf(primaryType)
                         }
+                    )
+                )
 
-                        ConverterType.OPTIONAL.name -> when {
-                            isChoice -> optionalChoiceConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
+                baseTypes.forEach { type ->
+                    strings.add(
+                        generate(
+                            classDeclaration,
+                            arguments,
+                            name,
+                            typeVarName,
 
-                            isCoalescing -> optionalCoalescingConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
-
-                            else -> optionalConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
-                        }
-
-                        ConverterType.DEFAULTING.name -> when {
-                            isChoice -> defaultingChoiceConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
-
-                            isCoalescing -> defaultingCoalescingConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
-
-                            else -> defaultingConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
-                        }
-
-                        ConverterType.LIST.name -> when {
-                            isChoice -> listChoiceConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
-
-                            isCoalescing -> listCoalescingConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
-
-                            else -> listConverter(
-                                classDeclaration,
-                                name,
-                                typeParamName,
-                                extraArguments,
-                                generic,
-                            )
-                        }
-
-                        ConverterType.CHOICE.name -> ""  // Done in the converter functions
-                        ConverterType.COALESCING.name -> ""  // Done in the converter functions
-
-                        else -> "// UNSUPPPORTED: $it"
-                    }.trim('\n')
-
-                    functions.add(func)
+                            if (isChoice) {
+                                listOf(primaryType, type, ConverterType.CHOICE)
+                            } else {
+                                listOf(primaryType, type)
+                            }
+                        )
+                    )
                 }
             }
 
@@ -233,32 +151,38 @@ public class ConverterProcessor(
                 import ${classDeclaration.qualifiedName!!.asString()}
                 
                 // Imports that all converters need
-                import com.kotlindiscord.kord.extensions.commands.converters.*
+                import com.kotlindiscord.kord.extensions.InvalidArgumentException
                 import com.kotlindiscord.kord.extensions.commands.Arguments
+                import com.kotlindiscord.kord.extensions.commands.converters.*
+                import com.kotlindiscord.kord.extensions.commands.converters.builders.*
                 import dev.kord.common.annotation.KordPreview
-
-
             """.trimIndent()
 
-            if (typeParam.simpleName.getShortName() != generic?.split(":")?.first()) {
-                outputText += """
-                    // Converter type param
-                    import ${typeParam.qualifiedName!!.asString()}
+            val ignoredGenerics = listOfNotNull(
+                arguments.builderGeneric?.split(":")?.first(),
+                arguments.functionGeneric?.split(":")?.first()
+            )
 
+            val typeImports = typeVars.filter { it.simpleName.getShortName() !in ignoredGenerics }
 
-                """.trimIndent()
+            if (typeImports.isNotEmpty()) {
+                outputText += "\n\n" +
+                    "// Converter type params"
+
+                typeImports.forEach {
+                    outputText += "\nimport ${it.qualifiedName!!.asString()}"
+                }
             }
 
-            // Converter type param
-            // "import ${typeParam.qualifiedName!!.asString()}"
+            outputText += "\n\n"
 
-            if (extraImports != null) {
+            if (arguments.imports.isNotEmpty()) {
                 outputText += "// Extra imports\n"
-                outputText += extraImports.joinToString("\n") { "import $it" }
+                outputText += arguments.imports.joinToString("\n") { "import $it" }
                 outputText += "\n\n"
             }
 
-            outputText += functions.filter { it.isNotEmpty() }.joinToString("\n\n")
+            outputText += strings.filter { it.isNotEmpty() }.joinToString("\n\n")
 
             val file = generator.createNewFile(
                 Dependencies(true, classDeclaration.containingFile!!),
@@ -273,6 +197,72 @@ public class ConverterProcessor(
             file.close()
         }
     }
+
+    internal fun generate(
+        classDeclaration: KSClassDeclaration,
+        arguments: ConverterAnnotationArgs,
+        converterName: String,
+        argumentTypeString: String,
+        types: List<ConverterType>
+    ): String {
+        val classBuilder = builderClass {
+            comment = classComment(converterName, classDeclaration.simpleName.asString())
+
+            name = converterName.toCapitalized()
+            converterClass = classDeclaration.simpleName.asString()
+            argumentType = argumentTypeString
+
+            builderGeneric = arguments.builderGeneric
+
+            arguments.builderConstructorArguments.forEach(this::builderArg)
+            arguments.builderFields.forEach(this::builderField)
+            arguments.builderExtraStatements.forEach(this::builderExtraStatement)
+            arguments.builderInitStatements.forEach(this::builderInitStatement)
+
+            whereSuffix = arguments.builderSuffixedWhere
+
+            types(types)
+        }
+
+        val function = builderFunction {
+            comment = functionComment(
+                converterName,
+                classBuilder.converterType.splitUpper().joinToString(" ") { it.toLowered() },
+                classBuilder.builderType
+            )
+
+            name = classBuilder.getFunctionName(converterName)
+
+            builderGeneric = arguments.builderGeneric
+            functionGeneric = arguments.functionGeneric
+
+            argumentType = argumentTypeString
+            builderType = classBuilder.builderType
+            converterType = classBuilder.converterType
+
+            whereSuffix = arguments.functionSuffixedWhere
+
+            arguments.functionBuilderArguments.forEach(this::builderArg)
+        }
+
+        return """
+           |${classBuilder.result!!.trim('\n', ' ')}
+
+           |${function.trim('\n', ' ')}
+        """.trimMargin().trim('\n', ' ')
+    }
+
+    internal fun classComment(name: String, see: String): String = """
+        Builder class for $name converters. Used to construct a converter based on the given options.
+        
+        @see $see
+    """.trimIndent()
+
+    internal fun functionComment(name: String, type: String, see: String): String = """
+        Converter creation function: $name $type
+        
+        @see $see
+    """.trimIndent()
 }
 
 internal fun String.toCapitalized() =
@@ -280,3 +270,29 @@ internal fun String.toCapitalized() =
 
 internal fun String.toLowered() =
     replaceFirstChar { if (it.isUpperCase()) it.lowercase(Locale.getDefault()) else it.toString() }
+
+internal fun String.splitUpper(): List<String> {
+    val parts: MutableList<String> = mutableListOf()
+    var currentPart = ""
+
+    for (char in this) {
+        if (currentPart.isEmpty()) {
+            currentPart += char
+            continue
+        }
+
+        if (char.isUpperCase()) {
+            parts.add(currentPart)
+            currentPart = "" + char
+            continue
+        }
+
+        currentPart += char
+    }
+
+    if (currentPart.isNotEmpty()) {
+        parts.add(currentPart)
+    }
+
+    return parts.toList()
+}

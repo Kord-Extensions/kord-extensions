@@ -41,55 +41,108 @@ class TestExtension : Extension() {
     val logger = KotlinLogging.logger {}
 
     class ColorArgs : Arguments() {
-        val color by colour("color", "Color to use for the embed")
+        val color by colour {
+            name = "color"
+            description = "Color to use for the embed"
+        }
     }
 
     class TestArgs : Arguments() {
-        val string by string("string", "String argument")
-        val enum by enum<TestEnum>("enum", "Enum argument", "test")
+        val string by string {
+            name = "string"
+            description = "String argument"
+        }
 
-        val optionalEnum by defaultingEnum(
-            displayName = "optional-enum",
-            description = "Defaulting enum argument",
-            typeName = "test",
+        val enum by enum<TestEnum> {
+            name = "enum"
+            description = "Enum argument"
+
+            typeName = "test"
+        }
+
+        val optionalEnum by defaultingEnum<TestEnum> {
+            name = "optional-enum"
+            description = "Defaulting enum argument"
+
+            typeName = "test"
             defaultValue = TestEnum.THREE
-        )
+        }
 
-        val bools by booleanList("bools", "Boolean list argument")
+        val bools by booleanList {
+            name = "bools"
+            description = "Boolean list argument"
+        }
     }
 
     class SlashArgs : Arguments() {
-        val string by string("string", "String argument")
-        val enum by enum<TestEnum>("enum", "Enum argument", "test")
-        val bool by boolean("bool", "Boolean argument")
+        val string by string {
+            name = "string"
+            description = "String argument"
+        }
 
-        val optionalEnum by defaultingEnum(
-            displayName = "optional-enum",
-            description = "Defaulting enum argument",
-            typeName = "test",
+        val enum by enum<TestEnum> {
+            name = "enum"
+            description = "Enum argument"
+
+            typeName = "test"
+        }
+
+        val bool by boolean {
+            name = "bool"
+            description = "Boolean argument"
+        }
+
+        val optionalEnum by defaultingEnum<TestEnum> {
+            name = "optional-enum"
+            description = "Defaulting enum argument"
+
+            typeName = "test"
             defaultValue = TestEnum.THREE
-        )
+        }
     }
 
     class SlashChoiceArgs : Arguments() {
-        val arg by enumChoice<TestChoiceEnum>("choice", "Enum Choice", "test")
+        val arg by enumChoice<TestChoiceEnum> {
+            name = "choice"
+            description = "Enum Choice"
+
+            typeName = "test"
+        }
     }
 
     class CoalescedArgs : Arguments() {
-        val string by coalescedString("input", "Text to use")
-        val flag by optionalBoolean("flag", "Some kinda flag")
+        val string by coalescingString {
+            name = "input"
+            description = "Test to use"
+        }
+
+        val flag by optionalBoolean {
+            name = "flag"
+            description = "Some kinda flag"
+        }
     }
 
     class MessageArgs : Arguments() {
-        val message by message("target", "Target message")
+        val message by message {
+            name = "target"
+            description = "Target message"
+        }
     }
 
     class UserArgs : Arguments() {
-        val user by user("target", "Target user")
+        val user by user {
+            name = "target"
+            description = "Target user"
+        }
     }
 
     class OptionalDurationArgs : Arguments() {
-        val duration by optionalDuration("duration", "duration", required = true)
+        val duration by optionalDuration {
+            name = "duration"
+            description = "duration"
+
+            ignoreErrors = false
+        }
     }
 
     override suspend fun setup() {

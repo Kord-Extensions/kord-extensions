@@ -10,7 +10,6 @@
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import com.kotlindiscord.kord.extensions.DISCORD_RED
-import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -382,9 +381,12 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     /** Arguments class for domain-relevant commands. **/
     inner class DomainArgs : Arguments() {
         /** Targeted domain string. **/
-        val domain by string("domain", "Domain to check") { _, value ->
-            if ("/" in value) {
-                throw DiscordRelayedException("Please provide the domain name only, without the protocol or a path.")
+        val domain by string {
+            name = "domain"
+            description = "Domain to check"
+
+            validate {
+                failIf("Please provide the domain name only, without the protocol or a path.") { "/" in value }
             }
         }
     }

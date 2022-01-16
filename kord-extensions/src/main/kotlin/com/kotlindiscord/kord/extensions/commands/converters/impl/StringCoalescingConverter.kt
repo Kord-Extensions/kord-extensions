@@ -15,7 +15,11 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -34,7 +38,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 @Converter(
     "string",
 
-    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE]
+    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL]
 )
 public class StringCoalescingConverter(
     shouldThrow: Boolean = false,

@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -18,6 +19,20 @@ import kotlin.reflect.KClass
  * A base class for all custom exceptions in our bot framework.
  */
 public open class ExtensionsException : Exception()
+
+/**
+ * Exception thrown when a converter builder hasn't been set up properly.
+ *
+ * @property builder Builder that didn't validate
+ * @property reason Reason for the validation failure
+ **/
+public class InvalidArgumentException(
+    public val builder: ConverterBuilder<*>,
+    public val reason: String
+) : ExtensionsException() {
+    override fun toString(): String =
+        "Invalid argument: $builder ($reason)"
+}
 
 /**
  * Thrown when an attempt to load an [Extension] fails.
@@ -36,7 +51,7 @@ public class InvalidExtensionException(
             ""
         }
 
-        return "Invalid extension class: ${clazz.qualifiedName} $formattedReason"
+        return "Invalid extension class: ${clazz.qualifiedName}$formattedReason"
     }
 }
 

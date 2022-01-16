@@ -10,11 +10,12 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings.converters
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
@@ -26,6 +27,19 @@ import me.shedaniel.linkie.Namespace
 /**
  * Argument converter for [MappingsContainer] objects based on mappings versions.
  */
+@Converter(
+    "mappingsVersion",
+    types = [ConverterType.SINGLE, ConverterType.OPTIONAL],
+    imports = ["me.shedaniel.linkie.Namespace"],
+
+    builderFields = ["public lateinit var namespaceGetter: suspend () -> Namespace"],
+    builderExtraStatements = [
+        "/** Convenience function for setting the namespace getter to a specific namespace. **/",
+        "public fun namespace(namespace: Namespace) {",
+        "    namespaceGetter = { namespace }",
+        "}",
+    ]
+)
 class MappingsVersionConverter(
     private val namespaceGetter: suspend () -> Namespace,
     override var validator: Validator<MappingsContainer> = null
@@ -71,18 +85,3 @@ class MappingsVersionConverter(
         throw DiscordRelayedException("Invalid ${namespace.id} version: `$optionValue`")
     }
 }
-
-/** Optional mappings version converter; see KordEx bundled functions for more info. **/
-fun Arguments.optionalMappingsVersion(
-    displayName: String,
-    description: String,
-    outputError: Boolean = false,
-    namespace: Namespace,
-    validator: Validator<MappingsContainer?> = null
-) =
-    arg(
-        displayName,
-        description,
-        MappingsVersionConverter({ namespace })
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )

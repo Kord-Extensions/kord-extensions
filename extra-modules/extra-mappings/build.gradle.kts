@@ -3,6 +3,7 @@ plugins {
     `published-module`
     `dokka-module`
     `disable-explicit-api-mode`
+    `ksp-module`
 }
 
 repositories {
@@ -52,6 +53,9 @@ dependencies {
     testImplementation(libs.logback)
 
     implementation(project(":kord-extensions"))
+    implementation(project(":annotations"))
+
+    ksp(project(":annotation-processor"))
 }
 
 group = "com.kotlindiscord.kord.extensions"

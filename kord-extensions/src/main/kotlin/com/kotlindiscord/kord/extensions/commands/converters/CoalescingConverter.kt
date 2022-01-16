@@ -9,6 +9,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.commands.converters.builders.CoalescingConverterBuilder
 import dev.kord.common.annotation.KordPreview
 
 /**
@@ -41,6 +42,19 @@ public abstract class CoalescingConverter<T : Any>(
      */
     public override lateinit var parsed: T
 
+    /** Access to the converter builder, perhaps a bit more hacky than it should be but whatever. **/
+    public open lateinit var builder: CoalescingConverterBuilder<T>
+
+    /** @suppress Internal function used by converter builders. **/
+    public open fun withBuilder(
+        builder: CoalescingConverterBuilder<T>
+    ): CoalescingConverter<T> {
+        this.builder = builder
+        this.genericBuilder = builder
+
+        return this
+    }
+
     /**
      * Wrap this coalescing converter with a [CoalescingToOptionalConverter], which is a special converter that will
      * act like an [OptionalCoalescingConverter] using the same logic of this converter.
@@ -70,7 +84,7 @@ public abstract class CoalescingConverter<T : Any>(
         errorTypeString: String? = null,
         outputError: Boolean = false,
         nestedValidator: Validator<T?> = null
-    ): OptionalCoalescingConverter<T?> = CoalescingToOptionalConverter(
+    ): OptionalCoalescingConverter<T> = CoalescingToOptionalConverter(
         this,
         signatureTypeString,
         showTypeInSignature,

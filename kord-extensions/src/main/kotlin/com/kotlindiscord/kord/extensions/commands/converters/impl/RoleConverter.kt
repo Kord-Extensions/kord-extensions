@@ -16,7 +16,11 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
+import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -45,7 +49,7 @@ import kotlinx.coroutines.flow.firstOrNull
 
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["dev.kord.common.entity.Snowflake"],
-    arguments = ["requiredGuild: (suspend () -> Snowflake)? = null"]
+    builderFields = ["public var requiredGuild: (suspend () -> Snowflake)? = null"]
 )
 @OptIn(KordPreview::class)
 public class RoleConverter(

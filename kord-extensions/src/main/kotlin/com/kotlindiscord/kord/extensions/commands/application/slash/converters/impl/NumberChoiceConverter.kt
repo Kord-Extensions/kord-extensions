@@ -40,11 +40,10 @@ private const val DEFAULT_RADIX = 10
     "number",
 
     types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    arguments = ["radix: Int = $DEFAULT_RADIX"]
+    builderFields = ["public var radix: Int = $DEFAULT_RADIX"]
 )
 @OptIn(KordPreview::class)
-public
-class NumberChoiceConverter(
+public class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
     choices: Map<String, Long>,
     override var validator: Validator<Long> = null

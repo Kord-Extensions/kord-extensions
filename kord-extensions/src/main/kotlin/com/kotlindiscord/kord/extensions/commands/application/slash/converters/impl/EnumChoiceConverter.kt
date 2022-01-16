@@ -14,11 +14,15 @@
 package com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.Argument
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
@@ -30,14 +34,48 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  *
  * All enums used for this must implement the [ChoiceEnum] interface.
  */
+@Converter(
+    "enum",
+
+    types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.CHOICE],
+    imports = [
+        "com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum",
+        "com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceEnum"
+    ],
+
+    builderGeneric = "E",
+    builderConstructorArguments = [
+        "public var getter: suspend (String) -> E?",
+        "!! argMap: Map<String, E>",
+    ],
+
+    builderFields = [
+        "public lateinit var typeName: String",
+        "public var bundle: String? = null"
+    ],
+
+    builderInitStatements = [
+        "choices(argMap)"
+    ],
+
+    builderSuffixedWhere = "E : Enum<E>, E : ChoiceEnum",
+
+    functionGeneric = "E",
+    functionBuilderArguments = [
+        "getter = { getEnum(it) }",
+        "argMap = enumValues<E>().associateBy { it.readableName }",
+    ],
+
+    functionSuffixedWhere = "E : Enum<E>, E : ChoiceEnum"
+)
 @OptIn(KordPreview::class)
 public class EnumChoiceConverter<E>(
     typeName: String,
     private val getter: suspend (String) -> E?,
-    choices: Array<E>,
+    choices: Map<String, E>,
     override var validator: Validator<E> = null,
     override val bundle: String? = null,
-) : ChoiceConverter<E>(choices.associateBy { it.readableName }) where E : Enum<E>, E : ChoiceEnum {
+) : ChoiceConverter<E>(choices) where E : Enum<E>, E : ChoiceEnum {
     override val signatureTypeString: String = typeName
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
@@ -73,63 +111,10 @@ public class EnumChoiceConverter<E>(
 }
 
 /**
- * Create an enum choice argument converter, for a defined set of single arguments.
- *
- * @see EnumChoiceConverter
+ * The default choice enum value getter - matches choice enums via a case-insensitive string comparison with the names.
  */
-public inline fun <reified T> Arguments.enumChoice(
-    displayName: String,
-    description: String,
-    typeName: String,
-    noinline validator: Validator<T> = null,
-    bundle: String? = null,
-): SingleConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
-    displayName,
-    description,
-    EnumChoiceConverter(typeName, ::getEnum, enumValues(), validator, bundle = bundle)
-)
-
-/**
- * Create an optional enum choice argument converter, for a defined set of single arguments.
- *
- * @see EnumChoiceConverter
- */
-public inline fun <reified T> Arguments.optionalEnumChoice(
-    displayName: String,
-    description: String,
-    typeName: String,
-    noinline validator: Validator<T?> = null,
-    bundle: String? = null,
-): OptionalConverter<T?> where T : Enum<T>, T : ChoiceEnum = arg(
-    displayName,
-    description,
-    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues(), bundle = bundle)
-        .toOptional(nestedValidator = validator)
-)
-
-/**
- * Create a defaulting enum choice argument converter, for a defined set of single arguments.
- *
- * @see EnumChoiceConverter
- */
-public inline fun <reified T> Arguments.defaultingEnumChoice(
-    displayName: String,
-    description: String,
-    typeName: String,
-    defaultValue: T,
-    noinline validator: Validator<T> = null,
-    bundle: String? = null,
-): DefaultingConverter<T> where T : Enum<T>, T : ChoiceEnum = arg(
-    displayName,
-    description,
-    EnumChoiceConverter<T>(typeName, ::getEnum, enumValues(), bundle = bundle)
-        .toDefaulting(defaultValue, nestedValidator = validator)
-)
-
-/**
- * The default enum value getter - matches enums based on a case-insensitive string comparison with the name.
- */
-public inline fun <reified T : Enum<T>> getEnum(arg: String): T? =
-    enumValues<T>().firstOrNull {
+public inline fun <reified E> getEnum(arg: String): E? where E : Enum<E>, E : ChoiceEnum =
+    enumValues<E>().firstOrNull {
+        it.readableName.equals(arg, true) ||
         it.name.equals(arg, true)
     }
