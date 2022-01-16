@@ -72,7 +72,7 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <R : Any?> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
         converter: OptionalConverter<R>
@@ -156,7 +156,7 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <R : Any?> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
         converter: OptionalCoalescingConverter<R>

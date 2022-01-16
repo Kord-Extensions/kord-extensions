@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
@@ -41,6 +42,9 @@ import kotlin.reflect.KProperty
 public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputType : Any, ResultType : Any>(
     public open val required: Boolean = true,
 ) : KoinComponent {
+    /** This is pretty hacky, but there aren't many better options. **/
+    internal lateinit var genericBuilder: ConverterBuilder<OutputType>
+
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
 
@@ -87,7 +91,11 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 
     /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
     public operator fun getValue(thisRef: Arguments, property: KProperty<*>): OutputType =
-        parsed
+        if (genericBuilder.mutator != null) {
+            genericBuilder.mutator!!(parsed)
+        } else {
+            parsed
+        }
 
     /**
      * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.

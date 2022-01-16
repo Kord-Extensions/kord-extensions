@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.InvalidArgumentException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.Converter
+import com.kotlindiscord.kord.extensions.commands.converters.Mutator
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
 
 /** Base abstract class for all converter builders. **/
@@ -20,11 +21,18 @@ public abstract class ConverterBuilder<T> {
     /** Converter description. Required. **/
     public open lateinit var description: String
 
+    /** Mutator, used to mutate the parsed value before it's presented. **/
+    public open var mutator: Mutator<T> = null
+
     /** Validator, used for argument validation. **/
     protected open var validator: Validator<T> = null
 
-    // This can't easily be implemented given the current converter and parsing model, we'll have to come back to it
     // public abstract suspend fun autoComplete()
+
+    /** Register the mutator for this converter, allowing you to modify the final value. **/
+    public open fun mutate(body: Mutator<T>) {
+        mutator = body
+    }
 
     /** Register the validator for this converter, allowing you to validate the final value. **/
     public open fun validate(body: Validator<T>) {

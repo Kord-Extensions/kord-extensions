@@ -8,6 +8,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ListConverterBuilder
 import dev.kord.common.annotation.KordPreview
 
 /**
@@ -32,4 +33,17 @@ public abstract class ListConverter<T : Any>(
      * This should be set by the converter during the course of the [parse] function.
      */
     public override var parsed: List<T> = listOf()
+
+    /** Access to the converter builder, perhaps a bit more hacky than it should be but whatever. **/
+    public open lateinit var builder: ListConverterBuilder<T>
+
+    /** @suppress Internal function used by converter builders. **/
+    public open fun withBuilder(
+        builder: ListConverterBuilder<T>
+    ): ListConverter<T> {
+        this.builder = builder
+        this.genericBuilder = builder
+
+        return this
+    }
 }

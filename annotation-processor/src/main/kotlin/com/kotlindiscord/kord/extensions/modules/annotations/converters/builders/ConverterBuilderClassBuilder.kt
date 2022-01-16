@@ -246,6 +246,8 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             builder.append("            )")
         }
 
+        builder.append(".withBuilder(this)")
+
         builder.append("\n")
         builder.append("        )\n")
         builder.append("    }\n")

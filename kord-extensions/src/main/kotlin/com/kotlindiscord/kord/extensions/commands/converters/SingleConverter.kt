@@ -8,6 +8,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters
 
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import dev.kord.common.annotation.KordPreview
 
 /**
@@ -32,6 +33,19 @@ public abstract class SingleConverter<T : Any>(
      * This should be set by the converter during the course of the [parse] function.
      */
     public override lateinit var parsed: T
+
+    /** Access to the converter builder, perhaps a bit more hacky than it should be but whatever. **/
+    public open lateinit var builder: ConverterBuilder<T>
+
+    /** @suppress Internal function used by converter builders. **/
+    public open fun withBuilder(
+        builder: ConverterBuilder<T>
+    ): SingleConverter<T> {
+        this.builder = builder
+        this.genericBuilder = builder
+
+        return this
+    }
 
     /**
      * Wrap this single converter with a [SingleToListConverter], which is a special converter that will act like a
