@@ -26,6 +26,7 @@ import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.convertToISO
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
@@ -851,18 +852,22 @@ public open class ExtensibleBotBuilder {
 
         /**
          * Registers a [LocaleResolver] using [Interaction.locale].
+         *
+         * @see convertToISO
          */
         public fun interactionUserLocaleResolver(): Unit =
             localeResolver { _, _, _, interaction ->
-                interaction?.locale?.asJavaLocale()
+                interaction?.locale?.convertToISO()?.asJavaLocale()
             }
 
         /**
          * Registers a [LocaleResolver] using [Interaction.guildLocale].
+         *
+         * @see convertToISO
          */
         public fun interactionGuildLocaleResolver(): Unit =
             localeResolver { _, _, _, interaction ->
-                interaction?.guildLocale?.asJavaLocale()
+                interaction?.guildLocale?.convertToISO()?.asJavaLocale()
             }
     }
 
