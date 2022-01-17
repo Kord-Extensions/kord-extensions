@@ -634,115 +634,98 @@ class MappingsExtension : Extension() {
         queryProvider: suspend (QueryContext) -> QueryResult<A, B>,
         pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>) -> List<Pair<String, String>>
     ) where A : MappingsMetadata, B : List<*> {
-    sentry.breadcrumb(BreadcrumbType.Query) {
-        message = "Beginning mapping lookup"
+        sentry.breadcrumb(BreadcrumbType.Query) {
+            message = "Beginning mapping lookup"
 
-        data["type"] = type
-        data["channel"] = channel ?: "N/A"
-        data["namespace"] = arguments.namespace.id
-        data["query"] = arguments.query
-        data["version"] = arguments.version?.version ?: "N/A"
-    }
+            data["type"] = type
+            data["channel"] = channel ?: "N/A"
+            data["namespace"] = arguments.namespace.id
+            data["query"] = arguments.query
+            data["version"] = arguments.version?.version ?: "N/A"
+        }
 
-    newSingleThreadContext("/query $type: ${arguments.query}").use { context ->
-        withContext(context) {
-            val version = arguments.version?.version
-                ?: arguments.namespace.getDefaultVersion(channel)
+        newSingleThreadContext("/query $type: ${arguments.query}").use { context ->
+            withContext(context) {
+                val version = arguments.version?.version
+                    ?: arguments.namespace.getDefaultVersion(channel)
 
-            val provider = if (version != null) {
-                arguments.namespace.getProvider(version)
-            } else {
-                MappingsProvider.empty(arguments.namespace)
-            }
-
-            provider.injectDefaultVersion(
-                arguments.namespace.getProvider(version ?: arguments.namespace.defaultVersion)
-            )
-
-            sentry.breadcrumb(BreadcrumbType.Info) {
-                message = "Provider resolved, with injected default version"
-
-                data["version"] = provider.version ?: "Unknown"
-            }
-
-            val query = arguments.query.replace('.', '/')
-            val pages: List<Pair<String, String>>
-
-            sentry.breadcrumb(BreadcrumbType.Info) {
-                message = "Attempting to run sanitized query"
-
-                data["query"] = query
-            }
-
-            @Suppress("TooGenericExceptionCaught")
-            val result = try {
-                queryProvider(QueryContext(
-                    provider = provider,
-                    searchKey = query
-                ))
-            } catch (e: NullPointerException) {
-                respond {
-                    content = e.localizedMessage
-                }
-                return@withContext
-            }
-
-            sentry.breadcrumb(BreadcrumbType.Info) {
-                message = "Generating pages for results"
-
-                data["resultCount"] = result.value.size
-            }
-
-            val container = provider.get()
-
-            pages = pageGenerationMethod(
-                arguments.namespace,
-                container,
-                result,
-//                arguments !is IntermediaryMappable || (arguments as IntermediaryMappable).mapDescriptors
-            )
-
-            if (pages.isEmpty()) {
-                respond {
-                    content = "No results found"
+                val provider = if (version != null) {
+                    arguments.namespace.getProvider(version)
+                } else {
+                    MappingsProvider.empty(arguments.namespace)
                 }
 
-                return@withContext
-            }
-
-            val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-
-            val plural = if (type == "class") "es" else "s"
-            val pageTitle = "List of ${container.name} $type$plural: ${container.version}"
-
-            val shortPages = mutableListOf<String>()
-            val longPages = mutableListOf<String>()
-
-            pages.forEach { (short, long) ->
-                shortPages.add(short)
-                longPages.add(long)
-            }
-
-            shortPages.forEach {
-                pagesObj.addPage(
-                    "${EXPAND_EMOJI.mention} for more",
-
-                    Page {
-                        description = it
-                        title = pageTitle
-
-                        footer {
-                            text = PAGE_FOOTER
-                            icon = PAGE_FOOTER_ICON
-                        }
-                    }
+                provider.injectDefaultVersion(
+                    arguments.namespace.getProvider(version ?: arguments.namespace.defaultVersion)
                 )
-            }
 
-            if (shortPages != longPages) {
-                longPages.forEach {
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Provider resolved, with injected default version"
+
+                    data["version"] = provider.version ?: "Unknown"
+                }
+
+                val query = arguments.query.replace('.', '/')
+                val pages: List<Pair<String, String>>
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Attempting to run sanitized query"
+
+                    data["query"] = query
+                }
+
+                @Suppress("TooGenericExceptionCaught")
+                val result = try {
+                    queryProvider(QueryContext(
+                        provider = provider,
+                        searchKey = query
+                    ))
+                } catch (e: NullPointerException) {
+                    respond {
+                        content = e.localizedMessage
+                    }
+                    return@withContext
+                }
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Generating pages for results"
+
+                    data["resultCount"] = result.value.size
+                }
+
+                val container = provider.get()
+
+                pages = pageGenerationMethod(
+                    arguments.namespace,
+                    container,
+                    result,
+    //                arguments !is IntermediaryMappable || (arguments as IntermediaryMappable).mapDescriptors
+                )
+
+                if (pages.isEmpty()) {
+                    respond {
+                        content = "No results found"
+                    }
+
+                    return@withContext
+                }
+
+                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
+
+                val plural = if (type == "class") "es" else "s"
+                val pageTitle = "List of ${container.name} $type$plural: ${container.version}"
+
+                val shortPages = mutableListOf<String>()
+                val longPages = mutableListOf<String>()
+
+                pages.forEach { (short, long) ->
+                    shortPages.add(short)
+                    longPages.add(long)
+                }
+
+                shortPages.forEach {
                     pagesObj.addPage(
-                        "${EXPAND_EMOJI.mention} for less",
+                        "${EXPAND_EMOJI.mention} for more",
 
                         Page {
                             description = it
@@ -755,24 +738,41 @@ class MappingsExtension : Extension() {
                         }
                     )
                 }
+
+                if (shortPages != longPages) {
+                    longPages.forEach {
+                        pagesObj.addPage(
+                            "${EXPAND_EMOJI.mention} for less",
+
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
+                    }
+                }
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Creating and sending paginator to Discord"
+                }
+
+                val paginator = PublicResponsePaginator(
+                    pages = pagesObj,
+                    owner = event.interaction.user,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
+                    interaction = interactionResponse
+                )
+
+                paginator.send()
             }
-
-            sentry.breadcrumb(BreadcrumbType.Info) {
-                message = "Creating and sending paginator to Discord"
-            }
-
-            val paginator = PublicResponsePaginator(
-                pages = pagesObj,
-                owner = event.interaction.user,
-                timeoutSeconds = getTimeout(),
-                locale = getLocale(),
-                interaction = interactionResponse
-            )
-
-            paginator.send()
         }
     }
-}
 
     private suspend fun <A, B, T> ConversionSlashCommand.convertMapping(
         type: String,
