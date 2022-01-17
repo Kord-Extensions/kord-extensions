@@ -18,7 +18,6 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.builders.ExtMappingsBuilder
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.YarnChannels
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.exceptions.UnsupportedNamespaceException
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.*
 import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
@@ -87,8 +86,6 @@ class MappingsExtension : Extension() {
         val yarnEnabled = enabledNamespaces.contains("yarn")
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
 
-        val patchworkEnabled = builder.config.yarnChannelEnabled(YarnChannels.PATCHWORK)
-
         val categoryCheck: Check<ChatInputCommandInteractionCreateEvent> = {
             allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
         }
@@ -101,9 +98,7 @@ class MappingsExtension : Extension() {
             allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
         }
 
-        val yarnChannels = YarnChannels.values().filter {
-            it != YarnChannels.PATCHWORK || patchworkEnabled
-        }.joinToString(", ") { "`${it.readableName}`" }
+        val yarnChannels = Channels.values().joinToString(", ") { "`${it.readableName}`" }
 
         suspend fun <T : MappingArguments> slashCommand(
             parentName: String,
@@ -184,7 +179,7 @@ class MappingsExtension : Extension() {
                 check(categoryCheck, channelCheck, guildCheck)
 
                 action(customInfoCommand ?: {
-                    val defaultVersion = namespace.getDefaultVersion()
+                    val defaultVersion = namespace.defaultVersion
                     val allVersions = namespace.getAllSortedVersions()
 
                     val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
@@ -275,7 +270,7 @@ class MappingsExtension : Extension() {
                 MojangNamespace,
                 ::MojangArguments
             ) {
-                val defaultVersion = MojangNamespace.getDefaultVersion()
+                val defaultVersion = MojangReleaseContainer.latestRelease
                 val allVersions = MojangNamespace.getAllSortedVersions()
 
                 val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
@@ -342,7 +337,7 @@ class MappingsExtension : Extension() {
                 MojangHashedNamespace,
                 ::HashedMojangArguments
             ) {
-                val defaultVersion = MojangNamespace.getDefaultVersion()
+                val defaultVersion = MojangReleaseContainer.latestRelease
                 val allVersions = MojangNamespace.getAllSortedVersions()
 
                 val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
@@ -420,16 +415,10 @@ class MappingsExtension : Extension() {
                 "yarn",
                 "Yarn",
                 YarnNamespace,
-                { if (patchworkEnabled) YarnWithPatchworkArguments() else YarnWithoutPatchworkArguments() }
+                ::YarnArguments
             ) {
-                val defaultPatchworkVersion = if (patchworkEnabled) {
-                    YarnNamespace.getDefaultVersion { YarnChannels.PATCHWORK.readableName }
-                } else {
-                    ""
-                }
-
-                val defaultVersion = YarnNamespace.getDefaultVersion()
-                val defaultSnapshotVersion = YarnNamespace.getDefaultVersion { YarnChannels.SNAPSHOT.readableName }
+                val defaultVersion = YarnReleaseContainer.latestRelease
+                val defaultSnapshotVersion = YarnReleaseContainer.latestSnapshot
                 val allVersions = YarnNamespace.getAllSortedVersions()
 
                 val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
@@ -437,12 +426,6 @@ class MappingsExtension : Extension() {
                         when (version) {
                             defaultVersion -> "**» $version** (Default)"
                             defaultSnapshotVersion -> "**» $version** (Default: Snapshot)"
-
-                            defaultPatchworkVersion -> if (patchworkEnabled) {
-                                "**» $version** (Default: Patchwork)"
-                            } else {
-                                "**»** $version"
-                            }
 
                             else -> "**»** $version"
                         }
@@ -455,12 +438,6 @@ class MappingsExtension : Extension() {
 
                         "**Default version:** $defaultVersion\n" +
                         "**Default snapshot version:** $defaultSnapshotVersion\n\n" +
-
-                        if (patchworkEnabled) {
-                            "**Default Patchwork version:** $defaultPatchworkVersion\n\n"
-                        } else {
-                            ""
-                        } +
 
                         "**Channels:** $yarnChannels\n" +
                         "**Commands:** `/yarn class`, `/yarn field`, `/yarn method`\n\n" +
@@ -670,21 +647,16 @@ class MappingsExtension : Extension() {
     newSingleThreadContext("/query $type: ${arguments.query}").use { context ->
         withContext(context) {
             val version = arguments.version?.version
+                ?: arguments.namespace.getDefaultVersion(channel)
 
             val provider = if (version != null) {
                 arguments.namespace.getProvider(version)
             } else {
-                channel?.let {
-                    arguments.namespace.getProvider(
-                        arguments.namespace.getDefaultVersion { it }
-                    )
-                } ?: MappingsProvider.empty(arguments.namespace)
+                MappingsProvider.empty(arguments.namespace)
             }
 
             provider.injectDefaultVersion(
-                arguments.namespace.getDefaultProvider {
-                    channel ?: arguments.namespace.getDefaultMappingChannel()
-                }
+                arguments.namespace.getProvider(version ?: arguments.namespace.defaultVersion)
             )
 
             sentry.breadcrumb(BreadcrumbType.Info) {
@@ -726,7 +698,8 @@ class MappingsExtension : Extension() {
             pages = pageGenerationMethod(
                 arguments.namespace,
                 container,
-                result
+                result,
+//                arguments !is IntermediaryMappable || (arguments as IntermediaryMappable).mapDescriptors
             )
 
             if (pages.isEmpty()) {
@@ -855,13 +828,9 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val inputDefault = inputNamespace.getDefaultVersion {
-                    arguments.inputChannel ?: inputNamespace.getDefaultMappingChannel()
-                }
+                val inputDefault = inputNamespace.getDefaultVersion(arguments.inputChannel)
 
-                val outputDefault = outputNamespace.getDefaultVersion {
-                    arguments.outputChannel ?: outputNamespace.getDefaultMappingChannel()
-                }
+                val outputDefault = outputNamespace.getDefaultVersion(arguments.outputChannel)
 
                 // try the command-provided version first
                 val version = arguments.version
@@ -888,18 +857,6 @@ class MappingsExtension : Extension() {
                     )
                     return@withContext
                 }
-
-                inputProvider.injectDefaultVersion(
-                    inputNamespace.getDefaultProvider {
-                        arguments.inputChannel ?: inputNamespace.getDefaultMappingChannel()
-                    }
-                )
-
-                outputProvider.injectDefaultVersion(
-                    outputNamespace.getDefaultProvider {
-                        arguments.outputChannel ?: outputNamespace.getDefaultMappingChannel()
-                    }
-                )
 
                 sentry.breadcrumb(BreadcrumbType.Info) {
                     message = "Providers and namespaces resolved"
@@ -1040,6 +997,22 @@ class MappingsExtension : Extension() {
     private suspend fun PublicSlashCommandContext<*>.returnError(errorMessage: String) {
         respond {
             content = errorMessage
+        }
+    }
+
+    private fun Namespace.getDefaultVersion(channel: String?): String? {
+        return when (this) {
+            is MojangNamespace -> if (channel == "snapshot") {
+                MojangReleaseContainer.latestSnapshot
+            } else {
+                MojangReleaseContainer.latestRelease
+            }
+            is YarnNamespace -> if (channel == "snapshot") {
+                YarnReleaseContainer.latestSnapshot
+            } else {
+                YarnReleaseContainer.latestRelease
+            }
+            else -> null
         }
     }
 

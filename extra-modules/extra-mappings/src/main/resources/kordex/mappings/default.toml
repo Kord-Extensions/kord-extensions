@@ -25,8 +25,3 @@ namespaces = ["hashed-mojang", "legacy-yarn", "plasma", "mcp", "mojang", "yarn",
 
 # How long to wait before closing mappings paginators (in seconds), defaults to 5 minutes
 # timeout = 300
-
-[yarn]
-# Extra yarn channels - official and snapshot are always enabled, but you can add or remove "PATCHWORK"
-# here to enable or disable it
-channels = ["PATCHWORK"]
