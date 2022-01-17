@@ -11,7 +11,7 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
-import com.kotlindiscord.kord.extensions.commands.converters.Converter
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -153,16 +153,16 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
             { "Got auto-complete request for command ${event.interaction.command.rootName} " +
                 "on non auto-completed option $name" }
         checkNotNull(focusedArgument, notFoundMessage)
-        checkNotNull(focusedArgument.converter.autoCompleter, notFoundMessage)
+        checkNotNull(focusedArgument.converter.genericBuilder.autoCompleter, notFoundMessage)
 
         // utility method to catch generic type
         @Suppress("RedundantSuspendModifier") // it is not redundant
-        suspend fun <I : Any> Converter<*, *, I, *>.autoComplete(value: Any?) {
+        suspend fun <I : Any?> ConverterBuilder<I>.autoComplete(value: Any?) {
             @Suppress("UNCHECKED_CAST")
             autoCompleter!!(event.interaction, focusedArgument, value as I)
         }
 
-        focusedArgument.converter.autoComplete(option.value)
+        focusedArgument.converter.genericBuilder.autoComplete(option.value)
     }
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/

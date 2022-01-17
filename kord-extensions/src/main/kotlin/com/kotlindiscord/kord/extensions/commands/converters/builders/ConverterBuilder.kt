@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.commands.converters.builders
 import com.kotlindiscord.kord.extensions.InvalidArgumentException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.AutoCompleter
 import com.kotlindiscord.kord.extensions.commands.converters.Converter
 import com.kotlindiscord.kord.extensions.commands.converters.Mutator
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
@@ -24,10 +25,22 @@ public abstract class ConverterBuilder<T> {
     /** Mutator, used to mutate the parsed value before it's presented. **/
     public open var mutator: Mutator<T> = null
 
+    /**
+     * AutoCompleter, used for Slash command auto complete requests.
+     */
+    public open var autoCompleter: AutoCompleter<T>? = null
+
     /** Validator, used for argument validation. **/
     protected open var validator: Validator<T> = null
 
-    // public abstract suspend fun autoComplete()
+    /**
+     * Registers an auto complete handler.
+     *
+     * @see AutoCompleter
+     */
+    public open fun autoComplete(body: AutoCompleter<T>) {
+        autoCompleter = body
+    }
 
     /** Register the mutator for this converter, allowing you to modify the final value. **/
     public open fun mutate(body: Mutator<T>) {

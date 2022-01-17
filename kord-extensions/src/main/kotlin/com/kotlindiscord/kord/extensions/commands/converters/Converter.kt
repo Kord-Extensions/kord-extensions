@@ -17,7 +17,6 @@ import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterB
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
-import dev.kord.common.entity.Choice
 import dev.kord.core.Kord
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -58,7 +57,7 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
      * @see autoCompleter
      */
     public val hasAutoComplete: Boolean
-        get() = autoCompleter != null
+        get() = genericBuilder.autoCompleter != null
 
     /**
      * The parsed value.
@@ -69,13 +68,6 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 
     /** Validation lambda, which may throw a [DiscordRelayedException] if required. **/
     public open var validator: Validator<OutputType> = null
-
-    /**
-     * Auto complete lambda, returning an [Choice] to suggest to the user.
-     *
-     * Discord will not validate, whether the actual user input was part of this response
-     */
-    public open var autoCompleter: AutoCompleter<NamedInputType>? = null
 
     /** This will be set to true by the argument parser if the conversion succeeded. **/
     public var parseSuccess: Boolean = false
