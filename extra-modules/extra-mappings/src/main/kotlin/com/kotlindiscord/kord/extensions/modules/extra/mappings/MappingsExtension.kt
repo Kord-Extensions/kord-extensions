@@ -632,7 +632,7 @@ class MappingsExtension : Extension() {
         type: String,
         channel: String? = null,
         queryProvider: suspend (QueryContext) -> QueryResult<A, B>,
-        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>) -> List<Pair<String, String>>
+        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>
     ) where A : MappingsMetadata, B : List<*> {
         sentry.breadcrumb(BreadcrumbType.Query) {
             message = "Beginning mapping lookup"
@@ -699,7 +699,7 @@ class MappingsExtension : Extension() {
                     arguments.namespace,
                     container,
                     result,
-    //                arguments !is IntermediaryMappable || (arguments as IntermediaryMappable).mapDescriptors
+                    arguments !is IntermediaryMappable || (arguments as IntermediaryMappable).mapDescriptors
                 )
 
                 if (pages.isEmpty()) {
@@ -789,9 +789,9 @@ class MappingsExtension : Extension() {
             data["type"] = type
             data["query"] = arguments.query
             data["inputNamespace"] = arguments.inputNamespace
-            data["inputChannel"] = arguments.inputChannel ?: "N/A"
+            data["inputChannel"] = arguments.inputChannel?.readableName ?: "N/A"
             data["outputNamespace"] = arguments.outputNamespace
-            data["outputChannel"] = arguments.outputChannel ?: "N/A"
+            data["outputChannel"] = arguments.outputChannel?.readableName ?: "N/A"
             data["version"] = arguments.version ?: "N/A"
         }
 
@@ -828,9 +828,9 @@ class MappingsExtension : Extension() {
                     return@withContext
                 }
 
-                val inputDefault = inputNamespace.getDefaultVersion(arguments.inputChannel)
+                val inputDefault = inputNamespace.getDefaultVersion(arguments.inputChannel?.readableName)
 
-                val outputDefault = outputNamespace.getDefaultVersion(arguments.outputChannel)
+                val outputDefault = outputNamespace.getDefaultVersion(arguments.outputChannel?.readableName)
 
                 // try the command-provided version first
                 val version = arguments.version
