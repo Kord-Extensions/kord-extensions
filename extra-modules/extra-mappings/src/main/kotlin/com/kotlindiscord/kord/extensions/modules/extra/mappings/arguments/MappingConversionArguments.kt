@@ -7,8 +7,8 @@
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.optionalEnumChoice
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.stringChoice
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalEnum
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
@@ -42,13 +42,17 @@ class MappingConversionArguments(enabledNamespaces: Map<String, String>) : Argum
         description = "Minecraft version to use for this query"
     }
 
-    val inputChannel by optionalEnum<Channels> {
+    val inputChannel by optionalEnumChoice<Channels> {
         name = "inputChannel"
         description = "The mappings channel to use for input"
+
+        typeName = "official/snapshot"
     }
 
-    val outputChannel by optionalEnum<Channels> {
+    val outputChannel by optionalEnumChoice<Channels> {
         name = "outputChannel"
         description = "The mappings channel to use for output"
+
+        typeName = "official/snapshot"
     }
 }

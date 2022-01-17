@@ -64,6 +64,7 @@ class MappingsExtension : Extension() {
                 "mojang" -> namespaces.add(MojangNamespace)
                 "hashed-mojang" -> namespaces.add(MojangHashedNamespace)
                 "plasma" -> namespaces.add(PlasmaNamespace)
+                "quilt-mappings" -> namespaces.add(QuiltMappingsNamespace)
                 "yarn" -> namespaces.add(YarnNamespace)
                 "yarrn" -> namespaces.add(YarrnNamespace)
 
@@ -83,6 +84,7 @@ class MappingsExtension : Extension() {
         val mojangEnabled = enabledNamespaces.contains("mojang")
         val hashedMojangEnabled = enabledNamespaces.contains("hashed-mojang")
         val plasmaEnabled = enabledNamespaces.contains("plasma")
+        val quiltMappingsEnabled = enabledNamespaces.contains("quilt-mappings")
         val yarnEnabled = enabledNamespaces.contains("yarn")
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
 
@@ -403,6 +405,19 @@ class MappingsExtension : Extension() {
                 "Plasma",
                 PlasmaNamespace,
                 ::PlasmaArguments
+            )
+        }
+
+        // endregion
+
+        // region: Quilt mappings lookups
+
+        if (quiltMappingsEnabled) {
+            slashCommand(
+                "quilt",
+                "Quilt",
+                QuiltMappingsNamespace,
+                ::QuiltArguments
             )
         }
 
