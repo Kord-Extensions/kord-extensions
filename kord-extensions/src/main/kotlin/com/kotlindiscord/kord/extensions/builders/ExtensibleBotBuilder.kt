@@ -494,10 +494,10 @@ public open class ExtensibleBotBuilder {
             public open var environment: String? = null
 
             /** Optional release version to send to Sentry. **/
-            public open val release: String? = null
+            public open var release: String? = null
 
             /** Optional server name to send to Sentry. **/
-            public open val serverName: String? = null
+            public open var serverName: String? = null
 
             /** Whether to ping users when responding to them. **/
             public var pingInReply: Boolean = true
