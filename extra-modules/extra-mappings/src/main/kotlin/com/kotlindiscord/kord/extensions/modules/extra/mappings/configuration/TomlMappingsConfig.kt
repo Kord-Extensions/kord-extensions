@@ -6,8 +6,10 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration
 
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.spec.*
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.YarnChannels
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.spec.CategoriesSpec
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.spec.ChannelsSpec
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.spec.GuildsSpec
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.spec.SettingsSpec
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.Feature
 import com.uchuhimo.konf.source.toml
@@ -25,7 +27,6 @@ class TomlMappingsConfig : MappingsConfigAdapter {
         addSpec(ChannelsSpec)
         addSpec(GuildsSpec)
         addSpec(SettingsSpec)
-        addSpec(YarnSpec)
     }
         .from.enabled(Feature.FAIL_ON_UNKNOWN_PATH).toml.resource("kordex/mappings/default.toml")
         .from.enabled(Feature.FAIL_ON_UNKNOWN_PATH).toml.resource(
@@ -56,8 +57,6 @@ class TomlMappingsConfig : MappingsConfigAdapter {
     override suspend fun getBannedGuilds(): List<Snowflake> = config[GuildsSpec.banned]
 
     override suspend fun getEnabledNamespaces(): List<String> = config[SettingsSpec.namespaces]
-
-    override suspend fun getExtraYarnChannels(): List<YarnChannels> = config[YarnSpec.channels]
 
     override suspend fun getTimeout(): Long = config[SettingsSpec.timeout]
 }
