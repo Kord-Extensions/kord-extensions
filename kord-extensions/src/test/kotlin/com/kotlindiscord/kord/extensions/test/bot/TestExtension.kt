@@ -23,6 +23,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.types.editingPaginator
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.respond
+import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
@@ -38,7 +39,31 @@ import kotlin.time.ExperimentalTime
 class TestExtension : Extension() {
     override val name = "test"
 
-    val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger {}
+
+    class AutoCompleteArgs : Arguments() {
+        private val optionsMap = mapOf(
+            "One" to "1",
+            "Two" to "2",
+            "Three" to "3",
+            "Four" to "4",
+            "Five" to "5",
+            "Six" to "6",
+            "Seven" to "7",
+            "Eight" to "8",
+            "Nine" to "9",
+            "Ten" to "10",
+        )
+
+        val arg by string {
+            name = "input"
+            description = "Autocomplete argument"
+
+            autoComplete {
+                suggestStringMap(optionsMap)
+            }
+        }
+    }
 
     class ColorArgs : Arguments() {
         val color by colour {
@@ -160,6 +185,17 @@ class TestExtension : Extension() {
                 message.respond {
                     content = arguments.duration.toString()
                 }
+            }
+        }
+
+        publicSlashCommand(::AutoCompleteArgs) {
+            name = "complete"
+            description = "Autocomplete test"
+
+            guild(TEST_SERVER_ID)
+
+            action {
+                respond { content = "Choice: ${arguments.arg}" }
             }
         }
 

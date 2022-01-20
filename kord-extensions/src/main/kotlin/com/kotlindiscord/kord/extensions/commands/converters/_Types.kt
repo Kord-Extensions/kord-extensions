@@ -9,9 +9,15 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
+import dev.kord.core.entity.interaction.AutoCompleteInteraction
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 
-/** Types alias representing a validator callable. Keeps things relatively maintainable. **/
+/** Type alias representing a validator callable. Keeps things relatively maintainable. **/
 public typealias Validator<T> = (suspend ValidationContext<T>.() -> Unit)?
 
- /** Types alias representing a mutator callable. Keeps things relatively maintainable. **/
- public typealias Mutator<T> = ((T) -> T)?
+/** Type alias representing a mutator callable. Keeps things relatively maintainable. **/
+public typealias Mutator<T> = ((T) -> T)?
+
+/** Type alias representing an autocomplete callable. **/
+public typealias AutoCompleteCallback =
+    (suspend AutoCompleteInteraction.(event: AutoCompleteInteractionCreateEvent) -> Unit)?
