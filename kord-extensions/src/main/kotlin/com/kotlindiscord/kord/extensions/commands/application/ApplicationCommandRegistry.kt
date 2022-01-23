@@ -443,6 +443,12 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                         .translate(option.name, locale, converter.bundle)
                         .lowercase()
 
+                    if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+                        option.choices = null
+                    }
+
+                    option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+
                     option
                 }
 
@@ -474,7 +480,16 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                                 .translate(option.name, locale, converter.bundle)
                                 .lowercase()
 
-                            converter.toSlashOption(arg)
+                            if (
+                                option is BaseChoiceBuilder<*> &&
+                                arg.converter.genericBuilder.autoCompleteCallback != null
+                            ) {
+                                option.choices = null
+                            }
+
+                            option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+
+                            option
                         }
 
                         this.subCommand(
