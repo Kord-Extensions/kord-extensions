@@ -27,7 +27,6 @@ open class MappingArguments(val namespace: Namespace) : Arguments() {
     val version by optionalMappingsVersion {
         name = "version"
         description = "Minecraft version to use for this query"
-        ignoreErrors = true // sometimes Linkie gets angry and throws an IllegalMonitorStateException
 
         namespace(namespace)
 
