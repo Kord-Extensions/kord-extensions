@@ -208,6 +208,10 @@ public open class SlashCommandParser {
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
 
                 is OptionalCoalescingConverter<*> -> try {
@@ -238,6 +242,10 @@ public open class SlashCommandParser {
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
 
                 is DefaultingConverter<*> -> try {
@@ -268,6 +276,10 @@ public open class SlashCommandParser {
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
 
                 is DefaultingCoalescingConverter<*> -> try {
@@ -298,6 +310,10 @@ public open class SlashCommandParser {
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
 
                 else -> error("Unsupported type for converter: $converter")
