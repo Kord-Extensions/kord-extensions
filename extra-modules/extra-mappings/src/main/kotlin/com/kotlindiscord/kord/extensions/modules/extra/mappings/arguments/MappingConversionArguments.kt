@@ -12,6 +12,9 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.converters.i
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.autocompleteVersions
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.toNamespace
+import dev.kord.core.entity.interaction.string
 
 /**
  * Arguments for class, field, and method conversion commands.
@@ -40,6 +43,17 @@ class MappingConversionArguments(enabledNamespaces: Map<String, String>) : Argum
     val version by optionalString {
         name = "version"
         description = "Minecraft version to use for this query"
+
+        autocompleteVersions {
+            val inputNamespace = command.options["input"]?.string()?.toNamespace()
+            val outputNamespace = command.options["output"]?.string()?.toNamespace()
+
+            if (inputNamespace == null || outputNamespace == null) {
+                emptyList()
+            } else {
+                inputNamespace.getAllSortedVersions().filter { it in outputNamespace.getAllSortedVersions() }
+            }
+        }
     }
 
     val inputChannel by optionalEnumChoice<Channels> {
