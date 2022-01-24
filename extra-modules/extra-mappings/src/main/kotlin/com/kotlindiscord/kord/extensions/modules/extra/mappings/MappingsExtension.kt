@@ -813,24 +813,14 @@ class MappingsExtension : Extension() {
         newSingleThreadContext("/convert $type: ${arguments.query}").use { context ->
             withContext(context) {
                 val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
-                    if (arguments.inputNamespace == "hashed-mojang") {
-                        // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
-                        MojangHashedNamespace
-                    } else {
-                        Namespaces[arguments.inputNamespace]
-                    }
+                    arguments.inputNamespace.toNamespace()
                 } else {
                     returnError("Input namespace is not enabled or available")
                     return@withContext
                 }
 
                 val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
-                    if (arguments.outputNamespace == "hashed-mojang") {
-                        // hashed-mojang is referred to by Linkie as `hashed_mojang` which breaks everything
-                        MojangHashedNamespace
-                    } else {
-                        Namespaces[arguments.outputNamespace]
-                    }
+                    arguments.outputNamespace.toNamespace()
                 } else {
                     returnError("Output namespace is not enabled or available")
                     return@withContext
@@ -1017,7 +1007,7 @@ class MappingsExtension : Extension() {
 
     private fun Namespace.getDefaultVersion(channel: String?): String? {
         return when (this) {
-            is MojangNamespace -> if (channel == "snapshot") {
+            is MojangNamespace, is MojangHashedNamespace -> if (channel == "snapshot") {
                 MojangReleaseContainer.latestSnapshot
             } else {
                 MojangReleaseContainer.latestRelease
