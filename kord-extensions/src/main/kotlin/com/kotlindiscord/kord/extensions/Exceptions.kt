@@ -30,6 +30,8 @@ public class InvalidArgumentException(
     public val builder: ConverterBuilder<*>,
     public val reason: String
 ) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String =
         "Invalid argument: $builder ($reason)"
 }
@@ -44,6 +46,8 @@ public class InvalidExtensionException(
     public val clazz: KClass<out Extension>,
     public val reason: String?
 ) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String {
         val formattedReason = if (reason != null) {
             " ($reason)"
@@ -61,6 +65,8 @@ public class InvalidExtensionException(
  * @param reason Why this [EventHandler] is considered invalid.
  */
 public class InvalidEventHandlerException(public val reason: String) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String = "Invalid event handler: $reason"
 }
 
@@ -70,6 +76,8 @@ public class InvalidEventHandlerException(public val reason: String) : Extension
  * @param reason Why this [EventHandler] could not be registered.
  */
 public class EventHandlerRegistrationException(public val reason: String) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String = "Failed to register event handler: $reason"
 }
 
@@ -80,6 +88,8 @@ public class EventHandlerRegistrationException(public val reason: String) : Exte
  * @param reason Why this [ChatCommand] is considered invalid.
  */
 public class InvalidCommandException(public val name: String?, public val reason: String) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String {
         if (name == null) {
             return "Invalid command: $reason"
@@ -96,6 +106,8 @@ public class InvalidCommandException(public val name: String?, public val reason
  * @param reason Why this [ChatCommand] could not be registered.
  */
 public class CommandRegistrationException(public val name: String?, public val reason: String) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String {
         if (name == null) {
             return "Failed to register command: $reason"
@@ -117,6 +129,8 @@ public open class DiscordRelayedException(
     public open val reason: String,
     public open val translationKey: String? = null
 ) : ExtensionsException() {
+    override val message: String by lazy { toString() }
+
     public constructor(other: DiscordRelayedException) : this(other.reason)
 
     override fun toString(): String = reason
@@ -138,6 +152,8 @@ public open class ArgumentParsingException(
     public val arguments: Arguments,
     public val parser: StringParser?
 ) : DiscordRelayedException(reason, translationKey) {
+    override val message: String by lazy { toString() }
+
     public constructor(other: ArgumentParsingException) :
         this(other.reason, other.translationKey, other.argument, other.arguments, other.parser)
 
