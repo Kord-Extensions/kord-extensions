@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getKoin
@@ -56,7 +57,10 @@ import org.koin.dsl.bind
 import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
+import java.nio.file.Path
 import java.util.*
+import kotlin.io.path.Path
+import kotlin.io.path.div
 
 internal typealias LocaleResolver = suspend (
     guild: GuildBehavior?,
@@ -94,6 +98,9 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val i18nBuilder: I18nBuilder = I18nBuilder()
+
+    /** @suppress Plugin builder. **/
+    public val pluginBuilder: PluginBuilder = PluginBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = {
@@ -140,6 +147,16 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public suspend fun cache(builder: suspend CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
+    }
+
+    /**
+     * DSL function used to configure the bot's plugin loading options.
+     *
+     * @see PluginBuilder
+     */
+    @BotBuilderDSL
+    public suspend fun plugins(builder: suspend PluginBuilder.() -> Unit) {
+        builder(pluginBuilder)
     }
 
     /**
@@ -349,6 +366,17 @@ public open class ExtensibleBotBuilder {
         hooksBuilder.runAfterKoinSetup()
     }
 
+    /** @suppress Plugin-loading function. **/
+    public open suspend fun loadPlugins(bot: ExtensibleBot) {
+        val manager = pluginBuilder.manager(pluginBuilder.pluginPaths)
+
+        manager.loadPlugins()
+
+        pluginBuilder.disabledPlugins.forEach(manager::disablePlugin)
+
+        manager.startPlugins()
+    }
+
     /** @suppress Internal function used to build a bot instance. **/
     public open suspend fun build(token: String): ExtensibleBot {
         setupKoin()
@@ -356,6 +384,7 @@ public open class ExtensibleBotBuilder {
         val bot = ExtensibleBot(this, token)
 
         loadModule { single { bot } bind ExtensibleBot::class }
+        loadModule { single { pluginBuilder.manager } bind PluginManager::class }
 
         hooksBuilder.runCreated(bot)
 
@@ -366,9 +395,58 @@ public open class ExtensibleBotBuilder {
 
         extensionsBuilder.extensions.forEach { bot.addExtension(it) }
 
+        if (pluginBuilder.enabled) {
+            loadPlugins(bot)
+        }
+
         hooksBuilder.runAfterExtensionsAdded(bot)
 
         return bot
+    }
+
+    /** Builder used for configuring the bot's wired-plugin-loading options. **/
+    @BotBuilderDSL
+    public class PluginBuilder {
+        /** Whether to attempt to load wired plugin. Defaults to `true`. **/
+        public var enabled: Boolean = true
+
+        /** Plugin manager builder, which you can replace if your needs require it. **/
+        public var manager: (List<Path>) -> PluginManager = ::PluginManager
+
+        /** List of paths to load plugin from. Uses `plugins/` in the current working directory by default. **/
+        public val pluginPaths: MutableList<Path> = mutableListOf(
+            Path(".") / "plugins"
+        )
+
+        /** List of plugin IDs to disable. Plugins in this list will not be loaded automatically. **/
+        public val disabledPlugins: MutableList<String> = mutableListOf()
+
+        /**
+         * Convenience function for disabling a plugin by ID.
+         *
+         * @see disabledPlugins
+         */
+        public fun disable(id: String) {
+            disabledPlugins.add(id)
+        }
+
+        /**
+         * Convenience function for adding a plugin path.
+         *
+         * @see pluginPaths
+         */
+        public fun pluginPath(path: String) {
+            pluginPaths.add(Path.of(path))
+        }
+
+        /**
+         * Convenience function for adding a plugin path.
+         *
+         * @see pluginPaths
+         */
+        public fun pluginPath(path: Path) {
+            pluginPaths.add(path)
+        }
     }
 
     /** Builder used for configuring the bot's caching options. **/

@@ -338,6 +338,23 @@ public open class ExtensibleBot(
     }
 
     /**
+     * Remove an installed [Extension] from this bot, by name.
+     *
+     * This function will unload the given extension (if it's loaded), and remove the
+     * extension object from the list of registered extensions.
+     *
+     * @param extension The name of the [Extension] to unload.
+     *
+     * @suppress This is meant to be used with the module system, and isn't necessarily a user-facing API.
+     * You need to be quite careful with this!
+     */
+    public open suspend fun removeExtension(extension: String) {
+        unloadExtension(extension)
+
+        extensions.remove(extension)
+    }
+
+    /**
      * Directly register an [EventHandler] to this bot.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and

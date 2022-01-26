@@ -46,11 +46,15 @@ suspend fun main() {
         }
 
         extensions {
-            add(::TestExtension)
-
             help {
                 paginatorTimeout = 30
             }
+        }
+
+        plugins {
+            pluginPaths.clear()
+
+            pluginPath("kord-extensions/build/generated/ksp/test/resources")
         }
     }
 
