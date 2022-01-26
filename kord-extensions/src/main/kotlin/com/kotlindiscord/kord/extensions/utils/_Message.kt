@@ -499,25 +499,25 @@ public suspend fun CommandContext.waitForResponse(
  *   - Roles to their @RoleName format
  *   - Emotes (not emojis!) to their :name: format.
  */
-public suspend fun Message.contentDisplay(): String {
-    val contentCopy = content
+public suspend fun Message.contentDisplay(): String = buildString {
+    append(content)
     val guildChannel = channel.asChannelOfOrNull<GuildChannel>()
     if (guildChannel != null) {
         mentionedRoles.toList().forEach {
-            contentCopy.replace(it.mention, "@${it.name}")
+            replace(it.mention.toRegex(), "@${it.name}")
         }
         mentionedChannels.toList().forEach {
-            contentCopy.replace(it.mention, "#${it.asChannelOf<GuildChannel>().name}")
+            replace(it.mention.toRegex(), "#${it.asChannelOf<GuildChannel>().name}")
         }
     }
     mentionedUsers.toList().forEach {
         val nickname = guildChannel?.guild?.getMember(it.id)?.nickname
         val effectiveName = nickname ?: it.username
 
-        contentCopy.replace(it.mention, "@$effectiveName")
+        replace("<@!?$id>".toRegex(), "@$effectiveName")
     }
-
-    return contentCopy
+    // Replace emotes
+    replace("<(?:a:)?(.*):\\d*>".toRegex(), ":$1:")
 }
 
 /**
