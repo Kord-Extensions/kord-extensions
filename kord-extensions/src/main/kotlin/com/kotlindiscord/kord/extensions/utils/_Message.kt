@@ -521,7 +521,7 @@ public suspend fun Message.contentDisplay(): String {
 }
 
 /**
- * Calculates the content of this [Message] how it would be displayed in the Discord client (without Markdown)
+ * Calculates the content of this [Message] how it would be displayed in the Discord client (without Markdown).
  *
  * @see Markdown
  * @see contentDisplay

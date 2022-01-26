@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.utils
 
 import org.intellij.markdown.IElementType
@@ -37,6 +43,8 @@ public fun String.parseMarkdown(): Markdown {
 
 /**
  * Container for Markdown operations.
+ *
+ * @property text the unchanged Markdown text
  *
  * @see parseMarkdown
  */
@@ -78,6 +86,9 @@ public object DiscordMarkFlavourDescriptor : CommonMarkFlavourDescriptor() {
         GFMElementTypes.STRIKETHROUGH
     )
 
+    /**
+     * List of [IElementType]s which are plain text.
+     */
     public val plainTextTypes: List<IElementType> = listOf(
         MarkdownTokenTypes.WHITE_SPACE,
         MarkdownTokenTypes.TEXT,
@@ -123,12 +134,15 @@ private class EscapingVisitor(private val source: String, private val escapedStr
                         escapedString.append(it)
                     }
                 }
-                in DiscordMarkFlavourDescriptor.plainTextTypes, MarkdownTokenTypes.FENCE_LANG, GFMTokenTypes.GFM_AUTOLINK -> escapedString.append(
+                in DiscordMarkFlavourDescriptor.plainTextTypes,
+                MarkdownTokenTypes.FENCE_LANG,
+                GFMTokenTypes.GFM_AUTOLINK -> escapedString.append(
                     source.substring(
                         node.startOffset, node.endOffset
                     )
                 )
                 MarkdownTokenTypes.CODE_FENCE_START, MarkdownTokenTypes.CODE_FENCE_END -> {
+                    @Suppress("MagicNumber")
                     repeat(3) {
                         // according to spec \``` is valid however Discord only accepts \`\`\`
                         escapedString.append(escapeChar).append('`')
@@ -157,8 +171,4 @@ private class StrippingVisitor(private val source: String, private val strippedS
             super.visitNode(node)
         }
     }
-}
-
-public fun main() {
-    println("[test](https://google.de)".parseMarkdown().escape())
 }
