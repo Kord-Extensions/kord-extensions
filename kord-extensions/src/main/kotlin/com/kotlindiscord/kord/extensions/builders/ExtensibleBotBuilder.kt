@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.plugins.KordExPlugin
 import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.types.FailureReason
@@ -79,6 +80,8 @@ internal typealias FailureResponseBuilder =
  */
 @BotBuilderDSL
 public open class ExtensibleBotBuilder {
+    protected val logger: KLogger = KotlinLogging.logger {}
+
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
@@ -318,7 +321,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** @suppress Internal function used to initially set up Koin. **/
-    public open fun setupKoin() {
+    public open suspend fun setupKoin() {
         startKoin {
             var logLevel = koinLogLevel
 
@@ -367,24 +370,48 @@ public open class ExtensibleBotBuilder {
     }
 
     /** @suppress Plugin-loading function. **/
-    public open suspend fun loadPlugins(bot: ExtensibleBot) {
+    @Suppress("TooGenericExceptionCaught")
+    public open suspend fun loadPlugins() {
         val manager = pluginBuilder.manager(pluginBuilder.pluginPaths)
+
+        loadModule { single { manager } bind PluginManager::class }
+
+        pluginBuilder.managerObj = manager
+        pluginBuilder.disabledPlugins.forEach(manager::disablePlugin)
 
         manager.loadPlugins()
 
-        pluginBuilder.disabledPlugins.forEach(manager::disablePlugin)
+        manager.plugins.forEach { wrapper ->
+            val plugin = wrapper.plugin as? KordExPlugin
 
-        manager.startPlugins()
+            plugin?.settingsCallbacks?.forEach { callback ->
+                try {
+                    callback(this)
+                } catch (t: Throwable) {
+                    logger.error(t) { "Error thrown while running settings callbacks for plugin: ${wrapper.pluginId}" }
+                }
+            }
+        }
+    }
+
+    /** @suppress Plugin-loading function. **/
+    public open suspend fun startPlugins() {
+        pluginBuilder.managerObj.startPlugins()
     }
 
     /** @suppress Internal function used to build a bot instance. **/
     public open suspend fun build(token: String): ExtensibleBot {
+        hooksBuilder.beforeKoinSetup {
+            if (pluginBuilder.enabled) {
+                loadPlugins()
+            }
+        }
+
         setupKoin()
 
         val bot = ExtensibleBot(this, token)
 
         loadModule { single { bot } bind ExtensibleBot::class }
-        loadModule { single { pluginBuilder.manager } bind PluginManager::class }
 
         hooksBuilder.runCreated(bot)
 
@@ -396,7 +423,7 @@ public open class ExtensibleBotBuilder {
         extensionsBuilder.extensions.forEach { bot.addExtension(it) }
 
         if (pluginBuilder.enabled) {
-            loadPlugins(bot)
+            startPlugins()
         }
 
         hooksBuilder.runAfterExtensionsAdded(bot)
@@ -407,6 +434,8 @@ public open class ExtensibleBotBuilder {
     /** Builder used for configuring the bot's wired-plugin-loading options. **/
     @BotBuilderDSL
     public class PluginBuilder {
+        internal lateinit var managerObj: PluginManager
+
         /** Whether to attempt to load wired plugin. Defaults to `true`. **/
         public var enabled: Boolean = true
 
@@ -705,10 +734,10 @@ public open class ExtensibleBotBuilder {
         public val afterExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
 
         /** @suppress Internal list of hooks. **/
-        public val afterKoinSetupList: MutableList<() -> Unit> = mutableListOf()
+        public val afterKoinSetupList: MutableList<suspend () -> Unit> = mutableListOf()
 
         /** @suppress Internal list of hooks. **/
-        public val beforeKoinSetupList: MutableList<() -> Unit> = mutableListOf()
+        public val beforeKoinSetupList: MutableList<suspend () -> Unit> = mutableListOf()
 
         /** @suppress Internal list of hooks. **/
         public val beforeExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
@@ -743,7 +772,7 @@ public open class ExtensibleBotBuilder {
          * via `loadModule` before the modules are actually accessed.
          */
         @BotBuilderDSL
-        public fun afterKoinSetup(body: () -> Unit): Boolean =
+        public fun afterKoinSetup(body: suspend () -> Unit): Boolean =
             afterKoinSetupList.add(body)
 
         /**
@@ -751,7 +780,7 @@ public open class ExtensibleBotBuilder {
          * early, if needed.
          */
         @BotBuilderDSL
-        public fun beforeKoinSetup(body: () -> Unit): Boolean =
+        public fun beforeKoinSetup(body: suspend () -> Unit): Boolean =
             beforeKoinSetupList.add(body)
 
         /**
@@ -807,7 +836,7 @@ public open class ExtensibleBotBuilder {
             }
 
         /** @suppress Internal hook execution function. **/
-        public fun runAfterKoinSetup() {
+        public suspend fun runAfterKoinSetup() {
             val logger: KLogger = KotlinLogging.logger {}
 
             afterKoinSetupList.forEach {
@@ -822,7 +851,7 @@ public open class ExtensibleBotBuilder {
         }
 
         /** @suppress Internal hook execution function. **/
-        public fun runBeforeKoinSetup() {
+        public suspend fun runBeforeKoinSetup() {
             val logger: KLogger = KotlinLogging.logger {}
 
             beforeKoinSetupList.forEach {
