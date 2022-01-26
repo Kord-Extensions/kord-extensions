@@ -23,6 +23,7 @@ logging = "2.1.21"
 sentry = "5.5.2"
 time4j-base = "5.8"
 time4j-tzdata = "5.0-2021a"
+markdown = "0.2.4"
 
 [libraries]
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator" }
@@ -52,6 +53,7 @@ logging = { module = "io.github.microutils:kotlin-logging", version.ref = "loggi
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
 time4j-base = { module = "net.time4j:time4j-base", version.ref = "time4j-base" }
 time4j-tzdata = { module = "net.time4j:time4j-tzdata", version.ref = "time4j-tzdata" }
+markdown = { module = "org.jetbrains:markdown", version.ref = "markdown" }
 
 [bundles]
 commons = [ "commons-validator" ]

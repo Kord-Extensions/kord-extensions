@@ -14,12 +14,15 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
+import dev.kord.core.behavior.channel.asChannelOf
+import dev.kord.core.behavior.channel.asChannelOfOrNull
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.interaction.PublicFollowupMessageBehavior
 import dev.kord.core.behavior.reply
 import dev.kord.core.cache.data.MessageData
 import dev.kord.core.entity.*
 import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.*
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
@@ -27,6 +30,7 @@ import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -486,3 +490,40 @@ public suspend fun CommandContext.waitForResponse(
 
     return event?.message
 }
+
+/**
+ * Calculates the content how it would be displayed in Discord.
+ * This includes resolving:
+ *   - Users / Members to their @Username/@Nickname format,
+ *   - TextChannels to their #ChannelName format,
+ *   - Roles to their @RoleName format
+ *   - Emotes (not emojis!) to their :name: format.
+ */
+public suspend fun Message.contentDisplay(): String {
+    val contentCopy = content
+    val guildChannel = channel.asChannelOfOrNull<GuildChannel>()
+    if (guildChannel != null) {
+        mentionedRoles.toList().forEach {
+            contentCopy.replace(it.mention, "@${it.name}")
+        }
+        mentionedChannels.toList().forEach {
+            contentCopy.replace(it.mention, "#${it.asChannelOf<GuildChannel>().name}")
+        }
+    }
+    mentionedUsers.toList().forEach {
+        val nickname = guildChannel?.guild?.getMember(it.id)?.nickname
+        val effectiveName = nickname ?: it.username
+
+        contentCopy.replace(it.mention, "@$effectiveName")
+    }
+
+    return contentCopy
+}
+
+/**
+ * Calculates the content of this [Message] how it would be displayed in the Discord client (without Markdown)
+ *
+ * @see Markdown
+ * @see contentDisplay
+ */
+public suspend fun Message.contentStripped(): String = contentDisplay().parseMarkdown().strip()
