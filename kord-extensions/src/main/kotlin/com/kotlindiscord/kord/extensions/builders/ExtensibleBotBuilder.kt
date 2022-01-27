@@ -103,7 +103,7 @@ public open class ExtensibleBotBuilder {
     public val i18nBuilder: I18nBuilder = I18nBuilder()
 
     /** @suppress Plugin builder. **/
-    public val pluginBuilder: PluginBuilder = PluginBuilder()
+    public val pluginBuilder: PluginBuilder = PluginBuilder(this)
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = {
@@ -431,9 +431,13 @@ public open class ExtensibleBotBuilder {
         return bot
     }
 
-    /** Builder used for configuring the bot's wired-plugin-loading options. **/
+    /**
+     * Builder used for configuring the bot's wired-plugin-loading options.
+     *
+     * @property parent Parent [ExtensibleBotBuilder], for extension functions.
+     */
     @BotBuilderDSL
-    public class PluginBuilder {
+    public class PluginBuilder(public val parent: ExtensibleBotBuilder) {
         internal lateinit var managerObj: PluginManager
 
         /** Whether to attempt to load wired plugin. Defaults to `true`. **/
