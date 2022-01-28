@@ -13,6 +13,9 @@ import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 
+/** The max number of suggestions allowed. **/
+public const val MAX_SUGGESTIONS: Int = 25
+
 /** Retrieve the option that's currently focused in the client. **/
 public val AutoCompleteInteractionCreateEvent.focusedOption: OptionValue<*>
     get() = this.interaction.command.options.values.first { it.focused }
@@ -27,7 +30,11 @@ public suspend inline fun AutoCompleteInteraction.suggestStringMap(map: Map<Stri
     var options = map
 
     if (option != null) {
-        options = map.filterKeys { it.lowercase().startsWith(option.lowercase()) }
+        options = options.filterKeys { it.lowercase().startsWith(option.lowercase()) }
+    }
+
+    if (options.size > MAX_SUGGESTIONS) {
+        options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
     }
 
     suggestString {
@@ -46,7 +53,11 @@ public suspend inline fun AutoCompleteInteraction.suggestLongMap(map: Map<String
     var options = map
 
     if (option != null) {
-        options = map.filterKeys { it.lowercase().startsWith(option.lowercase()) }
+        options = options.filterKeys { it.lowercase().startsWith(option.lowercase()) }
+    }
+
+    if (options.size > MAX_SUGGESTIONS) {
+        options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
     }
 
     suggestInt {
@@ -55,12 +66,21 @@ public suspend inline fun AutoCompleteInteraction.suggestLongMap(map: Map<String
 }
 
 /** Use a map to populate an autocomplete interaction, filtering by comparing the input with the start of the keys. **/
+public suspend inline fun AutoCompleteInteraction.suggestDoubleMap(map: Map<String, Double>) {
+    suggestNumberMap(map)
+}
+
+/** Use a map to populate an autocomplete interaction, filtering by comparing the input with the start of the keys. **/
 public suspend inline fun AutoCompleteInteraction.suggestNumberMap(map: Map<String, Double>) {
     val option = focusedOption.value as? String
     var options = map
 
     if (option != null) {
-        options = map.filterKeys { it.lowercase().startsWith(option.lowercase()) }
+        options = options.filterKeys { it.lowercase().startsWith(option.lowercase()) }
+    }
+
+    if (options.size > MAX_SUGGESTIONS) {
+        options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
     }
 
     suggestNumber {
