@@ -420,7 +420,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                         .lowercase()
 
                     if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
-                        option.choices = null
+                        option.choices?.clear()
                     }
 
                     option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
@@ -444,7 +444,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                         .lowercase()
 
                     if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
-                        option.choices = null
+                        option.choices?.clear()
                     }
 
                     option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
@@ -484,7 +484,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                                 option is BaseChoiceBuilder<*> &&
                                 arg.converter.genericBuilder.autoCompleteCallback != null
                             ) {
-                                option.choices = null
+                                option.choices?.clear()
                             }
 
                             option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
