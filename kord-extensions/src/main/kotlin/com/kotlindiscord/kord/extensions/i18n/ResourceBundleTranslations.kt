@@ -72,8 +72,27 @@ public open class ResourceBundleTranslations(
         val bundleKey = bundle to locale
 
         if (bundles[bundleKey] == null) {
+            val localeTag = locale.toLanguageTag()
+
             logger.trace { "Getting bundle $bundle for locale $locale" }
-            bundles[bundleKey] = getResourceBundle(bundle, locale, Control)
+
+            val firstBundle = getResourceBundle(bundle, locale, Control)
+
+            bundles[bundleKey] = if (localeTag.count { it in "-_" } == 0) {
+                val baseCode = localeTag.split('-', '_').first()
+                val secondLocale = Locale(baseCode, baseCode)
+                val secondBundle = getResourceBundle(bundle, secondLocale, Control)
+
+                val firstKey = firstBundle.keySet().first()
+
+                if (firstBundle.getStringOrNull(firstKey) != secondBundle.getStringOrNull(firstKey)) {
+                    secondBundle
+                } else {
+                    firstBundle
+                }
+            } else {
+                firstBundle
+            }
 
             try {
                 val overrideBundle = bundle + "_override"
