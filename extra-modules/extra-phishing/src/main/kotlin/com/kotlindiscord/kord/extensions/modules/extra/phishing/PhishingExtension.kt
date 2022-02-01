@@ -21,8 +21,6 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
 import com.kotlindiscord.kord.extensions.utils.getJumpUrl
-import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
-import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.Message
@@ -53,17 +51,17 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     private val domainCache: MutableSet<String> = mutableSetOf()
     private val logger = KotlinLogging.logger { }
 
-    private val scheduler = Scheduler()
-    private var checkTask: Task? = null
+    private var websocket: PhishingWebsocketWrapper = api.websocket(::handleChange)
 
     private val httpClient = HttpClient {
         followRedirects = false
     }
 
     override suspend fun setup() {
-        domainCache.addAll(api.getAllDomains())
+        websocket.stop()
+        websocket.start()
 
-        checkTask = scheduler.schedule(settings.updateDelay, pollingSeconds = 30, callback = ::updateDomains)
+        domainCache.addAll(api.getAllDomains())
 
         event<MessageCreateEvent> {
             check { isNotBot() }
@@ -375,23 +373,14 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     }
 
     override suspend fun unload() {
-        checkTask?.cancel()
-        checkTask = null
+        websocket.stop()
     }
 
-    @Suppress("MagicNumber")
-    internal suspend fun updateDomains() {
-        logger.trace { "Updating domains..." }
-
-        // An extra 30 seconds for safety, doubled to make sure we didn't miss any from an outage
-        api.getRecentDomains((settings.updateDelay.inWholeSeconds + 30) * 2).forEach {
-            when (it.type) {
-                DomainChangeType.Add -> domainCache.addAll(it.domains)
-                DomainChangeType.Delete -> domainCache.removeAll(it.domains)
-            }
+    internal fun handleChange(change: DomainChange) {
+        when (change.type) {
+            DomainChangeType.Add -> domainCache.addAll(change.domains)
+            DomainChangeType.Delete -> domainCache.removeAll(change.domains)
         }
-
-        checkTask?.restart()  // Off we go again
     }
 
     /** Arguments class for domain-relevant commands. **/

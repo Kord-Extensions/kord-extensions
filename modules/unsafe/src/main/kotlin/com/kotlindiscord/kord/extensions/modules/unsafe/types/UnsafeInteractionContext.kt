@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.core.behavior.interaction.*
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.ApplicationInteractionCreateEvent
@@ -102,7 +103,7 @@ public suspend inline fun UnsafeInteractionContext.respondPublic(
 @UnsafeAPI
 public suspend inline fun UnsafeInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-) {
+): Message {
     return when (val interaction = interactionResponse) {
         is InteractionResponseBehavior -> interaction.edit(builder)
 

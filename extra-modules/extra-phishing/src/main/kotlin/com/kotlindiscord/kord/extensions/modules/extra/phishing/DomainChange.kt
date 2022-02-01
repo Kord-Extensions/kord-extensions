@@ -21,12 +21,16 @@ data class DomainChange(
     val domains: Set<String>
 )
 
-/** Enum representing domain change types. **/
+/**
+ * Enum representing domain change types.
+ *
+ * @property readableName Readable name, for logging.
+ */
 @Serializable
-enum class DomainChangeType {
+enum class DomainChangeType(val readableName: String) {
     @SerialName("add")
-    Add,
+    Add("added"),
 
     @SerialName("delete")
-    Delete
+    Delete("deleted")
 }

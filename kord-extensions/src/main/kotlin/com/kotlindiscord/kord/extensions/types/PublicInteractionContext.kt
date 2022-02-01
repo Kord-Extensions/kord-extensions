@@ -13,6 +13,7 @@ import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.behavior.interaction.followUpEphemeral
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
@@ -40,7 +41,7 @@ public suspend inline fun PublicInteractionContext.respondEphemeral(
  */
 public suspend inline fun PublicInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-): Unit = interactionResponse.edit(builder)
+): Message = interactionResponse.edit(builder)
 
 /** Create a paginator that edits the original interaction. **/
 public suspend inline fun PublicInteractionContext.editingPaginator(
