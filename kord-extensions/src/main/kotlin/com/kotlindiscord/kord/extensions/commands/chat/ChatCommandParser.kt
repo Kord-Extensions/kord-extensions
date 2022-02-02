@@ -723,39 +723,41 @@ public open class ChatCommandParser : KoinComponent {
         val parts = mutableListOf<String>()
 
         argumentsObj.args.forEach {
-            var signature = ""
-
-            signature += if (it.converter.required) {
-                "<"
-            } else {
-                "["
-            }
-
-            signature += it.displayName
-
-            if (it.converter.showTypeInSignature) {
-                signature += ": "
-
-                signature += translationsProvider.translate(
-                    it.converter.signatureTypeString,
-                    it.converter.bundle,
-                    locale
-                )
-
-                if (it.converter is DefaultingConverter<*>) {
-                    signature += "="
-                    signature += it.converter.parsed
+            val signature = buildString {
+                if (it.converter.required) {
+                    append("<")
+                } else {
+                    append("[")
                 }
-            }
 
-            if (it.converter is ListConverter<*>) {
-                signature += "..."
-            }
+                append(it.displayName)
 
-            signature += if (it.converter.required) {
-                ">"
-            } else {
-                "]"
+                if (it.converter.showTypeInSignature) {
+                    append(": ")
+
+                    append(
+                        translationsProvider.translate(
+                            it.converter.signatureTypeString,
+                            it.converter.bundle,
+                            locale
+                        )
+                    )
+
+                    if (it.converter is DefaultingConverter<*>) {
+                        append("=")
+                        append(it.converter.parsed)
+                    }
+                }
+
+                if (it.converter is ListConverter<*>) {
+                    append("...")
+                }
+
+                if (it.converter.required) {
+                    append(">")
+                } else {
+                    append("]")
+                }
             }
 
             parts.add(signature)

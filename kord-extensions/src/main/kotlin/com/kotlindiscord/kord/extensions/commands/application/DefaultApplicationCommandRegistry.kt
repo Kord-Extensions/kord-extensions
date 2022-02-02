@@ -67,22 +67,24 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                 sync(removeOthers, it.key, it.value)
             } catch (e: KtorRequestException) {
                 logger.error(e) {
-                    var message = if (it.key == null) {
-                        "Failed to synchronise global application commands"
-                    } else {
-                        "Failed to synchronise application commands for guild with ID: ${it.key}"
-                    }
+                    buildString {
+                        if (it.key == null) {
+                            append("Failed to synchronise global application commands")
+                        } else {
+                            append("Failed to synchronise application commands for guild with ID: ${it.key}")
+                        }
 
-                    if (e.error?.message != null) {
-                        message += "\n        Discord error message: ${e.error?.message}"
-                    }
+                        if (e.error?.message != null) {
+                            append("\n        Discord error message: ${e.error?.message}")
+                        }
 
-                    if (e.error?.code == JsonErrorCode.MissingAccess) {
-                        message += "\n        Double-check that the bot was added to this guild with the " +
-                            "`application.commands` scope enabled"
+                        if (e.error?.code == JsonErrorCode.MissingAccess) {
+                            append(
+                                "\n        Double-check that the bot was added to this guild with the " +
+                                "`application.commands` scope enabled"
+                            )
+                        }
                     }
-
-                    message
                 }
             } catch (t: Throwable) {
                 logger.error(t) {
@@ -199,21 +201,25 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         }
 
         logger.info {
-            var message = if (guild == null) {
-                "Global application commands: ${toAdd.size} to add / " +
-                    "${toUpdate.size} to update / " +
-                    "${toRemove.size} to remove"
-            } else {
-                "Application commands for guild ${guild.name}: ${toAdd.size} to add / " +
-                    "${toUpdate.size} to update / " +
-                    "${toRemove.size} to remove"
-            }
+            buildString {
+                if (guild == null) {
+                    append(
+                        "Global application commands: ${toAdd.size} to add / " +
+                        "${toUpdate.size} to update / " +
+                        "${toRemove.size} to remove"
+                    )
+                } else {
+                    append(
+                        "Application commands for guild ${guild.name}: ${toAdd.size} to add / " +
+                        "${toUpdate.size} to update / " +
+                        "${toRemove.size} to remove"
+                    )
+                }
 
-            if (!removeOthers) {
-                message += "\nThe `removeOthers` parameter is `false`, so no commands will be removed."
+                if (!removeOthers) {
+                    append("\nThe `removeOthers` parameter is `false`, so no commands will be removed.")
+                }
             }
-
-            message
         }
 
         val toCreate = toAdd + toUpdate

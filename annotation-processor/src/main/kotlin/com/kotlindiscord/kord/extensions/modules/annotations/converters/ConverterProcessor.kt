@@ -76,16 +76,21 @@ public class ConverterProcessor(
 
             val typeVars = typeParams.map { it.type!!.resolve().declaration }
             val firstTypeVar = typeVars.first()
-            var typeVarName = firstTypeVar.simpleName.asString()
 
-            if (firstTypeVar.typeParameters.isNotEmpty()) {
-                typeVarName += "<"
+            val typeVarName = buildString {
+                append(firstTypeVar.simpleName.asString())
 
-                typeVarName += firstTypeVar.typeParameters.joinToString {
-                    it.bounds.joinToString { bound -> bound.resolve().declaration.simpleName.asString() }
+                if (firstTypeVar.typeParameters.isNotEmpty()) {
+                    append("<")
+
+                    append(
+                        firstTypeVar.typeParameters.joinToString {
+                            it.bounds.joinToString { bound -> bound.resolve().declaration.simpleName.asString() }
+                        }
+                    )
+
+                    append(">")
                 }
-
-                typeVarName += ">"
             }
 
             val strings: MutableList<String> = mutableListOf()
@@ -137,27 +142,6 @@ public class ConverterProcessor(
                 }
             }
 
-            var outputText = """
-                @file:OptIn(
-                    KordPreview::class,
-                    ConverterToDefaulting::class,
-                    ConverterToMulti::class,
-                    ConverterToOptional::class
-                )
-
-                package ${classDeclaration.packageName.asString()}
-                
-                // Original converter class, for safety
-                import ${classDeclaration.qualifiedName!!.asString()}
-                
-                // Imports that all converters need
-                import com.kotlindiscord.kord.extensions.InvalidArgumentException
-                import com.kotlindiscord.kord.extensions.commands.Arguments
-                import com.kotlindiscord.kord.extensions.commands.converters.*
-                import com.kotlindiscord.kord.extensions.commands.converters.builders.*
-                import dev.kord.common.annotation.KordPreview
-            """.trimIndent()
-
             val ignoredGenerics = listOfNotNull(
                 arguments.builderGeneric?.split(":")?.first(),
                 arguments.functionGeneric?.split(":")?.first()
@@ -165,32 +149,56 @@ public class ConverterProcessor(
 
             val typeImports = typeVars.filter { it.simpleName.getShortName() !in ignoredGenerics }
 
-            if (typeImports.isNotEmpty()) {
-                outputText += "\n\n" +
-                    "// Converter type params"
+            val outputText = buildString {
+                append(
+                    """
+                    @file:OptIn(
+                        KordPreview::class,
+                        ConverterToDefaulting::class,
+                        ConverterToMulti::class,
+                        ConverterToOptional::class
+                    )
+    
+                    package ${classDeclaration.packageName.asString()}
+                    
+                    // Original converter class, for safety
+                    import ${classDeclaration.qualifiedName!!.asString()}
+                    
+                    // Imports that all converters need
+                    import com.kotlindiscord.kord.extensions.InvalidArgumentException
+                    import com.kotlindiscord.kord.extensions.commands.Arguments
+                    import com.kotlindiscord.kord.extensions.commands.converters.*
+                    import com.kotlindiscord.kord.extensions.commands.converters.builders.*
+                    import dev.kord.common.annotation.KordPreview
+                    """.trimIndent()
+                )
 
-                typeImports.forEach {
-                    outputText += "\nimport ${it.qualifiedName!!.asString()}"
+                if (typeImports.isNotEmpty()) {
+                    append("\n\n// Converter type params")
+
+                    typeImports.forEach {
+                        append("\nimport ${it.qualifiedName!!.asString()}")
+                    }
                 }
+
+                append("\n\n")
+
+                if (arguments.imports.isNotEmpty()) {
+                    append("// Extra imports\n")
+                    append(arguments.imports.joinToString("\n") { "import $it" })
+                    append("\n\n")
+                }
+
+                append(strings.filter { it.isNotEmpty() }.joinToString("\n\n"))
+
+                append("\n")
             }
-
-            outputText += "\n\n"
-
-            if (arguments.imports.isNotEmpty()) {
-                outputText += "// Extra imports\n"
-                outputText += arguments.imports.joinToString("\n") { "import $it" }
-                outputText += "\n\n"
-            }
-
-            outputText += strings.filter { it.isNotEmpty() }.joinToString("\n\n")
 
             val file = generator.createNewFile(
                 Dependencies(true, classDeclaration.containingFile!!),
                 classDeclaration.packageName.asString(),
                 classDeclaration.simpleName.asString() + "Functions"
             )
-
-            outputText += "\n"
 
             file.write(outputText.encodeToByteArray())
             file.flush()
@@ -273,21 +281,24 @@ internal fun String.toLowered() =
 
 internal fun String.splitUpper(): List<String> {
     val parts: MutableList<String> = mutableListOf()
-    var currentPart = ""
 
-    for (char in this) {
-        if (currentPart.isEmpty()) {
-            currentPart += char
-            continue
+    val currentPart = buildString {
+        for (char in this@splitUpper) {
+            if (isEmpty()) {
+                append(char)
+                continue
+            }
+
+            if (char.isUpperCase()) {
+                parts.add(this.toString())
+                this.clear()
+
+                append("" + char)
+                continue
+            }
+
+            append(char)
         }
-
-        if (char.isUpperCase()) {
-            parts.add(currentPart)
-            currentPart = "" + char
-            continue
-        }
-
-        currentPart += char
     }
 
     if (currentPart.isNotEmpty()) {

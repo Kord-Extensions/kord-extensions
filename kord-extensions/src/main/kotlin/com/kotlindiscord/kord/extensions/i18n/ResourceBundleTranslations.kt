@@ -63,10 +63,12 @@ public open class ResourceBundleTranslations(
      */
     @Throws(MissingResourceException::class)
     protected open fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
-        var bundle = "translations." + (bundleName ?: KORDEX_KEY)
+        val bundle = buildString {
+            append("translations." + (bundleName ?: KORDEX_KEY))
 
-        if (bundle.count { it == '.' } < 2) {
-            bundle += ".$DEFAULT_BUNDLE_SUFFIX"
+            if (this.count { it == '.' } < 2) {
+                append(".$DEFAULT_BUNDLE_SUFFIX")
+            }
         }
 
         val bundleKey = bundle to locale

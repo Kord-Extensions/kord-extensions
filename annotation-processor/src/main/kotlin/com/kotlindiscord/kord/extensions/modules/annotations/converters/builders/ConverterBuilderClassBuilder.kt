@@ -100,7 +100,6 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     /** Build the string that contains this builder's code. It's also stored in [result]. **/
     public fun build(): String {
         builderType = ""
-        converterType = ""
 
         val builder = StringBuilder()
 
@@ -122,46 +121,48 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             }
         }
 
-        types.sortedBy { it.order }.forEach {
-            if (it.appendFragment) {
-                converterType += it.fragment
+        converterType = buildString {
+            types.sortedBy { it.order }.forEach {
+                if (it.appendFragment) {
+                    append(it.fragment)
+                }
             }
-        }
 
-        builderType = converterType +
-            name +
+            builderType = this.toString() +
+                name +
 
-            if (ConverterType.CHOICE in types) {
-                "Choice"
-            } else {
-                ""
-            } +
+                if (ConverterType.CHOICE in types) {
+                    "Choice"
+                } else {
+                    ""
+                } +
 
-            "ConverterBuilder"
+                "ConverterBuilder"
 
-        builder.append(builderType)
+            builder.append(builderType)
 
-        if (builderGeneric != null) {
-            builder.append(" <$builderGeneric>")
-        }
-
-        builder.append("(")
-
-        if (builderArguments.isNotEmpty()) {
-            builder.append("\n")
-
-            builderArguments.forEach {
-                builder.append("    ${it.trim('!', ' ')},\n")
+            if (builderGeneric != null) {
+                builder.append(" <$builderGeneric>")
             }
+
+            builder.append("(")
+
+            if (builderArguments.isNotEmpty()) {
+                builder.append("\n")
+
+                builderArguments.forEach {
+                    builder.append("    ${it.trim('!', ' ')},\n")
+                }
+            }
+
+            builder.append(") : ${this}ConverterBuilder<$argumentType>()")
+
+            if (ConverterType.SINGLE in types && this.isEmpty()) {
+                append("Single")
+            }
+
+            append("Converter")
         }
-
-        builder.append(") : ${converterType}ConverterBuilder<$argumentType>()")
-
-        if (ConverterType.SINGLE in types && converterType.isEmpty()) {
-            converterType += "Single"
-        }
-
-        converterType += "Converter"
 
         if (ConverterType.CHOICE in types) {
             builder.append(", ChoiceConverterBuilder<$argumentType>")
@@ -304,27 +305,27 @@ public class ConverterBuilderClassBuilder : KoinComponent {
         }
 
         val capitalizeName = before.isNotEmpty()
-
-        var resultString = ""
         var firstString = true
 
-        before.forEach {
-            if (firstString) {
-                resultString += it
-                firstString = false
-            } else {
-                resultString += it.toCapitalized()
+        val resultString = buildString {
+            before.forEach {
+                if (firstString) {
+                    append(it)
+                    firstString = false
+                } else {
+                    append(it.toCapitalized())
+                }
             }
-        }
 
-        resultString += if (capitalizeName) {
-            givenName.toCapitalized()
-        } else {
-            givenName
-        }
+            if (capitalizeName) {
+                append(givenName.toCapitalized())
+            } else {
+                append(givenName)
+            }
 
-        after.forEach {
-            resultString += it.toCapitalized()
+            after.forEach {
+                append(it.toCapitalized())
+            }
         }
 
         return resultString
