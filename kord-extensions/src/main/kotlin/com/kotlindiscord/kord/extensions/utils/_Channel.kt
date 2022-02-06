@@ -1,9 +1,16 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createWebhook
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.Webhook
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.TopGuildChannel
@@ -71,3 +78,14 @@ public suspend fun GuildChannel.permissionsForMember(memberId: Snowflake): Permi
  */
 public suspend fun GuildChannel.permissionsForMember(user: UserBehavior): Permissions =
     permissionsForMember(user.id)
+
+/**
+ * Convenience function that returns the thread's parent message, if it was created from one.
+ *
+ * If it wasn't, or the parent channel can't be found, this function returns `null`.
+ */
+public suspend fun ThreadChannel.getParentMessage(): Message? {
+    val parentChannel = getParentOrNull() ?: return null
+
+    return parentChannel.getMessageOrNull(this.id)
+}

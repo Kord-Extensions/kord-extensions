@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.i18n
 
 import java.util.*
@@ -9,15 +15,31 @@ import java.util.*
  * back: https://hosted.weblate.org/projects/kord-extensions/main/
  */
 public object SupportedLocales {
+    /** Simplified Chinese locale. **/
     public val CHINESE_SIMPLIFIED: Locale = Locale("zh", "cn")
+
+    /** English locale. **/
     public val ENGLISH: Locale = Locale("en", "gb")
+
+    /** Finnish locale. **/
     public val FINNISH: Locale = Locale("fi", "fi")
+
+    /** French locale. **/
     public val FRENCH: Locale = Locale("fr", "fr")
+
+    /** German locale. **/
     public val GERMAN: Locale = Locale("de", "de")
+
+    /** Polish locale. **/
     public val POLISH: Locale = Locale("pl", "pl")
+
+    /** Portuguese locale. **/
     public val PORTUGUESE: Locale = Locale("pt", "pt")
+
+    /** Russian locale. **/
     public val RUSSIAN: Locale = Locale("ru", "ru")
 
+    /** Map of string names to supported Locale objects.. **/
     public val ALL_LOCALES: Map<String, Locale> = mapOf(
         "chinese" to CHINESE_SIMPLIFIED,
         "zh" to CHINESE_SIMPLIFIED,

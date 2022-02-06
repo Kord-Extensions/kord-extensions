@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.parsers
@@ -20,6 +26,7 @@ private const val DAYS_IN_WEEK = 7
 public object DurationParser : KoinComponent {
     private val translations: TranslationsProvider by inject()
 
+    /** Check whether the given character is a valid duration unit character. **/
     public fun charValid(char: Char, locale: Locale): Boolean =
         char.isDigit() ||
             char == ' ' ||

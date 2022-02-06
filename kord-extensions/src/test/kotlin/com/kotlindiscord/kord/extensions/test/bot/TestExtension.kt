@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(KordPreview::class, ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.test.bot
@@ -17,6 +23,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.types.editingPaginator
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.respond
+import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Permission
@@ -32,60 +39,163 @@ import kotlin.time.ExperimentalTime
 class TestExtension : Extension() {
     override val name = "test"
 
-    val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger {}
+
+    class AutoCompleteArgs : Arguments() {
+        private val optionsMap = mapOf(
+            "One" to "1",
+            "Two" to "2",
+            "Three" to "3",
+            "Four" to "4",
+            "Five" to "5",
+            "Six" to "6",
+            "Seven" to "7",
+            "Eight" to "8",
+            "Nine" to "9",
+            "Ten" to "10",
+        )
+
+        val arg by string {
+            name = "input"
+            description = "Autocomplete argument"
+
+            autoComplete {
+                suggestStringMap(optionsMap)
+            }
+        }
+    }
 
     class ColorArgs : Arguments() {
-        val color by colour("color", "Color to use for the embed")
+        val color by colour {
+            name = "color"
+            description = "Color to use for the embed"
+        }
     }
 
     class TestArgs : Arguments() {
-        val string by string("string", "String argument")
-        val enum by enum<TestEnum>("enum", "Enum argument", "test")
+        val string by string {
+            name = "string"
+            description = "String argument"
+        }
 
-        val optionalEnum by defaultingEnum(
-            displayName = "optional-enum",
-            description = "Defaulting enum argument",
-            typeName = "test",
+        val enum by enum<TestEnum> {
+            name = "enum"
+            description = "Enum argument"
+
+            typeName = "test"
+        }
+
+        val optionalEnum by defaultingEnum<TestEnum> {
+            name = "optional-enum"
+            description = "Defaulting enum argument"
+
+            typeName = "test"
             defaultValue = TestEnum.THREE
-        )
+        }
 
-        val bools by booleanList("bools", "Boolean list argument")
+        val bools by booleanList {
+            name = "bools"
+            description = "Boolean list argument"
+        }
     }
 
     class SlashArgs : Arguments() {
-        val string by string("string", "String argument")
-        val enum by enum<TestEnum>("enum", "Enum argument", "test")
-        val bool by boolean("bool", "Boolean argument")
+        val string by string {
+            name = "string"
+            description = "String argument"
+        }
 
-        val optionalEnum by defaultingEnum(
-            displayName = "optional-enum",
-            description = "Defaulting enum argument",
-            typeName = "test",
+        val enum by enum<TestEnum> {
+            name = "enum"
+            description = "Enum argument"
+
+            typeName = "test"
+        }
+
+        val bool by boolean {
+            name = "bool"
+            description = "Boolean argument"
+        }
+
+        val optionalEnum by defaultingEnum<TestEnum> {
+            name = "optional-enum"
+            description = "Defaulting enum argument"
+
+            typeName = "test"
             defaultValue = TestEnum.THREE
-        )
+        }
     }
 
     class SlashChoiceArgs : Arguments() {
-        val arg by enumChoice<TestChoiceEnum>("choice", "Enum Choice", "test")
+        val arg by enumChoice<TestChoiceEnum> {
+            name = "choice"
+            description = "Enum Choice"
+
+            typeName = "test"
+        }
     }
 
     class CoalescedArgs : Arguments() {
-        val string by coalescedString("input", "Text to use")
-        val flag by optionalBoolean("flag", "Some kinda flag")
+        val string by coalescingString {
+            name = "input"
+            description = "Test to use"
+        }
+
+        val flag by optionalBoolean {
+            name = "flag"
+            description = "Some kinda flag"
+        }
     }
 
     class MessageArgs : Arguments() {
-        val message by message("target", "Target message")
+        val message by message {
+            name = "target"
+            description = "Target message"
+        }
     }
 
     class UserArgs : Arguments() {
-        val user by user("target", "Target user")
+        val user by user {
+            name = "target"
+            description = "Target user"
+        }
+    }
+
+    class OptionalDurationArgs : Arguments() {
+        val duration by optionalDuration {
+            name = "duration"
+            description = "duration"
+
+            ignoreErrors = false
+        }
     }
 
     override suspend fun setup() {
         event<GuildCreateEvent> {
             action {
-                logger.info { "Guild created: ${event.guild.name} (${event.guild.id.asString})" }
+                logger.info { "Guild created: ${event.guild.name} (${event.guild.id})" }
+            }
+        }
+
+        chatCommand(::OptionalDurationArgs) {
+            name = "duration"
+            description = "Optional duration test"
+
+            action {
+                message.respond {
+                    content = arguments.duration.toString()
+                }
+            }
+        }
+
+        publicSlashCommand(::AutoCompleteArgs) {
+            name = "complete"
+            description = "Autocomplete test"
+
+            guild(TEST_SERVER_ID)
+
+            action {
+                respond { content = "Choice: ${arguments.arg}" }
             }
         }
 

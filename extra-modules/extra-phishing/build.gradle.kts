@@ -17,11 +17,14 @@ repositories {
 dependencies {
     detektPlugins(libs.detekt)
 
+    implementation(libs.jsoup)
+
     implementation(libs.logging)
     implementation(libs.kotlin.stdlib)
     implementation(libs.ktor.logging)
 
     testImplementation(libs.groovy)  // For logback config
+    testImplementation(libs.jansi)
     testImplementation(libs.logback)
 
     implementation(project(":kord-extensions"))

@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
@@ -58,7 +64,7 @@ public class ChronoContainer {
      * Will most likely be inaccurate if the container wasn't normalized first.
      */
     public fun isPositive(): Boolean = values[
-        values.filter { (unit, value) -> value != 0L }
+        values.filter { (_, value) -> value != 0L }
             .keys
             .sortedByDescending { it.duration.seconds }
             .first()
@@ -194,6 +200,8 @@ public class ChronoContainer {
                 ChronoUnit.DAYS -> values[unit] = period.days.toLong()
                 ChronoUnit.MONTHS -> values[unit] = period.months.toLong()
                 ChronoUnit.YEARS -> values[unit] = period.years.toLong()
+
+                else -> {}
             }
         }
     }
@@ -207,6 +215,8 @@ public class ChronoContainer {
                 ChronoUnit.SECONDS -> values[unit] = duration.toSecondsPart().toLong()
                 ChronoUnit.MINUTES -> values[unit] = duration.toMinutesPart().toLong()
                 ChronoUnit.HOURS -> values[unit] = duration.toHoursPart().toLong()
+
+                else -> {}
             }
         }
     }
@@ -220,6 +230,8 @@ public class ChronoContainer {
                 ChronoUnit.DAYS -> values[unit] = period.days.toLong()
                 ChronoUnit.MONTHS -> values[unit] = period.months.toLong()
                 ChronoUnit.YEARS -> values[unit] = period.years.toLong()
+
+                else -> {}
             }
         }
     }

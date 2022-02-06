@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.commands.converters.*
@@ -66,7 +72,7 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <R : Any?> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
         converter: OptionalConverter<R>
@@ -77,7 +83,7 @@ public open class Arguments {
     }
 
     /**
-     * Add a [MultiConverter] argument to this set of arguments.
+     * Add a [ListConverter] argument to this set of arguments.
      *
      * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
      * is intended to be used as a property delegate.
@@ -90,8 +96,8 @@ public open class Arguments {
     public fun <R : Any> arg(
         displayName: String,
         description: String,
-        converter: MultiConverter<R>
-    ): MultiConverter<R> {
+        converter: ListConverter<R>
+    ): ListConverter<R> {
         args.add(Argument(displayName, description, converter))
 
         return converter
@@ -150,7 +156,7 @@ public open class Arguments {
      *
      * @return Argument converter to use as a delegate.
      */
-    public fun <R : Any?> arg(
+    public fun <R : Any> arg(
         displayName: String,
         description: String,
         converter: OptionalCoalescingConverter<R>

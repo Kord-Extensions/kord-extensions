@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
@@ -18,6 +24,10 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.interaction.GroupCommand
+import dev.kord.core.entity.interaction.InteractionCommand
+import dev.kord.core.entity.interaction.SubCommand
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
@@ -179,20 +189,20 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 data["command"] = commandObj.name
 
                 if (guildId != null) {
-                    data["command.guild"] = guildId!!.asString
+                    data["command.guild"] = guildId.toString()
                 }
 
                 if (channel != null) {
                     data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id.asString})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                        is DmChannel -> "Private Message (${channel.id})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
 
-                        else -> channel.id.asString
+                        else -> channel.id.toString()
                     }
                 }
 
                 if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id.asString})"
+                    data["guild"] = "${guild.name} (${guild.id})"
                 }
             }
         }
@@ -238,6 +248,36 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
 
         return result
     }
+
+    /** Given a command event, resolve the correct command or subcommand object. **/
+    public open fun findCommand(event: ChatInputCommandInteractionCreateEvent): SlashCommand<*, *> =
+        findCommand(event.interaction.command)
+
+    /** Given an autocomplete event, resolve the correct command or subcommand object. **/
+    public open fun findCommand(event: AutoCompleteInteractionCreateEvent): SlashCommand<*, *> =
+        findCommand(event.interaction.command)
+
+    /** Given an [InteractionCommand], resolve the correct command or subcommand object. **/
+    public open fun findCommand(eventCommand: InteractionCommand): SlashCommand<*, *> =
+        when (eventCommand) {
+            is SubCommand -> {
+                val firstSubCommandKey = eventCommand.name
+
+                this.subCommands.firstOrNull { it.name == firstSubCommandKey }
+                    ?: error("Unknown subcommand: $firstSubCommandKey")
+            }
+
+            is GroupCommand -> {
+                val firstEventGroupKey = eventCommand.groupName
+                val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
+                val firstSubCommandKey = eventCommand.name
+
+                group.subCommands.firstOrNull { it.name == firstSubCommandKey }
+                    ?: error("Unknown subcommand: $firstSubCommandKey")
+            }
+
+            else -> this
+        }
 
     /** A general way to handle errors thrown during the course of a command's execution. **/
     public open suspend fun handleError(context: C, t: Throwable, commandObj: SlashCommand<*, *>) {

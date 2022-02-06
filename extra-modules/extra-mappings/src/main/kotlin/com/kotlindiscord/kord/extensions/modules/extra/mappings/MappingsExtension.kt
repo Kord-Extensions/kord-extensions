@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
@@ -5,32 +11,34 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.PublicSlashCommandContext
+import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.extensions.chatCommand
+import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.builders.ExtMappingsBuilder
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.YarnChannels
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.exceptions.UnsupportedNamespaceException
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.classesToPages
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.fieldsToPages
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.methodsToPages
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.*
 import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
-import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
+import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
-import com.kotlindiscord.kord.extensions.utils.respond
-import dev.kord.core.behavior.channel.withTyping
-import dev.kord.core.event.message.MessageCreateEvent
+import com.kotlindiscord.kord.extensions.types.respond
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.MappingsQuery
 import me.shedaniel.linkie.utils.QueryContext
+import me.shedaniel.linkie.utils.QueryResult
+import me.shedaniel.linkie.utils.ResultHolder
 import mu.KotlinLogging
+
+private typealias MappingSlashCommand = PublicSlashCommandContext<out MappingArguments>
+private typealias ConversionSlashCommand = PublicSlashCommandContext<MappingConversionArguments>
 
 private const val VERSION_CHUNK_SIZE = 10
 private const val PAGE_FOOTER = "Powered by Linkie"
@@ -52,10 +60,11 @@ class MappingsExtension : Extension() {
         enabledNamespaces.forEach {
             when (it) {
                 "legacy-yarn" -> namespaces.add(LegacyYarnNamespace)
-                "mcp" -> namespaces.add(MCPNamespace)
+                "mcp" -> namespaces.add(McpNamespaceReplacement)
                 "mojang" -> namespaces.add(MojangNamespace)
                 "hashed-mojang" -> namespaces.add(MojangHashedNamespace)
                 "plasma" -> namespaces.add(PlasmaNamespace)
+                "quilt-mappings" -> namespaces.add(QuiltMappingsNamespace)
                 "yarn" -> namespaces.add(YarnNamespace)
                 "yarrn" -> namespaces.add(YarrnNamespace)
 
@@ -75,83 +84,167 @@ class MappingsExtension : Extension() {
         val mojangEnabled = enabledNamespaces.contains("mojang")
         val hashedMojangEnabled = enabledNamespaces.contains("hashed-mojang")
         val plasmaEnabled = enabledNamespaces.contains("plasma")
+        val quiltMappingsEnabled = enabledNamespaces.contains("quilt-mappings")
         val yarnEnabled = enabledNamespaces.contains("yarn")
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
 
-        val patchworkEnabled = builder.config.yarnChannelEnabled(YarnChannels.PATCHWORK)
-
-        val categoryCheck: Check<MessageCreateEvent> = {
+        val categoryCheck: Check<ChatInputCommandInteractionCreateEvent> = {
             allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
         }
 
-        val channelCheck: Check<MessageCreateEvent> = {
+        val channelCheck: Check<ChatInputCommandInteractionCreateEvent> = {
             allowedGuild(builder.config.getAllowedChannels(), builder.config.getBannedChannels())
         }
 
-        val guildCheck: Check<MessageCreateEvent> = {
+        val guildCheck: Check<ChatInputCommandInteractionCreateEvent> = {
             allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
         }
 
-        val yarnChannels = YarnChannels.values().filter {
-            it != YarnChannels.PATCHWORK || patchworkEnabled
-        }.joinToString(", ") { "`${it.str}`" }
+        val yarnChannels = Channels.values().joinToString(", ") { "`${it.readableName}`" }
+
+        suspend fun <T : MappingArguments> slashCommand(
+            parentName: String,
+            friendlyName: String,
+            namespace: Namespace,
+            arguments: () -> T,
+            customInfoCommand: (suspend PublicSlashCommandContext<out Arguments>.() -> Unit)? = null
+        ) = publicSlashCommand {
+            name = parentName
+            description = "Look up $friendlyName mappings."
+
+            publicSubCommand(arguments) {
+                name = "class"
+
+                description = "Look up $friendlyName mappings info for a class."
+
+                check { customChecks(name, namespace) }
+                check(categoryCheck, channelCheck, guildCheck)
+
+                action {
+                    val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
+
+                    queryMapping(
+                        "class",
+                        channel,
+                        queryProvider = MappingsQuery::queryClasses,
+                        pageGenerationMethod = classesToPages
+                    )
+                }
+            }
+
+            publicSubCommand(arguments) {
+                name = "field"
+
+                description = "Look up $friendlyName mappings info for a field."
+
+                check { customChecks(name, namespace) }
+                check(categoryCheck, channelCheck, guildCheck)
+
+                action {
+                    val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
+
+                    queryMapping(
+                        "field",
+                        channel,
+                        queryProvider = MappingsQuery::queryFields,
+                        pageGenerationMethod = ::fieldsToPages
+                    )
+                }
+            }
+
+            publicSubCommand(arguments) {
+                name = "method"
+
+                description = "Look up $friendlyName mappings info for a method."
+
+                check { customChecks(name, namespace) }
+                check(categoryCheck, channelCheck, guildCheck)
+
+                action {
+                    val channel = (this.arguments as? MappingWithChannelArguments)?.channel?.readableName
+
+                    queryMapping(
+                        "method",
+                        channel,
+                        queryProvider = MappingsQuery::queryMethods,
+                        pageGenerationMethod = ::methodsToPages
+                    )
+                }
+            }
+
+            publicSubCommand {
+                name = "info"
+
+                description = "Get information for $friendlyName mappings."
+
+                check { customChecks(name, namespace) }
+                check(categoryCheck, channelCheck, guildCheck)
+
+                action(customInfoCommand ?: {
+                    val defaultVersion = namespace.defaultVersion
+                    val allVersions = namespace.getAllSortedVersions()
+
+                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
+                        it.joinToString("\n") { version ->
+                            if (version == defaultVersion) {
+                                "**» $version** (Default)"
+                            } else {
+                                "**»** $version"
+                            }
+                        }
+                    }.toMutableList()
+
+                    val versionSize = allVersions.size
+                    pages.add(
+                        0,
+                        "$friendlyName mappings are available for queries across **$versionSize** versions.\n\n" +
+
+                            "**Default version:** $defaultVersion\n" +
+                            "**Commands:** `/$parentName class`, `/$parentName field`, `/$parentName method`\n\n" +
+
+                            "For a full list of supported $friendlyName versions, please view the rest of the pages."
+                    )
+
+                    val pagesObj = Pages()
+                    val pageTitle = "Mappings info: $friendlyName"
+
+                    pages.forEach {
+                        pagesObj.addPage(
+                            Page {
+                                description = it
+                                title = pageTitle
+
+                                footer {
+                                    text = PAGE_FOOTER
+                                    icon = PAGE_FOOTER_ICON
+                                }
+                            }
+                        )
+                    }
+
+                    val paginator = PublicResponsePaginator(
+                        pages = pagesObj,
+                        keepEmbed = true,
+                        owner = event.interaction.user,
+                        timeoutSeconds = getTimeout(),
+                        locale = getLocale(),
+                        interaction = interactionResponse
+                    )
+
+                    paginator.send()
+                })
+            }
+        }
 
         // region: Legacy Yarn mappings lookups
 
         if (legacyYarnEnabled) {
-            // Class
-            chatCommand(::LegacyYarnArguments) {
-                name = "lyc"
-                aliases = arrayOf("lyarnc", "legacy-yarnc", "legacyyarnc", "legacyarnc")
-
-                description = "Look up Legacy Yarn mappings info for a class.\n\n" +
-
-                    "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
-                    "`lyarn` command."
-
-                check { customChecks(name, LegacyYarnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryClasses(LegacyYarnNamespace, arguments.query, arguments.version)
-                }
-            }
-
-            // Field
-            chatCommand(::LegacyYarnArguments) {
-                name = "lyf"
-                aliases = arrayOf("lyarnf", "legacy-yarnf", "legacyyarnf", "legacyarnf")
-
-                description = "Look up Legacy Yarn mappings info for a field.\n\n" +
-
-                    "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
-                    "`lyarn` command."
-
-                check { customChecks(name, LegacyYarnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryFields(LegacyYarnNamespace, arguments.query, arguments.version)
-                }
-            }
-
-            // Method
-            chatCommand(::LegacyYarnArguments) {
-                name = "lym"
-                aliases = arrayOf("lyarnm", "legacy-yarnm", "legacyyarnm", "legacyarnm")
-
-                description = "Look up Legacy Yarn mappings info for a method.\n\n" +
-
-                    "For more information or a list of versions for Legacy Yarn mappings, you can use the " +
-                    "`lyarn` command."
-
-                check { customChecks(name, LegacyYarnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryMethods(LegacyYarnNamespace, arguments.query, arguments.version)
-                }
-            }
+            slashCommand(
+                "lyarn",
+                "Legacy Yarn",
+                LegacyYarnNamespace,
+                ::LegacyYarnArguments
+            )
         }
 
         // endregion
@@ -159,53 +252,13 @@ class MappingsExtension : Extension() {
         // region: MCP mappings lookups
 
         if (mcpEnabled) {
-            // Class
-            chatCommand(::MCPArguments) {
-                name = "mcpc"
-
-                description = "Look up MCP mappings info for a class.\n\n" +
-
-                    "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
-
-                check { customChecks(name, MCPNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryClasses(MCPNamespace, arguments.query, arguments.version)
-                }
-            }
-
-            // Field
-            chatCommand(::MCPArguments) {
-                name = "mcpf"
-
-                description = "Look up MCP mappings info for a field.\n\n" +
-
-                    "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
-
-                check { customChecks(name, MCPNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryFields(MCPNamespace, arguments.query, arguments.version)
-                }
-            }
-
-            // Method
-            chatCommand(::MCPArguments) {
-                name = "mcpm"
-
-                description = "Look up MCP mappings info for a method.\n\n" +
-
-                    "For more information or a list of versions for MCP mappings, you can use the `mcp` command."
-
-                check { customChecks(name, MCPNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryMethods(MCPNamespace, arguments.query, arguments.version)
-                }
-            }
+            // Slash commands
+            slashCommand(
+                "mcp",
+                "MCP",
+                McpNamespaceReplacement,
+                ::MCPArguments
+            )
         }
 
         // endregion
@@ -213,67 +266,65 @@ class MappingsExtension : Extension() {
         // region: Mojang mappings lookups
 
         if (mojangEnabled) {
-            // Class
-            chatCommand(::MojangArguments) {
-                name = "mmc"
-                aliases = arrayOf("mojc", "mojmapc")
+            slashCommand(
+                "mojang",
+                "Mojang",
+                MojangNamespace,
+                ::MojangArguments
+            ) {
+                val defaultVersion = MojangReleaseContainer.latestRelease
+                val allVersions = MojangNamespace.getAllSortedVersions()
 
-                description = "Look up Mojang mappings info for a class.\n\n" +
+                val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
+                    it.joinToString("\n") { version ->
+                        if (version == defaultVersion) {
+                            "**» $version** (Default)"
+                        } else {
+                            "**»** $version"
+                        }
+                    }
+                }.toMutableList()
 
-                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
-                    "\n\n" +
+                pages.add(
+                    0,
+                    "Mojang mappings are available for queries across **${allVersions.size}** versions.\n\n" +
 
-                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
-                    "command."
+                        "**Default version:** $defaultVersion\n\n" +
 
-                check { customChecks(name, MojangNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+                        "**Channels:** " + Channels.values().joinToString(", ") { "`${it.readableName}`" } +
+                        "\n" +
+                        "**Commands:** `/mojang class`, `/mojang field`, `/mojang method`\n\n" +
 
-                action {
-                    queryClasses(MojangNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                        "For a full list of supported Mojang versions, please view the rest of the pages."
+                )
+
+                val pagesObj = Pages()
+                val pageTitle = "Mappings info: Mojang"
+
+                pages.forEach {
+                    pagesObj.addPage(
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
+                    )
                 }
-            }
 
-            // Field
-            chatCommand(::MojangArguments) {
-                name = "mmf"
-                aliases = arrayOf("mojf", "mojmapf")
+                val paginator = PublicResponsePaginator(
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = event.interaction.user,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
+                    interaction = interactionResponse
+                )
 
-                description = "Look up Mojang mappings info for a field.\n\n" +
-
-                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
-                    "\n\n" +
-
-                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
-                    "command."
-
-                check { customChecks(name, MojangNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryFields(MojangNamespace, arguments.query, arguments.version, arguments.channel?.str)
-                }
-            }
-
-            // Method
-            chatCommand(::MojangArguments) {
-                name = "mmm"
-                aliases = arrayOf("mojm", "mojmapm")
-
-                description = "Look up Mojang mappings info for a method.\n\n" +
-
-                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
-                    "\n\n" +
-
-                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
-                    "command."
-
-                check { customChecks(name, MojangNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryMethods(MojangNamespace, arguments.query, arguments.version, arguments.channel?.str)
-                }
+                paginator.send()
             }
         }
 
@@ -282,67 +333,65 @@ class MappingsExtension : Extension() {
         // region: Hashed Mojang mappings lookups
 
         if (hashedMojangEnabled) {
-            // Class
-            chatCommand(::HashedMojangArguments) {
-                name = "hc"
-                aliases = arrayOf("hmojc", "hmojmapc", "hmc", "qhc")
+            slashCommand(
+                "hashed",
+                "Hashed Mojang",
+                MojangHashedNamespace,
+                ::HashedMojangArguments
+            ) {
+                val defaultVersion = MojangReleaseContainer.latestRelease
+                val allVersions = MojangNamespace.getAllSortedVersions()
 
-                description = "Look up Hashed Mojang mappings info for a class.\n\n" +
+                val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
+                    it.joinToString("\n") { version ->
+                        if (version == defaultVersion) {
+                            "**» $version** (Default)"
+                        } else {
+                            "**»** $version"
+                        }
+                    }
+                }.toMutableList()
 
-                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
-                    "\n\n" +
+                pages.add(
+                    0,
+                    "Hashed Mojang mappings are available for queries across **${allVersions.size}** versions.\n\n" +
 
-                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
-                    "command."
+                        "**Default version:** $defaultVersion\n\n" +
 
-                check { customChecks(name, MojangHashedNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+                        "**Channels:** " + Channels.values().joinToString(", ") { "`${it.readableName}`" } +
+                        "\n" +
+                        "**Commands:** `/hashed class`, `/hashed field`, `/hashed method`\n\n" +
 
-                action {
-                    queryClasses(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                        "For a full list of supported hashed Mojang versions, please view the rest of the pages."
+                )
+
+                val pagesObj = Pages()
+                val pageTitle = "Mappings info: Hashed Mojang"
+
+                pages.forEach {
+                    pagesObj.addPage(
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
+                    )
                 }
-            }
 
-            // Field
-            chatCommand(::HashedMojangArguments) {
-                name = "hf"
-                aliases = arrayOf("hmojf", "hmojmapf", "hmf", "qhf")
+                val paginator = PublicResponsePaginator(
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = event.interaction.user,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
+                    interaction = interactionResponse
+                )
 
-                description = "Look up Hashed Mojang mappings info for a field.\n\n" +
-
-                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
-                    "\n\n" +
-
-                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
-                    "command."
-
-                check { customChecks(name, MojangHashedNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryFields(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
-                }
-            }
-
-            // Method
-            chatCommand(::HashedMojangArguments) {
-                name = "hm"
-                aliases = arrayOf("hmojm", "hmojmapm", "hmm", "qhm")
-
-                description = "Look up Hashed Mojang mappings info for a method.\n\n" +
-
-                    "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
-                    "\n\n" +
-
-                    "For more information or a list of versions for Mojang mappings, you can use the `mojang` " +
-                    "command."
-
-                check { customChecks(name, MojangHashedNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryMethods(MojangHashedNamespace, arguments.query, arguments.version, arguments.channel?.str)
-                }
+                paginator.send()
             }
         }
 
@@ -351,56 +400,25 @@ class MappingsExtension : Extension() {
         // region: Plasma mappings lookups
 
         if (plasmaEnabled) {
-            // Class
-            chatCommand(::PlasmaArguments) {
-                name = "pc"
+            slashCommand(
+                "plasma",
+                "Plasma",
+                PlasmaNamespace,
+                ::PlasmaArguments
+            )
+        }
 
-                description = "Look up Plasma mappings info for a class.\n\n" +
+        // endregion
 
-                    "For more information or a list of versions for Plasma mappings, you can use the " +
-                    "`plasma` command."
+        // region: Quilt mappings lookups
 
-                check { customChecks(name, PlasmaNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryClasses(PlasmaNamespace, arguments.query, arguments.version)
-                }
-            }
-
-            // Field
-            chatCommand(::PlasmaArguments) {
-                name = "pf"
-
-                description = "Look up Plasma mappings info for a field.\n\n" +
-
-                    "For more information or a list of versions for Plasma mappings, you can use the " +
-                    "`plasma` command."
-
-                check { customChecks(name, PlasmaNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryFields(PlasmaNamespace, arguments.query, arguments.version)
-                }
-            }
-
-            // Method
-            chatCommand(::PlasmaArguments) {
-                name = "pm"
-
-                description = "Look up Plasma mappings info for a method.\n\n" +
-
-                    "For more information or a list of versions for Plasma mappings, you can use the " +
-                    "`plasma` command."
-
-                check { customChecks(name, PlasmaNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryMethods(PlasmaNamespace, arguments.query, arguments.version)
-                }
-            }
+        if (quiltMappingsEnabled) {
+            slashCommand(
+                "quilt",
+                "Quilt",
+                QuiltMappingsNamespace,
+                ::QuiltArguments
+            )
         }
 
         // endregion
@@ -408,82 +426,73 @@ class MappingsExtension : Extension() {
         // region: Yarn mappings lookups
 
         if (yarnEnabled) {
-            // Class
-            chatCommand({ YarnArguments(patchworkEnabled) }) {
-                name = "yc"
-                aliases = arrayOf("yarnc")
+            slashCommand(
+                "yarn",
+                "Yarn",
+                YarnNamespace,
+                ::YarnArguments
+            ) {
+                val defaultVersion = YarnReleaseContainer.latestRelease
+                val defaultSnapshotVersion = YarnReleaseContainer.latestSnapshot
+                val allVersions = YarnNamespace.getAllSortedVersions()
 
-                description = "Look up Yarn mappings info for a class.\n\n" +
+                val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
+                    it.joinToString("\n") { version ->
+                        when (version) {
+                            defaultVersion -> "**» $version** (Default)"
+                            defaultSnapshotVersion -> "**» $version** (Default: Snapshot)"
 
-                    "**Channels:** $yarnChannels" +
-                    "\n\n" +
-
-                    "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
-                    "command."
-
-                check { customChecks(name, YarnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    if (!patchworkEnabled && arguments.channel == YarnChannels.PATCHWORK) {
-                        message.respond("Patchwork support is currently disabled.")
-                        return@action
+                            else -> "**»** $version"
+                        }
                     }
+                }.toMutableList()
 
-                    queryClasses(YarnNamespace, arguments.query, arguments.version, arguments.channel?.str)
+                pages.add(
+                    0,
+                    "Yarn mappings are available for queries across **${allVersions.size}** versions.\n\n" +
+
+                        "**Default version:** $defaultVersion\n" +
+                        "**Default snapshot version:** $defaultSnapshotVersion\n\n" +
+
+                        "**Channels:** $yarnChannels\n" +
+                        "**Commands:** `/yarn class`, `/yarn field`, `/yarn method`\n\n" +
+
+                        "For a full list of supported Yarn versions, please view the rest of the pages." +
+
+                        if (legacyYarnEnabled) {
+                            " For Legacy Yarn mappings, please see the `lyarn` command."
+                        } else {
+                            ""
+                        }
+                )
+
+                val pagesObj = Pages()
+                val pageTitle = "Mappings info: Yarn"
+
+                pages.forEach {
+                    pagesObj.addPage(
+                        Page {
+                            description = it
+                            title = pageTitle
+
+                            footer {
+                                text = PAGE_FOOTER
+                                icon = PAGE_FOOTER_ICON
+                            }
+                        }
+                    )
                 }
-            }
 
-            // Field
-            chatCommand({ YarnArguments(patchworkEnabled) }) {
-                name = "yf"
-                aliases = arrayOf("yarnf")
+                val paginator = PublicResponsePaginator(
+                    pages = pagesObj,
+                    keepEmbed = true,
+                    owner = event.interaction.user,
+                    timeoutSeconds = getTimeout(),
+                    locale = getLocale(),
+                    interaction = interactionResponse
+                )
 
-                description = "Look up Yarn mappings info for a field.\n\n" +
-
-                    "**Channels:** $yarnChannels" +
-                    "\n\n" +
-
-                    "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
-                    "command."
-
-                check { customChecks(name, YarnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    if (!patchworkEnabled && arguments.channel == YarnChannels.PATCHWORK) {
-                        message.respond("Patchwork support is currently disabled.")
-                        return@action
-                    }
-
-                    queryFields(YarnNamespace, arguments.query, arguments.version, arguments.channel?.str)
-                }
-            }
-
-            // Method
-            chatCommand({ YarnArguments(patchworkEnabled) }) {
-                name = "ym"
-                aliases = arrayOf("yarnm")
-
-                description = "Look up Yarn mappings info for a method.\n\n" +
-
-                    "**Channels:** $yarnChannels" +
-                    "\n\n" +
-
-                    "For more information or a list of versions for Yarn mappings, you can use the `yarn` " +
-                    "command."
-
-                check { customChecks(name, YarnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    if (!patchworkEnabled && arguments.channel == YarnChannels.PATCHWORK) {
-                        message.respond("Patchwork support is currently disabled.")
-                        return@action
-                    }
-
-                    queryMethods(YarnNamespace, arguments.query, arguments.version, arguments.channel?.str)
-                }
+                paginator.send()
             }
         }
 
@@ -492,300 +501,114 @@ class MappingsExtension : Extension() {
         // region: Yarrn mappings lookups
 
         if (yarrnEnabled) {
-            // Class
-            chatCommand(::YarrnArguments) {
-                name = "yrc"
-
-                description = "Look up Yarrn mappings info for a class.\n\n" +
-
-                    "For more information or a list of versions for Yarrn mappings, you can use the " +
-                    "`yarrn` command."
-
-                check { customChecks(name, YarrnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryClasses(YarrnNamespace, arguments.query, arguments.version)
-                }
-            }
-
-            // Field
-            chatCommand(::YarrnArguments) {
-                name = "yrf"
-
-                description = "Look up Yarrn mappings info for a field.\n\n" +
-
-                    "For more information or a list of versions for Yarrn mappings, you can use the " +
-                    "`yarrn` command."
-
-                check { customChecks(name, YarrnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryFields(YarrnNamespace, arguments.query, arguments.version)
-                }
-            }
-
-            // Method
-            chatCommand(::YarrnArguments) {
-                name = "yrm"
-
-                description = "Look up Yarrn mappings info for a method.\n\n" +
-
-                    "For more information or a list of versions for Yarrn mappings, you can use the " +
-                    "`yarrn` command."
-
-                check { customChecks(name, YarrnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    queryMethods(YarrnNamespace, arguments.query, arguments.version)
-                }
-            }
+            slashCommand(
+                "yarrn",
+                "Yarrn",
+                YarrnNamespace,
+                ::YarrnArguments
+            )
         }
 
         // endregion
 
-        // region: Mappings info commands
+        // region: Mapping conversions
 
-        if (legacyYarnEnabled) {
-            chatCommand {
-                name = "lyarn"
-                aliases = arrayOf("legacy-yarn", "legacyyarn", "legacyarn")
+        publicSlashCommand {
+            name = "convert"
+            description = "Convert mappings across namespaces"
 
-                description = "Get information and a list of supported versions for Legacy Yarn mappings."
-
-                check { customChecks(name, LegacyYarnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+                name = "class"
+                description = "Convert a class mapping"
 
                 action {
-                    val defaultVersion = LegacyYarnNamespace.getDefaultVersion()
-                    val allVersions = LegacyYarnNamespace.getAllSortedVersions()
-
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            if (version == defaultVersion) {
-                                "**» $version** (Default)"
-                            } else {
-                                "**»** $version"
-                            }
-                        }
-                    }.toMutableList()
-
-                    pages.add(
-                        0,
-                        "Legacy Yarn mappings are available for queries across **${allVersions.size}** " +
-                            "versions.\n\n" +
-
-                            "**Default version:** $defaultVersion\n" +
-                            "**Commands:** `lyc`, `lyf`, `lym`\n\n" +
-
-                            "For a full list of supported Yarn versions, please view the rest of the pages."
+                    convertMapping(
+                        "class",
+                        MappingsQuery::queryClasses,
+                        classMatchesToPages,
+                        enabledNamespaces,
+                        obfNameProvider = { it.obfName.preferredName },
+                        classNameProvider = { it.obfName.preferredName!! },
+                        descProvider = { null }
                     )
-
-                    val pagesObj = Pages()
-                    val pageTitle = "Mappings info: Legacy Yarn"
-
-                    pages.forEach {
-                        pagesObj.addPage(
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
-                                }
-                            }
-                        )
-                    }
-
-                    val paginator = MessageButtonPaginator(
-                        targetMessage = event.message,
-                        pages = pagesObj,
-                        keepEmbed = true,
-                        owner = message.author,
-                        timeoutSeconds = getTimeout(),
-                        locale = getLocale(),
-                    )
-
-                    paginator.send()
                 }
             }
-        }
 
-        if (mcpEnabled) {
-            chatCommand {
-                name = "mcp"
-
-                description = "Get information and a list of supported versions for MCP mappings."
-
-                check { customChecks(name, MCPNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+                name = "field"
+                description = "Convert a field mapping"
 
                 action {
-                    val defaultVersion = MCPNamespace.getDefaultVersion()
-                    val allVersions = MCPNamespace.getAllSortedVersions()
-
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            if (version == defaultVersion) {
-                                "**» $version** (Default)"
-                            } else {
-                                "**»** $version"
+                    convertMapping(
+                        "field",
+                        MappingsQuery::queryFields,
+                        fieldMatchesToPages,
+                        enabledNamespaces,
+                        obfNameProvider = { it.second.obfName.preferredName },
+                        classNameProvider = { it.first.obfName.preferredName!! },
+                        descProvider = {
+                            when {
+                                second.obfName.isMerged() -> second.getObfMergedDesc(it)
+                                second.obfName.client != null -> second.getObfClientDesc(it)
+                                second.obfName.server != null -> second.getObfServerDesc(it)
+                                else -> null
                             }
                         }
-                    }.toMutableList()
-
-                    pages.add(
-                        0,
-                        "MCP mappings are available for queries across **${allVersions.size}** versions.\n\n" +
-
-                            "**Default version:** $defaultVersion\n" +
-                            "**Commands:** `mcpc`, `mcpf`, `mcpm`\n\n" +
-
-                            "For a full list of supported MCP versions, please view the rest of the pages."
                     )
-
-                    val pagesObj = Pages()
-                    val pageTitle = "Mappings info: MCP"
-
-                    pages.forEach {
-                        pagesObj.addPage(
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
-                                }
-                            }
-                        )
-                    }
-
-                    val paginator = MessageButtonPaginator(
-                        targetMessage = event.message,
-                        pages = pagesObj,
-                        keepEmbed = true,
-                        owner = message.author,
-                        timeoutSeconds = getTimeout(),
-                        locale = getLocale(),
-                    )
-
-                    paginator.send()
                 }
             }
-        }
 
-        if (mojangEnabled) {
-            chatCommand {
-                name = "mojang"
-                aliases = arrayOf("mojmap")
-
-                description = "Get information and a list of supported versions for Mojang mappings."
-
-                check { customChecks(name, MojangNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+                name = "method"
+                description = "Convert a method mapping"
 
                 action {
-                    val defaultVersion = MojangNamespace.getDefaultVersion()
-                    val allVersions = MojangNamespace.getAllSortedVersions()
-
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            if (version == defaultVersion) {
-                                "**» $version** (Default)"
-                            } else {
-                                "**»** $version"
+                    convertMapping(
+                        "method",
+                        MappingsQuery::queryMethods,
+                        methodMatchesToPages,
+                        enabledNamespaces,
+                        obfNameProvider = { it.second.obfName.preferredName },
+                        classNameProvider = { it.first.obfName.preferredName!! },
+                        descProvider = {
+                            when {
+                                second.obfName.isMerged() -> second.getObfMergedDesc(it)
+                                second.obfName.client != null -> second.getObfClientDesc(it)
+                                second.obfName.server != null -> second.getObfServerDesc(it)
+                                else -> null
                             }
                         }
-                    }.toMutableList()
-
-                    pages.add(
-                        0,
-                        "Mojang mappings are available for queries across **${allVersions.size}** versions.\n\n" +
-
-                            "**Default version:** $defaultVersion\n\n" +
-
-                            "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
-                            "\n" +
-                            "**Commands:** `mmc`, `mmf`, `mmm`\n\n" +
-
-                            "For a full list of supported Mojang versions, please view the rest of the pages."
                     )
-
-                    val pagesObj = Pages()
-                    val pageTitle = "Mappings info: Mojang"
-
-                    pages.forEach {
-                        pagesObj.addPage(
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
-                                }
-                            }
-                        )
-                    }
-
-                    val paginator = MessageButtonPaginator(
-                        targetMessage = event.message,
-                        pages = pagesObj,
-                        keepEmbed = true,
-                        owner = message.author,
-                        timeoutSeconds = getTimeout(),
-                        locale = getLocale(),
-                    )
-
-                    paginator.send()
                 }
             }
-        }
 
-        if (hashedMojangEnabled) {
-            chatCommand {
-                name = "hashed"
-                aliases = arrayOf("hashed-mojmap", "hashed-mojang", "quilt-hashed", "qh", "hm")
-
-                description = "Get information and a list of supported versions for hashed Mojang mappings."
-
-                check { customChecks(name, MojangHashedNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
+            publicSubCommand {
+                name = "info"
+                description = "Get information about /convert and its subcommands"
 
                 action {
-                    val defaultVersion = MojangHashedNamespace.getDefaultVersion()
-                    val allVersions = MojangHashedNamespace.getAllSortedVersions()
-
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            if (version == defaultVersion) {
-                                "**» $version** (Default)"
-                            } else {
-                                "**»** $version"
-                            }
-                        }
-                    }.toMutableList()
-
+                    val pages = mutableListOf<String>()
                     pages.add(
-                        0,
-                        "Hashed Mojang mappings are available for queries across **${allVersions.size}** " +
-                            "versions.\n\n" +
+                        "Mapping conversions are available for any Minecraft version with multiple mapping sets.\n\n" +
 
-                            "**Default version:** $defaultVersion\n\n" +
+                        "The version of the output is determined in this order:\n" +
+                        "\u2022 The version specified by the command, \n" +
+                        "\u2022 The default version of the output mapping set, \n" +
+                        "\u2022 The default version of the input mapping set, or\n" +
+                        "\u2022 The latest version supported by both mapping sets.\n\n" +
 
-                            "**Channels:** " + Channels.values().joinToString(", ") { "`${it.str}`" } +
-                            "\n" +
-                            "**Commands:** `hc`, `hf`, `hm`\n\n" +
-
-                            "For a full list of supported hashed Mojang versions, please view the rest of the pages."
+                        "For a list of available mappings, see the next page."
+                    )
+                    pages.add(
+                        enabledNamespaces.joinToString(
+                            prefix = "**Namespaces:** \n\n`",
+                            separator = "`\n`",
+                            postfix = "`"
+                        )
                     )
 
                     val pagesObj = Pages()
-                    val pageTitle = "Mappings info: Hashed Mojang"
+                    val pageTitle = "Mapping conversion info"
 
                     pages.forEach {
                         pagesObj.addPage(
@@ -801,236 +624,13 @@ class MappingsExtension : Extension() {
                         )
                     }
 
-                    val paginator = MessageButtonPaginator(
-                        targetMessage = event.message,
+                    val paginator = PublicResponsePaginator(
                         pages = pagesObj,
                         keepEmbed = true,
-                        owner = message.author,
+                        owner = event.interaction.user,
                         timeoutSeconds = getTimeout(),
                         locale = getLocale(),
-                    )
-
-                    paginator.send()
-                }
-            }
-        }
-
-        if (plasmaEnabled) {
-            chatCommand {
-                name = "plasma"
-
-                description = "Get information and a list of supported versions for Plasma mappings."
-
-                check { customChecks(name, PlasmaNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    val defaultVersion = PlasmaNamespace.getDefaultVersion()
-                    val allVersions = PlasmaNamespace.getAllSortedVersions()
-
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            if (version == defaultVersion) {
-                                "**» $version** (Default)"
-                            } else {
-                                "**»** $version"
-                            }
-                        }
-                    }.toMutableList()
-
-                    pages.add(
-                        0,
-                        "Plasma mappings are available for queries across **${allVersions.size}** " +
-                            "versions.\n\n" +
-
-                            "**Default version:** $defaultVersion\n" +
-                            "**Commands:** `pc`, `pf`, `pm`\n\n" +
-
-                            "For a full list of supported Plasma versions, please view the rest of the pages."
-                    )
-
-                    val pagesObj = Pages()
-                    val pageTitle = "Mappings info: Plasma"
-
-                    pages.forEach {
-                        pagesObj.addPage(
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
-                                }
-                            }
-                        )
-                    }
-
-                    val paginator = MessageButtonPaginator(
-                        targetMessage = event.message,
-                        pages = pagesObj,
-                        keepEmbed = true,
-                        owner = message.author,
-                        timeoutSeconds = getTimeout(),
-                        locale = getLocale(),
-                    )
-
-                    paginator.send()
-                }
-            }
-        }
-
-        if (yarnEnabled) {
-            chatCommand {
-                name = "yarn"
-
-                description = "Get information and a list of supported versions for Yarn mappings."
-
-                check { customChecks(name, YarnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    val defaultPatchworkVersion = if (patchworkEnabled) {
-                        YarnNamespace.getDefaultVersion { YarnChannels.PATCHWORK.str }
-                    } else {
-                        ""
-                    }
-
-                    val defaultVersion = YarnNamespace.getDefaultVersion()
-                    val defaultSnapshotVersion = YarnNamespace.getDefaultVersion { YarnChannels.SNAPSHOT.str }
-                    val allVersions = YarnNamespace.getAllSortedVersions()
-
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            when (version) {
-                                defaultVersion -> "**» $version** (Default)"
-                                defaultSnapshotVersion -> "**» $version** (Default: Snapshot)"
-
-                                defaultPatchworkVersion -> if (patchworkEnabled) {
-                                    "**» $version** (Default: Patchwork)"
-                                } else {
-                                    "**»** $version"
-                                }
-
-                                else -> "**»** $version"
-                            }
-                        }
-                    }.toMutableList()
-
-                    pages.add(
-                        0,
-                        "Yarn mappings are available for queries across **${allVersions.size}** versions.\n\n" +
-
-                            "**Default version:** $defaultVersion\n" +
-                            "**Default snapshot version:** $defaultSnapshotVersion\n\n" +
-
-                            if (patchworkEnabled) {
-                                "**Default Patchwork version:** $defaultPatchworkVersion\n\n"
-                            } else {
-                                ""
-                            } +
-
-                            "**Channels:** $yarnChannels\n" +
-                            "**Commands:** `yc`, `yf`, `ym`\n\n" +
-
-                            "For a full list of supported Yarn versions, please view the rest of the pages." +
-
-                            if (legacyYarnEnabled) {
-                                " For Legacy Yarn mappings, please see the `lyarn` command."
-                            } else {
-                                ""
-                            }
-                    )
-
-                    val pagesObj = Pages()
-                    val pageTitle = "Mappings info: Yarn"
-
-                    pages.forEach {
-                        pagesObj.addPage(
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
-                                }
-                            }
-                        )
-                    }
-
-                    val paginator = MessageButtonPaginator(
-                        targetMessage = event.message,
-                        pages = pagesObj,
-                        keepEmbed = true,
-                        owner = message.author,
-                        timeoutSeconds = getTimeout(),
-                        locale = getLocale(),
-                    )
-
-                    paginator.send()
-                }
-            }
-        }
-
-        if (yarrnEnabled) {
-            chatCommand {
-                name = "yarrn"
-
-                description = "Get information and a list of supported versions for Yarrn mappings."
-
-                check { customChecks(name, YarrnNamespace) }
-                check(categoryCheck, channelCheck, guildCheck)  // Default checks
-
-                action {
-                    val defaultVersion = YarrnNamespace.getDefaultVersion()
-                    val allVersions = YarrnNamespace.getAllSortedVersions()
-
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            if (version == defaultVersion) {
-                                "**» $version** (Default)"
-                            } else {
-                                "**»** $version"
-                            }
-                        }
-                    }.toMutableList()
-
-                    pages.add(
-                        0,
-                        "Yarrn mappings are available for queries across **${allVersions.size}** " +
-                            "versions.\n\n" +
-
-                            "**Default version:** $defaultVersion\n" +
-                            "**Commands:** `yrc`, `yrf`, `yrm`\n\n" +
-
-                            "For a full list of supported Yarrn versions, please view the rest of the pages."
-                    )
-
-                    val pagesObj = Pages()
-                    val pageTitle = "Mappings info: Yarrn"
-
-                    pages.forEach {
-                        pagesObj.addPage(
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
-                                }
-                            }
-                        )
-                    }
-
-                    val paginator = MessageButtonPaginator(
-                        targetMessage = event.message,
-                        pages = pagesObj,
-                        keepEmbed = true,
-                        owner = message.author,
-                        timeoutSeconds = getTimeout(),
-                        locale = getLocale(),
+                        interaction = interactionResponse
                     )
 
                     paginator.send()
@@ -1043,41 +643,35 @@ class MappingsExtension : Extension() {
         logger.info { "Mappings extension set up - namespaces: " + enabledNamespaces.joinToString(", ") }
     }
 
-    private suspend fun ChatCommandContext<out Arguments>.queryClasses(
-        namespace: Namespace,
-        givenQuery: String,
-        version: MappingsContainer?,
-        channel: String? = null
-    ) {
+    private suspend fun <A, B> MappingSlashCommand.queryMapping(
+        type: String,
+        channel: String? = null,
+        queryProvider: suspend (QueryContext) -> QueryResult<A, B>,
+        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>
+    ) where A : MappingsMetadata, B : List<*> {
         sentry.breadcrumb(BreadcrumbType.Query) {
-            message = "Beginning class lookup"
+            message = "Beginning mapping lookup"
 
+            data["type"] = type
             data["channel"] = channel ?: "N/A"
-            data["namespace"] = namespace.id
-            data["query"] = givenQuery
-            data["version"] = version?.version ?: "N/A"
+            data["namespace"] = arguments.namespace.id
+            data["query"] = arguments.query
+            data["version"] = arguments.version?.version ?: "N/A"
         }
 
-        val context = newSingleThreadContext("c: $givenQuery")
-
-        try {
+        newSingleThreadContext("/query $type: ${arguments.query}").use { context ->
             withContext(context) {
-                val provider = if (version == null) {
-                    if (channel != null) {
-                        namespace.getProvider(
-                            namespace.getDefaultVersion { channel }
-                        )
-                    } else {
-                        MappingsProvider.empty(namespace)
-                    }
+                val version = arguments.version?.version
+                    ?: arguments.namespace.getDefaultVersion(channel)
+
+                val provider = if (version != null) {
+                    arguments.namespace.getProvider(version)
                 } else {
-                    namespace.getProvider(version.version)
+                    MappingsProvider.empty(arguments.namespace)
                 }
 
                 provider.injectDefaultVersion(
-                    namespace.getDefaultProvider {
-                        channel ?: namespace.getDefaultMappingChannel()
-                    }
+                    arguments.namespace.getProvider(version ?: arguments.namespace.defaultVersion)
                 )
 
                 sentry.breadcrumb(BreadcrumbType.Info) {
@@ -1086,8 +680,8 @@ class MappingsExtension : Extension() {
                     data["version"] = provider.version ?: "Unknown"
                 }
 
-                val query = givenQuery.replace(".", "/")
-                var pages: List<Pair<String, String>>
+                val query = arguments.query.replace('.', '/')
+                val pages: List<Pair<String, String>>
 
                 sentry.breadcrumb(BreadcrumbType.Info) {
                     message = "Attempting to run sanitized query"
@@ -1095,38 +689,46 @@ class MappingsExtension : Extension() {
                     data["query"] = query
                 }
 
-                message.channel.withTyping {
-                    @Suppress("TooGenericExceptionCaught")
-                    val result = try {
-                        MappingsQuery.queryClasses(
-                            QueryContext(
-                                provider = provider,
-                                searchKey = query
-                            )
-                        )
-                    } catch (e: NullPointerException) {
-                        message.respond(e.localizedMessage)
-                        return@withContext
+                @Suppress("TooGenericExceptionCaught")
+                val result = try {
+                    queryProvider(QueryContext(
+                        provider = provider,
+                        searchKey = query
+                    ))
+                } catch (e: NullPointerException) {
+                    respond {
+                        content = e.localizedMessage
                     }
-
-                    sentry.breadcrumb(BreadcrumbType.Info) {
-                        message = "Generating pages for results"
-
-                        data["resultCount"] = result.value.size
-                    }
-
-                    pages = classesToPages(namespace, result)
-                }
-
-                if (pages.isEmpty()) {
-                    message.respond("No results found")
                     return@withContext
                 }
 
-                val meta = provider.get()
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Generating pages for results"
+
+                    data["resultCount"] = result.value.size
+                }
+
+                val container = provider.get()
+
+                pages = pageGenerationMethod(
+                    arguments.namespace,
+                    container,
+                    result,
+                    arguments !is IntermediaryMappable || (arguments as IntermediaryMappable).mapDescriptors
+                )
+
+                if (pages.isEmpty()) {
+                    respond {
+                        content = "No results found"
+                    }
+
+                    return@withContext
+                }
 
                 val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-                val pageTitle = "List of ${meta.name} classes: ${meta.version}"
+
+                val plural = if (type == "class") "es" else "s"
+                val pageTitle = "List of ${container.name} $type$plural: ${container.version}"
 
                 val shortPages = mutableListOf<String>()
                 val longPages = mutableListOf<String>()
@@ -1174,67 +776,101 @@ class MappingsExtension : Extension() {
                     message = "Creating and sending paginator to Discord"
                 }
 
-                val paginator = MessageButtonPaginator(
-                    targetMessage = event.message,
+                val paginator = PublicResponsePaginator(
                     pages = pagesObj,
-                    keepEmbed = true,
-                    owner = message.author,
+                    owner = event.interaction.user,
                     timeoutSeconds = getTimeout(),
                     locale = getLocale(),
+                    interaction = interactionResponse
                 )
 
                 paginator.send()
             }
-        } finally {
-            context.close()
         }
     }
 
-    private suspend fun ChatCommandContext<out Arguments>.queryFields(
-        namespace: Namespace,
-        givenQuery: String,
-        version: MappingsContainer?,
-        channel: String? = null
-    ) {
+    private suspend fun <A, B, T> ConversionSlashCommand.convertMapping(
+        type: String,
+        queryProvider: suspend (QueryContext) -> QueryResult<A, T>,
+        pageGenerationMethod: (MappingsContainer, Map<B, B>) -> List<String>,
+        enabledNamespaces: List<String>,
+        obfNameProvider: (B) -> String?,
+        classNameProvider: (B) -> String,
+        descProvider: B.(MappingsContainer) -> String?,
+    ) where A : MappingsMetadata, T : List<ResultHolder<B>> {
         sentry.breadcrumb(BreadcrumbType.Query) {
-            message = "Beginning field lookup"
+            message = "Beginning mapping conversion"
 
-            data["channel"] = channel ?: "N/A"
-            data["namespace"] = namespace.id
-            data["query"] = givenQuery
-            data["version"] = version?.version ?: "N/A"
+            data["type"] = type
+            data["query"] = arguments.query
+            data["inputNamespace"] = arguments.inputNamespace
+            data["inputChannel"] = arguments.inputChannel?.readableName ?: "N/A"
+            data["outputNamespace"] = arguments.outputNamespace
+            data["outputChannel"] = arguments.outputChannel?.readableName ?: "N/A"
+            data["version"] = arguments.version ?: "N/A"
         }
 
-        val context = newSingleThreadContext("f: $givenQuery")
-
-        try {
+        newSingleThreadContext("/convert $type: ${arguments.query}").use { context ->
             withContext(context) {
-                val provider = if (version == null) {
-                    if (channel != null) {
-                        namespace.getProvider(
-                            namespace.getDefaultVersion { channel }
-                        )
-                    } else {
-                        MappingsProvider.empty(namespace)
-                    }
+                val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
+                    arguments.inputNamespace.toNamespace()
                 } else {
-                    namespace.getProvider(version.version)
+                    returnError("Input namespace is not enabled or available")
+                    return@withContext
                 }
 
-                provider.injectDefaultVersion(
-                    namespace.getDefaultProvider {
-                        channel ?: namespace.getDefaultMappingChannel()
-                    }
-                )
+                val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
+                    arguments.outputNamespace.toNamespace()
+                } else {
+                    returnError("Output namespace is not enabled or available")
+                    return@withContext
+                }
+
+                val newestCommonVersion = inputNamespace.getAllSortedVersions().firstOrNull {
+                    it in outputNamespace.getAllSortedVersions()
+                } ?: run {
+                    returnError("No common version between input and output mappings")
+                    return@withContext
+                }
+
+                val inputDefault = inputNamespace.getDefaultVersion(arguments.inputChannel?.readableName)
+
+                val outputDefault = outputNamespace.getDefaultVersion(arguments.outputChannel?.readableName)
+
+                // try the command-provided version first
+                val version = arguments.version
+                // then try the default version for the output namespace
+                    ?: outputDefault.takeIf { it in inputNamespace.getAllSortedVersions() }
+                    // then try the default version for the input namespace
+                    ?: inputDefault.takeIf { it in outputNamespace.getAllSortedVersions() }
+                    // and if all else fails, use the newest common version
+                    ?: newestCommonVersion
+
+                val inputProvider = inputNamespace.getProvider(version)
+                val outputProvider = outputNamespace.getProvider(version)
+
+                val inputContainer = inputProvider.getOrNull() ?: run {
+                    returnError(
+                        "Input mapping is not available ($version probably isn't supported by ${inputNamespace.id})"
+                    )
+                    return@withContext
+                }
+
+                val outputContainer = outputProvider.getOrNull() ?: run {
+                    returnError(
+                        "Output mapping is not available ($version probably isn't supported by ${outputNamespace.id})"
+                    )
+                    return@withContext
+                }
 
                 sentry.breadcrumb(BreadcrumbType.Info) {
-                    message = "Provider resolved, with injected default version"
+                    message = "Providers and namespaces resolved"
 
-                    data["version"] = provider.version ?: "Unknown"
+                    data["version"] = inputProvider.version ?: "Unknown"
                 }
 
-                val query = givenQuery.replace(".", "/")
-                var pages: List<Pair<String, String>>
+                val query = arguments.query.replace('.', '/')
+                val pages: List<String>
 
                 sentry.breadcrumb(BreadcrumbType.Info) {
                     message = "Attempting to run sanitized query"
@@ -1242,50 +878,97 @@ class MappingsExtension : Extension() {
                     data["query"] = query
                 }
 
-                message.channel.withTyping {
-                    @Suppress("TooGenericExceptionCaught")
-                    val result = try {
-                        MappingsQuery.queryFields(
-                            QueryContext(
-                                provider = provider,
-                                searchKey = query
-                            )
-                        )
-                    } catch (e: NullPointerException) {
-                        message.respond(e.localizedMessage)
-                        return@withContext
-                    }
-
-                    sentry.breadcrumb(BreadcrumbType.Info) {
-                        message = "Generating pages for results"
-
-                        data["resultCount"] = result.value.size
-                    }
-
-                    pages = fieldsToPages(namespace, provider.get(), result)
-                }
-
-                if (pages.isEmpty()) {
-                    message.respond("No results found")
+                @Suppress("TooGenericExceptionCaught")
+                val inputResult = try {
+                    queryProvider(QueryContext(
+                        provider = inputProvider,
+                        searchKey = query
+                    ))
+                } catch (e: NullPointerException) {
+                    returnError(e.localizedMessage)
                     return@withContext
                 }
 
-                val meta = provider.get()
+                val outputQueries = inputResult.value.map {
+                    it.value to obfNameProvider(it.value)
+                }
+                    .filter { it.second != null }
+                    .associate { it.first to it.second!! }
 
-                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-                val pageTitle = "List of ${meta.name} fields: ${meta.version}"
+                @Suppress("TooGenericExceptionCaught")
+                val outputResults = outputQueries.mapValues {
+                    try {
+                        val classes = MappingsQuery.queryClasses(
+                            QueryContext(
+                                provider = outputProvider,
+                                searchKey = classNameProvider(it.key)
+                            )
+                        )
 
-                val shortPages = mutableListOf<String>()
-                val longPages = mutableListOf<String>()
+                        val clazz = classes.value.first { clazz ->
+                            clazz.value.obfName.preferredName!! == classNameProvider(it.key)
+                        }
+                            .value
 
-                pages.forEach { (short, long) ->
-                    shortPages.add(short)
-                    longPages.add(long)
+                        val possibilities = when (type) {
+                            "class" -> return@mapValues clazz
+                            "method" -> clazz.methods
+                            "field" -> clazz.fields
+                            else -> error("`$type` isn't `class`, `field`, or `method`?????")
+                        }
+                            .filter { mapping ->
+                                mapping.obfName.preferredName == it.value
+                            }
+
+                        // NPE escapes the try block so it's ok
+                        val inputDesc = it.key.descProvider(inputContainer)!!
+
+                        val result = possibilities.find { member ->
+                            val desc = runCatching { member.getObfMergedDesc(outputContainer) }
+                                .recoverCatching { member.getObfClientDesc(outputContainer) }
+                                .recoverCatching { member.getObfServerDesc(outputContainer) }
+                                .getOrElse {
+                                    return@find false
+                                }
+
+                            desc == inputDesc
+                        }!!
+
+                        clazz to result
+                    } catch (e: NullPointerException) {
+                        null // skip
+                    }
+                }
+                    .filterValues { it != null }
+                    .mapValues {
+                        @Suppress("UNCHECKED_CAST")
+                        it.value!! as B
+                    }
+
+                sentry.breadcrumb(BreadcrumbType.Info) {
+                    message = "Generating pages for results"
+
+                    data["resultCount"] = outputResults.size
                 }
 
-                shortPages.forEach {
+                pages = pageGenerationMethod(outputContainer, outputResults)
+                if (pages.isEmpty()) {
+                    returnError("No results found")
+                    return@withContext
+                }
+
+                val pagesObj = Pages("")
+
+                val inputName = inputContainer.name
+                val outputName = outputContainer.name
+
+                val versionName = inputProvider.version ?: outputProvider.version ?: "Unknown"
+
+                val pageTitle = "List of $inputName -> $outputName $type mappings: $versionName"
+
+                pages.forEach {
                     pagesObj.addPage(
-                        "${EXPAND_EMOJI.mention} for more",
+                        "",
 
                         Page {
                             description = it
@@ -1299,194 +982,51 @@ class MappingsExtension : Extension() {
                     )
                 }
 
-                if (shortPages != longPages) {
-                    longPages.forEach {
-                        pagesObj.addPage(
-                            "${EXPAND_EMOJI.mention} for less",
-
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
-                                }
-                            }
-                        )
-                    }
-                }
-
                 sentry.breadcrumb(BreadcrumbType.Info) {
                     message = "Creating and sending paginator to Discord"
                 }
 
-                val paginator = MessageButtonPaginator(
-                    targetMessage = event.message,
+                val paginator = PublicResponsePaginator(
                     pages = pagesObj,
-                    keepEmbed = true,
-                    owner = message.author,
+                    owner = event.interaction.user,
                     timeoutSeconds = getTimeout(),
                     locale = getLocale(),
+                    interaction = interactionResponse
                 )
 
                 paginator.send()
             }
-        } finally {
-            context.close()
         }
     }
 
-    private suspend fun ChatCommandContext<out Arguments>.queryMethods(
-        namespace: Namespace,
-        givenQuery: String,
-        version: MappingsContainer?,
-        channel: String? = null
-    ) {
-        sentry.breadcrumb(BreadcrumbType.Query) {
-            message = "Beginning method lookup"
-
-            data["channel"] = channel ?: "N/A"
-            data["namespace"] = namespace.id
-            data["query"] = givenQuery
-            data["version"] = version?.version ?: "N/A"
+    private suspend fun PublicSlashCommandContext<*>.returnError(errorMessage: String) {
+        respond {
+            content = errorMessage
         }
+    }
 
-        val context = newSingleThreadContext("m: $givenQuery")
-
-        try {
-            withContext(context) {
-                val provider = if (version == null) {
-                    if (channel != null) {
-                        namespace.getProvider(
-                            namespace.getDefaultVersion { channel }
-                        )
-                    } else {
-                        MappingsProvider.empty(namespace)
-                    }
-                } else {
-                    namespace.getProvider(version.version)
-                }
-
-                provider.injectDefaultVersion(
-                    namespace.getDefaultProvider {
-                        channel ?: namespace.getDefaultMappingChannel()
-                    }
-                )
-
-                sentry.breadcrumb(BreadcrumbType.Info) {
-                    message = "Provider resolved, with injected default version"
-
-                    data["version"] = provider.version ?: "Unknown"
-                }
-
-                val query = givenQuery.replace(".", "/")
-                var pages: List<Pair<String, String>>
-
-                sentry.breadcrumb(BreadcrumbType.Info) {
-                    message = "Attempting to run sanitized query"
-
-                    data["query"] = query
-                }
-
-                message.channel.withTyping {
-                    @Suppress("TooGenericExceptionCaught")
-                    val result = try {
-                        MappingsQuery.queryMethods(
-                            QueryContext(
-                                provider = provider,
-                                searchKey = query
-                            )
-                        )
-                    } catch (e: NullPointerException) {
-                        message.respond(e.localizedMessage)
-                        return@withContext
-                    }
-
-                    sentry.breadcrumb(BreadcrumbType.Info) {
-                        message = "Generating pages for results"
-
-                        data["resultCount"] = result.value.size
-                    }
-
-                    pages = methodsToPages(namespace, provider.get(), result)
-                }
-
-                if (pages.isEmpty()) {
-                    message.respond("No results found")
-                    return@withContext
-                }
-
-                val meta = provider.get()
-
-                val pagesObj = Pages("${EXPAND_EMOJI.mention} for more")
-                val pageTitle = "List of ${meta.name} methods: ${meta.version}"
-
-                val shortPages = mutableListOf<String>()
-                val longPages = mutableListOf<String>()
-
-                pages.forEach { (short, long) ->
-                    shortPages.add(short)
-                    longPages.add(long)
-                }
-
-                shortPages.forEach {
-                    pagesObj.addPage(
-                        "${EXPAND_EMOJI.mention} for more",
-
-                        Page {
-                            description = it
-                            title = pageTitle
-
-                            footer {
-                                text = PAGE_FOOTER
-                                icon = PAGE_FOOTER_ICON
-                            }
-                        }
-                    )
-                }
-
-                if (shortPages != longPages) {
-                    longPages.forEach {
-                        pagesObj.addPage(
-                            "${EXPAND_EMOJI.mention} for less",
-
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
-                                }
-                            }
-                        )
-                    }
-                }
-
-                sentry.breadcrumb(BreadcrumbType.Info) {
-                    message = "Creating and sending paginator to Discord"
-                }
-
-                val paginator = MessageButtonPaginator(
-                    targetMessage = event.message,
-                    pages = pagesObj,
-                    keepEmbed = true,
-                    owner = message.author,
-                    timeoutSeconds = getTimeout(),
-                    locale = getLocale(),
-                )
-
-                paginator.send()
+    private fun Namespace.getDefaultVersion(channel: String?): String? {
+        return when (this) {
+            is MojangNamespace, is MojangHashedNamespace -> if (channel == "snapshot") {
+                MojangReleaseContainer.latestSnapshot
+            } else {
+                MojangReleaseContainer.latestRelease
             }
-        } finally {
-            context.close()
+            is YarnNamespace -> if (channel == "snapshot") {
+                YarnReleaseContainer.latestSnapshot
+            } else {
+                YarnReleaseContainer.latestRelease
+            }
+            else -> null
         }
     }
 
     private suspend fun getTimeout() = builder.config.getTimeout()
 
-    private suspend fun CheckContext<MessageCreateEvent>.customChecks(command: String, namespace: Namespace) {
+    private suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.customChecks(
+        command: String,
+        namespace: Namespace
+    ) {
         builder.commandChecks.forEach {
             it(command)()
 

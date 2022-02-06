@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import kotlinx.serialization.SerialName
@@ -15,12 +21,16 @@ data class DomainChange(
     val domains: Set<String>
 )
 
-/** Enum representing domain change types. **/
+/**
+ * Enum representing domain change types.
+ *
+ * @property readableName Readable name, for logging.
+ */
 @Serializable
-enum class DomainChangeType {
+enum class DomainChangeType(val readableName: String) {
     @SerialName("add")
-    Add,
+    Add("added"),
 
     @SerialName("delete")
-    Delete
+    Delete("deleted")
 }

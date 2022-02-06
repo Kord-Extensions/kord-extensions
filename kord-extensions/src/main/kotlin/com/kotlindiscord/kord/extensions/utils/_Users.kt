@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Snowflake
@@ -17,7 +23,7 @@ private const val DISCORD_USERS_URI = "https://discord.com/users"
  * The user's Discord profile URL.
  */
 public val User.profileLink: String
-    get() = "$DISCORD_USERS_URI/${id.asString}/"
+    get() = "$DISCORD_USERS_URI/$id/"
 
 /**
  * The user's creation timestamp.

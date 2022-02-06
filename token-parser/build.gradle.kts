@@ -13,6 +13,7 @@ dependencies {
 
     testApi(libs.kord)
     testImplementation(libs.groovy)  // For logback config
+    testImplementation(libs.jansi)
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.logback)

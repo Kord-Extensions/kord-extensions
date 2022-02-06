@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.types
 
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
@@ -7,6 +13,7 @@ import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.behavior.interaction.followUpEphemeral
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
@@ -24,7 +31,7 @@ public suspend inline fun PublicInteractionContext.respond(
     builder: FollowupMessageCreateBuilder.() -> Unit
 ): PublicFollowupMessage = interactionResponse.followUp(builder)
 
-/** Respond to the current interaction with a public followup. **/
+/** Respond to the current interaction with an ephemeral followup. **/
 public suspend inline fun PublicInteractionContext.respondEphemeral(
     builder: FollowupMessageCreateBuilder.() -> Unit
 ): EphemeralFollowupMessage = interactionResponse.followUpEphemeral(builder)
@@ -34,7 +41,7 @@ public suspend inline fun PublicInteractionContext.respondEphemeral(
  */
 public suspend inline fun PublicInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-): Unit = interactionResponse.edit(builder)
+): Message = interactionResponse.edit(builder)
 
 /** Create a paginator that edits the original interaction. **/
 public suspend inline fun PublicInteractionContext.editingPaginator(

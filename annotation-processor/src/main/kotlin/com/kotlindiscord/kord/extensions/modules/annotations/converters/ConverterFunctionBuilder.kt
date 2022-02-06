@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("UndocumentedPublicFunction", "UndocumentedPublicProperty")
 
 package com.kotlindiscord.kord.extensions.modules.annotations.converters
@@ -149,91 +155,97 @@ public class ConverterFunctionBuilder(
     ): ConverterFunctionBuilder = maybe(predicate(), callback)
 
     public fun build(): String {
-        var result = ""
-
-        if (comment != null) {
-            result += """
-                |/**
-                ${comment!!.split("\n").joinToString("\n") { "| * $it" }}
-                | */
-            """.trimMargin() + "\n"
-        }
-
-        result += "public "
-
-        if (generic != null) {
-            result += "inline "
-        }
-
-        result += "fun "
-
-        if (generic != null) {
-            result += "<reified $generic> "
-        }
-
-        result += "Arguments.$name(\n"
-        result += functionArgs.joinToString("") { "    $it,\n" }
-        result += "): $returnType "
-
-        result += if (implicitReturn) {
-            "="
-        } else {
-            "{"
-        }
-
-        result += "\n"
-
-        if (lines.isNotEmpty()) {
-            result += lines.joinToString("") { "    $it\n" }
-            result += "\n"
-        }
-
-        result += "    arg(\n"
-        result += "        displayName = displayName,\n"
-        result += "        description = description,\n"
-        result += "\n"
-        result += "        converter = $converterName("
-
-        if (converterArgs.isNotEmpty()) {
-            result += "\n"
-            result += converterArgs.joinToString("") { "            $it,\n" }
-            result += "        "
-        }
-
-        result += ")"
-
-        result += if (converterArgs.isNotEmpty() && wrapperName != null) {
-            ""
-        } else if (converterArgs.isEmpty() && wrapperName != null) {
-            "\n            "
-        } else {
-            "\n"
-        }
-
-        if (wrapperName != null) {
-            result += ".to${wrapperName!!.toCapitalized()}("
-
-            logger.info("== Wrapper args ==\n    ${wrapperArgs.joinToString(", ") { "\"$it\"" }}\n")
-
-            if (wrapperArgs.isNotEmpty()) {
-                result += "\n"
-
-                result += if (converterArgs.isNotEmpty()) {
-                    wrapperArgs.joinToString("") { "            $it,\n" } +
-                        "        "
-                } else {
-                    wrapperArgs.joinToString("") { "                $it,\n" } +
-                        "            "
-                }
+        var result = buildString {
+            if (comment != null) {
+                append(
+                    """
+                    |/**
+                    ${comment!!.split("\n").joinToString("\n") { "| * $it" }}
+                    | */
+                    """.trimMargin() + "\n"
+                )
             }
 
-            result += ")\n"
-        }
+            append("public ")
 
-        result += "    )\n"
+            if (generic != null) {
+                append("inline ")
+            }
 
-        if (!implicitReturn) {
-            result += "}"
+            append("fun ")
+
+            if (generic != null) {
+                append("<reified $generic> ")
+            }
+
+            append("Arguments.$name(\n")
+            append(functionArgs.joinToString("") { "    $it,\n" })
+            append("): $returnType ")
+
+            if (implicitReturn) {
+                append("=")
+            } else {
+                append("{")
+            }
+
+            append("\n")
+
+            if (lines.isNotEmpty()) {
+                append(lines.joinToString("") { "    $it\n" })
+                append("\n")
+            }
+
+            append("    arg(\n")
+            append("        displayName = displayName,\n")
+            append("        description = description,\n")
+            append("\n")
+            append("        converter = $converterName(")
+
+            if (converterArgs.isNotEmpty()) {
+                append("\n")
+                append(converterArgs.joinToString("") { "            $it,\n" })
+                append("        ")
+            }
+
+            append(")")
+
+            if (converterArgs.isNotEmpty() && wrapperName != null) {
+                append("")
+            } else if (converterArgs.isEmpty() && wrapperName != null) {
+                append("\n            ")
+            } else {
+                append("\n")
+            }
+
+            if (wrapperName != null) {
+                append(".to${wrapperName!!.toCapitalized()}(")
+
+                logger.info("== Wrapper args ==\n    ${wrapperArgs.joinToString(", ") { "\"$it\"" }}\n")
+
+                if (wrapperArgs.isNotEmpty()) {
+                    append("\n")
+
+                    if (converterArgs.isNotEmpty()) {
+                        append(
+                            wrapperArgs.joinToString("") { "            $it,\n" } +
+                            "        "
+                        )
+                    } else {
+                        append(
+                            wrapperArgs.joinToString("") { "                $it,\n" } +
+                            "            "
+                        )
+                    }
+                }
+
+                append(")\n")
+            }
+
+            append("    )\n")
+
+            if (!implicitReturn) {
+                append("}")
+            }
         }
 
         return result

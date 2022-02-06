@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(KordPreview::class)
 
 package com.kotlindiscord.kord.extensions.extensions.impl
@@ -277,108 +283,133 @@ public class HelpExtension : HelpProvider, Extension() {
 
         val openingLine = "**$prefix$commandName ${command.getSignature(locale)}**\n"
 
-        var description = if (longDescription) {
-            translationsProvider.translate(command.description, command.extension.bundle, locale)
-        } else {
-            translationsProvider.translate(command.description, command.extension.bundle, locale)
-                .takeWhile { it != '\n' }
-        } + "\n"
-
-        val aliases: MutableSet<String> = mutableSetOf()
-
-        aliases.addAll(command.getTranslatedAliases(locale))
-
-        if (command.localeFallback && locale != defaultLocale) {
-            aliases.add(command.getTranslatedName(defaultLocale))
-            aliases.addAll(command.getTranslatedAliases(defaultLocale))
-
-            aliases.remove(command.getTranslatedName(locale))
-        }
-
-        if (aliases.isNotEmpty()) {
-            description += "\n"
-
-            description += translationsProvider.translate(
-                "extensions.help.commandDescription.aliases",
-                locale
-            )
-
-            description += " "
-            description += aliases.sorted().joinToString(", ") {
-                "`$it`"
+        val description = buildString {
+            if (longDescription) {
+                append(translationsProvider.translate(command.description, command.extension.bundle, locale))
+            } else {
+                append(
+                    translationsProvider.translate(command.description, command.extension.bundle, locale)
+                        .takeWhile { it != '\n' }
+                )
             }
-        }
 
-        if (command is ChatGroupCommand) {
-            val subCommands = command.commands.filter { it.runChecks(event, false) }
+            append("\n")
 
-            if (subCommands.isNotEmpty()) {
-                description += "\n"
+            val aliases: MutableSet<String> = mutableSetOf()
 
-                description += translationsProvider.translate(
-                    "extensions.help.commandDescription.subCommands",
-                    locale
+            aliases.addAll(command.getTranslatedAliases(locale))
+
+            if (command.localeFallback && locale != defaultLocale) {
+                aliases.add(command.getTranslatedName(defaultLocale))
+                aliases.addAll(command.getTranslatedAliases(defaultLocale))
+
+                aliases.remove(command.getTranslatedName(locale))
+            }
+
+            if (aliases.isNotEmpty()) {
+                append("\n")
+
+                append(
+                    translationsProvider.translate(
+                        "extensions.help.commandDescription.aliases",
+                        locale
+                    )
                 )
 
-                description += " "
-                description += subCommands.map { it.getTranslatedName(locale) }.joinToString(", ") {
-                    "`$it`"
-                }
+                append(" ")
+                append(
+                    aliases.sorted().joinToString(", ") {
+                        "`$it`"
+                    }
+                )
             }
-        }
 
-        if (command.requiredPerms.isNotEmpty()) {
-            description += "\n"
+            if (command is ChatGroupCommand) {
+                val subCommands = command.commands.filter { it.runChecks(event, false) }
 
-            description += translationsProvider.translate(
-                "extensions.help.commandDescription.requiredBotPermissions",
-                locale
-            )
+                if (subCommands.isNotEmpty()) {
+                    append("\n")
 
-            description += " "
-            description += command.requiredPerms.map { it.translate(locale) }.joinToString(", ")
-        }
-
-        var arguments = "\n\n"
-
-        if (command.arguments == null) {
-            arguments += translationsProvider.translate(
-                "extensions.help.commandDescription.noArguments",
-                locale
-            )
-        } else {
-            @Suppress("TooGenericExceptionCaught")  // Hard to say really
-            arguments += try {
-                val argsObj = command.arguments!!.invoke()
-
-                argsObj.args.joinToString("\n") {
-                    var desc = "**»** `${it.displayName}"
-
-                    if (it.converter.showTypeInSignature) {
-                        desc += " ("
-
-                        desc += translationsProvider.translate(
-                            it.converter.signatureTypeString,
-                            it.converter.bundle,
+                    append(
+                        translationsProvider.translate(
+                            "extensions.help.commandDescription.subCommands",
                             locale
                         )
+                    )
 
-                        desc += ")"
-                    }
-
-                    desc += "`: "
-                    desc += translationsProvider.translate(it.description, command.extension.bundle, locale)
-
-                    desc
+                    append(" ")
+                    append(
+                        subCommands.map { it.getTranslatedName(locale) }.joinToString(", ") {
+                            "`$it`"
+                        }
+                    )
                 }
-            } catch (t: Throwable) {
-                logger.error(t) { "Failed to retrieve argument list for command: $name" }
-
-                translationsProvider.translate("extensions.help.commandDescription.error.argumentList", locale)
             }
-        }
 
-        return Triple(openingLine.trim('\n'), description.trim('\n'), arguments.trim('\n'))
+            if (command.requiredPerms.isNotEmpty()) {
+                append("\n")
+
+                append(
+                    translationsProvider.translate(
+                        "extensions.help.commandDescription.requiredBotPermissions",
+                        locale
+                    )
+                )
+
+                append(" ")
+                append(command.requiredPerms.map { it.translate(locale) }.joinToString(", "))
+            }
+        }.trim('\n')
+
+        val arguments = buildString {
+            append("\n\n")
+
+            if (command.arguments == null) {
+                append(
+                    translationsProvider.translate(
+                        "extensions.help.commandDescription.noArguments",
+                        locale
+                    )
+                )
+            } else {
+                @Suppress("TooGenericExceptionCaught")  // Hard to say really
+                try {
+                    val argsObj = command.arguments!!.invoke()
+
+                    argsObj.args.joinToString("\n") {
+                        append("**»** `${it.displayName}")
+
+                        if (it.converter.showTypeInSignature) {
+                            append(" (")
+
+                            append(
+                                translationsProvider.translate(
+                                    it.converter.signatureTypeString,
+                                    it.converter.bundle,
+                                    locale
+                                )
+                            )
+
+                            append(")")
+                        }
+
+                        append("`: ")
+                        append(translationsProvider.translate(it.description, command.extension.bundle, locale))
+                    }
+                } catch (t: Throwable) {
+                    logger.error(t) { "Failed to retrieve argument list for command: $name" }
+
+                    append(
+                        translationsProvider.translate(
+                            "extensions.help.commandDescription.error.argumentList",
+                            locale
+                        )
+                    )
+                }
+            }
+        }.trim('\n')
+
+        return Triple(openingLine.trim('\n'), description, arguments)
     }
 
     override suspend fun getCommand(
@@ -409,11 +440,16 @@ public class HelpExtension : HelpProvider, Extension() {
 
     /** Help command arguments class. **/
     public class HelpArguments : Arguments() {
+//        public val command: List<String> by stringList(
+//            "command",
+//            "extensions.help.commandArguments.command",
+//            false
+//        )
+
         /** Command to get help for. **/
-        public val command: List<String> by stringList(
-            "command",
-            "extensions.help.commandArguments.command",
-            false
-        )
+        public val command: List<String> by stringList {
+            name = "command"
+            description = "extensions.help.commandArguments.command"
+        }
     }
 }

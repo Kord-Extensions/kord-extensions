@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.types
@@ -9,6 +15,7 @@ import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.core.behavior.interaction.*
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.core.event.interaction.ApplicationInteractionCreateEvent
@@ -96,7 +103,7 @@ public suspend inline fun UnsafeInteractionContext.respondPublic(
 @UnsafeAPI
 public suspend inline fun UnsafeInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-) {
+): Message {
     return when (val interaction = interactionResponse) {
         is InteractionResponseBehavior -> interaction.edit(builder)
 

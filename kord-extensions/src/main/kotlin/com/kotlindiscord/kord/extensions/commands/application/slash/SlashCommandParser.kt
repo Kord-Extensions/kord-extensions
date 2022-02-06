@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(KordPreview::class)
 @file:Suppress(
     "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
@@ -43,7 +49,7 @@ public open class SlashCommandParser {
 
         val values = command.options.mapValues {
             if (it.value is OptionValue.StringOptionValue) {
-                OptionValue.StringOptionValue((it.value.value as String).trim())
+                OptionValue.StringOptionValue((it.value.value as String).trim(), it.value.focused)
             } else {
                 it.value
             }
@@ -202,6 +208,10 @@ public open class SlashCommandParser {
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
 
                 is OptionalCoalescingConverter<*> -> try {
@@ -232,6 +242,10 @@ public open class SlashCommandParser {
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
 
                 is DefaultingConverter<*> -> try {
@@ -262,6 +276,10 @@ public open class SlashCommandParser {
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
 
                 is DefaultingCoalescingConverter<*> -> try {
@@ -292,6 +310,10 @@ public open class SlashCommandParser {
                     }
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+                    if (converter.required) {
+                        throw t
+                    }
                 }
 
                 else -> error("Unsupported type for converter: $converter")

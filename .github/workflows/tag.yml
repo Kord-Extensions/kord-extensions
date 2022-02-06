@@ -45,7 +45,7 @@ jobs:
       - name: Gradle (Build)
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: checkLicenses build
 
       - name: Gradle (Publish)
         uses: gradle/gradle-build-action@v2

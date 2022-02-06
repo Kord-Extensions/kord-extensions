@@ -1,19 +1,13 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments
 
-import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.converters.optionalMappingsVersion
-import me.shedaniel.linkie.namespaces.MCPNamespace
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.McpNamespaceReplacement
 
 /** Arguments for MCP mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
-class MCPArguments : Arguments() {
-    val query by string("query", "Name to query mappings for")
-
-    val version by optionalMappingsVersion(
-        "version",
-        "Minecraft version to use for this query",
-        true,
-        MCPNamespace
-    )
-}
+class MCPArguments : MappingArguments(McpNamespaceReplacement)

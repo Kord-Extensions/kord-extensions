@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -103,7 +109,7 @@ public abstract class BasePaginator(
         currentPage.build(
             localeObj,
             currentPageNum,
-            pages.size,
+            pages.groups[currentGroup]!!.size,
             groupEmoji,
             allGroups.indexOf(currentGroup),
             allGroups.size
@@ -127,7 +133,7 @@ public abstract class BasePaginator(
 
     /** Convenience function to go to call [goToPage] with the next page number, if we're not at the last page. **/
     public open suspend fun nextPage() {
-        if (currentPageNum < pages.size - 1) {
+        if (currentPageNum < pages.groups[currentGroup]!!.size - 1) {
             goToPage(currentPageNum + 1)
         }
     }

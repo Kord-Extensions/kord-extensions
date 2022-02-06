@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
 
 package com.kotlindiscord.kord.extensions.utils.scheduling
@@ -7,6 +13,7 @@ import mu.KotlinLogging
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 private val logger = KotlinLogging.logger {}
@@ -29,7 +36,7 @@ public class Scheduler : CoroutineScope {
         pollingSeconds: Long = 1,
         callback: suspend () -> Unit
     ): Task = schedule(
-        delay = Duration.seconds(seconds),
+        delay = seconds.seconds,
         startNow = startNow,
         name = name,
         pollingSeconds = pollingSeconds,

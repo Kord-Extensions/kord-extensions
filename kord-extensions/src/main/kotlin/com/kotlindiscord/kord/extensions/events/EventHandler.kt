@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.events
 
 import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
@@ -152,38 +158,38 @@ public open class EventHandler<T : Event>(
 
                 if (channel != null) {
                     data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id.asString})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                        is DmChannel -> "Private Message (${channel.id})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
 
-                        else -> channel.id.asString
+                        else -> channel.id.toString()
                     }
                 }
 
                 if (thread != null) {
-                    data["thread"] = "#${thread.name} (${thread.id.asString})"
+                    data["thread"] = "#${thread.name} (${thread.id})"
                 }
 
                 if (guildBehavior != null) {
                     val guild = guildBehavior.asGuildOrNull()
 
                     data["guild"] = if (guild != null) {
-                        "${guild.name} (${guild.id.asString})"
+                        "${guild.name} (${guild.id})"
                     } else {
-                        guildBehavior.id.asString
+                        guildBehavior.id.toString()
                     }
                 }
 
                 if (messageBehavior != null) {
-                    data["message"] = messageBehavior.id.asString
+                    data["message"] = messageBehavior.id.toString()
                 }
 
                 if (roleBehavior != null) {
                     val role = roleBehavior.guild.getRoleOrNull(roleBehavior.id)
 
                     data["role"] = if (role != null) {
-                        "@${role.name} (${role.id.asString})"
+                        "@${role.name} (${role.id})"
                     } else {
-                        roleBehavior.id.asString
+                        roleBehavior.id.toString()
                     }
                 }
 
@@ -191,9 +197,9 @@ public open class EventHandler<T : Event>(
                     val user = userBehavior.asUserOrNull()
 
                     data["user"] = if (user != null) {
-                        "${user.tag} (${user.id.asString})"
+                        "${user.tag} (${user.id})"
                     } else {
-                        userBehavior.id.asString
+                        userBehavior.id.toString()
                     }
                 }
             }

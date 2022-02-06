@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(KordPreview::class)
 
 @file:Suppress(
@@ -71,7 +77,7 @@ public open class ChatCommandParser : KoinComponent {
         val argumentsObj = builder.invoke()
         argumentsObj.validate()
 
-        val parser = context.parser!!
+        val parser = context.parser
 
         logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
@@ -294,7 +300,7 @@ public open class ChatCommandParser : KoinComponent {
                     }
                 }
 
-                is MultiConverter<*> -> try {
+                is ListConverter<*> -> try {
                     val parsedCount = if (hasKwargs) {
                         converter.parse(parser, context, kwValue!!)
                     } else {
@@ -547,7 +553,7 @@ public open class ChatCommandParser : KoinComponent {
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (converter.required || hasKwargs) {
+                    if (converter.required || converter.outputError || hasKwargs) {
                         throw t
                     }
                 }
@@ -633,7 +639,7 @@ public open class ChatCommandParser : KoinComponent {
                 } catch (t: Throwable) {
                     logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (converter.required) {
+                    if (converter.required || converter.outputError) {
                         throw t
                     }
                 }
@@ -717,39 +723,41 @@ public open class ChatCommandParser : KoinComponent {
         val parts = mutableListOf<String>()
 
         argumentsObj.args.forEach {
-            var signature = ""
-
-            signature += if (it.converter.required) {
-                "<"
-            } else {
-                "["
-            }
-
-            signature += it.displayName
-
-            if (it.converter.showTypeInSignature) {
-                signature += ": "
-
-                signature += translationsProvider.translate(
-                    it.converter.signatureTypeString,
-                    it.converter.bundle,
-                    locale
-                )
-
-                if (it.converter is DefaultingConverter<*>) {
-                    signature += "="
-                    signature += it.converter.parsed
+            val signature = buildString {
+                if (it.converter.required) {
+                    append("<")
+                } else {
+                    append("[")
                 }
-            }
 
-            if (it.converter is MultiConverter<*>) {
-                signature += "..."
-            }
+                append(it.displayName)
 
-            signature += if (it.converter.required) {
-                ">"
-            } else {
-                "]"
+                if (it.converter.showTypeInSignature) {
+                    append(": ")
+
+                    append(
+                        translationsProvider.translate(
+                            it.converter.signatureTypeString,
+                            it.converter.bundle,
+                            locale
+                        )
+                    )
+
+                    if (it.converter is DefaultingConverter<*>) {
+                        append("=")
+                        append(it.converter.parsed)
+                    }
+                }
+
+                if (it.converter is ListConverter<*>) {
+                    append("...")
+                }
+
+                if (it.converter.required) {
+                    append(">")
+                } else {
+                    append("]")
+                }
             }
 
             parts.add(signature)

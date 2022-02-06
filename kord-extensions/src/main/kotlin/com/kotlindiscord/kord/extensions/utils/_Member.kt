@@ -1,11 +1,33 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.utils
 
+import com.kotlindiscord.kord.extensions.annotations.DoNotChain
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.RoleBehavior
+import dev.kord.core.behavior.edit
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Role
+import dev.kord.rest.builder.member.MemberModifyBuilder
 import kotlinx.coroutines.flow.toList
+import kotlinx.datetime.*
+import kotlin.time.Duration
+
+/** A more sensible name than `communicationDisabledUntil`. **/
+public val Member.timeoutUntil: Instant?
+    inline get() = this.communicationDisabledUntil
+
+/** A more sensible name than `communicationDisabledUntil`. **/
+public var MemberModifyBuilder.timeoutUntil: Instant?
+    inline get() = this.communicationDisabledUntil
+    inline set(value) {
+        this.communicationDisabledUntil = value
+    }
 
 /**
  * Check if the user has the given [Role].
@@ -125,3 +147,104 @@ public suspend fun Member.canInteract(member: Member): Boolean {
 
     return highestRole.canInteract(otherHighestRole)
 }
+
+/**
+ * Convenience function to remove the timeout from a member, skipping the [edit] DSL.
+ */
+@DoNotChain
+public suspend fun Member.removeTimeout(reason: String? = null): Member =
+    edit {
+        timeoutUntil = null
+
+        this.reason = reason
+    }
+
+/**
+ * Convenience function to time out a member using a [Duration], skipping the [edit] DSL.
+ */
+@DoNotChain
+public suspend fun Member.timeout(until: Duration, reason: String? = null): Member =
+    edit {
+        timeoutUntil = Clock.System.now() + until
+
+        this.reason = reason
+    }
+
+/**
+ * Convenience function to time out a member using a [DateTimePeriod] and timezone, skipping the [edit] DSL.
+ *
+ * This will use [TimeZone.UTC] by default. You can provide another if you really need to.
+ */
+@DoNotChain
+public suspend fun Member.timeout(
+    until: DateTimePeriod,
+    timezone: TimeZone = TimeZone.UTC,
+    reason: String? = null
+): Member =
+    edit {
+        timeoutUntil = Clock.System.now().plus(until, timezone)
+
+        this.reason = reason
+    }
+
+/**
+ * Convenience function to server mute a member, skipping the [edit] DSL.
+ */
+@DoNotChain
+public suspend fun Member.mute(reason: String? = null): Member = edit {
+    muted = true
+
+    this.reason = reason
+}
+
+/**
+ * Convenience function to undo a server mute for a member, skipping the [edit] DSL.
+ */
+@DoNotChain
+public suspend fun Member.unMute(reason: String? = null): Member = edit {
+    muted = false
+
+    this.reason = reason
+}
+
+/**
+ * Convenience function to server deafen a member, skipping the [edit] DSL.
+ */
+@DoNotChain
+public suspend fun Member.deafen(reason: String? = null): Member = edit {
+    deafened = true
+
+    this.reason = reason
+}
+
+/**
+ * Convenience function to undo a server deafen for a member, skipping the [edit] DSL.
+ */
+@DoNotChain
+public suspend fun Member.unDeafen(reason: String? = null): Member = edit {
+    deafened = false
+
+    this.reason = reason
+}
+
+/**
+ * Convenience function to set a member's nickname, skipping the [edit] DSL.
+ *
+ * You can also provide `null` to remove a nickname - [removeNickname] is a wrapper for this function that does
+ * exactly that.
+ */
+@DoNotChain
+public suspend fun Member.setNickname(nickname: String?, reason: String? = null): Member = edit {
+    this.nickname = nickname
+
+    this.reason = reason
+}
+
+/**
+ * Convenience function to remove a member's nickname, skipping the [edit] DSL.
+ *
+ * This will simply call [setNickname] with a `nickname` of `null`.
+ */
+@DoNotChain
+public suspend fun Member.removeNickname(reason: String? = null): Member =
+    setNickname(null, reason)

@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("TooGenericExceptionCaught")
 
 package com.kotlindiscord.kord.extensions.sentry
@@ -27,7 +33,7 @@ public fun Scope.user(tag: String, id: String) {
  * @param userObj Kord user object to add to this scope.
  */
 public fun Scope.user(userObj: dev.kord.core.entity.User): Unit =
-    user(userObj.tag, userObj.id.asString)
+    user(userObj.tag, userObj.id.toString())
 
 /**
  * Convenience function to quickly set a Sentry tag in the current scope.

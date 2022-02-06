@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.i18n
 
 import com.ibm.icu.text.MessageFormat
@@ -18,7 +24,7 @@ import java.util.*
  * With a `bundleName` of `null`, this means the bundle will be named `translations.kordex.strings`, which will resolve
  * to `translations/kordex/strings${_locale ?: ""}.properties` in the resources.
  */
-public class ResourceBundleTranslations(
+public open class ResourceBundleTranslations(
     defaultLocaleBuilder: () -> Locale
 ) : TranslationsProvider(defaultLocaleBuilder) {
     private val logger: KLogger = KotlinLogging.logger(
@@ -41,26 +47,61 @@ public class ResourceBundleTranslations(
         }
     }
 
-    @Throws(MissingResourceException::class)
-    private fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
-        var bundle = "translations." + (bundleName ?: KORDEX_KEY)
+    /**
+     * Loads the [ResourceBundle] called [bundle] for [locale].
+     *
+     * @see ResourceBundle.getBundle
+     */
+    protected open fun getResourceBundle(
+        bundle: String,
+        locale: Locale,
+        control: ResourceBundle.Control
+    ): ResourceBundle = ResourceBundle.getBundle(bundle, locale, Control)
 
-        if (bundle.count { it == '.' } < 2) {
-            bundle += ".$DEFAULT_BUNDLE_SUFFIX"
+    /**
+     * Retrieves a pair of the [ResourceBundle] and the overide resource bundle for [bundleName] in locale.
+     */
+    @Throws(MissingResourceException::class)
+    protected open fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
+        val bundle = buildString {
+            append("translations." + (bundleName ?: KORDEX_KEY))
+
+            if (this.count { it == '.' } < 2) {
+                append(".$DEFAULT_BUNDLE_SUFFIX")
+            }
         }
 
         val bundleKey = bundle to locale
 
         if (bundles[bundleKey] == null) {
+            val localeTag = locale.toLanguageTag()
+
             logger.trace { "Getting bundle $bundle for locale $locale" }
-            bundles[bundleKey] = ResourceBundle.getBundle(bundle, locale, Control)
+
+            val firstBundle = getResourceBundle(bundle, locale, Control)
+
+            bundles[bundleKey] = if (localeTag.count { it in "-_" } == 0) {
+                val baseCode = localeTag.split('-', '_').first()
+                val secondLocale = Locale(baseCode, baseCode)
+                val secondBundle = getResourceBundle(bundle, secondLocale, Control)
+
+                val firstKey = firstBundle.keySet().first()
+
+                if (firstBundle.getStringOrNull(firstKey) != secondBundle.getStringOrNull(firstKey)) {
+                    secondBundle
+                } else {
+                    firstBundle
+                }
+            } else {
+                firstBundle
+            }
 
             try {
                 val overrideBundle = bundle + "_override"
 
                 logger.trace { "Getting override bundle $overrideBundle for locale $locale" }
 
-                overrideBundles[bundleKey] = ResourceBundle.getBundle(overrideBundle, locale, Control)
+                overrideBundles[bundleKey] = getResourceBundle(overrideBundle, locale, Control)
             } catch (e: MissingResourceException) {
                 logger.trace { "No override bundle found." }
             }

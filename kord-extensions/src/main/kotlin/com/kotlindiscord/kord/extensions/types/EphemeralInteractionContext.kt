@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.types
 
 import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
@@ -7,6 +13,7 @@ import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.edit
 import dev.kord.core.behavior.interaction.followUp
 import dev.kord.core.behavior.interaction.followUpEphemeral
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
@@ -38,7 +45,7 @@ public suspend inline fun PublicInteractionContext.respondPublic(
  */
 public suspend inline fun EphemeralInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-): Unit = interactionResponse.edit(builder)
+): Message = interactionResponse.edit(builder)
 
 /**
  * Create a paginator that edits the original interaction. This is the only option for an ephemeral interaction, as

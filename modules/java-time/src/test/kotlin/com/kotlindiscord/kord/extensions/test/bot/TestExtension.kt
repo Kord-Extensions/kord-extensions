@@ -1,9 +1,15 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.test.bot
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.chatCommand
-import com.kotlindiscord.kord.extensions.modules.time.java.coalescedJ8Duration
+import com.kotlindiscord.kord.extensions.modules.time.java.coalescingJ8Duration
 import com.kotlindiscord.kord.extensions.modules.time.java.toHuman
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordPreview
@@ -15,11 +21,10 @@ class TestExtension : Extension() {
     override val name = "test"
 
     class TestArgs : Arguments() {
-        val duration by coalescedJ8Duration(
-            "duration",
-            "Duration argument",
-            shouldThrow = true
-        )
+        val duration by coalescingJ8Duration {
+            name = "duration"
+            description = "Duration argument"
+        }
     }
 
     override suspend fun setup() {

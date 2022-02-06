@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(
     KordPreview::class,
     ConverterToDefaulting::class,
@@ -27,7 +33,7 @@ public fun Arguments.sentryId(displayName: String, description: String): SingleC
  *
  * @see SentryIdConverter
  */
-public fun Arguments.optionalSentryId(displayName: String, description: String): OptionalConverter<SentryId?> =
+public fun Arguments.optionalSentryId(displayName: String, description: String): OptionalConverter<SentryId> =
     arg(displayName, description, SentryIdConverter().toOptional())
 
 /**
@@ -39,5 +45,5 @@ public fun Arguments.sentryIdList(
     displayName: String,
     description: String,
     required: Boolean = true
-): MultiConverter<SentryId> =
-    arg(displayName, description, SentryIdConverter().toMulti(required))
+): ListConverter<SentryId> =
+    arg(displayName, description, SentryIdConverter().toList(required))

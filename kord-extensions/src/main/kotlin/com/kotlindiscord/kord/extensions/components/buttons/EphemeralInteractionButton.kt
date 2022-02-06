@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("TooGenericExceptionCaught")
 
 package com.kotlindiscord.kord.extensions.components.buttons
@@ -51,6 +57,8 @@ public open class EphemeralInteractionButton(
         builder.interactionButton(style, id) {
             emoji = partialEmoji
             label = this@EphemeralInteractionButton.label
+
+            disabled = this@EphemeralInteractionButton.disabled
         }
     }
 

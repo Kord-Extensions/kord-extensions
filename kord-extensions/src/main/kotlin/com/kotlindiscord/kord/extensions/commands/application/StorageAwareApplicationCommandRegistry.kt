@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress(
     "UNCHECKED_CAST"
 )
@@ -12,6 +18,7 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.registry.RegistryStorage
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -74,7 +81,7 @@ public open class StorageAwareApplicationCommandRegistry(
         val commandId = event.interaction.invokedCommandId
         val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
 
-        command ?: return logger.warn { "Received interaction for unknown slash command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
 
         command.call(event)
     }
@@ -83,7 +90,7 @@ public open class StorageAwareApplicationCommandRegistry(
         val commandId = event.interaction.invokedCommandId
         val command = commandRegistry.get(commandId) as? MessageCommand<*>
 
-        command ?: return logger.warn { "Received interaction for unknown message command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown message command: $commandId" }
 
         command.call(event)
     }
@@ -92,9 +99,38 @@ public open class StorageAwareApplicationCommandRegistry(
         val commandId = event.interaction.invokedCommandId
         val command = commandRegistry.get(commandId) as? UserCommand<*>
 
-        command ?: return logger.warn { "Received interaction for unknown user command: ${commandId.asString}" }
+        command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
         command.call(event)
+    }
+
+    override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {
+        val commandId = event.interaction.command.rootId
+        val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
+
+        command ?: return logger.warn { "Received autocomplete interaction for unknown command: $commandId" }
+
+        if (command.arguments == null) {
+            return logger.trace { "Command $command doesn't have any arguments." }
+        }
+
+        val option = event.interaction.command.options.filterValues { it.focused }.toList().firstOrNull()
+
+        option ?: return logger.trace { "Autocomplete event for command $command doesn't have a focused option." }
+
+        val arg = command.arguments!!().args.firstOrNull { it.displayName == option.first }
+
+        arg ?: return logger.warn {
+            "Autocomplete event for command $command has an unknown focused option: ${option.first}."
+        }
+
+        val callback = arg.converter.genericBuilder.autoCompleteCallback
+
+        callback ?: return logger.trace {
+            "Autocomplete event for command $command has an focused option without a callback: ${option.first}."
+        }
+
+        callback(event.interaction, event)
     }
 
     override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? =

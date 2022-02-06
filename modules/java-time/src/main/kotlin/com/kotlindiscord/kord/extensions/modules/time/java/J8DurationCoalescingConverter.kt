@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(
     KordPreview::class,
     ConverterToDefaulting::class,
@@ -9,9 +15,11 @@ package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
-import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
@@ -35,6 +43,17 @@ import java.time.LocalDateTime
  * @see coalescedDuration
  * @see parseDurationJ8
  */
+@Converter(
+    names = ["j8Duration"],
+    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL],
+    imports = ["java.time.*"],
+
+    builderFields = [
+        "public var longHelp: Boolean = true",
+        "public var positiveOnly: Boolean = true",
+        "public var shouldThrow: Boolean = true"
+    ],
+)
 public class J8DurationCoalescingConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,
@@ -46,7 +65,11 @@ public class J8DurationCoalescingConverter(
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val durations = mutableListOf<String>()
-        val ignoredWords = context.translate("utils.durations.ignoredWords").split(",")
+
+        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
+            .split(",")
+            .toMutableList()
+            .apply { remove(EMPTY_VALUE_STRING) }
 
         var skipNext = false
 
@@ -195,69 +218,3 @@ public class J8DurationCoalescingConverter(
         return true
     }
 }
-
-/**
- * Create a coalescing Java 8 Duration converter.
- *
- * @see J8DurationCoalescingConverter
- */
-public fun Arguments.coalescedJ8Duration(
-    displayName: String,
-    description: String,
-    requirePositive: Boolean = true,
-    longHelp: Boolean = true,
-    shouldThrow: Boolean = false,
-    validator: Validator<ChronoContainer> = null,
-): CoalescingConverter<ChronoContainer> =
-    arg(
-        displayName,
-        description,
-        J8DurationCoalescingConverter(
-            longHelp = longHelp,
-            shouldThrow = shouldThrow,
-            positiveOnly = requirePositive,
-            validator = validator
-        )
-    )
-
-/**
- * Create an optional coalescing Java 8 Duration converter.
- *
- * @see J8DurationCoalescingConverter
- */
-public fun Arguments.optionalCoalescedJ8Duration(
-    displayName: String,
-    description: String,
-    requirePositive: Boolean = true,
-    longHelp: Boolean = true,
-    outputError: Boolean = false,
-    validator: Validator<ChronoContainer?> = null,
-): OptionalCoalescingConverter<ChronoContainer?> =
-    arg(
-        displayName,
-        description,
-
-        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = outputError, positiveOnly = requirePositive)
-            .toOptional(outputError = outputError, nestedValidator = validator)
-    )
-
-/**
- * Create a defaulting coalescing Java 8 Duration converter.
- *
- * @see J8DurationCoalescingConverter
- */
-public fun Arguments.defaultingCoalescedJ8Duration(
-    displayName: String,
-    description: String,
-    defaultValue: ChronoContainer,
-    requirePositive: Boolean = true,
-    longHelp: Boolean = true,
-    shouldThrow: Boolean = false,
-    validator: Validator<ChronoContainer> = null,
-): DefaultingCoalescingConverter<ChronoContainer> =
-    arg(
-        displayName,
-        description,
-        J8DurationCoalescingConverter(longHelp = longHelp, shouldThrow = shouldThrow, positiveOnly = requirePositive)
-            .toDefaulting(defaultValue, nestedValidator = validator)
-    )

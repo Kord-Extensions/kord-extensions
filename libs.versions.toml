@@ -1,24 +1,27 @@
 [versions]
-detekt = "1.17.1"  # Note: Plugin versions must be updated in the settings.gradle.kts too
-dokka = "1.4.10.2"  # Note: Plugin versions must be updated in the settings.gradle.kts too
-kotlin = "1.5.30"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+detekt = "1.19.0"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+dokka = "1.6.0"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+kotlin = "1.6.10"  # Note: Plugin versions must be updated in the settings.gradle.kts too
 
 commons-validator = "1.7"
 groovy = "3.0.8"
 icu4j = "69.1"
+jansi = "2.4.0"
+jsoup = "1.14.3"
 junit = "5.6.2"
-koin = "3.0.2"
-konf = "0.23.0"
+koin = "3.1.4"
+konf = "1.1.2"
 #kord = "0.8.x-SNAPSHOT"
-kord = "0.8.0-M7"
-kotlinpoet = "1.8.0"
-ksp = "1.5.30-1.0.0-beta08"
-ktor = "1.6.3"
-kx-ser = "1.3.0"
-linkie = "1.0.88"
-logback = "1.2.3"
-logging = "2.0.11"
-sentry = "5.0.0"
+kord = "0.8.0-M9"
+kotlinpoet = "1.10.2"
+ksp = "1.6.10-1.0.2"
+ktor = "1.6.7"
+kx-ser = "1.3.2"
+linkie = "1.0.94"
+logback = "1.2.5"
+logging = "2.1.21"
+pf4j = "3.6.0"
+sentry = "5.5.2"
 time4j-base = "5.8"
 time4j-tzdata = "5.0-2021a"
 
@@ -27,6 +30,8 @@ commons-validator = { module = "commons-validator:commons-validator", version.re
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
 icu4j = { module = "com.ibm.icu:icu4j", version.ref = "icu4j" }
+jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -45,6 +50,7 @@ kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.
 linkie = { module = "me.shedaniel:linkie-core", version.ref = "linkie" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logging = { module = "io.github.microutils:kotlin-logging", version.ref = "logging" }
+pf4j = { module = "org.pf4j:pf4j", version.ref = "pf4j" }
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
 time4j-base = { module = "net.time4j:time4j-base", version.ref = "time4j-base" }
 time4j-tzdata = { module = "net.time4j:time4j-tzdata", version.ref = "time4j-tzdata" }

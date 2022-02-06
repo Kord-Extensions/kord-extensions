@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -16,6 +22,7 @@ import java.util.*
 public object T4JDurationParser : KoinComponent {
     private val translations: TranslationsProvider by inject()
 
+    /** Check whether the given character is a valid duration unit character. **/
     public fun charValid(char: Char, locale: Locale): Boolean =
         char.isDigit() ||
             char == ' ' ||

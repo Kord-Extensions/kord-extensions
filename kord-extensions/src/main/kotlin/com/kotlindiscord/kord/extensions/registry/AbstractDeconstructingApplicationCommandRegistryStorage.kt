@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.registry
 
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
@@ -52,7 +58,8 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T 
      */
     protected abstract fun entries(): Flow<RegistryStorage.StorageEntry<String, String>>
 
-    override fun constructUniqueIdentifier(data: T): String = "${data.name}-${data.type.value}-${data.guildId ?: 0}"
+    override fun constructUniqueIdentifier(data: T): String =
+        "${data.name}-${data.type.value}-${data.guildId?.value ?: 0}"
 
     override suspend fun register(data: T) {
         commandMapping[constructUniqueIdentifier(data)] = data
@@ -61,16 +68,16 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T 
     override suspend fun set(id: Snowflake, data: T) {
         val key = constructUniqueIdentifier(data)
         commandMapping[key] = data
-        upsert(id.asString, key)
+        upsert(id.toString(), key)
     }
 
     override suspend fun get(id: Snowflake): T? {
-        val key = read(id.asString) ?: return null
+        val key = read(id.toString()) ?: return null
         return commandMapping[key]
     }
 
     override suspend fun remove(id: Snowflake): T? {
-        val key = delete(id.asString) ?: return null
+        val key = delete(id.toString()) ?: return null
         return commandMapping[key]
     }
 

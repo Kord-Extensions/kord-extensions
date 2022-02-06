@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
@@ -5,6 +11,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -32,10 +39,10 @@ import kotlin.time.ExperimentalTime
     types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL],
     imports = ["kotlinx.datetime.*"],
 
-    arguments = [
-        "longHelp: Boolean = true",
-        "positiveOnly: Boolean = true",
-        "shouldThrow: Boolean = false"
+    builderFields = [
+        "public var longHelp: Boolean = true",
+        "public var positiveOnly: Boolean = true",
+        "public var shouldThrow: Boolean = false"
     ],
 )
 @OptIn(KordPreview::class, ExperimentalTime::class)
@@ -63,7 +70,11 @@ public class DurationCoalescingConverter(
         }
 
         val durations = mutableListOf<String>()
-        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords").split(",")
+
+        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
+            .split(",")
+            .toMutableList()
+            .apply { remove(EMPTY_VALUE_STRING) }
 
         var skipNext = false
 

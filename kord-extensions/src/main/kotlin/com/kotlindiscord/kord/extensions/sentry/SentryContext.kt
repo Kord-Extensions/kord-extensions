@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("TooGenericExceptionCaught")
 
 package com.kotlindiscord.kord.extensions.sentry
@@ -204,5 +210,14 @@ public class SentryContext : KoinComponent {
         adapter.addEventId(id)
 
         return id
+    }
+
+    /** Make a copy of this Sentry context, bringing the breadcrumbs over into a new list. **/
+    public fun copy(): SentryContext {
+        val new = SentryContext()
+
+        new.breadcrumbs.addAll(this.breadcrumbs)
+
+        return new
     }
 }

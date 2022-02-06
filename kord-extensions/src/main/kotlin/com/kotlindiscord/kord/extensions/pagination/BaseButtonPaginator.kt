@@ -1,10 +1,15 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(KordPreview::class)
 
 package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.components.ComponentContainer
-import com.kotlindiscord.kord.extensions.components.buttons.DisabledInteractionButton
 import com.kotlindiscord.kord.extensions.components.buttons.PublicInteractionButton
 import com.kotlindiscord.kord.extensions.components.publicButton
 import com.kotlindiscord.kord.extensions.components.types.emoji
@@ -88,11 +93,12 @@ public abstract class BaseButtonPaginator(
     }
 
     override suspend fun setup() {
-        if (pages.size > 1) {
+        if (pages.groups.values.any { it.size > 1 }) {
             // Add navigation buttons...
             firstPageButton = components.publicButton {
                 deferredAck = true
                 style = ButtonStyle.Secondary
+                disabled = pages.groups[currentGroup]!!.size <= 1
 
                 check(defaultCheck)
 
@@ -109,6 +115,7 @@ public abstract class BaseButtonPaginator(
             backButton = components.publicButton {
                 deferredAck = true
                 style = ButtonStyle.Secondary
+                disabled = pages.groups[currentGroup]!!.size <= 1
 
                 check(defaultCheck)
 
@@ -125,6 +132,7 @@ public abstract class BaseButtonPaginator(
             nextButton = components.publicButton {
                 deferredAck = true
                 style = ButtonStyle.Secondary
+                disabled = pages.groups[currentGroup]!!.size <= 1
 
                 check(defaultCheck)
 
@@ -141,13 +149,14 @@ public abstract class BaseButtonPaginator(
             lastPageButton = components.publicButton {
                 deferredAck = true
                 style = ButtonStyle.Secondary
+                disabled = pages.groups[currentGroup]!!.size <= 1
 
                 check(defaultCheck)
 
                 emoji(LAST_PAGE_EMOJI)
 
                 action {
-                    goToPage(pages.size - 1)
+                    goToPage(pages.groups[currentGroup]!!.size - 1)
 
                     send()
                     task?.restart()
@@ -155,7 +164,7 @@ public abstract class BaseButtonPaginator(
             }
         }
 
-        if (pages.size > 1 || !keepEmbed) {
+        if (pages.groups.values.any { it.size > 1 } || !keepEmbed) {
             // Add the destroy button
             components.publicButton(lastRowNumber) {
                 deferredAck = true
@@ -236,6 +245,8 @@ public abstract class BaseButtonPaginator(
             return
         }
 
+        // To avoid out-of-bounds
+        currentPageNum = minOf(currentPageNum, pages.groups[group]!!.size)
         currentPage = pages.get(group, currentPageNum)
         currentGroup = group
 
@@ -246,15 +257,11 @@ public abstract class BaseButtonPaginator(
         val current = currentGroup
         val nextIndex = allGroups.indexOf(current) + 1
 
-        currentGroup = if (nextIndex >= allGroups.size) {
-            allGroups.first()
+        if (nextIndex >= allGroups.size) {
+            switchGroup(allGroups.first())
         } else {
-            allGroups[nextIndex]
+            switchGroup(allGroups[nextIndex])
         }
-
-        currentPage = pages.get(currentGroup, currentPageNum)
-
-        send()
     }
 
     override suspend fun goToPage(page: Int) {
@@ -262,7 +269,7 @@ public abstract class BaseButtonPaginator(
             return
         }
 
-        if (page < 0 || page > pages.size - 1) {
+        if (page < 0 || page > pages.groups[currentGroup]!!.size - 1) {
             return
         }
 
@@ -284,7 +291,7 @@ public abstract class BaseButtonPaginator(
             setEnabledButton(backButton)
         }
 
-        if (currentPageNum >= pages.size - 1) {
+        if (currentPageNum >= pages.groups[currentGroup]!!.size - 1) {
             setDisabledButton(nextButton)
             setDisabledButton(lastPageButton)
         } else {
@@ -312,24 +319,16 @@ public abstract class BaseButtonPaginator(
     }
 
     /** Replace an enabled interactive button in [components] with a disabled button of the same ID. **/
-    public suspend fun setDisabledButton(oldButton: PublicInteractionButton?): Boolean {
-        oldButton ?: return false
+    public fun setDisabledButton(button: PublicInteractionButton?) {
+        button ?: return
 
-        val newButton = DisabledInteractionButton()
-
-        // Copy properties from the old button
-        newButton.id = oldButton.id
-        newButton.label = oldButton.label
-        newButton.partialEmoji = oldButton.partialEmoji
-        newButton.style = oldButton.style
-
-        return components.replace(oldButton, newButton)
+        button.disable()
     }
 
     /** Replace a disabled button in [components] with the given interactive button of the same ID.. **/
-    public suspend fun setEnabledButton(newButton: PublicInteractionButton?): Boolean {
-        newButton ?: return false
+    public fun setEnabledButton(button: PublicInteractionButton?) {
+        button ?: return
 
-        return components.replace(newButton.id, newButton)
+        button.enable()
     }
 }

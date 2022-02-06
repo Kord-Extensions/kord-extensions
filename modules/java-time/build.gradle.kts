@@ -9,11 +9,16 @@ plugins {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
+
     implementation(project(":kord-extensions"))
+    implementation(project(":annotations"))
+
+    ksp(project(":annotation-processor"))
 
     detektPlugins(libs.detekt)
 
     testImplementation(libs.groovy)  // For logback config
+    testImplementation(libs.jansi)
     testImplementation(libs.junit)
     testImplementation(libs.logback)
 }
@@ -25,5 +30,5 @@ kordex {
 }
 
 dokkaModule {
-   moduleName.set("Kord Extensions: Java Time")
+    moduleName.set("Kord Extensions: Java Time")
 }

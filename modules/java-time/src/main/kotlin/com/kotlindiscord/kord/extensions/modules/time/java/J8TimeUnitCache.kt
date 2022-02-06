@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -25,6 +31,7 @@ public object J8TimeUnitCache : KoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
 
+    /** Return a mapping of all translated unit names to ChronoUnit objects, based on the given locale. **/
     public fun getUnits(locale: Locale): UnitMap {
         if (valueCache[locale] == null) {
             val unitMap: UnitMap = linkedMapOf()

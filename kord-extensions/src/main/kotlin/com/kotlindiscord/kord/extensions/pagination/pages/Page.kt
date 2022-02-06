@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.pagination.pages
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -41,42 +47,47 @@ public open class Page(
 
         footer {
             icon = curFooterIcon
-            text = ""
 
-            if (pages > 1) {
-                text += translationsProvider.translate(
-                    "paginator.footer.page",
-                    locale,
-                    replacements = arrayOf(pageNum + 1, pages)
-                )
-            }
-
-            if (group != null && group.isNotBlank() || groups > 2) {
-                if (text.isNotBlank()) {
-                    text += " • "
-                }
-
-                text += if (group.isNullOrBlank()) {
-                    translationsProvider.translate(
-                        "paginator.footer.group",
-                        locale,
-                        replacements = arrayOf(groupIndex + 1, groups)
+            text = buildString {
+                if (pages > 1) {
+                    append(
+                        translationsProvider.translate(
+                            "paginator.footer.page",
+                            locale,
+                            replacements = arrayOf(pageNum + 1, pages)
+                        )
                     )
-                } else {
-                    val groupName = translationsProvider.translate(
-                        group, locale, bundle
-                    ).capitalizeWords(locale)
-
-                    "$groupName (${groupIndex + 1}/$groups)"
-                }
-            }
-
-            if (!curFooterText.isNullOrEmpty()) {
-                if (text.isNotBlank()) {
-                    text += " • "
                 }
 
-                text += curFooterText
+                if (group != null && group.isNotBlank() || groups > 2) {
+                    if (text.isNotBlank()) {
+                        append(" • ")
+                    }
+
+                    if (group.isNullOrBlank()) {
+                        append(
+                            translationsProvider.translate(
+                                "paginator.footer.group",
+                                locale,
+                                replacements = arrayOf(groupIndex + 1, groups)
+                            )
+                        )
+                    } else {
+                        val groupName = translationsProvider.translate(
+                            group, locale, bundle
+                        ).capitalizeWords(locale)
+
+                        append("$groupName (${groupIndex + 1}/$groups)")
+                    }
+                }
+
+                if (!curFooterText.isNullOrEmpty()) {
+                    if (text.isNotBlank()) {
+                        append(" • ")
+                    }
+
+                    append(curFooterText)
+                }
             }
         }
     }

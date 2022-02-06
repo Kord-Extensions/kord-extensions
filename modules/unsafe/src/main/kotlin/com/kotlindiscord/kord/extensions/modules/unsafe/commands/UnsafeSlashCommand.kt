@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("TooGenericExceptionCaught")
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.commands
@@ -18,8 +24,6 @@ import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.entity.interaction.GroupCommand
-import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
 /** Like a standard slash command, but with less safety features. **/
@@ -35,29 +39,7 @@ public class UnsafeSlashCommand<A : Arguments>(
     public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
 
     override suspend fun call(event: ChatInputCommandInteractionCreateEvent) {
-        val eventCommand = event.interaction.command
-
-        val commandObj: SlashCommand<*, *> = when (eventCommand) {
-            is SubCommand -> {
-                val firstSubCommandKey = eventCommand.name
-
-                this.subCommands.firstOrNull { it.name == firstSubCommandKey }
-                    ?: error("Unknown subcommand: $firstSubCommandKey")
-            }
-
-            is GroupCommand -> {
-                val firstEventGroupKey = eventCommand.groupName
-                val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
-                val firstSubCommandKey = eventCommand.name
-
-                group.subCommands.firstOrNull { it.name == firstSubCommandKey }
-                    ?: error("Unknown subcommand: $firstSubCommandKey")
-            }
-
-            else -> this
-        }
-
-        commandObj.run(event)
+        findCommand(event).run(event)
     }
 
     override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {

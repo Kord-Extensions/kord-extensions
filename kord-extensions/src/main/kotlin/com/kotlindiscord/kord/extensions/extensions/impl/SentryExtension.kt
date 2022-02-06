@@ -1,10 +1,16 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(KordPreview::class)
 
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescedString
+import com.kotlindiscord.kord.extensions.commands.converters.impl.coalescingString
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.chatCommand
@@ -56,7 +62,7 @@ public class SentryExtension : Extension() {
                     val feedback = UserFeedback(
                         arguments.id,
                         member!!.asMember().tag,
-                        member!!.id.asString,
+                        member!!.id.toString(),
                         arguments.feedback
                     )
 
@@ -89,7 +95,7 @@ public class SentryExtension : Extension() {
                     val feedback = UserFeedback(
                         arguments.id,
                         author.tag,
-                        author.id.asString,
+                        author.id.toString(),
                         arguments.feedback
                     )
 
@@ -110,10 +116,10 @@ public class SentryExtension : Extension() {
         public val id: SentryId by sentryId("id", "extensions.sentry.arguments.id")
 
         /** Feedback message to submit to Sentry. **/
-        public val feedback: String by coalescedString(
-            "feedback",
-            "extensions.sentry.arguments.feedback"
-        )
+        public val feedback: String by coalescingString {
+            name = "feedback"
+            description = "extensions.sentry.arguments.feedback"
+        }
     }
 
     /** Arguments for the feedback command. **/
@@ -124,9 +130,9 @@ public class SentryExtension : Extension() {
         public val id: SentryId by sentryId("id", "Sentry event ID")
 
         /** Feedback message to submit to Sentry. **/
-        public val feedback: String by string(
-            "feedback",
-            "Feedback to send to the developers"
-        )
+        public val feedback: String by string {
+            name = "feedback"
+            description = "Feedback to send to the developers"
+        }
     }
 }

@@ -1,8 +1,15 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
+import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -14,6 +21,22 @@ import kotlin.reflect.KClass
 public open class ExtensionsException : Exception()
 
 /**
+ * Exception thrown when a converter builder hasn't been set up properly.
+ *
+ * @property builder Builder that didn't validate
+ * @property reason Reason for the validation failure
+ **/
+public class InvalidArgumentException(
+    public val builder: ConverterBuilder<*>,
+    public val reason: String
+) : ExtensionsException() {
+    override val message: String = toString()
+
+    override fun toString(): String =
+        "Invalid argument: $builder ($reason)"
+}
+
+/**
  * Thrown when an attempt to load an [Extension] fails.
  *
  * @param clazz The invalid [Extension] class.
@@ -23,6 +46,8 @@ public class InvalidExtensionException(
     public val clazz: KClass<out Extension>,
     public val reason: String?
 ) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String {
         val formattedReason = if (reason != null) {
             " ($reason)"
@@ -30,7 +55,7 @@ public class InvalidExtensionException(
             ""
         }
 
-        return "Invalid extension class: ${clazz.qualifiedName} $formattedReason"
+        return "Invalid extension class: ${clazz.qualifiedName}$formattedReason"
     }
 }
 
@@ -40,6 +65,8 @@ public class InvalidExtensionException(
  * @param reason Why this [EventHandler] is considered invalid.
  */
 public class InvalidEventHandlerException(public val reason: String) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String = "Invalid event handler: $reason"
 }
 
@@ -49,6 +76,8 @@ public class InvalidEventHandlerException(public val reason: String) : Extension
  * @param reason Why this [EventHandler] could not be registered.
  */
 public class EventHandlerRegistrationException(public val reason: String) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String = "Failed to register event handler: $reason"
 }
 
@@ -59,6 +88,8 @@ public class EventHandlerRegistrationException(public val reason: String) : Exte
  * @param reason Why this [ChatCommand] is considered invalid.
  */
 public class InvalidCommandException(public val name: String?, public val reason: String) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String {
         if (name == null) {
             return "Invalid command: $reason"
@@ -75,6 +106,8 @@ public class InvalidCommandException(public val name: String?, public val reason
  * @param reason Why this [ChatCommand] could not be registered.
  */
 public class CommandRegistrationException(public val name: String?, public val reason: String) : ExtensionsException() {
+    override val message: String = toString()
+
     override fun toString(): String {
         if (name == null) {
             return "Failed to register command: $reason"
@@ -96,6 +129,8 @@ public open class DiscordRelayedException(
     public open val reason: String,
     public open val translationKey: String? = null
 ) : ExtensionsException() {
+    override val message: String by lazy { toString() }
+
     public constructor(other: DiscordRelayedException) : this(other.reason)
 
     override fun toString(): String = reason
@@ -117,6 +152,8 @@ public open class ArgumentParsingException(
     public val arguments: Arguments,
     public val parser: StringParser?
 ) : DiscordRelayedException(reason, translationKey) {
+    override val message: String by lazy { toString() }
+
     public constructor(other: ArgumentParsingException) :
         this(other.reason, other.translationKey, other.argument, other.arguments, other.parser)
 

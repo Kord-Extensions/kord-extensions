@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress(
     "UNCHECKED_CAST",
     "TooGenericExceptionCaught",
@@ -26,6 +32,7 @@ import dev.kord.core.behavior.createChatInputCommand
 import dev.kord.core.behavior.createMessageCommand
 import dev.kord.core.behavior.createUserCommand
 import dev.kord.core.entity.Guild
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -128,6 +135,9 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
     /** Event handler for user commands. **/
     public abstract suspend fun handle(event: UserCommandInteractionCreateEvent)
 
+    /** Event handler for autocomplete interactions. **/
+    public abstract suspend fun handle(event: AutoCompleteInteractionCreateEvent)
+
     /** Unregister a slash command. **/
     public abstract suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>?
 
@@ -181,7 +191,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
     /** Register multiple slash commands. **/
     public open suspend fun <T : ApplicationCommand<*>> registerAll(vararg commands: T): List<T> =
-        commands.mapNotNull {
+        commands.sortedByDescending { it.name }.mapNotNull {
             try {
                 when (it) {
                     is SlashCommand<*, *> -> register(it) as T
@@ -409,11 +419,17 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                         .translate(option.name, locale, converter.bundle)
                         .lowercase()
 
+                    if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+                        option.choices?.clear()
+                    }
+
+                    option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+
                     this.options!! += option
                 }
             }
         } else {
-            command.subCommands.forEach {
+            command.subCommands.sortedByDescending { it.name }.forEach {
                 val args = it.arguments?.invoke()?.args?.map { arg ->
                     val converter = arg.converter
 
@@ -426,6 +442,12 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                     option.name = translationsProvider
                         .translate(option.name, locale, converter.bundle)
                         .lowercase()
+
+                    if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+                        option.choices?.clear()
+                    }
+
+                    option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
 
                     option
                 }
@@ -442,9 +464,9 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                 }
             }
 
-            command.groups.values.forEach { group ->
+            command.groups.values.sortedByDescending { it.name }.forEach { group ->
                 this.group(group.name, group.getTranslatedDescription(locale)) {
-                    group.subCommands.forEach {
+                    group.subCommands.sortedByDescending { it.name }.forEach {
                         val args = it.arguments?.invoke()?.args?.map { arg ->
                             val converter = arg.converter
 
@@ -458,7 +480,16 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                                 .translate(option.name, locale, converter.bundle)
                                 .lowercase()
 
-                            converter.toSlashOption(arg)
+                            if (
+                                option is BaseChoiceBuilder<*> &&
+                                arg.converter.genericBuilder.autoCompleteCallback != null
+                            ) {
+                                option.choices?.clear()
+                            }
+
+                            option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+
+                            option
                         }
 
                         this.subCommand(

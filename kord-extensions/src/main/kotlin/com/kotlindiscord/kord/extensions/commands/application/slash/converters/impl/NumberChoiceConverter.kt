@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(
     KordPreview::class,
     ConverterToDefaulting::class,
@@ -34,11 +40,10 @@ private const val DEFAULT_RADIX = 10
     "number",
 
     types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    arguments = ["radix: Int = $DEFAULT_RADIX"]
+    builderFields = ["public var radix: Int = $DEFAULT_RADIX"]
 )
 @OptIn(KordPreview::class)
-public
-class NumberChoiceConverter(
+public class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
     choices: Map<String, Long>,
     override var validator: Validator<Long> = null

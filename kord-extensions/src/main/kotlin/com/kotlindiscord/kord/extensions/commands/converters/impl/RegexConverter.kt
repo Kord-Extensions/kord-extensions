@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(
     KordPreview::class,
     ConverterToDefaulting::class,
@@ -9,7 +15,11 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
+import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -24,7 +34,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * Please note that user-provided regular expressions are not safe - they can take down your entire bot.
  *
  * As there is no way to validate individual segments of regex, the multi version of this converter
- * (via [toMulti]) will consume all remaining arguments.
+ * (via [toList]) will consume all remaining arguments.
  *
  * @param options Optional set of [RegexOption]s to pass to the regex parser.
  */
@@ -33,7 +43,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["kotlin.text.RegexOption"],
-    arguments = ["options: Set<RegexOption> = setOf()"]
+    builderFields = ["public var options: Set<RegexOption> = setOf()"]
 )
 @OptIn(KordPreview::class)
 public class RegexConverter(

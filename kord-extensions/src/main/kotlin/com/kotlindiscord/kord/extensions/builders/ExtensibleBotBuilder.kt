@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(KordPreview::class)
 
 package com.kotlindiscord.kord.extensions.builders
@@ -18,6 +24,8 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.plugins.KordExPlugin
+import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getKoin
@@ -41,6 +49,7 @@ import dev.kord.gateway.Intents
 import dev.kord.gateway.builder.PresenceBuilder
 import dev.kord.gateway.builder.Shards
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import io.ktor.utils.io.*
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.context.startKoin
@@ -49,7 +58,10 @@ import org.koin.dsl.bind
 import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
+import java.nio.file.Path
 import java.util.*
+import kotlin.io.path.Path
+import kotlin.io.path.div
 
 internal typealias LocaleResolver = suspend (
     guild: GuildBehavior?,
@@ -68,6 +80,8 @@ internal typealias FailureResponseBuilder =
  */
 @BotBuilderDSL
 public open class ExtensibleBotBuilder {
+    protected val logger: KLogger = KotlinLogging.logger {}
+
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
@@ -87,6 +101,9 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val i18nBuilder: I18nBuilder = I18nBuilder()
+
+    /** @suppress Plugin builder. **/
+    public val pluginBuilder: PluginBuilder = PluginBuilder(this)
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = {
@@ -133,6 +150,16 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public suspend fun cache(builder: suspend CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
+    }
+
+    /**
+     * DSL function used to configure the bot's plugin loading options.
+     *
+     * @see PluginBuilder
+     */
+    @BotBuilderDSL
+    public suspend fun plugins(builder: suspend PluginBuilder.() -> Unit) {
+        builder(pluginBuilder)
     }
 
     /**
@@ -294,9 +321,16 @@ public open class ExtensibleBotBuilder {
     }
 
     /** @suppress Internal function used to initially set up Koin. **/
-    public open fun setupKoin() {
+    public open suspend fun setupKoin() {
         startKoin {
-            slf4jLogger(koinLogLevel)
+            var logLevel = koinLogLevel
+
+            if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
+                // NOTE: Temporary workaround for Koin not supporting Kotlin 1.6
+                logLevel = Level.ERROR
+            }
+
+            slf4jLogger(logLevel)
 //            environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
 
             if (File("koin.properties").exists()) {
@@ -335,8 +369,44 @@ public open class ExtensibleBotBuilder {
         hooksBuilder.runAfterKoinSetup()
     }
 
+    /** @suppress Plugin-loading function. **/
+    @Suppress("TooGenericExceptionCaught")
+    public open suspend fun loadPlugins() {
+        val manager = pluginBuilder.manager(pluginBuilder.pluginPaths)
+
+        loadModule { single { manager } bind PluginManager::class }
+
+        pluginBuilder.managerObj = manager
+        pluginBuilder.disabledPlugins.forEach(manager::disablePlugin)
+
+        manager.loadPlugins()
+
+        manager.plugins.forEach { wrapper ->
+            val plugin = wrapper.plugin as? KordExPlugin
+
+            plugin?.settingsCallbacks?.forEach { callback ->
+                try {
+                    callback(this)
+                } catch (t: Throwable) {
+                    logger.error(t) { "Error thrown while running settings callbacks for plugin: ${wrapper.pluginId}" }
+                }
+            }
+        }
+    }
+
+    /** @suppress Plugin-loading function. **/
+    public open suspend fun startPlugins() {
+        pluginBuilder.managerObj.startPlugins()
+    }
+
     /** @suppress Internal function used to build a bot instance. **/
     public open suspend fun build(token: String): ExtensibleBot {
+        hooksBuilder.beforeKoinSetup {
+            if (pluginBuilder.enabled) {
+                loadPlugins()
+            }
+        }
+
         setupKoin()
 
         val bot = ExtensibleBot(this, token)
@@ -352,9 +422,64 @@ public open class ExtensibleBotBuilder {
 
         extensionsBuilder.extensions.forEach { bot.addExtension(it) }
 
+        if (pluginBuilder.enabled) {
+            startPlugins()
+        }
+
         hooksBuilder.runAfterExtensionsAdded(bot)
 
         return bot
+    }
+
+    /**
+     * Builder used for configuring the bot's wired-plugin-loading options.
+     *
+     * @property parent Parent [ExtensibleBotBuilder], for extension functions.
+     */
+    @BotBuilderDSL
+    public class PluginBuilder(public val parent: ExtensibleBotBuilder) {
+        internal lateinit var managerObj: PluginManager
+
+        /** Whether to attempt to load wired plugin. Defaults to `true`. **/
+        public var enabled: Boolean = true
+
+        /** Plugin manager builder, which you can replace if your needs require it. **/
+        public var manager: (List<Path>) -> PluginManager = ::PluginManager
+
+        /** List of paths to load plugin from. Uses `plugins/` in the current working directory by default. **/
+        public val pluginPaths: MutableList<Path> = mutableListOf(
+            Path(".") / "plugins"
+        )
+
+        /** List of plugin IDs to disable. Plugins in this list will not be loaded automatically. **/
+        public val disabledPlugins: MutableList<String> = mutableListOf()
+
+        /**
+         * Convenience function for disabling a plugin by ID.
+         *
+         * @see disabledPlugins
+         */
+        public fun disable(id: String) {
+            disabledPlugins.add(id)
+        }
+
+        /**
+         * Convenience function for adding a plugin path.
+         *
+         * @see pluginPaths
+         */
+        public fun pluginPath(path: String) {
+            pluginPaths.add(Path.of(path))
+        }
+
+        /**
+         * Convenience function for adding a plugin path.
+         *
+         * @see pluginPaths
+         */
+        public fun pluginPath(path: Path) {
+            pluginPaths.add(path)
+        }
     }
 
     /** Builder used for configuring the bot's caching options. **/
@@ -480,10 +605,10 @@ public open class ExtensibleBotBuilder {
             public open var environment: String? = null
 
             /** Optional release version to send to Sentry. **/
-            public open val release: String? = null
+            public open var release: String? = null
 
             /** Optional server name to send to Sentry. **/
-            public open val serverName: String? = null
+            public open var serverName: String? = null
 
             /** Whether to ping users when responding to them. **/
             public var pingInReply: Boolean = true
@@ -511,6 +636,18 @@ public open class ExtensibleBotBuilder {
             /** Register a builder used to construct a [SentryAdapter] instance, usually the constructor. **/
             public fun builder(body: () -> SentryAdapter) {
                 builder = body
+            }
+
+            /**
+             * Convenience function to enable and set the DSN, but only if the supplied DSN isn't null.
+             *
+             * Intended for use with `envOrNull`.
+             */
+            public fun enableIfDSN(sentryDSN: String?) {
+                if (sentryDSN != null) {
+                    dsn = sentryDSN
+                    enable = true
+                }
             }
 
             /**
@@ -601,10 +738,10 @@ public open class ExtensibleBotBuilder {
         public val afterExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
 
         /** @suppress Internal list of hooks. **/
-        public val afterKoinSetupList: MutableList<() -> Unit> = mutableListOf()
+        public val afterKoinSetupList: MutableList<suspend () -> Unit> = mutableListOf()
 
         /** @suppress Internal list of hooks. **/
-        public val beforeKoinSetupList: MutableList<() -> Unit> = mutableListOf()
+        public val beforeKoinSetupList: MutableList<suspend () -> Unit> = mutableListOf()
 
         /** @suppress Internal list of hooks. **/
         public val beforeExtensionsAddedList: MutableList<suspend ExtensibleBot.() -> Unit> = mutableListOf()
@@ -639,7 +776,7 @@ public open class ExtensibleBotBuilder {
          * via `loadModule` before the modules are actually accessed.
          */
         @BotBuilderDSL
-        public fun afterKoinSetup(body: () -> Unit): Boolean =
+        public fun afterKoinSetup(body: suspend () -> Unit): Boolean =
             afterKoinSetupList.add(body)
 
         /**
@@ -647,7 +784,7 @@ public open class ExtensibleBotBuilder {
          * early, if needed.
          */
         @BotBuilderDSL
-        public fun beforeKoinSetup(body: () -> Unit): Boolean =
+        public fun beforeKoinSetup(body: suspend () -> Unit): Boolean =
             beforeKoinSetupList.add(body)
 
         /**
@@ -703,7 +840,7 @@ public open class ExtensibleBotBuilder {
             }
 
         /** @suppress Internal hook execution function. **/
-        public fun runAfterKoinSetup() {
+        public suspend fun runAfterKoinSetup() {
             val logger: KLogger = KotlinLogging.logger {}
 
             afterKoinSetupList.forEach {
@@ -718,7 +855,7 @@ public open class ExtensibleBotBuilder {
         }
 
         /** @suppress Internal hook execution function. **/
-        public fun runBeforeKoinSetup() {
+        public suspend fun runBeforeKoinSetup() {
             val logger: KLogger = KotlinLogging.logger {}
 
             beforeKoinSetupList.forEach {
@@ -835,6 +972,13 @@ public open class ExtensibleBotBuilder {
          * Requires the `GUILD_PRESENCES` privileged intent. Make sure you've enabled it for your bot!
          */
         public var fillPresences: Boolean? = null
+
+        /**
+         * Whether to lock when requesting members from guilds, preventing concurrent requests from being processed
+         * at once. This will slow down filling the cache with members, but may avoid hitting rate limits for larger
+         * bots.
+         */
+        public var lockMemberRequests: Boolean = false
 
         /**
          * Add a list of guild IDs to request members for.
@@ -1011,18 +1155,18 @@ public open class ExtensibleBotBuilder {
         public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: Snowflake) {
+        public fun defaultGuild(id: Snowflake?) {
             defaultGuild = id
         }
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: ULong) {
-            defaultGuild = Snowflake(id)
+        public fun defaultGuild(id: ULong?) {
+            defaultGuild = id?.let { Snowflake(it) }
         }
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
-        public fun defaultGuild(id: String) {
-            defaultGuild = Snowflake(id)
+        public fun defaultGuild(id: String?) {
+            defaultGuild = id?.let { Snowflake(it) }
         }
 
         /**

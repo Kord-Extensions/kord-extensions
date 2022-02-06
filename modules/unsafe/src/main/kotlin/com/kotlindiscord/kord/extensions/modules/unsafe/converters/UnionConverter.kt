@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(
     KordPreview::class,
     ConverterToDefaulting::class,
@@ -113,7 +119,7 @@ public class UnionConverter(
                     if (shouldThrow) throw t
                 }
 
-                is MultiConverter<*> -> try {
+                is ListConverter<*> -> try {
                     val result: Int = converter.parse(parser, context, named)
 
                     if (result > 0) {
@@ -223,7 +229,7 @@ public class UnionConverter(
                     if (shouldThrow) throw t
                 }
 
-                is MultiConverter<*> -> throw DiscordRelayedException(
+                is ListConverter<*> -> throw DiscordRelayedException(
                     context.translate(
                         "converters.union.error.unknownConverterType",
                         replacements = arrayOf(converter)
@@ -333,7 +339,7 @@ public fun Arguments.optionalUnion(
     vararg converters: GenericConverter,
     bundle: String? = null,
     validator: Validator<Any?> = null
-): OptionalCoalescingConverter<Any?> {
+): OptionalCoalescingConverter<Any> {
     val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle)
 
     converter.validateUnion()
@@ -344,7 +350,7 @@ public fun Arguments.optionalUnion(
         }
     }
 
-    val optionalConverter: OptionalCoalescingConverter<Any?> = converter.toOptional(nestedValidator = validator)
+    val optionalConverter: OptionalCoalescingConverter<Any> = converter.toOptional(nestedValidator = validator)
 
     arg(displayName, description, optionalConverter)
 

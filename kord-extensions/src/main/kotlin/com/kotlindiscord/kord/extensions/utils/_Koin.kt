@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.utils
 
 import org.koin.core.Koin
@@ -10,10 +16,9 @@ import org.koin.mp.KoinPlatformTools
 /** Wrapper for [org.koin.dsl.module] that immediately loads the module for the current [Koin] instance. **/
 public fun loadModule(
     createdAtStart: Boolean = false,
-    override: Boolean = false,
     moduleDeclaration: ModuleDeclaration
 ): Module {
-    val moduleObj = module(createdAtStart, override, moduleDeclaration)
+    val moduleObj = module(createdAtStart, moduleDeclaration)
 
     loadKoinModules(moduleObj)
 

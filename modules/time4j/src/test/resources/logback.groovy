@@ -1,10 +1,18 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.joran.spi.ConsoleTarget
 
 def environment = System.getenv().getOrDefault("ENVIRONMENT", "production")
-
-def defaultLevel = DEBUG
+def defaultLevel = TRACE
 
 if (environment == "spam") {
+    statusListener(OnConsoleStatusListener)
+
     logger("dev.kord.rest.DefaultGateway", TRACE)
 } else {
     // Silence warning about missing native PRNG
@@ -13,10 +21,12 @@ if (environment == "spam") {
 
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
-        pattern = "%d{yyyy-MM-dd HH:mm:ss:SSS Z} | %5level | %40.40logger{40} | %msg%n"
+        pattern = "%boldGreen(%d{yyyy-MM-dd}) %boldYellow(%d{HH:mm:ss}) %gray(|) %highlight(%5level) %gray(|) %boldMagenta(%40.40logger{40}) %gray(|) %msg%n"
+
+        withJansi = true
     }
 
-    target = ConsoleTarget.SystemErr
+    target = ConsoleTarget.SystemOut
 }
 
 appender("FILE", FileAppender) {

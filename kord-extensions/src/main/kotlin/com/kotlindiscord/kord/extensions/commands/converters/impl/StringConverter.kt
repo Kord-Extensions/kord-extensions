@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.commands.Argument
@@ -15,7 +21,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 /**
  * Coalescing argument that simply returns the argument as it was given.
  *
- * The multi version of this converter (via [toMulti]) will consume all remaining arguments.
+ * The multi version of this converter (via [toList]) will consume all remaining arguments.
  */
 @Converter(
     "string",

@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("StringLiteralDuplication", "UnusedPrivateMember")
 
 package com.kotlindiscord.kord.extensions.modules.annotations.converters
@@ -22,7 +28,6 @@ internal fun defaultingConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("DefaultingConverter<$typeParam>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -30,35 +35,28 @@ internal fun defaultingConverter(
             "DefaultingConverter<${generic.split(":").first().trim()}>"
         )
     }
-
     .defaultFirstArgs()
-
     .requiredFunArg("defaultValue", typeParam)
     .optionalFunArg("required", "Boolean", "false")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim())
     }.maybe(generic == null) {
         defaultLastArgs(typeParam)
     }
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .wrapper("defaulting")
     .wrapperArg("defaultValue")
     .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
-
     .build()
 
 internal fun defaultingChoiceConverter(
@@ -79,7 +77,6 @@ internal fun defaultingChoiceConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("DefaultingConverter<$typeParam>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -87,38 +84,30 @@ internal fun defaultingChoiceConverter(
             "DefaultingConverter<<${generic.split(":").first().trim()}>>"
         )
     }
-
     .defaultFirstArgs()
-
     .requiredFunArg("defaultValue", typeParam)
     .optionalFunArg("required", "Boolean", "false")
     .requiredFunArg("choices", "Map<String, $typeParam>")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim())
     }.maybe(generic == null) {
         defaultLastArgs(typeParam)
     }
-
     .converterArg("choices")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .wrapper("defaulting")
     .wrapperArg("defaultValue")
     .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
-
     .build()
 
 internal fun defaultingCoalescingConverter(
@@ -139,7 +128,6 @@ internal fun defaultingCoalescingConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("DefaultingCoalescingConverter<$typeParam>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -147,35 +135,28 @@ internal fun defaultingCoalescingConverter(
             "DefaultingCoalescingConverter<${generic.split(":").first().trim()}>"
         )
     }
-
     .defaultFirstArgs()
-
     .requiredFunArg("defaultValue", typeParam)
     .optionalFunArg("required", "Boolean", "false")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim())
     }.maybe(generic == null) {
         defaultLastArgs(typeParam)
     }
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .wrapper("defaulting")
     .wrapperArg("defaultValue")
     .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
-
     .build()
 
 internal fun listConverter(
@@ -196,7 +177,6 @@ internal fun listConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("MultiConverter<$typeParam>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -204,32 +184,26 @@ internal fun listConverter(
             "MultiConverter<${generic.split(":").first().trim()}>"
         )
     }
-
     .defaultFirstArgs()
     .optionalFunArg("required", "Boolean", "true")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs("List<${generic!!.split(":").first().trim()}>")
     }.maybe(generic == null) {
         defaultLastArgs("List<$typeParam>")
     }
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .wrapper("multi")
     .wrapperArg("required")
     .wrapperArg("nestedValidator", "validator")
-
     .build()
 
 internal fun listChoiceConverter(
@@ -265,7 +239,6 @@ internal fun singleConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("SingleConverter<$typeParam>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -273,29 +246,23 @@ internal fun singleConverter(
             "SingleConverter<${generic.split(":").first().trim()}>"
         )
     }
-
     .defaultFirstArgs()
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim())
     }.maybe(generic == null) {
         defaultLastArgs(typeParam)
     }
-
     .converterArg("validator")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .build()
 
 internal fun singleChoiceConverter(
@@ -315,7 +282,6 @@ internal fun singleChoiceConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("SingleConverter<$typeParam>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -323,31 +289,25 @@ internal fun singleChoiceConverter(
             "SingleConverter<${generic.split(":").first().trim()}>"
         )
     }
-
     .defaultFirstArgs()
     .requiredFunArg("choices", "Map<String, $typeParam>")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim())
     }.maybe(generic == null) {
         defaultLastArgs(typeParam)
     }
-
     .converterArg("choices")
     .converterArg("validator")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .build()
 
 internal fun singleCoalescingConverter(
@@ -367,7 +327,6 @@ internal fun singleCoalescingConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("CoalescingConverter<$typeParam>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -375,29 +334,23 @@ internal fun singleCoalescingConverter(
             "CoalescingConverter<${generic.split(":").first().trim()}>"
         )
     }
-
     .defaultFirstArgs()
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim())
     }.maybe(generic == null) {
         defaultLastArgs(typeParam)
     }
-
     .converterArg("validator")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .build()
 
 internal fun optionalConverter(
@@ -418,7 +371,6 @@ internal fun optionalConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("OptionalConverter<$typeParam?>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -426,33 +378,27 @@ internal fun optionalConverter(
             "OptionalConverter<${generic.split(":").first().trim()}?>"
         )
     }
-
     .defaultFirstArgs()
     .optionalFunArg("required", "Boolean", "false")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim() + "?")
     }
     .maybe(generic == null) {
         defaultLastArgs("$typeParam?")
     }
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .wrapper("optional")
     .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
-
     .build()
 
 internal fun optionalChoiceConverter(
@@ -472,7 +418,6 @@ internal fun optionalChoiceConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("OptionalConverter<$typeParam?>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -480,36 +425,29 @@ internal fun optionalChoiceConverter(
             "OptionalConverter<${generic.split(":").first().trim()}?>"
         )
     }
-
     .defaultFirstArgs()
     .requiredFunArg("choices", "Map<String, $typeParam>")
     .optionalFunArg("required", "Boolean", "false")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim() + "?")
     }
     .maybe(generic == null) {
         defaultLastArgs("$typeParam?")
     }
-
     .converterArg("choices")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .wrapper("optional")
     .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
-
     .build()
 
 internal fun optionalCoalescingConverter(
@@ -529,7 +467,6 @@ internal fun optionalCoalescingConverter(
 )
     .converter(classDeclaration.simpleName.asString())
     .returnType("OptionalCoalescingConverter<$typeParam?>")
-
     .maybe(generic != null) {
         rawGeneric(generic!!)
 
@@ -537,31 +474,25 @@ internal fun optionalCoalescingConverter(
             "OptionalCoalescingConverter<${generic.split(":").first().trim()}?>"
         )
     }
-
     .defaultFirstArgs()
     .optionalFunArg("required", "Boolean", "false")
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             rawFunArg(it)
         }
     }
-
     .maybe(generic != null) {
         defaultLastArgs(generic!!.split(":").first().trim() + "?")
     }
     .maybe(generic == null) {
         defaultLastArgs("$typeParam?")
     }
-
     .maybe(extraArguments.isNotEmpty()) {
         extraArguments.forEach {
             converterArg(it.split(":").first().trim().split(" ").last())
         }
     }
-
     .wrapper("optional")
     .wrapperArg("outputError", "required")
     .wrapperArg("nestedValidator", "validator")
-
     .build()

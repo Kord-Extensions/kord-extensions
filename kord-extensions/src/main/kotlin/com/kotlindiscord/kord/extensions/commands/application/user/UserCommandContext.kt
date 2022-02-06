@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.commands.application.user
 
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandContext
@@ -15,5 +21,5 @@ public abstract class UserCommandContext<C : UserCommandContext<C>>(
     public override val command: UserCommand<C>
 ) : ApplicationCommandContext(event, command) {
     /** Messages that this message command is being executed against. **/
-    public val targetUsers: Collection<User> by lazy { event.interaction.users?.values ?: listOf() }
+    public val targetUsers: Collection<User> by lazy { event.interaction.users.values }
 }

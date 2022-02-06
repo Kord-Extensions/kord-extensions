@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.components.ComponentWithAction
@@ -16,10 +22,10 @@ import mu.KLogger
 import mu.KotlinLogging
 
 /** Maximum length for an option's description. **/
-public const val DESCRIPTION_MAX: Int = 50
+public const val DESCRIPTION_MAX: Int = 100
 
 /** Maximum length for an option's label. **/
-public const val LABEL_MAX: Int = 25
+public const val LABEL_MAX: Int = 100
 
 /** Maximum number of options for a menu. **/
 public const val OPTIONS_MAX: Int = 25
@@ -50,6 +56,19 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
     @Suppress("MagicNumber")  // WHY DO YOU THINK I ASSIGN IT HERE
     override val unitWidth: Int = 5
+
+    /** Whether this select menu is disabled. **/
+    public open var disabled: Boolean? = null
+
+    /** Mark this select menu as disabled. **/
+    public open fun disable() {
+        disabled = true
+    }
+
+    /** Mark this select menu as enabled. **/
+    public open fun enable() {
+        disabled = null  // Don't ask me why this is
+    }
 
     /** Add an option to this select menu. **/
     @Suppress("UnnecessaryParentheses")  // Disagrees with IDEA, amusingly.
@@ -83,6 +102,8 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
             this.options.addAll(this@SelectMenu.options)
             this.placeholder = this@SelectMenu.placeholder
+
+            this.disabled = this@SelectMenu.disabled
         }
     }
 
@@ -118,19 +139,19 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
                 if (channel != null) {
                     data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id.asString})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                        is DmChannel -> "Private Message (${channel.id})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
 
-                        else -> channel.id.asString
+                        else -> channel.id.toString()
                     }
                 }
 
                 if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id.asString})"
+                    data["guild"] = "${guild.name} (${guild.id})"
                 }
 
                 if (message != null) {
-                    data["message"] = message.id.asString
+                    data["message"] = message.id.toString()
                 }
             }
         }

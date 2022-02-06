@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:Suppress("StringLiteralDuplication", "TooGenericExceptionCaught")
 
 package com.kotlindiscord.kord.extensions.commands.chat
@@ -434,15 +440,15 @@ public open class ChatCommand<T : Arguments>(
 
                 if (channel != null) {
                     data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id.asString})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id.asString})"
+                        is DmChannel -> "Private Message (${channel.id})"
+                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
 
-                        else -> channel.id.asString
+                        else -> channel.id.toString()
                     }
                 }
 
                 if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id.asString})"
+                    data["guild"] = "${guild.name} (${guild.id})"
                 }
             }
         }

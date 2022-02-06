@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.parsers.caches
 
 import com.kotlindiscord.kord.extensions.*
@@ -24,6 +30,7 @@ public object ColorCache : KoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, ColorMap> = mutableMapOf()
 
+    /** Return a mapping of all translated colour names to Color objects, based on the given locale. **/
     public fun getColors(locale: Locale): ColorMap {
         if (valueCache[locale] == null) {
             val colorMap: ColorMap = linkedMapOf()

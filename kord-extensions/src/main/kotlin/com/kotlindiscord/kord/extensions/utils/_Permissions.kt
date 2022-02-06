@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.utils
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
@@ -20,6 +26,7 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.KickMembers -> "permission.kickMembers"
     Permission.ManageChannels -> "permission.manageChannels"
     Permission.ManageEmojis -> "permission.manageEmojis"
+    Permission.ManageEvents -> "permission.manageEvents"
     Permission.ManageGuild -> "permission.manageGuild"
     Permission.ManageMessages -> "permission.manageMessages"
     Permission.ManageNicknames -> "permission.manageNicknames"
@@ -36,6 +43,7 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.SendTTSMessages -> "permission.sendTTSMessages"
     Permission.Speak -> "permission.speak"
     Permission.Stream -> "permission.stream"
+    Permission.ModerateMembers -> "permission.timeoutMembers"
     Permission.UseExternalEmojis -> "permission.useExternalEmojis"
     Permission.UseSlashCommands -> "permission.useSlashCommands"
     Permission.UseVAD -> "permission.useVAD"
@@ -51,6 +59,10 @@ public fun Permission.toTranslationKey(): String = when (this) {
 /** Because "Stream" is a confusing name, people may look for "Video" instead. **/
 public val Permission.Video: Permission.Stream
     inline get() = Permission.Stream
+
+/** Because it hasn't been called "Moderate Members" since the DMD testing finished. **/
+public val Permission.TimeoutMembers: Permission.ModerateMembers
+    inline get() = Permission.ModerateMembers
 
 /** Given a [CommandContext], translate the [Permission] to a human-readable string based on the context's locale. **/
 public suspend fun Permission.translate(context: CommandContext): String =

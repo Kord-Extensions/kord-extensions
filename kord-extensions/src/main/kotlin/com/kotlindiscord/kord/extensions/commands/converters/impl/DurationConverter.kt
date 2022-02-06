@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
@@ -31,9 +37,9 @@ import kotlin.time.ExperimentalTime
     types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["kotlinx.datetime.*"],
 
-    arguments = [
-        "longHelp: Boolean = true",
-        "positiveOnly: Boolean = true"
+    builderFields = [
+        "public var longHelp: Boolean = true",
+        "public var positiveOnly: Boolean = true"
     ],
 )
 @OptIn(KordPreview::class, ExperimentalTime::class)

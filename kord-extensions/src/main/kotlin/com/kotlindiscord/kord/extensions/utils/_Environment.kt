@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(ExperimentalPathApi::class)
 
 package com.kotlindiscord.kord.extensions.utils
@@ -53,7 +59,9 @@ public fun envOrNull(name: String): String? {
                     continue
                 }
 
-                val split = effectiveLine.split("=", limit = 2)
+                val split = effectiveLine
+                    .split("=", limit = 2)
+                    .map { it.trim() }
 
                 if (split.size != 2) {
                     logger.warn {
@@ -90,6 +98,6 @@ public fun envOrNull(name: String): String? {
  */
 public fun env(name: String): String =
     envOrNull(name) ?: error(
-        "Missing environmental variable '$name' - please set this by adding it to a `.env` file, or using your" +
+        "Missing environmental variable '$name' - please set this by adding it to a `.env` file, or using your " +
             "system or process manager's environment management commands and tools."
     )

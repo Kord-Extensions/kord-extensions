@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(
     KordPreview::class,
     ConverterToDefaulting::class,
@@ -11,7 +17,11 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
+import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
+import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -48,10 +58,11 @@ private val logger = KotlinLogging.logger {}
 
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["dev.kord.common.entity.Snowflake"],
-    arguments = [
-        "requireGuild: Boolean = false",
-        "requiredGuild: (suspend () -> Snowflake)? = null",
-        "useReply: Boolean = true",
+
+    builderFields = [
+        "public var requireGuild: Boolean = false",
+        "public var requiredGuild: (suspend () -> Snowflake)? = null",
+        "public var useReply: Boolean = true",
     ]
 )
 @OptIn(KordPreview::class)
@@ -158,7 +169,7 @@ public class MessageConverter(
             try {
                 channel.getMessage(mid)
             } catch (e: EntityNotFoundException) {
-                errorNoMessage(mid.asString, context)
+                errorNoMessage(mid.toString(), context)
             }
         } else { // Try a message ID
             val channel: ChannelBehavior? = context.getChannel()

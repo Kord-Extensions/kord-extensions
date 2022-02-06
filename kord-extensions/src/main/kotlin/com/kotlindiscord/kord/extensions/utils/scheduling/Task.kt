@@ -1,17 +1,30 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 @file:OptIn(ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.utils.scheduling
 
-import com.kotlindiscord.kord.extensions.utils.getKoin
+import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.sentry.tag
 import dev.kord.core.Kord
 import kotlinx.coroutines.*
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
-
-private val logger = KotlinLogging.logger {}
 
 /**
  * Simple class representing a polling-based delayed task. Coroutine-based.
@@ -23,18 +36,19 @@ private val logger = KotlinLogging.logger {}
  * @param parent Parent [Scheduler] object, if any.
  * @param name Optional task name, "Unnamed" by default.
  */
-public class Task(
-    public val duration: Duration,
-    public val callback: suspend () -> Unit,
-    public val pollingSeconds: Long = 1,
-    public val coroutineScope: CoroutineScope = getKoin().get<Kord>(),
-    public val parent: Scheduler? = null,
+public open class Task(
+    public open val duration: Duration,
+    public open val callback: suspend () -> Unit,
+    public open val pollingSeconds: Long = 1,
+    public open val coroutineScope: CoroutineScope = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>(),
+    public open val parent: Scheduler? = null,
 
-    name: String = "Unnamed",
-) {
-    private val logger = KotlinLogging.logger("Task: $name")
-    private var job: Job? = null
-    private lateinit var started: TimeMark
+    public val name: String = "Unnamed",
+) : KoinComponent {
+    protected val logger: KLogger = KotlinLogging.logger("Task: $name")
+    protected var job: Job? = null
+    protected lateinit var started: TimeMark
+    protected val sentry: SentryAdapter by inject()
 
     /** Whether this task is currently running - that is, waiting until it's time to execute the [callback]. **/
     public val running: Boolean get() = job != null
@@ -44,7 +58,20 @@ public class Task(
 
     /** Mark the start time and begin waiting until the execution time has been reached. **/
     public fun start() {
+        val sentryContext = SentryContext()
+
         started = TimeSource.Monotonic.markNow()
+
+        sentryContext.breadcrumb(BreadcrumbType.Info) {
+            val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+
+            message = "Starting task: waiting for configured delay to pass"
+
+            data["delay"] = duration.toIsoString()
+            data["name"] = name
+            data["now"] = now.toString()
+            data["pollingSeconds"] = pollingSeconds
+        }
 
         job = coroutineScope.launch {
             while (!shouldStart()) {
@@ -52,11 +79,29 @@ public class Task(
                 delay(pollingSeconds * 1000)
             }
 
+            sentryContext.breadcrumb(BreadcrumbType.Info) {
+                val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+
+                message = "Delay has passed, executing task"
+
+                data["now"] = now.toString()
+            }
+
             @Suppress("TooGenericExceptionCaught")
             try {
                 callback()
             } catch (t: Throwable) {
-                logger.error(t) { "Error running scheduled callback." }
+                if (t is CancellationException && t.cause == null) {
+                    logger.trace { "Task cancelled." }
+                } else {
+                    logger.error(t) { "Error running scheduled callback." }
+
+                    if (sentry.enabled) {
+                        sentryContext.captureException(t, "Error running scheduled callback") {
+                            tag("task", name)
+                        }
+                    }
+                }
             }
 
             removeFromParent()
@@ -114,5 +159,5 @@ public class Task(
     /** Join the running [job], if any. **/
     public suspend fun join(): Unit? = job?.join()
 
-    private fun removeFromParent() = parent?.removeTask(this@Task)
+    protected fun removeFromParent(): Boolean? = parent?.removeTask(this@Task)
 }
