@@ -71,5 +71,10 @@
       <option name="name" value="QuiltMC (Releases)" />
       <option name="url" value="https://maven.quiltmc.org/repository/release/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="Sonatype Snapshots" />
+      <option name="name" value="Sonatype Snapshots" />
+      <option name="url" value="https://oss.sonatype.org/content/repositories/snapshots" />
+    </remote-repository>
   </component>
 </project>
