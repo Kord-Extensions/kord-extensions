@@ -36,7 +36,7 @@ public suspend inline fun EphemeralInteractionContext.respond(
 ): EphemeralFollowupMessage = interactionResponse.followUpEphemeral(builder)
 
 /** Respond to the current interaction with a public followup. **/
-public suspend inline fun PublicInteractionContext.respondPublic(
+public suspend inline fun EphemeralInteractionContext.respondPublic(
     builder: FollowupMessageCreateBuilder.() -> Unit
 ): PublicFollowupMessage = interactionResponse.followUp(builder)
 
