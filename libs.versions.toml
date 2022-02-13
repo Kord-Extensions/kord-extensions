@@ -21,7 +21,7 @@ linkie = "1.0.94"
 logback = "1.2.5"
 logging = "2.1.21"
 pf4j = "3.6.0"
-sentry = "5.5.2"
+sentry = "5.6.1"
 time4j-base = "5.8"
 time4j-tzdata = "5.0-2021a"
 
