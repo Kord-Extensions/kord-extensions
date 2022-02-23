@@ -57,8 +57,8 @@ public class UnsafeUserCommand(
         }
 
         val response = when (val r = initialResponse) {
-            is InitialUserCommandResponse.EphemeralAck -> event.interaction.acknowledgeEphemeral()
-            is InitialUserCommandResponse.PublicAck -> event.interaction.acknowledgePublic()
+            is InitialUserCommandResponse.EphemeralAck -> event.interaction.deferEphemeralMessage()
+            is InitialUserCommandResponse.PublicAck -> event.interaction.deferPublicMessage()
 
             is InitialUserCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
                 r.builder!!(event)

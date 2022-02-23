@@ -68,8 +68,8 @@ public class UnsafeSlashCommand<A : Arguments>(
         }
 
         val response = when (val r = initialResponse) {
-            is InitialSlashCommandResponse.EphemeralAck -> event.interaction.acknowledgeEphemeral()
-            is InitialSlashCommandResponse.PublicAck -> event.interaction.acknowledgePublic()
+            is InitialSlashCommandResponse.EphemeralAck -> event.interaction.deferEphemeralMessage()
+            is InitialSlashCommandResponse.PublicAck -> event.interaction.deferPublicMessage()
 
             is InitialSlashCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
                 r.builder!!(event)

@@ -46,7 +46,7 @@ public suspend fun UnsafeInteractionContext.ackEphemeral(
     }
 
     interactionResponse = if (builder == null) {
-        event.interaction.acknowledgeEphemeral()
+        event.interaction.deferEphemeralMessage()
     } else {
         event.interaction.respondEphemeral { builder() }
     }
@@ -64,7 +64,7 @@ public suspend fun UnsafeInteractionContext.ackPublic(
     }
 
     interactionResponse = if (builder == null) {
-        event.interaction.acknowledgePublic()
+        event.interaction.deferPublicMessage()
     } else {
         event.interaction.respondPublic { builder() }
     }

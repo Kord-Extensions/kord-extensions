@@ -64,7 +64,7 @@ public class PublicMessageCommand(
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
         } else {
-            event.interaction.acknowledgePublic()
+            event.interaction.deferPublicMessage()
         }
 
         val context = PublicMessageCommandContext(event, this, response)

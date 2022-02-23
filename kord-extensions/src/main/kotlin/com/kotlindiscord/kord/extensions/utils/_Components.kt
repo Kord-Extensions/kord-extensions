@@ -22,18 +22,18 @@ import dev.kord.rest.builder.component.SelectOptionBuilder
 public suspend fun ComponentInteractionBehavior.ackEphemeral(
     deferred: Boolean = false
 ): EphemeralMessageInteractionResponseBehavior = if (deferred) {
-    acknowledgeEphemeralDeferredMessageUpdate()
+    deferEphemeralMessageUpdate()
 } else {
-    acknowledgeEphemeral()
+    deferEphemeralMessage()
 }
 
 /** Convenience wrapper for sending a public ack, optionally deferred, with less characters. **/
 public suspend fun ComponentInteractionBehavior.ackPublic(
     deferred: Boolean = false
 ): PublicMessageInteractionResponseBehavior = if (deferred) {
-    acknowledgePublicDeferredMessageUpdate()
+    deferPublicMessageUpdate()
 } else {
-    acknowledgePublic()
+    deferPublicMessage()
 }
 
 /** Convenience function for setting [this.emoji] based on a given Unicode emoji. **/

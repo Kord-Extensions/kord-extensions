@@ -71,7 +71,7 @@ public class PublicSlashCommand<A : Arguments>(
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
         } else {
-            event.interaction.acknowledgePublic()
+            event.interaction.deferPublicMessage()
         }
 
         val context = PublicSlashCommandContext(event, this, response)
