@@ -30,6 +30,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
+import dev.kord.core.entity.interaction.MemberOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.UserBuilder
@@ -128,7 +129,7 @@ public class MemberConverter(
         UserBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.MemberOptionValue)?.value as? Member ?: return false
+        val optionValue = (option as? MemberOptionValue)?.resolvedObject ?: return false
         this.parsed = optionValue
 
         return true

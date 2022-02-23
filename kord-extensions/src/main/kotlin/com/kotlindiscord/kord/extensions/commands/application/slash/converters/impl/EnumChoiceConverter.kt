@@ -26,6 +26,7 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
@@ -98,7 +99,7 @@ public class EnumChoiceConverter<E>(
         }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val stringOption = option as? OptionValue.StringOptionValue ?: return false
+        val stringOption = option as? StringOptionValue ?: return false
 
         try {
             parsed = getter.invoke(stringOption.value) ?: return false

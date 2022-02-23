@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -48,8 +49,8 @@ public open class SlashCommandParser {
         val command = context.event.interaction.command
 
         val values = command.options.mapValues {
-            if (it.value is OptionValue.StringOptionValue) {
-                OptionValue.StringOptionValue((it.value.value as String).trim(), it.value.focused)
+            if (it.value is StringOptionValue) {
+                StringOptionValue((it.value.value as String).trim(), it.value.focused)
             } else {
                 it.value
             }
