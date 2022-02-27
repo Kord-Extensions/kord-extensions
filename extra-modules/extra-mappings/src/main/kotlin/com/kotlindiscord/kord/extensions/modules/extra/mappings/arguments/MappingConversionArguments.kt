@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.autocompleteVersions
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.toNamespace
+import com.kotlindiscord.kord.extensions.utils.command
 
 /**
  * Arguments for class, field, and method conversion commands.
