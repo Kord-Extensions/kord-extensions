@@ -266,6 +266,10 @@ public open class ExtensibleBot(
     public open suspend fun addExtension(builder: () -> Extension) {
         val extensionObj = builder.invoke()
 
+        if (extensions.contains(extensionObj.name)) {
+            logger.warn { "Using duplicate extension name: ${extensionObj.name}" }
+        }
+
         extensions[extensionObj.name] = extensionObj
         loadExtension(extensionObj.name)
 
