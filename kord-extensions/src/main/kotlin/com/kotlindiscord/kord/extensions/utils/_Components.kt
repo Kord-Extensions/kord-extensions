@@ -12,8 +12,8 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.optional.optional
 import dev.kord.core.behavior.interaction.ComponentInteractionBehavior
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.component.SelectOptionBuilder
@@ -21,19 +21,19 @@ import dev.kord.rest.builder.component.SelectOptionBuilder
 /** Convenience wrapper for sending an ephemeral ack, optionally deferred, with less characters. **/
 public suspend fun ComponentInteractionBehavior.ackEphemeral(
     deferred: Boolean = false
-): EphemeralInteractionResponseBehavior = if (deferred) {
-    acknowledgeEphemeralDeferredMessageUpdate()
+): EphemeralMessageInteractionResponseBehavior = if (deferred) {
+    deferEphemeralMessageUpdate()
 } else {
-    acknowledgeEphemeral()
+    deferEphemeralMessage()
 }
 
 /** Convenience wrapper for sending a public ack, optionally deferred, with less characters. **/
 public suspend fun ComponentInteractionBehavior.ackPublic(
     deferred: Boolean = false
-): PublicInteractionResponseBehavior = if (deferred) {
-    acknowledgePublicDeferredMessageUpdate()
+): PublicMessageInteractionResponseBehavior = if (deferred) {
+    deferPublicMessageUpdate()
 } else {
-    acknowledgePublic()
+    deferPublicMessage()
 }
 
 /** Convenience function for setting [this.emoji] based on a given Unicode emoji. **/

@@ -76,7 +76,7 @@ public class EphemeralSlashCommand<A : Arguments>(
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
         } else {
-            event.interaction.acknowledgeEphemeral()
+            event.interaction.deferEphemeralMessage()
         }
 
         val context = EphemeralSlashCommandContext(event, this, response)

@@ -288,7 +288,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
     return when {
-        event is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.member
+        event is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.user
 
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member

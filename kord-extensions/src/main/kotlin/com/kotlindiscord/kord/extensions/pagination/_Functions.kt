@@ -7,12 +7,13 @@
 package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.PublicInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import java.util.*
 
 /** Create a paginator that edits the original interaction. **/
-public suspend inline fun PublicInteractionResponseBehavior.editingPaginator(
+public suspend inline fun PublicMessageInteractionResponseBehavior.editingPaginator(
     locale: Locale? = null,
     defaultGroup: String = "",
     builder: (PaginatorBuilder).() -> Unit
@@ -41,7 +42,7 @@ public suspend inline fun PublicInteractionResponseBehavior.respondingPaginator(
  * Create a paginator that edits the original interaction. This is the only option for an ephemeral interaction, as
  * it's impossible to edit an ephemeral follow-up.
  */
-public suspend inline fun EphemeralInteractionResponseBehavior.editingPaginator(
+public suspend inline fun EphemeralMessageInteractionResponseBehavior.editingPaginator(
     locale: Locale? = null,
     defaultGroup: String = "",
     builder: (PaginatorBuilder).() -> Unit

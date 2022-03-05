@@ -66,9 +66,9 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
         } else {
             if (!deferredAck) {
-                event.interaction.acknowledgePublic()
+                event.interaction.deferPublicMessage()
             } else {
-                event.interaction.acknowledgePublicDeferredMessageUpdate()
+                event.interaction.deferPublicMessageUpdate()
             }
         }
 
