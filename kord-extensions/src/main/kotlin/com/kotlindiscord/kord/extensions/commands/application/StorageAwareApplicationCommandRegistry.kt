@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.commands.application.message.MessageCom
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.registry.RegistryStorage
+import com.kotlindiscord.kord.extensions.utils.command
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent

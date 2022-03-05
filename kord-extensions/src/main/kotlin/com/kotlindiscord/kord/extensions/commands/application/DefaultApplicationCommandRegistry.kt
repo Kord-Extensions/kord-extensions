@@ -16,6 +16,7 @@ package com.kotlindiscord.kord.extensions.commands.application
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
+import com.kotlindiscord.kord.extensions.utils.command
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.createApplicationCommands
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent

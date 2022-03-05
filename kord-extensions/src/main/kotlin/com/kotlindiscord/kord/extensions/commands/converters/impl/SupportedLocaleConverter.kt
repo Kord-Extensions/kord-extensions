@@ -29,6 +29,7 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import java.util.*
@@ -67,7 +68,7 @@ public class SupportedLocaleConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+        val optionValue = (option as? StringOptionValue)?.value ?: return false
 
         this.parsed = SupportedLocales.ALL_LOCALES[optionValue.lowercase().trim()] ?: throw DiscordRelayedException(
             context.translate("converters.supportedLocale.error.unknown", replacements = arrayOf(optionValue))

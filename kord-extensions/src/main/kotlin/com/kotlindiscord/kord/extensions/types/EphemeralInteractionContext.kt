@@ -9,13 +9,13 @@ package com.kotlindiscord.kord.extensions.types
 import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.edit
-import dev.kord.core.behavior.interaction.followUp
-import dev.kord.core.behavior.interaction.followUpEphemeral
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.edit
+import dev.kord.core.behavior.interaction.response.followUp
+import dev.kord.core.behavior.interaction.response.followUpEphemeral
 import dev.kord.core.entity.Message
-import dev.kord.core.entity.interaction.EphemeralFollowupMessage
-import dev.kord.core.entity.interaction.PublicFollowupMessage
+import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
+import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import java.util.*
@@ -23,7 +23,7 @@ import java.util.*
 /** Interface representing an ephemeral-only interaction action context. **/
 public interface EphemeralInteractionContext {
     /** Response created by acknowledging the interaction ephemerally. **/
-    public val interactionResponse: EphemeralInteractionResponseBehavior
+    public val interactionResponse: EphemeralMessageInteractionResponseBehavior
 }
 
 /**

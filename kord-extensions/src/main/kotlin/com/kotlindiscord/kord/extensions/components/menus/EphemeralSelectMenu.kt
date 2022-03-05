@@ -65,9 +65,9 @@ public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<Ephemeral
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
         } else {
             if (!deferredAck) {
-                event.interaction.acknowledgeEphemeral()
+                event.interaction.deferEphemeralMessage()
             } else {
-                event.interaction.acknowledgeEphemeralDeferredMessageUpdate()
+                event.interaction.deferEphemeralMessageUpdate()
             }
         }
 
