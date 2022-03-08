@@ -10,8 +10,6 @@ import dev.kord.core.behavior.interaction.suggestInt
 import dev.kord.core.behavior.interaction.suggestNumber
 import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
-import dev.kord.core.entity.interaction.ChatInputCommandInteraction
-import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 
@@ -43,18 +41,6 @@ public open class FilterStrategy(public val test: (provided: String, candidate: 
 /** Retrieve the option that's currently focused in the client. **/
 public val AutoCompleteInteractionCreateEvent.focusedOption: OptionValue<*>
     get() = this.interaction.command.options.values.first { it.focused }
-
-/** Retrieve the option that's currently focused in the client. **/
-public val AutoCompleteInteraction.focusedOption: OptionValue<*>
-    get() = this.command.options.values.first { it.focused }
-
-/**
- * An [InteractionCommand] that contains the values the user filled so far.
- *
- * This might not contain all [options][InteractionCommand.options] and
- * [resolvedObjects][InteractionCommand.resolvedObjects], they will be available in a [ChatInputCommandInteraction].
- */
-public val AutoCompleteInteraction.command: InteractionCommand get() = InteractionCommand(data.data, kord)
 
 /** Use a map to populate an autocomplete interaction, filtering by comparing the input with the start of the keys. **/
 public suspend inline fun AutoCompleteInteraction.suggestStringMap(

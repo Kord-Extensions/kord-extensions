@@ -12,7 +12,7 @@ import dev.kord.common.entity.Permission
 import java.util.*
 
 /** Given a [Permission], return a string representing its translation key. **/
-public fun Permission.toTranslationKey(): String = when (this) {
+public fun Permission.toTranslationKey(): String? = when (this) {
     Permission.AddReactions -> "permission.addReactions"
     Permission.Administrator -> "permission.administrator"
     Permission.All -> "permission.all"
@@ -25,7 +25,7 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.EmbedLinks -> "permission.embedLinks"
     Permission.KickMembers -> "permission.kickMembers"
     Permission.ManageChannels -> "permission.manageChannels"
-    Permission.ManageEmojis -> "permission.manageEmojis"
+    Permission.ManageEmojisAndStickers -> "permission.manageEmojisAndStickers"
     Permission.ManageEvents -> "permission.manageEvents"
     Permission.ManageGuild -> "permission.manageGuild"
     Permission.ManageMessages -> "permission.manageMessages"
@@ -45,7 +45,7 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.Stream -> "permission.stream"
     Permission.ModerateMembers -> "permission.timeoutMembers"
     Permission.UseExternalEmojis -> "permission.useExternalEmojis"
-    Permission.UseSlashCommands -> "permission.useSlashCommands"
+    Permission.UseApplicationCommands -> "permission.useApplicationCommands"
     Permission.UseVAD -> "permission.useVAD"
     Permission.ViewAuditLog -> "permission.viewAuditLog"
     Permission.ViewChannel -> "permission.viewChannel"
@@ -54,6 +54,11 @@ public fun Permission.toTranslationKey(): String = when (this) {
     Permission.CreatePublicThreads -> "permission.createPublicThreads"
     Permission.CreatePrivateThreads -> "permission.createPrivateThreads"
     Permission.SendMessagesInThreads -> "permission.sendMessagesInThreads"
+
+    Permission.UseExternalStickers -> "permission.useExternalStickers"
+    Permission.UseEmbeddedActivities -> "permission.useEmbeddedActivities"
+
+    is Permission.Unknown -> null
 }
 
 /** Because "Stream" is a confusing name, people may look for "Video" instead. **/
@@ -65,9 +70,27 @@ public val Permission.TimeoutMembers: Permission.ModerateMembers
     inline get() = Permission.ModerateMembers
 
 /** Given a [CommandContext], translate the [Permission] to a human-readable string based on the context's locale. **/
-public suspend fun Permission.translate(context: CommandContext): String =
-    context.translate(toTranslationKey())
+public suspend fun Permission.translate(context: CommandContext): String {
+    val key = toTranslationKey()
+
+    return if (key == null) {
+        context.translate("permission.unknown", replacements = arrayOf(code.value))
+    } else {
+        context.translate(key)
+    }
+}
 
 /** Given a locale, translate the [Permission] to a human-readable string. **/
-public fun Permission.translate(locale: Locale): String =
-    getKoin().get<TranslationsProvider>().translate(toTranslationKey(), locale)
+public fun Permission.translate(locale: Locale): String {
+    val key = toTranslationKey()
+
+    return if (key == null) {
+        getKoin().get<TranslationsProvider>().translate(
+            "permission.unknown",
+            locale,
+            replacements = arrayOf(code.value)
+        )
+    } else {
+        getKoin().get<TranslationsProvider>().translate(key, locale)
+    }
+}

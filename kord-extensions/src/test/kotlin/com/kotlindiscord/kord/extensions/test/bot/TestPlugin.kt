@@ -16,6 +16,6 @@ import org.pf4j.PluginWrapper
 )
 class TestPlugin(wrapper: PluginWrapper) : KordExPlugin(wrapper) {
     override suspend fun setup() {
-        extension(::TestExtension)
+//        extension(::TestExtension)
     }
 }

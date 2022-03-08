@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
+@file:OptIn(KordPreview::class, PrivilegedIntent::class)
 
 package com.kotlindiscord.kord.extensions.builders
 
@@ -45,7 +45,9 @@ import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
+import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
+import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
 import dev.kord.gateway.builder.Shards
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
@@ -108,6 +110,10 @@ public open class ExtensibleBotBuilder {
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = {
         +Intents.nonPrivileged
+
+        if (chatCommandsBuilder.enabled) {
+            +Intent.MessageContent
+        }
 
         getKoin().get<ExtensibleBot>().extensions.values.forEach { extension ->
             extension.intents.forEach {
@@ -266,6 +272,10 @@ public open class ExtensibleBotBuilder {
         this.intentsBuilder = {
             if (addDefaultIntents) {
                 +Intents.nonPrivileged
+
+                if (chatCommandsBuilder.enabled) {
+                    +Intent.MessageContent
+                }
             }
 
             if (addExtensionIntents) {

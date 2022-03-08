@@ -8,7 +8,7 @@ package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.response.PublicInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import java.util.*
 
@@ -26,7 +26,7 @@ public suspend inline fun PublicMessageInteractionResponseBehavior.editingPagina
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
-public suspend inline fun PublicInteractionResponseBehavior.respondingPaginator(
+public suspend inline fun FollowupPermittingInteractionResponseBehavior.respondingPaginator(
     locale: Locale? = null,
     defaultGroup: String = "",
     builder: (PaginatorBuilder).() -> Unit

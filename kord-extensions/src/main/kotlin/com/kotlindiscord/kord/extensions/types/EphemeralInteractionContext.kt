@@ -9,13 +9,10 @@ package com.kotlindiscord.kord.extensions.types
 import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
-import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.response.edit
-import dev.kord.core.behavior.interaction.response.followUp
-import dev.kord.core.behavior.interaction.response.followUpEphemeral
-import dev.kord.core.entity.Message
+import dev.kord.core.behavior.interaction.response.*
 import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
+import dev.kord.core.entity.interaction.response.EphemeralMessageInteractionResponse
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import java.util.*
@@ -33,19 +30,19 @@ public interface EphemeralInteractionContext {
  */
 public suspend inline fun EphemeralInteractionContext.respond(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): EphemeralFollowupMessage = interactionResponse.followUpEphemeral(builder)
+): EphemeralFollowupMessage = interactionResponse.createEphemeralFollowup { builder() }
 
 /** Respond to the current interaction with a public followup. **/
 public suspend inline fun EphemeralInteractionContext.respondPublic(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): PublicFollowupMessage = interactionResponse.followUp(builder)
+): PublicFollowupMessage = interactionResponse.createPublicFollowup { builder() }
 
 /**
  * Edit the current interaction's response.
  */
 public suspend inline fun EphemeralInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-): Message = interactionResponse.edit(builder)
+): EphemeralMessageInteractionResponse = interactionResponse.edit(builder)
 
 /**
  * Create a paginator that edits the original interaction. This is the only option for an ephemeral interaction, as

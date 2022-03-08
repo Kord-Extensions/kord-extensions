@@ -10,12 +10,12 @@ import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.createEphemeralFollowup
+import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.behavior.interaction.response.edit
-import dev.kord.core.behavior.interaction.response.followUp
-import dev.kord.core.behavior.interaction.response.followUpEphemeral
-import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
+import dev.kord.core.entity.interaction.response.PublicMessageInteractionResponse
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import java.util.*
@@ -29,19 +29,19 @@ public interface PublicInteractionContext {
 /** Respond to the current interaction with a public followup. **/
 public suspend inline fun PublicInteractionContext.respond(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): PublicFollowupMessage = interactionResponse.followUp(builder)
+): PublicFollowupMessage = interactionResponse.createPublicFollowup { builder() }
 
 /** Respond to the current interaction with an ephemeral followup. **/
 public suspend inline fun PublicInteractionContext.respondEphemeral(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): EphemeralFollowupMessage = interactionResponse.followUpEphemeral(builder)
+): EphemeralFollowupMessage = interactionResponse.createEphemeralFollowup { builder() }
 
 /**
  * Edit the current interaction's response.
  */
 public suspend inline fun PublicInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-): Message = interactionResponse.edit(builder)
+): PublicMessageInteractionResponse = interactionResponse.edit(builder)
 
 /** Create a paginator that edits the original interaction. **/
 public suspend inline fun PublicInteractionContext.editingPaginator(

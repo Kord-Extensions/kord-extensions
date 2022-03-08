@@ -10,11 +10,11 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.entity.User
 import dev.kord.core.event.Event
-import dev.kord.core.firstOrNull
 import dev.kord.core.live.LiveKordEntity
 import dev.kord.core.supplier.EntitySupplyStrategy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withTimeoutOrNull
 
 /** Flow containing all [User] objects in the cache. **/

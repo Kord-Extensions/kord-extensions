@@ -46,6 +46,8 @@ suspend fun main() {
         }
 
         extensions {
+            add(::TestExtension)
+
             help {
                 paginatorTimeout = 30
             }

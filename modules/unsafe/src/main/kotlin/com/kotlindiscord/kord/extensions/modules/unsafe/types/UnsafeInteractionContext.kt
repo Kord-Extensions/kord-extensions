@@ -17,9 +17,9 @@ import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.*
-import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
+import dev.kord.core.entity.interaction.response.MessageInteractionResponse
 import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
@@ -78,7 +78,7 @@ public suspend inline fun UnsafeInteractionContext.respondEphemeral(
     builder: FollowupMessageCreateBuilder.() -> Unit
 ): EphemeralFollowupMessage {
     return when (val interaction = interactionResponse) {
-        is InteractionResponseBehavior -> interaction.followUpEphemeral(builder)
+        is InteractionResponseBehavior -> interaction.createEphemeralFollowup { builder() }
 
         null -> error("Acknowledge the interaction before trying to follow-up.")
         else -> error("Unsupported initial interaction response type $interaction - please report this.")
@@ -91,7 +91,9 @@ public suspend inline fun UnsafeInteractionContext.respondPublic(
     builder: FollowupMessageCreateBuilder.() -> Unit
 ): PublicFollowupMessage {
     return when (val interaction = interactionResponse) {
-        is InteractionResponseBehavior -> interaction.followUp { builder() }
+        is InteractionResponseBehavior -> interaction.createPublicFollowup {
+            builder()
+        }
 
         null -> error("Acknowledge the interaction before trying to follow-up.")
         else -> error("Unsupported initial interaction response type $interaction - please report this.")
@@ -105,7 +107,7 @@ public suspend inline fun UnsafeInteractionContext.respondPublic(
 @UnsafeAPI
 public suspend inline fun UnsafeInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-): Message {
+): MessageInteractionResponse {
     return when (val interaction = interactionResponse) {
         is InteractionResponseBehavior -> interaction.edit(builder)
 

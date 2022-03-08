@@ -16,8 +16,8 @@ import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.TopGuildChannel
 import dev.kord.core.entity.channel.TopGuildMessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
-import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
+import kotlinx.coroutines.flow.firstOrNull
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
