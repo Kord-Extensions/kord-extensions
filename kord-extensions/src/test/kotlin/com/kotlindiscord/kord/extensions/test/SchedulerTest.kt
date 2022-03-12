@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
+import kotlin.time.Duration.Companion.seconds
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SchedulerTest {
@@ -91,5 +92,22 @@ class SchedulerTest {
         }
 
         assertEquals(count, 1) { "Task executed $count times instead of once" }
+    }
+
+    @Test
+    @Execution(ExecutionMode.CONCURRENT)
+    fun `Tasks marked as repeatable run multiple times`() = runBlocking {
+        val scheduler = Scheduler()
+        var count = 0
+
+        val task = scheduler.schedule(1.seconds, repeat = true) {
+            count += 1
+        }
+
+        delay(10.seconds)
+
+        task.cancel()
+
+        assert(count > 1) { "Task did not run multiple times" }
     }
 }
