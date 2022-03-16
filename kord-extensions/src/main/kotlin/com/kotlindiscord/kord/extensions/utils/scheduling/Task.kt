@@ -126,22 +126,22 @@ public open class Task(
         } catch (t: Throwable) {
             logger.error(t) { "Error running scheduled callback." }
         }
-
-        if (!repeat) {
-            removeFromParent()
-        }
     }
 
     /** Stop waiting and don't execute. **/
     public fun cancel() {
         job?.cancel()
         job = null
+
+        removeFromParent()
     }
 
     /** Like [cancel], but blocks .. **/
     public suspend fun cancelAndJoin() {
         job?.cancelAndJoin()
         job = null
+
+        removeFromParent()
     }
 
     /** If the task is running, cancel it and restart it. **/
