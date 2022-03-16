@@ -126,6 +126,10 @@ public open class Task(
         } catch (t: Throwable) {
             logger.error(t) { "Error running scheduled callback." }
         }
+
+        if (!repeat) {
+            removeFromParent()
+        }
     }
 
     /** Stop waiting and don't execute. **/
