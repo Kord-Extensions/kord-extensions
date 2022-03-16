@@ -108,15 +108,9 @@ public open class Task(
 
             if (!repeat) {
                 removeFromParent()
-            }
 
-            job = null
-
-            if (repeat) {
-                sentryContext.breadcrumb(BreadcrumbType.Info) {
-                    message = "Task finished, rescheduling"
-                }
-
+                job = null
+            } else {
                 start()
             }
         }
@@ -132,30 +126,18 @@ public open class Task(
         } catch (t: Throwable) {
             logger.error(t) { "Error running scheduled callback." }
         }
-
-        if (!repeat) {
-            removeFromParent()
-        }
     }
 
     /** Stop waiting and don't execute. **/
     public fun cancel() {
         job?.cancel()
         job = null
-
-        if (!repeat) {
-            removeFromParent()
-        }
     }
 
     /** Like [cancel], but blocks .. **/
     public suspend fun cancelAndJoin() {
         job?.cancelAndJoin()
         job = null
-
-        if (!repeat) {
-            removeFromParent()
-        }
     }
 
     /** If the task is running, cancel it and restart it. **/
