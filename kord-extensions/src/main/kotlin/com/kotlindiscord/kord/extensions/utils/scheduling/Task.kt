@@ -35,6 +35,7 @@ import kotlin.time.TimeSource
  * @param coroutineScope Coroutine scope to launch in - Kord's by default.
  * @param parent Parent [Scheduler] object, if any.
  * @param name Optional task name, "Unnamed" by default.
+ * @param repeat Whether the task should repeat after completion. `false` by default.
  */
 public open class Task(
     public open val duration: Duration,
@@ -44,6 +45,7 @@ public open class Task(
     public open val parent: Scheduler? = null,
 
     public val name: String = "Unnamed",
+    public val repeat: Boolean = false
 ) : KoinComponent {
     protected val logger: KLogger = KotlinLogging.logger("Task: $name")
     protected var job: Job? = null
@@ -104,9 +106,13 @@ public open class Task(
                 }
             }
 
-            removeFromParent()
+            if (!repeat) {
+                removeFromParent()
 
-            job = null
+                job = null
+            } else {
+                start()
+            }
         }
     }
 
@@ -120,8 +126,6 @@ public open class Task(
         } catch (t: Throwable) {
             logger.error(t) { "Error running scheduled callback." }
         }
-
-        removeFromParent()
     }
 
     /** Stop waiting and don't execute. **/
@@ -157,7 +161,9 @@ public open class Task(
     }
 
     /** Join the running [job], if any. **/
-    public suspend fun join(): Unit? = job?.join()
+    public suspend fun join() {
+        job?.join()
+    }
 
     protected fun removeFromParent(): Boolean? = parent?.removeTask(this@Task)
 }
