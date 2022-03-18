@@ -47,8 +47,8 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public open val parentCommand: SlashCommand<*, *>? = null,
     public open val parentGroup: SlashGroup? = null
 ) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
-    /** @suppress **/
-    public val logger: KLogger = KotlinLogging.logger {}
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val kxLogger: KLogger = KotlinLogging.logger {}
 
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
@@ -281,10 +281,10 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
 
     /** A general way to handle errors thrown during the course of a command's execution. **/
     public open suspend fun handleError(context: C, t: Throwable, commandObj: SlashCommand<*, *>) {
-        logger.error(t) { "Error during execution of ${commandObj.name} slash command (${context.event})" }
+        kxLogger.error(t) { "Error during execution of ${commandObj.name} slash command (${context.event})" }
 
         if (sentry.enabled) {
-            logger.trace { "Submitting error to sentry." }
+            kxLogger.trace { "Submitting error to sentry." }
 
             val channel = context.channel
             val author = context.user.asUserOrNull()
@@ -304,7 +304,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 tag("extension", commandObj.extension.name)
             }
 
-            logger.info { "Error submitted to Sentry: $sentryId" }
+            kxLogger.info { "Error submitted to Sentry: $sentryId" }
 
             val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
                 context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
