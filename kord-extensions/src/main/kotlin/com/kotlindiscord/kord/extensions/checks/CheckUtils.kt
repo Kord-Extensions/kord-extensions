@@ -251,9 +251,6 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is NewsChannelUpdateEvent -> event.channel.guild
         is ReactionAddEvent -> event.guild
         is ReactionRemoveEvent -> event.guild
-        is StoreChannelCreateEvent -> event.channel.guild
-        is StoreChannelDeleteEvent -> event.channel.guild
-        is StoreChannelUpdateEvent -> event.channel.guild
         is TextChannelCreateEvent -> event.channel.guild
         is TextChannelDeleteEvent -> event.channel.guild
         is TextChannelUpdateEvent -> event.channel.guild

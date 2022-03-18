@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.components.buttons
 
@@ -13,6 +14,7 @@ import com.kotlindiscord.kord.extensions.components.callbacks.PublicButtonCallba
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
@@ -82,7 +84,7 @@ public open class PublicInteractionButton(
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
         } else {
             if (!deferredAck) {
-                event.interaction.deferPublicMessage()
+                event.interaction.deferPublicResponseUnsafe()
             } else {
                 event.interaction.deferPublicMessageUpdate()
             }

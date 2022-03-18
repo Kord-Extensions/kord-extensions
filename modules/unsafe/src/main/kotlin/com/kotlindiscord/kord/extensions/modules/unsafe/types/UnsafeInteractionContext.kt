@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("StringLiteralDuplication")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.types
 
@@ -14,6 +15,7 @@ import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.*
@@ -46,7 +48,7 @@ public suspend fun UnsafeInteractionContext.ackEphemeral(
     }
 
     interactionResponse = if (builder == null) {
-        event.interaction.deferEphemeralMessage()
+        event.interaction.deferEphemeralResponseUnsafe()
     } else {
         event.interaction.respondEphemeral { builder() }
     }
@@ -64,7 +66,7 @@ public suspend fun UnsafeInteractionContext.ackPublic(
     }
 
     interactionResponse = if (builder == null) {
-        event.interaction.deferPublicMessage()
+        event.interaction.deferPublicResponseUnsafe()
     } else {
         event.interaction.respondPublic { builder() }
     }

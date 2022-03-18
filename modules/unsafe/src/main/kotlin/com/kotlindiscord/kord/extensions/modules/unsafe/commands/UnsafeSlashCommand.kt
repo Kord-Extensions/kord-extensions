@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
@@ -20,6 +21,7 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialSlashComman
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
@@ -68,8 +70,8 @@ public class UnsafeSlashCommand<A : Arguments>(
         }
 
         val response = when (val r = initialResponse) {
-            is InitialSlashCommandResponse.EphemeralAck -> event.interaction.deferEphemeralMessage()
-            is InitialSlashCommandResponse.PublicAck -> event.interaction.deferPublicMessage()
+            is InitialSlashCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
+            is InitialSlashCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
 
             is InitialSlashCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
                 r.builder!!(event)
