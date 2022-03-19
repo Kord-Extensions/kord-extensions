@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.commands.converters.builders
 import com.kotlindiscord.kord.extensions.InvalidArgumentException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.converters.AutoCompleteCallback
 import com.kotlindiscord.kord.extensions.commands.converters.Converter
 import com.kotlindiscord.kord.extensions.commands.converters.Mutator
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
@@ -27,7 +28,13 @@ public abstract class ConverterBuilder<T> {
     /** Validator, used for argument validation. **/
     protected open var validator: Validator<T> = null
 
-    // public abstract suspend fun autoComplete()
+    /** Auto-complete callback. **/
+    public open var autoCompleteCallback: AutoCompleteCallback = null
+
+    /** Register the autocomplete callback for this converter. **/
+    public open fun autoComplete(body: AutoCompleteCallback) {
+        autoCompleteCallback = body
+    }
 
     /** Register the mutator for this converter, allowing you to modify the final value. **/
     public open fun mutate(body: Mutator<T>) {
@@ -50,6 +57,13 @@ public abstract class ConverterBuilder<T> {
 
         if (!this::description.isInitialized) {
             throw InvalidArgumentException(this, "Required field not provided: description")
+        }
+
+        if (this is ChoiceConverterBuilder<*> && this.choices.isNotEmpty() && this.autoCompleteCallback != null) {
+            throw InvalidArgumentException(
+                this,
+                "One of either a map of choices or an autocomplete callback may be provided, but both are present"
+            )
         }
     }
 

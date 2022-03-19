@@ -19,8 +19,11 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.MappingsContainer
 import me.shedaniel.linkie.Namespace
 
@@ -49,39 +52,34 @@ class MappingsVersionConverter(
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
-
-        val namespace = namespaceGetter.invoke()
-
-        if (arg in namespace.getAllVersions()) {
-            val version = namespace.getProvider(arg).getOrNull()
-
-            if (version != null) {
-                this.parsed = version
-
-                return true
-            }
-        }
-
-        throw DiscordRelayedException("Invalid ${namespace.id} version: `$arg`")
+        return parse(arg)
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
-        val namespace = namespaceGetter.invoke()
+        val optionValue = (option as? StringOptionValue)?.value ?: return false
+        return parse(optionValue)
+    }
 
-        if (optionValue in namespace.getAllVersions()) {
-            val version = namespace.getProvider(optionValue).getOrNull()
+    private suspend fun parse(string: String): Boolean {
+        newSingleThreadContext("version-parser").use { context ->
+            return withContext(context) {
+                val namespace = namespaceGetter.invoke()
 
-            if (version != null) {
-                this.parsed = version
+                if (string in namespace.getAllVersions()) {
+                    val version = namespace.getProvider(string).getOrNull()
 
-                return true
+                    if (version != null) {
+                        this@MappingsVersionConverter.parsed = version
+
+                        return@withContext true
+                    }
+                }
+
+                throw DiscordRelayedException("Invalid ${namespace.id} version: `$string`")
             }
         }
-
-        throw DiscordRelayedException("Invalid ${namespace.id} version: `$optionValue`")
     }
 }

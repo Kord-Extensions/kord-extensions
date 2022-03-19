@@ -1,1 +1,2 @@
 com.kotlindiscord.kord.extensions.modules.annotations.ConverterProcessorProvider
+com.kotlindiscord.kord.extensions.modules.annotations.PluginProcessorProvider

@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
@@ -15,10 +16,9 @@ import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.entity.interaction.GroupCommand
-import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
@@ -42,29 +42,7 @@ public class PublicSlashCommand<A : Arguments>(
     }
 
     override suspend fun call(event: ChatInputCommandInteractionCreateEvent) {
-        val eventCommand = event.interaction.command
-
-        val commandObj: SlashCommand<*, *> = when (eventCommand) {
-            is SubCommand -> {
-                val firstSubCommandKey = eventCommand.name
-
-                this.subCommands.firstOrNull { it.name == firstSubCommandKey }
-                    ?: error("Unknown subcommand: $firstSubCommandKey")
-            }
-
-            is GroupCommand -> {
-                val firstEventGroupKey = eventCommand.groupName
-                val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
-                val firstSubCommandKey = eventCommand.name
-
-                group.subCommands.firstOrNull { it.name == firstSubCommandKey }
-                    ?: error("Unknown subcommand: $firstSubCommandKey")
-            }
-
-            else -> this
-        }
-
-        commandObj.run(event)
+        findCommand(event).run(event)
     }
 
     override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
@@ -95,7 +73,7 @@ public class PublicSlashCommand<A : Arguments>(
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
         } else {
-            event.interaction.acknowledgePublic()
+            event.interaction.deferPublicResponseUnsafe()
         }
 
         val context = PublicSlashCommandContext(event, this, response)

@@ -17,7 +17,7 @@ import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.interaction.GuildApplicationCommandInteraction
-import dev.kord.core.event.interaction.ApplicationInteractionCreateEvent
+import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
 import org.koin.core.component.inject
 
 /**
@@ -27,7 +27,7 @@ import org.koin.core.component.inject
  * @param genericCommand Generic command object that this context belongs to.
  */
 public abstract class ApplicationCommandContext(
-    public val genericEvent: ApplicationInteractionCreateEvent,
+    public val genericEvent: ApplicationCommandInteractionCreateEvent,
     public val genericCommand: ApplicationCommand<*>
 ) : CommandContext(genericCommand, genericEvent, genericCommand.name) {
     /** Current bot setting object. **/
@@ -65,7 +65,7 @@ public abstract class ApplicationCommandContext(
 
     /** Extract member information from event data, if that context is available. **/
     public override suspend fun getMember(): MemberBehavior? =
-        (genericEvent.interaction as? GuildApplicationCommandInteraction)?.member
+        (genericEvent.interaction as? GuildApplicationCommandInteraction)?.user
 
     /** Extract user information from event data, if that context is available. **/
     public override suspend fun getUser(): UserBehavior =

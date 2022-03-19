@@ -97,9 +97,9 @@ public fun <T : Arguments> SlashCommand<*, *>.ephemeralSubCommand(
         commandObj.validate()
         subCommands.add(commandObj)
     } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
+        kxLogger.error(e) { "Failed to register subcommand - $e" }
     } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
+        kxLogger.error(e) { "Failed to register subcommand - $e" }
     }
 
     return commandObj
@@ -115,7 +115,7 @@ public fun <T : Arguments> SlashCommand<*, *>.ephemeralSubCommand(
 public suspend fun SlashCommand<*, *>.ephemeralSubCommand(
     body: suspend EphemeralSlashCommand<Arguments>.() -> Unit
 ): EphemeralSlashCommand<Arguments> {
-    val commandObj = EphemeralSlashCommand<Arguments>(extension, null, parentCommand, parentGroup)
+    val commandObj = EphemeralSlashCommand<Arguments>(extension, null, this, parentGroup)
     body(commandObj)
 
     return ephemeralSubCommand(commandObj)
@@ -166,9 +166,9 @@ public fun <T : Arguments> SlashCommand<*, *>.publicSubCommand(
         commandObj.validate()
         subCommands.add(commandObj)
     } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
+        kxLogger.error(e) { "Failed to register subcommand - $e" }
     } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
+        kxLogger.error(e) { "Failed to register subcommand - $e" }
     }
 
     return commandObj
@@ -184,7 +184,7 @@ public fun <T : Arguments> SlashCommand<*, *>.publicSubCommand(
 public suspend fun SlashCommand<*, *>.publicSubCommand(
     body: suspend PublicSlashCommand<Arguments>.() -> Unit
 ): PublicSlashCommand<Arguments> {
-    val commandObj = PublicSlashCommand<Arguments>(extension, null, parentCommand, parentGroup)
+    val commandObj = PublicSlashCommand<Arguments>(extension, null, this, parentGroup)
     body(commandObj)
 
     return publicSubCommand(commandObj)

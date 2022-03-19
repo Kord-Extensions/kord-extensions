@@ -32,6 +32,7 @@ import dev.kord.core.behavior.createChatInputCommand
 import dev.kord.core.behavior.createMessageCommand
 import dev.kord.core.behavior.createUserCommand
 import dev.kord.core.entity.Guild
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -133,6 +134,9 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
     /** Event handler for user commands. **/
     public abstract suspend fun handle(event: UserCommandInteractionCreateEvent)
+
+    /** Event handler for autocomplete interactions. **/
+    public abstract suspend fun handle(event: AutoCompleteInteractionCreateEvent)
 
     /** Unregister a slash command. **/
     public abstract suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>?
@@ -415,6 +419,12 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                         .translate(option.name, locale, converter.bundle)
                         .lowercase()
 
+                    if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+                        option.choices?.clear()
+                    }
+
+                    option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+
                     this.options!! += option
                 }
             }
@@ -432,6 +442,12 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                     option.name = translationsProvider
                         .translate(option.name, locale, converter.bundle)
                         .lowercase()
+
+                    if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+                        option.choices?.clear()
+                    }
+
+                    option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
 
                     option
                 }
@@ -464,7 +480,16 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                                 .translate(option.name, locale, converter.bundle)
                                 .lowercase()
 
-                            converter.toSlashOption(arg)
+                            if (
+                                option is BaseChoiceBuilder<*> &&
+                                arg.converter.genericBuilder.autoCompleteCallback != null
+                            ) {
+                                option.choices?.clear()
+                            }
+
+                            option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+
+                            option
                         }
 
                         this.subCommand(

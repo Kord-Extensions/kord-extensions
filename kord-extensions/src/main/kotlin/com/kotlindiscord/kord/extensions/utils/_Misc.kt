@@ -10,6 +10,8 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 
 /**
@@ -33,3 +35,9 @@ public fun EmbedBuilder.Footer.textOrNull(): String? =
     } catch (e: UninitializedPropertyAccessException) {
         null
     }
+
+/**
+ * Returns `true` if any element in the `Flow` matches the given predicate. Consumes the `Flow`.
+ */
+public suspend inline fun <T : Any> Flow<T>.any(crossinline predicate: suspend (T) -> Boolean): Boolean =
+    firstOrNull { predicate(it) } != null

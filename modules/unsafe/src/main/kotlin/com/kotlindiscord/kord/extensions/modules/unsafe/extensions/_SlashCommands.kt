@@ -61,9 +61,9 @@ public fun <T : Arguments> SlashCommand<*, *>.unsafeSubCommand(
         commandObj.validate()
         subCommands.add(commandObj)
     } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
+        kxLogger.error(e) { "Failed to register subcommand - $e" }
     } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
+        kxLogger.error(e) { "Failed to register subcommand - $e" }
     }
 
     return commandObj

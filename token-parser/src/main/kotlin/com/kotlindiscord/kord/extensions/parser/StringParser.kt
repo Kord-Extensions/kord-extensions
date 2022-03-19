@@ -51,8 +51,8 @@ public open class StringParser(public open val input: String) {
     public fun parseNamed(): List<NamedArgumentToken> {
         val tokens: MutableList<NamedArgumentToken> = mutableListOf()
 
-        var buffer = ""
-        var outputBuffer = ""
+        val buffer = StringBuilder()
+        val outputBuffer = StringBuilder()
 
         var isQuoted = false
 
@@ -93,8 +93,8 @@ public open class StringParser(public open val input: String) {
                 // Keyword pair, key=value
                 logger.trace { "  Marking as keyword pair." }
 
-                keywordName = buffer
-                buffer = ""
+                keywordName = buffer.toString()
+                buffer.clear()
 
                 isKeyword = true
                 continue
@@ -104,7 +104,7 @@ public open class StringParser(public open val input: String) {
                 // Escaped quote, only handle if it's in a quoted argument though
                 logger.trace { "  Escaped quote." }
 
-                buffer += '"'
+                buffer.append('"')
                 cursor.next()
                 continue
             }
@@ -118,7 +118,7 @@ public open class StringParser(public open val input: String) {
                     logger.trace { "    Flag value detected." }
                     logger.trace { "" }
 
-                    tokens.add(NamedArgumentToken(flagName, buffer))
+                    tokens.add(NamedArgumentToken(flagName, buffer.toString()))
 
                     flagName = ""
 
@@ -129,7 +129,7 @@ public open class StringParser(public open val input: String) {
                     logger.trace { "    Keyword value detected." }
                     logger.trace { "" }
 
-                    tokens.add(NamedArgumentToken(keywordName, buffer))
+                    tokens.add(NamedArgumentToken(keywordName, buffer.toString()))
 
                     keywordName = ""
 
@@ -139,11 +139,11 @@ public open class StringParser(public open val input: String) {
                     logger.trace { "    Token end detected." }
                     logger.trace { "" }
 
-                    outputBuffer += "\"$buffer\""
+                    outputBuffer.append("\"$buffer\"")
                     cursor.skipWhitespace()
                 }
 
-                buffer = ""
+                buffer.clear()
                 isQuoted = false
 
                 continue
@@ -160,13 +160,13 @@ public open class StringParser(public open val input: String) {
                         logger.trace { "    Flag name detected." }
                         logger.trace { "" }
 
-                        flagName = buffer
+                        flagName = buffer.toString()
                         isFlagValue = true
                     } else {
                         logger.trace { "    Flag value detected." }
                         logger.trace { "" }
 
-                        tokens.add(NamedArgumentToken(flagName, buffer))
+                        tokens.add(NamedArgumentToken(flagName, buffer.toString()))
                         cursor.skipWhitespace()
 
                         flagName = ""
@@ -179,7 +179,7 @@ public open class StringParser(public open val input: String) {
                     logger.trace { "    Keyword value detected." }
                     logger.trace { "" }
 
-                    tokens.add(NamedArgumentToken(keywordName, buffer))
+                    tokens.add(NamedArgumentToken(keywordName, buffer.toString()))
                     cursor.skipWhitespace()
 
                     keywordName = ""
@@ -190,15 +190,15 @@ public open class StringParser(public open val input: String) {
                     logger.trace { "    Token end detected." }
                     logger.trace { "" }
 
-                    outputBuffer += "$buffer "
+                    outputBuffer.append("$buffer ")
 //                    cursor.skipWhitespace()
                 }
 
-                buffer = ""
+                buffer.clear()
                 continue
             }
 
-            buffer += char
+            buffer.append(char)
             logger.trace { "  Adding: \"$buffer\" + '$char'" }
         }
 
@@ -214,22 +214,22 @@ public open class StringParser(public open val input: String) {
                 } else {
                     logger.trace { "  Flag value detected." }
 
-                    tokens.add(NamedArgumentToken(flagName, buffer))
+                    tokens.add(NamedArgumentToken(flagName, buffer.toString()))
                 }
             } else if (isKeyword) {
                 // This is a keyword value
                 logger.trace { "  Keyword value detected." }
 
-                tokens.add(NamedArgumentToken(keywordName, buffer))
+                tokens.add(NamedArgumentToken(keywordName, buffer.toString()))
             } else {
                 // Not a flag/keyword value, so we're at the end of this token
                 logger.trace { "  End of token detected." }
 
-                outputBuffer += buffer
+                outputBuffer.append(buffer.toString())
             }
         }
 
-        cursor = Cursor(outputBuffer.trim())
+        cursor = Cursor(outputBuffer.toString().trim())
 
         return tokens
     }
@@ -253,7 +253,7 @@ public open class StringParser(public open val input: String) {
      */
     public fun parseNext(): PositionalArgumentToken? {
         var token: PositionalArgumentToken? = null
-        var buffer = ""
+        var buffer = StringBuilder()
 
         var isQuoted = false
 
@@ -273,7 +273,7 @@ public open class StringParser(public open val input: String) {
                 // Escaped quote, only handle if it's in a quoted argument though
                 logger.trace { "  Escaped quote." }
 
-                buffer += '"'
+                buffer.append('"')
                 cursor.next()
                 continue
             }
@@ -284,10 +284,10 @@ public open class StringParser(public open val input: String) {
                 logger.trace { "    Token end detected." }
                 logger.trace { "" }
 
-                token = PositionalArgumentToken(buffer)
+                token = PositionalArgumentToken(buffer.toString())
                 cursor.skipWhitespace()
 
-                buffer = ""
+                buffer.clear()
 
                 break
             }
@@ -298,15 +298,15 @@ public open class StringParser(public open val input: String) {
                 logger.trace { "    Token end detected." }
                 logger.trace { "" }
 
-                token = PositionalArgumentToken(buffer)
+                token = PositionalArgumentToken(buffer.toString())
                 cursor.skipWhitespace()
 
-                buffer = ""
+                buffer.clear()
 
                 break
             }
 
-            buffer += char
+            buffer.append(char)
             logger.trace { "  Adding: \"$buffer\" + '$char'" }
         }
 
@@ -314,7 +314,7 @@ public open class StringParser(public open val input: String) {
             logger.trace { "" }
             logger.trace { "Remaining buffer treated as positional token." }
 
-            token = PositionalArgumentToken(buffer)
+            token = PositionalArgumentToken(buffer.toString())
         }
 
         return token

@@ -25,7 +25,9 @@ dependencies {
     api(libs.logging) // Basic logging setup
     api(libs.kx.ser)
     api(libs.sentry)  // Needs to be transitive or bots will start breaking
+    api(libs.pf4j)
 
+    api(project(":annotations"))
     api(project(":token-parser"))
 
     detektPlugins(libs.detekt)
@@ -33,7 +35,6 @@ dependencies {
     implementation(libs.bundles.commons)
     implementation(libs.kotlin.stdlib)
 
-    implementation(project(":annotations"))
 
     testImplementation(libs.groovy)  // For logback config
     testImplementation(libs.jansi)
@@ -42,6 +43,7 @@ dependencies {
     testImplementation(libs.logback)
 
     ksp(project(":annotation-processor"))
+    kspTest(project(":annotation-processor"))
 }
 
 val compileKotlin: KotlinCompile by tasks

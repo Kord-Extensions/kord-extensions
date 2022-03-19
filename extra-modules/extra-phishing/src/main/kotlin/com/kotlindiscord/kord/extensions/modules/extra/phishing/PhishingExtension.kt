@@ -21,8 +21,6 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
 import com.kotlindiscord.kord.extensions.utils.getJumpUrl
-import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
-import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.Message
@@ -39,6 +37,7 @@ import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.jsoup.Jsoup
+import org.jsoup.UnsupportedMimeTypeException
 import kotlin.time.ExperimentalTime
 
 /** The maximum number of redirects to attempt to follow for a URL. **/
@@ -52,17 +51,17 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     private val domainCache: MutableSet<String> = mutableSetOf()
     private val logger = KotlinLogging.logger { }
 
-    private val scheduler = Scheduler()
-    private var checkTask: Task? = null
+    private var websocket: PhishingWebsocketWrapper = api.websocket(::handleChange)
 
     private val httpClient = HttpClient {
         followRedirects = false
     }
 
     override suspend fun setup() {
-        domainCache.addAll(api.getAllDomains())
+        websocket.stop()
+        websocket.start()
 
-        checkTask = scheduler.schedule(settings.updateDelay, pollingSeconds = 30, callback = ::updateDomains)
+        domainCache.addAll(api.getAllDomains())
 
         event<MessageCreateEvent> {
             check { isNotBot() }
@@ -308,6 +307,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         return domains
     }
 
+    @Suppress("MagicNumber")  // HTTP status codes
     internal suspend fun followRedirects(url: String, count: Int = 0): String? {
         if (count >= MAX_REDIRECTS) {
             logger.warn { "Maximum redirect count reached for URL: $url" }
@@ -319,6 +319,14 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             httpClient.get(url)
         } catch (e: RedirectResponseException) {
             e.response
+        } catch (e: ClientRequestException) {
+            val status = e.response.status
+
+            if (status.value !in 200 until 499) {
+                logger.warn { "$url -> $status" }
+            }
+
+            return url
         }
 
         if (response.headers.contains("Location")) {
@@ -330,7 +338,13 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
             return followRedirects(newUrl, count + 1)
         } else {
-            val soup = Jsoup.connect(url).get()
+            val soup = try {
+                Jsoup.connect(url).get()
+            } catch (e: UnsupportedMimeTypeException) {
+                logger.debug { "$url -> Unsupported MIME type; not parsing" }
+
+                return url
+            }
 
             val element = soup.head()
                 .getElementsByAttributeValue("http-equiv", "refresh")
@@ -359,23 +373,14 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     }
 
     override suspend fun unload() {
-        checkTask?.cancel()
-        checkTask = null
+        websocket.stop()
     }
 
-    @Suppress("MagicNumber")
-    internal suspend fun updateDomains() {
-        logger.trace { "Updating domains..." }
-
-        // An extra 30 seconds for safety, doubled to make sure we didn't miss any from an outage
-        api.getRecentDomains((settings.updateDelay.inWholeSeconds + 30) * 2).forEach {
-            when (it.type) {
-                DomainChangeType.Add -> domainCache.addAll(it.domains)
-                DomainChangeType.Delete -> domainCache.removeAll(it.domains)
-            }
+    internal fun handleChange(change: DomainChange) {
+        when (change.type) {
+            DomainChangeType.Add -> domainCache.addAll(change.domains)
+            DomainChangeType.Delete -> domainCache.removeAll(change.domains)
         }
-
-        checkTask?.restart()  // Off we go again
     }
 
     /** Arguments class for domain-relevant commands. **/

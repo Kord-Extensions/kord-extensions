@@ -252,9 +252,6 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is NewsChannelUpdateEvent -> event.channel.guild
         is ReactionAddEvent -> event.guild
         is ReactionRemoveEvent -> event.guild
-        is StoreChannelCreateEvent -> event.channel.guild
-        is StoreChannelDeleteEvent -> event.channel.guild
-        is StoreChannelUpdateEvent -> event.channel.guild
         is TextChannelCreateEvent -> event.channel.guild
         is TextChannelDeleteEvent -> event.channel.guild
         is TextChannelUpdateEvent -> event.channel.guild
@@ -289,7 +286,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
     return when {
-        event is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.member
+        event is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.user
 
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member

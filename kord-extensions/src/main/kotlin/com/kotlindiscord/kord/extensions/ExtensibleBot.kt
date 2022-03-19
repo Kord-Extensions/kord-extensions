@@ -126,6 +126,12 @@ public open class ExtensibleBot(
         }
     }
 
+    /** Start up the bot and log into Discord, but launched via Kord's coroutine scope. **/
+    public open suspend fun startAsync(): Job =
+        getKoin().get<Kord>().launch {
+            start()
+        }
+
     /** This function sets up all of the bot's default event listeners. **/
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
@@ -177,6 +183,10 @@ public open class ExtensibleBot(
             }
 
             on<UserCommandInteractionCreateEvent> {
+                getKoin().get<ApplicationCommandRegistry>().handle(this)
+            }
+
+            on<AutoCompleteInteractionCreateEvent> {
                 getKoin().get<ApplicationCommandRegistry>().handle(this)
             }
 
@@ -256,6 +266,13 @@ public open class ExtensibleBot(
     public open suspend fun addExtension(builder: () -> Extension) {
         val extensionObj = builder.invoke()
 
+        if (extensions.contains(extensionObj.name)) {
+            logger.error {
+                "Extension with duplicate name ${extensionObj.name} loaded - unloading previously registered extension"
+            }
+            unloadExtension(extensionObj.name)
+        }
+
         extensions[extensionObj.name] = extensionObj
         loadExtension(extensionObj.name)
 
@@ -325,6 +342,23 @@ public open class ExtensibleBot(
         if (extensionObj.loaded) {
             extensionObj.doUnload()
         }
+    }
+
+    /**
+     * Remove an installed [Extension] from this bot, by name.
+     *
+     * This function will unload the given extension (if it's loaded), and remove the
+     * extension object from the list of registered extensions.
+     *
+     * @param extension The name of the [Extension] to unload.
+     *
+     * @suppress This is meant to be used with the module system, and isn't necessarily a user-facing API.
+     * You need to be quite careful with this!
+     */
+    public open suspend fun removeExtension(extension: String) {
+        unloadExtension(extension)
+
+        extensions.remove(extension)
     }
 
     /**

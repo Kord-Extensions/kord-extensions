@@ -27,7 +27,7 @@ val printVersion = task("printVersion") {
 }
 
 gitHooks {
-    setHooks(mapOf("pre-commit" to "licenseFormat detekt"))
+    setHooks(mapOf("pre-commit" to "updateLicenses detekt"))
 }
 
 repositories {
@@ -35,7 +35,12 @@ repositories {
     mavenCentral()
 
     maven {
-        name = "KotDis"
+        name = "Sonatype Snapshots"
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+
+    maven {
+        name = "Kotlin Discord"
         url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
     }
 }

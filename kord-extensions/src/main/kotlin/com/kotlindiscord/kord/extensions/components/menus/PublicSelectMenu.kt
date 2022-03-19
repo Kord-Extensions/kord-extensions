@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.components.menus
 
@@ -13,6 +14,7 @@ import com.kotlindiscord.kord.extensions.components.callbacks.PublicMenuCallback
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
@@ -66,9 +68,9 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
         } else {
             if (!deferredAck) {
-                event.interaction.acknowledgePublic()
+                event.interaction.deferPublicResponseUnsafe()
             } else {
-                event.interaction.acknowledgePublicDeferredMessageUpdate()
+                event.interaction.deferPublicMessageUpdate()
             }
         }
 

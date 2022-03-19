@@ -30,86 +30,93 @@ fun classesToPages(
 
     classes.chunked(PAGE_SIZE).forEach { result ->
         val shortPage = result.joinToString("\n\n") { clazz ->
-            var text = ""
+            buildString {
+                append("**Class:** `${clazz.optimumName}`\n")
 
-            text += "**Class:** `${clazz.optimumName}`\n"
+                val (clientName, serverName) = clazz.obfName.stringPairs()
 
-            val (clientName, serverName) = clazz.obfName.stringPairs()
+                if (clientName != null && clientName.isNotEmpty()) {
+                    if (serverName == null) {
+                        append("**Name:** `$clientName` -> ")
+                    } else {
+                        append("**Client:** `$clientName` -> ")
+                    }
 
-            if (clientName != null && clientName.isNotEmpty()) {
-                if (serverName == null) {
-                    text += "**Name:** `$clientName` -> "
-                } else {
-                    text += "**Client:** `$clientName` -> "
+                    append(
+                        "`${clazz.intermediaryName}`" +
+                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
 
-                text += "`${clazz.intermediaryName}`" +
-                    (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
+                if (serverName != null && serverName.isNotEmpty()) {
+                    if (clientName != null) {
+                        append("\n")
+                    }
 
-            if (serverName != null && serverName.isNotEmpty()) {
-                if (clientName != null) {
-                    text += "\n"
+                    append("**Server:** `$serverName` -> ")
+
+                    append(
+                        "`${clazz.intermediaryName}`" +
+                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
-
-                text += "**Server:** `$serverName` -> "
-
-                text += "`${clazz.intermediaryName}`" +
-                    (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
-
-            text.trimEnd('\n')
+            }.trimEnd('\n')
         }
 
         val longPage = result.joinToString("\n\n") { clazz ->
-            var text = ""
+            buildString {
+                append("**Class:** `${clazz.optimumName}`\n")
 
-            text += "**Class:** `${clazz.optimumName}`\n"
+                val (clientName, serverName) = clazz.obfName.stringPairs()
 
-            val (clientName, serverName) = clazz.obfName.stringPairs()
+                if (clientName != null && clientName.isNotEmpty()) {
+                    if (serverName == null) {
+                        append("**Name:** `$clientName` -> ")
+                    } else {
+                        append("**Client:** `$clientName` -> ")
+                    }
 
-            if (clientName != null && clientName.isNotEmpty()) {
-                if (serverName == null) {
-                    text += "**Name:** `$clientName` -> "
-                } else {
-                    text += "**Client:** `$clientName` -> "
+                    append(
+                        "`${clazz.intermediaryName}`" +
+                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
 
-                text += "`${clazz.intermediaryName}`" +
-                    (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
+                if (serverName != null && serverName.isNotEmpty()) {
+                    if (clientName != null) {
+                        append("\n")
+                    }
 
-            if (serverName != null && serverName.isNotEmpty()) {
-                if (clientName != null) {
-                    text += "\n"
+                    append("**Server:** `$serverName` -> ")
+
+                    append(
+                        "`${clazz.intermediaryName}`" +
+                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
 
-                text += "**Server:** `$serverName` -> "
+                append("\n")
 
-                text += "`${clazz.intermediaryName}`" +
-                    (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
-
-            text += "\n"
-
-            if (namespace.supportsAT()) {
-                text += "**Access Transformer:** `public " +
-                    clazz.intermediaryName.replace('/', '.') +
-                    "`"
-            } else if (namespace.supportsAW()) {
-                text += "\n" +
-                    "**Access Widener:** `accessible class ${clazz.optimumName}`"
-            }
-
-            text.trimEnd('\n')
+                if (namespace.supportsAT()) {
+                    append(
+                        "**Access Transformer:** `public " +
+                            clazz.intermediaryName.replace('/', '.') +
+                            "`"
+                    )
+                } else if (namespace.supportsAW()) {
+                    append(
+                        "\n**Access Widener:** `accessible class ${clazz.optimumName}`"
+                    )
+                }
+            }.trimEnd('\n')
         }
 
         pages.add(Pair(shortPage, longPage))
@@ -129,7 +136,7 @@ fun classesToPages(
  * A convenience function variable for having an unused MappingsContainer argument.
  * This is to allow a more general function to be used for all queries.
  */
-val classesToPages = { namespace: Namespace, _: MappingsContainer, classes: ClassResults ->
+val classesToPages = { namespace: Namespace, _: MappingsContainer, classes: ClassResults, _: Boolean ->
     classesToPages(namespace, classes)
 }
 
@@ -137,120 +144,134 @@ val classesToPages = { namespace: Namespace, _: MappingsContainer, classes: Clas
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    fields: List<Pair<Class, Field>>
+    fields: List<Pair<Class, Field>>,
+    mapDescriptors: Boolean = true
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
 
     fields.chunked(PAGE_SIZE).forEach { result ->
         val shortPage = result.joinToString("\n\n") {
             val (clazz, field) = it
-            val mappedDesc = field.getMappedDesc(mappings)
 
-            var text = ""
-
-            text += "**Field:** `${clazz.optimumName}::${field.optimumName}`\n"
-
-            val (clientName, serverName) = field.obfName.stringPairs()
-
-            if (!clientName.isNullOrEmpty()) {
-                if (!serverName.isNullOrEmpty()) {
-                    text += "**Name:** `$clientName` -> "
-                } else {
-                    text += "**Client:** `$clientName` -> "
-                }
-
-                text += "`${field.intermediaryName}`" +
-                    (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
+            val desc = if (mapDescriptors) {
+                field.getMappedDesc(mappings)
+            } else {
+                field.intermediaryDesc
             }
 
-            if (!serverName.isNullOrEmpty()) {
+            buildString {
+                append("**Field:** `${clazz.optimumName}::${field.optimumName}`\n")
+
+                val (clientName, serverName) = field.obfName.stringPairs()
+
                 if (!clientName.isNullOrEmpty()) {
-                    text += "\n"
+                    if (!serverName.isNullOrEmpty()) {
+                        append("**Name:** `$clientName` -> ")
+                    } else {
+                        append("**Client:** `$clientName` -> ")
+                    }
+
+                    append(
+                        "`${field.intermediaryName}`" +
+                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
 
-                text += "**Server:** `$serverName` -> "
+                if (!serverName.isNullOrEmpty()) {
+                    if (!clientName.isNullOrEmpty()) {
+                        append("\n")
+                    }
 
-                text += "`${field.intermediaryName}`" +
-                    (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
+                    append("**Server:** `$serverName` -> ")
+
+                    append(
+                        "`${field.intermediaryName}`" +
+                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
+                }
+
+                if (namespace.supportsFieldDescription()) {
+                    append("\n")
+                    append("**Types:** `${desc.localiseFieldDesc()}`")
+                }
             }
-
-            if (namespace.supportsFieldDescription()) {
-                text += "\n"
-                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
-            }
-
-            text
         }
 
         val longPage = result.joinToString("\n\n") {
             val (clazz, field) = it
             val mappedDesc = field.getMappedDesc(mappings)
 
-            var text = ""
+            buildString {
+                append("**Field:** `${clazz.optimumName}::${field.optimumName}`\n")
 
-            text += "**Field:** `${clazz.optimumName}::${field.optimumName}`\n"
+                val (clientName, serverName) = field.obfName.stringPairs()
 
-            val (clientName, serverName) = field.obfName.stringPairs()
-
-            if (!clientName.isNullOrEmpty()) {
-                if (!serverName.isNullOrEmpty()) {
-                    text += "**Name:** `$clientName` -> "
-                } else {
-                    text += "**Client:** `$clientName` -> "
-                }
-
-                text += "`${field.intermediaryName}`" +
-                    (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
-
-            if (!serverName.isNullOrEmpty()) {
                 if (!clientName.isNullOrEmpty()) {
-                    text += "\n"
+                    if (!serverName.isNullOrEmpty()) {
+                        append("**Name:** `$clientName` -> ")
+                    } else {
+                        append("**Client:** `$clientName` -> ")
+                    }
+
+                    append(
+                        "`${field.intermediaryName}`" +
+                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
 
-                text += "**Server:** `$serverName` -> "
+                if (!serverName.isNullOrEmpty()) {
+                    if (!clientName.isNullOrEmpty()) {
+                        append("\n")
+                    }
 
-                text += "`${field.intermediaryName}`" +
-                    (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
+                    append("**Server:** `$serverName` -> ")
 
-            if (namespace.supportsFieldDescription()) {
-                text += "\n"
-                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
-            }
+                    append(
+                        "`${field.intermediaryName}`" +
+                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
+                }
 
-            text += "\n"
+                if (namespace.supportsFieldDescription()) {
+                    append("\n")
+                    append("**Types:** `${mappedDesc.localiseFieldDesc()}`")
+                }
 
-            if (namespace.supportsMixin()) {
-                text += "\n"
+                append("\n")
 
-                text += "**Mixin Target:** `" +
-                    "L${clazz.optimumName};" +
-                    field.optimumName +
-                    ":" +
-                    mappedDesc +
-                    "`"
-            }
+                if (namespace.supportsMixin()) {
+                    append("\n")
 
-            if (namespace.supportsAT()) {
-                text += "\n"
+                    append(
+                        "**Mixin Target:** `" +
+                            "L${clazz.optimumName};" +
+                            field.optimumName +
+                            ":" +
+                            mappedDesc +
+                            "`"
+                    )
+                }
 
-                text += "**Access Transformer:** `${field.intermediaryName} # ${field.optimumName}`"
-            } else if (namespace.supportsAW()) {
-                text += "\n"
+                if (namespace.supportsAT()) {
+                    append("\n")
 
-                text += "**Access Widener:** `accessible field ${clazz.optimumName} ${field.optimumName} $mappedDesc`"
-            }
+                    append("**Access Transformer:** `${field.intermediaryName} # ${field.optimumName}`")
+                } else if (namespace.supportsAW()) {
+                    append("\n")
 
-            text.trimEnd('\n')
+                    append(
+                        "**Access Widener:** `accessible field ${clazz.optimumName} ${field.optimumName} $mappedDesc`"
+                    )
+                }
+            }.trimEnd('\n')
         }
 
         pages.add(Pair(shortPage, longPage))
@@ -263,118 +284,137 @@ fun fieldsToPages(
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    queryResult: QueryResult<MappingsContainer, FieldResultList>
+    queryResult: QueryResult<MappingsContainer, FieldResultList>,
+    mapDescriptors: Boolean = true
 ) =
-    fieldsToPages(namespace, mappings, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
+    fieldsToPages(
+        namespace,
+        mappings,
+        queryResult.map { it.map { inner -> inner.value }.toList() }.value,
+        mapDescriptors
+    )
 
 /** Given a set of result methods, format them into a list of pages for the paginator. **/
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    methods: List<Pair<Class, Method>>
+    methods: List<Pair<Class, Method>>,
+    mapDescriptors: Boolean = true
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
 
     methods.chunked(PAGE_SIZE).forEach { result ->
         val shortPage = result.joinToString("\n\n") {
             val (clazz, method) = it
-            var text = ""
+            buildString {
+                append("**Method:** `${clazz.optimumName}::${method.optimumName}`\n")
 
-            text += "**Method:** `${clazz.optimumName}::${method.optimumName}`\n"
+                val (clientName, serverName) = method.obfName.stringPairs()
 
-            val (clientName, serverName) = method.obfName.stringPairs()
-
-            if (!clientName.isNullOrEmpty()) {
-                if (!serverName.isNullOrEmpty()) {
-                    text += "**Name:** `$clientName` -> "
-                } else {
-                    text += "**Client:** `$clientName` -> "
-                }
-
-                text += "`${method.intermediaryName}`" +
-                    (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
-
-            if (!serverName.isNullOrEmpty()) {
                 if (!clientName.isNullOrEmpty()) {
-                    text += "\n"
+                    if (!serverName.isNullOrEmpty()) {
+                        append("**Name:** `$clientName` -> ")
+                    } else {
+                        append("**Client:** `$clientName` -> ")
+                    }
+
+                    append(
+                        "`${method.intermediaryName}`" +
+                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
 
-                text += "**Server:** `$serverName` -> "
+                if (!serverName.isNullOrEmpty()) {
+                    if (!clientName.isNullOrEmpty()) {
+                        append("\n")
+                    }
 
-                text += "`${method.intermediaryName}`" +
-                    (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
+                    append("**Server:** `$serverName` -> ")
 
-            text.trimEnd('\n')
+                    append(
+                        "`${method.intermediaryName}`" +
+                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
+                }
+            }.trimEnd('\n')
         }
 
         val longPage = result.joinToString("\n\n") {
             val (clazz, method) = it
-            val mappedDesc = method.getMappedDesc(mappings)
+            val desc = if (mapDescriptors) {
+                method.getMappedDesc(mappings)
+            } else {
+                method.intermediaryDesc
+            }
 
-            var text = ""
+            buildString {
+                append("**Method:** `${clazz.optimumName}::${method.optimumName}`\n")
 
-            text += "**Method:** `${clazz.optimumName}::${method.optimumName}`\n"
+                val (clientName, serverName) = method.obfName.stringPairs()
 
-            val (clientName, serverName) = method.obfName.stringPairs()
+                if (clientName != null && clientName.isNotEmpty()) {
+                    if (serverName == null) {
+                        append("**Name:** `$clientName` -> ")
+                    } else {
+                        append("**Client:** `$clientName` -> ")
+                    }
 
-            if (clientName != null && clientName.isNotEmpty()) {
-                if (serverName == null) {
-                    text += "**Name:** `$clientName` -> "
-                } else {
-                    text += "**Client:** `$clientName` -> "
+                    append(
+                        "`${method.intermediaryName}`" +
+                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
 
-                text += "`${method.intermediaryName}`" +
-                    (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
+                if (serverName != null && serverName.isNotEmpty()) {
+                    if (clientName != null) {
+                        append("\n")
+                    }
 
-            if (serverName != null && serverName.isNotEmpty()) {
-                if (clientName != null) {
-                    text += "\n"
+                    append("**Server:** `$serverName` -> ")
+
+                    append(
+                        "`${method.intermediaryName}`" +
+                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                " -> `$name`"
+                            } ?: "")
+                    )
                 }
 
-                text += "**Server:** `$serverName` -> "
+                append("\n")
 
-                text += "`${method.intermediaryName}`" +
-                    (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                        " -> `$name`"
-                    } ?: "")
-            }
+                if (namespace.supportsMixin()) {
+                    append("\n")
 
-            text += "\n"
+                    append(
+                        "**Mixin Target** `" +
+                            "L${clazz.optimumName};" +
+                            method.optimumName +
+                            desc +
+                            "`"
+                    )
+                }
 
-            if (namespace.supportsMixin()) {
-                text += "\n"
+                if (namespace.supportsAT()) {
+                    append("\n")
 
-                text += "**Mixin Target** `" +
-                    "L${clazz.optimumName};" +
-                    method.optimumName +
-                    mappedDesc +
-                    "`"
-            }
+                    append(
+                        "**Access Transformer** `public" + clazz.optimumName.replace('/', '.') +
+                            method.intermediaryName +
+                            desc +
+                            " # ${method.optimumName}`"
+                    )
+                } else if (namespace.supportsAW()) {
+                    append("\n")
 
-            if (namespace.supportsAT()) {
-                text += "\n"
-
-                text += "**Access Transformer** `public" + clazz.optimumName.replace('/', '.') +
-                    method.intermediaryName +
-                    mappedDesc +
-                    " # ${method.optimumName}`"
-            } else if (namespace.supportsAW()) {
-                text += "\n"
-
-                text += "**Access Widener** `accessible method ${clazz.optimumName} ${method.optimumName} $mappedDesc`"
-            }
-
-            text.trimEnd('\n')
+                    append("**Access Widener** `accessible method ${clazz.optimumName} ${method.optimumName} $desc`")
+                }
+            }.trimEnd('\n')
         }
 
         pages.add(Pair(shortPage, longPage))
@@ -387,8 +427,14 @@ fun methodsToPages(
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    queryResult: QueryResult<MappingsContainer, MethodResultList>
-) = methodsToPages(namespace, mappings, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
+    queryResult: QueryResult<MappingsContainer, MethodResultList>,
+    mapDescriptors: Boolean = true
+) = methodsToPages(
+    namespace,
+    mappings,
+    queryResult.map { it.map { inner -> inner.value }.toList() }.value,
+    mapDescriptors
+)
 
 /** Given a set of class mapping matches, format them into a list of pages for the paginator. **/
 fun classMatchesToPages(
@@ -433,21 +479,21 @@ fun fieldMatchesToPages(
             val inputClassName = inputClass.mappedName ?: inputClass.optimumName
             val outputClassName = outputClass.mappedName ?: outputClass.optimumName
 
-            var text = "**Field:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`"
+            buildString {
+                append("**Field:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`")
 
-            val namespace = if (outputContainer.namespace == "hashed-mojmap") {
-                // thanks linkie you're ruining everything
-                MojangHashedNamespace
-            } else {
-                Namespaces[outputContainer.namespace]
+                val namespace = if (outputContainer.namespace == "hashed-mojmap") {
+                    // thanks linkie you're ruining everything
+                    MojangHashedNamespace
+                } else {
+                    Namespaces[outputContainer.namespace]
+                }
+
+                if (namespace.supportsFieldDescription()) {
+                    append("\n")
+                    append("**Types:** `${mappedDesc.localiseFieldDesc()}`")
+                }
             }
-
-            if (namespace.supportsFieldDescription()) {
-                text += "\n"
-                text += "**Types:** `${mappedDesc.localiseFieldDesc()}`"
-            }
-
-            text
         }
         pages.add(page)
     }
@@ -455,7 +501,7 @@ fun fieldMatchesToPages(
     return pages
 }
 
-/** Convienence function for making code more generalized. */
+/** Convenience function for making code more generalized. */
 val fieldMatchesToPages = { outputContainer: MappingsContainer, fieldMatches: Matches<Pair<Class, Field>> ->
     fieldMatchesToPages(outputContainer, fieldMatches.toList())
 }
@@ -478,12 +524,8 @@ fun methodMatchesToPages(
             val inputClassName = inputClass.mappedName ?: inputClass.optimumName
             val outputClassName = outputClass.mappedName ?: outputClass.optimumName
 
-            var text = "**Method:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`"
-
-            text += "\n" +
-                "**Description:** `$mappedDesc`"
-
-            text
+            "**Method:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`" +
+                "\n**Description:** `$mappedDesc`"
         }
         pages.add(page)
     }

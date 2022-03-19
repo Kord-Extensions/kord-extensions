@@ -24,6 +24,10 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.interaction.GroupCommand
+import dev.kord.core.entity.interaction.InteractionCommand
+import dev.kord.core.entity.interaction.SubCommand
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
@@ -43,8 +47,8 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public open val parentCommand: SlashCommand<*, *>? = null,
     public open val parentGroup: SlashGroup? = null
 ) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
-    /** @suppress **/
-    public val logger: KLogger = KotlinLogging.logger {}
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val kxLogger: KLogger = KotlinLogging.logger {}
 
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
@@ -245,12 +249,42 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         return result
     }
 
+    /** Given a command event, resolve the correct command or subcommand object. **/
+    public open fun findCommand(event: ChatInputCommandInteractionCreateEvent): SlashCommand<*, *> =
+        findCommand(event.interaction.command)
+
+    /** Given an autocomplete event, resolve the correct command or subcommand object. **/
+    public open fun findCommand(event: AutoCompleteInteractionCreateEvent): SlashCommand<*, *> =
+        findCommand(event.interaction.command)
+
+    /** Given an [InteractionCommand], resolve the correct command or subcommand object. **/
+    public open fun findCommand(eventCommand: InteractionCommand): SlashCommand<*, *> =
+        when (eventCommand) {
+            is SubCommand -> {
+                val firstSubCommandKey = eventCommand.name
+
+                this.subCommands.firstOrNull { it.name == firstSubCommandKey }
+                    ?: error("Unknown subcommand: $firstSubCommandKey")
+            }
+
+            is GroupCommand -> {
+                val firstEventGroupKey = eventCommand.groupName
+                val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
+                val firstSubCommandKey = eventCommand.name
+
+                group.subCommands.firstOrNull { it.name == firstSubCommandKey }
+                    ?: error("Unknown subcommand: $firstSubCommandKey")
+            }
+
+            else -> this
+        }
+
     /** A general way to handle errors thrown during the course of a command's execution. **/
     public open suspend fun handleError(context: C, t: Throwable, commandObj: SlashCommand<*, *>) {
-        logger.error(t) { "Error during execution of ${commandObj.name} slash command (${context.event})" }
+        kxLogger.error(t) { "Error during execution of ${commandObj.name} slash command (${context.event})" }
 
         if (sentry.enabled) {
-            logger.trace { "Submitting error to sentry." }
+            kxLogger.trace { "Submitting error to sentry." }
 
             val channel = context.channel
             val author = context.user.asUserOrNull()
@@ -270,7 +304,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 tag("extension", commandObj.extension.name)
             }
 
-            logger.info { "Error submitted to Sentry: $sentryId" }
+            kxLogger.info { "Error submitted to Sentry: $sentryId" }
 
             val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
                 context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))

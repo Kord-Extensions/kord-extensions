@@ -12,11 +12,11 @@ import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.interaction.InteractionResponseBehavior
-import dev.kord.core.behavior.interaction.edit
-import dev.kord.core.behavior.interaction.followUp
+import dev.kord.core.behavior.interaction.followup.edit
+import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.core.entity.interaction.PublicFollowupMessage
+import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.modify.embed
 import java.util.*
@@ -36,7 +36,7 @@ public class PublicFollowUpPaginator(
     bundle: String? = null,
     locale: Locale? = null,
 
-    public val interaction: InteractionResponseBehavior,
+    public val interaction: FollowupPermittingInteractionResponseBehavior,
 ) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
     /** Follow-up interaction to use for this paginator's embeds. Will be created by [send]. **/
     public var embedInteraction: PublicFollowupMessage? = null
@@ -45,11 +45,10 @@ public class PublicFollowUpPaginator(
         if (embedInteraction == null) {
             setup()
 
-            embedInteraction = interaction.followUp {
+            embedInteraction = interaction.createPublicFollowup {
                 embed { applyPage() }
-
                 with(this@PublicFollowUpPaginator.components) {
-                    this@followUp.applyToMessage()
+                    this@createPublicFollowup.applyToMessage()
                 }
             }
         } else {
@@ -90,7 +89,7 @@ public class PublicFollowUpPaginator(
 @Suppress("FunctionNaming")  // Factory function
 public fun PublicFollowUpPaginator(
     builder: PaginatorBuilder,
-    interaction: InteractionResponseBehavior
+    interaction: FollowupPermittingInteractionResponseBehavior
 ): PublicFollowUpPaginator = PublicFollowUpPaginator(
     pages = builder.pages,
     owner = builder.owner,

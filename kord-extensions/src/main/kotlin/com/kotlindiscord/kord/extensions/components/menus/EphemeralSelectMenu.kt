@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.components.menus
 
@@ -13,6 +14,7 @@ import com.kotlindiscord.kord.extensions.components.callbacks.EphemeralMenuCallb
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
@@ -65,9 +67,9 @@ public open class EphemeralSelectMenu(timeoutTask: Task?) : SelectMenu<Ephemeral
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
         } else {
             if (!deferredAck) {
-                event.interaction.acknowledgeEphemeral()
+                event.interaction.deferEphemeralResponseUnsafe()
             } else {
-                event.interaction.acknowledgeEphemeralDeferredMessageUpdate()
+                event.interaction.deferEphemeralMessageUpdate()
             }
         }
 

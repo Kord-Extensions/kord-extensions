@@ -15,7 +15,7 @@ import dev.kord.core.behavior.MessageBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
-import dev.kord.core.behavior.interaction.PublicFollowupMessageBehavior
+import dev.kord.core.behavior.interaction.followup.PublicFollowupMessageBehavior
 import dev.kord.core.behavior.reply
 import dev.kord.core.cache.data.MessageData
 import dev.kord.core.entity.*

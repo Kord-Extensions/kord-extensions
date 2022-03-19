@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.createApplicationCommands
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -66,22 +67,24 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                 sync(removeOthers, it.key, it.value)
             } catch (e: KtorRequestException) {
                 logger.error(e) {
-                    var message = if (it.key == null) {
-                        "Failed to synchronise global application commands"
-                    } else {
-                        "Failed to synchronise application commands for guild with ID: ${it.key}"
-                    }
+                    buildString {
+                        if (it.key == null) {
+                            append("Failed to synchronise global application commands")
+                        } else {
+                            append("Failed to synchronise application commands for guild with ID: ${it.key}")
+                        }
 
-                    if (e.error?.message != null) {
-                        message += "\n        Discord error message: ${e.error?.message}"
-                    }
+                        if (e.error?.message != null) {
+                            append("\n        Discord error message: ${e.error?.message}")
+                        }
 
-                    if (e.error?.code == JsonErrorCode.MissingAccess) {
-                        message += "\n        Double-check that the bot was added to this guild with the " +
-                            "`application.commands` scope enabled"
+                        if (e.error?.code == JsonErrorCode.MissingAccess) {
+                            append(
+                                "\n        Double-check that the bot was added to this guild with the " +
+                                "`application.commands` scope enabled"
+                            )
+                        }
                     }
-
-                    message
                 }
             } catch (t: Throwable) {
                 logger.error(t) {
@@ -198,21 +201,25 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         }
 
         logger.info {
-            var message = if (guild == null) {
-                "Global application commands: ${toAdd.size} to add / " +
-                    "${toUpdate.size} to update / " +
-                    "${toRemove.size} to remove"
-            } else {
-                "Application commands for guild ${guild.name}: ${toAdd.size} to add / " +
-                    "${toUpdate.size} to update / " +
-                    "${toRemove.size} to remove"
-            }
+            buildString {
+                if (guild == null) {
+                    append(
+                        "Global application commands: ${toAdd.size} to add / " +
+                        "${toUpdate.size} to update / " +
+                        "${toRemove.size} to remove"
+                    )
+                } else {
+                    append(
+                        "Application commands for guild ${guild.name}: ${toAdd.size} to add / " +
+                        "${toUpdate.size} to update / " +
+                        "${toRemove.size} to remove"
+                    )
+                }
 
-            if (!removeOthers) {
-                message += "\nThe `removeOthers` parameter is `false`, so no commands will be removed."
+                if (!removeOthers) {
+                    append("\nThe `removeOthers` parameter is `false`, so no commands will be removed.")
+                }
             }
-
-            message
         }
 
         val toCreate = toAdd + toUpdate
@@ -269,16 +276,18 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
             }
         }
 
-        // Finally, we can remove anything that needs to be removed
-        toRemove.forEach {
-            logger.trace { "Removing ${it.type.name} command: ${it.name}" }
+        if (toAdd.isEmpty() && toUpdate.isEmpty()) {
+            // Finally, we can remove anything that needs to be removed
+            toRemove.forEach {
+                logger.trace { "Removing ${it.type.name} command: ${it.name}" }
 
-            @Suppress("MagicNumber")  // not today, Detekt
-            try {
-                it.delete()
-            } catch (e: KtorRequestException) {
-                if (e.status.code != 404) {
-                    throw e
+                @Suppress("MagicNumber")  // not today, Detekt
+                try {
+                    it.delete()
+                } catch (e: KtorRequestException) {
+                    if (e.status.code != 404) {
+                        throw e
+                    }
                 }
             }
         }
@@ -395,6 +404,35 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
         command.call(event)
+    }
+
+    override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {
+        val commandId = event.interaction.command.rootId
+        val command = slashCommands[commandId]?.findCommand(event)
+
+        command ?: return logger.warn { "Received autocomplete interaction for unknown command: $commandId" }
+
+        if (command.arguments == null) {
+            return logger.trace { "Command $command doesn't have any arguments." }
+        }
+
+        val option = event.interaction.command.options.filterValues { it.focused }.toList().firstOrNull()
+
+        option ?: return logger.trace { "Autocomplete event for command $command doesn't have a focused option." }
+
+        val arg = command.arguments!!().args.firstOrNull { it.displayName == option.first }
+
+        arg ?: return logger.warn {
+            "Autocomplete event for command $command has an unknown focused option: ${option.first}."
+        }
+
+        val callback = arg.converter.genericBuilder.autoCompleteCallback
+
+        callback ?: return logger.trace {
+            "Autocomplete event for command $command has an focused option without a callback: ${option.first}."
+        }
+
+        callback(event.interaction, event)
     }
 
     // endregion

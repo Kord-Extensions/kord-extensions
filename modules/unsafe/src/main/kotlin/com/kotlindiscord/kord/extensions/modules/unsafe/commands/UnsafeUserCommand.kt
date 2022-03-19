@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
@@ -17,10 +18,11 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialUserCommand
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
 /** Like a standard user command, but with less safety features. **/
@@ -57,8 +59,8 @@ public class UnsafeUserCommand(
         }
 
         val response = when (val r = initialResponse) {
-            is InitialUserCommandResponse.EphemeralAck -> event.interaction.acknowledgeEphemeral()
-            is InitialUserCommandResponse.PublicAck -> event.interaction.acknowledgePublic()
+            is InitialUserCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
+            is InitialUserCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
 
             is InitialUserCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
                 r.builder!!(event)
@@ -108,11 +110,11 @@ public class UnsafeUserCommand(
         failureType: FailureReason<*>
     ) {
         when (context.interactionResponse) {
-            is PublicInteractionResponseBehavior -> context.respondPublic {
+            is PublicMessageInteractionResponseBehavior -> context.respondPublic {
                 settings.failureResponseBuilder(this, message, failureType)
             }
 
-            is EphemeralInteractionResponseBehavior -> context.respondEphemeral {
+            is EphemeralMessageInteractionResponseBehavior -> context.respondEphemeral {
                 settings.failureResponseBuilder(this, message, failureType)
             }
         }

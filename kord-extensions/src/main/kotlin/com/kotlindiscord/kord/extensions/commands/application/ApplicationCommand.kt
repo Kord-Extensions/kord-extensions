@@ -14,12 +14,12 @@ import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.utils.any
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.any
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.behavior.UserBehavior

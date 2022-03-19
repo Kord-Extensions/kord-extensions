@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
@@ -20,12 +21,11 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialSlashComman
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.entity.interaction.GroupCommand
-import dev.kord.core.entity.interaction.SubCommand
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
 /** Like a standard slash command, but with less safety features. **/
@@ -41,29 +41,7 @@ public class UnsafeSlashCommand<A : Arguments>(
     public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
 
     override suspend fun call(event: ChatInputCommandInteractionCreateEvent) {
-        val eventCommand = event.interaction.command
-
-        val commandObj: SlashCommand<*, *> = when (eventCommand) {
-            is SubCommand -> {
-                val firstSubCommandKey = eventCommand.name
-
-                this.subCommands.firstOrNull { it.name == firstSubCommandKey }
-                    ?: error("Unknown subcommand: $firstSubCommandKey")
-            }
-
-            is GroupCommand -> {
-                val firstEventGroupKey = eventCommand.groupName
-                val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
-                val firstSubCommandKey = eventCommand.name
-
-                group.subCommands.firstOrNull { it.name == firstSubCommandKey }
-                    ?: error("Unknown subcommand: $firstSubCommandKey")
-            }
-
-            else -> this
-        }
-
-        commandObj.run(event)
+        findCommand(event).run(event)
     }
 
     override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
@@ -92,8 +70,8 @@ public class UnsafeSlashCommand<A : Arguments>(
         }
 
         val response = when (val r = initialResponse) {
-            is InitialSlashCommandResponse.EphemeralAck -> event.interaction.acknowledgeEphemeral()
-            is InitialSlashCommandResponse.PublicAck -> event.interaction.acknowledgePublic()
+            is InitialSlashCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
+            is InitialSlashCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
 
             is InitialSlashCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
                 r.builder!!(event)
@@ -156,11 +134,11 @@ public class UnsafeSlashCommand<A : Arguments>(
         failureType: FailureReason<*>
     ) {
         when (context.interactionResponse) {
-            is PublicInteractionResponseBehavior -> context.respondPublic {
+            is PublicMessageInteractionResponseBehavior -> context.respondPublic {
                 settings.failureResponseBuilder(this, message, failureType)
             }
 
-            is EphemeralInteractionResponseBehavior -> context.respondEphemeral {
+            is EphemeralMessageInteractionResponseBehavior -> context.respondEphemeral {
                 settings.failureResponseBuilder(this, message, failureType)
             }
         }

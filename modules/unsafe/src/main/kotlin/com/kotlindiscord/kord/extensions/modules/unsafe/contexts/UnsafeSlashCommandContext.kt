@@ -11,7 +11,7 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.commands.UnsafeSlashCommand
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.UnsafeInteractionContext
-import dev.kord.core.behavior.interaction.InteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
 /** Command context for an unsafe slash command. **/
@@ -19,5 +19,5 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 public class UnsafeSlashCommandContext<A : Arguments>(
     override val event: ChatInputCommandInteractionCreateEvent,
     override val command: UnsafeSlashCommand<A>,
-    override var interactionResponse: InteractionResponseBehavior?
+    override var interactionResponse: MessageInteractionResponseBehavior?
 ) : SlashCommandContext<UnsafeSlashCommandContext<A>, A>(event, command), UnsafeInteractionContext
