@@ -438,6 +438,7 @@ fun methodsToPages(
 
 /** Given a set of class mapping matches, format them into a list of pages for the paginator. **/
 fun classMatchesToPages(
+    outputContainer: MappingsContainer,
     matches: List<Pair<Class, Class>>
 ): List<String> {
     val pages = mutableListOf<String>()
@@ -446,7 +447,14 @@ fun classMatchesToPages(
         val text = match.joinToString("\n\n") { (input, output) ->
 
             val inputName = input.mappedName ?: input.optimumName
-            val outputName = output.mappedName ?: output.optimumName
+
+            val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                // Because of requests and how hashed is often used for its hashes rather than the names,
+                // we call from "intermediary" instead of mapped.
+                output.intermediaryName
+            } else {
+                output.mappedName ?: output.optimumName
+            }
 
             "**Class:** `$inputName` -> `$outputName`"
         }
@@ -457,8 +465,8 @@ fun classMatchesToPages(
 }
 
 /** Convienence function for making code more generalized. */
-val classMatchesToPages = { _: MappingsContainer, classMatches: Matches<Class> ->
-    classMatchesToPages(classMatches.toList())
+val classMatchesToPages = { outputContainer: MappingsContainer, classMatches: Matches<Class> ->
+    classMatchesToPages(outputContainer, classMatches.toList())
 }
 
 /** Given a set of field mapping matches, format them into a list of pages for the paginator. **/
@@ -475,9 +483,20 @@ fun fieldMatchesToPages(
             val mappedDesc = outputField.getMappedDesc(outputContainer)
 
             val inputName = inputField.mappedName ?: inputField.optimumName
-            val outputName = outputField.mappedName ?: outputField.optimumName
+
+            val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                outputField.intermediaryName
+            } else {
+                outputField.mappedName ?: outputField.optimumName
+            }
+
             val inputClassName = inputClass.mappedName ?: inputClass.optimumName
-            val outputClassName = outputClass.mappedName ?: outputClass.optimumName
+
+            val outputClassName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                outputClass.intermediaryName
+            } else {
+                outputClass.mappedName ?: outputClass.optimumName
+            }
 
             buildString {
                 append("**Field:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`")
@@ -520,9 +539,20 @@ fun methodMatchesToPages(
             val mappedDesc = outputMethod.getMappedDesc(outputContainer)
 
             val inputName = inputMethod.mappedName ?: inputMethod.optimumName
-            val outputName = outputMethod.mappedName ?: outputMethod.optimumName
+
+            val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                outputMethod.intermediaryName
+            } else {
+                outputMethod.mappedName ?: outputMethod.optimumName
+            }
+
             val inputClassName = inputClass.mappedName ?: inputClass.optimumName
-            val outputClassName = outputClass.mappedName ?: outputClass.optimumName
+
+            val outputClassName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                outputClass.intermediaryName
+            } else {
+                outputClass.mappedName ?: outputClass.optimumName
+            }
 
             "**Method:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`" +
                 "\n**Description:** `$mappedDesc`"
