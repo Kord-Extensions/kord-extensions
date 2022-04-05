@@ -1,7 +1,7 @@
 [versions]
 detekt = "1.19.0"  # Note: Plugin versions must be updated in the settings.gradle.kts too
-dokka = "1.6.0"  # Note: Plugin versions must be updated in the settings.gradle.kts too
-kotlin = "1.6.10"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+dokka = "1.6.10"  # Note: Plugin versions must be updated in the settings.gradle.kts too
+kotlin = "1.6.20"  # Note: Plugin versions must be updated in the settings.gradle.kts too
 
 commons-validator = "1.7"
 groovy = "3.0.8"
@@ -14,7 +14,7 @@ konf = "1.1.2"
 #kord = "0.8.x-SNAPSHOT"
 kord = "0.8.0-M12"
 kotlinpoet = "1.10.2"
-ksp = "1.6.10-1.0.2"
+ksp = "1.6.20-1.0.4"
 ktor = "1.6.7"
 kx-ser = "1.3.2"
 linkie = "1.0.94"
