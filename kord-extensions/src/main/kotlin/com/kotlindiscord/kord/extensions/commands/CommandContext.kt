@@ -108,7 +108,7 @@ public abstract class CommandContext(
      */
     public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
         key,
-        command.extension.bundle,
+        command.resolvedBundle,
         replacements
     )
 }

@@ -127,5 +127,5 @@ public open class ChatCommandContext<T : Arguments>(
         key: String,
         replacements: Array<Any?> = arrayOf(),
         useReply: Boolean = true
-    ): Message = respond(translate(key, command.extension.bundle, replacements), useReply)
+    ): Message = respond(translate(key, command.resolvedBundle, replacements), useReply)
 }

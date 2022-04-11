@@ -104,7 +104,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
         if (!nameTranslationCache.containsKey(locale)) {
             nameTranslationCache[locale] = translationsProvider.translate(
                 this.name,
-                this.extension.bundle,
+                this.resolvedBundle,
                 locale
             )
         }
