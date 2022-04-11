@@ -216,9 +216,9 @@ public open class ChatCommandParser : KoinComponent {
                         logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -269,9 +269,9 @@ public open class ChatCommandParser : KoinComponent {
                         logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -354,10 +354,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required) {
                         throw ArgumentParsingException(
@@ -435,6 +435,8 @@ public open class ChatCommandParser : KoinComponent {
                         }
 
                         converter.parseSuccess = true
+
+                        converter.validate(context)
                     } else {
                         if (parsedCount > 0) {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
@@ -526,10 +528,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -612,10 +614,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
