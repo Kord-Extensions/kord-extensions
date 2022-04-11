@@ -26,6 +26,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ApplicationCommandType
+import dev.kord.common.entity.Choice
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.createChatInputCommand
@@ -243,14 +244,17 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
             null
         }
 
-        val name = command.getTranslatedName(locale)
-        val description = command.getTranslatedDescription(locale)
+        val (name, nameLocalizations) = command.localizedName
+        val (description, descriptionLocalizations) = command.localizedDescription
 
         val response = if (guild == null) {
             // We're registering global commands here, if the guild is null
 
             kord.createGlobalChatInputCommand(name, description) {
                 logger.trace { "Adding/updating global ${command.type.name} command: $name" }
+
+                this.nameLocalizations = nameLocalizations
+                this.descriptionLocalizations = descriptionLocalizations
 
                 this.register(locale, command)
             }
@@ -259,6 +263,9 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
             guild.createChatInputCommand(name, description) {
                 logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
+
+                this.nameLocalizations = nameLocalizations
+                this.descriptionLocalizations = descriptionLocalizations
 
                 this.register(locale, command)
             }
@@ -281,13 +288,14 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
             null
         }
 
-        val name = command.getTranslatedName(locale)
+        val (name, nameLocalizations) = command.localizedName
 
         val response = if (guild == null) {
             // We're registering global commands here, if the guild is null
 
             kord.createGlobalUserCommand(name) {
                 logger.trace { "Adding/updating global ${command.type.name} command: $name" }
+                this.nameLocalizations = nameLocalizations
 
                 this.register(locale, command)
             }
@@ -296,6 +304,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
             guild.createUserCommand(name) {
                 logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
+                this.nameLocalizations = nameLocalizations
 
                 this.register(locale, command)
             }
@@ -318,13 +327,14 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
             null
         }
 
-        val name = command.getTranslatedName(locale)
+        val (name, nameLocalizations) = command.localizedName
 
         val response = if (guild == null) {
             // We're registering global commands here, if the guild is null
 
             kord.createGlobalMessageCommand(name) {
                 logger.trace { "Adding/updating global ${command.type.name} command: $name" }
+                this.nameLocalizations = nameLocalizations
 
                 this.register(locale, command)
             }
@@ -333,6 +343,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
             guild.createMessageCommand(name) {
                 logger.trace { "Adding/updating guild-specific ${command.type.name} command: $name" }
+                this.nameLocalizations = nameLocalizations
 
                 this.register(locale, command)
             }
@@ -415,9 +426,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
                     val option = converter.toSlashOption(arg)
 
-                    option.name = translationsProvider
-                        .translate(option.name, locale, converter.bundle)
-                        .lowercase()
+                    option.translate(command)
 
                     if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
                         option.choices?.clear()
@@ -439,9 +448,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
                     val option = converter.toSlashOption(arg)
 
-                    option.name = translationsProvider
-                        .translate(option.name, locale, converter.bundle)
-                        .lowercase()
+                    option.translate(command)
 
                     if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
                         option.choices?.clear()
@@ -452,10 +459,16 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                     option
                 }
 
+                val (name, nameLocalizations) = it.localizedName
+                val (description, descriptionLocalizations) = it.localizedDescription
+
                 this.subCommand(
-                    it.name,
-                    it.getTranslatedDescription(locale)
+                    name,
+                    description
                 ) {
+                    this.nameLocalizations = nameLocalizations
+                    this.descriptionLocalizations = descriptionLocalizations
+
                     if (args != null) {
                         if (this.options == null) this.options = mutableListOf()
 
@@ -476,9 +489,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
 
                             val option = converter.toSlashOption(arg)
 
-                            option.name = translationsProvider
-                                .translate(option.name, locale, converter.bundle)
-                                .lowercase()
+                            option.translate(command)
 
                             if (
                                 option is BaseChoiceBuilder<*> &&
@@ -492,10 +503,15 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
                             option
                         }
 
+                        val (name, nameLocalizations) = it.localizedName
+                        val (description, descriptionLocalizations) = it.localizedDescription
+
                         this.subCommand(
-                            it.name,
-                            it.getTranslatedDescription(locale)
+                            name,
+                            description
                         ) {
+                            this.nameLocalizations = nameLocalizations
+                            this.descriptionLocalizations = descriptionLocalizations
                             if (args != null) {
                                 if (this.options == null) this.options = mutableListOf()
 
@@ -524,7 +540,33 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
     public open fun ApplicationCommand<*>.matches(
         locale: Locale,
         other: dev.kord.core.entity.application.ApplicationCommand
-    ): Boolean = type == other.type && getTranslatedName(locale).equals(other.name, true)
+    ): Boolean = type == other.type && localizedName.default.equals(other.name, true)
 
     // endregion
+
+    private fun OptionsBuilder.translate(command: ApplicationCommand<*>) {
+        val (name, nameLocalizations) = command.localize(name)
+        this.name = name.lowercase()
+        this.nameLocalizations = nameLocalizations
+
+        val (description, descriptionLocalizations) = command.localize(description)
+        this.description = description.lowercase()
+        this.descriptionLocalizations = descriptionLocalizations
+
+        if (this is BaseChoiceBuilder<*> && !choices.isNullOrEmpty()) {
+            translate(command)
+        }
+    }
+
+    private fun BaseChoiceBuilder<*>.translate(command: ApplicationCommand<*>) {
+        choices = choices!!.map {
+            val (name, nameLocalizations) = command.localize(it.name)
+
+            when (it) {
+                is Choice.IntChoice -> Choice.IntChoice(name, nameLocalizations, it.value)
+                is Choice.NumberChoice -> Choice.NumberChoice(name, nameLocalizations, it.value)
+                is Choice.StringChoice -> Choice.StringChoice(name, nameLocalizations, it.value)
+            }
+        }.toMutableList()
+    }
 }
