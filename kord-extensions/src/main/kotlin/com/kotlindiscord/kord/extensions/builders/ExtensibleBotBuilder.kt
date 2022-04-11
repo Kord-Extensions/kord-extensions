@@ -1162,6 +1162,15 @@ public open class ExtensibleBotBuilder {
         /** Whether to attempt to register the bot's application commands. Intended for multi-instance sharded bots. **/
         public var register: Boolean = true
 
+        /**
+         * Whether to sync application command permissions. KordEx will still enforce them if this is disabled, but
+         * Discord won't be made aware of command restrictions based on users or roles.
+         *
+         * You may want to disable this if your bots service communities that have Discord's newest slash command
+         * permissions experiment enabled.
+         */
+        public var syncPermissions: Boolean = true
+
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var applicationCommandRegistryBuilder: () -> ApplicationCommandRegistry =
             { DefaultApplicationCommandRegistry() }
