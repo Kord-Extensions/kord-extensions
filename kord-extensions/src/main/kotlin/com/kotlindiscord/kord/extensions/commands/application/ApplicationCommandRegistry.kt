@@ -28,6 +28,7 @@ import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Choice
 import dev.kord.common.entity.Snowflake
+import dev.kord.common.entity.optional.Optional
 import dev.kord.core.Kord
 import dev.kord.core.behavior.createChatInputCommand
 import dev.kord.core.behavior.createMessageCommand
@@ -563,9 +564,9 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
             val (name, nameLocalizations) = command.localize(it.name)
 
             when (it) {
-                is Choice.IntChoice -> Choice.IntChoice(name, nameLocalizations, it.value)
-                is Choice.NumberChoice -> Choice.NumberChoice(name, nameLocalizations, it.value)
-                is Choice.StringChoice -> Choice.StringChoice(name, nameLocalizations, it.value)
+                is Choice.IntChoice -> Choice.IntChoice(name, Optional(nameLocalizations), it.value)
+                is Choice.NumberChoice -> Choice.NumberChoice(name, Optional(nameLocalizations), it.value)
+                is Choice.StringChoice -> Choice.StringChoice(name, Optional(nameLocalizations), it.value)
             }
         }.toMutableList()
     }
