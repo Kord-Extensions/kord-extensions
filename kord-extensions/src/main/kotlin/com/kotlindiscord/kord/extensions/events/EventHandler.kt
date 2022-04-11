@@ -239,7 +239,7 @@ public open class EventHandler<T : Event>(
         val user = userFor(this)
 
         for (resolver in extension.bot.settings.i18nBuilder.localeResolvers) {
-            val result = resolver(guild, channel, user)
+            val result = resolver(guild, channel, user, interactionFor(this))
 
             if (result != null) {
                 locale = result

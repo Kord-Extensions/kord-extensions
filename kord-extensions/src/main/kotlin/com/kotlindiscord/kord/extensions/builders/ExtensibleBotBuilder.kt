@@ -42,6 +42,7 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.builder.kord.KordBuilder
 import dev.kord.core.cache.KordCacheBuilder
+import dev.kord.core.entity.interaction.Interaction
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
@@ -68,7 +69,8 @@ import kotlin.io.path.div
 internal typealias LocaleResolver = suspend (
     guild: GuildBehavior?,
     channel: ChannelBehavior?,
-    user: UserBehavior?
+    user: UserBehavior?,
+    interaction: Interaction?
 ) -> Locale?
 
 internal typealias FailureResponseBuilder =
@@ -967,6 +969,22 @@ public open class ExtensibleBotBuilder {
         public fun localeResolver(body: LocaleResolver) {
             localeResolvers.add(body)
         }
+
+        /**
+         * Registers a [LocaleResolver] using [Interaction.locale].
+         */
+        public fun interactionUserLocaleResolver(): Unit =
+            localeResolver { _, _, _, interaction ->
+                interaction?.locale?.asJavaLocale()
+            }
+
+        /**
+         * Registers a [LocaleResolver] using [Interaction.guildLocale].
+         */
+        public fun interactionGuildLocaleResolver(): Unit =
+            localeResolver { _, _, _, interaction ->
+                interaction?.guildLocale?.asJavaLocale()
+            }
     }
 
     /** Builder used for configuring the bot's member-related options. **/
