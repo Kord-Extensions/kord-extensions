@@ -74,6 +74,9 @@ public open class ChatCommand<T : Arguments>(
     /** Kord instance, backing the ExtensibleBot. **/
     public val kord: Kord by inject()
 
+    /** Whether to allow the parser to parse keyword arguments. Defaults to `true`. **/
+    public open var allowKeywordArguments: Boolean = true
+
     /**
      * @suppress
      */

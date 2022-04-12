@@ -85,11 +85,17 @@ public open class ChatCommandParser : KoinComponent {
         val argsMap = args.map { Pair(it.displayName.lowercase(), it) }.toMap()
         val keywordArgs: MutableMap<String, MutableList<String>> = mutableMapOf()
 
-        parser.parseNamed().forEach {
-            val name = it.name.lowercase()
+        if (context.chatCommand.allowKeywordArguments) {
+            parser.parseNamed().forEach {
+                val name = it.name.lowercase()
 
-            keywordArgs[name] = keywordArgs[name] ?: mutableListOf()
-            keywordArgs[name]!!.add(it.data)
+                keywordArgs[name] = keywordArgs[name] ?: mutableListOf()
+                keywordArgs[name]!!.add(it.data)
+            }
+
+            logger.trace { "Parsed out ${keywordArgs.size} keyword args." }
+        } else {
+            logger.trace { "Skipping keyword args, command is configured to disallow them." }
         }
 
         logger.trace { "Args map: $argsMap" }

@@ -29,18 +29,18 @@ import dev.kord.core.event.message.MessageCreateEvent
 /**
  * Command context object representing the context given to chat commands.
  *
- * @property messageCommand Chat command object
+ * @property chatCommand Chat command object
  * @param parser String parser instance, if any - will be `null` if this isn't a chat command.
  * @property argString String containing the command's unparsed arguments, raw, fresh from Discord itself.
  */
 @ExtensionDSL
 public open class ChatCommandContext<T : Arguments>(
-    public val messageCommand: ChatCommand<out T>,
+    public val chatCommand: ChatCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
     public open val parser: StringParser,
     public val argString: String
-) : CommandContext(messageCommand, eventObj, commandName) {
+) : CommandContext(chatCommand, eventObj, commandName) {
     /** Event that triggered this command execution. **/
     public val event: MessageCreateEvent get() = eventObj as MessageCreateEvent
 
@@ -113,7 +113,7 @@ public open class ChatCommandContext<T : Arguments>(
      */
     public suspend fun sendHelp(): Boolean {
         val helpExtension = this.command.extension.bot.findExtension<HelpProvider>() ?: return false
-        val paginator = helpExtension.getCommandHelpPaginator(this, messageCommand)
+        val paginator = helpExtension.getCommandHelpPaginator(this, chatCommand)
 
         paginator.send()
 
