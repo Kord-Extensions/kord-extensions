@@ -46,7 +46,7 @@ public class SlashGroup(
         if (!descriptionTranslationCache.containsKey(locale)) {
             descriptionTranslationCache[locale] = translationsProvider.translate(
                 this.description,
-                this.parent.extension.bundle,
+                this.parent.resolvedBundle,
                 locale
             ).lowercase()
         }

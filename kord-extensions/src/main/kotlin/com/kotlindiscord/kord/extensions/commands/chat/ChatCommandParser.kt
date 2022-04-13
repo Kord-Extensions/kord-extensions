@@ -85,11 +85,17 @@ public open class ChatCommandParser : KoinComponent {
         val argsMap = args.map { Pair(it.displayName.lowercase(), it) }.toMap()
         val keywordArgs: MutableMap<String, MutableList<String>> = mutableMapOf()
 
-        parser.parseNamed().forEach {
-            val name = it.name.lowercase()
+        if (context.chatCommand.allowKeywordArguments) {
+            parser.parseNamed().forEach {
+                val name = it.name.lowercase()
 
-            keywordArgs[name] = keywordArgs[name] ?: mutableListOf()
-            keywordArgs[name]!!.add(it.data)
+                keywordArgs[name] = keywordArgs[name] ?: mutableListOf()
+                keywordArgs[name]!!.add(it.data)
+            }
+
+            logger.trace { "Parsed out ${keywordArgs.size} keyword args." }
+        } else {
+            logger.trace { "Skipping keyword args, command is configured to disallow them." }
         }
 
         logger.trace { "Args map: $argsMap" }
@@ -216,9 +222,9 @@ public open class ChatCommandParser : KoinComponent {
                         logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -269,9 +275,9 @@ public open class ChatCommandParser : KoinComponent {
                         logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -354,10 +360,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required) {
                         throw ArgumentParsingException(
@@ -435,6 +441,8 @@ public open class ChatCommandParser : KoinComponent {
                         }
 
                         converter.parseSuccess = true
+
+                        converter.validate(context)
                     } else {
                         if (parsedCount > 0) {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
@@ -526,10 +534,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -612,10 +620,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(

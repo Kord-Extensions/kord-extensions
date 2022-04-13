@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.firstOrNull
  * This converter supports specifying guilds by supplying:
  * * A guild ID
  * * The name of the guild - the first matching guild available to the bot will be used
+ * * `this` to refer to the current guild
  *
  * @see guild
  * @see guildList
@@ -56,6 +57,16 @@ public class GuildConverter(
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
+        if (arg.equals("this", true)) {
+            val guild = context.getGuild()?.asGuildOrNull()
+
+            if (guild != null) {
+                this.parsed = guild
+
+                return true
+            }
+        }
 
         this.parsed = findGuild(arg)
             ?: throw DiscordRelayedException(

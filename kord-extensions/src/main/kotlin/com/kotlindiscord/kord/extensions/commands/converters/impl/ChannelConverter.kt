@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.toList
  * * A channel mention
  * * A channel ID, with or without a `#` prefix
  * * A channel name, with or without a `#` prefix (the required guild will be searched for the first matching channel)
+ * * `this` to refer to the current channel
  *
  * @param requireSameGuild Whether to require that the channel passed is on the same guild as the message.
  * @param requiredGuild Lambda returning a specific guild to require the channel to be in, if needed.
@@ -79,6 +80,16 @@ public class ChannelConverter(
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
+        if (arg.equals("this", true)) {
+            val channel = context.getChannel()?.asChannelOrNull()
+
+            if (channel != null) {
+                this.parsed = channel
+
+                return true
+            }
+        }
 
         val channel: Channel = findChannel(arg, context) ?: throw DiscordRelayedException(
             context.translate(

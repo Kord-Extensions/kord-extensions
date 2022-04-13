@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.firstOrNull
  * * A user or member mention
  * * A user ID
  * * The user's tag (`username#discriminator`)
+ * * "me" to refer to the user running the command
  *
  * @param useReply Whether to use the author of the replied-to message (if there is one) instead of trying to parse an
  * argument.
@@ -74,6 +75,16 @@ public class UserConverter(
         }
 
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
+        if (arg.equals("me", true)) {
+            val user = context.getUser()?.asUserOrNull()
+
+            if (user != null) {
+                this.parsed = user
+
+                return true
+            }
+        }
 
         this.parsed = findUser(arg, context)
             ?: throw DiscordRelayedException(

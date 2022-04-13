@@ -108,7 +108,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         if (!nameTranslationCache.containsKey(locale)) {
             nameTranslationCache[locale] = translationsProvider.translate(
                 this.name,
-                this.extension.bundle,
+                this.resolvedBundle,
                 locale
             ).lowercase()
         }
@@ -123,7 +123,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         if (!descriptionTranslationCache.containsKey(locale)) {
             descriptionTranslationCache[locale] = translationsProvider.translate(
                 this.description,
-                this.extension.bundle,
+                this.resolvedBundle,
                 locale
             )
         }

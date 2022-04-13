@@ -28,7 +28,7 @@ public suspend fun MessageCreateEvent.getLocale(): Locale {
     var result = bot.settings.i18nBuilder.defaultLocale
 
     for (resolver in bot.settings.i18nBuilder.localeResolvers) {
-        val resolved = resolver(getGuild(), message.channel, message.author)
+        val resolved = resolver(getGuild(), message.channel, message.author, null)
 
         if (resolved != null) {
             result = resolved
@@ -62,7 +62,7 @@ public suspend fun InteractionCreateEvent.getLocale(): Locale {
             null
         }
 
-        val resolved = resolver(guild, interaction.channel, interaction.user)
+        val resolved = resolver(guild, interaction.channel, interaction.user, interaction)
 
         if (resolved != null) {
             result = resolved

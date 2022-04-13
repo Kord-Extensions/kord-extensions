@@ -51,6 +51,9 @@ public open class ChatCommand<T : Arguments>(
     public open val arguments: (() -> T)? = null
 ) : Command(extension) {
 
+    /** Whether to allow the parser to parse keyword arguments. Defaults to `true`. **/
+    public open var allowKeywordArguments: Boolean = true
+
     /**
      * @suppress
      */
@@ -133,7 +136,7 @@ public open class ChatCommand<T : Arguments>(
             if (signature != null) {
                 signatureCache[locale] = translationsProvider.translate(
                     signature!!,
-                    extension.bundle,
+                    resolvedBundle,
                     locale
                 )
             } else {
@@ -149,7 +152,7 @@ public open class ChatCommand<T : Arguments>(
         if (!nameTranslationCache.containsKey(locale)) {
             nameTranslationCache[locale] = translationsProvider.translate(
                 this.name,
-                this.extension.bundle,
+                this.resolvedBundle,
                 locale
             ).lowercase()
         }
@@ -161,7 +164,7 @@ public open class ChatCommand<T : Arguments>(
     public open fun getTranslatedAliases(locale: Locale): Set<String> {
         if (!aliasTranslationCache.containsKey(locale)) {
             val translations = if (aliasKey != null) {
-                translationsProvider.translate(aliasKey!!, extension.bundle, locale)
+                translationsProvider.translate(aliasKey!!, resolvedBundle, locale)
                     .lowercase()
                     .split(",")
                     .map { it.trim() }
@@ -169,7 +172,7 @@ public open class ChatCommand<T : Arguments>(
                     .toSortedSet()
             } else {
                 this.aliases.map {
-                    translationsProvider.translate(it, extension.bundle, locale).lowercase()
+                    translationsProvider.translate(it, resolvedBundle, locale).lowercase()
                 }.toSortedSet()
             }
 

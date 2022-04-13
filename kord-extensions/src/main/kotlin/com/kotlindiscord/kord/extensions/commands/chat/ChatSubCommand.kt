@@ -45,7 +45,7 @@ public open class ChatSubCommand<T : Arguments>(
         if (!nameTranslationCache.containsKey(locale)) {
             nameTranslationCache[locale] = translationsProvider.translate(
                 this.name,
-                this.extension.bundle,
+                this.resolvedBundle,
                 locale
             ).lowercase()
         }

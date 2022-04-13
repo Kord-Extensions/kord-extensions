@@ -42,6 +42,7 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.builder.kord.KordBuilder
 import dev.kord.core.cache.KordCacheBuilder
+import dev.kord.core.entity.interaction.Interaction
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
@@ -68,7 +69,8 @@ import kotlin.io.path.div
 internal typealias LocaleResolver = suspend (
     guild: GuildBehavior?,
     channel: ChannelBehavior?,
-    user: UserBehavior?
+    user: UserBehavior?,
+    interaction: Interaction?
 ) -> Locale?
 
 internal typealias FailureResponseBuilder =
@@ -97,6 +99,10 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
+
+    /** @suppress Used for late execution of extensions builder calls, so plugins can be loaded first. **/
+    protected open val deferredExtensionsBuilders: MutableList<suspend ExtensionsBuilder.() -> Unit> =
+        mutableListOf()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val hooksBuilder: HooksBuilder = HooksBuilder()
@@ -245,13 +251,14 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
-     * DSL function used to configure the bot's extension options, and add extensions.
+     * DSL function used to configure the bot's extension options, and add extensions. Calls to this function **do not
+     * run immediately**, so that plugins can be loaded beforehand.
      *
      * @see ExtensionsBuilder
      */
     @BotBuilderDSL
     public open suspend fun extensions(builder: suspend ExtensionsBuilder.() -> Unit) {
-        builder(extensionsBuilder)
+        deferredExtensionsBuilders.add(builder)
     }
 
     /**
@@ -415,6 +422,8 @@ public open class ExtensibleBotBuilder {
             if (pluginBuilder.enabled) {
                 loadPlugins()
             }
+
+            deferredExtensionsBuilders.forEach { it(extensionsBuilder) }
         }
 
         setupKoin()
@@ -967,6 +976,22 @@ public open class ExtensibleBotBuilder {
         public fun localeResolver(body: LocaleResolver) {
             localeResolvers.add(body)
         }
+
+        /**
+         * Registers a [LocaleResolver] using [Interaction.locale].
+         */
+        public fun interactionUserLocaleResolver(): Unit =
+            localeResolver { _, _, _, interaction ->
+                interaction?.locale?.asJavaLocale()
+            }
+
+        /**
+         * Registers a [LocaleResolver] using [Interaction.guildLocale].
+         */
+        public fun interactionGuildLocaleResolver(): Unit =
+            localeResolver { _, _, _, interaction ->
+                interaction?.guildLocale?.asJavaLocale()
+            }
     }
 
     /** Builder used for configuring the bot's member-related options. **/

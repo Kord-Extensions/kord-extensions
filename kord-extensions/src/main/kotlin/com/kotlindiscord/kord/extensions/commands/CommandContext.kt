@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.commands
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
+import com.kotlindiscord.kord.extensions.checks.interactionFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
@@ -74,7 +75,7 @@ public abstract class CommandContext(
         val user = userFor(eventObj)
 
         for (resolver in command.extension.bot.settings.i18nBuilder.localeResolvers) {
-            val result = resolver(guild, channel, user)
+            val result = resolver(guild, channel, user, interactionFor(eventObj))
 
             if (result != null) {
                 locale = result
@@ -107,7 +108,7 @@ public abstract class CommandContext(
      */
     public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
         key,
-        command.extension.bundle,
+        command.resolvedBundle,
         replacements
     )
 }

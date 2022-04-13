@@ -193,9 +193,9 @@ public open class SlashCommandParser {
 
                         converter.parseSuccess = true
                         currentValue = null
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
                         throw ArgumentParsingException(
@@ -227,9 +227,9 @@ public open class SlashCommandParser {
 
                         converter.parseSuccess = true
                         currentValue = null
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
                         throw ArgumentParsingException(
@@ -261,9 +261,9 @@ public open class SlashCommandParser {
 
                         converter.parseSuccess = true
                         currentValue = null
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
                         throw ArgumentParsingException(
@@ -295,9 +295,9 @@ public open class SlashCommandParser {
 
                         converter.parseSuccess = true
                         currentValue = null
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
                         throw ArgumentParsingException(
