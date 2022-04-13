@@ -100,6 +100,10 @@ public open class ExtensibleBotBuilder {
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
 
+    /** @suppress Used for late execution of extensions builder calls, so plugins can be loaded first. **/
+    protected open val deferredExtensionsBuilders: MutableList<suspend ExtensionsBuilder.() -> Unit> =
+        mutableListOf()
+
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val hooksBuilder: HooksBuilder = HooksBuilder()
 
@@ -247,13 +251,14 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
-     * DSL function used to configure the bot's extension options, and add extensions.
+     * DSL function used to configure the bot's extension options, and add extensions. Calls to this function **do not
+     * run immediately**, so that plugins can be loaded beforehand.
      *
      * @see ExtensionsBuilder
      */
     @BotBuilderDSL
     public open suspend fun extensions(builder: suspend ExtensionsBuilder.() -> Unit) {
-        builder(extensionsBuilder)
+        deferredExtensionsBuilders.add(builder)
     }
 
     /**
@@ -417,6 +422,8 @@ public open class ExtensibleBotBuilder {
             if (pluginBuilder.enabled) {
                 loadPlugins()
             }
+
+            deferredExtensionsBuilders.forEach { it(extensionsBuilder) }
         }
 
         setupKoin()
