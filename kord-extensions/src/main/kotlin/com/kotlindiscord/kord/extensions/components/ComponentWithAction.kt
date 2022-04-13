@@ -12,11 +12,8 @@ import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
-import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
-import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
@@ -129,34 +126,6 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     @Throws(DiscordRelayedException::class)
     public open suspend fun runChecks(event: E): Boolean =
         runStandardChecks(event)
-
-    /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(DiscordRelayedException::class)
-    public open suspend fun checkBotPerms(context: C) {
-        if (requiredPerms.isEmpty()) {
-            return  // Nothing to check, don't try to hit the cache
-        }
-
-        if (context.guild != null) {
-            val perms = (context.channel.asChannel() as GuildChannel)
-                .permissionsForMember(kord.selfId)
-
-            val missingPerms = requiredPerms.filter { !perms.contains(it) }
-
-            if (missingPerms.isNotEmpty()) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        "commands.error.missingBotPermissions",
-                        null,
-
-                        replacements = arrayOf(
-                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
-                        )
-                    )
-                )
-            }
-        }
-    }
 
     /** Override this to implement your component's calling logic. Check subtypes for examples! **/
     public open suspend fun call(event: E) {

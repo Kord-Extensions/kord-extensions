@@ -12,7 +12,6 @@ import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
-import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -20,26 +19,18 @@ import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
-import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.respond
-import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
-import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -58,21 +49,7 @@ private val logger = KotlinLogging.logger {}
 public open class ChatCommand<T : Arguments>(
     extension: Extension,
     public open val arguments: (() -> T)? = null
-) : Command(extension), KoinComponent {
-    /** Translations provider, for retrieving translations. **/
-    public val translationsProvider: TranslationsProvider by inject()
-
-    /** Bot settings object. **/
-    public val settings: ExtensibleBotBuilder by inject()
-
-    /** Message command registry. **/
-    public val registry: ChatCommandRegistry by inject()
-
-    /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentry: SentryAdapter by inject()
-
-    /** Kord instance, backing the ExtensibleBot. **/
-    public val kord: Kord by inject()
+) : Command(extension) {
 
     /**
      * @suppress
@@ -132,12 +109,6 @@ public open class ChatCommand<T : Arguments>(
      * @suppress
      */
     public open val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
-
-    /** Permissions required to be able to run this command. **/
-    public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
-
-    /** Translation cache, so we don't have to look up translations every time. **/
-    public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /** Translation cache, so we don't have to look up translations every time. **/
     public open val aliasTranslationCache: MutableMap<Locale, Set<String>> = mutableMapOf()
@@ -346,34 +317,6 @@ public open class ChatCommand<T : Arguments>(
         }
 
         return true
-    }
-
-    /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(DiscordRelayedException::class)
-    public open suspend fun checkBotPerms(context: ChatCommandContext<T>) {
-        if (requiredPerms.isEmpty()) {
-            return  // Nothing to check, don't try to hit the cache
-        }
-
-        if (context.guild != null) {
-            val perms = (context.channel.asChannel() as GuildChannel)
-                .permissionsForMember(kord.selfId)
-
-            val missingPerms = requiredPerms.filter { !perms.contains(it) }
-
-            if (missingPerms.isNotEmpty()) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        "commands.error.missingBotPermissions",
-                        null,
-
-                        replacements = arrayOf(
-                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
-                        )
-                    )
-                )
-            }
-        }
     }
 
     /**

@@ -49,8 +49,8 @@ public abstract class CommandContext(
     /** Called before processing, used to populate any extra variables from event data. **/
     public abstract suspend fun populate()
 
-    /** Extract channel information from event data, if that context is available. **/
-    public abstract suspend fun getChannel(): ChannelBehavior?
+    /** Extract channel information from event data. **/
+    public abstract suspend fun getChannel(): ChannelBehavior
 
     /** Extract guild information from event data, if that context is available. **/
     public abstract suspend fun getGuild(): GuildBehavior?
