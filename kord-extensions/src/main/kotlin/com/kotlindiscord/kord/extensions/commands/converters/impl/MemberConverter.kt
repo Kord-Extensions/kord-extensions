@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.firstOrNull
  * * A user or member mention
  * * A user ID
  * * The user's tag (`username#discriminator`)
+ * * "me" to refer to the member running the command
  *
  * @param requiredGuild Lambda returning a specific guild to require the member to be in, if needed.
  * @param useReply Whether to use the author of the replied-to message (if there is one) instead of trying to parse an
@@ -82,6 +83,16 @@ public class MemberConverter(
         }
 
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
+        if (arg.equals("me", true)) {
+            val member = context.getMember()?.asMemberOrNull()
+
+            if (member != null) {
+                this.parsed = member
+
+                return true
+            }
+        }
 
         parsed = findMember(arg, context)
             ?: throw DiscordRelayedException(
