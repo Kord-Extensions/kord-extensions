@@ -52,6 +52,7 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
 import dev.kord.gateway.builder.Shards
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import dev.kord.rest.builder.message.create.allowedMentions
 import io.ktor.utils.io.*
 import mu.KLogger
 import mu.KotlinLogging
@@ -95,7 +96,11 @@ public open class ExtensibleBotBuilder {
     /**
      * @suppress Builder that shouldn't be set directly by the user.
      */
-    public var failureResponseBuilder: FailureResponseBuilder = { message, _ -> content = message }
+    public var failureResponseBuilder: FailureResponseBuilder = { message, _ ->
+        allowedMentions { }
+
+        content = message
+    }
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
