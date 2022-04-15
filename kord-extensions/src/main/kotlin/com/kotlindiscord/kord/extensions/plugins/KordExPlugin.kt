@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.plugins
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.core.Kord
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.pf4j.Plugin
@@ -78,15 +79,15 @@ public abstract class KordExPlugin(wrapper: PluginWrapper) : Plugin(wrapper), Ko
         }
     }
 
-    override fun start() {
-        kord.launch { asyncStart() }
+    override fun start(): Unit = runBlocking {
+        kord.launch { asyncStart() }.join()
     }
 
-    override fun stop() {
-        kord.launch { asyncStop() }
+    override fun stop(): Unit = runBlocking {
+        kord.launch { asyncStop() }.join()
     }
 
-    override fun delete() {
-        kord.launch { asyncDelete() }
+    override fun delete(): Unit = runBlocking {
+        kord.launch { asyncDelete() }.join()
     }
 }
