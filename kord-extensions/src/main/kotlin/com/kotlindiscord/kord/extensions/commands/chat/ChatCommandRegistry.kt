@@ -48,7 +48,7 @@ public open class ChatCommandRegistry : KoinComponent {
      * Directly register a [ChatCommand] to this command registry.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
-     * call the [Extension.messageContentCommand] function in your [Extension.setup] function.
+     * call the [ChatGroupCommand.chatCommand] function in your [Extension.setup] function.
      *
      * This function will throw a [CommandRegistrationException] if the command has already been registered, if
      * a command with the same name exists, or if a command with one of the same aliases exists.

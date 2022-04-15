@@ -867,7 +867,7 @@ public open class ExtensibleBotBuilder {
                     it.invoke()
                 } catch (t: Throwable) {
                     logger.error(t) {
-                        "Failed to run beforeKoinSetup hook $it"
+                        "Failed to run afterKoinSetup hook $it"
                     }
                 }
             }

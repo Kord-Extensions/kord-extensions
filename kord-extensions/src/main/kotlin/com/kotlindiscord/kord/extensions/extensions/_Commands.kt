@@ -447,7 +447,7 @@ public suspend fun Extension.chatCommand(
  *
  * You can use this if you have a custom command subclass you need to register.
  *
- * @param commandObj MessageContentCommand object to register.
+ * @param commandObj [ChatCommand] object to register.
  */
 @ExtensionDSL
 public fun <T : Arguments> Extension.chatCommand(
