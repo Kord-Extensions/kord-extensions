@@ -326,7 +326,7 @@ class TestExtension : Extension() {
             name = "pages"
             description = "Pages!"
 
-            guild(787452339908116521)
+            guild(TEST_SERVER_ID)
 
             action {
                 editingPaginator("short") {
@@ -372,7 +372,7 @@ class TestExtension : Extension() {
             name = "buttons"
             description = "Buttons!"
 
-            guild(787452339908116521) // Our test server
+            guild(TEST_SERVER_ID) // Our test server
 
             action {
                 respond {
@@ -415,7 +415,7 @@ class TestExtension : Extension() {
             name = "test-noack"
             description = "Don't auto-ack this one"
 
-            guild(787452339908116521) // Our test server
+            guild(TEST_SERVER_ID) // Our test server
 
             initialResponse {
                 embed {
@@ -432,7 +432,7 @@ class TestExtension : Extension() {
             name = "choice"
             description = "Choice-based"
 
-            guild(787452339908116521) // Our test server
+            guild(TEST_SERVER_ID) // Our test server
 
             action {
                 respond {
@@ -445,7 +445,7 @@ class TestExtension : Extension() {
             name = "group"
             description = "Test command, please ignore"
 
-            guild(787452339908116521) // Our test server
+            guild(TEST_SERVER_ID) // Our test server
 
             group("one") {
                 description = "Group one"
@@ -504,7 +504,7 @@ class TestExtension : Extension() {
             name = "guild-embed"
             description = "Test command, please ignore"
 
-            guild(787452339908116521) // Our test server
+            guild(TEST_SERVER_ID) // Our test server
 
             group("first") {
                 description = "First group."
@@ -552,7 +552,7 @@ class TestExtension : Extension() {
 
                 "Now with some newlines in the description!"
 
-            guild(787452339908116521) // Our test server
+            guild(TEST_SERVER_ID) // Our test server
 
             action {
                 respond {
