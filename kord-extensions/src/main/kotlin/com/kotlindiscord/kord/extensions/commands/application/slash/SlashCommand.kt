@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -27,6 +28,7 @@ import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -45,6 +47,9 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
 ) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
     /** @suppress This is only meant for use by code that extends the command system. **/
     public val kxLogger: KLogger = KotlinLogging.logger {}
+
+    /** Application command registry. **/
+    public val registry: ApplicationCommandRegistry by inject()
 
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String

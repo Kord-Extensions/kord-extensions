@@ -31,6 +31,7 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
@@ -121,6 +122,9 @@ public open class ChatCommand<T : Arguments>(
 
     /** Locale-based cache of generated signature strings. **/
     public open var signatureCache: MutableMap<Locale, String> = mutableMapOf()
+
+    /** Chat command registry. **/
+    public val registry: ChatCommandRegistry by inject()
 
     /**
      * Retrieve the command signature for a locale, which specifies how the command's arguments should be structured.

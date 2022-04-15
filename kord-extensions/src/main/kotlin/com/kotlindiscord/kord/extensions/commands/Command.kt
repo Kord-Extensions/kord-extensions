@@ -12,7 +12,6 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
-import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.events.CommandEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -64,9 +63,6 @@ public abstract class Command(public val extension: Extension) : Lockable, KoinC
 
     /** Bot settings object. **/
     public val settings: ExtensibleBotBuilder by inject()
-
-    /** Message command registry. **/
-    public val registry: ChatCommandRegistry by inject()
 
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
