@@ -129,5 +129,4 @@ public abstract class Command(public val extension: Extension) : Lockable, KoinC
             }
         }
     }
-
 }

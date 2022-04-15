@@ -152,6 +152,9 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
         replacements
     )
 
+    /**
+     * @param breadcrumb breadcrumb data will be modified to add the component context information
+     */
     public suspend fun addContextDataToBreadcrumb(breadcrumb: Breadcrumb) {
         val channel = channel.asChannelOrNull()
         val guild = guild?.asGuildOrNull()
