@@ -17,7 +17,7 @@ import me.shedaniel.linkie.Namespace
  */
 @Suppress("UndocumentedPublicProperty")
 open class MappingArguments(val namespace: Namespace) : Arguments() {
-    private val versions = namespace.getAllSortedVersions()
+    private val versions by lazy { namespace.getAllSortedVersions() }
 
     val query by string {
         name = "query"
