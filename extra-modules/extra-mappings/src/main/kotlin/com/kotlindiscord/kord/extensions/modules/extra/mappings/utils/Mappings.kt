@@ -128,7 +128,7 @@ fun classesToPages(
 /** Given a set of result classes, format them into a list of pages for the paginator. **/
 fun classesToPages(
     namespace: Namespace,
-    queryResult: QueryResult<MappingsContainer, ClassResultList>
+    queryResult: ClassResults
 ) =
     classesToPages(namespace, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
 
@@ -144,7 +144,7 @@ val classesToPages = { namespace: Namespace, _: MappingsContainer, classes: Clas
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    fields: List<Pair<Class, Field>>,
+    fields: List<MemberEntry<Field>>,
     mapDescriptors: Boolean = true
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
@@ -298,7 +298,7 @@ fun fieldsToPages(
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    methods: List<Pair<Class, Method>>,
+    methods: List<MemberEntry<Method>>,
     mapDescriptors: Boolean = true
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
@@ -472,7 +472,7 @@ val classMatchesToPages = { outputContainer: MappingsContainer, classMatches: Ma
 /** Given a set of field mapping matches, format them into a list of pages for the paginator. **/
 fun fieldMatchesToPages(
     outputContainer: MappingsContainer,
-    matches: List<Pair<Pair<Class, Field>, Pair<Class, Field>>>
+    matches: List<Pair<MemberEntry<Field>, MemberEntry<Field>>>
 ): List<String> {
     val pages = mutableListOf<String>()
 
@@ -521,14 +521,14 @@ fun fieldMatchesToPages(
 }
 
 /** Convenience function for making code more generalized. */
-val fieldMatchesToPages = { outputContainer: MappingsContainer, fieldMatches: Matches<Pair<Class, Field>> ->
+val fieldMatchesToPages = { outputContainer: MappingsContainer, fieldMatches: Matches<MemberEntry<Field>> ->
     fieldMatchesToPages(outputContainer, fieldMatches.toList())
 }
 
 /** Given a set of method mapping matches, format them into a list of pages for the paginator. **/
 fun methodMatchesToPages(
     outputContainer: MappingsContainer,
-    matches: List<Pair<Pair<Class, Method>, Pair<Class, Method>>>
+    matches: List<Pair<MemberEntry<Method>, MemberEntry<Method>>>
 ): List<String> {
     val pages = mutableListOf<String>()
 
@@ -564,7 +564,7 @@ fun methodMatchesToPages(
 }
 
 /** Convienence function for making code more generalized. */
-val methodMatchesToPages = { outputContainer: MappingsContainer, methodMatches: Matches<Pair<Class, Method>> ->
+val methodMatchesToPages = { outputContainer: MappingsContainer, methodMatches: Matches<MemberEntry<Method>> ->
     methodMatchesToPages(outputContainer, methodMatches.toList())
 }
 

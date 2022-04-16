@@ -36,6 +36,7 @@ import me.shedaniel.linkie.utils.QueryContext
 import me.shedaniel.linkie.utils.QueryResult
 import me.shedaniel.linkie.utils.ResultHolder
 import mu.KotlinLogging
+import kotlin.collections.set
 
 private typealias MappingSlashCommand = PublicSlashCommandContext<out MappingArguments>
 private typealias ConversionSlashCommand = PublicSlashCommandContext<MappingConversionArguments>
@@ -527,8 +528,8 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryClasses,
                         classMatchesToPages,
                         enabledNamespaces,
-                        obfNameProvider = { it.obfName.preferredName },
-                        classNameProvider = { it.obfName.preferredName!! },
+                        obfNameProvider = { obfName.preferredName },
+                        classNameProvider = { obfName.preferredName!! },
                         descProvider = { null }
                     )
                 }
@@ -544,13 +545,13 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryFields,
                         fieldMatchesToPages,
                         enabledNamespaces,
-                        obfNameProvider = { it.second.obfName.preferredName },
-                        classNameProvider = { it.first.obfName.preferredName!! },
+                        obfNameProvider = { member.obfName.preferredName },
+                        classNameProvider = { owner.obfName.preferredName!! },
                         descProvider = {
                             when {
-                                second.obfName.isMerged() -> second.getObfMergedDesc(it)
-                                second.obfName.client != null -> second.getObfClientDesc(it)
-                                second.obfName.server != null -> second.getObfServerDesc(it)
+                                member.obfName.isMerged() -> member.getObfMergedDesc(it)
+                                member.obfName.client != null -> member.getObfClientDesc(it)
+                                member.obfName.server != null -> member.getObfServerDesc(it)
                                 else -> null
                             }
                         }
@@ -568,13 +569,13 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryMethods,
                         methodMatchesToPages,
                         enabledNamespaces,
-                        obfNameProvider = { it.second.obfName.preferredName },
-                        classNameProvider = { it.first.obfName.preferredName!! },
+                        obfNameProvider = { member.obfName.preferredName },
+                        classNameProvider = { owner.obfName.preferredName!! },
                         descProvider = {
                             when {
-                                second.obfName.isMerged() -> second.getObfMergedDesc(it)
-                                second.obfName.client != null -> second.getObfClientDesc(it)
-                                second.obfName.server != null -> second.getObfServerDesc(it)
+                                member.obfName.isMerged() -> member.getObfMergedDesc(it)
+                                member.obfName.client != null -> member.getObfClientDesc(it)
+                                member.obfName.server != null -> member.getObfServerDesc(it)
                                 else -> null
                             }
                         }
@@ -794,8 +795,8 @@ class MappingsExtension : Extension() {
         queryProvider: suspend (QueryContext) -> QueryResult<A, T>,
         pageGenerationMethod: (MappingsContainer, Map<B, B>) -> List<String>,
         enabledNamespaces: List<String>,
-        obfNameProvider: (B) -> String?,
-        classNameProvider: (B) -> String,
+        obfNameProvider: B.() -> String?,
+        classNameProvider: B.() -> String,
         descProvider: B.(MappingsContainer) -> String?,
     ) where A : MappingsMetadata, T : List<ResultHolder<B>> {
         sentry.breadcrumb(BreadcrumbType.Query) {
