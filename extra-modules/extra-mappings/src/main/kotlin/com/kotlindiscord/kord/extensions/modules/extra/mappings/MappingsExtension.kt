@@ -26,6 +26,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.types.respond
+import com.soywiz.korio.file.std.localVfs
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
@@ -55,6 +56,12 @@ class MappingsExtension : Extension() {
     override val name: String = "mappings"
 
     override suspend fun setup() {
+        // Fix issue where Linkie doesn't create its cache directory
+        val cacheDirectory = localVfs("./.linkie-cache")
+        if (!cacheDirectory.exists()) {
+            cacheDirectory.mkdirs()
+        }
+
         val namespaces = mutableListOf<Namespace>()
         val enabledNamespaces = builder.config.getEnabledNamespaces()
 
