@@ -13,6 +13,7 @@ import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
@@ -42,7 +43,10 @@ class PhishingWebsocketWrapper(
     private val kord: Kord by inject()
 
     internal val client = HttpClient {
-        install(ContentNegotiation)
+        install(ContentNegotiation) {
+            json()
+        }
+
         install(WebSockets)
     }
 
@@ -89,7 +93,7 @@ class PhishingWebsocketWrapper(
                 logger.debug { "Sinking Yachts <<< $frameText" }
 
                 try {
-                    val change = Json.decodeFromString<DomainChange>(frameText)
+                    val change: DomainChange = Json.decodeFromString(frameText)
 
                     callback(change)
                 } catch (e: Exception) {

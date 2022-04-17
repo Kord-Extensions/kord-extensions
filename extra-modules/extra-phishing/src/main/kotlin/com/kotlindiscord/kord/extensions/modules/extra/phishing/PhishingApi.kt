@@ -11,6 +11,7 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
+import io.ktor.serialization.kotlinx.json.*
 import mu.KotlinLogging
 
 internal const val ALL_PATH = "https://phish.sinking.yachts/v2/all"
@@ -23,7 +24,10 @@ class PhishingApi(internal val appName: String) {
     private val logger = KotlinLogging.logger { }
 
     internal val client = HttpClient {
-        install(ContentNegotiation)
+        install(ContentNegotiation) {
+            json()
+        }
+
         install(WebSockets)
     }
 
