@@ -63,7 +63,7 @@ public class T4JDurationConverter(
         try {
             this.parsed = T4JDurationParser.parse(arg, context.getLocale())
         } catch (e: InvalidTimeUnitException) {
-            val message = context.translate(
+            val message: String = context.translate(
                 "converters.duration.error.invalidUnit",
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
@@ -80,12 +80,12 @@ public class T4JDurationConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val arg = (option as? StringOptionValue)?.value ?: return false
+        val arg: String = (option as? StringOptionValue)?.value ?: return false
 
         try {
             this.parsed = T4JDurationParser.parse(arg, context.getLocale())
         } catch (e: InvalidTimeUnitException) {
-            val message = context.translate(
+            val message: String = context.translate(
                 "converters.duration.error.invalidUnit",
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""

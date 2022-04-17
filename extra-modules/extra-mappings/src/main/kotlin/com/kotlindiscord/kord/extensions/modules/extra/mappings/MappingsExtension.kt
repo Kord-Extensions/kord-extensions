@@ -5,6 +5,7 @@
  */
 
 @file:Suppress("StringLiteralDuplication")
+@file:OptIn(DelicateCoroutinesApi::class)
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
@@ -28,6 +29,7 @@ import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.types.respond
 import com.soywiz.korio.file.std.localVfs
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
@@ -188,59 +190,63 @@ class MappingsExtension : Extension() {
                 check { customChecks(name, namespace) }
                 check(categoryCheck, channelCheck, guildCheck)
 
-                action(customInfoCommand ?: {
-                    val defaultVersion = namespace.defaultVersion
-                    val allVersions = namespace.getAllSortedVersions()
+                action(
+                    customInfoCommand ?: {
+                        val defaultVersion = namespace.defaultVersion
+                        val allVersions = namespace.getAllSortedVersions()
 
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            if (version == defaultVersion) {
-                                "**» $version** (Default)"
-                            } else {
-                                "**»** $version"
-                            }
-                        }
-                    }.toMutableList()
-
-                    val versionSize = allVersions.size
-                    pages.add(
-                        0,
-                        "$friendlyName mappings are available for queries across **$versionSize** versions.\n\n" +
-
-                            "**Default version:** $defaultVersion\n" +
-                            "**Commands:** `/$parentName class`, `/$parentName field`, `/$parentName method`\n\n" +
-
-                            "For a full list of supported $friendlyName versions, please view the rest of the pages."
-                    )
-
-                    val pagesObj = Pages()
-                    val pageTitle = "Mappings info: $friendlyName"
-
-                    pages.forEach {
-                        pagesObj.addPage(
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
+                        val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
+                            it.joinToString("\n") { version ->
+                                if (version == defaultVersion) {
+                                    "**» $version** (Default)"
+                                } else {
+                                    "**»** $version"
                                 }
                             }
+                        }.toMutableList()
+
+                        val versionSize = allVersions.size
+                        pages.add(
+                            0,
+                            "$friendlyName mappings are available for queries across **$versionSize** " +
+                                "versions.\n\n" +
+
+                                "**Default version:** $defaultVersion\n" +
+                                "**Commands:** `/$parentName class`, `/$parentName field`, `/$parentName method`\n\n" +
+
+                                "For a full list of supported $friendlyName versions, please view the rest of the " +
+                                "pages."
                         )
+
+                        val pagesObj = Pages()
+                        val pageTitle = "Mappings info: $friendlyName"
+
+                        pages.forEach {
+                            pagesObj.addPage(
+                                Page {
+                                    description = it
+                                    title = pageTitle
+
+                                    footer {
+                                        text = PAGE_FOOTER
+                                        icon = PAGE_FOOTER_ICON
+                                    }
+                                }
+                            )
+                        }
+
+                        val paginator = PublicResponsePaginator(
+                            pages = pagesObj,
+                            keepEmbed = true,
+                            owner = event.interaction.user,
+                            timeoutSeconds = getTimeout(),
+                            locale = getLocale(),
+                            interaction = interactionResponse
+                        )
+
+                        paginator.send()
                     }
-
-                    val paginator = PublicResponsePaginator(
-                        pages = pagesObj,
-                        keepEmbed = true,
-                        owner = event.interaction.user,
-                        timeoutSeconds = getTimeout(),
-                        locale = getLocale(),
-                        interaction = interactionResponse
-                    )
-
-                    paginator.send()
-                })
+                )
             }
         }
 
@@ -599,13 +605,13 @@ class MappingsExtension : Extension() {
                     pages.add(
                         "Mapping conversions are available for any Minecraft version with multiple mapping sets.\n\n" +
 
-                        "The version of the output is determined in this order:\n" +
-                        "\u2022 The version specified by the command, \n" +
-                        "\u2022 The default version of the output mapping set, \n" +
-                        "\u2022 The default version of the input mapping set, or\n" +
-                        "\u2022 The latest version supported by both mapping sets.\n\n" +
+                            "The version of the output is determined in this order:\n" +
+                            "\u2022 The version specified by the command, \n" +
+                            "\u2022 The default version of the output mapping set, \n" +
+                            "\u2022 The default version of the input mapping set, or\n" +
+                            "\u2022 The latest version supported by both mapping sets.\n\n" +
 
-                        "For a list of available mappings, see the next page."
+                            "For a list of available mappings, see the next page."
                     )
                     pages.add(
                         enabledNamespaces.joinToString(
@@ -699,10 +705,12 @@ class MappingsExtension : Extension() {
 
                 @Suppress("TooGenericExceptionCaught")
                 val result = try {
-                    queryProvider(QueryContext(
-                        provider = provider,
-                        searchKey = query
-                    ))
+                    queryProvider(
+                        QueryContext(
+                            provider = provider,
+                            searchKey = query
+                        )
+                    )
                 } catch (e: NullPointerException) {
                     respond {
                         content = e.localizedMessage
@@ -888,10 +896,12 @@ class MappingsExtension : Extension() {
 
                 @Suppress("TooGenericExceptionCaught")
                 val inputResult = try {
-                    queryProvider(QueryContext(
-                        provider = inputProvider,
-                        searchKey = query
-                    ))
+                    queryProvider(
+                        QueryContext(
+                            provider = inputProvider,
+                            searchKey = query
+                        )
+                    )
                 } catch (e: NullPointerException) {
                     returnError(e.localizedMessage)
                     return@withContext

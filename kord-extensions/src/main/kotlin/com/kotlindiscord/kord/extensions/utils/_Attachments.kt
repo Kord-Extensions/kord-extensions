@@ -8,7 +8,9 @@ package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.core.entity.Attachment
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.jvm.javaio.*
@@ -25,10 +27,10 @@ private val client = HttpClient()
  * of the other functions.
  */
 public suspend fun Attachment.download(): ByteArray {
-    val channel = client.get<ByteReadChannel>(this.url)
-    val packet = channel.readRemaining()
+    val channel = client.get(this.url)
+    val packet = channel.bodyAsChannel()
 
-    return packet.readBytes()
+    return packet.readRemaining().readBytes()
 }
 
 /** Given a [String] representing a file path, download the attachment to the file it points to. **/
@@ -53,7 +55,7 @@ public suspend fun Attachment.downloadToFile(file: File): Path {
         file.toPath().createFile()
     }
 
-    val channel = client.get<ByteReadChannel>(this.url)
+    val channel = client.get(this.url).bodyAsChannel()
 
     file.outputStream().use { fileStream ->
         channel.copyTo(fileStream)
@@ -79,7 +81,7 @@ public suspend fun Attachment.downloadToFolder(file: File): Path {
     }
 
     val targetFile = File(file, "${this.id.value} - ${this.filename}")
-    val channel = client.get<ByteReadChannel>(this.url)
+    val channel = client.get(this.url).bodyAsChannel()
 
     targetFile.outputStream().use { fileStream ->
         channel.copyTo(fileStream)

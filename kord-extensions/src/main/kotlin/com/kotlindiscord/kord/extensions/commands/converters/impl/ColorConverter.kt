@@ -82,19 +82,20 @@ public class ColorConverter(
 
         try {
             when {
-                optionValue.startsWith("#") -> this.parsed =
-                    Color(optionValue.substring(1).toInt(16))
+                optionValue.startsWith("#") ->
+                    this.parsed = Color(optionValue.substring(1).toInt(16))
 
-                optionValue.startsWith("0x") -> this.parsed =
-                    Color(optionValue.substring(2).toInt(16))
+                optionValue.startsWith("0x") ->
+                    this.parsed = Color(optionValue.substring(2).toInt(16))
 
-                optionValue.all { it.isDigit() } -> this.parsed =
-                    Color(optionValue.toInt())
+                optionValue.all { it.isDigit() } ->
+                    this.parsed = Color(optionValue.toInt())
 
-                else -> this.parsed =
-                    ColorParser.parse(optionValue, context.getLocale()) ?: throw DiscordRelayedException(
-                        context.translate("converters.color.error.unknown", replacements = arrayOf(optionValue))
-                    )
+                else ->
+                    this.parsed = ColorParser.parse(optionValue, context.getLocale())
+                        ?: throw DiscordRelayedException(
+                            context.translate("converters.color.error.unknown", replacements = arrayOf(optionValue))
+                        )
             }
         } catch (e: DiscordRelayedException) {
             throw e

@@ -174,8 +174,8 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         }
 
         // Get guild commands if we're registering them (guild != null), otherwise get global commands
-        val registered = guild?.commands?.toList()
-            ?: kord.globalCommands.toList()
+        val registered = guild?.getApplicationCommands()?.toList()
+            ?: kord.getGlobalApplicationCommands().toList()
 
         if (!bot.settings.applicationCommandsBuilder.register) {
             commands.forEach { commandObj ->

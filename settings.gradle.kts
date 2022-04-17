@@ -1,6 +1,3 @@
-// NOTE: UPDATE THIS IF YOU UPDATE THE LIBS.VERSIONS.TOML
-// NOTE: All the plugins and plugin repositories moved to buildSrc/build.gradle.kts
-
 rootProject.name = "kord-extensions"
 
 enableFeaturePreview("VERSION_CATALOGS")

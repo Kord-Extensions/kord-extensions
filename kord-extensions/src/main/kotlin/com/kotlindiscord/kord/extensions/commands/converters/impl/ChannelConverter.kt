@@ -150,7 +150,8 @@ public class ChannelConverter(
 
             throw DiscordRelayedException(
                 context.translate(
-                    "converters.channel.error.wrongType", replacements = arrayOf(
+                    "converters.channel.error.wrongType",
+                    replacements = arrayOf(
                         channel.type,
                         requiredChannelTypes.joinToString { "**${it.translate(locale)}**" }
                     )

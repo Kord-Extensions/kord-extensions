@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.kotlindiscord.kord.extensions.checks
 
 import dev.kord.common.entity.Snowflake

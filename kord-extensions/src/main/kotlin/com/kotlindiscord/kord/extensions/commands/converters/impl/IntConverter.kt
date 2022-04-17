@@ -27,7 +27,7 @@ import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.IntegerOptionValue
 import dev.kord.core.entity.interaction.OptionValue
-import dev.kord.rest.builder.interaction.IntChoiceBuilder
+import dev.kord.rest.builder.interaction.IntegerOptionBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
 private const val DEFAULT_RADIX = 10
@@ -67,7 +67,7 @@ public class IntConverter(
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        IntChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+        IntegerOptionBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
         val optionValue = (option as? IntegerOptionValue)?.value ?: return false

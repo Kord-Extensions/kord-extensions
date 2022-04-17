@@ -46,14 +46,16 @@ object McpNamespaceReplacement : Namespace("mcp") {
                 buildMappings(name = "MCP") {
                     val latestSnapshot = mcpConfigSnapshots[it.toVersion()]?.maxOrNull()!!
                     @Suppress("MagicNumber") // we're constructing a version, we need 13
-                    source(if (it.toVersion() >= Version(1, 13)) {
-                        loadTsrgFromURLZip(URL("$forgeMaven/mcp_config/$it/mcp_config-$it.zip"))
-                        MappingsSource.MCP_TSRG
-                    } else {
-                        val link = "$forgeMaven/mcp/$it/mcp-$it-srg.zip"
-                        loadSrgFromURLZip(URL(link))
-                        MappingsSource.MCP_SRG
-                    })
+                    source(
+                        if (it.toVersion() >= Version(1, 13)) {
+                            loadTsrgFromURLZip(URL("$forgeMaven/mcp_config/$it/mcp_config-$it.zip"))
+                            MappingsSource.MCP_TSRG
+                        } else {
+                            val link = "$forgeMaven/mcp/$it/mcp-$it-srg.zip"
+                            loadSrgFromURLZip(URL(link))
+                            MappingsSource.MCP_SRG
+                        }
+                    )
                     val link = "$mcpArchive/mcp_snapshot/$latestSnapshot-$it/mcp_snapshot-$latestSnapshot-$it.zip"
                     loadMCPFromURLZip(URL(link))
                 }

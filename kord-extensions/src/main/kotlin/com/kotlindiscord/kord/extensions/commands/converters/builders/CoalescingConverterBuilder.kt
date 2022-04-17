@@ -7,4 +7,5 @@
 package com.kotlindiscord.kord.extensions.commands.converters.builders
 
 /** Converter builder for coalescing converters. **/
+@Suppress("UnnecessaryAbstractClass")  // Your face is an unnecessary abstract class
 public abstract class CoalescingConverterBuilder<T> : ConverterBuilder<T>()

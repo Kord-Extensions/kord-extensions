@@ -59,8 +59,3 @@ dependencies {
 }
 
 group = "com.kotlindiscord.kord.extensions"
-
-kordex {
-    jvmTarget.set("9")
-    javaVersion.set(JavaVersion.VERSION_1_9)
-}

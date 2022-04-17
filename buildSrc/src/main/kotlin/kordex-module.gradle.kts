@@ -48,12 +48,12 @@ tasks {
         rootProject.file("LICENSE").copyTo(rootProject.file("build/LICENSE-kordex"), true)
 
         java {
-            sourceCompatibility = extension.javaVersion.getOrElse(JavaVersion.VERSION_1_8)
+            sourceCompatibility = extension.javaVersion.getOrElse(JavaVersion.VERSION_11)
         }
 
         withType<KotlinCompile>().configureEach {
             kotlinOptions {
-                jvmTarget = extension.jvmTarget.getOrElse("1.8")
+                jvmTarget = extension.jvmTarget.getOrElse("11")
             }
         }
     }

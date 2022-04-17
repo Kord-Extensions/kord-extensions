@@ -12,6 +12,7 @@ import dev.kord.common.entity.ChannelType
 import java.util.*
 
 /** Given a [ChannelType], return a string representing its translation key. **/
+@Suppress("DEPRECATION")
 public fun ChannelType.toTranslationKey(): String = when (this) {
     ChannelType.DM -> "channelType.dm"
     ChannelType.GroupDM -> "channelType.groupDm"
@@ -24,6 +25,7 @@ public fun ChannelType.toTranslationKey(): String = when (this) {
     ChannelType.PublicNewsThread -> "channelType.publicNewsThread"
     ChannelType.PublicGuildThread -> "channelType.publicGuildThread"
     ChannelType.PrivateThread -> "channelType.privateThread"
+    ChannelType.GuildDirectory -> "channelType.guildDirectory"
 
     is ChannelType.Unknown -> "channelType.unknown"
 }

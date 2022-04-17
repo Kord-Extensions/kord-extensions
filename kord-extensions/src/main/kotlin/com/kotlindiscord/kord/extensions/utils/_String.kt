@@ -63,6 +63,7 @@ public fun String.capitalizeWords(locale: Locale? = null): String {
                 it.titlecase(locale ?: Locale.getDefault())
             } else {
                 it.toString()
-            } }
+            }
+        }
     }
 }

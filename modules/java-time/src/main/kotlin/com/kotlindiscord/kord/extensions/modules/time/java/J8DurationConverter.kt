@@ -61,10 +61,10 @@ public class J8DurationConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         try {
-            val result = J8DurationParser.parse(arg, context.getLocale())
+            val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
 
             if (positiveOnly) {
-                val normalized = result.clone()
+                val normalized: ChronoContainer = result.clone()
 
                 normalized.normalize(LocalDateTime.now())
 
@@ -75,7 +75,7 @@ public class J8DurationConverter(
 
             parsed = result
         } catch (e: InvalidTimeUnitException) {
-            val message = context.translate(
+            val message: String = context.translate(
                 "converters.duration.error.invalidUnit",
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
@@ -92,13 +92,13 @@ public class J8DurationConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val arg = (option as? StringOptionValue)?.value ?: return false
+        val arg: String = (option as? StringOptionValue)?.value ?: return false
 
         try {
-            val result = J8DurationParser.parse(arg, context.getLocale())
+            val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
 
             if (positiveOnly) {
-                val normalized = result.clone()
+                val normalized: ChronoContainer = result.clone()
 
                 normalized.normalize(LocalDateTime.now())
 
@@ -109,7 +109,7 @@ public class J8DurationConverter(
 
             parsed = result
         } catch (e: InvalidTimeUnitException) {
-            val message = context.translate(
+            val message: String = context.translate(
                 "converters.duration.error.invalidUnit",
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""

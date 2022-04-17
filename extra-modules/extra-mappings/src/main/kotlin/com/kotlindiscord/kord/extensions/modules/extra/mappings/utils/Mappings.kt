@@ -44,9 +44,11 @@ fun classesToPages(
 
                     append(
                         "`${clazz.intermediaryName}`" +
-                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -59,9 +61,11 @@ fun classesToPages(
 
                     append(
                         "`${clazz.intermediaryName}`" +
-                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
             }.trimEnd('\n')
@@ -82,9 +86,11 @@ fun classesToPages(
 
                     append(
                         "`${clazz.intermediaryName}`" +
-                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -97,9 +103,11 @@ fun classesToPages(
 
                     append(
                         "`${clazz.intermediaryName}`" +
-                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -173,9 +181,11 @@ fun fieldsToPages(
 
                     append(
                         "`${field.intermediaryName}`" +
-                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -188,9 +198,11 @@ fun fieldsToPages(
 
                     append(
                         "`${field.intermediaryName}`" +
-                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -219,9 +231,11 @@ fun fieldsToPages(
 
                     append(
                         "`${field.intermediaryName}`" +
-                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -234,9 +248,11 @@ fun fieldsToPages(
 
                     append(
                         "`${field.intermediaryName}`" +
-                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -320,9 +336,11 @@ fun methodsToPages(
 
                     append(
                         "`${method.intermediaryName}`" +
-                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -335,9 +353,11 @@ fun methodsToPages(
 
                     append(
                         "`${method.intermediaryName}`" +
-                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
             }.trimEnd('\n')
@@ -365,9 +385,11 @@ fun methodsToPages(
 
                     append(
                         "`${method.intermediaryName}`" +
-                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -380,9 +402,11 @@ fun methodsToPages(
 
                     append(
                         "`${method.intermediaryName}`" +
-                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 

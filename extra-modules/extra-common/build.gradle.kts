@@ -24,8 +24,3 @@ dependencies {
 
     implementation(project(":kord-extensions"))
 }
-
-kordex {
-    jvmTarget.set("9")
-    javaVersion.set(JavaVersion.VERSION_1_9)
-}

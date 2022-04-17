@@ -53,9 +53,11 @@ public class ConverterProcessor(
 
             val arguments = ConverterAnnotationArgs(annotation)
 
-            logger.info("Arguments: \n" + annotation.arguments.joinToString("\n") {
-                "    ${it.name?.getShortName()} : ${it.value}"
-            })
+            logger.info(
+                "Arguments: \n" + annotation.arguments.joinToString("\n") {
+                    "    ${it.name?.getShortName()} : ${it.value}"
+                }
+            )
 
             val superTypes = classDeclaration.superTypes.map { it.resolve() }.toList()
 

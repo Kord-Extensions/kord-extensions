@@ -10,10 +10,10 @@ package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import dev.kord.core.Kord
 import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.websocket.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
-import io.ktor.http.cio.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
@@ -42,7 +42,7 @@ class PhishingWebsocketWrapper(
     private val kord: Kord by inject()
 
     internal val client = HttpClient {
-        install(JsonFeature)
+        install(ContentNegotiation)
         install(WebSockets)
     }
 

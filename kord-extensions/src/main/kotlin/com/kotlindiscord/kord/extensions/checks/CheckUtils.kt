@@ -291,8 +291,9 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
         event is MemberJoinEvent -> event.member
         event is MemberUpdateEvent -> event.member
         event is MessageCreateEvent -> event.member
-        event is MessageDeleteEvent -> event.message?.data?.guildId?.value
-            ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
+        event is MessageDeleteEvent ->
+            event.message?.data?.guildId?.value
+                ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
 
         event is MessageUpdateEvent -> {
             val message = event.new

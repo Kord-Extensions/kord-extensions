@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ConverterToOptional::class, KordPreview::class)
+@file:OptIn(ConverterToOptional::class, KordPreview::class, DelicateCoroutinesApi::class)
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.converters
 
@@ -22,6 +22,7 @@ import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.MappingsContainer
@@ -59,17 +60,17 @@ class MappingsVersionConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+        val optionValue: String = (option as? StringOptionValue)?.value ?: return false
         return parse(optionValue)
     }
 
     private suspend fun parse(string: String): Boolean {
         newSingleThreadContext("version-parser").use { context ->
             return withContext(context) {
-                val namespace = namespaceGetter.invoke()
+                val namespace: Namespace = namespaceGetter.invoke()
 
                 if (string in namespace.getAllVersions()) {
-                    val version = namespace.getProvider(string).getOrNull()
+                    val version: MappingsContainer? = namespace.getProvider(string).getOrNull()
 
                     if (version != null) {
                         this@MappingsVersionConverter.parsed = version

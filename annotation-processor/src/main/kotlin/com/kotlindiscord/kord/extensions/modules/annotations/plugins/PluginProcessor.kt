@@ -44,11 +44,12 @@ public class PluginProcessor(
         val wrongSuperType = plugins
             .filterIsInstance<KSClassDeclaration>()
             .filter { symbol ->
-                !(symbol.validate() &&
-                    symbol.superTypes
-                        .mapNotNull { it.resolve().declaration as? KSClassDeclaration }
-                        .mapNotNull { it.qualifiedName?.asString() }
-                        .contains("com.kotlindiscord.kord.extensions.plugins.KordExPlugin")
+                !(
+                    symbol.validate() &&
+                        symbol.superTypes
+                            .mapNotNull { it.resolve().declaration as? KSClassDeclaration }
+                            .mapNotNull { it.qualifiedName?.asString() }
+                            .contains("com.kotlindiscord.kord.extensions.plugins.KordExPlugin")
                     )
             }.toList()
 

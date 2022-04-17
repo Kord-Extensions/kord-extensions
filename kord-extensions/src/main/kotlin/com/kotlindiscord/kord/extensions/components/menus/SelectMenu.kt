@@ -71,10 +71,19 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
     /** Add an option to this select menu. **/
     @Suppress("UnnecessaryParentheses")  // Disagrees with IDEA, amusingly.
-    public open suspend fun option(label: String, value: String, body: suspend SelectOptionBuilder.() -> Unit = {}) {
+    public open suspend fun option(
+        label: String,
+        value: String,
+
+        // TODO: Check this is fixed in later versions of the compiler
+        // This is nullable like this due to a compiler bug: https://youtrack.jetbrains.com/issue/KT-51820
+        body: (suspend SelectOptionBuilder.() -> Unit)? = null
+    ) {
         val builder = SelectOptionBuilder(label, value)
 
-        body(builder)
+        if (body != null) {
+            body(builder)
+        }
 
         if ((builder.description?.length ?: 0) > DESCRIPTION_MAX) {
             error("Option descriptions must not be longer than $DESCRIPTION_MAX characters.")
