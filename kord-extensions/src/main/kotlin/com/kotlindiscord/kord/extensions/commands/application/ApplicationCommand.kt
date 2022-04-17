@@ -8,7 +8,6 @@ package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Command
@@ -25,7 +24,6 @@ import dev.kord.core.event.interaction.InteractionCreateEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import dev.kord.common.Locale as KLocale
-import java.util.*
 
 /**
  * Abstract class representing an application command - extend this for actual implementations.
@@ -36,20 +34,10 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     extension: Extension
 ) : Command(extension), KoinComponent {
     /** Translations provider, for retrieving translations. **/
-    public val translationsProvider: TranslationsProvider by inject()
     protected val bot: ExtensibleBot by inject()
 
     /** Quick access to the command registry. **/
     public val registry: ApplicationCommandRegistry by inject()
-
-    /** Bot settings object. **/
-    public val settings: ExtensibleBotBuilder by inject()
-
-    /** Kord instance, backing the ExtensibleBot. **/
-    public val kord: Kord by inject()
-
-    /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentry: SentryAdapter by inject()
 
     /** Discord-side command type, for matching up. **/
     public abstract val type: ApplicationCommandType
@@ -91,7 +79,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public open val disallowedUsers: MutableSet<Snowflake> = mutableSetOf()
 
     /** Permissions required to be able to run this command. **/
-    public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
+    public override val requiredPerms: MutableSet<Permission> = mutableSetOf()
 
     /**
      * A [Localized] version of [name].
