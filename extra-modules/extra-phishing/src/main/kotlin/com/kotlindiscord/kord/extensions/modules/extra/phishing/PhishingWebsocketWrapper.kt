@@ -48,6 +48,8 @@ class PhishingWebsocketWrapper(
         }
 
         install(WebSockets)
+
+        expectSuccess = true
     }
 
     /**

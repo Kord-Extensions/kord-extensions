@@ -55,6 +55,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
     private val httpClient = HttpClient {
         followRedirects = false
+        expectSuccess = true
     }
 
     override suspend fun setup() {

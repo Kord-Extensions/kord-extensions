@@ -29,6 +29,8 @@ class PhishingApi(internal val appName: String) {
         }
 
         install(WebSockets)
+
+        expectSuccess = true
     }
 
     internal suspend inline fun <reified T> get(url: String): T = client.get(url) {

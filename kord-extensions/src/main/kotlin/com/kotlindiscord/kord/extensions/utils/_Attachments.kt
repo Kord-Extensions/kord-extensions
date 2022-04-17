@@ -18,7 +18,9 @@ import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.*
 
-private val client = HttpClient()
+private val client = HttpClient {
+    expectSuccess = true
+}
 
 /**
  * Download the attachment and return it as a [ByteArray].
