@@ -34,12 +34,10 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
-import me.shedaniel.linkie.utils.MappingsQuery
-import me.shedaniel.linkie.utils.QueryContext
-import me.shedaniel.linkie.utils.QueryResult
-import me.shedaniel.linkie.utils.ResultHolder
+import me.shedaniel.linkie.utils.*
 import mu.KotlinLogging
 import kotlin.collections.set
+import kotlin.error
 
 private typealias MappingSlashCommand = PublicSlashCommandContext<out MappingArguments>
 private typealias ConversionSlashCommand = PublicSlashCommandContext<MappingConversionArguments>
@@ -952,15 +950,15 @@ class MappingsExtension : Extension() {
                             desc == inputDesc
                         }!!
 
-                        clazz to result
+                        MemberEntry<MappingsMember>(clazz, result)
                     } catch (e: NullPointerException) {
                         null // skip
                     }
                 }
                     .filterValues { it != null }
-                    .mapValues {
+                    .mapValues { (_, value) ->
                         @Suppress("UNCHECKED_CAST")
-                        it.value!! as B
+                        value as B
                     }
 
                 sentry.breadcrumb(BreadcrumbType.Info) {
