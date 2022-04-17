@@ -444,7 +444,16 @@ public open class ExtensibleBotBuilder {
         hooksBuilder.runSetup(bot)
         hooksBuilder.runBeforeExtensionsAdded(bot)
 
-        extensionsBuilder.extensions.forEach { bot.addExtension(it) }
+        @Suppress("TooGenericExceptionCaught")
+        extensionsBuilder.extensions.forEach {
+            try {
+                bot.addExtension(it)
+            } catch (e: Exception) {
+                logger.error(e) {
+                    "Failed to set up extension: $it"
+                }
+            }
+        }
 
         if (pluginBuilder.enabled) {
             startPlugins()
