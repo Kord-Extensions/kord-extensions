@@ -6,23 +6,20 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
-import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import com.kotlindiscord.kord.extensions.utils.permissionsForMember
-import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.InteractionCommand
@@ -31,6 +28,7 @@ import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -50,6 +48,9 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     /** @suppress This is only meant for use by code that extends the command system. **/
     public val kxLogger: KLogger = KotlinLogging.logger {}
 
+    /** Application command registry. **/
+    public val registry: ApplicationCommandRegistry by inject()
+
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
 
@@ -66,6 +67,9 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public open val subCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
 
     override val type: ApplicationCommandType = ApplicationCommandType.ChatInput
+
+    /** Translation cache, so we don't have to look up translations every time. **/
+    public open val descriptionTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     override var guildId: Snowflake? = if (parentCommand == null && parentGroup == null) {
         settings.applicationCommandsBuilder.defaultGuild
@@ -147,34 +151,6 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
      * Override this to implement the final calling logic, including creating the command context and running with it.
      */
     public abstract suspend fun run(event: ChatInputCommandInteractionCreateEvent)
-
-    /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(DiscordRelayedException::class)
-    public open suspend fun checkBotPerms(context: C) {
-        if (requiredPerms.isEmpty()) {
-            return  // Nothing to check, don't try to hit the cache
-        }
-
-        if (context.guild != null) {
-            val perms = (context.channel.asChannel() as GuildChannel)
-                .permissionsForMember(kord.selfId)
-
-            val missingPerms = requiredPerms.filter { !perms.contains(it) }
-
-            if (missingPerms.isNotEmpty()) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        "commands.error.missingBotPermissions",
-                        null,
-
-                        replacements = arrayOf(
-                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
-                        )
-                    )
-                )
-            }
-        }
-    }
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
     public open suspend fun firstSentryBreadcrumb(context: C, commandObj: SlashCommand<*, *>) {

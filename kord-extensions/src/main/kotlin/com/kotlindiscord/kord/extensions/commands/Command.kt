@@ -8,14 +8,26 @@
 
 package com.kotlindiscord.kord.extensions.commands
 
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.events.CommandEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.types.Lockable
+import com.kotlindiscord.kord.extensions.utils.permissionsForMember
+import com.kotlindiscord.kord.extensions.utils.translate
+import dev.kord.common.entity.Permission
+import dev.kord.core.Kord
+import dev.kord.core.entity.channel.GuildChannel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import java.util.*
 
 /**
  * Abstract base class representing the few things that command objects can have in common.
@@ -25,7 +37,7 @@ import kotlinx.coroutines.sync.Mutex
  * @property extension The extension object this command belongs to.
  */
 @ExtensionDSL
-public abstract class Command(public val extension: Extension) : Lockable {
+public abstract class Command(public val extension: Extension) : Lockable, KoinComponent {
     /**
      * The name of this command, for invocation and help commands.
      */
@@ -45,6 +57,24 @@ public abstract class Command(public val extension: Extension) : Lockable {
         get() = bundle ?: extension.bundle
 
     override var mutex: Mutex? = null
+
+    /** Translations provider, for retrieving translations. **/
+    public val translationsProvider: TranslationsProvider by inject()
+
+    /** Bot settings object. **/
+    public val settings: ExtensibleBotBuilder by inject()
+
+    /** Sentry adapter, for easy access to Sentry functions. **/
+    public val sentry: SentryAdapter by inject()
+
+    /** Kord instance, backing the ExtensibleBot. **/
+    public val kord: Kord by inject()
+
+    /** Permissions required to be able to run this command. **/
+    public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
+
+    /** Translation cache, so we don't have to look up translations every time. **/
+    public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /**
      * An internal function used to ensure that all of a command's required arguments are present and correct.
@@ -67,4 +97,32 @@ public abstract class Command(public val extension: Extension) : Lockable {
         event.launch {
             extension.bot.send(event)
         }
+
+    /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
+    @Throws(DiscordRelayedException::class)
+    public open suspend fun checkBotPerms(context: CommandContext) {
+        if (requiredPerms.isEmpty()) {
+            return  // Nothing to check, don't try to hit the cache
+        }
+
+        if (context.getGuild() != null) {
+            val perms = (context.getChannel().asChannel() as GuildChannel)
+                .permissionsForMember(kord.selfId)
+
+            val missingPerms = requiredPerms.filter { !perms.contains(it) }
+
+            if (missingPerms.isNotEmpty()) {
+                throw DiscordRelayedException(
+                    context.translate(
+                        "commands.error.missingBotPermissions",
+                        null,
+
+                        replacements = arrayOf(
+                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
+                        )
+                    )
+                )
+            }
+        }
+    }
 }

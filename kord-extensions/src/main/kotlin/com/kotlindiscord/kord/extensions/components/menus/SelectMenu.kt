@@ -13,7 +13,6 @@ import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
@@ -131,28 +130,8 @@ public abstract class SelectMenu<C : SelectMenuContext>(
                 category = "component.selectMenu"
                 message = "Select menu \"${button.id}\" submitted."
 
-                val channel = context.channel.asChannelOrNull()
-                val guild = context.guild?.asGuildOrNull()
-                val message = context.message
-
                 data["component"] = button.id
-
-                if (channel != null) {
-                    data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
-
-                        else -> channel.id.toString()
-                    }
-                }
-
-                if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id})"
-                }
-
-                if (message != null) {
-                    data["message"] = message.id.toString()
-                }
+                context.addContextDataToBreadcrumb(this)
             }
         }
     }

@@ -7,25 +7,19 @@
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
-import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.extensions.Extension
-import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.utils.any
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.Kord
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -35,21 +29,7 @@ import java.util.*
  */
 public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     extension: Extension
-) : Command(extension), KoinComponent {
-    /** Translations provider, for retrieving translations. **/
-    public val translationsProvider: TranslationsProvider by inject()
-
-    /** Quick access to the command registry. **/
-    public val registry: ApplicationCommandRegistry by inject()
-
-    /** Bot settings object. **/
-    public val settings: ExtensibleBotBuilder by inject()
-
-    /** Kord instance, backing the ExtensibleBot. **/
-    public val kord: Kord by inject()
-
-    /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentry: SentryAdapter by inject()
+) : Command(extension) {
 
     /** Discord-side command type, for matching up. **/
     public abstract val type: ApplicationCommandType
@@ -89,15 +69,6 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      * List of disallowed invoker IDs. Allows take priority over disallows.
      */
     public open val disallowedUsers: MutableSet<Snowflake> = mutableSetOf()
-
-    /** Permissions required to be able to run this command. **/
-    public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
-
-    /** Translation cache, so we don't have to look up translations every time. **/
-    public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
-
-    /** Translation cache, so we don't have to look up translations every time. **/
-    public open val descriptionTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /** Return this command's name translated for the given locale, cached as required. **/
     public open fun getTranslatedName(locale: Locale): String {

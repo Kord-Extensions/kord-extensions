@@ -82,7 +82,7 @@ public class ChannelConverter(
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
         if (arg.equals("this", true)) {
-            val channel = context.getChannel()?.asChannelOrNull()
+            val channel = context.getChannel().asChannelOrNull()
 
             if (channel != null) {
                 this.parsed = channel

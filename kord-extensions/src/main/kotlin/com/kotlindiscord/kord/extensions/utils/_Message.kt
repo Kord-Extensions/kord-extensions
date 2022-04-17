@@ -480,7 +480,7 @@ public suspend fun CommandContext.waitForResponse(
     val kord = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>()
     val event = kord.waitFor<MessageCreateEvent>(timeout) {
         message.author?.id == getUser()?.id &&
-            message.channelId == getChannel()?.id &&
+            message.channelId == getChannel().id &&
             filter()
     }
 

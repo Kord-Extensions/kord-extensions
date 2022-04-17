@@ -22,7 +22,10 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
+import io.sentry.Breadcrumb
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -59,8 +62,8 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     /** Member that interacted with this component, if on a guild. **/
     public open var member: MemberBehavior? = null
 
-    /** Member that interacted with this component, if on a guild. **/
-    public open var message: Message? = null
+    /** The message the component is attached to. **/
+    public open lateinit var message: Message
 
     /** User that interacted with this component. **/
     public open lateinit var user: UserBehavior
@@ -86,12 +89,12 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 
     /** Extract member information from event data, if that context is available. **/
     @JvmName("getMember1")
-    public suspend fun getMember(): MemberBehavior? =
+    public fun getMember(): MemberBehavior? =
         getGuild()?.let { Member(event.interaction.data.member.value!!, event.interaction.user.data, event.kord) }
 
     /** Extract message information from event data, if that context is available. **/
     @JvmName("getMessage1")
-    public fun getMessage(): Message? =
+    public fun getMessage(): Message =
         event.interaction.message
 
     /** Extract user information from event data, if that context is available. **/
@@ -148,4 +151,28 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
         component.bundle,
         replacements
     )
+
+    /**
+     * @param breadcrumb breadcrumb data will be modified to add the component context information
+     */
+    public suspend fun addContextDataToBreadcrumb(breadcrumb: Breadcrumb) {
+        val channel = channel.asChannelOrNull()
+        val guild = guild?.asGuildOrNull()
+        val message = message
+
+        if (channel != null) {
+            breadcrumb.data["channel"] = when (channel) {
+                is DmChannel -> "Private Message (${channel.id})"
+                is GuildMessageChannel -> "#${channel.name} (${channel.id})"
+
+                else -> channel.id.toString()
+            }
+        }
+
+        if (guild != null) {
+            breadcrumb.data["guild"] = "${guild.name} (${guild.id})"
+        }
+
+        breadcrumb.data["message"] = message.id.toString()
+    }
 }
