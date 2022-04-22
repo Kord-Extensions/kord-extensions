@@ -27,7 +27,6 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.types.respond
-import com.soywiz.korio.file.std.localVfs
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
@@ -38,6 +37,9 @@ import me.shedaniel.linkie.utils.*
 import mu.KotlinLogging
 import kotlin.collections.set
 import kotlin.error
+import kotlin.io.path.Path
+import kotlin.io.path.createDirectory
+import kotlin.io.path.exists
 
 private typealias MappingSlashCommand = PublicSlashCommandContext<out MappingArguments>
 private typealias ConversionSlashCommand = PublicSlashCommandContext<MappingConversionArguments>
@@ -57,9 +59,9 @@ class MappingsExtension : Extension() {
 
     override suspend fun setup() {
         // Fix issue where Linkie doesn't create its cache directory
-        val cacheDirectory = localVfs("./.linkie-cache")
+        val cacheDirectory = Path("./.linkie-cache")
         if (!cacheDirectory.exists()) {
-            cacheDirectory.mkdirs()
+            cacheDirectory.createDirectory()
         }
 
         val namespaces = mutableListOf<Namespace>()
