@@ -10,7 +10,7 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
-import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.application.Localized
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -28,8 +28,6 @@ import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.inject
-import java.util.*
 
 /**
  * Slash command, executed directly in the chat input.
@@ -48,9 +46,6 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     /** @suppress This is only meant for use by code that extends the command system. **/
     public val kxLogger: KLogger = KotlinLogging.logger {}
 
-    /** Application command registry. **/
-    public val registry: ApplicationCommandRegistry by inject()
-
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
 
@@ -66,10 +61,12 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     /** List of subcommands, if any. **/
     public open val subCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
 
-    override val type: ApplicationCommandType = ApplicationCommandType.ChatInput
+    /**
+     * A [Localized] version of [description].
+     */
+    public val localizedDescription: Localized<String> by lazy { localize(description) }
 
-    /** Translation cache, so we don't have to look up translations every time. **/
-    public open val descriptionTranslationCache: MutableMap<Locale, String> = mutableMapOf()
+    override val type: ApplicationCommandType = ApplicationCommandType.ChatInput
 
     override var guildId: Snowflake? = if (parentCommand == null && parentGroup == null) {
         settings.applicationCommandsBuilder.defaultGuild
@@ -105,35 +102,6 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                     "instead."
             )
         }
-    }
-
-    public override fun getTranslatedName(locale: Locale): String {
-        // Only slash commands need this to be lower-cased.
-
-        if (!nameTranslationCache.containsKey(locale)) {
-            nameTranslationCache[locale] = translationsProvider.translate(
-                this.name,
-                this.resolvedBundle,
-                locale
-            ).lowercase()
-        }
-
-        return nameTranslationCache[locale]!!
-    }
-
-    /** Return this command's description translated for the given locale, cached as required. **/
-    public fun getTranslatedDescription(locale: Locale): String {
-        // Only slash commands need this to be lower-cased.
-
-        if (!descriptionTranslationCache.containsKey(locale)) {
-            descriptionTranslationCache[locale] = translationsProvider.translate(
-                this.description,
-                this.resolvedBundle,
-                locale
-            )
-        }
-
-        return descriptionTranslationCache[locale]!!
     }
 
     /** Call this to supply a command [body], to be called when the command is executed. **/

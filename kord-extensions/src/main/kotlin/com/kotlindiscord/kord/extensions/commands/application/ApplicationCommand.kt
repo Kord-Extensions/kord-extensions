@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Command
@@ -20,7 +21,9 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import java.util.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import dev.kord.common.Locale as KLocale
 
 /**
  * Abstract class representing an application command - extend this for actual implementations.
@@ -29,7 +32,12 @@ import java.util.*
  */
 public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     extension: Extension
-) : Command(extension) {
+) : Command(extension), KoinComponent {
+    /** Translations provider, for retrieving translations. **/
+    protected val bot: ExtensibleBot by inject()
+
+    /** Quick access to the command registry. **/
+    public val registry: ApplicationCommandRegistry by inject()
 
     /** Discord-side command type, for matching up. **/
     public abstract val type: ApplicationCommandType
@@ -70,17 +78,32 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      */
     public open val disallowedUsers: MutableSet<Snowflake> = mutableSetOf()
 
-    /** Return this command's name translated for the given locale, cached as required. **/
-    public open fun getTranslatedName(locale: Locale): String {
-        if (!nameTranslationCache.containsKey(locale)) {
-            nameTranslationCache[locale] = translationsProvider.translate(
-                this.name,
+    /** Permissions required to be able to run this command. **/
+    public override val requiredPerms: MutableSet<Permission> = mutableSetOf()
+
+    /**
+     * A [Localized] version of [name].
+     */
+    public val localizedName: Localized<String> by lazy { localize(name) }
+
+    /**
+     * Localizes a property by its [key] for this command.
+     */
+    public fun localize(key: String): Localized<String> {
+        val default = translationsProvider.translate(
+            key,
+            this.resolvedBundle,
+            translationsProvider.defaultLocale
+        )
+        val translations = bot.settings.i18nBuilder.applicationCommandLocales.associateWith { locale ->
+            translationsProvider.translate(
+                key,
                 this.resolvedBundle,
-                locale
+                locale.asJavaLocale()
             )
         }
 
-        return nameTranslationCache[locale]!!
+        return Localized(default, translations.toMutableMap())
     }
 
     /** If your bot requires permissions to be able to execute the command, add them using this function. **/
@@ -226,3 +249,12 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     /** Override this to implement the calling logic for your subclass. **/
     public abstract suspend fun call(event: E)
 }
+
+/**
+ * Representation of a localized object.
+ *
+ * @property default the default translations
+ * @property translations a map containing all localizations
+ * @param T the type of the object
+ */
+public data class Localized<T>(val default: T, val translations: MutableMap<KLocale, String>)

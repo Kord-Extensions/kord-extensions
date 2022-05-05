@@ -22,6 +22,7 @@ import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
+import dev.kord.rest.builder.interaction.MultiApplicationCommandBuilder
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.coroutines.flow.toList
@@ -230,45 +231,42 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
         val toCreate = toAdd + toUpdate
 
+        val builder: suspend MultiApplicationCommandBuilder.() -> Unit = {
+            toCreate.forEach {
+                val (name, nameLocalizations) = it.localizedName
+
+                logger.trace { "Adding/updating ${it.type.name} command: $name" }
+
+                when (it) {
+                    is MessageCommand<*> -> message(name) {
+                        this.nameLocalizations = nameLocalizations
+                        this.register(locale, it)
+                    }
+                    is UserCommand<*> -> user(name) {
+                        this.nameLocalizations = nameLocalizations
+                        this.register(locale, it)
+                    }
+
+                    is SlashCommand<*, *> -> {
+                        val (description, descriptionLocalizations) = it.localizedDescription
+                        input(name, description) {
+                            this.nameLocalizations = nameLocalizations
+                            this.descriptionLocalizations = descriptionLocalizations
+                            this.register(locale, it)
+                        }
+                    }
+                }
+            }
+        }
+
         @Suppress("IfThenToElvis")  // Ultimately, this is far more readable
         val response = if (guild == null) {
             // We're registering global commands here, if the guild is null
 
-            kord.createGlobalApplicationCommands {
-                toCreate.forEach {
-                    val name = it.getTranslatedName(locale)
-
-                    logger.trace { "Adding/updating global ${it.type.name} command: $name" }
-
-                    when (it) {
-                        is MessageCommand<*> -> message(name) { this.register(locale, it) }
-                        is UserCommand<*> -> user(name) { this.register(locale, it) }
-
-                        is SlashCommand<*, *> -> input(
-                            name, it.getTranslatedDescription(locale)
-                        ) { this.register(locale, it) }
-                    }
-                }
-            }.toList()
+            kord.createGlobalApplicationCommands { builder() }.toList()
         } else {
             // We're registering guild-specific commands here, if the guild is available
-
-            guild.createApplicationCommands {
-                toCreate.forEach {
-                    val name = it.getTranslatedName(locale)
-
-                    logger.trace { "Adding/updating guild-specific ${it.type.name} command: $name" }
-
-                    when (it) {
-                        is MessageCommand<*> -> message(name) { this.register(locale, it) }
-                        is UserCommand<*> -> user(name) { this.register(locale, it) }
-
-                        is SlashCommand<*, *> -> input(
-                            name, it.getTranslatedDescription(locale)
-                        ) { this.register(locale, it) }
-                    }
-                }
-            }.toList()
+            guild.createApplicationCommands  { builder() }.toList()
         }
 
         // Next, we need to associate all the commands we just registered with the commands in our extensions

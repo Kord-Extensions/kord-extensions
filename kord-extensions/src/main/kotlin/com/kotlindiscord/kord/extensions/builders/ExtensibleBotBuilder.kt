@@ -66,6 +66,7 @@ import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.Path
 import kotlin.io.path.div
+import dev.kord.common.Locale as KLocale
 
 internal typealias LocaleResolver = suspend (
     guild: GuildBehavior?,
@@ -972,6 +973,11 @@ public open class ExtensibleBotBuilder {
         public var defaultLocale: Locale = SupportedLocales.ENGLISH
 
         /**
+         * List of [locales][KLocale] which are used for application command names (without [defaultLocale]).
+         */
+        public var applicationCommandLocales: MutableList<KLocale> = mutableListOf()
+
+        /**
          * Callables used to resolve a Locale object for the given guild, channel and user.
          *
          * Resolves to [defaultLocale] by default.
@@ -989,6 +995,15 @@ public open class ExtensibleBotBuilder {
         /** Register a locale resolver, returning the required [Locale] object or `null`. **/
         public fun localeResolver(body: LocaleResolver) {
             localeResolvers.add(body)
+        }
+
+        /**
+         * Registers [locale] as an application command language.
+         *
+         * **Do not register [defaultLocale]**
+         */
+        public fun applicationCommandLocale(vararg locale: KLocale) {
+            applicationCommandLocales.addAll(locale.toList())
         }
 
         /**
