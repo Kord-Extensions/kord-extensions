@@ -150,7 +150,7 @@ public open class ExtensibleBotBuilder {
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val applicationCommandsBuilder: ApplicationCommandsBuilder = ApplicationCommandsBuilder()
 
-    /** @suppress List of registered koin modules that shouldn't be set directly by the user. **/
+    /** @suppress List of registered Koin modules that shouldn't be set directly by the user. **/
     public val koinModules: MutableList<org.koin.core.module.Module> = mutableListOf()
 
     /** @suppress List of Kord builders, shouldn't be set directly by the user. **/
@@ -375,7 +375,7 @@ public open class ExtensibleBotBuilder {
         setKoinLogLevel()
     }
 
-    /** @suppress Internal function that loads koin properties from 'koin.properties', if it exists. **/
+    /** @suppress Internal function that loads Koin properties from 'koin.properties', if it exists. **/
     private fun loadKoinProperties() {
         val propertyFile = File("koin.properties")
 

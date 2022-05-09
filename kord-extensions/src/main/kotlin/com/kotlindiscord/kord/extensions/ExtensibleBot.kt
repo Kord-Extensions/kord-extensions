@@ -127,7 +127,7 @@ public open class ExtensibleBot(
         }
     }
 
-    /** Stop the bot and unload bot-related koin modules. **/
+    /** Stop the bot and unload bot-related Koin modules. **/
     public open suspend fun stop() {
         getKoin().get<Kord>().shutdown()
         unloadKoinModules(settings.koinModules)
