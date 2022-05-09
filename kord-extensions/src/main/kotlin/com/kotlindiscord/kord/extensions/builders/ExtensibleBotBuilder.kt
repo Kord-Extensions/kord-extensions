@@ -93,9 +93,6 @@ public open class ExtensibleBotBuilder {
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public val koinModules: MutableList<org.koin.core.module.Module> = mutableListOf()
-
-    /** @suppress Builder that shouldn't be set directly by the user. **/
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
 
     /**
@@ -152,6 +149,9 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val applicationCommandsBuilder: ApplicationCommandsBuilder = ApplicationCommandsBuilder()
+
+    /** @suppress List of registered koin modules that shouldn't be set directly by the user. **/
+    public val koinModules: MutableList<org.koin.core.module.Module> = mutableListOf()
 
     /** @suppress List of Kord builders, shouldn't be set directly by the user. **/
     public val kordHooks: MutableList<suspend KordBuilder.() -> Unit> = mutableListOf()
@@ -359,19 +359,23 @@ public open class ExtensibleBotBuilder {
         hooksBuilder.runAfterKoinSetup()
     }
 
+    /** @suppress Creates a new Koin instance if it has not already been started. **/
     private fun startKoinIfNeeded() {
         if (koinNotStarted()) {
             startKoin {}
         }
     }
 
+    /** @suppress Internal function that checks if Koin has been started. **/
     private fun koinNotStarted(): Boolean = GlobalContext.getOrNull() == null
 
+    /** @suppress Internal function that sets all KordEx needed Koin settings. **/
     private fun configureKoinInstance() {
         loadKoinProperties()
         setKoinLogLevel()
     }
 
+    /** @suppress Internal function that loads koin properties from 'koin.properties', if it exists. **/
     private fun loadKoinProperties() {
         val propertyFile = File("koin.properties")
 
@@ -380,6 +384,7 @@ public open class ExtensibleBotBuilder {
         }
     }
 
+    /** @suppress Internal function that determines and sets the log level for the Koin instance. **/
     private fun setKoinLogLevel() {
         var logLevel = koinLogLevel
 
@@ -391,6 +396,8 @@ public open class ExtensibleBotBuilder {
         getKoin().logger.level = logLevel
     }
 
+    /** @suppress Internal function that creates and loads the bot's main Koin module.
+     * The module provides important bot-related singletons. **/
     private fun addBotKoinModule() {
         val botModule = loadModule {
             single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class
