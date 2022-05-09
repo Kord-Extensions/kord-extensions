@@ -40,6 +40,7 @@ import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
+import org.koin.core.context.unloadKoinModules
 import org.koin.dsl.bind
 
 /**
@@ -124,6 +125,12 @@ public open class ExtensibleBot(
             this.presence(settings.presenceBuilder)
             this.intents = Intents(settings.intentsBuilder!!)
         }
+    }
+
+    /** Stop the bot and unload bot-related koin modules. **/
+    public open suspend fun stop() {
+        getKoin().get<Kord>().shutdown()
+        unloadKoinModules(settings.koinModules)
     }
 
     /** Start up the bot and log into Discord, but launched via Kord's coroutine scope. **/

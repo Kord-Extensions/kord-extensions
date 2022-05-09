@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class, PrivilegedIntent::class)
+@file:OptIn(KordPreview::class, PrivilegedIntent::class, KoinInternalApi::class)
 
 package com.kotlindiscord.kord.extensions.builders
 
@@ -56,11 +56,12 @@ import dev.kord.rest.builder.message.create.allowedMentions
 import io.ktor.utils.io.*
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.annotation.KoinInternalApi
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import org.koin.core.registry.loadPropertiesFromFile
 import org.koin.dsl.bind
-import org.koin.fileProperties
-import org.koin.logger.slf4jLogger
 import java.io.File
 import java.nio.file.Path
 import java.util.*
@@ -90,6 +91,9 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val cacheBuilder: CacheBuilder = CacheBuilder()
+
+    /** @suppress Builder that shouldn't be set directly by the user. **/
+    public val koinModules: MutableList<org.koin.core.module.Module> = mutableListOf()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
@@ -345,39 +349,58 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Internal function used to initially set up Koin. **/
     public open suspend fun setupKoin() {
-        startKoin {
-            var logLevel = koinLogLevel
-
-            if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
-                // NOTE: Temporary workaround for Koin not supporting Kotlin 1.6
-                logLevel = Level.ERROR
-            }
-
-            slf4jLogger(logLevel)
-//            environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
-
-            if (File("koin.properties").exists()) {
-                fileProperties("koin.properties")
-            }
-
-            modules()
-        }
+        startKoinIfNeeded()
+        configureKoinInstance()
 
         hooksBuilder.runBeforeKoinSetup()
 
-        loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
-        loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
-        loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
-        loadModule { single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class }
-        loadModule { single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class }
+        addBotKoinModule()
 
-        loadModule {
+        hooksBuilder.runAfterKoinSetup()
+    }
+
+    private fun startKoinIfNeeded() {
+        if (koinNotStarted()) {
+            startKoin {}
+        }
+    }
+
+    private fun koinNotStarted(): Boolean = GlobalContext.getOrNull() == null
+
+    private fun configureKoinInstance() {
+        loadKoinProperties()
+        setKoinLogLevel()
+    }
+
+    private fun loadKoinProperties() {
+        val propertyFile = File("koin.properties")
+
+        if (propertyFile.exists()) {
+            getKoin().propertyRegistry.loadPropertiesFromFile(propertyFile.path)
+        }
+    }
+
+    private fun setKoinLogLevel() {
+        var logLevel = koinLogLevel
+
+        if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
+            // NOTE: Temporary workaround for Koin not supporting Kotlin 1.6
+            logLevel = Level.ERROR
+        }
+
+        getKoin().logger.level = logLevel
+    }
+
+    private fun addBotKoinModule() {
+        val botModule = loadModule {
+            single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class
+            single { i18nBuilder.translationsProvider } bind TranslationsProvider::class
+            single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class
+            single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class
+            single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class
             single {
                 applicationCommandsBuilder.applicationCommandRegistryBuilder()
             } bind ApplicationCommandRegistry::class
-        }
-
-        loadModule {
             single {
                 val adapter = extensionsBuilder.sentryExtensionBuilder.builder()
 
@@ -389,7 +412,7 @@ public open class ExtensibleBotBuilder {
             } bind SentryAdapter::class
         }
 
-        hooksBuilder.runAfterKoinSetup()
+        koinModules.add(botModule)
     }
 
     /** @suppress Plugin-loading function. **/
