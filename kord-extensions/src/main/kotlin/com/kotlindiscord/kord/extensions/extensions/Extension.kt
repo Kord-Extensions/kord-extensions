@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
@@ -114,6 +115,13 @@ public abstract class Extension : KoinComponent {
      */
     public open val chatCommandChecks: MutableList<ChatCommandCheck> =
         mutableListOf()
+
+    /**
+     * Whether [ApplicationCommands][ApplicationCommand] should be allowed in DMs by default.
+     *
+     * @see ApplicationCommand.allowInDms
+     */
+    public open val allowApplicationCommandInDMs: Boolean = true
 
     /**
      * List of message command checks.

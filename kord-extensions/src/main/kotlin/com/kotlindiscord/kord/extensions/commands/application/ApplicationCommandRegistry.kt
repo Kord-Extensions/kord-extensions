@@ -510,7 +510,7 @@ public abstract class ApplicationCommandRegistry : KoinComponent {
         command: ApplicationCommand<*>
     ) {
         registerGuildPermissions(locale, command)
-        this.dmPermission = command.allowByDefault
+        this.dmPermission = command.allowInDms
     }
 
     /**

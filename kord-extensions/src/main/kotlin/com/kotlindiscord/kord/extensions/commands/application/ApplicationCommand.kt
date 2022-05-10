@@ -74,7 +74,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      *
      * **Calling [guild] or setting [guildId] will disable this automatically**
      */
-    public open var allowInDms: Boolean = true
+    public open var allowInDms: Boolean = extension.allowApplicationCommandInDMs
         get() {
             if (guildId != null) {
                 return true
