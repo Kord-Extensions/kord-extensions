@@ -17,6 +17,8 @@ import com.kotlindiscord.kord.extensions.events.KordExEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
+import com.kotlindiscord.kord.extensions.koin.KordExContext
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.common.annotation.KordPreview
@@ -39,8 +41,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
-import org.koin.core.context.unloadKoinModules
 import org.koin.dsl.bind
 
 /**
@@ -58,7 +58,7 @@ import org.koin.dsl.bind
 public open class ExtensibleBot(
     public val settings: ExtensibleBotBuilder,
     private val token: String
-) : KoinComponent, Lockable {
+) : KordExKoinComponent, Lockable {
 
     override var mutex: Mutex? = Mutex()
     override var locking: Boolean = settings.membersBuilder.lockMemberRequests
@@ -127,10 +127,10 @@ public open class ExtensibleBot(
         }
     }
 
-    /** Stop the bot and unload bot-related Koin modules. **/
+    /** Stop the bot and its [Kord] instance. **/
     public open suspend fun stop() {
         getKoin().get<Kord>().shutdown()
-        unloadKoinModules(settings.koinModules)
+        KordExContext.stopKoin()
     }
 
     /** Start up the bot and log into Discord, but launched via Kord's coroutine scope. **/

@@ -10,12 +10,12 @@
 
 package com.kotlindiscord.kord.extensions.components
 
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 import dev.kord.rest.builder.message.modify.actionRow
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -41,7 +41,7 @@ public const val ROW_SIZE: Int = 5
 public open class ComponentContainer(
     public val timeout: Duration? = null,
     startTimeoutNow: Boolean = false
-) : KoinComponent {
+) : KordExKoinComponent {
     internal val registry: ComponentRegistry by inject()
 
     /** If a [timeout] was provided, the scheduled timeout task will be stored here. **/

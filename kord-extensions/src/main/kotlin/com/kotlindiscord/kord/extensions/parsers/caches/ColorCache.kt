@@ -8,8 +8,8 @@ package com.kotlindiscord.kord.extensions.parsers.caches
 
 import com.kotlindiscord.kord.extensions.*
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.common.Color
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -26,7 +26,7 @@ private val keyMap: ColorMap = linkedMapOf(
 )
 
 /** Simple object that caches translated colors per locale. **/
-public object ColorCache : KoinComponent {
+public object ColorCache : KordExKoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, ColorMap> = mutableMapOf()
 

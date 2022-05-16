@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.utils.any
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ApplicationCommandType
@@ -21,7 +22,6 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.event.interaction.InteractionCreateEvent
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import dev.kord.common.Locale as KLocale
 
@@ -32,7 +32,7 @@ import dev.kord.common.Locale as KLocale
  */
 public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     extension: Extension
-) : Command(extension), KoinComponent {
+) : Command(extension), KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     protected val bot: ExtensibleBot by inject()
 

@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.Kord
@@ -15,7 +16,6 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.message.EmbedBuilder
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -65,7 +65,7 @@ public abstract class BasePaginator(
     public open val bundle: String? = null,
 
     locale: Locale? = null
-) : KoinComponent {
+) : KordExKoinComponent {
     private val logger = KotlinLogging.logger {}
 
     /** Current instance of the bot. **/

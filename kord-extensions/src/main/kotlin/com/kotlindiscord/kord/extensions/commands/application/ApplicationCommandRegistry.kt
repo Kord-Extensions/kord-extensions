@@ -23,6 +23,7 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ApplicationCommandType
@@ -42,7 +43,6 @@ import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.request.KtorRequestException
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -54,7 +54,7 @@ import java.util.*
  *
  * @see DefaultApplicationCommandRegistry
  */
-public abstract class ApplicationCommandRegistry : KoinComponent {
+public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
     protected val logger: KLogger = KotlinLogging.logger { }
 

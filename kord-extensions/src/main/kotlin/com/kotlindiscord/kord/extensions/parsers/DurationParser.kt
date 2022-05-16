@@ -9,11 +9,11 @@
 package com.kotlindiscord.kord.extensions.parsers
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.parsers.caches.TimeUnitCache
 import com.kotlindiscord.kord.extensions.time.name
 import com.kotlindiscord.kord.extensions.utils.splitOn
 import kotlinx.datetime.DateTimePeriod
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 import kotlin.time.ExperimentalTime
@@ -23,7 +23,7 @@ private const val DAYS_IN_WEEK = 7
 /**
  * Object in charge of parsing strings into [DateTimePeriod]s, using translated locale-aware units.
  */
-public object DurationParser : KoinComponent {
+public object DurationParser : KordExKoinComponent {
     private val translations: TranslationsProvider by inject()
 
     /** Check whether the given character is a valid duration unit character. **/

@@ -8,6 +8,7 @@
 
 package com.kotlindiscord.kord.extensions.utils.scheduling
 
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
@@ -19,7 +20,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -46,7 +46,7 @@ public open class Task(
 
     public val name: String = "Unnamed",
     public val repeat: Boolean = false
-) : KoinComponent {
+) : KordExKoinComponent {
     protected val logger: KLogger = KotlinLogging.logger("Task: $name")
     protected var job: Job? = null
     protected lateinit var started: TimeMark

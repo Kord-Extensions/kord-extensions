@@ -7,10 +7,10 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import net.time4j.CalendarUnit
 import net.time4j.ClockUnit
 import net.time4j.IsoUnit
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -29,7 +29,7 @@ private val keyMap: UnitMap = linkedMapOf(
 /**
  * Simple object that caches translated time units per locale.
  */
-public object T4JTimeUnitCache : KoinComponent {
+public object T4JTimeUnitCache : KordExKoinComponent() {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
 

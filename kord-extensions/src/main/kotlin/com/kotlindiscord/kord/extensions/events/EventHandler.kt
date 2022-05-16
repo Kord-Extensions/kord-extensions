@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -23,7 +24,6 @@ import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.Event
 import kotlinx.coroutines.Job
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -44,7 +44,7 @@ private val defaultLocale: Locale
  */
 public open class EventHandler<T : Event>(
     public val extension: Extension
-) : KoinComponent {
+) : KordExKoinComponent {
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 

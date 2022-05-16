@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class, PrivilegedIntent::class, KoinInternalApi::class)
+@file:OptIn(KordPreview::class, PrivilegedIntent::class)
 
 package com.kotlindiscord.kord.extensions.builders
 
@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExContext
 import com.kotlindiscord.kord.extensions.plugins.KordExPlugin
 import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
@@ -56,12 +57,10 @@ import dev.kord.rest.builder.message.create.allowedMentions
 import io.ktor.utils.io.*
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.annotation.KoinInternalApi
-import org.koin.core.context.GlobalContext
-import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.core.registry.loadPropertiesFromFile
 import org.koin.dsl.bind
+import org.koin.fileProperties
+import org.koin.logger.slf4jLogger
 import java.io.File
 import java.nio.file.Path
 import java.util.*
@@ -149,9 +148,6 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val applicationCommandsBuilder: ApplicationCommandsBuilder = ApplicationCommandsBuilder()
-
-    /** @suppress List of registered Koin modules that shouldn't be set directly by the user. **/
-    public val koinModules: MutableList<org.koin.core.module.Module> = mutableListOf()
 
     /** @suppress List of Kord builders, shouldn't be set directly by the user. **/
     public val kordHooks: MutableList<suspend KordBuilder.() -> Unit> = mutableListOf()
@@ -350,7 +346,6 @@ public open class ExtensibleBotBuilder {
     /** @suppress Internal function used to initially set up Koin. **/
     public open suspend fun setupKoin() {
         startKoinIfNeeded()
-        configureKoinInstance()
 
         hooksBuilder.runBeforeKoinSetup()
 
@@ -359,33 +354,8 @@ public open class ExtensibleBotBuilder {
         hooksBuilder.runAfterKoinSetup()
     }
 
-    /** @suppress Creates a new Koin instance if it has not already been started. **/
+    /** @suppress Creates a new KoinApplication if it has not already been started. **/
     private fun startKoinIfNeeded() {
-        if (koinNotStarted()) {
-            startKoin {}
-        }
-    }
-
-    /** @suppress Internal function that checks if Koin has been started. **/
-    private fun koinNotStarted(): Boolean = GlobalContext.getOrNull() == null
-
-    /** @suppress Internal function that sets all KordEx needed Koin settings. **/
-    private fun configureKoinInstance() {
-        loadKoinProperties()
-        setKoinLogLevel()
-    }
-
-    /** @suppress Internal function that loads Koin properties from 'koin.properties', if it exists. **/
-    private fun loadKoinProperties() {
-        val propertyFile = File("koin.properties")
-
-        if (propertyFile.exists()) {
-            getKoin().propertyRegistry.loadPropertiesFromFile(propertyFile.path)
-        }
-    }
-
-    /** @suppress Internal function that determines and sets the log level for the Koin instance. **/
-    private fun setKoinLogLevel() {
         var logLevel = koinLogLevel
 
         if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
@@ -393,21 +363,36 @@ public open class ExtensibleBotBuilder {
             logLevel = Level.ERROR
         }
 
-        getKoin().logger.level = logLevel
+        if (koinNotStarted()) {
+            KordExContext.startKoin {
+                slf4jLogger(logLevel)
+
+                if (File("koin.properties").exists()) {
+                    fileProperties("koin.properties")
+                }
+            }
+        } else {
+            getKoin().logger.level = logLevel
+        }
     }
 
-    /** @suppress Internal function that creates and loads the bot's main Koin module.
-     * The module provides important bot-related singletons. **/
+    /** @suppress Internal function that checks if Koin has been started. **/
+    private fun koinNotStarted(): Boolean = KordExContext.getOrNull() == null
+
+    /** @suppress Internal function that creates and loads the bot's main Koin modules.
+     * The modules provide important bot-related singletons. **/
     private fun addBotKoinModule() {
-        val botModule = loadModule {
-            single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class
-            single { i18nBuilder.translationsProvider } bind TranslationsProvider::class
-            single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class
-            single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class
-            single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class
+        loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
+        loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
+        loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
+        loadModule { single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class }
+        loadModule { single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class }
+        loadModule {
             single {
                 applicationCommandsBuilder.applicationCommandRegistryBuilder()
             } bind ApplicationCommandRegistry::class
+        }
+        loadModule {
             single {
                 val adapter = extensionsBuilder.sentryExtensionBuilder.builder()
 
@@ -418,8 +403,6 @@ public open class ExtensibleBotBuilder {
                 adapter
             } bind SentryAdapter::class
         }
-
-        koinModules.add(botModule)
     }
 
     /** @suppress Plugin-loading function. **/
