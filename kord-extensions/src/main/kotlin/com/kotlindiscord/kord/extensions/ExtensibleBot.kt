@@ -127,9 +127,14 @@ public open class ExtensibleBot(
         }
     }
 
-    /** Stop the bot and its [Kord] instance. **/
+    /** Stop the bot. **/
     public open suspend fun stop() {
         getKoin().get<Kord>().shutdown()
+    }
+
+    /** Stop the bot and its [Kord] instance. Restarting the bot after closing will result in undefined behavior. **/
+    public open suspend fun close() {
+        stop()
         KordExContext.stopKoin()
     }
 
