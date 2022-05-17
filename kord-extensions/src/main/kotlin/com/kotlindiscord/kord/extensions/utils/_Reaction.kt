@@ -6,8 +6,11 @@
 
 package com.kotlindiscord.kord.extensions.utils
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.entity.ReactionEmoji
+
+internal val CUSTOM_EMOJI_REGEX = "<(a)?:([^:]+):(\\d+)>".toRegex()
 
 /**
  * Transform the given [GuildEmoji] into a [ReactionEmoji].
@@ -20,11 +23,26 @@ import dev.kord.core.entity.ReactionEmoji
 public fun GuildEmoji.toReaction(): ReactionEmoji = ReactionEmoji.from(this)
 
 /**
- * Transform a [String] containing a Unicode emoji into a [ReactionEmoji].
+ * Transform a [String] containing an emoji into a [ReactionEmoji].
+ *
+ * This will attempt to parse the string as a custom emoji first and, if it can't, it'll assume you've given it a
+ * Unicode emoji. Custom emoji must match one of the following formats:
+ *
+ * * Animated emoji: `<a:name:id>`
+ * * Normal emoji: `<:name:id>`
  *
  * @receiver String containing a Unicode emoji.
  * @return Newly-created reaction emoji instance.
  *
  * @see [ReactionEmoji.Unicode]
  */
-public fun String.toReaction(): ReactionEmoji = ReactionEmoji.Unicode(this)
+@Suppress("MagicNumber")
+public fun String.toReaction(): ReactionEmoji {
+    val match = CUSTOM_EMOJI_REGEX.matchEntire(this)
+        ?: return ReactionEmoji.Unicode(this)
+
+    val groups = match.groupValues
+    val isAnimated = groups[1].isNotEmpty()
+
+    return ReactionEmoji.Custom(Snowflake(groups[3]), groups[2], isAnimated)
+}

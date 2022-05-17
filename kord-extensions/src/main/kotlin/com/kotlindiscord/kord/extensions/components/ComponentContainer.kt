@@ -110,7 +110,7 @@ public open class ComponentContainer(
             }
 
             @Suppress("UnnecessaryParentheses")  // Yeah, but let me be paranoid. Please.
-            val freeSlots = (ROW_SIZE - row.size) + old.unitWidth
+            val freeSlots = (ROW_SIZE - rowWidth(row)) + old.unitWidth
 
             if (new.unitWidth > freeSlots) {
                 error(
@@ -144,7 +144,7 @@ public open class ComponentContainer(
             }
 
             val old = row[index]
-            val freeSlots = old.unitWidth + (ROW_SIZE - row.size)
+            val freeSlots = old.unitWidth + (ROW_SIZE - rowWidth(row))
 
             if (new.unitWidth > freeSlots) {
                 error(
@@ -184,16 +184,16 @@ public open class ComponentContainer(
 
         val row = rows[rowNum]
 
-        if (row.size >= ROW_SIZE) {
+        if (rowWidth(row) >= ROW_SIZE) {
             error(
                 "Row $rowNum is full, no more components can be added to it."
             )
         }
 
-        if (row.size + component.unitWidth > ROW_SIZE) {
+        if (rowWidth(row) + component.unitWidth > ROW_SIZE) {
             error(
                 "The given component takes up ${component.unitWidth} slots, but row $rowNum only has " +
-                    "${ROW_SIZE - row.size} available slots remaining."
+                    "${ROW_SIZE - rowWidth(row)} available slots remaining."
             )
         }
 
@@ -212,7 +212,7 @@ public open class ComponentContainer(
 
             @Suppress("UnconditionalJumpStatementInLoop")  // Yes, but this is nicer to read
             for (row in rows) {
-                if (row.size >= ROW_SIZE || row.size + component.unitWidth > ROW_SIZE) {
+                if (rowWidth(row) >= ROW_SIZE || rowWidth(row) + component.unitWidth > ROW_SIZE) {
                     continue
                 }
 
@@ -258,6 +258,8 @@ public open class ComponentContainer(
             }
         }
     }
+
+    private fun rowWidth(row: List<Component>): Int = row.sumOf { it.unitWidth }
 }
 
 /** DSL-style factory function to make component containers these by hand easier. **/
