@@ -13,7 +13,6 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.message.MessageCreateEvent
 import org.koin.core.component.KoinComponent
@@ -22,7 +21,7 @@ import org.koin.core.component.inject
 /**
  * A class for the registration and dispatching of message-based commands.
  */
-@OptIn(KordPreview::class)
+
 public open class ChatCommandRegistry : KoinComponent {
     /** Current instance of the bot. **/
     public val bot: ExtensibleBot by inject()

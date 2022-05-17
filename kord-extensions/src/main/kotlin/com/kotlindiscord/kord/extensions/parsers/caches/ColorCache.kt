@@ -35,7 +35,7 @@ public object ColorCache : KoinComponent {
         if (valueCache[locale] == null) {
             val colorMap: ColorMap = linkedMapOf()
 
-            keyMap.forEach { key, value ->
+            keyMap.forEach { (key, value) ->
                 val result = translations.translate(key, locale)
 
                 result.split(",").map { it.trim() }.forEach {

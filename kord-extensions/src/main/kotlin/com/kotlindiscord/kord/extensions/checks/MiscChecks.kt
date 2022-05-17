@@ -76,22 +76,25 @@ public suspend fun CheckContext<*>.isInThread() {
     }
 
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isInThread")
-    val channel = channelFor(event)?.asChannelOrNull()
 
-    if (channel == null) {
-        logger.failed("Event did not concern a channel.")
+    when (channelFor(event)?.asChannelOrNull()) {
+        null -> {
+            logger.failed("Event did not concern a channel.")
 
-        fail()
-    } else if (channel is ThreadChannelBehavior) {
-        logger.passed()
+            fail()
+        }
+        is ThreadChannelBehavior -> {
+            logger.passed()
 
-        pass()
-    } else {
-        logger.failed("Channel is not a thread.")
+            pass()
+        }
+        else -> {
+            logger.failed("Channel is not a thread.")
 
-        fail(
-            translate("checks.isInThread.failed")
-        )
+            fail(
+                translate("checks.isInThread.failed")
+            )
+        }
     }
 }
 
@@ -105,21 +108,24 @@ public suspend fun CheckContext<*>.isNotInThread() {
     }
 
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotInThread")
-    val channel = channelFor(event)?.asChannelOrNull()
 
-    if (channel == null) {
-        logger.passed("Event did not concern a channel.")
+    when (channelFor(event)?.asChannelOrNull()) {
+        null -> {
+            logger.passed("Event did not concern a channel.")
 
-        pass()
-    } else if (channel !is ThreadChannelBehavior) {
-        logger.passed()
+            pass()
+        }
+        !is ThreadChannelBehavior -> {
+            logger.passed()
 
-        pass()
-    } else {
-        logger.failed("Channel is a thread.")
+            pass()
+        }
+        else -> {
+            logger.failed("Channel is a thread.")
 
-        fail(
-            translate("checks.isNotInThread.failed")
-        )
+            fail(
+                translate("checks.isNotInThread.failed")
+            )
+        }
     }
 }

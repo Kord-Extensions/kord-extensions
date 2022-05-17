@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
@@ -23,7 +21,6 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.deleteIgnoringNotFound
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.translate
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 import org.koin.core.component.inject
@@ -215,12 +212,10 @@ public class HelpExtension : HelpProvider, Extension() {
         } else {
             val (openingLine, desc, arguments) = formatCommandHelp(prefix, event, command, longDescription = true)
 
-            val commandName = if (command is ChatSubCommand) {
-                command.getFullTranslatedName(locale)
-            } else if (command is ChatGroupCommand) {
-                command.getFullTranslatedName(locale)
-            } else {
-                command.getTranslatedName(locale)
+            val commandName = when (command) {
+                is ChatSubCommand -> command.getFullTranslatedName(locale)
+                is ChatGroupCommand -> command.getFullTranslatedName(locale)
+                else -> command.getTranslatedName(locale)
             }
 
             pages.addPage(
@@ -273,12 +268,10 @@ public class HelpExtension : HelpProvider, Extension() {
         val locale = event.getLocale()
         val defaultLocale = botSettings.i18nBuilder.defaultLocale
 
-        val commandName = if (command is ChatSubCommand) {
-            command.getFullTranslatedName(locale)
-        } else if (command is ChatGroupCommand) {
-            command.getFullTranslatedName(locale)
-        } else {
-            command.getTranslatedName(locale)
+        val commandName = when (command) {
+            is ChatSubCommand -> command.getFullTranslatedName(locale)
+            is ChatGroupCommand -> command.getFullTranslatedName(locale)
+            else -> command.getTranslatedName(locale)
         }
 
         val openingLine = "**$prefix$commandName ${command.getSignature(locale)}**\n"
@@ -357,7 +350,7 @@ public class HelpExtension : HelpProvider, Extension() {
                 )
 
                 append(" ")
-                append(command.requiredPerms.map { it.translate(locale) }.joinToString(", "))
+                append(command.requiredPerms.joinToString(", ") { it.translate(locale) })
             }
         }.trim('\n')
 

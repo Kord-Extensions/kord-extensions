@@ -4,12 +4,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ListConverterBuilder
-import dev.kord.common.annotation.KordPreview
 
 /**
  * Abstract base class for a multi converter.

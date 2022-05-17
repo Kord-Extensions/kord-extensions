@@ -19,7 +19,7 @@ import dev.kord.core.event.guild.GuildCreateEvent
 import kotlinx.coroutines.flow.toList
 
 /**
- * Emoji extension, in charge of keeping track of custom emoji so you can easily retrieve them later.
+ * Emoji extension, in charge of keeping track of custom emoji, so you can easily retrieve them later.
  */
 class EmojiExtension : Extension() {
     override val name: String = "emoji"
@@ -55,9 +55,9 @@ class EmojiExtension : Extension() {
             configuredGuilds.mapNotNull { kord.getGuild(it) }
         }
 
-        val guildEmojis = emojiGuilds.map { guild ->
+        val guildEmojis = emojiGuilds.associate { guild ->
             guild.id to guild.emojis.toList()
-        }.toMap()
+        }
 
         if (forGuildId != null) {
             emojis.entries.removeAll { (_, emoji) -> emoji.guildId != forGuildId }

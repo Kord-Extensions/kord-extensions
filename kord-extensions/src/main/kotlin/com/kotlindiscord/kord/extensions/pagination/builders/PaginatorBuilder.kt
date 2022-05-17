@@ -16,7 +16,6 @@ import java.util.*
 /**
  * Wrapping builder for easily creating paginators using DSL functions defined in the context classes.
  *
- * @param extension Extension the paginator is being created for
  * @param locale Locale to use for the paginator
  * @param defaultGroup Default page group, if any
  */

@@ -5,11 +5,7 @@
  */
 
 @file:OptIn(
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class,
     FlowPreview::class,
-    KordPreview::class,
 )
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
@@ -17,12 +13,12 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.translate
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.Channel
@@ -69,7 +65,6 @@ import kotlinx.coroutines.flow.toList
         "public var requiredChannelTypes: MutableSet<ChannelType> = mutableSetOf()",
     ],
 )
-@OptIn(KordPreview::class)
 public class ChannelConverter(
     private val requireSameGuild: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null,

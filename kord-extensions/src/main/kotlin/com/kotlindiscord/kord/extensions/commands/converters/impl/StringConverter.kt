@@ -13,7 +13,6 @@ import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
@@ -29,7 +28,6 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
-@OptIn(KordPreview::class)
 public class StringConverter(
     override var validator: Validator<String> = null
 ) : SingleConverter<String>() {

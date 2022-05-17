@@ -7,7 +7,6 @@
 package com.kotlindiscord.kord.extensions.commands.application.slash.converters
 
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
-import dev.kord.common.annotation.KordPreview
 
 private const val CHOICE_LIMIT = 25  // Discord doesn't allow more choices than this
 
@@ -16,7 +15,7 @@ private const val CHOICE_LIMIT = 25  // Discord doesn't allow more choices than 
  *
  * @property choices List of choices for the user to pick from.
  */
-@OptIn(KordPreview::class)
+
 public abstract class ChoiceConverter<T : Any>(
     public open val choices: Map<String, T>
 ) : SingleConverter<T>() {

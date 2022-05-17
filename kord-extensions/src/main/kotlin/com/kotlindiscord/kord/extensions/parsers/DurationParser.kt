@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ExperimentalTime::class)
-
 package com.kotlindiscord.kord.extensions.parsers
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -16,7 +14,6 @@ import kotlinx.datetime.DateTimePeriod
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
-import kotlin.time.ExperimentalTime
 
 private const val DAYS_IN_WEEK = 7
 
@@ -46,16 +43,16 @@ public object DurationParser : KoinComponent {
             .replace(" ", "")
 
         while (buffer.isNotEmpty()) {
-            if (isValueChar(buffer.first())) {
+            buffer = if (isValueChar(buffer.first())) {
                 val (value, remaining) = buffer.splitOn(DurationParser::isNotValueChar)
 
                 values.add(value)
-                buffer = remaining
+                remaining
             } else {
                 val (unit, remaining) = buffer.splitOn(DurationParser::isValueChar)
 
                 units.add(unit)
-                buffer = remaining
+                remaining
             }
         }
 
