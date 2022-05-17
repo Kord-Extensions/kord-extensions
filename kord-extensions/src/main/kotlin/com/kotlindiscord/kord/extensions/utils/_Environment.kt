@@ -42,7 +42,7 @@ public fun envOrNull(name: String): String? {
             for (line in lines) {
                 var effectiveLine = line.trimStart()
 
-                if (effectiveLine.startsWith("#")) {
+                if (effectiveLine.isBlank() || effectiveLine.startsWith("#")) {
                     continue
                 }
 
