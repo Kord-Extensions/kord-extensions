@@ -29,7 +29,7 @@ private val keyMap: UnitMap = linkedMapOf(
 /**
  * Simple object that caches translated time units per locale.
  */
-public object T4JTimeUnitCache : KordExKoinComponent() {
+public object T4JTimeUnitCache : KordExKoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
 

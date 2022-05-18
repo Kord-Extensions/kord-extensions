@@ -8,6 +8,7 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -23,7 +24,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
@@ -36,7 +36,7 @@ import org.koin.core.component.inject
 class PhishingWebsocketWrapper(
     private val appName: String,
     private val callback: suspend (DomainChange) -> Unit
-) : KoinComponent {
+) : KordExKoinComponent {
     private val logger = KotlinLogging.logger { }
     private var job: Job? = null
 

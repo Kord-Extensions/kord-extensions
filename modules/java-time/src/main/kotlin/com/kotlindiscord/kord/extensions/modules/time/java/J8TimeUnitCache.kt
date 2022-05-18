@@ -7,7 +7,7 @@
 package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import org.koin.core.component.KoinComponent
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import org.koin.core.component.inject
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -27,7 +27,7 @@ private val keyMap: UnitMap = linkedMapOf(
 /**
  * Simple object that caches translated time units per locale.
  */
-public object J8TimeUnitCache : KoinComponent {
+public object J8TimeUnitCache : KordExKoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
 
