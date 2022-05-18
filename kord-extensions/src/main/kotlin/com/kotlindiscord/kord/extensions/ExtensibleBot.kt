@@ -33,11 +33,9 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
 import mu.KotlinLogging
@@ -119,7 +117,8 @@ public open class ExtensibleBot(
     /** Start up the bot and log into Discord. **/
     public open suspend fun start() {
         settings.hooksBuilder.runBeforeStart(this)
-        registerListeners()
+
+        if (!initialized) registerListeners()
 
         getKoin().get<Kord>().login {
             this.presence(settings.presenceBuilder)
@@ -128,18 +127,18 @@ public open class ExtensibleBot(
     }
 
     /**
-     * Stop the bot by shutting down Kord.
+     * Stop the bot by logging out [Kord].
      *
      * This will leave the Koin context intact, so subsequent restarting of the bot is possible.
      *
      * @see close
      **/
     public open suspend fun stop() {
-        getKoin().get<Kord>().shutdown()
+        getKoin().get<Kord>().logout()
     }
 
     /**
-     * Stop the bot and remove its Koin context.
+     * Stop the bot by shutting down [Kord] and removing its Koin context.
      *
      * Restarting the bot after closing will result in undefined behavior
      * because the Koin context needed to start will no longer exist.
@@ -151,7 +150,7 @@ public open class ExtensibleBot(
      * @see stop
      **/
     public open suspend fun close() {
-        stop()
+        getKoin().get<Kord>().shutdown()
         KordExContext.stopKoin()
     }
 
