@@ -19,6 +19,8 @@ import org.koin.dsl.KoinAppDeclaration
  * This contains the [KoinApplication] and its [Koin] instance for dependency injection.
  *
  * To use this context, implement [KordExKoinComponent].
+ *
+ * @see org.koin.core.context.GlobalContext
  */
 public object KordExContext : KoinContext {
     /** The current [Koin] instance. */
@@ -27,7 +29,8 @@ public object KordExContext : KoinContext {
     /** The current [KoinApplication]. */
     private var koinApp: KoinApplication? = null
 
-    /** Gets the [Koin] instance.
+    /**
+     * Gets the [Koin] instance.
      *
      * @throws IllegalStateException [KoinApplication] has not yet been started.
      */
@@ -39,7 +42,8 @@ public object KordExContext : KoinContext {
     /** Gets the [KoinApplication] or null if the [KoinApplication] has not yet been started. */
     public fun getKoinApplicationOrNull(): KoinApplication? = koinApp
 
-    /** Registers a [KoinApplication] to as the current one for this context.
+    /**
+     * Registers a [KoinApplication] to as the current one for this context.
      *
      * @param koinApplication The application to registers.
      *
@@ -49,6 +53,7 @@ public object KordExContext : KoinContext {
         if (koin != null) {
             throw KoinAppAlreadyStartedException("KordEx Koin Application has already been started")
         }
+
         koinApp = koinApplication
         koin = koinApplication.koin
     }
@@ -69,6 +74,7 @@ public object KordExContext : KoinContext {
     override fun startKoin(koinApplication: KoinApplication): KoinApplication = synchronized(this) {
         register(koinApplication)
         koinApplication.createEagerInstances()
+
         return koinApplication
     }
 
@@ -81,9 +87,11 @@ public object KordExContext : KoinContext {
      */
     override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = synchronized(this) {
         val koinApplication = KoinApplication.init()
+
         register(koinApplication)
         appDeclaration(koinApplication)
         koinApplication.createEagerInstances()
+
         return koinApplication
     }
 
@@ -106,7 +114,7 @@ public object KordExContext : KoinContext {
     }
 
     /**
-     * Unloads module from the [Koin] instance.
+     * Unloads a module from the [Koin] instance.
      *
      * @param module The module to unload.
      */

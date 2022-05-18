@@ -349,7 +349,7 @@ public open class ExtensibleBotBuilder {
 
         hooksBuilder.runBeforeKoinSetup()
 
-        addBotKoinModule()
+        addBotKoinModules()
 
         hooksBuilder.runAfterKoinSetup()
     }
@@ -366,6 +366,7 @@ public open class ExtensibleBotBuilder {
         if (koinNotStarted()) {
             KordExContext.startKoin {
                 slf4jLogger(logLevel)
+//                environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
 
                 if (File("koin.properties").exists()) {
                     fileProperties("koin.properties")
@@ -379,19 +380,23 @@ public open class ExtensibleBotBuilder {
     /** @suppress Internal function that checks if Koin has been started. **/
     private fun koinNotStarted(): Boolean = KordExContext.getOrNull() == null
 
-    /** @suppress Internal function that creates and loads the bot's main Koin modules.
-     * The modules provide important bot-related singletons. **/
-    private fun addBotKoinModule() {
+    /**
+     * @suppress Internal function that creates and loads the bot's main Koin modules.
+     * The modules provide important bot-related singletons.
+     **/
+    private fun addBotKoinModules() {
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
         loadModule { single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class }
         loadModule { single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class }
+
         loadModule {
             single {
                 applicationCommandsBuilder.applicationCommandRegistryBuilder()
             } bind ApplicationCommandRegistry::class
         }
+
         loadModule {
             single {
                 val adapter = extensionsBuilder.sentryExtensionBuilder.builder()

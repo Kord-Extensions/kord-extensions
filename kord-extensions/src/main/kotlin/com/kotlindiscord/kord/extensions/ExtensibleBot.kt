@@ -127,12 +127,29 @@ public open class ExtensibleBot(
         }
     }
 
-    /** Stop the bot. **/
+    /**
+     * Stop the bot by shutting down Kord.
+     *
+     * This will leave the Koin context intact, so subsequent restarting of the bot is possible.
+     *
+     * @see close
+     **/
     public open suspend fun stop() {
         getKoin().get<Kord>().shutdown()
     }
 
-    /** Stop the bot and its [Kord] instance. Restarting the bot after closing will result in undefined behavior. **/
+    /**
+     * Stop the bot and remove its Koin context.
+     *
+     * Restarting the bot after closing will result in undefined behavior
+     * because the Koin context needed to start will no longer exist.
+     *
+     * If a bot has been closed, then it must be fully rebuilt to start again.
+     *
+     * If a new bot is going to be built, then the previous bot must be closed first.
+     *
+     * @see stop
+     **/
     public open suspend fun close() {
         stop()
         KordExContext.stopKoin()
