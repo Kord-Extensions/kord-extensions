@@ -9,7 +9,6 @@ package com.kotlindiscord.kord.extensions.commands.converters
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
@@ -26,7 +25,6 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
-@OptIn(KordPreview::class)
 public class SingleToOptionalConverter<T : Any>(
     public val singleConverter: SingleConverter<T>,
 

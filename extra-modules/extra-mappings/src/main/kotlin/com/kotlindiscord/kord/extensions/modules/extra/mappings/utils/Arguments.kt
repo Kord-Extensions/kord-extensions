@@ -9,7 +9,6 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings.utils
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import com.kotlindiscord.kord.extensions.utils.FilterStrategy
-import com.kotlindiscord.kord.extensions.utils.focusedOption
 import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import me.shedaniel.linkie.Namespace

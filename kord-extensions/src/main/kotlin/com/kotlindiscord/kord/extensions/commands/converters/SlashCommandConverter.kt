@@ -8,14 +8,12 @@ package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
  * Interface representing converters that can be made use of in slash commands.
  */
-@OptIn(KordPreview::class)
 public interface SlashCommandConverter {
     /**
      * Return a slash command option that corresponds to this converter.

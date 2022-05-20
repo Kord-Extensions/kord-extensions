@@ -4,14 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class, KordUnsafe::class, KordExperimental::class)
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.checks
 
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.utils.authorId
 import dev.kord.common.annotation.KordExperimental
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
@@ -285,17 +284,15 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  * @return A [MemberBehavior] representing the member, or null if there isn't one.
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
-    return when {
-        event is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.user
-
-        event is MemberJoinEvent -> event.member
-        event is MemberUpdateEvent -> event.member
-        event is MessageCreateEvent -> event.member
-        event is MessageDeleteEvent ->
+    return when (event) {
+        is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.user
+        is MemberJoinEvent -> event.member
+        is MemberUpdateEvent -> event.member
+        is MessageCreateEvent -> event.member
+        is MessageDeleteEvent ->
             event.message?.data?.guildId?.value
-                ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
-
-        event is MessageUpdateEvent -> {
+            ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
+        is MessageUpdateEvent -> {
             val message = event.new
             if (message.author.value != null && message.member.value != null) {
                 val userData = message.author.value!!.toData()
@@ -304,21 +301,18 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
             }
             return null
         }
-        event is ReactionAddEvent -> event.userAsMember
-        event is ReactionRemoveEvent -> event.userAsMember
-
-        event is TypingStartEvent -> if (event.guildId != null) {
+        is ReactionAddEvent -> event.userAsMember
+        is ReactionRemoveEvent -> event.userAsMember
+        is TypingStartEvent -> if (event.guildId != null) {
             event.getGuild()!!.getMemberOrNull(event.userId)
         } else {
             null
         }
-
-        event is ThreadChannelCreateEvent -> event.channel.owner.asMember(event.channel.guildId)
+        is ThreadChannelCreateEvent -> event.channel.owner.asMember(event.channel.guildId)
 //        event is ThreadUpdateEvent -> event.
 //        event is ThreadChannelDeleteEvent -> event.
 //        event is ThreadListSyncEvent -> event.
-
-        event is ThreadMemberUpdateEvent -> {
+        is ThreadMemberUpdateEvent -> {
             val thread = event.member.getThreadOrNull()
 
             if (thread == null) {
@@ -329,7 +323,6 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
         }
 
 //        event is ThreadMembersUpdateEvent -> event.
-
         else -> null
     }
 }

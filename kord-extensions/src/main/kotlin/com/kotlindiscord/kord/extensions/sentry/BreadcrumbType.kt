@@ -22,7 +22,7 @@ public sealed class BreadcrumbType(public val name: String, public vararg val re
     /** A detected or unhandled error. **/
     public object Error : BreadcrumbType("error")
 
-    /** A HTTP request sent by your bot. **/
+    /** An HTTP request sent by your bot. **/
     public object HTTP : BreadcrumbType("http")
 
     /** Information on what's been going on. **/

@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ExperimentalPathApi::class)
-
 package com.kotlindiscord.kordex.ext.common.data
 
 import kotlinx.serialization.KSerializer
@@ -46,7 +44,7 @@ import kotlin.io.path.*
  *                      in your subclass.
  */
 @Suppress("UnnecessaryAbstractClass")  // Literally an API class
-public abstract class SerializedData<T : Any>(
+abstract class SerializedData<T : Any>(
     baseName: String,
     dataFolder: String,
     private val serializerObj: KSerializer<T>,

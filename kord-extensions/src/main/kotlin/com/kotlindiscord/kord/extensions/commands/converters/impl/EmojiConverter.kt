@@ -4,27 +4,16 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.entity.interaction.OptionValue
@@ -53,7 +42,6 @@ import kotlinx.coroutines.flow.mapNotNull
 
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
-@OptIn(KordPreview::class)
 public class EmojiConverter(
     override var validator: Validator<GuildEmoji> = null
 ) : SingleConverter<GuildEmoji>() {
@@ -76,7 +64,7 @@ public class EmojiConverter(
             val id: String = arg.substring(0, arg.length - 1).split(":").last()
 
             try {
-                val snowflake: Snowflake = Snowflake(id)
+                val snowflake = Snowflake(id)
 
                 kord.guilds.mapNotNull {
                     it.getEmojiOrNull(snowflake)
@@ -90,7 +78,7 @@ public class EmojiConverter(
             val name = if (arg.startsWith(":") && arg.endsWith(":")) arg.substring(1, arg.length - 1) else arg
 
             try {
-                val snowflake: Snowflake = Snowflake(name)
+                val snowflake = Snowflake(name)
 
                 kord.guilds.mapNotNull {
                     it.getEmojiOrNull(snowflake)

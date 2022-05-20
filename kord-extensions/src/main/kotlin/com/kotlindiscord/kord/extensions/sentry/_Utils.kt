@@ -72,14 +72,14 @@ public fun Scope.breadcrumb(
 }
 
 /** Convenience function for creating and testing a sub-transaction. **/
-public inline fun <T> ITransaction.transaction(name: String, operation: String, body: (ITransaction).() -> T) {
+public inline fun <T> transaction(name: String, operation: String, body: ITransaction.() -> T) {
     val transaction = startTransaction(name, operation)
 
     transaction(transaction, body)
 }
 
 /** Convenience function for testing a sub-transaction. **/
-public inline fun <T> ITransaction.transaction(transaction: ITransaction, body: (ITransaction).() -> T) {
+public inline fun <T> transaction(transaction: ITransaction, body: ITransaction.() -> T) {
     try {
         body(transaction)
     } catch (t: Throwable) {

@@ -7,7 +7,6 @@
 package com.kotlindiscord.kord.extensions.utils
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.Event
 import dev.kord.core.event.interaction.InteractionCreateEvent
@@ -42,7 +41,6 @@ public suspend fun MessageCreateEvent.getLocale(): Locale {
 }
 
 /** Attempt to resolve the locale for the given [InteractionCreateEvent] object. **/
-@OptIn(KordPreview::class)
 public suspend fun InteractionCreateEvent.getLocale(): Locale {
     val existing = localeCache[this]
 

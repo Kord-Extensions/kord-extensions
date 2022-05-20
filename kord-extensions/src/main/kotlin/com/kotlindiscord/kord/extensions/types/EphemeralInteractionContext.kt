@@ -9,7 +9,10 @@ package com.kotlindiscord.kord.extensions.types
 import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
-import dev.kord.core.behavior.interaction.response.*
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.createEphemeralFollowup
+import dev.kord.core.behavior.interaction.response.createPublicFollowup
+import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 import dev.kord.core.entity.interaction.response.EphemeralMessageInteractionResponse
@@ -48,7 +51,7 @@ public suspend inline fun EphemeralInteractionContext.edit(
  * Create a paginator that edits the original interaction. This is the only option for an ephemeral interaction, as
  * it's impossible to edit an ephemeral follow-up.
  */
-public suspend inline fun EphemeralInteractionContext.editingPaginator(
+public inline fun EphemeralInteractionContext.editingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
@@ -61,7 +64,7 @@ public suspend inline fun EphemeralInteractionContext.editingPaginator(
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
-public suspend inline fun EphemeralInteractionContext.publicRespondingPaginator(
+public inline fun EphemeralInteractionContext.publicRespondingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit

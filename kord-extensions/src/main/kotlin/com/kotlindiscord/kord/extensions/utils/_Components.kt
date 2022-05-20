@@ -4,11 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class, KordUnsafe::class)
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.utils
 
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.optional.optional

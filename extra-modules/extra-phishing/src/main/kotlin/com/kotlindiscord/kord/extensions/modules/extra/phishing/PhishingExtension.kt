@@ -4,7 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ExperimentalTime::class)
 @file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
@@ -38,7 +37,6 @@ import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.UnsupportedMimeTypeException
-import kotlin.time.ExperimentalTime
 
 /** The maximum number of redirects to attempt to follow for a URL. **/
 const val MAX_REDIRECTS = 5

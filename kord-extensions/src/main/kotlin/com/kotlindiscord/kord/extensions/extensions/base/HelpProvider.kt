@@ -136,7 +136,7 @@ public interface HelpProvider {
     ): BasePaginator
 
     /**
-     * Given an command context and argument list, attempt to find the command represented by the arguments and return
+     * Given a command context and argument list, attempt to find the command represented by the arguments and return
      * a [BasePaginator], ready to be sent.
      *
      * The [BasePaginator] will contain an error message if the command passed was `null`, or the command's checks fail.
@@ -176,7 +176,7 @@ public interface HelpProvider {
     public suspend fun getMainHelpPaginator(event: MessageCreateEvent, prefix: String): BasePaginator
 
     /**
-     * Given an command context, return a [BasePaginator] containing help information for all loaded commands with
+     * Given a command context, return a [BasePaginator] containing help information for all loaded commands with
      * passing checks.
      *
      * While it shouldn't really be possible, this will also handle the case where there are no commands registered
