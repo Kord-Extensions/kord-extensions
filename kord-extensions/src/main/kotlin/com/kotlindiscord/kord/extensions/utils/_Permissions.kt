@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("unused")
+
 package com.kotlindiscord.kord.extensions.utils
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
@@ -62,11 +64,11 @@ public fun Permission.toTranslationKey(): String? = when (this) {
 }
 
 /** Because "Stream" is a confusing name, people may look for "Video" instead. **/
-public val Video: Permission.Stream
+public val Permission.Video: Permission.Stream
     inline get() = Permission.Stream
 
 /** Because it hasn't been called "Moderate Members" since the DMD testing finished. **/
-public val TimeoutMembers: Permission.ModerateMembers
+public val Permission.TimeoutMembers: Permission.ModerateMembers
     inline get() = Permission.ModerateMembers
 
 /** Given a [CommandContext], translate the [Permission] to a human-readable string based on the context's locale. **/
