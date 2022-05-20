@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
@@ -16,7 +14,6 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

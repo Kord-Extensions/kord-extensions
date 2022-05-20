@@ -35,7 +35,7 @@ private const val DELETE_DELAY = 1000L * 30L  // 30 seconds
 private const val DISCORD_CHANNEL_URI = "https://discord.com/channels"
 
 /**
- * Deletes a message, catching and ignoring a HTTP 404 (Not Found) exception.
+ * Deletes a message, catching and ignoring an HTTP 404 (Not Found) exception.
  */
 public suspend fun MessageBehavior.deleteIgnoringNotFound() {
     try {
@@ -48,7 +48,7 @@ public suspend fun MessageBehavior.deleteIgnoringNotFound() {
 }
 
 /**
- * Deletes a public follow-up, catching and ignoring a HTTP 404 (Not Found) exception.
+ * Deletes a public follow-up, catching and ignoring an HTTP 404 (Not Found) exception.
  */
 public suspend fun PublicFollowupMessageBehavior.deleteIgnoringNotFound() {
     try {

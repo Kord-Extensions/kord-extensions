@@ -23,6 +23,9 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.MultiApplicationCommandBuilder
+import dev.kord.rest.builder.interaction.input
+import dev.kord.rest.builder.interaction.message
+import dev.kord.rest.builder.interaction.user
 import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.coroutines.flow.toList
@@ -98,60 +101,10 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
             }
         }
 
-        val commandsWithPerms = (messageCommands + slashCommands + userCommands)
-            .filterValues {
-                it.allowedRoles.isNotEmpty() ||
-                    it.allowedUsers.isNotEmpty() ||
-                    it.disallowedRoles.isNotEmpty() ||
-                    it.disallowedUsers.isNotEmpty() ||
-                    !it.allowByDefault
-            }
-            .toList()
-            .groupBy { it.second.guildId }
-
         if (!bot.settings.applicationCommandsBuilder.syncPermissions) {
             logger.debug { "Skipping permissions synchronisation, as it was disabled." }
 
             return
-        }
-
-        try {
-            commandsWithPerms.forEach { (guildId, commands) ->
-                if (guildId != null) {
-                    kord.bulkEditApplicationCommandPermissions(guildId) {
-                        commands.forEach { (id, commandObj) ->
-                            command(id) { injectRawPermissions(this, commandObj) }
-                        }
-                    }
-
-                    logger.trace { "Applied permissions for ${commands.size} commands." }
-                } else {
-                    logger.warn { "Applying permissions to global application commands is currently not supported." }
-                }
-            }
-        } catch (e: KtorRequestException) {
-            logger.error(e) {
-                "Failed to apply application command permissions - for this reason, all commands with configured" +
-                    "permissions will be disabled." +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        } catch (t: Throwable) {
-            logger.error(t) {
-                "Failed to apply application command permissions - for this reason, all commands with configured " +
-                    "permissions will be disabled."
-            }
-
-            commandsWithPerms.forEach { (_, commands) ->
-                commands.forEach { (id, _) ->
-                    messageCommands.remove(id)
-                    slashCommands.remove(id)
-                    userCommands.remove(id)
-                }
-            }
         }
     }
 

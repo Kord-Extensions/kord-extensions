@@ -4,11 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 @file:Suppress(
     "TooGenericExceptionCaught",
-    "StringLiteralDuplication"
+    "StringLiteralDuplication",
+    "DuplicatedCode"
 )
 
 package com.kotlindiscord.kord.extensions.commands.chat
@@ -22,7 +21,6 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import dev.kord.common.annotation.KordPreview
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -82,7 +80,7 @@ public open class ChatCommandParser : KoinComponent {
         logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
-        val argsMap = args.map { Pair(it.displayName.lowercase(), it) }.toMap()
+        val argsMap = args.associateBy { it.displayName.lowercase() }
         val keywordArgs: MutableMap<String, MutableList<String>> = mutableMapOf()
 
         if (context.chatCommand.allowKeywordArguments) {

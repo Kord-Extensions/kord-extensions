@@ -14,7 +14,6 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.parseBoolean
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.BooleanOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.BooleanBuilder
@@ -30,7 +29,7 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
-@OptIn(KordPreview::class)
+
 public class BooleanConverter(
     override var validator: Validator<Boolean> = null
 ) : SingleConverter<Boolean>() {

@@ -44,7 +44,7 @@ public suspend inline fun PublicInteractionContext.edit(
 ): PublicMessageInteractionResponse = interactionResponse.edit(builder)
 
 /** Create a paginator that edits the original interaction. **/
-public suspend inline fun PublicInteractionContext.editingPaginator(
+public inline fun PublicInteractionContext.editingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
@@ -57,7 +57,7 @@ public suspend inline fun PublicInteractionContext.editingPaginator(
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
-public suspend inline fun PublicInteractionContext.respondingPaginator(
+public inline fun PublicInteractionContext.respondingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit

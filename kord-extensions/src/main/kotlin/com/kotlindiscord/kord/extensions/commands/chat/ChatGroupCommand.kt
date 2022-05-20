@@ -89,7 +89,7 @@ public open class ChatGroupCommand<T : Arguments>(
         arguments: (() -> R)?,
         body: suspend ChatCommand<R>.() -> Unit
     ): ChatCommand<R> {
-        val commandObj = ChatSubCommand<R>(extension, arguments, this)
+        val commandObj = ChatSubCommand(extension, arguments, this)
         body.invoke(commandObj)
 
         return chatCommand(commandObj)

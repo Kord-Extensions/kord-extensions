@@ -4,11 +4,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
+@file:OptIn(ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.utils.scheduling
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import mu.KotlinLogging
 import java.util.*
 import kotlin.coroutines.CoroutineContext

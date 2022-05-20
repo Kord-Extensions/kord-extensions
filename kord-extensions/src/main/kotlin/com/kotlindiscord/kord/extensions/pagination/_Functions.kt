@@ -13,7 +13,7 @@ import dev.kord.core.behavior.interaction.response.PublicMessageInteractionRespo
 import java.util.*
 
 /** Create a paginator that edits the original interaction. **/
-public suspend inline fun PublicMessageInteractionResponseBehavior.editingPaginator(
+public inline fun PublicMessageInteractionResponseBehavior.editingPaginator(
     locale: Locale? = null,
     defaultGroup: String = "",
     builder: (PaginatorBuilder).() -> Unit
@@ -26,7 +26,7 @@ public suspend inline fun PublicMessageInteractionResponseBehavior.editingPagina
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
-public suspend inline fun FollowupPermittingInteractionResponseBehavior.respondingPaginator(
+public inline fun FollowupPermittingInteractionResponseBehavior.respondingPaginator(
     locale: Locale? = null,
     defaultGroup: String = "",
     builder: (PaginatorBuilder).() -> Unit
@@ -42,7 +42,7 @@ public suspend inline fun FollowupPermittingInteractionResponseBehavior.respondi
  * Create a paginator that edits the original interaction. This is the only option for an ephemeral interaction, as
  * it's impossible to edit an ephemeral follow-up.
  */
-public suspend inline fun EphemeralMessageInteractionResponseBehavior.editingPaginator(
+public inline fun EphemeralMessageInteractionResponseBehavior.editingPaginator(
     locale: Locale? = null,
     defaultGroup: String = "",
     builder: (PaginatorBuilder).() -> Unit

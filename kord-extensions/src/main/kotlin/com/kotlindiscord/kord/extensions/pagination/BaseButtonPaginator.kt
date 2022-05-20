@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.checks.types.Check
@@ -17,7 +15,6 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
@@ -282,7 +279,7 @@ public abstract class BaseButtonPaginator(
     /**
      * Convenience function that enables and disables buttons as necessary, depending on the current page number.
      */
-    public suspend fun updateButtons() {
+    public fun updateButtons() {
         if (currentPageNum <= 0) {
             setDisabledButton(firstPageButton)
             setDisabledButton(backButton)
@@ -325,7 +322,7 @@ public abstract class BaseButtonPaginator(
         button.disable()
     }
 
-    /** Replace a disabled button in [components] with the given interactive button of the same ID.. **/
+    /** Replace a disabled button in [components] with the given interactive button of the same ID. **/
     public fun setEnabledButton(button: PublicInteractionButton?) {
         button ?: return
 
