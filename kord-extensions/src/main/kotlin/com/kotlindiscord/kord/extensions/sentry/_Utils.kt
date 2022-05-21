@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("TooGenericExceptionCaught")
+@file:Suppress("TooGenericExceptionCaught", "unused")
 
 package com.kotlindiscord.kord.extensions.sentry
 
@@ -72,14 +72,14 @@ public fun Scope.breadcrumb(
 }
 
 /** Convenience function for creating and testing a sub-transaction. **/
-public inline fun <T> ITransaction.transaction(name: String, operation: String, body: (ITransaction).() -> T) {
+public inline fun <T> ITransaction.transaction(name: String, operation: String, body: ITransaction.() -> T) {
     val transaction = startTransaction(name, operation)
 
     transaction(transaction, body)
 }
 
 /** Convenience function for testing a sub-transaction. **/
-public inline fun <T> ITransaction.transaction(transaction: ITransaction, body: (ITransaction).() -> T) {
+public inline fun <T> ITransaction.transaction(transaction: ITransaction, body: ITransaction.() -> T) {
     try {
         body(transaction)
     } catch (t: Throwable) {

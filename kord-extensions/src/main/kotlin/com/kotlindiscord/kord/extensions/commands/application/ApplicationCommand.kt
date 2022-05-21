@@ -8,19 +8,18 @@ package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
-import com.kotlindiscord.kord.extensions.utils.any
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
-import dev.kord.core.behavior.RoleBehavior
-import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import org.koin.core.component.inject
 import dev.kord.common.Locale as KLocale
@@ -51,32 +50,38 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     /**
      * Whether to allow everyone to use this command by default.
      *
-     * Leaving this at `true` means that your allowed roles/users sets will effectively be ignored, but your denied
-     * roles/users won't be.
-     *
      * This will be set to `false` automatically by the `allowX` functions, to ensure that they're applied by Discord.
      */
-    public open var allowByDefault: Boolean = true
+    public open var allowByDefault: Boolean
+        get() = defaultMemberPermissions == null
+        set(value) {
+            defaultMemberPermissions = if (value) {
+                null
+            } else {
+                Permissions()
+            }
+        }
 
     /**
-     * List of allowed role IDs. Allows take priority over disallows.
+     * Default set of [Permissions] required to use the command on a guild.
+     *
+     * **Not enforced, read [requirePermission] for more information**
      */
-    public open val allowedRoles: MutableSet<Snowflake> = mutableSetOf()
+    public open var defaultMemberPermissions: Permissions? = null
 
     /**
-     * List of allowed invoker IDs. Allows take priority over disallows.
+     * Enables or disables the command in DMs.
+     *
+     * **Calling [guild] or setting [guildId] will disable this automatically**
      */
-    public open val allowedUsers: MutableSet<Snowflake> = mutableSetOf()
+    public open var allowInDms: Boolean = extension.allowApplicationCommandInDMs
+        get() {
+            if (guildId != null) {
+                return true
+            }
 
-    /**
-     * List of disallowed role IDs. Allows take priority over disallows.
-     */
-    public open val disallowedRoles: MutableSet<Snowflake> = mutableSetOf()
-
-    /**
-     * List of disallowed invoker IDs. Allows take priority over disallows.
-     */
-    public open val disallowedUsers: MutableSet<Snowflake> = mutableSetOf()
+            return field
+        }
 
     /** Permissions required to be able to run this command. **/
     public override val requiredPerms: MutableSet<Permission> = mutableSetOf()
@@ -85,6 +90,17 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      * A [Localized] version of [name].
      */
     public val localizedName: Localized<String> by lazy { localize(name) }
+
+    /**
+     * This will register a requirement for [permissions] with Discord.
+     *
+     * **These permissions won't get enforced, as Discords UI allows server owners to change them, if you want to
+     * enforce them please also call [hasPermission]**
+     */
+    public fun requirePermission(vararg permissions: Permission) {
+        val newPermissions = (defaultMemberPermissions ?: Permissions()) + Permissions(*permissions)
+        defaultMemberPermissions = newPermissions
+    }
 
     /**
      * Localizes a property by its [key] for this command.
@@ -125,44 +141,6 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public open fun guild(guild: GuildBehavior) {
         this.guildId = guild.id
     }
-
-    /** Register an allowed role, and set [allowByDefault] to `false`. **/
-    public open fun allowRole(role: Snowflake): Boolean {
-        allowByDefault = false
-
-        return allowedRoles.add(role)
-    }
-
-    /** Register an allowed role, and set [allowByDefault] to `false`. **/
-    public open fun allowRole(role: RoleBehavior): Boolean =
-        allowRole(role.id)
-
-    /** Register a disallowed role, and set [allowByDefault] to `false`. **/
-    public open fun disallowRole(role: Snowflake): Boolean =
-        disallowedRoles.add(role)
-
-    /** Register a disallowed role, and set [allowByDefault] to `false`. **/
-    public open fun disallowRole(role: RoleBehavior): Boolean =
-        disallowRole(role.id)
-
-    /** Register an allowed user, and set [allowByDefault] to `false`. **/
-    public open fun allowUser(user: Snowflake): Boolean {
-        allowByDefault = false
-
-        return allowedUsers.add(user)
-    }
-
-    /** Register an allowed user, and set [allowByDefault] to `false`. **/
-    public open fun allowUser(user: UserBehavior): Boolean =
-        allowUser(user.id)
-
-    /** Register a disallowed user. **/
-    public open fun disallowUser(user: Snowflake): Boolean =
-        disallowedUsers.add(user)
-
-    /** Register a disallowed user. **/
-    public open fun disallowUser(user: UserBehavior): Boolean =
-        disallowUser(user.id)
 
     /**
      * Define a check which must pass for the command to be executed.
@@ -214,31 +192,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
             }
         }
 
-        // Handle discord-side perms checks, as they can't be relied on to enforce them
-
-        val guildId = event.interaction.data.guildId.value ?: return allowByDefault
-        val memberId = event.interaction.user.id
-
-        var isAllowed = memberId in allowedUsers
-        var isDenied = memberId in disallowedUsers
-
-        if (allowedRoles.isNotEmpty()) {
-            val member = GuildBehavior(guildId, kord).getMember(memberId)
-
-            isAllowed = isAllowed || member.roles.any { it.id in allowedRoles }
-        }
-
-        if (disallowedRoles.isNotEmpty()) {
-            val member = GuildBehavior(guildId, kord).getMember(memberId)
-
-            isDenied = isDenied || member.roles.any { it.id in disallowedRoles }
-        }
-
-        return if (allowByDefault) {
-            !isDenied
-        } else {
-            isAllowed && !isDenied
-        }
+        return true
     }
 
     /** Override this in order to implement any subclass-specific checks. **/

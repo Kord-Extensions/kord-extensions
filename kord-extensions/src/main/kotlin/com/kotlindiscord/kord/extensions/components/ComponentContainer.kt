@@ -5,8 +5,8 @@
  */
 
 @file:Suppress("AnnotationSpacing")
+
 // Genuinely hate having to deal with this one sometimes.
-@file:OptIn(ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.components
 
@@ -18,7 +18,6 @@ import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 import dev.kord.rest.builder.message.modify.actionRow
 import org.koin.core.component.inject
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /** The maximum number of slots you can have in a row. **/
 public const val ROW_SIZE: Int = 5

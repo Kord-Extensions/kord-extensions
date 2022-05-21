@@ -16,7 +16,6 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.time.TimestampType
 import com.kotlindiscord.kord.extensions.time.toDiscord
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
@@ -34,7 +33,6 @@ private const val TIMESTAMP_SUFFIX = ">"
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
-@OptIn(KordPreview::class)
 public class TimestampConverter(
     override var validator: Validator<FormattedTimestamp> = null
 ) : SingleConverter<FormattedTimestamp>() {

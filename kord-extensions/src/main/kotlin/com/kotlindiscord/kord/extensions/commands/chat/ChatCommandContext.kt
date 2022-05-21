@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class, KordUnsafe::class, KordExperimental::class)
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.commands.chat
 
@@ -17,7 +17,6 @@ import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordExperimental
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior

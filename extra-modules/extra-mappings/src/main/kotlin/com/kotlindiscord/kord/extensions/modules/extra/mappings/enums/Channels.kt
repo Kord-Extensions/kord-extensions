@@ -11,7 +11,7 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.converters.C
 /**
  * Enum representing available Yarn channels.
  *
- * @property str String name used for the channel by Linkie
+ * @property readableName String name used for the channel by Linkie
  */
 enum class Channels(override val readableName: String) : ChoiceEnum {
     OFFICIAL("official"),

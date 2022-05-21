@@ -17,13 +17,11 @@ import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.datetime.*
-import kotlin.time.ExperimentalTime
 
 /**
  * Argument converter for Kotlin [DateTimePeriod] arguments. You can apply these to an `Instant` using `plus` and a
@@ -43,7 +41,6 @@ import kotlin.time.ExperimentalTime
         "public var positiveOnly: Boolean = true"
     ],
 )
-@OptIn(KordPreview::class, ExperimentalTime::class)
 public class DurationConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,

@@ -4,27 +4,16 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.IntegerOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.IntegerOptionBuilder
@@ -41,7 +30,6 @@ private const val DEFAULT_RADIX = 10
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     builderFields = ["public var radix: Int = $DEFAULT_RADIX"]
 )
-@OptIn(KordPreview::class)
 public class LongConverter(
     private val radix: Int = DEFAULT_RADIX,
     override var validator: Validator<Long> = null
@@ -71,7 +59,7 @@ public class LongConverter(
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
         val optionValue = (option as? IntegerOptionValue)?.value ?: return false
-        this.parsed = optionValue.toLong()
+        this.parsed = optionValue
 
         return true
     }

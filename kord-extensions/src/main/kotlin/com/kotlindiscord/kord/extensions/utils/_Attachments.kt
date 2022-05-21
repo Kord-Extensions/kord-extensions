@@ -8,10 +8,8 @@ package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.core.entity.Attachment
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.jvm.javaio.*
 import java.io.File
@@ -39,7 +37,6 @@ public suspend fun Attachment.download(): ByteArray {
 public suspend fun Attachment.downloadToFile(path: String): Path = downloadToFile(Path.of(path))
 
 /** Given a [Path] object, download the attachment to the file it points to. **/
-@OptIn(ExperimentalPathApi::class)
 public suspend fun Attachment.downloadToFile(path: Path): Path {
     if (!path.exists()) {
         path.createDirectories()
@@ -51,7 +48,6 @@ public suspend fun Attachment.downloadToFile(path: Path): Path {
 }
 
 /** Given a [File] object, download the attachment and write it to the given file. **/
-@OptIn(ExperimentalPathApi::class)
 public suspend fun Attachment.downloadToFile(file: File): Path {
     if (!file.exists()) {
         file.toPath().createFile()
@@ -71,12 +67,10 @@ public suspend fun Attachment.downloadToFolder(path: String): Path =
     downloadToFolder(Path.of(path))
 
 /** Given a [Path] representing a folder, download the attachment to a file within it. **/
-@OptIn(ExperimentalPathApi::class)
 public suspend fun Attachment.downloadToFolder(path: Path): Path =
     downloadToFolder(path.toFile())
 
 /** Given a [File] representing a folder, download the attachment to a file within it. **/
-@OptIn(ExperimentalPathApi::class)
 public suspend fun Attachment.downloadToFolder(file: File): Path {
     if (!file.exists()) {
         file.toPath().createDirectories()

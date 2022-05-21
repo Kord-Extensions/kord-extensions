@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class, PrivilegedIntent::class)
+@file:OptIn(PrivilegedIntent::class)
 
 package com.kotlindiscord.kord.extensions.builders
 
@@ -33,7 +33,6 @@ import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
 import dev.kord.common.Color
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
@@ -1261,7 +1260,7 @@ public open class ExtensibleBotBuilder {
         }
 
         /**
-         * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
+         * Register the builder used to create the [ApplicationCommandRegistry]. You can change this if you need to make
          * use of a subclass.
          */
         public fun applicationCommandRegistry(builder: () -> ApplicationCommandRegistry) {

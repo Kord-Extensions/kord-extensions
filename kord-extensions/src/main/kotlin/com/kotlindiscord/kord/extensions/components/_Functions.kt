@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ExperimentalTime::class)
-
 package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.components.buttons.DisabledInteractionButton
@@ -17,7 +15,6 @@ import com.kotlindiscord.kord.extensions.components.menus.PublicSelectMenu
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /** DSL function for creating a disabled button and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.disabledButton(

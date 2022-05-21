@@ -34,7 +34,6 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.createChatInputCommand
 import dev.kord.core.behavior.createMessageCommand
 import dev.kord.core.behavior.createUserCommand
-import dev.kord.core.entity.Guild
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
@@ -272,8 +271,6 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
             }
         }
 
-        injectPermissions(guild, command, response.id) ?: return null
-
         return response.id
     }
 
@@ -310,8 +307,6 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
                 this.register(locale, command)
             }
         }
-
-        injectPermissions(guild, command, response.id) ?: return null
 
         return response.id
     }
@@ -350,58 +345,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
             }
         }
 
-        injectPermissions(guild, command, response.id) ?: return null
-
         return response.id
-    }
-
-    // endregion
-
-    // region: Permissions
-
-    protected suspend fun <T : ApplicationCommand<*>> injectPermissions(
-        guild: Guild?,
-        command: T,
-        commandId: Snowflake
-    ): T? {
-        try {
-            if (guild != null) {
-                kord.editApplicationCommandPermissions(guild.id, commandId) {
-                    injectRawPermissions(this, command)
-                }
-
-                logger.trace { "Applied permissions for command: ${command.name} ($command)" }
-            } else {
-                logger.warn { "Applying permissions to global application commands is currently not supported." }
-            }
-        } catch (e: KtorRequestException) {
-            logger.error(e) {
-                "Failed to apply application command permissions. This command will not be registered." +
-                    if (e.error?.message != null) {
-                        "\n        Discord error message: ${e.error?.message}"
-                    } else {
-                        ""
-                    }
-            }
-        } catch (t: Throwable) {
-            logger.error(t) {
-                "Failed to apply application command permissions. This command will not be registered."
-            }
-
-            return null
-        }
-        return command
-    }
-
-    protected fun injectRawPermissions(
-        builder: ApplicationCommandPermissionsModifyBuilder,
-        command: ApplicationCommand<*>
-    ) {
-        command.allowedUsers.map { builder.user(it, true) }
-        command.disallowedUsers.map { builder.user(it, false) }
-
-        command.allowedRoles.map { builder.role(it, true) }
-        command.disallowedRoles.map { builder.role(it, false) }
     }
 
     // endregion
@@ -409,8 +353,15 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     // region: Extensions
 
     /** Registration logic for slash commands, extracted for clarity. **/
+    public open suspend fun GlobalChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
+        registerGlobalPermissions(locale, command)
+
+        (this as ChatInputCreateBuilder).register(locale, command)
+    }
+
+    /** Registration logic for slash commands, extracted for clarity. **/
     public open suspend fun ChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
-        this.defaultPermission = command.guildId == null || command.allowByDefault
+        registerGuildPermissions(locale, command)
 
         if (command.hasBody) {
             val args = command.arguments?.invoke()
@@ -528,13 +479,48 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     /** Registration logic for message commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
     public open fun MessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
-        this.defaultPermission = command.guildId == null || command.allowByDefault
+        registerGuildPermissions(locale, command)
     }
 
     /** Registration logic for user commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
     public open fun UserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
-        this.defaultPermission = command.guildId == null || command.allowByDefault
+        registerGuildPermissions(locale, command)
+    }
+
+    /** Registration logic for message commands, extracted for clarity. **/
+    @Suppress("UnusedPrivateMember")  // Only for now...
+    public open fun GlobalMessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
+        registerGuildPermissions(locale, command)
+        registerGlobalPermissions(locale, command)
+    }
+
+    /** Registration logic for user commands, extracted for clarity. **/
+    @Suppress("UnusedPrivateMember")  // Only for now...
+    public open fun GlobalUserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
+        registerGuildPermissions(locale, command)
+        registerGlobalPermissions(locale, command)
+    }
+
+    /**
+     * Registers the global permissions of [command].
+     */
+    public open fun GlobalApplicationCommandCreateBuilder.registerGlobalPermissions(
+        locale: Locale,
+        command: ApplicationCommand<*>
+    ) {
+        registerGuildPermissions(locale, command)
+        this.dmPermission = command.allowInDms
+    }
+
+    /**
+     * Registers the guild permission of [command].
+     */
+    public open fun ApplicationCommandCreateBuilder.registerGuildPermissions(
+        locale: Locale,
+        command: ApplicationCommand<*>
+    ) {
+        this.defaultMemberPermissions = command.defaultMemberPermissions
     }
 
     /** Check whether the type and name of an extension-registered application command matches a Discord one. **/

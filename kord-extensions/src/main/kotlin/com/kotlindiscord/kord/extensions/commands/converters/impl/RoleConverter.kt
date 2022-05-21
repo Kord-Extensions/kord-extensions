@@ -4,27 +4,16 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Role
@@ -52,7 +41,6 @@ import kotlinx.coroutines.flow.firstOrNull
     imports = ["dev.kord.common.entity.Snowflake"],
     builderFields = ["public var requiredGuild: (suspend () -> Snowflake)? = null"]
 )
-@OptIn(KordPreview::class)
 public class RoleConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
     override var validator: Validator<Role> = null
