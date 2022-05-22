@@ -7,8 +7,8 @@
 package com.kotlindiscord.kord.extensions.parsers.caches
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import kotlinx.datetime.DateTimeUnit
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -17,7 +17,7 @@ private typealias UnitMap = LinkedHashMap<String, DateTimeUnit>
 /**
  * Simple object that caches translated time units per locale.
  */
-public object TimeUnitCache : KoinComponent {
+public object TimeUnitCache : KordExKoinComponent {
     private val translations: TranslationsProvider by inject()
     private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
 

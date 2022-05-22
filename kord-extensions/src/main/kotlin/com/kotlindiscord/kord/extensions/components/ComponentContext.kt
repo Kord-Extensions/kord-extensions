@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
@@ -26,7 +27,6 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import io.sentry.Breadcrumb
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -40,7 +40,7 @@ import java.util.*
 public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     public open val component: Component,
     public open val event: E
-) : KoinComponent {
+) : KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 

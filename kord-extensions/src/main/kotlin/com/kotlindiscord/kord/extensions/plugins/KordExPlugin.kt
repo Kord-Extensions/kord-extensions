@@ -7,10 +7,10 @@
 package com.kotlindiscord.kord.extensions.plugins
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
@@ -21,7 +21,7 @@ import org.pf4j.PluginWrapper
  * Registered plugins will always be loaded at the end of the setup process, so that everything else is available
  * and ready to be used.
  */
-public abstract class KordExPlugin(wrapper: PluginWrapper) : Plugin(wrapper), KoinComponent {
+public abstract class KordExPlugin(wrapper: PluginWrapper) : Plugin(wrapper), KordExKoinComponent {
     internal val extensions: MutableMap<String, ExtensionBuilder> = mutableMapOf()
     internal val settingsCallbacks: MutableList<SettingsCallback> = mutableListOf()
 

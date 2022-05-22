@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExContext
 import com.kotlindiscord.kord.extensions.plugins.KordExPlugin
 import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
@@ -55,7 +56,6 @@ import dev.kord.rest.builder.message.create.allowedMentions
 import io.ktor.utils.io.*
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
 import org.koin.fileProperties
@@ -344,26 +344,46 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Internal function used to initially set up Koin. **/
     public open suspend fun setupKoin() {
-        startKoin {
-            var logLevel = koinLogLevel
-
-            if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
-                // NOTE: Temporary workaround for Koin not supporting Kotlin 1.6
-                logLevel = Level.ERROR
-            }
-
-            slf4jLogger(logLevel)
-//            environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
-
-            if (File("koin.properties").exists()) {
-                fileProperties("koin.properties")
-            }
-
-            modules()
-        }
+        startKoinIfNeeded()
 
         hooksBuilder.runBeforeKoinSetup()
 
+        addBotKoinModules()
+
+        hooksBuilder.runAfterKoinSetup()
+    }
+
+    /** @suppress Creates a new KoinApplication if it has not already been started. **/
+    private fun startKoinIfNeeded() {
+        var logLevel = koinLogLevel
+
+        if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
+            // NOTE: Temporary workaround for Koin not supporting Kotlin 1.6
+            logLevel = Level.ERROR
+        }
+
+        if (koinNotStarted()) {
+            KordExContext.startKoin {
+                slf4jLogger(logLevel)
+//                environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
+
+                if (File("koin.properties").exists()) {
+                    fileProperties("koin.properties")
+                }
+            }
+        } else {
+            getKoin().logger.level = logLevel
+        }
+    }
+
+    /** @suppress Internal function that checks if Koin has been started. **/
+    private fun koinNotStarted(): Boolean = KordExContext.getOrNull() == null
+
+    /**
+     * @suppress Internal function that creates and loads the bot's main Koin modules.
+     * The modules provide important bot-related singletons.
+     **/
+    private fun addBotKoinModules() {
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
@@ -387,8 +407,6 @@ public open class ExtensibleBotBuilder {
                 adapter
             } bind SentryAdapter::class
         }
-
-        hooksBuilder.runAfterKoinSetup()
     }
 
     /** @suppress Plugin-loading function. **/

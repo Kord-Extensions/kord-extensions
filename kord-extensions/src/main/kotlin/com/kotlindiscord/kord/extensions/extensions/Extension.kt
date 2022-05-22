@@ -21,11 +21,11 @@ import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import dev.kord.gateway.Intent
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 private val logger = KotlinLogging.logger {}
@@ -37,7 +37,7 @@ private val logger = KotlinLogging.logger {}
  * This will allow you to keep distinct blocks of functionality separate, keeping the codebase
  * clean and configurable.
  */
-public abstract class Extension : KoinComponent {
+public abstract class Extension : KordExKoinComponent {
     /** The [ExtensibleBot] instance that this extension is installed to. **/
     public open val bot: ExtensibleBot by inject()
 

@@ -8,8 +8,8 @@ package com.kotlindiscord.kord.extensions.checks.types
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.event.Event
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -20,7 +20,7 @@ import java.util.*
  * @property event Event of type [T]
  * @property locale Locale for the current check context
  */
-public class CheckContext<out T : Event>(public val event: T, public val locale: Locale) : KoinComponent {
+public class CheckContext<out T : Event>(public val event: T, public val locale: Locale) : KordExKoinComponent {
     /** Translations provider. **/
     public val translations: TranslationsProvider by inject()
 

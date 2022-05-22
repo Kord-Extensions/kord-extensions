@@ -9,7 +9,7 @@ package com.kotlindiscord.kord.extensions.commands.converters.builders
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import org.koin.core.component.KoinComponent
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -21,7 +21,7 @@ import java.util.*
  * @property value Value of type [T]
  * @property context Command context that triggered this validation
  */
-public class ValidationContext<out T>(public val value: T, public val context: CommandContext) : KoinComponent {
+public class ValidationContext<out T>(public val value: T, public val context: CommandContext) : KordExKoinComponent {
     /** Translations provider. **/
     public val translations: TranslationsProvider by inject()
 

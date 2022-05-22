@@ -10,14 +10,14 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import dev.kord.core.Kord
 import dev.kord.rest.builder.component.ActionRowBuilder
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /** Abstract class representing a basic Discord component. **/
-public abstract class Component : KoinComponent {
+public abstract class Component : KordExKoinComponent {
     /** Component width, how many "slots" in one row it needs to be added to the row. **/
     public open val unitWidth: Int = 1
 

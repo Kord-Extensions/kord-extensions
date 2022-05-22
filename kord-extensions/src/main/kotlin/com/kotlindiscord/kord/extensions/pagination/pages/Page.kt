@@ -8,10 +8,10 @@ package com.kotlindiscord.kord.extensions.pagination.pages
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import com.kotlindiscord.kord.extensions.utils.textOrNull
 import dev.kord.rest.builder.message.EmbedBuilder
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -24,7 +24,7 @@ import java.util.*
 public open class Page(
     public open val bundle: String? = null,
     public open val builder: suspend EmbedBuilder.() -> Unit
-) : KoinComponent {
+) : KordExKoinComponent {
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
 

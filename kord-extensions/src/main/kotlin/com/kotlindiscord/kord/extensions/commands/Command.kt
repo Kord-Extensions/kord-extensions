@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.events.CommandEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
@@ -25,7 +26,6 @@ import dev.kord.core.entity.channel.GuildChannel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -37,7 +37,7 @@ import java.util.*
  * @property extension The extension object this command belongs to.
  */
 @ExtensionDSL
-public abstract class Command(public val extension: Extension) : Lockable, KoinComponent {
+public abstract class Command(public val extension: Extension) : Lockable, KordExKoinComponent {
     /**
      * The name of this command, for invocation and help commands.
      */

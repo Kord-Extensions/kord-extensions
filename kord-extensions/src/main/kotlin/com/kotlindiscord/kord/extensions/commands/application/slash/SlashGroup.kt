@@ -8,9 +8,9 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -23,7 +23,7 @@ import java.util.*
 public class SlashGroup(
     public val name: String,
     public val parent: SlashCommand<*, *>
-) : KoinComponent {
+) : KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 

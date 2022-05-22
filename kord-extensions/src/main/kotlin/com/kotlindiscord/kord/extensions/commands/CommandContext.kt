@@ -12,13 +12,13 @@ import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.interactionFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.event.Event
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -37,7 +37,7 @@ public abstract class CommandContext(
     public open val command: Command,
     public open val eventObj: Event,
     public open val commandName: String,
-) : KoinComponent {
+) : KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 

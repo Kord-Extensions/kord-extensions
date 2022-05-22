@@ -17,6 +17,8 @@ import com.kotlindiscord.kord.extensions.events.KordExEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
+import com.kotlindiscord.kord.extensions.koin.KordExContext
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.core.Kord
@@ -30,15 +32,12 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.dsl.bind
 
 /**
@@ -56,7 +55,7 @@ import org.koin.dsl.bind
 public open class ExtensibleBot(
     public val settings: ExtensibleBotBuilder,
     private val token: String
-) : KoinComponent, Lockable {
+) : KordExKoinComponent, Lockable {
 
     override var mutex: Mutex? = Mutex()
     override var locking: Boolean = settings.membersBuilder.lockMemberRequests
@@ -117,12 +116,41 @@ public open class ExtensibleBot(
     /** Start up the bot and log into Discord. **/
     public open suspend fun start() {
         settings.hooksBuilder.runBeforeStart(this)
-        registerListeners()
+
+        if (!initialized) registerListeners()
 
         getKoin().get<Kord>().login {
             this.presence(settings.presenceBuilder)
             this.intents = Intents(settings.intentsBuilder!!)
         }
+    }
+
+    /**
+     * Stop the bot by logging out [Kord].
+     *
+     * This will leave the Koin context intact, so subsequent restarting of the bot is possible.
+     *
+     * @see close
+     **/
+    public open suspend fun stop() {
+        getKoin().get<Kord>().logout()
+    }
+
+    /**
+     * Stop the bot by shutting down [Kord] and removing its Koin context.
+     *
+     * Restarting the bot after closing will result in undefined behavior
+     * because the Koin context needed to start will no longer exist.
+     *
+     * If a bot has been closed, then it must be fully rebuilt to start again.
+     *
+     * If a new bot is going to be built, then the previous bot must be closed first.
+     *
+     * @see stop
+     **/
+    public open suspend fun close() {
+        getKoin().get<Kord>().shutdown()
+        KordExContext.stopKoin()
     }
 
     /** Start up the bot and log into Discord, but launched via Kord's coroutine scope. **/

@@ -21,8 +21,8 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 import kotlin.collections.set
@@ -42,7 +42,7 @@ private val logger = KotlinLogging.logger {}
  *
  * We recommend reading over the source code if you'd like to get to grips with how this all works.
  */
-public open class ChatCommandParser : KoinComponent {
+public open class ChatCommandParser : KordExKoinComponent {
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
 

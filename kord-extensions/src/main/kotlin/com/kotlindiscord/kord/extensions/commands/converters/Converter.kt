@@ -13,9 +13,9 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterBuilder
 import com.kotlindiscord.kord.extensions.commands.converters.builders.ValidationContext
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.core.Kord
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.reflect.KProperty
 
@@ -38,7 +38,7 @@ import kotlin.reflect.KProperty
  */
 public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputType : Any, ResultType : Any>(
     public open val required: Boolean = true,
-) : KoinComponent {
+) : KordExKoinComponent {
     /** This is pretty hacky, but there aren't many better options. **/
     internal lateinit var genericBuilder: ConverterBuilder<OutputType>
 
