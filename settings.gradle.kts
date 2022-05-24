@@ -23,4 +23,5 @@ include("modules:java-time")
 include("modules:time4j")
 include("modules:unsafe")
 
+include("test-bot")
 include("token-parser")
