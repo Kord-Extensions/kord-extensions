@@ -23,7 +23,7 @@ public sealed class LogLevel(
     public object DEBUG : LogLevel("DEBUG", null, 1)
 
     public fun isEnabled(): Boolean =
-        this in getEnabled()
+        this in enabled
 
     override fun compareTo(other: LogLevel): Int =
         order.compareTo(other.order)
@@ -34,6 +34,17 @@ public sealed class LogLevel(
         public val WARN: WARNING = WARNING
 
         public var enabledLevel: LogLevel = INFO
+            set(value) {
+                field = value
+
+                enabled = ALL.filter {
+                    it.order >= value.order
+                }.toSet()
+            }
+
+        public var enabled: Set<LogLevel> = ALL.filter {
+            it.order >= enabledLevel.order
+        }.toSet()
 
         public fun fromString(string: String): LogLevel? = when (string.uppercase()) {
             ERROR.toString() -> ERROR
@@ -45,10 +56,5 @@ public sealed class LogLevel(
 
             else -> null
         }
-
-        public fun getEnabled(): Set<LogLevel> =
-            ALL.filter {
-                it.order >= enabledLevel.order
-            }.toSet()
     }
 }
