@@ -430,7 +430,10 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
             }
 
             command.groups.values.sortedByDescending { it.name }.forEach { group ->
-                this.group(group.name, group.getTranslatedDescription(locale)) {
+                this.group(group.name, group.description) {
+                    this.nameLocalizations = group.localizedName.translations
+                    this.descriptionLocalizations = group.localizedDescription.translations
+
                     group.subCommands.sortedByDescending { it.name }.forEach {
                         val args = it.arguments?.invoke()?.args?.map { arg ->
                             val converter = arg.converter
@@ -464,6 +467,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
                         ) {
                             this.nameLocalizations = nameLocalizations
                             this.descriptionLocalizations = descriptionLocalizations
+
                             if (args != null) {
                                 if (this.options == null) this.options = mutableListOf()
 

@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.commands.application.Localized
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import mu.KLogger
@@ -35,6 +36,16 @@ public class SlashGroup(
 
     /** Command group description, which is required and shown on Discord. **/
     public lateinit var description: String
+
+    /**
+     * A [Localized] version of [name].
+     */
+    public val localizedName: Localized<String> by lazy { parent.localize(name) }
+
+    /**
+     * A [Localized] version of [description].
+     */
+    public val localizedDescription: Localized<String> by lazy { parent.localize(description) }
 
     /** Translation cache, so we don't have to look up translations every time. **/
     public val descriptionTranslationCache: MutableMap<Locale, String> = mutableMapOf()

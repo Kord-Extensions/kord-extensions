@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.test.bot
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.utils.env
+import dev.kord.common.Locale
 import dev.kord.common.entity.Snowflake
 import org.koin.core.logger.Level
 
@@ -31,6 +32,13 @@ suspend fun main() {
                     default  // "?"
                 }
             }
+        }
+
+        i18n {
+            this.interactionUserLocaleResolver()
+
+            this.applicationCommandLocales.add(Locale.ENGLISH_UNITED_STATES)
+            this.applicationCommandLocales.add(Locale.JAPANESE)
         }
 
         applicationCommands {

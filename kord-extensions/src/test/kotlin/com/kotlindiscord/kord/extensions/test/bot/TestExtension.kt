@@ -177,6 +177,17 @@ class TestExtension : Extension() {
             }
         }
 
+        publicSlashCommand {
+            name = "banana"
+            description = "banana"
+
+            bundle = "test"
+
+            action {
+                respond { content = "Text: ${translate("banana")}" }
+            }
+        }
+
         chatCommand(::OptionalDurationArgs) {
             name = "duration"
             description = "Optional duration test"
