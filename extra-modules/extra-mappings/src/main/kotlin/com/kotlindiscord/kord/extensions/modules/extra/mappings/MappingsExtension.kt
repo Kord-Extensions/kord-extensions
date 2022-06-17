@@ -25,6 +25,7 @@ import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.plugins.extra.MappingsPlugin
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
@@ -55,7 +56,7 @@ private const val PAGE_FOOTER_ICON =
  */
 class MappingsExtension : Extension() {
     private val logger = KotlinLogging.logger { }
-    override val name: String = "mappings"
+    override val name: String = MappingsPlugin.PLUGIN_ID
 
     override suspend fun setup() {
         // Fix issue where Linkie doesn't create its cache directory

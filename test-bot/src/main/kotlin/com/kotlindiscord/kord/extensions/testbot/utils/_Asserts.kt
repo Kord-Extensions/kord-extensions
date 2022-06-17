@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("StringLiteralDuplication")
+
 package com.kotlindiscord.kord.extensions.testbot.utils
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
@@ -16,11 +18,11 @@ public suspend fun CommandContext.assert(
     failureMessage: AssertBody = null
 ) {
     if (!value) {
-        val message = failureMessage?.invoke()?.toString() ?: "Assertion failed."
+        val message = failureMessage?.invoke()?.toString() ?: "Argument is not `true`."
 
-        logError { message }
+        logError { "**Assertion failed:** $message" }
 
-        throw DiscordRelayedException(message)
+        throw DiscordRelayedException("**Assertion failed:** $message")
     }
 }
 
@@ -29,11 +31,11 @@ public suspend fun CommandContext.assertFalse(
     failureMessage: AssertBody = null
 ) {
     if (value) {
-        val message = failureMessage?.invoke()?.toString() ?: "Assertion failed."
+        val message = failureMessage?.invoke()?.toString() ?: "Argument is not `false`."
 
-        logError { message }
+        logError { "**Assertion failed:** $message" }
 
-        throw DiscordRelayedException(message)
+        throw DiscordRelayedException("**Assertion failed:** $message")
     }
 }
 
@@ -43,11 +45,11 @@ public suspend fun CommandContext.assertEqual(
     failureMessage: AssertBody = null
 ) {
     if (left != right) {
-        val message = failureMessage?.invoke()?.toString() ?: "Assertion failed: `$left` is not equal to `$right`"
+        val message = failureMessage?.invoke()?.toString() ?: "`$left` is not equal to `$right`"
 
-        logError { message }
+        logError { "**Assertion failed:** $message" }
 
-        throw DiscordRelayedException(message)
+        throw DiscordRelayedException("**Assertion failed:** $message")
     }
 }
 
@@ -57,10 +59,10 @@ public suspend fun CommandContext.assertNotEqual(
     failureMessage: AssertBody = null
 ) {
     if (left == right) {
-        val message = failureMessage?.invoke()?.toString() ?: "Assertion failed: `$left` is equal to `$right`"
+        val message = failureMessage?.invoke()?.toString() ?: "`$left` is equal to `$right`"
 
-        logError { message }
+        logError { "**Assertion failed:** $message" }
 
-        throw DiscordRelayedException(message)
+        throw DiscordRelayedException("**Assertion failed:** $message")
     }
 }

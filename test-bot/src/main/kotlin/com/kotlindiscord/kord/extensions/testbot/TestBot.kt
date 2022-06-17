@@ -8,9 +8,11 @@ package com.kotlindiscord.kord.extensions.testbot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.isNotBot
+import com.kotlindiscord.kord.extensions.testbot.extensions.I18nTestExtension
 import com.kotlindiscord.kord.extensions.testbot.utils.LogLevel
 import com.kotlindiscord.kord.extensions.utils.env
 import com.kotlindiscord.kord.extensions.utils.envOrNull
+import dev.kord.common.Locale
 import dev.kord.common.entity.Snowflake
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
@@ -39,6 +41,14 @@ public suspend fun main() {
             +Intents.all
         }
 
+        i18n {
+            interactionUserLocaleResolver()
+
+            applicationCommandLocale(Locale.ENGLISH_GREAT_BRITAIN)
+            applicationCommandLocale(Locale.ENGLISH_UNITED_STATES)
+            applicationCommandLocale(Locale.JAPANESE)
+        }
+
         members {
             all()
         }
@@ -47,12 +57,15 @@ public suspend fun main() {
             help {
                 paginatorTimeout = 30
             }
+
+            add(::I18nTestExtension)
         }
 
         plugins {
             pluginPaths.clear()
 
-            pluginPath("test-bot/build/generated/ksp/test/resources")
+            pluginPath("test-bot/build/generated/ksp/main/resources")
+            pluginPath("extra-modules/extra-mappings/build/generated/ksp/main/resources")
         }
     }
 

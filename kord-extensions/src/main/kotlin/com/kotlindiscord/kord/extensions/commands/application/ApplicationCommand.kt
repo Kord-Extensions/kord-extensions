@@ -111,13 +111,15 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
             this.resolvedBundle,
             translationsProvider.defaultLocale
         )
-        val translations = bot.settings.i18nBuilder.applicationCommandLocales.associateWith { locale ->
-            translationsProvider.translate(
-                key,
-                this.resolvedBundle,
-                locale.asJavaLocale()
-            )
-        }
+
+        val translations = bot.settings.i18nBuilder.applicationCommandLocales
+            .associateWith { locale ->
+                translationsProvider.translate(
+                    key,
+                    this.resolvedBundle,
+                    locale.asJavaLocale()
+                )
+            }.filter { it.value != default }
 
         return Localized(default, translations.toMutableMap())
     }

@@ -35,7 +35,6 @@ dependencies {
     implementation(libs.bundles.commons)
     implementation(libs.kotlin.stdlib)
 
-
     testImplementation(libs.groovy)  // For logback config
     testImplementation(libs.jansi)
     testImplementation(libs.junit)

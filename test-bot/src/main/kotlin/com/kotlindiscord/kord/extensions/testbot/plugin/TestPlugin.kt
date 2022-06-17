@@ -13,7 +13,7 @@ import org.pf4j.PluginWrapper
 @WiredPlugin(
     TestPlugin.PLUGIN_ID,
     "0.0.1",
-    "kord-ex",
+    "kord-extensions",
     "KordEx testing plugin",
     "MPL 2.0"
 )
