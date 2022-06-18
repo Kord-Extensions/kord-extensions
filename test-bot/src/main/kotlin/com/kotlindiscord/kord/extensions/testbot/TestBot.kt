@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.testbot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.isNotBot
+import com.kotlindiscord.kord.extensions.modules.extra.phishing.extPhishing
 import com.kotlindiscord.kord.extensions.testbot.extensions.I18nTestExtension
 import com.kotlindiscord.kord.extensions.testbot.utils.LogLevel
 import com.kotlindiscord.kord.extensions.utils.env
@@ -56,6 +57,11 @@ public suspend fun main() {
         extensions {
             help {
                 paginatorTimeout = 30
+            }
+
+            extPhishing {
+                appName = "Integration test bot"
+                logChannelName = "alerts"
             }
 
             add(::I18nTestExtension)

@@ -28,10 +28,19 @@ private const val DEFAULT_RADIX = 10
     "int",
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    builderFields = ["public var radix: Int = $DEFAULT_RADIX"]
+
+    builderFields = [
+        "public var radix: Int = $DEFAULT_RADIX",
+
+        "public var maxValue: Int? = null",
+        "public var minValue: Int? = null",
+    ]
 )
 public class IntConverter(
     private val radix: Int = DEFAULT_RADIX,
+    private val maxValue: Int? = null,
+    private val minValue: Int? = null,
+
     override var validator: Validator<Int> = null
 ) : SingleConverter<Int>() {
     override val signatureTypeString: String = "converters.number.signatureType"
@@ -51,11 +60,34 @@ public class IntConverter(
             throw DiscordRelayedException(errorString)
         }
 
+        if (minValue != null && this.parsed < minValue) {
+            throw DiscordRelayedException(
+                context.translate(
+                    "converters.number.error.invalid.tooSmall",
+                    replacements = arrayOf(arg, minValue)
+                )
+            )
+        }
+
+        if (maxValue != null && this.parsed > maxValue) {
+            throw DiscordRelayedException(
+                context.translate(
+                    "converters.number.error.invalid.tooLarge",
+                    replacements = arrayOf(arg, maxValue)
+                )
+            )
+        }
+
         return true
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        IntegerOptionBuilder(arg.displayName, arg.description).apply { required = true }
+        IntegerOptionBuilder(arg.displayName, arg.description).apply {
+            this@apply.maxValue = this@IntConverter.maxValue?.toLong()
+            this@apply.minValue = this@IntConverter.minValue?.toLong()
+
+            required = true
+        }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
         val optionValue = (option as? IntegerOptionValue)?.value ?: return false

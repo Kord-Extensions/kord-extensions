@@ -29,9 +29,16 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
     "decimal",
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-)
 
+    builderFields = [
+        "public var maxValue: Double? = null",
+        "public var minValue: Double? = null",
+    ],
+)
 public class DecimalConverter(
+    private val maxValue: Double? = null,
+    private val minValue: Double? = null,
+
     override var validator: Validator<Double> = null
 ) : SingleConverter<Double>() {
     override val signatureTypeString: String = "converters.decimal.signatureType"
@@ -47,11 +54,34 @@ public class DecimalConverter(
             )
         }
 
+        if (minValue != null && this.parsed < minValue) {
+            throw DiscordRelayedException(
+                context.translate(
+                    "converters.number.error.invalid.tooSmall",
+                    replacements = arrayOf(arg, minValue)
+                )
+            )
+        }
+
+        if (maxValue != null && this.parsed > maxValue) {
+            throw DiscordRelayedException(
+                context.translate(
+                    "converters.number.error.invalid.tooLarge",
+                    replacements = arrayOf(arg, maxValue)
+                )
+            )
+        }
+
         return true
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        NumberOptionBuilder(arg.displayName, arg.description).apply { required = true }
+        NumberOptionBuilder(arg.displayName, arg.description).apply {
+            this@apply.maxValue = this@DecimalConverter.maxValue
+            this@apply.minValue = this@DecimalConverter.minValue
+
+            required = true
+        }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
         val optionValue = (option as? NumberOptionValue)?.value ?: return false

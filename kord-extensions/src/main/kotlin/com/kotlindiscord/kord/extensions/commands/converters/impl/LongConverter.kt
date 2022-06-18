@@ -28,10 +28,19 @@ private const val DEFAULT_RADIX = 10
     "long",
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    builderFields = ["public var radix: Int = $DEFAULT_RADIX"]
+
+    builderFields = [
+        "public var radix: Int = $DEFAULT_RADIX",
+
+        "public var maxValue: Long? = null",
+        "public var minValue: Long? = null",
+    ]
 )
 public class LongConverter(
     private val radix: Int = DEFAULT_RADIX,
+    private val maxValue: Long? = null,
+    private val minValue: Long? = null,
+
     override var validator: Validator<Long> = null
 ) : SingleConverter<Long>() {
     override val signatureTypeString: String = "converters.number.signatureType"
@@ -51,11 +60,34 @@ public class LongConverter(
             throw DiscordRelayedException(errorString)
         }
 
+        if (minValue != null && this.parsed < minValue) {
+            throw DiscordRelayedException(
+                context.translate(
+                    "converters.number.error.invalid.tooSmall",
+                    replacements = arrayOf(arg, minValue)
+                )
+            )
+        }
+
+        if (maxValue != null && this.parsed > maxValue) {
+            throw DiscordRelayedException(
+                context.translate(
+                    "converters.number.error.invalid.tooLarge",
+                    replacements = arrayOf(arg, maxValue)
+                )
+            )
+        }
+
         return true
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        IntegerOptionBuilder(arg.displayName, arg.description).apply { required = true }
+        IntegerOptionBuilder(arg.displayName, arg.description).apply {
+            this@apply.maxValue = this@LongConverter.maxValue
+            this@apply.minValue = this@LongConverter.minValue
+
+            required = true
+        }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
         val optionValue = (option as? IntegerOptionValue)?.value ?: return false
