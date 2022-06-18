@@ -9,6 +9,7 @@
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import com.kotlindiscord.kord.extensions.DISCORD_RED
+import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -64,8 +65,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
         event<MessageCreateEvent> {
             check { isNotBot() }
-            check { event.message.author != null }
-            check { event.guildId != null }
+            check { anyGuild() }
 
             check {
                 settings.checks.forEach {
@@ -80,8 +80,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
         event<MessageUpdateEvent> {
             check { isNotBot() }
-            check { event.new.author.value != null }
-            check { event.new.guildId.value != null }
+            check { anyGuild() }
 
             check {
                 settings.checks.forEach {
