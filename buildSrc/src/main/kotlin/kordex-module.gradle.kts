@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
 
     id("io.gitlab.arturbosch.detekt")
     id("org.cadixdev.licenser")

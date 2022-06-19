@@ -52,7 +52,6 @@ repositories {
 dependencies {
     implementation(project(":kord-extensions"))
 
-    implementation(project(":extra-modules:extra-common"))
     implementation(project(":extra-modules:extra-mappings"))
     implementation(project(":extra-modules:extra-phishing"))
 

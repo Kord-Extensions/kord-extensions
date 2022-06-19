@@ -28,6 +28,8 @@ import com.kotlindiscord.kord.extensions.koin.KordExContext
 import com.kotlindiscord.kord.extensions.plugins.KordExPlugin
 import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.storage.DataAdapter
+import com.kotlindiscord.kord.extensions.storage.toml.TomlDataAdapter
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
@@ -92,6 +94,9 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
+
+    /** Data storage adapter to use for all extensions, modules and plugins. **/
+    public var dataAdapter: DataAdapter = TomlDataAdapter()
 
     /**
      * @suppress Builder that shouldn't be set directly by the user.
@@ -441,6 +446,10 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Internal function used to build a bot instance. **/
     public open suspend fun build(token: String): ExtensibleBot {
+        hooksBuilder.beforeKoinSetup {  // We have to do this super-duper early for safety
+            loadModule { single { dataAdapter } bind DataAdapter::class }
+        }
+
         hooksBuilder.beforeKoinSetup {
             if (pluginBuilder.enabled) {
                 loadPlugins()

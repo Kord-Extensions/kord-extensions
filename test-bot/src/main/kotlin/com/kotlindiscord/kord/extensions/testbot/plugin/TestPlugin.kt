@@ -8,6 +8,8 @@ package com.kotlindiscord.kord.extensions.testbot.plugin
 
 import com.kotlindiscord.kord.extensions.plugins.KordExPlugin
 import com.kotlindiscord.kord.extensions.plugins.annotations.plugins.WiredPlugin
+import com.kotlindiscord.kord.extensions.storage.StorageType
+import com.kotlindiscord.kord.extensions.storage.StorageUnit
 import org.pf4j.PluginWrapper
 
 @WiredPlugin(
@@ -24,5 +26,12 @@ public class TestPlugin(wrapper: PluginWrapper) : KordExPlugin(wrapper) {
 
     public companion object {
         public const val PLUGIN_ID: String = "test-plugin"
+
+        internal val DATA_UNIT = StorageUnit(
+            StorageType.Data,
+            PLUGIN_ID,
+            "test",
+            TestPluginData::class
+        )
     }
 }

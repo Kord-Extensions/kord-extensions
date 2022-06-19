@@ -6,6 +6,9 @@
 
 package com.kotlindiscord.kord.extensions.testbot.plugin
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.plugins.PluginManager
@@ -20,7 +23,67 @@ public class TestPluginExtension : Extension() {
 
     private val pluginManager: PluginManager by inject()
 
+    public inner class ConfigSetArgs : Arguments() {
+        public val value: String by string {
+            name = "value"
+            description = "Value to set. Can be anything."
+        }
+    }
+
     override suspend fun setup() {
+        publicSlashCommand {
+            name = "plugin-config"
+            description = "Commands for working with the test plugin's configuration."
+
+            publicSubCommand {
+                name = "delete"
+                description = "Delete  current set configuration value."
+
+                action {
+                    val value = TestPlugin.DATA_UNIT.delete()
+
+                    respond {
+                        content = "Value deleted."
+                    }
+                }
+            }
+
+            publicSubCommand {
+                name = "get"
+                description = "Get the current set configuration value."
+
+                action {
+                    val value = TestPlugin.DATA_UNIT.get()?.key
+
+                    respond {
+                        content = if (value == null) {
+                            "No value has been set."
+                        } else {
+                            "**Value:** `$value`"
+                        }
+                    }
+                }
+            }
+
+            publicSubCommand(::ConfigSetArgs) {
+                name = "set"
+                description = "Set a new configuration value."
+
+                action {
+                    val value = TestPlugin.DATA_UNIT.get()
+                        ?: TestPluginData(key = arguments.value)
+
+                    value.key = arguments.value
+
+                    TestPlugin.DATA_UNIT.save(value)
+
+                    respond {
+                        content = "**Value set:** `${value.key}`"
+                    }
+                }
+            }
+        }
+
         publicSlashCommand {
             name = "plugins"
             description = "Retrieve the list of loaded plugins."
@@ -53,10 +116,12 @@ public class TestPluginExtension : Extension() {
 
                             appendLine(
                                 "**Class:** " +
-                                    "`${desc.pluginClass.replace(
-                                        "com.kotlindiscord.kord.extensions",
-                                        "c.k.k.e"
-                                    )}`"
+                                    "`${
+                                        desc.pluginClass.replace(
+                                            "com.kotlindiscord.kord.extensions",
+                                            "c.k.k.e"
+                                        )
+                                    }`"
                             )
 
                             appendLine(

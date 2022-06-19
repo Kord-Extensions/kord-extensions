@@ -115,6 +115,7 @@ fabric.properties
 
 ### Custom ignores
 
+/data
 */build
 */*/build
 

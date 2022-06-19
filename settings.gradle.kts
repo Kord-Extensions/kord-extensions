@@ -15,7 +15,6 @@ include("annotation-processor")
 
 include("kord-extensions")
 
-include("extra-modules:extra-common")
 include("extra-modules:extra-mappings")
 include("extra-modules:extra-phishing")
 
