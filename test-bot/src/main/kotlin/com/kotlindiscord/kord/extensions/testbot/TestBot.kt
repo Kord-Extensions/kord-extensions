@@ -45,8 +45,10 @@ public suspend fun main() {
         i18n {
             interactionUserLocaleResolver()
 
+            applicationCommandLocale(Locale.CHINESE_CHINA)
             applicationCommandLocale(Locale.ENGLISH_GREAT_BRITAIN)
             applicationCommandLocale(Locale.ENGLISH_UNITED_STATES)
+            applicationCommandLocale(Locale.GERMAN)
             applicationCommandLocale(Locale.JAPANESE)
         }
 

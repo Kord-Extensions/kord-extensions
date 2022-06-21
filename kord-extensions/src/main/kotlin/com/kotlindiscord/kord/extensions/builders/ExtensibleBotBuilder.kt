@@ -96,7 +96,7 @@ public open class ExtensibleBotBuilder {
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
 
     /** Data storage adapter to use for all extensions, modules and plugins. **/
-    public var dataAdapter: DataAdapter = TomlDataAdapter()
+    public var dataAdapter: DataAdapter<*> = TomlDataAdapter()
 
     /**
      * @suppress Builder that shouldn't be set directly by the user.

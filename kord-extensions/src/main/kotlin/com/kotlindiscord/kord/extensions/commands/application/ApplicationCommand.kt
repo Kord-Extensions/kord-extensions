@@ -89,7 +89,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     /**
      * A [Localized] version of [name].
      */
-    public val localizedName: Localized<String> by lazy { localize(name) }
+    public val localizedName: Localized<String> by lazy { localize(name, true) }
 
     /**
      * This will register a requirement for [permissions] with Discord.
@@ -104,21 +104,33 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
     /**
      * Localizes a property by its [key] for this command.
+     *
+     * @param lowerCase Provide `true` to lower-case all of the translations. Discord requires this for some fields.
      */
-    public fun localize(key: String): Localized<String> {
-        val default = translationsProvider.translate(
+    public fun localize(key: String, lowerCase: Boolean = false): Localized<String> {
+        var default = translationsProvider.translate(
             key,
             this.resolvedBundle,
             translationsProvider.defaultLocale
         )
 
+        if (lowerCase) {
+            default = default.lowercase(translationsProvider.defaultLocale)
+        }
+
         val translations = bot.settings.i18nBuilder.applicationCommandLocales
             .associateWith { locale ->
-                translationsProvider.translate(
+                val result = translationsProvider.translate(
                     key,
                     this.resolvedBundle,
                     locale.asJavaLocale()
                 )
+
+                if (lowerCase) {
+                    result.lowercase(locale.asJavaLocale())
+                } else {
+                    result
+                }
             }.filter { it.value != default }
 
         return Localized(default, translations.toMutableMap())

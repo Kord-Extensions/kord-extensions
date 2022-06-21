@@ -536,12 +536,14 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     // endregion
 
     private fun OptionsBuilder.translate(command: ApplicationCommand<*>) {
-        val (name, nameLocalizations) = command.localize(name)
-        this.name = name.lowercase()
+        val (name, nameLocalizations) = command.localize(name, true)
+
+        this.name = name
         this.nameLocalizations = nameLocalizations
 
         val (description, descriptionLocalizations) = command.localize(description)
-        this.description = description.lowercase()
+
+        this.description = description
         this.descriptionLocalizations = descriptionLocalizations
 
         if (this is BaseChoiceBuilder<*> && !choices.isNullOrEmpty()) {

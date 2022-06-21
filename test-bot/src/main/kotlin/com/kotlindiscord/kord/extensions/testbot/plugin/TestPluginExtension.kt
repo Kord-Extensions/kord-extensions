@@ -40,10 +40,12 @@ public class TestPluginExtension : Extension() {
                 description = "Delete  current set configuration value."
 
                 action {
-                    val value = TestPlugin.DATA_UNIT.delete()
+                    val value = TestPlugin.DATA_UNIT
+                        .withUser(event.interaction.user.id)
+                        .delete()
 
                     respond {
-                        content = "Value deleted."
+                        content = "User value deleted."
                     }
                 }
             }
@@ -53,13 +55,16 @@ public class TestPluginExtension : Extension() {
                 description = "Get the current set configuration value."
 
                 action {
-                    val value = TestPlugin.DATA_UNIT.get()?.key
+                    val value = TestPlugin.DATA_UNIT
+                        .withUser(event.interaction.user.id)
+                        .get()
+                        ?.key
 
                     respond {
                         content = if (value == null) {
-                            "No value has been set."
+                            "No user value has been set."
                         } else {
-                            "**Value:** `$value`"
+                            "**User value:** `$value`"
                         }
                     }
                 }
@@ -70,15 +75,18 @@ public class TestPluginExtension : Extension() {
                 description = "Set a new configuration value."
 
                 action {
-                    val value = TestPlugin.DATA_UNIT.get()
+                    val dataUnit = TestPlugin.DATA_UNIT
+                        .withUserFrom(event)
+
+                    val value = dataUnit.get()
                         ?: TestPluginData(key = arguments.value)
 
                     value.key = arguments.value
 
-                    TestPlugin.DATA_UNIT.save(value)
+                    dataUnit.save(value)
 
                     respond {
-                        content = "**Value set:** `${value.key}`"
+                        content = "**User value set:** `${value.key}`"
                     }
                 }
             }

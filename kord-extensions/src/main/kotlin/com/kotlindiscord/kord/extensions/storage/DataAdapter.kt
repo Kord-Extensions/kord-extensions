@@ -13,13 +13,30 @@ package com.kotlindiscord.kord.extensions.storage
  * This class exists because it's intended for you to be able to create your own data adapters. As your bot is
  * configured to use a single, global adapter, this allows you to switch up how your configuration is stored,
  * as long as the eventual data translation happens via `kotlinx.serialization`.
+ *
+ * As storage units may provide contextual information but may not necessarily point to different actual data objects,
+ * data adapters also include the concept of data IDs. These IDs are identifiers that provide a mapping between storage
+ * units and the actual data objects they refer to. As an example, a file-backed data adapter will likely use the path
+ * to the file here - so all storage units pointing to the same file will point at the same data object.
+ *
+ * Data IDs allow you to point at contextual data sources when required, allowing for quite a few different
+ * possibilities in configuration. For example, different guilds, users, and so on may have their own separate
+ * configurations, if you so desire. It's up to your extensions to work with this system, and only provide the extra
+ * storage unit context that makes sense for the specific use-case.
+ *
+ * @param ID A typevar representing what you use to identify specific instances of data storage, referred to as data
+ * IDs. This will often be a string, but you can use anything that can reasonably be used as the key for a map.
+ * File-based data adapters will likely just use the file path here.
  */
-public abstract class DataAdapter {
-    /** A simple map for in-memory caching of data. Please use this in your implementations, for performance. **/
-    protected open val cache: MutableMap<StorageUnit<*>, Data> = mutableMapOf()
+public abstract class DataAdapter<ID : Any> {
+    /** A simple map that maps data IDs to data objects. **/
+    protected open val dataCache: MutableMap<ID, Data> = mutableMapOf()
+
+    /** A simple map that maps storage units to your data IDs. **/
+    protected open val unitCache: MutableMap<StorageUnit<*>, ID> = mutableMapOf()
 
     /**
-     * Entirely removes the data represented by the given storage unit from the [cache], the disk if this is an
+     * Entirely removes the data represented by the given storage unit from the [dataCache], the disk if this is an
      * adapter that stores data in files, or from whatever relevant persistent storage is being used.
      *
      * @return Whether the data was deleted - should return `false` if it didn't exist.
@@ -29,7 +46,7 @@ public abstract class DataAdapter {
     /**
      * Retrieve and return the data object represented by the given storage unit.
      *
-     * This function should attempt to retrieve from the [cache] first, and return the result of [reload] if it
+     * This function should attempt to retrieve from the [dataCache] first, and return the result of [reload] if it
      * isn't present there.
      *
      * @return The loaded data if it was found, `null` otherwise.
@@ -37,8 +54,8 @@ public abstract class DataAdapter {
     public abstract suspend fun <R : Data> get(unit: StorageUnit<R>): R?
 
     /**
-     * Retrieve the data represented by the given storage unit from persistent storage, storing it in the [cache] and
-     * returning it if it was found.
+     * Retrieve the data represented by the given storage unit from persistent storage, storing it in the [dataCache]
+     * and returning it if it was found.
      *
      * @return The loaded data if it was found, `null` otherwise.
      */
@@ -52,17 +69,34 @@ public abstract class DataAdapter {
 
     /**
      * Save the given data represented by the given storage unit to persistent storage, creating any files and folders
-     * as needed, and storing the given data object in the [cache].
+     * as needed, and storing the given data object in the [dataCache].
      */
     public abstract suspend fun <R : Data> save(unit: StorageUnit<R>, data: R)
 
     /**
-     * Reload all data objects stored in [cache] by calling [reload] against each storage unit.
+     * Reload all data objects stored in [dataCache] by calling [reload] against each storage unit.
      */
-    public abstract suspend fun reloadAll()
+    public open suspend fun reloadAll() {
+        unitCache.keys.forEach { reload(it) }
+    }
 
     /**
-     * Save all data objects stored in [cache] to persistent storage by calling [save] against each.
+     * Save all data objects stored in [dataCache] to persistent storage by calling [save] against each.
      */
-    public abstract suspend fun saveAll()
+    public open suspend fun saveAll() {
+        unitCache.keys.forEach { save(it) }
+    }
+
+    /**
+     * Convenience function for removing a storage unit from both caches, if required. Will only remove a stored data
+     * object if all storage units referencing it are removed.
+     */
+    protected open suspend fun removeFromCache(unit: StorageUnit<*>) {
+        val dataId = unitCache.remove(unit) ?: return
+        val removeData = unitCache.filterValues { it == dataId }.isEmpty()
+
+        if (removeData) {
+            dataCache.remove(dataId)
+        }
+    }
 }

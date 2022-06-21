@@ -6,7 +6,18 @@
 
 package com.kotlindiscord.kord.extensions.storage
 
+import com.kotlindiscord.kord.extensions.checks.channelFor
+import com.kotlindiscord.kord.extensions.checks.guildFor
+import com.kotlindiscord.kord.extensions.checks.messageFor
+import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.MessageBehavior
+import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.channel.ChannelBehavior
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.event.Event
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
@@ -20,7 +31,7 @@ import kotlin.reflect.KClass
  * Storage units instruct the data adapters, explaining exactly what needs to be done. However, those adapters are
  * free to handle the storage as they feel they need to.
  */
-@Suppress("DataClassContainsFunctions")
+@Suppress("DataClassContainsFunctions", "DataClassShouldBeImmutable")
 public data class StorageUnit<T : Data>(
     /** The type of data to store. **/
     public val storageType: StorageType,
@@ -37,7 +48,23 @@ public data class StorageUnit<T : Data>(
     /** Storage unit key - used to construct paths, or just as a string reference to this storage unit. **/
     public val unitKey: String = "${storageType.type}/$namespace/$identifier"
 
-    private val dataAdapter: DataAdapter by inject()
+    private val dataAdapter: DataAdapter<*> by inject()
+
+    /** Channel context, supplied via [withChannel] or [withChannelFrom]. **/
+    public var channel: Snowflake? = null
+        internal set
+
+    /** Guild context, supplied via [withGuild] or [withGuildFrom]. **/
+    public var guild: Snowflake? = null
+        internal set
+
+    /** Message context, supplied via [withMessage] or [withMessageFrom]. **/
+    public var message: Snowflake? = null
+        internal set
+
+    /** User context, supplied via [withUser] or [withUserFrom]. **/
+    public var user: Snowflake? = null
+        internal set
 
     @OptIn(InternalSerializationApi::class)
     internal val serializer: KSerializer<T> = dataType.serializer()
@@ -84,5 +111,152 @@ public data class StorageUnit<T : Data>(
         dataAdapter.save(this, data)
     }
 
+    /**
+     * Copy this [StorageUnit], applying the given channel's ID to its context, but only if it's not a DM channel.
+     */
+    public suspend fun withChannel(channelObj: ChannelBehavior): StorageUnit<T> {
+        return copy().apply {
+            if (channelObj.asChannel() !is DmChannel) {
+                channel = channelObj.id
+            }
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the given channel ID to its context, but only if it's not a DM channel.
+     */
+    public fun withChannel(channelId: Snowflake): StorageUnit<T> {
+        return copy().apply {
+            channel = channelId
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the channel ID from the given event to its context, but only if it's present
+     * and not a DM channel.
+     */
+    public suspend fun withChannelFrom(event: Event): StorageUnit<T> {
+        return copy().apply {
+            if (guildFor(event) != null) {
+                channel = channelFor(event)?.id
+            }
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the given guild's ID to its context.
+     */
+    public fun withGuild(guildObj: GuildBehavior): StorageUnit<T> {
+        return copy().apply {
+            guild = guildObj.id
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the given guild ID to its context.
+     */
+    public fun withGuild(guildId: Snowflake): StorageUnit<T> {
+        return copy().apply {
+            guild = guildId
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the guild ID from the given event to its context, if present.
+     */
+    public suspend fun withGuildFrom(event: Event): StorageUnit<T> {
+        return copy().apply {
+            guild = guildFor(event)?.id
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the given message's ID to its context.
+     */
+    public fun withMessage(messageObj: MessageBehavior): StorageUnit<T> {
+        return copy().apply {
+            message = messageObj.id
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the given message ID to its context.
+     */
+    public fun withMessage(messageId: Snowflake): StorageUnit<T> {
+        return copy().apply {
+            message = messageId
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the message ID from the given event to its context, if present.
+     */
+    public suspend fun withMessageFrom(event: Event): StorageUnit<T> {
+        return copy().apply {
+            message = messageFor(event)?.id
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the given user's ID to its context.
+     */
+    public fun withUser(userObj: UserBehavior): StorageUnit<T> {
+        return copy().apply {
+            user = userObj.id
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the given user ID to its context.
+     */
+    public fun withUser(userId: Snowflake): StorageUnit<T> {
+        return copy().apply {
+            user = userId
+        }
+    }
+
+    /**
+     * Copy this [StorageUnit], applying the user ID from the given event to its context, if present.
+     */
+    public suspend fun withUserFrom(event: Event): StorageUnit<T> {
+        return copy().apply {
+            user = userFor(event)?.id
+        }
+    }
+
     override fun toString(): String = unitKey
+
+    /** Generated function provided here because data classes don't care about non-constructor properties. **/
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as StorageUnit<*>
+
+        if (storageType != other.storageType) return false
+        if (namespace != other.namespace) return false
+        if (identifier != other.identifier) return false
+        if (unitKey != other.unitKey) return false
+        if (channel != other.channel) return false
+        if (guild != other.guild) return false
+        if (message != other.message) return false
+        if (user != other.user) return false
+
+        return true
+    }
+
+    /** Generated function provided here because data classes don't care about non-constructor properties. **/
+    override fun hashCode(): Int {
+        var result = storageType.hashCode()
+
+        result = 31 * result + namespace.hashCode()
+        result = 31 * result + identifier.hashCode()
+        result = 31 * result + unitKey.hashCode()
+        result = 31 * result + (channel?.hashCode() ?: 0)
+        result = 31 * result + (guild?.hashCode() ?: 0)
+        result = 31 * result + (message?.hashCode() ?: 0)
+        result = 31 * result + (user?.hashCode() ?: 0)
+
+        return result
+    }
 }

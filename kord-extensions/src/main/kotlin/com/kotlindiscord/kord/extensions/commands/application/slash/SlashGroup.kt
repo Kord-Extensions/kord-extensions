@@ -40,7 +40,7 @@ public class SlashGroup(
     /**
      * A [Localized] version of [name].
      */
-    public val localizedName: Localized<String> by lazy { parent.localize(name) }
+    public val localizedName: Localized<String> by lazy { parent.localize(name, true) }
 
     /**
      * A [Localized] version of [description].
