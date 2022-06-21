@@ -167,7 +167,7 @@ public open class ExtensibleBot(
                     settings.membersBuilder.guildsToFill == null ||
                     settings.membersBuilder.guildsToFill!!.contains(guild.id)
                 ) {
-                    logger.info { "Requesting members for guild: ${guild.name}" }
+                    logger.debug { "Requesting members for guild: ${guild.name}" }
 
                     guild.requestMembers {
                         presences = settings.membersBuilder.fillPresences
