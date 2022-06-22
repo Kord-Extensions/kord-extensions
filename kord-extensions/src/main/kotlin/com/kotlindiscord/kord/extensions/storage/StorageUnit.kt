@@ -66,8 +66,9 @@ public data class StorageUnit<T : Data>(
     public var user: Snowflake? = null
         internal set
 
+    /** Reference to the serializer for this storage unit's data type. **/
     @OptIn(InternalSerializationApi::class)
-    internal val serializer: KSerializer<T> = dataType.serializer()
+    public val serializer: KSerializer<T> = dataType.serializer()
 
     /**
      * Convenience function, allowing you to delete the data represented by this storage unit.
