@@ -42,7 +42,7 @@ public open class FilterStrategy(public val test: (provided: String, candidate: 
 public val AutoCompleteInteractionCreateEvent.focusedOption: OptionValue<*>
     get() = this.interaction.command.options.values.first { it.focused }
 
-/** Use a map to populate an autocomplete interaction, filtering by comparing the input with the start of the keys. **/
+/** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestStringMap(
     map: Map<String, String>,
     strategy: FilterStrategy = FilterStrategy.Prefix
@@ -63,7 +63,21 @@ public suspend inline fun AutoCompleteInteraction.suggestStringMap(
     }
 }
 
-/** Use a map to populate an autocomplete interaction, filtering by comparing the input with the start of the keys. **/
+/**
+ * Use a collection (like a list) to populate an autocomplete interaction, filtering as described by the provided
+ * [strategy].
+ */
+public suspend inline fun AutoCompleteInteraction.suggestStringCollection(
+    collection: Collection<String>,
+    strategy: FilterStrategy = FilterStrategy.Prefix
+) {
+    suggestStringMap(
+        collection.associateBy { it },
+        strategy
+    )
+}
+
+/** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestIntMap(
     map: Map<String, Int>,
     strategy: FilterStrategy = FilterStrategy.Prefix
@@ -71,7 +85,21 @@ public suspend inline fun AutoCompleteInteraction.suggestIntMap(
     suggestLongMap(map.mapValues { it.value.toLong() }, strategy)
 }
 
-/** Use a map to populate an autocomplete interaction, filtering by comparing the input with the start of the keys. **/
+/**
+ * Use a collection (like a list) to populate an autocomplete interaction, filtering as described by the provided
+ * [strategy].
+ */
+public suspend inline fun AutoCompleteInteraction.suggestIntCollection(
+    collection: Collection<Int>,
+    strategy: FilterStrategy = FilterStrategy.Prefix
+) {
+    suggestIntMap(
+        collection.associateBy { it.toString() },
+        strategy
+    )
+}
+
+/** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestLongMap(
     map: Map<String, Long>,
     strategy: FilterStrategy = FilterStrategy.Prefix
@@ -92,7 +120,21 @@ public suspend inline fun AutoCompleteInteraction.suggestLongMap(
     }
 }
 
-/** Use a map to populate an autocomplete interaction, filtering by comparing the input with the start of the keys. **/
+/**
+ * Use a collection (like a list) to populate an autocomplete interaction, filtering as described by the provided
+ * [strategy].
+ */
+public suspend inline fun AutoCompleteInteraction.suggestLongCollection(
+    collection: Collection<Long>,
+    strategy: FilterStrategy = FilterStrategy.Prefix
+) {
+    suggestLongMap(
+        collection.associateBy { it.toString() },
+        strategy
+    )
+}
+
+/** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestDoubleMap(
     map: Map<String, Double>,
     strategy: FilterStrategy = FilterStrategy.Prefix
@@ -100,7 +142,21 @@ public suspend inline fun AutoCompleteInteraction.suggestDoubleMap(
     suggestNumberMap(map, strategy)
 }
 
-/** Use a map to populate an autocomplete interaction, filtering by comparing the input with the start of the keys. **/
+/**
+ * Use a collection (like a list) to populate an autocomplete interaction, filtering as described by the provided
+ * [strategy].
+ */
+public suspend inline fun AutoCompleteInteraction.suggestDoubleCollection(
+    collection: Collection<Double>,
+    strategy: FilterStrategy = FilterStrategy.Prefix
+) {
+    suggestDoubleMap(
+        collection.associateBy { it.toString() },
+        strategy
+    )
+}
+
+/** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestNumberMap(
     map: Map<String, Double>,
     strategy: FilterStrategy = FilterStrategy.Prefix
@@ -119,4 +175,18 @@ public suspend inline fun AutoCompleteInteraction.suggestNumberMap(
     suggestNumber {
         options.forEach(::choice)
     }
+}
+
+/**
+ * Use a collection (like a list) to populate an autocomplete interaction, filtering as described by the provided
+ * [strategy].
+ */
+public suspend inline fun AutoCompleteInteraction.suggestNumberCollection(
+    collection: Collection<Double>,
+    strategy: FilterStrategy = FilterStrategy.Prefix
+) {
+    suggestNumberMap(
+        collection.associateBy { it.toString() },
+        strategy
+    )
 }
