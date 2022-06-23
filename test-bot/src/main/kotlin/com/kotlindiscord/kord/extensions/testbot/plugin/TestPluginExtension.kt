@@ -40,7 +40,7 @@ public class TestPluginExtension : Extension() {
                 description = "Delete  current set configuration value."
 
                 action {
-                    val value = TestPlugin.DATA_UNIT
+                    TestPlugin.DATA_UNIT
                         .withUser(event.interaction.user.id)
                         .delete()
 

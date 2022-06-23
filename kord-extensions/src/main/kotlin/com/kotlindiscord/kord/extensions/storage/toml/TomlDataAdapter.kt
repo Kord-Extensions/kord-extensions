@@ -82,7 +82,7 @@ public open class TomlDataAdapter : DataAdapter<String>() {
         return dataCache[dataId] as R?
     }
 
-    override suspend fun <R : Data> save(unit: StorageUnit<R>, data: R) {
+    override suspend fun <R : Data> save(unit: StorageUnit<R>, data: R): R {
         val dataId = unit.pathString
 
         dataCache[dataId] = data
@@ -96,10 +96,12 @@ public open class TomlDataAdapter : DataAdapter<String>() {
         }
 
         file.writeText(Toml.encodeToString(unit.serializer, data))
+
+        return data
     }
 
-    override suspend fun <R : Data> save(unit: StorageUnit<R>) {
-        val data = get(unit) ?: return
+    override suspend fun <R : Data> save(unit: StorageUnit<R>): R? {
+        val data = get(unit) ?: return null
         val file = unit.file
 
         if (!file.exists()) {
@@ -108,5 +110,7 @@ public open class TomlDataAdapter : DataAdapter<String>() {
         }
 
         file.writeText(Toml.encodeToString(unit.serializer, data))
+
+        return data
     }
 }

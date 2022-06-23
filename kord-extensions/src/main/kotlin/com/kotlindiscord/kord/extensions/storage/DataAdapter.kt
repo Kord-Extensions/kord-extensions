@@ -54,6 +54,20 @@ public abstract class DataAdapter<ID : Any> {
     public abstract suspend fun <R : Data> get(unit: StorageUnit<R>): R?
 
     /**
+     * Retrieve the data object represented by the given storage unit, or store the data object returned by the
+     * callback if no respective data could be found.
+     *
+     * This is similar to the `getOrDefault` you'd find on collections, but it also saves the default for you. You
+     * can use an elvis operator (`?:`) if you don't want to save.
+     *
+     * This function takes a lambda so that data objects aren't created unless they're needed.
+     *
+     * @return The stored data, or the data you passed if there was nothing stored.
+     */
+    public open suspend fun <R : Data> getOrSaveDefault(unit: StorageUnit<R>, data: suspend () -> R): R =
+        get(unit) ?: save(unit, data())
+
+    /**
      * Retrieve the data represented by the given storage unit from persistent storage, storing it in the [dataCache]
      * and returning it if it was found.
      *
@@ -64,14 +78,18 @@ public abstract class DataAdapter<ID : Any> {
     /**
      * Save the cached data represented by the given storage unit to persistent storage, creating any files and folders
      * as needed.
+     *
+     * @return The saved data if it was found, `null` otherwise.
      */
-    public abstract suspend fun <R : Data> save(unit: StorageUnit<R>)
+    public abstract suspend fun <R : Data> save(unit: StorageUnit<R>): R?
 
     /**
      * Save the given data represented by the given storage unit to persistent storage, creating any files and folders
      * as needed, and storing the given data object in the [dataCache].
+     *
+     * @return The saved data.
      */
-    public abstract suspend fun <R : Data> save(unit: StorageUnit<R>, data: R)
+    public abstract suspend fun <R : Data> save(unit: StorageUnit<R>, data: R): R
 
     /**
      * Reload all data objects stored in [dataCache] by calling [reload] against each storage unit.
