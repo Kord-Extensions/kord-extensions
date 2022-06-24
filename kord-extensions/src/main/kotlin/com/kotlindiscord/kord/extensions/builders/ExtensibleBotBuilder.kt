@@ -96,7 +96,7 @@ public open class ExtensibleBotBuilder {
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
 
     /** Data storage adapter to use for all extensions, modules and plugins. **/
-    public var dataAdapter: DataAdapter<*> = TomlDataAdapter()
+    public var dataAdapterCallback: () -> DataAdapter<*> = ::TomlDataAdapter
 
     /**
      * @suppress Builder that shouldn't be set directly by the user.
@@ -172,6 +172,15 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public suspend fun cache(builder: suspend CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
+    }
+
+    /**
+     * Call this to register a custom data adapter class. Generally you'd pass a constructor here, but you can
+     * also provide a lambda if needed.
+     */
+    @BotBuilderDSL
+    public fun dataAdapter(builder: () -> DataAdapter<*>) {
+        dataAdapterCallback = builder
     }
 
     /**
@@ -447,7 +456,7 @@ public open class ExtensibleBotBuilder {
     /** @suppress Internal function used to build a bot instance. **/
     public open suspend fun build(token: String): ExtensibleBot {
         hooksBuilder.beforeKoinSetup {  // We have to do this super-duper early for safety
-            loadModule { single { dataAdapter } bind DataAdapter::class }
+            loadModule { single { dataAdapterCallback() } bind DataAdapter::class }
         }
 
         hooksBuilder.beforeKoinSetup {
