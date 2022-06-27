@@ -9,7 +9,9 @@ package com.kotlindiscord.kord.extensions.testbot
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.modules.extra.phishing.extPhishing
+import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.extPluralKit
 import com.kotlindiscord.kord.extensions.testbot.extensions.I18nTestExtension
+import com.kotlindiscord.kord.extensions.testbot.extensions.PKTestExtension
 import com.kotlindiscord.kord.extensions.testbot.utils.LogLevel
 import com.kotlindiscord.kord.extensions.utils.env
 import com.kotlindiscord.kord.extensions.utils.envOrNull
@@ -66,7 +68,12 @@ public suspend fun main() {
                 logChannelName = "alerts"
             }
 
+            if (envOrNull("PLURALKIT_TESTING") != null) {
+                extPluralKit()
+            }
+
             add(::I18nTestExtension)
+            add(::PKTestExtension)
         }
 
         plugins {

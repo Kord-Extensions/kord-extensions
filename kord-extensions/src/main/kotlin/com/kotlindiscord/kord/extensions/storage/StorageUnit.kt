@@ -99,18 +99,16 @@ public data class StorageUnit<T : Data>(
      *
      * @see DataAdapter.save
      */
-    public suspend fun save() {
+    public suspend fun save(): T? =
         dataAdapter.save(this)
-    }
 
     /**
      * Convenience function, allowing you to save the given data object, as represented by this storage unit.
      *
      * @see DataAdapter.save
      */
-    public suspend fun save(data: T) {
+    public suspend fun save(data: T): T =
         dataAdapter.save(this, data)
-    }
 
     /**
      * Copy this [StorageUnit], applying the given channel's ID to its context, but only if it's not a DM channel.
