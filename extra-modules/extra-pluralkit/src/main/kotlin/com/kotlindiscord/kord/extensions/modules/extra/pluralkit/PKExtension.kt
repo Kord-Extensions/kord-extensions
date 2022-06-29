@@ -140,7 +140,7 @@ class PKExtension : Extension() {
                     .webhooks
                     .firstOrNull { it.id == webhookId }
 
-                if (webhook == null || webhook.creatorId?.value?.toLong() != config.botId) {
+                if (webhook == null || webhook.creatorId != config.botId) {
                     return@action
                 }
 
@@ -211,7 +211,7 @@ class PKExtension : Extension() {
                     .webhooks
                     .firstOrNull { it.id == webhookId }
 
-                if (webhook == null || webhook.creatorId?.value?.toLong() != config.botId) {
+                if (webhook == null || webhook.creatorId != config.botId) {
                     kord.launch {
                         bot.send(event.unproxied())
                     }
@@ -272,7 +272,7 @@ class PKExtension : Extension() {
                     .webhooks
                     .firstOrNull { it.id == webhookId }
 
-                if (webhook == null || webhook.creatorId?.value?.toLong() != config.botId) {
+                if (webhook == null || webhook.creatorId != config.botId) {
                     kord.launch {
                         bot.send(event.unproxied())
                     }
@@ -380,7 +380,7 @@ class PKExtension : Extension() {
                         return@action
                     }
 
-                    config.botId = arguments.bot!!.id.value.toLong()
+                    config.botId = arguments.bot!!.id
                     configUnit.save(config)
 
                     respond {

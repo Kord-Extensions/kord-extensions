@@ -14,6 +14,7 @@
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.storage
 
 import com.kotlindiscord.kord.extensions.storage.Data
+import dev.kord.common.entity.Snowflake
 import kotlinx.serialization.Serializable
 import net.peanuuutz.tomlkt.TomlComment
 
@@ -28,7 +29,7 @@ data class PKGuildConfig(
     @TomlComment(
         "The ID of the PluralKit instance to use, if not the default instance."
     )
-    var botId: Long = 466378653216014359L,
+    var botId: Snowflake = Snowflake(466378653216014359),
 
     @TomlComment(
         "Whether PluralKit integration should be enabled on this server."
