@@ -4,22 +4,28 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
+
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.events
 
 import com.kotlindiscord.kord.extensions.events.KordExEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.ChannelEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.GuildEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.MemberEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.MessageEvent
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api.PKMessage
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.MemberBehavior
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
-import dev.kord.core.entity.Guild
-import dev.kord.core.entity.Member
-import dev.kord.core.entity.Message
-import dev.kord.core.entity.Strategizable
-import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.entity.*
+import dev.kord.core.entity.channel.Channel
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
-import dev.kord.core.supplier.getChannelOf
-import dev.kord.core.supplier.getChannelOfOrNull
 
 /**
  * A [MessageDeleteEvent] wrapper that fires with extra context that may be supplied by PluralKit. Subtypes are
@@ -35,31 +41,38 @@ import dev.kord.core.supplier.getChannelOfOrNull
 abstract class PKMessageDeleteEvent(
     open val event: MessageDeleteEvent,
     open val channelId: Snowflake,
-    open val message: Message?,
+    override val message: Message?,
     open val guildId: Snowflake?,
     open val author: Member?,
     open val repliedToMessage: Message?,
     override val shard: Int,
     override val supplier: EntitySupplier = event.kord.defaultSupplier,
-) : KordExEvent, Strategizable {
+) : KordExEvent, Strategizable, ChannelEvent, MessageEvent, GuildEvent, MemberEvent {
     /** @suppress Forwards to [repliedToMessage], **/
     val referencedMessage get() = repliedToMessage
 
     /** Channel behaviour representing the channel the message was sent to. **/
-    val channel: MessageChannelBehavior
+    override val channel: MessageChannelBehavior
         get() = MessageChannelBehavior(channelId, kord)
 
-    /** Attempt to retrieve the channel this message was sent to, throwing if it can't be found. **/
-    suspend inline fun <reified T : MessageChannel> getChannel(): T =
-        supplier.getChannelOf<T>(channelId)
+    override val guild: GuildBehavior? get() = guildId?.let { kord.unsafe.guild(it) }
+    override val member: MemberBehavior? get() = author
+    override val user: UserBehavior? get() = author
 
-    /** Attempt to retrieve the channel this message was sent to, returning null if it can't be found. **/
-    suspend inline fun <reified T : MessageChannel> getChannelOrNull(): T? =
-        supplier.getChannelOfOrNull(channelId)
+    override suspend fun getChannel(): Channel = channel.asChannel()
+    override suspend fun getChannelOrNull(): Channel = channel.asChannel()
 
-    /** Attempt to retrieve the guild this message was sent to, returning null if it can't be found. **/
-    suspend fun getGuild(): Guild? =
-        guildId?.let { supplier.getGuildOrNull(it) }
+    override suspend fun getGuild(): Guild = getGuildOrNull()!!
+    override suspend fun getGuildOrNull(): Guild? = guildId?.let { supplier.getGuildOrNull(it) }
+
+    override suspend fun getMember(): Member  = author!!
+    override suspend fun getMemberOrNull(): Member? = author
+
+    override suspend fun getMessage(): Message = message!!
+    override suspend fun getMessageOrNull(): Message? = message
+
+    override suspend fun getUser(): User = author!!
+    override suspend fun getUserOrNull(): User? = author
 }
 
 /**

@@ -29,14 +29,16 @@ you've broken KordEx too!
 You can find the test bot in the `test-bot` module. To run it, use Gradle to run the `test-bot:run` task, with the
 following environment variables set:
 
-* `TOKEN` - your testing bot's token
 * `TEST_SERVER` - your test server's ID
+* `TOKEN` - your testing bot's token
 
 Optionally, you can provide the following environment variables:
 
+* `ENVIRONMENT` - Set this to `spam` to enable trace logging for Kord's gateway
 * `LOG_LEVEL` - One of `ERROR`, `WARNING`, `INFO` or `DEBUG`, which refers to the highest log level that will be posted
   in `#test-logs` (as mentioned below)
-* `ENVIRONMENT` - Set this to `spam` to enable trace logging for Kord's gateway
+* `PLURALKIT_TESTING` - Set this to any value (eg, `true`) to enable the PluralKit integration test module, which will
+  respond to all message events (create, delete, update) with whether the message was proxied by PK or not.
 
 Additionally, ensure that your test server contains a channel named `test-logs` that your test bot can send messages
 to.

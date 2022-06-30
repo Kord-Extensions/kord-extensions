@@ -4,15 +4,22 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
+
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.events
 
 import com.kotlindiscord.kord.extensions.events.KordExEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.GuildEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.MemberEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.MessageEvent
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api.PKMessage
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.Guild
-import dev.kord.core.entity.Member
-import dev.kord.core.entity.Message
-import dev.kord.core.entity.Strategizable
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.MemberBehavior
+import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.entity.*
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
@@ -29,18 +36,31 @@ import dev.kord.core.supplier.EntitySupplyStrategy
  */
 sealed class PKMessageCreateEvent(
     open val event: MessageCreateEvent,
-    open val message: Message,
+    override val message: Message,
     open val guildId: Snowflake?,
     open val author: Member?,
     open val repliedToMessage: Message?,
     override val shard: Int,
     override val supplier: EntitySupplier = event.kord.defaultSupplier,
-) : KordExEvent, Strategizable {
+) : KordExEvent, Strategizable, MessageEvent, GuildEvent, MemberEvent {
     /** @suppress Forwards to [repliedToMessage], **/
     val referencedMessage get() = repliedToMessage
 
-    /** Attempt to retrieve the guild this message was sent in, if any. **/
-    suspend fun getGuild(): Guild? = guildId?.let { supplier.getGuildOrNull(it) }
+    override val guild: GuildBehavior? get() = guildId?.let { kord.unsafe.guild(it) }
+    override val member: MemberBehavior? get() = author
+    override val user: UserBehavior? get() = author
+
+    override suspend fun getGuild(): Guild = getGuildOrNull()!!
+    override suspend fun getGuildOrNull(): Guild? = guildId?.let { supplier.getGuildOrNull(it) }
+
+    override suspend fun getMember(): Member  = author!!
+    override suspend fun getMemberOrNull(): Member? = author
+
+    override suspend fun getMessage(): Message = message
+    override suspend fun getMessageOrNull(): Message? = message
+
+    override suspend fun getUser(): User = author!!
+    override suspend fun getUserOrNull(): User? = author
 }
 
 /**

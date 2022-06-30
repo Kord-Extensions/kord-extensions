@@ -4,17 +4,26 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
+
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.events
 
 import com.kotlindiscord.kord.extensions.events.KordExEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.ChannelEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.MemberEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.MessageEvent
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api.PKMessage
+import dev.kord.common.annotation.KordExperimental
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.DiscordPartialMessage
 import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.MessageBehavior
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
-import dev.kord.core.entity.Member
-import dev.kord.core.entity.Message
-import dev.kord.core.entity.Strategizable
+import dev.kord.core.entity.*
+import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.core.supplier.EntitySupplier
@@ -42,25 +51,33 @@ abstract class PKMessageUpdateEvent(
     open val repliedToMessage: Message?,
     override val shard: Int,
     override val supplier: EntitySupplier = event.kord.defaultSupplier,
-) : KordExEvent, Strategizable {
+) : KordExEvent, Strategizable, ChannelEvent, MessageEvent, MemberEvent {
     /** @suppress Forwards to [repliedToMessage], **/
     val referencedMessage get() = repliedToMessage
 
-    /** Channel behaviour representing the channel the message was sent to. **/
-    val channel: MessageChannelBehavior
-        get() = MessageChannelBehavior(id = channelId, kord = kord)
+    override val channel: MessageChannelBehavior get() = kord.unsafe.messageChannel(channelId)
+    override val guild: GuildBehavior? get() = member?.guild
+    override val member: MemberBehavior? get() = author
+    override val message: MessageBehavior get() = kord.unsafe.message(messageId = messageId, channelId = channelId)
+    override val user: UserBehavior? get() = author
 
-    /** Message behaviour representing the message that was updated.. **/
-    val message: MessageBehavior
-        get() = MessageBehavior(messageId = messageId, channelId = channelId, kord = kord)
+    override suspend fun getChannel(): Channel = channel.asChannel()
+    override suspend fun getChannelOrNull(): Channel = channel.asChannel()
 
-    /** Attempt to retrieve the updated message object, throwing if not found. **/
-    suspend fun getMessage(): Message =
+    override suspend fun getGuild(): Guild = getGuildOrNull()!!
+    override suspend fun getGuildOrNull(): Guild? = member?.guild?.asGuildOrNull()
+
+    override suspend fun getMember(): Member  = author!!
+    override suspend fun getMemberOrNull(): Member? = author
+
+    override suspend fun getMessage(): Message =
         supplier.getMessage(channelId = channelId, messageId = messageId)
 
-    /** Attempt to retrieve the updated message object, returning null if not found. **/
-    suspend fun getMessageOrNull(): Message? =
+    override suspend fun getMessageOrNull(): Message? =
         supplier.getMessageOrNull(channelId = channelId, messageId = messageId)
+
+    override suspend fun getUser(): User = author!!
+    override suspend fun getUserOrNull(): User? = author
 }
 
 /**

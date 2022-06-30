@@ -9,6 +9,7 @@
 package com.kotlindiscord.kord.extensions.checks
 
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.events.interfaces.*
 import com.kotlindiscord.kord.extensions.utils.authorId
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
@@ -46,6 +47,8 @@ import kotlinx.coroutines.flow.first
  */
 public suspend fun channelFor(event: Event): ChannelBehavior? {
     return when (event) {
+        is ChannelEvent -> event.channel
+
         is ChannelCreateEvent -> event.channel
         is ChannelDeleteEvent -> event.channel
         is ChannelPinsUpdateEvent -> event.channel
@@ -110,6 +113,8 @@ public suspend fun topChannelFor(event: Event): ChannelBehavior? {
  */
 public suspend fun channelIdFor(event: Event): ULong? {
     return when (event) {
+        is ChannelEvent -> event.channel?.id?.value
+
         is ChannelCreateEvent -> event.channel.id.value
         is ChannelDeleteEvent -> event.channel.id.value
         is ChannelPinsUpdateEvent -> event.channel.id.value
@@ -152,6 +157,8 @@ public suspend fun channelIdFor(event: Event): ULong? {
  */
 public suspend fun channelSnowflakeFor(event: Event): Snowflake? {
     return when (event) {
+        is ChannelEvent -> event.channel?.id
+
         is ChannelCreateEvent -> event.channel.id
         is ChannelDeleteEvent -> event.channel.id
         is ChannelPinsUpdateEvent -> event.channel.id
@@ -194,6 +201,8 @@ public suspend fun channelSnowflakeFor(event: Event): Snowflake? {
  */
 public suspend fun guildFor(event: Event): GuildBehavior? {
     return when (event) {
+        is GuildEvent -> event.guild
+
         is BanAddEvent -> event.guild
         is BanRemoveEvent -> event.guild
 
@@ -285,6 +294,8 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
     return when (event) {
+        is MemberEvent -> event.member
+
         is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.user
         is MemberJoinEvent -> event.member
         is MemberUpdateEvent -> event.member
@@ -340,6 +351,8 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
  */
 public suspend fun messageFor(event: Event): MessageBehavior? {
     return when (event) {
+        is MessageEvent -> event.message
+
         is MessageCreateEvent -> event.message
         is MessageDeleteEvent -> event.message
         is MessageUpdateEvent -> event.getMessage()
@@ -372,6 +385,8 @@ public suspend fun messageFor(event: Event): MessageBehavior? {
  */
 public fun roleFor(event: Event): RoleBehavior? {
     return when (event) {
+        is RoleEvent -> event.role
+
         is RoleCreateEvent -> event.role
         is RoleDeleteEvent -> event.role
         is RoleUpdateEvent -> event.role
@@ -414,6 +429,8 @@ public suspend fun threadFor(event: Event): ThreadChannelBehavior? =
  */
 public suspend fun userFor(event: Event): UserBehavior? {
     return when (event) {
+        is UserEvent -> event.user
+
         is BanAddEvent -> event.user
         is BanRemoveEvent -> event.user
 
