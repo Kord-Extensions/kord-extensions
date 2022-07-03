@@ -16,6 +16,7 @@ import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
+import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import kotlinx.coroutines.sync.Mutex
@@ -102,7 +103,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
 
     /** If your bot requires permissions to be able to execute this component's body, add them using this function. **/
     public fun requireBotPermissions(vararg perms: Permission) {
-        perms.forEach { requiredPerms.add(it) }
+        perms.forEach(requiredPerms::add)
     }
 
     /** Runs standard checks that can be handled in a generic way, without worrying about subclass-specific checks. **/
@@ -138,7 +139,9 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
         }
 
         if (context.guild != null) {
-            val perms = (context.channel.asChannel() as GuildChannel)
+            val perms = context
+                .getChannel()
+                .asChannelOf<GuildChannel>()
                 .permissionsForMember(kord.selfId)
 
             val missingPerms = requiredPerms.filter { !perms.contains(it) }
@@ -150,7 +153,9 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
                         null,
 
                         replacements = arrayOf(
-                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
+                            missingPerms
+                                .map { it.translate(context.getLocale()) }
+                                .joinToString()
                         )
                     )
                 )

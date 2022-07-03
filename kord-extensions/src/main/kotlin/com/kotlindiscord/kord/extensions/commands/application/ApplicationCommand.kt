@@ -138,7 +138,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
     /** If your bot requires permissions to be able to execute the command, add them using this function. **/
     public fun requireBotPermissions(vararg perms: Permission) {
-        perms.forEach { requiredPerms.add(it) }
+        perms.forEach(requiredPerms::add)
     }
 
     /** Specify a specific guild for this application command to be locked to. **/

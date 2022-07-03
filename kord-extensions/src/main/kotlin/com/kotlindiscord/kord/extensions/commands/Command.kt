@@ -22,6 +22,7 @@ import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
 import dev.kord.core.Kord
+import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.core.entity.channel.GuildChannel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -106,7 +107,9 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
         }
 
         if (context.getGuild() != null) {
-            val perms = (context.getChannel().asChannel() as GuildChannel)
+            val perms = context
+                .getChannel()
+                .asChannelOf<GuildChannel>()
                 .permissionsForMember(kord.selfId)
 
             val missingPerms = requiredPerms.filter { !perms.contains(it) }
@@ -118,7 +121,9 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
                         null,
 
                         replacements = arrayOf(
-                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
+                            missingPerms
+                                .map { it.translate(context.getLocale()) }
+                                .joinToString()
                         )
                     )
                 )
