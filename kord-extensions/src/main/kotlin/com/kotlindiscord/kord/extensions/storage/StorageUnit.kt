@@ -25,45 +25,45 @@ import org.koin.core.component.inject
 import kotlin.reflect.KClass
 
 /**
- * Data class representing a storage unit. Storage units represent specific, single units of data, and explain how
+ * Class representing a storage unit. Storage units represent specific, single units of data, and explain how
  * to store, retrieve and serialize that data.
  *
  * Storage units instruct the data adapters, explaining exactly what needs to be done. However, those adapters are
  * free to handle the storage as they feel they need to.
  */
 @Suppress("DataClassContainsFunctions", "DataClassShouldBeImmutable")
-public data class StorageUnit<T : Data>(
+public open class StorageUnit<T : Data>(
     /** The type of data to store. **/
-    public val storageType: StorageType,
+    public open val storageType: StorageType,
 
     /** The namespace - usually a plugin or extension ID. Represents a folder for file-backed storage. **/
-    public val namespace: String,
+    public open val namespace: String,
 
     /** The identifier - usually a specific category or name. Represents a filename for file-backed storage. **/
-    public val identifier: String,
+    public open val identifier: String,
 
     /** The classobj representing your data - usually retrieved via `MyDataClass::class`. **/
-    public val dataType: KClass<T>
+    public val dataType: KClass<T>,
 ) : KordExKoinComponent {
     /** Storage unit key - used to construct paths, or just as a string reference to this storage unit. **/
     public val unitKey: String = "${storageType.type}/$namespace/$identifier"
 
-    private val dataAdapter: DataAdapter<*> by inject()
+    protected val dataAdapter: DataAdapter<*> by inject()
 
     /** Channel context, supplied via [withChannel] or [withChannelFrom]. **/
-    public var channel: Snowflake? = null
+    public open var channel: Snowflake? = null
         internal set
 
     /** Guild context, supplied via [withGuild] or [withGuildFrom]. **/
-    public var guild: Snowflake? = null
+    public open var guild: Snowflake? = null
         internal set
 
     /** Message context, supplied via [withMessage] or [withMessageFrom]. **/
-    public var message: Snowflake? = null
+    public open var message: Snowflake? = null
         internal set
 
     /** User context, supplied via [withUser] or [withUserFrom]. **/
-    public var user: Snowflake? = null
+    public open var user: Snowflake? = null
         internal set
 
     /** Reference to the serializer for this storage unit's data type. **/
@@ -221,6 +221,23 @@ public data class StorageUnit<T : Data>(
         return copy().apply {
             user = userFor(event)?.id
         }
+    }
+
+    /** Return a new [StorageUnit] object, containing a copy of all the data that's stored in this one. **/
+    public open fun copy(): StorageUnit<T> {
+        val unit = StorageUnit(
+            storageType = storageType,
+            namespace = namespace,
+            identifier = identifier,
+            dataType = dataType
+        )
+
+        unit.channel = channel
+        unit.guild = guild
+        unit.message = message
+        unit.user = user
+
+        return unit
     }
 
     override fun toString(): String = unitKey
