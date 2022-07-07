@@ -49,6 +49,7 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     internal val builderFields: MutableList<String> = mutableListOf()
     internal val builderFieldNames: MutableList<String> = mutableListOf()
 
+    internal val builderBuildFunctionStatements: MutableList<String> = mutableListOf()
     internal val builderExtraStatements: MutableList<String> = mutableListOf()
     internal val builderInitStatements: MutableList<String> = mutableListOf()
 
@@ -77,7 +78,12 @@ public class ConverterBuilderClassBuilder : KoinComponent {
         builderFieldNames.add(field.split(":").first().split(" ").last())
     }
 
-    /** Add a builder init statement. **/
+    /** Add a builder build function statement. **/
+    public fun builderBuildFunctionStatement(line: String) {
+        builderBuildFunctionStatements.add(line)
+    }
+
+    /** Add a builder extra statement. **/
     public fun builderExtraStatement(line: String) {
         builderExtraStatements.add(line)
     }
@@ -145,7 +151,7 @@ public class ConverterBuilderClassBuilder : KoinComponent {
                 builder.append(" <$builderGeneric>")
             }
 
-            builder.append("(")
+            builder.append("( /** @inject: builderConstructorArguments **/ ")
 
             if (builderArguments.isNotEmpty()) {
                 builder.append("\n")
@@ -178,56 +184,71 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             builder.append("    override var choices: MutableMap<String, $argumentType> = mutableMapOf()\n\n")
         }
 
+        builder.append("    /** @inject: builderFields **/\n")
+
         if (builderFields.isNotEmpty()) {
             builderFields.forEach {
                 builder.append("    $it\n")
             }
-
-            builder.append("\n")
         }
 
-        if (builderInitStatements.isNotEmpty()) {
-            builder.append("    init {\n")
+        builder.append("\n")
 
+        builder.append("    init {\n")
+        builder.append("        /** @inject: builderInitStatements **/\n")
+
+        if (builderInitStatements.isNotEmpty()) {
             builderInitStatements.forEach {
                 builder.append("        $it\n")
             }
-
-            builder.append("    }\n\n")
         }
+
+        builder.append("    }\n\n")
+        builder.append("    /** @inject: builderExtraStatements **/\n")
 
         if (builderExtraStatements.isNotEmpty()) {
             builderExtraStatements.forEach {
                 builder.append("    $it\n")
             }
-
-            builder.append("\n")
         }
 
+        builder.append("\n")
+
         builder.append("    public override fun build(arguments: Arguments): $converterType<$argumentType> {\n")
+        builder.append("        val converter = $converterClass(\n")
+
+        if (!types.containsAny(ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.DEFAULTING)) {
+            builder.append("            validator = validator,\n")
+        }
+
+        if (ConverterType.CHOICE in types) {
+            builder.append("            choices = choices,\n")
+        }
+
+        builderArgumentNames.forEach {
+            builder.append("            $it = $it,\n")
+        }
+
+        builderFieldNames.forEach {
+            builder.append("            $it = $it,\n")
+        }
+
+        builder.append("        )\n\n")
+        builder.append("        /** @inject: builderBuildFunctionStatements **/\n")
+
+        if (builderBuildFunctionStatements.isNotEmpty()) {
+            builderBuildFunctionStatements.forEach {
+                builder.append("        $it\n")
+            }
+        }
+
+        builder.append("\n")
+
         builder.append("        return arguments.arg(\n")
         builder.append("            displayName = name,\n")
         builder.append("            description = description,\n")
         builder.append("\n")
-        builder.append("            converter = $converterClass(\n")
-
-        if (!types.containsAny(ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.DEFAULTING)) {
-            builder.append("                validator = validator,\n")
-        }
-
-        if (ConverterType.CHOICE in types) {
-            builder.append("                choices = choices,\n")
-        }
-
-        builderArgumentNames.forEach {
-            builder.append("                $it = $it,\n")
-        }
-
-        builderFieldNames.forEach {
-            builder.append("                $it = $it,\n")
-        }
-
-        builder.append("            )")
+        builder.append("            converter = converter")
 
         if (types.contains(ConverterType.DEFAULTING)) {
             builder.append(".toDefaulting(\n")
@@ -300,7 +321,8 @@ public class ConverterBuilderClassBuilder : KoinComponent {
                 ConverterType.COALESCING -> before.add("coalescing")
                 ConverterType.CHOICE -> after.add("choice")
 
-                ConverterType.SINGLE -> { /* Don't add anything */ }
+                ConverterType.SINGLE -> { /* Don't add anything */
+                }
             }
         }
 

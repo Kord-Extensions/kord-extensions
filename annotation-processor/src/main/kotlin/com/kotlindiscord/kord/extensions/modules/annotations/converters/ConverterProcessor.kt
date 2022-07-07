@@ -22,7 +22,7 @@ import java.util.*
  */
 public class ConverterProcessor(
     private val generator: CodeGenerator,
-    private val logger: KSPLogger
+    private val logger: KSPLogger,
 ) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(
@@ -213,7 +213,7 @@ public class ConverterProcessor(
         arguments: ConverterAnnotationArgs,
         converterName: String,
         argumentTypeString: String,
-        types: List<ConverterType>
+        types: List<ConverterType>,
     ): String {
         val classBuilder = builderClass {
             comment = classComment(converterName, classDeclaration.simpleName.asString())
@@ -226,6 +226,7 @@ public class ConverterProcessor(
 
             arguments.builderConstructorArguments.forEach(this::builderArg)
             arguments.builderFields.forEach(this::builderField)
+            arguments.builderBuildFunctionStatements.forEach(this::builderBuildFunctionStatement)
             arguments.builderExtraStatements.forEach(this::builderExtraStatement)
             arguments.builderInitStatements.forEach(this::builderInitStatement)
 

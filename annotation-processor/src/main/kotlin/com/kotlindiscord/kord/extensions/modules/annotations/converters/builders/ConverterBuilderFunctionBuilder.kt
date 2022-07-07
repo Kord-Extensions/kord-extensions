@@ -104,7 +104,7 @@ public class ConverterBuilderFunctionBuilder : KoinComponent {
             builder.append("<$splitBuilderGeneric>")
         }
 
-        builder.append("(")
+        builder.append("( /** @inject: functionBuilderArguments **/ ")
 
         if (builderArguments.isNotEmpty()) {
             builder.append("\n")

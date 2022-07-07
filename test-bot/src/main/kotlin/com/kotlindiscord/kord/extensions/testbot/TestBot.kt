@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.modules.extra.phishing.extPhishing
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.extPluralKit
+import com.kotlindiscord.kord.extensions.testbot.extensions.ArgumentTestExtension
 import com.kotlindiscord.kord.extensions.testbot.extensions.I18nTestExtension
 import com.kotlindiscord.kord.extensions.testbot.extensions.PKTestExtension
 import com.kotlindiscord.kord.extensions.testbot.utils.LogLevel
@@ -72,6 +73,7 @@ public suspend fun main() {
                 extPluralKit()
             }
 
+            add(::ArgumentTestExtension)
             add(::I18nTestExtension)
             add(::PKTestExtension)
         }
