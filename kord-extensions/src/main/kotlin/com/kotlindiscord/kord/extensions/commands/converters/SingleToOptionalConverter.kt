@@ -25,7 +25,7 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
-public class SingleToOptionalConverter<T : Any>(
+public open class SingleToOptionalConverter<T : Any>(
     public val singleConverter: SingleConverter<T>,
 
     newSignatureTypeString: String? = null,

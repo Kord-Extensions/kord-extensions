@@ -23,7 +23,7 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
-public class SingleToDefaultingConverter<T : Any>(
+public open class SingleToDefaultingConverter<T : Any>(
     public val singleConverter: SingleConverter<T>,
     defaultValue: T,
     outputError: Boolean = false,

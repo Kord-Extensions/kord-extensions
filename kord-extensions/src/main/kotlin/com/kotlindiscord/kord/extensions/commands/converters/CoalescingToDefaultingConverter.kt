@@ -25,7 +25,7 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * [coalescingConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [coalescingConverter].
  */
-public class CoalescingToDefaultingConverter<T : Any>(
+public open class CoalescingToDefaultingConverter<T : Any>(
     public val coalescingConverter: CoalescingConverter<T>,
     defaultValue: T,
     outputError: Boolean = false,

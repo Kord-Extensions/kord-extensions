@@ -24,7 +24,7 @@ import com.kotlindiscord.kord.extensions.parser.StringParser
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
-public class SingleToListConverter<T : Any>(
+public open class SingleToListConverter<T : Any>(
     required: Boolean = true,
     public val singleConverter: SingleConverter<T>,
 
