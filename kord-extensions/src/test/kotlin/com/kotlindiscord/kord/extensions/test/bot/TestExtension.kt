@@ -178,13 +178,13 @@ class TestExtension : Extension() {
         }
 
         publicSlashCommand {
-            name = "banana"
-            description = "banana"
+            name = "command.banana"
+            description = "command.banana"
 
             bundle = "test"
 
             action {
-                respond { content = "Text: ${translate("banana")}" }
+                respond { content = "Text: ${translate("command.banana")}" }
             }
         }
 
