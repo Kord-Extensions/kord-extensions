@@ -38,7 +38,9 @@ public suspend fun SlashCommand<*, *>.group(name: String, body: suspend SlashGro
         error("Commands may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT command groups.")
     }
 
-    if (groups[name] != null) {
+    val localizedGroupName = localize(name, true).default
+
+    if (groups[localizedGroupName] != null) {
         error("A command group with the name '$name' has already been registered.")
     }
 
@@ -47,7 +49,7 @@ public suspend fun SlashCommand<*, *>.group(name: String, body: suspend SlashGro
     body(group)
     group.validate()
 
-    groups[name] = group
+    groups[localizedGroupName] = group
 
     return group
 }

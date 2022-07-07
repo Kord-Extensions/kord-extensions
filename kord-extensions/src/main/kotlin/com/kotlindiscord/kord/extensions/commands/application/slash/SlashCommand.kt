@@ -207,7 +207,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
             is SubCommand -> {
                 val firstSubCommandKey = eventCommand.name
 
-                this.subCommands.firstOrNull { it.name == firstSubCommandKey }
+                this.subCommands.firstOrNull { it.localizedName.default == firstSubCommandKey }
                     ?: error("Unknown subcommand: $firstSubCommandKey")
             }
 
@@ -216,7 +216,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
                 val firstSubCommandKey = eventCommand.name
 
-                group.subCommands.firstOrNull { it.name == firstSubCommandKey }
+                group.subCommands.firstOrNull { it.localizedName.default == firstSubCommandKey }
                     ?: error("Unknown subcommand: $firstSubCommandKey")
             }
 
