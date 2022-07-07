@@ -20,7 +20,7 @@ public class I18nTestExtension : Extension() {
 
     override suspend fun setup() {
         publicSlashCommand {
-            name = "banana-flat"
+            name = "command.banana-flat"
             description = "Translated banana"
 
             action {
@@ -31,16 +31,16 @@ public class I18nTestExtension : Extension() {
                     "Command locale (`$commandLocale`) does not match interaction locale (`$interactionLocale`)"
                 }
 
-                respond { content = "Text: ${translate("banana")}" }
+                respond { content = "Text: ${translate("command.banana")}" }
             }
         }
 
         publicSlashCommand {
-            name = "banana-sub"
+            name = "command.banana-sub"
             description = "Translated banana subcommand"
 
             publicSubCommand {
-                name = "banana"
+                name = "command.banana"
                 description = "Translated banana"
 
                 action {
@@ -51,20 +51,20 @@ public class I18nTestExtension : Extension() {
                         "Command locale (`$commandLocale`) does not match interaction locale (`$interactionLocale`)"
                     }
 
-                    respond { content = "Text: ${translate("banana")}" }
+                    respond { content = "Text: ${translate("command.banana")}" }
                 }
             }
         }
 
         publicSlashCommand {
-            name = "banana-group"
+            name = "command.banana-group"
             description = "Translated banana group"
 
-            group("banana") {
+            group("command.banana") {
                 description = "Translated banana group"
 
                 publicSubCommand {
-                    name = "banana"
+                    name = "command.banana"
                     description = "Translated banana"
 
                     action {
@@ -75,7 +75,7 @@ public class I18nTestExtension : Extension() {
                             "Command locale (`$commandLocale`) does not match interaction locale (`$interactionLocale`)"
                         }
 
-                        respond { content = "Text: ${translate("banana")}" }
+                        respond { content = "Text: ${translate("command.banana")}" }
                     }
                 }
             }
