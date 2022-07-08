@@ -23,7 +23,7 @@ import java.util.*
  */
 public open class Page(
     public open val bundle: String? = null,
-    public open val builder: suspend EmbedBuilder.() -> Unit
+    public open val builder: suspend EmbedBuilder.() -> Unit,
 ) : KordExKoinComponent {
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
@@ -38,7 +38,7 @@ public open class Page(
         pages: Int,
         group: String?,
         groupIndex: Int,
-        groups: Int
+        groups: Int,
     ): suspend EmbedBuilder.() -> Unit = {
         builder()
 
@@ -60,7 +60,7 @@ public open class Page(
                 }
 
                 if (group != null && group.isNotBlank() || groups > 2) {
-                    if (text.isNotBlank()) {
+                    if (isNotBlank()) {
                         append(" • ")
                     }
 
@@ -82,7 +82,7 @@ public open class Page(
                 }
 
                 if (!curFooterText.isNullOrEmpty()) {
-                    if (text.isNotBlank()) {
+                    if (isNotBlank()) {
                         append(" • ")
                     }
 
