@@ -98,7 +98,7 @@ public class SentryContext : KordExKoinComponent {
     /** Capture a [SentryEvent], submitting it to Sentry with the breadcrumbs in this context. **/
     public inline fun captureEvent(
         event: SentryEvent,
-        hint: Any?,
+        hint: Hint,
         crossinline body: (Scope).() -> Unit
     ): SentryId {
         lateinit var id: SentryId
@@ -139,7 +139,7 @@ public class SentryContext : KordExKoinComponent {
     /** Capture a [Throwable] exception, submitting it to Sentry with the breadcrumbs in this context. **/
     public inline fun captureException(
         t: Throwable,
-        hint: Any?,
+        hint: Hint,
         crossinline body: (Scope).() -> Unit
     ): SentryId {
         lateinit var id: SentryId

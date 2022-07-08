@@ -66,7 +66,7 @@ public open class SentryAdapter {
             if (release != null) it.release = release
             if (sampleRate != null) it.sampleRate = sampleRate
             if (serverName != null) it.serverName = serverName
-            if (shutdownTimeout != null) it.shutdownTimeout = shutdownTimeout
+            if (shutdownTimeout != null) it.shutdownTimeoutMillis = shutdownTimeout
 
             it.isAttachStacktrace = attachStacktrace
             it.isAttachThreads = attachThreads
@@ -74,7 +74,7 @@ public open class SentryAdapter {
             it.isEnableExternalConfiguration = enableExternalConfiguration
             it.isEnableNdk = enableNdk
             it.isEnableScopeSync = enableScopeSync
-            it.enableUncaughtExceptionHandler = enableUncaughtExceptionHandler
+            it.isEnableUncaughtExceptionHandler = enableUncaughtExceptionHandler
             it.isSendDefaultPii = sendDefaultPii
 
             inAppExcludes.forEach { exclude -> it.addInAppExclude(exclude) }

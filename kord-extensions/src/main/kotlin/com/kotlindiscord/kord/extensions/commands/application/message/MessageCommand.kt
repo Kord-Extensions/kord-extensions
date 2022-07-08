@@ -127,7 +127,7 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
             val channel = context.channel
             val author = context.user.asUserOrNull()
 
-            val sentryId = context.sentry.captureException(t, "Message command execution failed.") {
+            val sentryId = context.sentry.captureException(t) {
                 if (author != null) {
                     user(author)
                 }

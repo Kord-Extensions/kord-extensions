@@ -66,7 +66,7 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
             val channel = context.channel
             val author = context.user.asUserOrNull()
 
-            val sentryId = context.sentry.captureException(t, "Button action execution failed.") {
+            val sentryId = context.sentry.captureException(t) {
                 if (author != null) {
                     user(author)
                 }
@@ -79,7 +79,7 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
 
                 tag("component", button.id)
 
-                Sentry.captureException(t, "Slash command execution failed.")
+                Sentry.captureException(t)
             }
 
             logger.info { "Error submitted to Sentry: $sentryId" }

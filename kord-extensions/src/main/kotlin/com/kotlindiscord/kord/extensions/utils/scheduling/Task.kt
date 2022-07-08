@@ -111,7 +111,7 @@ public open class Task(
                     logger.error(t) { "Error running scheduled callback." }
 
                     if (sentry.enabled) {
-                        sentryContext.captureException(t, "Error running scheduled callback") {
+                        sentryContext.captureException(t) {
                             setExtra("executions", executions.toString())
                             tag("task", name)
                         }

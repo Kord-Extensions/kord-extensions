@@ -13,7 +13,3 @@ dependencies {
 dokkaModule {
     moduleName.set("Kord Extensions: Annotation Processor")
 }
-
-kordex {
-    jvmTarget.set("1.8")
-}

@@ -155,7 +155,7 @@ public abstract class SelectMenu<C : SelectMenuContext>(
             val channel = context.channel
             val author = context.user.asUserOrNull()
 
-            val sentryId = context.sentry.captureException(t, "Select menu action execution failed.") {
+            val sentryId = context.sentry.captureException(t) {
                 if (author != null) {
                     user(author)
                 }
@@ -168,7 +168,7 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
                 tag("component", button.id)
 
-                Sentry.captureException(t, "Select menu action execution failed.")
+                Sentry.captureException(t)
             }
 
             logger.info { "Error submitted to Sentry: $sentryId" }

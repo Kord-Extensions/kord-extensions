@@ -233,7 +233,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
             val channel = context.channel
             val author = context.user.asUserOrNull()
 
-            val sentryId = context.sentry.captureException(t, "Slash command execution failed.") {
+            val sentryId = context.sentry.captureException(t) {
                 if (author != null) {
                     user(author)
                 }

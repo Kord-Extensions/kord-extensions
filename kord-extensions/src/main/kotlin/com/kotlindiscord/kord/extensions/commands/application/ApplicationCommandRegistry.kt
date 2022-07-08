@@ -432,6 +432,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
             command.groups.values.sortedByDescending { it.name }.forEach { group ->
                 val (name, nameLocalizations) = group.localizedName
                 val (description, descriptionLocalizations) = group.localizedDescription
+
                 this.group(name, description) {
                     this.nameLocalizations = nameLocalizations
                     this.descriptionLocalizations = descriptionLocalizations

@@ -455,7 +455,7 @@ public open class ChatCommand<T : Arguments>(
                     else -> this.getTranslatedName(context.getLocale())
                 }
 
-                val sentryId = context.sentry.captureException(t, "MessageCommand execution failed.") {
+                val sentryId = context.sentry.captureException(t) {
                     val author = event.message.author
 
                     if (author != null) {

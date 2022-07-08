@@ -212,7 +212,7 @@ public open class EventHandler<T : Event>(
             if (sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
                 logger.trace { "Submitting error to sentry." }
 
-                val sentryId = context.sentry.captureException(t, "Event processing failed.") {
+                val sentryId = context.sentry.captureException(t) {
                     tag("event", eventName ?: "Unknown")
                     tag("extension", extension.name)
                 }

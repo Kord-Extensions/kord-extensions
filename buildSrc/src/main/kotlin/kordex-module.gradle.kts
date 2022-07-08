@@ -8,15 +8,6 @@ plugins {
     id("org.cadixdev.licenser")
 }
 
-abstract class KordexExtension {
-    abstract val jvmTarget: Property<String>
-    abstract val javaVersion: Property<JavaVersion>
-}
-
-val kordexExtensionName = "kordex"
-
-extensions.create<KordexExtension>(kordexExtensionName)
-
 val sourceJar = task("sourceJar", Jar::class) {
     dependsOn(tasks["classes"])
     archiveClassifier.set("sources")
@@ -37,6 +28,10 @@ tasks {
 
     kotlin {
         explicitApi()
+
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of("11"))
+        }
     }
 
     jar {
@@ -44,17 +39,16 @@ tasks {
     }
 
     afterEvaluate {
-        val extension = project.extensions.getByName<KordexExtension>(kordexExtensionName)
-
         rootProject.file("LICENSE").copyTo(rootProject.file("build/LICENSE-kordex"), true)
 
-        java {
-            sourceCompatibility = extension.javaVersion.getOrElse(JavaVersion.VERSION_11)
+        tasks.withType<JavaCompile>().configureEach {
+            sourceCompatibility = "11"
+            targetCompatibility = "11"
         }
 
         withType<KotlinCompile>().configureEach {
             kotlinOptions {
-                jvmTarget = extension.jvmTarget.getOrElse("11")
+                jvmTarget = "11"
             }
         }
     }

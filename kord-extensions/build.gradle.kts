@@ -18,6 +18,8 @@ plugins {
 }
 
 dependencies {
+    api(libs.h2)
+    api(libs.hikari)
     api(libs.icu4j)  // For translations
     api(libs.koin.core)
     api(libs.koin.logger)
@@ -49,7 +51,7 @@ dependencies {
 val compileKotlin: KotlinCompile by tasks
 
 compileKotlin.kotlinOptions {
-    languageVersion = "1.6"
+    languageVersion = "1.7"
 }
 
 dokkaModule {

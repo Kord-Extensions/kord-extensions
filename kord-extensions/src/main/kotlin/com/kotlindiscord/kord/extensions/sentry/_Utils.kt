@@ -55,7 +55,7 @@ public fun Scope.breadcrumb(
     level: SentryLevel? = null,
     message: String? = null,
     type: String? = null,
-    hint: String? = null,
+    hint: Hint? = null,
 
     data: Map<String, Any> = mapOf()
 ) {
