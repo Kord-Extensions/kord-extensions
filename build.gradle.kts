@@ -23,7 +23,9 @@ group = "com.kotlindiscord.kord.extensions"
 version = projectVersion
 
 val printVersion = task("printVersion") {
-    print(version.toString())
+    doLast {
+        print(version.toString())
+    }
 }
 
 gitHooks {
