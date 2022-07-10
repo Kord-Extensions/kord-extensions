@@ -16,6 +16,7 @@ package com.kotlindiscord.kord.extensions.commands.application
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.createApplicationCommands
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
@@ -85,7 +86,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                         if (e.error?.code == JsonErrorCode.MissingAccess) {
                             append(
                                 "\n        Double-check that the bot was added to this guild with the " +
-                                "`application.commands` scope enabled"
+                                    "`application.commands` scope enabled"
                             )
                         }
                     }
@@ -112,7 +113,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     public open suspend fun sync(
         removeOthers: Boolean = false,
         guildId: Snowflake?,
-        commands: List<ApplicationCommand<*>>
+        commands: List<ApplicationCommand<*>>,
     ) {
         // NOTE: Someday, discord will make real i18n possible, we hope...
         val locale = bot.settings.i18nBuilder.defaultLocale
@@ -165,14 +166,14 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                 if (guild == null) {
                     append(
                         "Global application commands: ${toAdd.size} to add / " +
-                        "${toUpdate.size} to update / " +
-                        "${toRemove.size} to remove"
+                            "${toUpdate.size} to update / " +
+                            "${toRemove.size} to remove"
                     )
                 } else {
                     append(
                         "Application commands for guild ${guild.name}: ${toAdd.size} to add / " +
-                        "${toUpdate.size} to update / " +
-                        "${toRemove.size} to remove"
+                            "${toUpdate.size} to update / " +
+                            "${toRemove.size} to remove"
                     )
                 }
 
@@ -219,7 +220,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
             kord.createGlobalApplicationCommands { builder() }.toList()
         } else {
             // We're registering guild-specific commands here, if the guild is available
-            guild.createApplicationCommands  { builder() }.toList()
+            guild.createApplicationCommands { builder() }.toList()
         }
 
         // Next, we need to associate all the commands we just registered with the commands in our extensions
@@ -377,7 +378,9 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
         option ?: return logger.trace { "Autocomplete event for command $command doesn't have a focused option." }
 
-        val arg = command.arguments!!().args.firstOrNull { it.displayName == option.first }
+        val arg = command.arguments!!().args.firstOrNull {
+            it.getDefaultTranslatedDisplayName(translationsProvider, command) == option.first
+        }
 
         arg ?: return logger.warn {
             "Autocomplete event for command $command has an unknown focused option: ${option.first}."
