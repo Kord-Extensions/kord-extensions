@@ -16,6 +16,7 @@ package com.kotlindiscord.kord.extensions.commands.application
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.registry.RegistryStorage
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
@@ -32,7 +33,7 @@ import kotlinx.coroutines.flow.toList
  * Discord lifecycles may not be implemented in this class and require manual updating.
  */
 public open class StorageAwareApplicationCommandRegistry(
-    builder: () -> RegistryStorage<Snowflake, ApplicationCommand<*>>
+    builder: () -> RegistryStorage<Snowflake, ApplicationCommand<*>>,
 ) : ApplicationCommandRegistry() {
 
     protected open val commandRegistry: RegistryStorage<Snowflake, ApplicationCommand<*>> = builder.invoke()
@@ -118,7 +119,12 @@ public open class StorageAwareApplicationCommandRegistry(
 
         option ?: return logger.trace { "Autocomplete event for command $command doesn't have a focused option." }
 
-        val arg = command.arguments!!().args.firstOrNull { it.displayName == option.first }
+        val arg = command.arguments!!().args.firstOrNull {
+            it.getDefaultTranslatedDisplayName(
+                translationsProvider,
+                command
+            ) == option.first
+        }
 
         arg ?: return logger.warn {
             "Autocomplete event for command $command has an unknown focused option: ${option.first}."
@@ -144,7 +150,7 @@ public open class StorageAwareApplicationCommandRegistry(
 
     protected open suspend fun unregisterApplicationCommand(
         command: ApplicationCommand<*>,
-        delete: Boolean
+        delete: Boolean,
     ): ApplicationCommand<*>? {
         val id = commandRegistry.constructUniqueIdentifier(command)
 
@@ -164,7 +170,7 @@ public open class StorageAwareApplicationCommandRegistry(
     }
 
     protected open fun RegistryStorage.StorageEntry<Snowflake, ApplicationCommand<*>>.hasCommand(
-        command: ApplicationCommand<*>
+        command: ApplicationCommand<*>,
     ): Boolean {
         val key = commandRegistry.constructUniqueIdentifier(value)
         val other = commandRegistry.constructUniqueIdentifier(command)

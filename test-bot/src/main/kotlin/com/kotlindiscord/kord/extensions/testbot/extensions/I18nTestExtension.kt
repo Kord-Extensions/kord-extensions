@@ -8,11 +8,14 @@
 
 package com.kotlindiscord.kord.extensions.testbot.extensions
 
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
+import dev.kord.core.behavior.interaction.suggestString
 
 public class I18nTestExtension : Extension() {
     override val name: String = "test-i18n"
@@ -78,6 +81,29 @@ public class I18nTestExtension : Extension() {
                         respond { content = "Text: ${translate("command.banana")}" }
                     }
                 }
+            }
+        }
+
+        publicSlashCommand(::I18nTestArguments) {
+            name = "command.fruit"
+            description = "command.fruit"
+
+            action {
+                respond {
+                    content = translate("command.fruit.response", arrayOf(arguments.fruit))
+                }
+            }
+        }
+    }
+}
+
+internal class I18nTestArguments : Arguments() {
+    val fruit by string {
+        name = "command.fruit"
+        description = "command.fruit"
+        autoComplete {
+            suggestString {
+                listOf("Banana", "Apple", "Cherry").forEach { choice(it, it) }
             }
         }
     }

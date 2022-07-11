@@ -16,6 +16,7 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
@@ -38,7 +39,7 @@ public open class SlashCommandParser {
      */
     public suspend fun <T : Arguments> parse(
         builder: () -> T,
-        context: SlashCommandContext<*, *>
+        context: SlashCommandContext<*, *>,
     ): T {
         val argumentsObj = builder.invoke()
         argumentsObj.validate()
@@ -66,7 +67,8 @@ public open class SlashCommandParser {
 
             logger.trace { "Current argument: ${currentArg.displayName}" }
 
-            currentValue = values[currentArg.displayName.lowercase()]
+            currentValue =
+                values[currentArg.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)]
 
             logger.trace { "Current value: $currentValue" }
 
