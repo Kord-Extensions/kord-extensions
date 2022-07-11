@@ -6,11 +6,14 @@
 
 package com.kotlindiscord.kord.extensions.storage
 
+import kotlinx.serialization.Serializable
+
 /**
  * Sealed class representing the two types of storage - configuration and data.
  *
  * @property type Human-readable storage type name.
  */
+@Serializable(with = StorageTypeSerializer::class)
 public sealed class StorageType(public val type: String) {
     /** Configuration data. **/
     public object Config : StorageType("config")
