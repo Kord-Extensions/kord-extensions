@@ -276,3 +276,24 @@ public open class StorageUnit<T : Data>(
         return result
     }
 }
+
+/**
+ *  Convenience function allowing you to create a StorageUnit without passing a class manually.
+ *
+ *  @param storageType The type of data to store.
+ *  @param namespace The namespace - usually a plugin or extension ID. Represents a folder for file-backed storage.
+ *  @param identifier The identifier - usually a specific category or name. Represents a filename for file-backed
+ *  storage.
+ */
+@Suppress("FunctionName")
+public inline fun <reified T : Data> StorageUnit(
+    storageType: StorageType,
+    namespace: String,
+    identifier: String
+): StorageUnit<T> =
+    StorageUnit(
+        storageType,
+        namespace,
+        identifier,
+        T::class
+    )
