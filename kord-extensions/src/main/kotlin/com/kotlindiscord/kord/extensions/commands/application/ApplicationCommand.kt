@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.checks.types.Check
 import com.kotlindiscord.kord.extensions.checks.types.CheckContext
 import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.utils.getLocale
@@ -87,9 +88,9 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public override val requiredPerms: MutableSet<Permission> = mutableSetOf()
 
     /**
-     * A [Localized] version of [name].
+     * A [Localized] version of [name]. Lower-cased if this is a slash command.
      */
-    public val localizedName: Localized<String> by lazy { localize(name, true) }
+    public val localizedName: Localized<String> by lazy { localize(name, this is SlashCommand<*, *>) }
 
     /**
      * This will register a requirement for [permissions] with Discord.
@@ -105,7 +106,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     /**
      * Localizes a property by its [key] for this command.
      *
-     * @param lowerCase Provide `true` to lower-case all of the translations. Discord requires this for some fields.
+     * @param lowerCase Provide `true` to lower-case all the translations. Discord requires this for some fields.
      */
     public fun localize(key: String, lowerCase: Boolean = false): Localized<String> {
         var default = translationsProvider.translate(
