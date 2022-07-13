@@ -25,7 +25,7 @@ import java.util.*
  * to `translations/kordex/strings${_locale ?: ""}.properties` in the resources.
  */
 public open class ResourceBundleTranslations(
-    defaultLocaleBuilder: () -> Locale
+    defaultLocaleBuilder: () -> Locale,
 ) : TranslationsProvider(defaultLocaleBuilder) {
     private val logger: KLogger = KotlinLogging.logger(
         "com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations"
@@ -55,7 +55,7 @@ public open class ResourceBundleTranslations(
     protected open fun getResourceBundle(
         bundle: String,
         locale: Locale,
-        control: ResourceBundle.Control
+        control: ResourceBundle.Control,
     ): ResourceBundle = ResourceBundle.getBundle(bundle, locale, Control)
 
     /**
@@ -80,7 +80,7 @@ public open class ResourceBundleTranslations(
 
             val firstBundle = getResourceBundle(bundle, locale, Control)
 
-            bundles[bundleKey] = if (localeTag.count { it in "-_" } == 0) {
+            bundles[bundleKey] = if (localeTag.count { it in "-_" } != 0) {
                 val baseCode = localeTag.split('-', '_').first()
                 val secondLocale = Locale(baseCode, baseCode)
                 val secondBundle = getResourceBundle(bundle, secondLocale, Control)
