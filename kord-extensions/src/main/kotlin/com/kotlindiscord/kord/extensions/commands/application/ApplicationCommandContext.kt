@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.common.entity.Permissions
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
@@ -44,6 +45,13 @@ public abstract class ApplicationCommandContext(
 
     /** User that executed this command. **/
     public open lateinit var user: UserBehavior
+
+    /**
+     * The permissions applicable to your bot in this execution context (guild, roles, channels), or null if
+     * this command wasn't executed on a guild.
+     */
+    public val appPermissions: Permissions? = (genericEvent.interaction as? GuildApplicationCommandInteraction)
+        ?.appPermissions
 
     /** Called before processing, used to populate any extra variables from event data. **/
     public override suspend fun populate() {
