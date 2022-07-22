@@ -20,7 +20,7 @@ import java.util.*
  * @property event Event of type [T]
  * @property locale Locale for the current check context
  */
-public class CheckContext<out T : Event>(public val event: T, public val locale: Locale) : KordExKoinComponent {
+public open class CheckContext<out T : Event>(public val event: T, public val locale: Locale) : KordExKoinComponent {
     /** Translations provider. **/
     public val translations: TranslationsProvider by inject()
 

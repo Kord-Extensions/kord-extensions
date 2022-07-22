@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.components.Component
 import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
@@ -15,5 +16,6 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 public class PublicSelectMenuContext(
     override val component: Component,
     override val event: SelectMenuInteractionCreateEvent,
-    override val interactionResponse: PublicMessageInteractionResponseBehavior
-) : SelectMenuContext(component, event), PublicInteractionContext
+    override val interactionResponse: PublicMessageInteractionResponseBehavior,
+    cache: MutableStringKeyedMap<Any>
+) : SelectMenuContext(component, event, cache), PublicInteractionContext

@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.event.Event
 import org.koin.core.component.inject
 import java.util.*
@@ -24,10 +25,12 @@ import java.util.*
  *
  * @param eventHandler Respective event handler for this context object.
  * @param event Event that triggered this event handler.
+ * @param cache Data cache map shared with the defined checks.
  */
 public open class EventContext<T : Event>(
     public open val eventHandler: EventHandler<T>,
-    public open val event: T
+    public open val event: T,
+    public open val cache: MutableStringKeyedMap<Any>
 ) : KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()

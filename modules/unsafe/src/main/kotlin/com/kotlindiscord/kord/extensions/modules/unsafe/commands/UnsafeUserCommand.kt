@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialUserCommand
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
@@ -33,11 +34,11 @@ public class UnsafeUserCommand(
     /** Initial response type. Change this to decide what happens when this user command action is executed. **/
     public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
 
-    override suspend fun call(event: UserCommandInteractionCreateEvent) {
+    override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
         emitEventAsync(UnsafeUserCommandInvocationEvent(this, event))
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 emitEventAsync(
                     UnsafeUserCommandFailedChecksEvent(
                         this,
@@ -73,7 +74,7 @@ public class UnsafeUserCommand(
             is InitialUserCommandResponse.None -> null
         }
 
-        val context = UnsafeUserCommandContext(event, this, response)
+        val context = UnsafeUserCommandContext(event, this, response, cache)
 
         context.populate()
 

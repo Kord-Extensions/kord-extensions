@@ -191,7 +191,7 @@ public class HelpExtension : HelpProvider, Extension() {
         val pages = Pages(COMMANDS_GROUP)
         val locale = event.getLocale()
 
-        if (command == null || !command.runChecks(event, false)) {
+        if (command == null || !command.runChecks(event, false, mutableMapOf())) {
             pages.addPage(
                 COMMANDS_GROUP,
 
@@ -256,7 +256,7 @@ public class HelpExtension : HelpProvider, Extension() {
 
     override suspend fun gatherCommands(event: MessageCreateEvent): List<ChatCommand<out Arguments>> =
         messageCommandsRegistry.commands
-            .filter { !it.hidden && it.enabled && it.runChecks(event, false) }
+            .filter { !it.hidden && it.enabled && it.runChecks(event, false, mutableMapOf()) }
             .sortedBy { it.name }
 
     override suspend fun formatCommandHelp(
@@ -318,7 +318,7 @@ public class HelpExtension : HelpProvider, Extension() {
             }
 
             if (command is ChatGroupCommand) {
-                val subCommands = command.commands.filter { it.runChecks(event, false) }
+                val subCommands = command.commands.filter { it.runChecks(event, false, mutableMapOf()) }
 
                 if (subCommands.isNotEmpty()) {
                     append("\n")
@@ -412,7 +412,7 @@ public class HelpExtension : HelpProvider, Extension() {
         val firstArg = args.first()
         var command = messageCommandsRegistry.getCommand(firstArg, event)
 
-        if (command?.runChecks(event, false) == false) {
+        if (command?.runChecks(event, false, mutableMapOf()) == false) {
             return null
         }
 
@@ -420,7 +420,7 @@ public class HelpExtension : HelpProvider, Extension() {
             if (command is ChatGroupCommand<out Arguments>) {
                 val gc = command as ChatGroupCommand<out Arguments>
 
-                command = if (gc.runChecks(event, false)) {
+                command = if (gc.runChecks(event, false, mutableMapOf())) {
                     gc.getCommand(it, event)
                 } else {
                     null

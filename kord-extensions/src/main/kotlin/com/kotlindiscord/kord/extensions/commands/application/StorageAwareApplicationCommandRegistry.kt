@@ -84,7 +84,7 @@ public open class StorageAwareApplicationCommandRegistry(
 
         command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     override suspend fun handle(event: MessageCommandInteractionCreateEvent) {
@@ -93,7 +93,7 @@ public open class StorageAwareApplicationCommandRegistry(
 
         command ?: return logger.warn { "Received interaction for unknown message command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     override suspend fun handle(event: UserCommandInteractionCreateEvent) {
@@ -102,7 +102,7 @@ public open class StorageAwareApplicationCommandRegistry(
 
         command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {

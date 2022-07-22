@@ -10,6 +10,7 @@ package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.Permissions
@@ -29,8 +30,9 @@ import org.koin.core.component.inject
  */
 public abstract class ApplicationCommandContext(
     public val genericEvent: ApplicationCommandInteractionCreateEvent,
-    public val genericCommand: ApplicationCommand<*>
-) : CommandContext(genericCommand, genericEvent, genericCommand.name) {
+    public val genericCommand: ApplicationCommand<*>,
+    cache: MutableStringKeyedMap<Any>
+) : CommandContext(genericCommand, genericEvent, genericCommand.name, cache) {
     /** Current bot setting object. **/
     public val botSettings: ExtensibleBotBuilder by inject()
 

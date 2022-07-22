@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.commands.chat
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.event.message.MessageCreateEvent
 import java.util.*
 
@@ -24,18 +25,16 @@ import java.util.*
 public open class ChatSubCommand<T : Arguments>(
     extension: Extension,
     arguments: (() -> T)? = null,
-    public open val parent: ChatGroupCommand<out Arguments>
+    public open val parent: ChatGroupCommand<out Arguments>,
 ) : ChatCommand<T>(extension, arguments) {
 
-    override suspend fun runChecks(event: MessageCreateEvent, sendMessage: Boolean): Boolean {
-        var result = parent.runChecks(event, sendMessage)
-
-        if (result) {
-            result = super.runChecks(event, sendMessage)
-        }
-
-        return result
-    }
+    override suspend fun runChecks(
+        event: MessageCreateEvent,
+        sendMessage: Boolean,
+        cache: MutableStringKeyedMap<Any>,
+    ): Boolean =
+        parent.runChecks(event, sendMessage, cache) &&
+            super.runChecks(event, sendMessage, cache)
 
     /** Get the full command name, translated, with parent commands taken into account. **/
     public open suspend fun getFullTranslatedName(locale: Locale): String =

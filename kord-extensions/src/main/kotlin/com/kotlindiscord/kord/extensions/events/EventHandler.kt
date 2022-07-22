@@ -9,14 +9,15 @@ package com.kotlindiscord.kord.extensions.events
 import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.*
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
@@ -62,7 +63,7 @@ public open class EventHandler<T : Event>(
     /**
      * @suppress
      */
-    public val checkList: MutableList<Check<T>> = mutableListOf()
+    public val checkList: MutableList<CheckWithCache<T>> = mutableListOf()
 
     /**
      * @suppress This is the job returned by `Kord#on`, which we cancel to stop listening.
@@ -109,14 +110,14 @@ public open class EventHandler<T : Event>(
      *
      * @param checks Checks to apply to this event handler.
      */
-    public fun check(vararg checks: Check<T>): Unit = checks.forEach { checkList.add(it) }
+    public fun check(vararg checks: CheckWithCache<T>): Unit = checks.forEach { checkList.add(it) }
 
     /**
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this event handler.
      */
-    public fun check(check: Check<T>): Boolean = checkList.add(check)
+    public fun check(check: CheckWithCache<T>): Boolean = checkList.add(check)
 
     // endregion
 
@@ -131,8 +132,10 @@ public open class EventHandler<T : Event>(
      * @param event The given event object.
      */
     public suspend fun call(event: T) {
+        val cache: MutableStringKeyedMap<Any> = mutableMapOf()
+
         for (check in checkList) {
-            val context = CheckContext(event, defaultLocale)
+            val context = CheckContextWithCache(event, defaultLocale, cache)
 
             check(context)
 
@@ -141,7 +144,7 @@ public open class EventHandler<T : Event>(
             }
         }
 
-        val context = EventContext(this, event)
+        val context = EventContext(this, event, cache)
         val eventName = event::class.simpleName
 
         if (sentry.enabled) {
@@ -209,7 +212,7 @@ public open class EventHandler<T : Event>(
         try {
             this.body(context)
         } catch (t: Throwable) {
-            if (sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+            if (sentry.enabled) {
                 logger.trace { "Submitting error to sentry." }
 
                 val sentryId = context.sentry.captureException(t) {

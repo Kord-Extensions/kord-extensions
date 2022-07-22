@@ -9,8 +9,8 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
+import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.PublicSlashCommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
@@ -99,15 +99,15 @@ class MappingsExtension : Extension() {
         val yarnEnabled = enabledNamespaces.contains("yarn")
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
 
-        val categoryCheck: Check<ChatInputCommandInteractionCreateEvent> = {
+        val categoryCheck: SlashCommandCheck = {
             allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
         }
 
-        val channelCheck: Check<ChatInputCommandInteractionCreateEvent> = {
+        val channelCheck: SlashCommandCheck = {
             allowedGuild(builder.config.getAllowedChannels(), builder.config.getBannedChannels())
         }
 
-        val guildCheck: Check<ChatInputCommandInteractionCreateEvent> = {
+        val guildCheck: SlashCommandCheck = {
             allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
         }
 
@@ -1042,7 +1042,7 @@ class MappingsExtension : Extension() {
 
     private suspend fun getTimeout() = builder.config.getTimeout()
 
-    private suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.customChecks(
+    private suspend fun CheckContextWithCache<ChatInputCommandInteractionCreateEvent>.customChecks(
         command: String,
         namespace: Namespace
     ) {

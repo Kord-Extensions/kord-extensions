@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialMessageComm
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
@@ -33,11 +34,11 @@ public class UnsafeMessageCommand(
     /** Initial response type. Change this to decide what happens when this message command action is executed. **/
     public var initialResponse: InitialMessageCommandResponse = InitialMessageCommandResponse.EphemeralAck
 
-    override suspend fun call(event: MessageCommandInteractionCreateEvent) {
+    override suspend fun call(event: MessageCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
         emitEventAsync(UnsafeMessageCommandInvocationEvent(this, event))
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 emitEventAsync(
                     UnsafeMessageCommandFailedChecksEvent(
                         this,
@@ -72,7 +73,7 @@ public class UnsafeMessageCommand(
             is InitialMessageCommandResponse.None -> null
         }
 
-        val context = UnsafeMessageCommandContext(event, this, response)
+        val context = UnsafeMessageCommandContext(event, this, response, cache)
 
         context.populate()
 

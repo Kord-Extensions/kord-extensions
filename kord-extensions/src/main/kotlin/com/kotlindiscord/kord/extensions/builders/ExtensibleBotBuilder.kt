@@ -11,10 +11,7 @@ package com.kotlindiscord.kord.extensions.builders
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
-import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
-import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.*
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
@@ -751,7 +748,7 @@ public open class ExtensibleBotBuilder {
             public var pingInReply: Boolean = true
 
             /** List of command checks. These checks will be checked against all commands in the help extension. **/
-            public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
+            public val checkList: MutableList<ChatCommandCheck> = mutableListOf()
 
             /** For custom help embed colours. Only one may be defined. **/
             public var colourGetter: suspend MessageCreateEvent.() -> Color = { DISCORD_BLURPLE }
@@ -776,7 +773,7 @@ public open class ExtensibleBotBuilder {
              *
              * @param checks Checks to apply to all help commands.
              */
-            public fun check(vararg checks: Check<MessageCreateEvent>) {
+            public fun check(vararg checks: ChatCommandCheck) {
                 checks.forEach { checkList.add(it) }
             }
 
@@ -785,7 +782,7 @@ public open class ExtensibleBotBuilder {
              *
              * @param check Check to apply to all help commands.
              */
-            public fun check(check: Check<MessageCreateEvent>) {
+            public fun check(check: ChatCommandCheck) {
                 checkList.add(check)
             }
         }
@@ -1170,7 +1167,7 @@ public open class ExtensibleBotBuilder {
          *
          * These checks will be checked against all commands.
          */
-        public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
+        public val checkList: MutableList<ChatCommandCheck> = mutableListOf()
 
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
@@ -1202,7 +1199,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all commands.
          */
-        public fun check(vararg checks: Check<MessageCreateEvent>) {
+        public fun check(vararg checks: ChatCommandCheck) {
             checks.forEach { checkList.add(it) }
         }
 
@@ -1211,7 +1208,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param check Checks to apply to all commands.
          */
-        public fun check(check: Check<MessageCreateEvent>) {
+        public fun check(check: ChatCommandCheck) {
             checkList.add(check)
         }
     }

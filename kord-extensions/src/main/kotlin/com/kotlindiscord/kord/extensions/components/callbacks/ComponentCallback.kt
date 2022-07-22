@@ -7,13 +7,14 @@
 package com.kotlindiscord.kord.extensions.components.callbacks
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.components.ComponentContext
 import com.kotlindiscord.kord.extensions.components.buttons.EphemeralInteractionButtonContext
 import com.kotlindiscord.kord.extensions.components.buttons.PublicInteractionButtonContext
 import com.kotlindiscord.kord.extensions.components.menus.EphemeralSelectMenuContext
 import com.kotlindiscord.kord.extensions.components.menus.PublicSelectMenuContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.InteractionCreateEvent
@@ -22,7 +23,7 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 /** Sealed class representing a component callback. **/
 public sealed class ComponentCallback<C : ComponentContext<*>, E : InteractionCreateEvent> {
     /** @suppress List of checks stored within this callback. **/
-    protected open val checkList: MutableList<Check<E>> = mutableListOf()
+    protected open val checkList: MutableList<CheckWithCache<E>> = mutableListOf()
 
     /** @suppress Action body, to be called when the component is interacted with. **/
     protected lateinit var body: suspend C.() -> Unit
@@ -43,7 +44,7 @@ public sealed class ComponentCallback<C : ComponentContext<*>, E : InteractionCr
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun check(vararg checks: Check<E>) {
+    public open fun check(vararg checks: CheckWithCache<E>) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -52,17 +53,17 @@ public sealed class ComponentCallback<C : ComponentContext<*>, E : InteractionCr
      *
      * @param check Check to apply to this command.
      */
-    public open fun check(check: Check<E>) {
+    public open fun check(check: CheckWithCache<E>) {
         checkList.add(check)
     }
 
     /** Runs the checks that are defined for this callback. **/
     @Throws(DiscordRelayedException::class)
-    public open suspend fun runChecks(event: E): Boolean {
+    public open suspend fun runChecks(event: E, cache: MutableStringKeyedMap<Any>): Boolean {
         val locale = event.getLocale()
 
         checkList.forEach { check ->
-            val context = CheckContext(event, locale)
+            val context = CheckContextWithCache(event, locale, cache)
 
             check(context)
 

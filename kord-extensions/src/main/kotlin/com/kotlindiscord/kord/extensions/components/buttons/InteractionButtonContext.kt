@@ -8,11 +8,13 @@ package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.components.Component
 import com.kotlindiscord.kord.extensions.components.ComponentContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 
 /** Abstract class representing the execution context for a button component's action. **/
 @Suppress("UnnecessaryAbstractClass")  // Your face is an unnecessary abstract class
 public abstract class InteractionButtonContext(
     component: Component,
-    event: ButtonInteractionCreateEvent
-) : ComponentContext<ButtonInteractionCreateEvent>(component, event)
+    event: ButtonInteractionCreateEvent,
+    cache: MutableStringKeyedMap<Any>
+) : ComponentContext<ButtonInteractionCreateEvent>(component, event, cache)

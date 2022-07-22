@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.components.callbacks.PublicButtonCallback
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ButtonStyle
@@ -52,7 +53,7 @@ public open class PublicInteractionButton(
             val callback: PublicButtonCallback = callbackRegistry.getOfTypeOrNull(id)
                 ?: error("Callback \"$id\" is either missing or is the wrong type.")
 
-            passed = callback.runChecks(event)
+            passed = callback.runChecks(event, cache)
         }
     }
 
@@ -66,10 +67,12 @@ public open class PublicInteractionButton(
     }
 
     override suspend fun call(event: ButtonInteractionCreateEvent): Unit = withLock {
+        val cache: MutableStringKeyedMap<Any> = mutableMapOf()
+
         super.call(event)
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 return@withLock
             }
         } catch (e: DiscordRelayedException) {
@@ -90,7 +93,7 @@ public open class PublicInteractionButton(
             }
         }
 
-        val context = PublicInteractionButtonContext(this, event, response)
+        val context = PublicInteractionButtonContext(this, event, response, cache)
 
         context.populate()
 

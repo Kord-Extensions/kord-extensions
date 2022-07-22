@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.components.callbacks.PublicMenuCallback
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -45,15 +46,17 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
             val callback: PublicMenuCallback = callbackRegistry.getOfTypeOrNull(id)
                 ?: error("Callback \"$id\" is either missing or is the wrong type.")
 
-            passed = callback.runChecks(event)
+            passed = callback.runChecks(event, cache)
         }
     }
 
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
+        val cache: MutableStringKeyedMap<Any> = mutableMapOf()
+
         super.call(event)
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 return@withLock
             }
         } catch (e: DiscordRelayedException) {
@@ -74,7 +77,7 @@ public open class PublicSelectMenu(timeoutTask: Task?) : SelectMenu<PublicSelect
             }
         }
 
-        val context = PublicSelectMenuContext(this, event, response)
+        val context = PublicSelectMenuContext(this, event, response, cache)
 
         context.populate()
 

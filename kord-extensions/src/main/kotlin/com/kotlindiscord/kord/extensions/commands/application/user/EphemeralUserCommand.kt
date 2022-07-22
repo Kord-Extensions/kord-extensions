@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.commands.events.EphemeralUserCommandSuc
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -37,11 +38,11 @@ public class EphemeralUserCommand(
         initialResponseBuilder = body
     }
 
-    override suspend fun call(event: UserCommandInteractionCreateEvent) {
+    override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
         emitEventAsync(EphemeralUserCommandInvocationEvent(this, event))
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 emitEventAsync(
                     EphemeralUserCommandFailedChecksEvent(
                         this,
@@ -68,7 +69,7 @@ public class EphemeralUserCommand(
             event.interaction.deferEphemeralResponseUnsafe()
         }
 
-        val context = EphemeralUserCommandContext(event, this, response)
+        val context = EphemeralUserCommandContext(event, this, response, cache)
 
         context.populate()
 

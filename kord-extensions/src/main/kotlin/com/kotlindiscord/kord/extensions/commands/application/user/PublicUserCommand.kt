@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandSuccee
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
@@ -38,11 +39,11 @@ public class PublicUserCommand(
         initialResponseBuilder = body
     }
 
-    override suspend fun call(event: UserCommandInteractionCreateEvent) {
+    override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
         emitEventAsync(PublicUserCommandInvocationEvent(this, event))
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 emitEventAsync(
                     PublicUserCommandFailedChecksEvent(
                         this,
@@ -69,7 +70,7 @@ public class PublicUserCommand(
             event.interaction.deferPublicResponseUnsafe()
         }
 
-        val context = PublicUserCommandContext(event, this, response)
+        val context = PublicUserCommandContext(event, this, response, cache)
 
         context.populate()
 

@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
@@ -14,5 +15,6 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 public class PublicMessageCommandContext(
     override val event: MessageCommandInteractionCreateEvent,
     override val command: MessageCommand<PublicMessageCommandContext>,
-    override val interactionResponse: PublicMessageInteractionResponseBehavior
-) : MessageCommandContext<PublicMessageCommandContext>(event, command), PublicInteractionContext
+    override val interactionResponse: PublicMessageInteractionResponseBehavior,
+    cache: MutableStringKeyedMap<Any>
+) : MessageCommandContext<PublicMessageCommandContext>(event, command, cache), PublicInteractionContext

@@ -7,10 +7,11 @@
 package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
 import com.kotlindiscord.kord.extensions.types.Lockable
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
@@ -45,7 +46,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     public open var deferredAck: Boolean = true
 
     /** @suppress **/
-    public open val checkList: MutableList<Check<E>> = mutableListOf()
+    public open val checkList: MutableList<CheckWithCache<E>> = mutableListOf()
 
     /** Bot permissions required to be able to run execute this component's action. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
@@ -76,7 +77,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun check(vararg checks: Check<E>) {
+    public open fun check(vararg checks: CheckWithCache<E>) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -85,7 +86,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
      *
      * @param check Check to apply to this command.
      */
-    public open fun check(check: Check<E>) {
+    public open fun check(check: CheckWithCache<E>) {
         checkList.add(check)
     }
 
@@ -108,11 +109,11 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
 
     /** Runs standard checks that can be handled in a generic way, without worrying about subclass-specific checks. **/
     @Throws(DiscordRelayedException::class)
-    public open suspend fun runStandardChecks(event: E): Boolean {
+    public open suspend fun runStandardChecks(event: E, cache: MutableStringKeyedMap<Any>): Boolean {
         val locale = event.getLocale()
 
         checkList.forEach { check ->
-            val context = CheckContext(event, locale)
+            val context = CheckContextWithCache(event, locale, cache)
 
             check(context)
 
@@ -128,8 +129,8 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
 
     /** Override this in order to implement any subclass-specific checks. **/
     @Throws(DiscordRelayedException::class)
-    public open suspend fun runChecks(event: E): Boolean =
-        runStandardChecks(event)
+    public open suspend fun runChecks(event: E, cache: MutableStringKeyedMap<Any>): Boolean =
+        runStandardChecks(event, cache)
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(DiscordRelayedException::class)

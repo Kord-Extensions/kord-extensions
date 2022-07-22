@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
@@ -37,11 +38,11 @@ public class EphemeralMessageCommand(
         initialResponseBuilder = body
     }
 
-    override suspend fun call(event: MessageCommandInteractionCreateEvent) {
+    override suspend fun call(event: MessageCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
         emitEventAsync(EphemeralMessageCommandInvocationEvent(this, event))
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 emitEventAsync(
                     EphemeralMessageCommandFailedChecksEvent(
                         this,
@@ -68,7 +69,7 @@ public class EphemeralMessageCommand(
             event.interaction.deferEphemeralResponseUnsafe()
         }
 
-        val context = EphemeralMessageCommandContext(event, this, response)
+        val context = EphemeralMessageCommandContext(event, this, response, cache)
 
         context.populate()
 

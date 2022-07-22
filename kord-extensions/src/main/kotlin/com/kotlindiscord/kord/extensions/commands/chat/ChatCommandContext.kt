@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
@@ -38,8 +39,9 @@ public open class ChatCommandContext<T : Arguments>(
     eventObj: MessageCreateEvent,
     commandName: String,
     public open val parser: StringParser,
-    public val argString: String
-) : CommandContext(chatCommand, eventObj, commandName) {
+    public val argString: String,
+    cache: MutableStringKeyedMap<Any>
+) : CommandContext(chatCommand, eventObj, commandName, cache) {
     /** Event that triggered this command execution. **/
     public val event: MessageCreateEvent get() = eventObj as MessageCreateEvent
 

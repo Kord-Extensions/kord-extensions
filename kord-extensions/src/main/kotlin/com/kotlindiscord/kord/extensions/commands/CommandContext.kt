@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
@@ -31,12 +32,14 @@ import java.util.*
  * @param command Respective command for this context object.
  * @param eventObj Event that triggered this command.
  * @param commandName Command name given by the user to invoke the command - lower-cased.
+ * @param cache Data cache map shared with the defined checks.
  */
 @ExtensionDSL
 public abstract class CommandContext(
     public open val command: Command,
     public open val eventObj: Event,
     public open val commandName: String,
+    public open val cache: MutableStringKeyedMap<Any>
 ) : KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()

@@ -21,6 +21,7 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialSlashComman
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
@@ -40,15 +41,15 @@ public class UnsafeSlashCommand<A : Arguments>(
     /** Initial response type. Change this to decide what happens when this slash command is executed. **/
     public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
 
-    override suspend fun call(event: ChatInputCommandInteractionCreateEvent) {
-        findCommand(event).run(event)
+    override suspend fun call(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
+        findCommand(event).run(event, cache)
     }
 
-    override suspend fun run(event: ChatInputCommandInteractionCreateEvent) {
+    override suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
         emitEventAsync(UnsafeSlashCommandInvocationEvent(this, event))
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 emitEventAsync(
                     UnsafeSlashCommandFailedChecksEvent(
                         this,
@@ -84,7 +85,7 @@ public class UnsafeSlashCommand<A : Arguments>(
             is InitialSlashCommandResponse.None -> null
         }
 
-        val context = UnsafeSlashCommandContext(event, this, response)
+        val context = UnsafeSlashCommandContext(event, this, response, cache)
 
         context.populate()
 

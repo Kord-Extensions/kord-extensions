@@ -7,13 +7,14 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.InvalidCommandException
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.core.entity.channel.DmChannel
@@ -47,7 +48,10 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
     }
 
     /** Override this to implement your command's calling logic. Check subtypes for examples! **/
-    public abstract override suspend fun call(event: MessageCommandInteractionCreateEvent)
+    public abstract override suspend fun call(
+        event: MessageCommandInteractionCreateEvent,
+        cache: MutableStringKeyedMap<Any>
+    )
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
     public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
@@ -84,13 +88,16 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
         }
     }
 
-    override suspend fun runChecks(event: MessageCommandInteractionCreateEvent): Boolean {
+    override suspend fun runChecks(
+        event: MessageCommandInteractionCreateEvent,
+        cache: MutableStringKeyedMap<Any>
+    ): Boolean {
         val locale = event.getLocale()
-        val result = super.runChecks(event)
+        val result = super.runChecks(event, cache)
 
         if (result) {
             settings.applicationCommandsBuilder.messageCommandChecks.forEach { check ->
-                val context = CheckContext(event, locale)
+                val context = CheckContextWithCache(event, locale, cache)
 
                 check(context)
 
@@ -102,7 +109,7 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
             }
 
             extension.messageCommandChecks.forEach { check ->
-                val context = CheckContext(event, locale)
+                val context = CheckContextWithCache(event, locale, cache)
 
                 check(context)
 

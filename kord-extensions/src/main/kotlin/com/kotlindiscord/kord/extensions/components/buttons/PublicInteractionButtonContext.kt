@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 
@@ -14,5 +15,6 @@ import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 public class PublicInteractionButtonContext(
     component: PublicInteractionButton,
     event: ButtonInteractionCreateEvent,
-    override val interactionResponse: PublicMessageInteractionResponseBehavior
-) : InteractionButtonContext(component, event), PublicInteractionContext
+    override val interactionResponse: PublicMessageInteractionResponseBehavior,
+    cache: MutableStringKeyedMap<Any>
+) : InteractionButtonContext(component, event, cache), PublicInteractionContext

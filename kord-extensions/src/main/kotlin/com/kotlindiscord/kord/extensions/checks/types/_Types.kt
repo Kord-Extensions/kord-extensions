@@ -16,14 +16,17 @@ import dev.kord.core.event.message.MessageCreateEvent
 /** Types alias representing a check function for a specific event type. **/
 public typealias Check<T> = suspend CheckContext<T>.() -> Unit
 
+/** Types alias representing a check function for a specific event type. **/
+public typealias CheckWithCache<T> = suspend CheckContextWithCache<T>.() -> Unit
+
 /** Check type for chat commands. **/
-public typealias ChatCommandCheck = Check<MessageCreateEvent>
+public typealias ChatCommandCheck = CheckWithCache<MessageCreateEvent>
 
 /** Check type for message commands. **/
-public typealias MessageCommandCheck = Check<MessageCommandInteractionCreateEvent>
+public typealias MessageCommandCheck = CheckWithCache<MessageCommandInteractionCreateEvent>
 
 /** Check type for slash commands. **/
-public typealias SlashCommandCheck = Check<ChatInputCommandInteractionCreateEvent>
+public typealias SlashCommandCheck = CheckWithCache<ChatInputCommandInteractionCreateEvent>
 
 /** Check type for user commands. **/
-public typealias UserCommandCheck = Check<UserCommandInteractionCreateEvent>
+public typealias UserCommandCheck = CheckWithCache<UserCommandInteractionCreateEvent>

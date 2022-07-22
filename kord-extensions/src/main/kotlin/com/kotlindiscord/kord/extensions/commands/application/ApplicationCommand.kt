@@ -9,12 +9,13 @@ package com.kotlindiscord.kord.extensions.commands.application
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.hasPermission
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Permission
@@ -43,7 +44,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public abstract val type: ApplicationCommandType
 
     /** @suppress **/
-    public open val checkList: MutableList<Check<E>> = mutableListOf()
+    public open val checkList: MutableList<CheckWithCache<E>> = mutableListOf()
 
     /** @suppress **/
     public open var guildId: Snowflake? = settings.applicationCommandsBuilder.defaultGuild
@@ -168,7 +169,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun check(vararg checks: Check<E>) {
+    public open fun check(vararg checks: CheckWithCache<E>) {
         checkList.addAll(checks)
     }
 
@@ -177,26 +178,24 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      *
      * @param check Check to apply to this command.
      */
-    public open fun check(check: Check<E>) {
+    public open fun check(check: CheckWithCache<E>) {
         checkList.add(check)
     }
 
     /** Called in order to execute the command. **/
     public open suspend fun doCall(event: E): Unit = withLock {
-        if (!runChecks(event)) {
-            return@withLock
-        }
+        val cache: MutableStringKeyedMap<Any> = mutableMapOf()
 
-        call(event)
+        call(event, cache)
     }
 
     /** Runs standard checks that can be handled in a generic way, without worrying about subclass-specific checks. **/
     @Throws(DiscordRelayedException::class)
-    public open suspend fun runStandardChecks(event: E): Boolean {
+    public open suspend fun runStandardChecks(event: E, cache: MutableStringKeyedMap<Any>): Boolean {
         val locale = event.getLocale()
 
         checkList.forEach { check ->
-            val context = CheckContext(event, locale)
+            val context = CheckContextWithCache(event, locale, cache)
 
             check(context)
 
@@ -212,11 +211,11 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
     /** Override this in order to implement any subclass-specific checks. **/
     @Throws(DiscordRelayedException::class)
-    public open suspend fun runChecks(event: E): Boolean =
-        runStandardChecks(event)
+    public open suspend fun runChecks(event: E, cache: MutableStringKeyedMap<Any>): Boolean =
+        runStandardChecks(event, cache)
 
     /** Override this to implement the calling logic for your subclass. **/
-    public abstract suspend fun call(event: E)
+    public abstract suspend fun call(event: E, cache: MutableStringKeyedMap<Any>)
 }
 
 /**

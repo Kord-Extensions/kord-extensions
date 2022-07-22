@@ -12,8 +12,7 @@ import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.*
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.events.*
@@ -24,6 +23,7 @@ import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.entity.Permission
@@ -49,7 +49,7 @@ private val logger = KotlinLogging.logger {}
 @ExtensionDSL
 public open class ChatCommand<T : Arguments>(
     extension: Extension,
-    public open val arguments: (() -> T)? = null
+    public open val arguments: (() -> T)? = null,
 ) : Command(extension) {
 
     /** Whether to allow the parser to parse keyword arguments. Defaults to `true`. **/
@@ -112,7 +112,7 @@ public open class ChatCommand<T : Arguments>(
     /**
      * @suppress
      */
-    public open val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
+    public open val checkList: MutableList<ChatCommandCheck> = mutableListOf()
 
     /** Translation cache, so we don't have to look up translations every time. **/
     public open val aliasTranslationCache: MutableMap<Locale, Set<String>> = mutableMapOf()
@@ -227,7 +227,7 @@ public open class ChatCommand<T : Arguments>(
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun check(vararg checks: Check<MessageCreateEvent>) {
+    public open fun check(vararg checks: ChatCommandCheck) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -236,19 +236,23 @@ public open class ChatCommand<T : Arguments>(
      *
      * @param check Check to apply to this command.
      */
-    public open fun check(check: Check<MessageCreateEvent>) {
+    public open fun check(check: ChatCommandCheck) {
         checkList.add(check)
     }
 
     // endregion
 
     /** Run checks with the provided [MessageCreateEvent]. Return false if any failed, true otherwise. **/
-    public open suspend fun runChecks(event: MessageCreateEvent, sendMessage: Boolean = true): Boolean {
+    public open suspend fun runChecks(
+        event: MessageCreateEvent,
+        sendMessage: Boolean = true,
+        cache: MutableStringKeyedMap<Any>,
+    ): Boolean {
         val locale = event.getLocale()
 
         // global command checks
         for (check in extension.bot.settings.chatCommandsBuilder.checkList) {
-            val context = CheckContext(event, locale)
+            val context = CheckContextWithCache(event, locale, cache)
 
             check(context)
 
@@ -274,7 +278,7 @@ public open class ChatCommand<T : Arguments>(
 
         // local extension checks
         for (check in extension.chatCommandChecks) {
-            val context = CheckContext(event, locale)
+            val context = CheckContextWithCache(event, locale, cache)
 
             check(context)
 
@@ -299,7 +303,7 @@ public open class ChatCommand<T : Arguments>(
         }
 
         for (check in checkList) {
-            val context = CheckContext(event, locale)
+            val context = CheckContextWithCache(event, locale, cache)
 
             check(context)
 
@@ -347,12 +351,13 @@ public open class ChatCommand<T : Arguments>(
         commandName: String,
         parser: StringParser,
         argString: String,
-        skipChecks: Boolean = false
+        skipChecks: Boolean = false,
+        cache: MutableStringKeyedMap<Any> = mutableMapOf()
     ): Unit = withLock {
         emitEventAsync(ChatCommandInvocationEvent(this, event))
 
         try {
-            if (!skipChecks && !runChecks(event)) {
+            if (!skipChecks && !runChecks(event, cache = cache)) {
                 emitEventAsync(
                     ChatCommandFailedChecksEvent(
                         this,
@@ -373,7 +378,7 @@ public open class ChatCommand<T : Arguments>(
             return@withLock
         }
 
-        val context = ChatCommandContext(this, event, commandName, parser, argString)
+        val context = ChatCommandContext(this, event, commandName, parser, argString, cache)
 
         context.populate()
 

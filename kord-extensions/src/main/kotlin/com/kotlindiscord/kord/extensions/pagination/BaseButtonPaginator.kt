@@ -6,7 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.pagination
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.components.ComponentContainer
 import com.kotlindiscord.kord.extensions.components.buttons.PublicInteractionButton
 import com.kotlindiscord.kord.extensions.components.publicButton
@@ -72,7 +72,7 @@ public abstract class BaseButtonPaginator(
     public val canUseSwitchingButtons: Boolean by lazy { allGroups.size in 3..5 && "" !in allGroups }
 
     /** A button-oriented check function that matches based on the [owner] property. **/
-    public val defaultCheck: Check<ComponentInteractionCreateEvent> = {
+    public val defaultCheck: CheckWithCache<ComponentInteractionCreateEvent> = {
         if (!active) {
             fail()
         } else if (owner == null) {

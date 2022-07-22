@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommandContext
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.UnsafeInteractionContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
@@ -18,5 +19,6 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 public class UnsafeUserCommandContext(
     override val event: UserCommandInteractionCreateEvent,
     override val command: UserCommand<UnsafeUserCommandContext>,
-    override var interactionResponse: MessageInteractionResponseBehavior?
-) : UserCommandContext<UnsafeUserCommandContext>(event, command), UnsafeInteractionContext
+    override var interactionResponse: MessageInteractionResponseBehavior?,
+    cache: MutableStringKeyedMap<Any>
+) : UserCommandContext<UnsafeUserCommandContext>(event, command, cache), UnsafeInteractionContext

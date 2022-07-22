@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.GuildBehavior
@@ -36,10 +37,12 @@ import java.util.*
  * @param E Event type the component makes use of
  * @param component Component object that's being interacted with
  * @param event Event that triggered this execution context
+ * @param cache Data cache map shared with the defined checks.
  */
 public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     public open val component: Component,
-    public open val event: E
+    public open val event: E,
+    public open val cache: MutableStringKeyedMap<Any>
 ) : KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()

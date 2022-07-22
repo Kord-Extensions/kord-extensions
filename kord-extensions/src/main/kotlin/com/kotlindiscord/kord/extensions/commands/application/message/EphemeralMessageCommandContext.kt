@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.types.EphemeralInteractionContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
@@ -14,5 +15,6 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 public class EphemeralMessageCommandContext(
     override val event: MessageCommandInteractionCreateEvent,
     override val command: MessageCommand<EphemeralMessageCommandContext>,
-    override val interactionResponse: EphemeralMessageInteractionResponseBehavior
-) : MessageCommandContext<EphemeralMessageCommandContext>(event, command), EphemeralInteractionContext
+    override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
+    cache: MutableStringKeyedMap<Any>
+) : MessageCommandContext<EphemeralMessageCommandContext>(event, command, cache), EphemeralInteractionContext

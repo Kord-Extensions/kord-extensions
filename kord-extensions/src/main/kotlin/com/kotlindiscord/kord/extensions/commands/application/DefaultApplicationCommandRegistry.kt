@@ -341,7 +341,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
         command ?: return logger.warn { "Received interaction for unknown message command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     /** Event handler for slash commands. **/
@@ -351,7 +351,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
         command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     /** Event handler for user commands. **/
@@ -361,7 +361,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
         command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {

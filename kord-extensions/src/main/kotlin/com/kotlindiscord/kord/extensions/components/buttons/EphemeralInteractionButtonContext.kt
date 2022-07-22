@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.types.EphemeralInteractionContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 
@@ -14,5 +15,6 @@ import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 public class EphemeralInteractionButtonContext(
     override val component: EphemeralInteractionButton,
     override val event: ButtonInteractionCreateEvent,
-    override val interactionResponse: EphemeralMessageInteractionResponseBehavior
-) : InteractionButtonContext(component, event), EphemeralInteractionContext
+    override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
+    cache: MutableStringKeyedMap<Any>
+) : InteractionButtonContext(component, event, cache), EphemeralInteractionContext

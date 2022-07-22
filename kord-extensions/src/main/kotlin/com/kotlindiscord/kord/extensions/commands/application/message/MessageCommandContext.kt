@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.entity.Message
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
@@ -19,7 +20,8 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 public abstract class MessageCommandContext<C : MessageCommandContext<C>>(
     public open val event: MessageCommandInteractionCreateEvent,
     public override val command: MessageCommand<C>,
-) : ApplicationCommandContext(event, command) {
+    cache: MutableStringKeyedMap<Any>
+) : ApplicationCommandContext(event, command, cache) {
     /** Messages that this message command is being executed against. **/
     public val targetMessages: Collection<Message> by lazy { event.interaction.messages.values }
 }

@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
@@ -51,11 +52,15 @@ public open class ChatGroupCommand<T : Arguments>(
         sendHelp()
     }
 
-    override suspend fun runChecks(event: MessageCreateEvent, sendMessage: Boolean): Boolean {
-        var result = parent?.runChecks(event, sendMessage) ?: true
+    override suspend fun runChecks(
+        event: MessageCreateEvent,
+        sendMessage: Boolean,
+        cache: MutableStringKeyedMap<Any>
+    ): Boolean {
+        var result = parent?.runChecks(event, sendMessage, cache) ?: true
 
         if (result) {
-            result = super.runChecks(event, sendMessage)
+            result = super.runChecks(event, sendMessage, cache)
         }
 
         return result
@@ -213,9 +218,10 @@ public open class ChatGroupCommand<T : Arguments>(
         commandName: String,
         parser: StringParser,
         argString: String,
-        skipChecks: Boolean
+        skipChecks: Boolean,
+        cache: MutableStringKeyedMap<Any>
     ) {
-        if (skipChecks || !runChecks(event)) {
+        if (skipChecks || !runChecks(event, cache = cache)) {
             return
         }
 
@@ -223,7 +229,7 @@ public open class ChatGroupCommand<T : Arguments>(
         val subCommand = getCommand(command, event)
 
         if (subCommand == null) {
-            super.call(event, commandName, parser, argString, true)
+            super.call(event, commandName, parser, argString, true, cache)
         } else {
             parser.parseNext()  // Advance the cursor so proper parsing can happen
 
