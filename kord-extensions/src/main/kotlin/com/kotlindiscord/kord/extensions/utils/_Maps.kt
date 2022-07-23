@@ -40,3 +40,29 @@ public inline fun <reified T : Any> StringKeyedMap<*>.getOfOrDefault(key: String
  */
 public inline fun <reified T : Any?> StringKeyedMap<*>.getOfOrNull(key: String): T? =
     this[key] as? T
+
+/**
+ * Utility function for getting a key from the given String-keyed map, attempting to cast it to the given generic
+ * type, [T]. Will return the provided [default] value if they key is missing or the value cannot be cast.
+ *
+ * If [store] is `true`, this will store the given default value if the key is missing or the value cannot be cast.
+ *
+ * **Note:** This function does not support maps with nullable values.
+ */
+public inline fun <reified V : Any, reified T : V> MutableStringKeyedMap<V>.getOfOrDefault(
+    key: String,
+    default: T,
+    store: Boolean,
+): T {
+    val value = this[key] as? T
+
+    if (value == null) {
+        if (store) {
+            this[key] = default
+        }
+
+        return default
+    }
+
+    return value
+}

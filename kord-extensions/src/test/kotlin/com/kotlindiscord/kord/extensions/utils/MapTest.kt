@@ -36,5 +36,13 @@ class MapTest {
 
         assertThrows<ClassCastException> { map.getOf<String>("number") }
         assertThrows<IllegalArgumentException> { map.getOf<Int>("missing") }
+
+        assertEquals("two", map.getOfOrDefault("two", "two", true))
+        assertEquals("two", map.getOf("two"))
+        assertThrows<ClassCastException> { map.getOf<Int>("two") }
+
+        assertEquals(2, map.getOfOrDefault("two", 2, true))
+        assertEquals(2, map.getOf("two"))
+        assertThrows<ClassCastException> { map.getOf<String>("two") }
     }
 }
