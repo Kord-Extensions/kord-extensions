@@ -47,6 +47,8 @@ konf-core = { module = "com.uchuhimo:konf", version.ref = "konf" }
 konf-toml = { module = "com.uchuhimo:konf-toml", version.ref = "konf" }
 
 kord = { module = "dev.kord:kord-core", version.ref = "kord" }
+kord-voice = { module = "dev.kord:core-voice", version.ref = "kord" }
+
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
