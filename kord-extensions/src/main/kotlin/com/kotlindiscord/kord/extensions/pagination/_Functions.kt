@@ -14,8 +14,8 @@ import java.util.*
 
 /** Create a paginator that edits the original interaction. **/
 public inline fun PublicMessageInteractionResponseBehavior.editingPaginator(
-    locale: Locale? = null,
     defaultGroup: String = "",
+    locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
 ): PublicResponsePaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
@@ -27,8 +27,8 @@ public inline fun PublicMessageInteractionResponseBehavior.editingPaginator(
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
 public inline fun FollowupPermittingInteractionResponseBehavior.respondingPaginator(
-    locale: Locale? = null,
     defaultGroup: String = "",
+    locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
 ): PublicFollowUpPaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
@@ -43,8 +43,8 @@ public inline fun FollowupPermittingInteractionResponseBehavior.respondingPagina
  * it's impossible to edit an ephemeral follow-up.
  */
 public inline fun EphemeralMessageInteractionResponseBehavior.editingPaginator(
-    locale: Locale? = null,
     defaultGroup: String = "",
+    locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
 ): EphemeralResponsePaginator {
     val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)

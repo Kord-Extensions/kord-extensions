@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.extPluralKit
 import com.kotlindiscord.kord.extensions.testbot.extensions.ArgumentTestExtension
 import com.kotlindiscord.kord.extensions.testbot.extensions.I18nTestExtension
 import com.kotlindiscord.kord.extensions.testbot.extensions.PKTestExtension
+import com.kotlindiscord.kord.extensions.testbot.extensions.PaginatorTestExtension
 import com.kotlindiscord.kord.extensions.testbot.utils.LogLevel
 import com.kotlindiscord.kord.extensions.utils.env
 import com.kotlindiscord.kord.extensions.utils.envOrNull
@@ -75,6 +76,7 @@ public suspend fun main() {
 
             add(::ArgumentTestExtension)
             add(::I18nTestExtension)
+            add(::PaginatorTestExtension)
             add(::PKTestExtension)
         }
 

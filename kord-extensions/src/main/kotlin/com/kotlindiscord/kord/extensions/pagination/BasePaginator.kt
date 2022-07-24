@@ -95,6 +95,12 @@ public abstract class BasePaginator(
     /** Set of all page groups. **/
     public open var allGroups: List<String> = pages.groups.map { it.key }
 
+    init {
+        if (pages.groups.filterValues { it.isNotEmpty() }.isEmpty()) {
+            error("Attempted to send a paginator with no pages in it")
+        }
+    }
+
     /** Currently-displayed page object. **/
     public open var currentPage: Page = pages.get(currentGroup, currentPageNum)
 
