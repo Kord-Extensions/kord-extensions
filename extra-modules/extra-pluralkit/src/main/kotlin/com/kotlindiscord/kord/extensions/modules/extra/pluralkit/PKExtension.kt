@@ -126,8 +126,10 @@ class PKExtension : Extension() {
                 if (webhookId == null) {
                     awaitingEvents[message.id] = event
 
-                    if (message.messageReference != null) {
-                        replyCache[message.id] = message.referencedMessage!!
+                    val referencedMessage = message.messageReference?.message?.asMessageOrNull()
+
+                    if (referencedMessage != null) {
+                        replyCache[message.id] = referencedMessage
                     }
 
                     return@action
