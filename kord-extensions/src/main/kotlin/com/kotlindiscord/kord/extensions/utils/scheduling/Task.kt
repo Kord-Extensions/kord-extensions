@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import com.kotlindiscord.kord.extensions.sentry.tag
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.Kord
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
@@ -47,6 +48,9 @@ public open class Task(
     public val name: String = "Unnamed",
     public val repeat: Boolean = false
 ) : KordExKoinComponent {
+    /** Cache map for storing data for this task, if needed. **/
+    public val cache: MutableStringKeyedMap<Any> = mutableMapOf()
+
     protected val logger: KLogger = KotlinLogging.logger("Task: $name")
     protected var job: Job? = null
     protected lateinit var started: TimeMark
