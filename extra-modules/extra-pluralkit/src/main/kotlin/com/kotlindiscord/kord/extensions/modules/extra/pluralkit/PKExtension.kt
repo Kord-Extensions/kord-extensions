@@ -49,6 +49,8 @@ import dev.kord.rest.builder.message.create.embed
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.seconds
 
@@ -67,6 +69,8 @@ class PKExtension : Extension() {
         PKGuildConfig::class
     )
 
+    private val eventLock = Mutex()
+
     private val awaitingEvents: MutableMap<Snowflake, MessageCreateEvent> = mutableMapOf()
     private val replyCache: LRUHashMap<Snowflake, Message> = LRUHashMap(1000)
 
@@ -84,18 +88,20 @@ class PKExtension : Extension() {
             repeat = true
         ) {
             val now = Clock.System.now()
-            val target = now - 2.seconds
+            val target = now - 3.seconds  // This delay will need fine-tuning over time
 
-            awaitingEvents
-                .toMap()
-                .filterKeys { it.timestamp < target }
-                .forEach { (key, value) ->
-                    awaitingEvents.remove(key)
+            eventLock.withLock {
+                awaitingEvents
+                    .toMap()
+                    .filterKeys { it.timestamp < target }
+                    .forEach { (key, value) ->
+                        awaitingEvents.remove(key)
 
-                    kord.launch {
-                        bot.send(value.unproxied())
+                        kord.launch {
+                            bot.send(value.unproxied())
+                        }
                     }
-                }
+            }
         }
 
         event<MessageCreateEvent> {
@@ -124,7 +130,9 @@ class PKExtension : Extension() {
                 val webhookId = message.data.webhookId.value
 
                 if (webhookId == null) {
-                    awaitingEvents[message.id] = event
+                    eventLock.withLock {
+                        awaitingEvents[message.id] = event
+                    }
 
                     val referencedMessage = message.messageReference?.message?.asMessageOrNull()
 
@@ -146,7 +154,7 @@ class PKExtension : Extension() {
                     return@action
                 }
 
-                delay(1.seconds)
+                delay(2.seconds)
 
                 val pkMessage = config.api().getMessageOrNull(message.id)
 
@@ -154,8 +162,10 @@ class PKExtension : Extension() {
                     return@action
                 }
 
-                awaitingEvents.remove(pkMessage.original)
-                awaitingEvents.remove(message.id)
+                eventLock.withLock {
+                    awaitingEvents.remove(pkMessage.original)
+                    awaitingEvents.remove(message.id)
+                }
 
                 kord.launch {
                     bot.send(
@@ -190,7 +200,9 @@ class PKExtension : Extension() {
                 val message = event.message
                 val webhookId = message?.data?.webhookId?.value
 
-                awaitingEvents.remove(message?.id)
+                eventLock.withLock {
+                    awaitingEvents.remove(message?.id)
+                }
 
                 if (webhookId == null) {
                     val pkMessage = guild.config().api().getMessageOrNull(event.messageId)
@@ -221,7 +233,7 @@ class PKExtension : Extension() {
                     return@action
                 }
 
-                delay(1.seconds)
+                delay(2.seconds)
 
                 val pkMessage = config.api().getMessageOrNull(message.id)
                     ?: return@action
@@ -282,7 +294,7 @@ class PKExtension : Extension() {
                     return@action
                 }
 
-                delay(1.seconds)
+                delay(2.seconds)
 
                 val pkMessage = config.api().getMessageOrNull(message.id)
                     ?: return@action

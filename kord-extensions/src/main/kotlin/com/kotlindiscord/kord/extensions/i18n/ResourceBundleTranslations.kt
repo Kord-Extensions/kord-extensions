@@ -56,7 +56,7 @@ public open class ResourceBundleTranslations(
         bundle: String,
         locale: Locale,
         control: ResourceBundle.Control,
-    ): ResourceBundle = ResourceBundle.getBundle(bundle, locale, Control)
+    ): ResourceBundle = ResourceBundle.getBundle(bundle, locale, control)
 
     /**
      * Retrieves a pair of the [ResourceBundle] and the overide resource bundle for [bundleName] in locale.
