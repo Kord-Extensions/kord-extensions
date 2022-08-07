@@ -36,6 +36,8 @@ suspend fun main() {
 This will install the extension using its default configuration. However, the extension may be configured in several 
 ways - as is detailed below.
 
+Your bot will now require the **Manage Webhooks** permission to use the extension.
+
 # Commands
 
 This extension provides the following commands for use on Discord.
