@@ -39,7 +39,7 @@ public const val ROW_SIZE: Int = 5
  */
 public open class ComponentContainer(
     public val timeout: Duration? = null,
-    startTimeoutNow: Boolean = false
+    startTimeoutNow: Boolean = false,
 ) : KordExKoinComponent {
     internal val registry: ComponentRegistry by inject()
 
@@ -258,6 +258,17 @@ public open class ComponentContainer(
         }
     }
 
+    /**
+     * Cancel the timeout task, and remove all components from this component container.
+     *
+     * This is equivalent to timing out this container early, but will not run the supplied [timeoutCallback], if one
+     * was provided in [onTimeout].
+     */
+    public open suspend fun cancel() {
+        timeoutTask?.cancel()
+        removeAll()
+    }
+
     private fun rowWidth(row: List<Component>): Int = row.sumOf { it.unitWidth }
 }
 
@@ -266,7 +277,7 @@ public open class ComponentContainer(
 public suspend fun ComponentContainer(
     timeout: Duration? = null,
     startTimeoutNow: Boolean = false,
-    builder: suspend ComponentContainer.() -> Unit
+    builder: suspend ComponentContainer.() -> Unit,
 ): ComponentContainer {
     val container = ComponentContainer(timeout, startTimeoutNow)
 
