@@ -95,7 +95,7 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 
     /** Quick shortcut for emitting a command event without blocking. **/
     public open suspend fun emitEventAsync(event: CommandEvent<*, *>): Job =
-        event.launch {
+        kord.launch {
             extension.bot.send(event)
         }
 
