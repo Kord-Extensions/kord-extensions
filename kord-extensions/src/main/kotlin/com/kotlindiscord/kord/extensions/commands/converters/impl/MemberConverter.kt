@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("StringLiteralDuplication")
+
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
@@ -47,16 +49,24 @@ import kotlinx.coroutines.flow.firstOrNull
     builderFields = [
         "public var requiredGuild: (suspend () -> Snowflake)? = null",
         "public var useReply: Boolean = true",
+        "public var requireSameGuild: Boolean = true",
     ]
 )
 public class MemberConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
     private var useReply: Boolean = true,
-    override var validator: Validator<Member> = null
+    private var requireSameGuild: Boolean = true,
+    override var validator: Validator<Member> = null,
 ) : SingleConverter<Member>() {
     override val signatureTypeString: String = "converters.member.signatureType"
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val guild = context.getGuild()
+
+        if (requireSameGuild && requiredGuild == null && guild != null) {
+            requiredGuild = { guild.id }
+        }
+
         if (useReply && context is ChatCommandContext<*>) {
             val messageReference = context.message.asMessage().messageReference
 
@@ -115,13 +125,23 @@ public class MemberConverter(
             }
         }
 
-        val guildId: Snowflake = if (requiredGuild != null) {
+        val currentGuild = context.getGuild()
+
+        val guildId: Snowflake? = if (requiredGuild != null) {
             requiredGuild!!.invoke()
         } else {
-            context.getGuild()?.id
-        } ?: return null
+            currentGuild?.id
+        }
 
-        return user?.asMember(guildId)
+        if (guildId != currentGuild?.id) {
+            throw DiscordRelayedException(
+                context.translate("converters.member.error.invalid", replacements = arrayOf(user?.tag ?: arg))
+            )
+        }
+
+        return user?.asMember(
+            guildId ?: return null
+        )
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
@@ -129,6 +149,20 @@ public class MemberConverter(
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
         val optionValue = (option as? MemberOptionValue)?.resolvedObject ?: return false
+        val guild = context.getGuild()
+
+        if (requireSameGuild && requiredGuild == null && guild != null) {
+            requiredGuild = { guild.id }
+        }
+
+        val requiredGuildId = requiredGuild?.invoke()
+
+        if (requiredGuildId != null && optionValue.guildId != requiredGuildId) {
+            throw DiscordRelayedException(
+                context.translate("converters.member.error.invalid", replacements = arrayOf(optionValue.tag))
+            )
+        }
+
         this.parsed = optionValue
 
         return true
