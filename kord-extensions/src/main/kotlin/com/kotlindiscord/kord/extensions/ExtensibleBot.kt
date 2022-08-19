@@ -29,6 +29,7 @@ import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.core.event.interaction.*
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.gateway.handler.DefaultGatewayEventInterceptor
 import dev.kord.core.on
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
@@ -102,6 +103,12 @@ public open class ExtensibleBot(
             enableShutdownHook = settings.hooksBuilder.kordShutdownHook
 
             settings.kordHooks.forEach { it() }
+
+            gatewayEventInterceptor = DefaultGatewayEventInterceptor(
+                customContextCreator = { _, _ ->
+                    mutableMapOf<String, Any>()
+                }
+            )
         }
 
         loadModule { single { kord } bind Kord::class }
