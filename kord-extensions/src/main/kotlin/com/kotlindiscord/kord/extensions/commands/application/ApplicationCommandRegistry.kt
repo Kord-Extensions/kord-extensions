@@ -351,17 +351,13 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     // endregion
 
     // region: Extensions
-
-    /** Registration logic for slash commands, extracted for clarity. **/
-    public open suspend fun GlobalChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
-        registerGlobalPermissions(locale, command)
-
-        (this as ChatInputCreateBuilder).register(locale, command)
-    }
-
     /** Registration logic for slash commands, extracted for clarity. **/
     public open suspend fun ChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
-        registerGuildPermissions(locale, command)
+        if (this is GlobalChatInputCreateBuilder) {
+            registerGlobalPermissions(locale, command)
+        }else {
+            registerGuildPermissions(locale, command)
+        }
 
         if (command.hasBody) {
             val args = command.arguments?.invoke()
