@@ -355,7 +355,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     public open suspend fun ChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
         if (this is GlobalChatInputCreateBuilder) {
             registerGlobalPermissions(locale, command)
-        }else {
+        } else {
             registerGuildPermissions(locale, command)
         }
 
@@ -510,7 +510,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
      */
     public open fun GlobalApplicationCommandCreateBuilder.registerGlobalPermissions(
         locale: Locale,
-        command: ApplicationCommand<*>
+        command: ApplicationCommand<*>,
     ) {
         registerGuildPermissions(locale, command)
         this.dmPermission = command.allowInDms
@@ -521,7 +521,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
      */
     public open fun ApplicationCommandCreateBuilder.registerGuildPermissions(
         locale: Locale,
-        command: ApplicationCommand<*>
+        command: ApplicationCommand<*>,
     ) {
         this.defaultMemberPermissions = command.defaultMemberPermissions
     }
@@ -529,7 +529,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     /** Check whether the type and name of an extension-registered application command matches a Discord one. **/
     public open fun ApplicationCommand<*>.matches(
         locale: Locale,
-        other: dev.kord.core.entity.application.ApplicationCommand
+        other: dev.kord.core.entity.application.ApplicationCommand,
     ): Boolean = type == other.type && localizedName.default.equals(other.name, true)
 
     // endregion
