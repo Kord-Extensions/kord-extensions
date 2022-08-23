@@ -20,6 +20,18 @@ import kotlinx.datetime.plus
 import kotlin.time.Duration
 
 /**
+ * Simple convenience function for mapping from `0` to the given [Int], exclusively.
+ */
+public inline fun <T> Int.map(body: (Int) -> T): List<T> =
+    (0 until this).map<Int, T> { body(it) }
+
+/**
+ * Simple convenience function for mapping from `0` to the given [Long], exclusively.
+ */
+public inline fun <T> Long.map(body: (Long) -> T): List<T> =
+    (0 until this).map<Long, T> { body(it) }
+
+/**
  * Run a block of code within a coroutine scope, defined by a given dispatcher.
  *
  * This is intended for use with code that normally isn't designed to be run within a coroutine, such as
