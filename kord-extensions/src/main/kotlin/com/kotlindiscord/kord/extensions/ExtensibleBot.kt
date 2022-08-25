@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(PrivilegedIntent::class)
+@file:OptIn(PrivilegedIntent::class, KordPreview::class)
 
 package com.kotlindiscord.kord.extensions
 
@@ -21,6 +21,7 @@ import com.kotlindiscord.kord.extensions.koin.KordExContext
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.loadModule
+import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
