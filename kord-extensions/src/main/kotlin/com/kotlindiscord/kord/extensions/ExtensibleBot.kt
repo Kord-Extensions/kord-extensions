@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(PrivilegedIntent::class)
+@file:OptIn(PrivilegedIntent::class, KordPreview::class)
 
 package com.kotlindiscord.kord.extensions
 
@@ -21,6 +21,7 @@ import com.kotlindiscord.kord.extensions.koin.KordExContext
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.loadModule
+import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
@@ -29,6 +30,7 @@ import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.core.event.interaction.*
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.gateway.handler.DefaultGatewayEventInterceptor
 import dev.kord.core.on
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
@@ -38,6 +40,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import org.koin.dsl.bind
 
 /**
@@ -59,6 +62,9 @@ public open class ExtensibleBot(
 
     override var mutex: Mutex? = Mutex()
     override var locking: Boolean = settings.membersBuilder.lockMemberRequests
+
+    /** @suppress Meant for internal use by public inline function. **/
+    public val kordRef: Kord by inject()
 
     /**
      * A list of all registered event handlers.
@@ -98,6 +104,12 @@ public open class ExtensibleBot(
             enableShutdownHook = settings.hooksBuilder.kordShutdownHook
 
             settings.kordHooks.forEach { it() }
+
+            gatewayEventInterceptor = DefaultGatewayEventInterceptor(
+                customContextCreator = { _, _ ->
+                    mutableMapOf<String, Any>()
+                }
+            )
         }
 
         loadModule { single { kord } bind Kord::class }
@@ -105,7 +117,7 @@ public open class ExtensibleBot(
         settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
         kord.on<Event> {
-            this.launch {
+            kord.launch {
                 send(this@on)
             }
         }
@@ -268,7 +280,7 @@ public open class ExtensibleBot(
             .filterIsInstance<T>()
             .onEach {
                 runCatching {
-                    if (launch) it.launch { consumer(it) } else consumer(it)
+                    if (launch) kordRef.launch { consumer(it) } else consumer(it)
                 }.onFailure { logger.catching(it) }
             }.catch { logger.catching(it) }
             .launchIn(scope)

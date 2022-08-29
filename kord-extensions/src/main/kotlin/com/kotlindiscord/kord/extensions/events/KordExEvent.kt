@@ -7,9 +7,10 @@
 package com.kotlindiscord.kord.extensions.events
 
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Base interface for events fired by Kord Extensions.
@@ -17,5 +18,8 @@ import kotlin.coroutines.CoroutineContext
 public interface KordExEvent : Event, KordExKoinComponent {
     override val kord: Kord get() = getKoin().get()
     override val shard: Int get() = -1
-    override val coroutineContext: CoroutineContext get() = kord.coroutineContext
+
+    @KordPreview
+    override val customContext: MutableStringKeyedMap<Any>
+        get() = mutableMapOf<String, Any>()
 }
