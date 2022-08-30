@@ -20,7 +20,6 @@ import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
 
@@ -85,7 +84,7 @@ public class EmojiConverter(
                 }.firstOrNull()
             } catch (e: NumberFormatException) {  // Not an ID, let's check names
                 kord.guilds.mapNotNull {
-                    it.emojis.first { emojiObj -> emojiObj.name?.lowercase().equals(name, true) }
+                    it.emojis.firstOrNull { emojiObj -> emojiObj.name?.lowercase().equals(name, true) }
                 }.firstOrNull()
             }
         }
