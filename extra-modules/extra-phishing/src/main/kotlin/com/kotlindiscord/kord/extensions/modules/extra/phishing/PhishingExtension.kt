@@ -37,12 +37,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
-import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
-import org.jsoup.UnsupportedMimeTypeException
-import java.io.IOException
-import java.net.MalformedURLException
-import java.net.SocketTimeoutException
 
 /** The maximum number of redirects to attempt to follow for a URL. **/
 const val MAX_REDIRECTS = 5
@@ -345,26 +340,11 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
             return followRedirects(newUrl, count + 1)
         } else {
+            @Suppress("TooGenericExceptionCaught")
             val soup = try {
                 Jsoup.connect(url).get()
-            } catch (e: UnsupportedMimeTypeException) {
-                logger.debug { "$url -> Unsupported MIME type; not parsing" }
-
-                return url
-            } catch (e: HttpStatusException) {
-                logger.debug { "$url -> HTTP error fetching URL. Status=${e.statusCode}" }
-
-                return url
-            } catch (e: MalformedURLException) {
-                logger.debug { "$url -> Illegal character in query" }
-
-                return url
-            } catch (e: IOException) {
-                logger.debug { "$url -> Resetting to invalid mark" }
-
-                return url
-            } catch (e: SocketTimeoutException) {
-                logger.debug { "$url -> Connection timed out" }
+            } catch (e: Exception) {
+                logger.debug(e) { e.message }
 
                 return url
             }
