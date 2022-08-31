@@ -11,6 +11,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.phishing
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
 import io.ktor.client.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -35,22 +36,27 @@ import org.koin.core.component.inject
  */
 class PhishingWebsocketWrapper(
     private val appName: String,
-    private val callback: suspend (DomainChange) -> Unit
+    private val callback: suspend (DomainChange) -> Unit,
 ) : KordExKoinComponent {
     private val logger = KotlinLogging.logger { }
     private var job: Job? = null
 
     private val kord: Kord by inject()
 
-    internal val client = HttpClient {
-        install(ContentNegotiation) {
-            json()
+    internal val client =
+        HttpClient {
+            try {
+                install(ContentNegotiation) {
+                    json()
+                }
+
+                install(WebSockets)
+            } catch (e: Exception) {
+                logger.debug(e) { e.message }
+            }
+
+            expectSuccess = true
         }
-
-        install(WebSockets)
-
-        expectSuccess = true
-    }
 
     /**
      * Connect the websocket, and start processing incoming data. This will also stop any current websocket connection.

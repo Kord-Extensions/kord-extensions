@@ -12,6 +12,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
+import mu.KotlinLogging
 
 internal const val ALL_PATH = "https://phish.sinking.yachts/v2/all"
 internal const val CHECK_PATH = "https://phish.sinking.yachts/v2/check/%"
@@ -20,13 +21,19 @@ internal const val SIZE_PATH = "https://phish.sinking.yachts/v2/dbsize"
 
 /** Implementation of the Sinking Yachts phishing domain API. **/
 class PhishingApi(internal val appName: String) {
+    private val logger = KotlinLogging.logger { }
 
     internal val client = HttpClient {
-        install(ContentNegotiation) {
-            json()
-        }
+        @Suppress("TooGenericExceptionCaught")
+        try {
+            install(ContentNegotiation) {
+                json()
+            }
 
-        install(WebSockets)
+            install(WebSockets)
+        } catch (e: Exception) {
+            logger.debug(e) { e.message }
+        }
 
         expectSuccess = true
     }
