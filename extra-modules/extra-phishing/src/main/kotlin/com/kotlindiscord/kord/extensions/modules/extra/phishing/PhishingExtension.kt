@@ -32,6 +32,7 @@ import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.network.sockets.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
@@ -327,6 +328,10 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             return url
         } catch (e: HttpRequestTimeoutException) {
             logger.warn { "$url -> Request timeout has expired." }
+
+            return url
+        } catch (e: URLParserException) {
+            logger.debug { "$url -> Failed to parse url" }
 
             return url
         }
