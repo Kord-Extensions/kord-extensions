@@ -43,16 +43,15 @@ class PhishingWebsocketWrapper(
 
     private val kord: Kord by inject()
 
-    internal val client =
-        HttpClient {
-            install(ContentNegotiation) {
-                json()
-            }
-
-            install(WebSockets)
-
-            expectSuccess = true
+    internal val client = HttpClient {
+        install(ContentNegotiation) {
+            json()
         }
+
+        install(WebSockets)
+
+        expectSuccess = true
+    }
 
     /**
      * Connect the websocket, and start processing incoming data. This will also stop any current websocket connection.

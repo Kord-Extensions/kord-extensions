@@ -53,8 +53,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     private var websocket: PhishingWebsocketWrapper = api.websocket(::handleChange)
 
     private val httpClient = HttpClient {
-            followRedirects = false
-            expectSuccess = true
+        followRedirects = false
+        expectSuccess = true
     }
 
     override suspend fun setup() {
