@@ -10,23 +10,15 @@ import com.kotlindiscord.kord.extensions.components.Component
 import kotlin.time.Duration
 
 public abstract class Form {
-    /** Components that haven't been sorted into rows by [pack] yet. **/
-    public open val unsortedComponents: MutableList<Component> = mutableListOf()
+    public open val timeout: Duration = Duration.ZERO
 
-    /** Array containing sorted rows of components. **/
-    public open val grid: WidgetGrid = arrayOf(
-        // Up to 5 rows of components
+//    /** Widgets that haven't been sorted into the grid by [pack] yet. **/
+//    public open val unsortedComponents: MutableList<Component> = mutableListOf()
 
-        mutableListOf(),
-        mutableListOf(),
-        mutableListOf(),
-        mutableListOf(),
-        mutableListOf(),
-    )
+    /** A grid containing rows of widgets. **/
+    public open val grid: WidgetGrid = WidgetGrid()
 
-    public abstract val timeout: Duration
-
-    public abstract fun pack()
-    public abstract fun update()
-    public abstract fun destroy()
+//    public abstract fun pack()
+//    public abstract fun update()
+//    public abstract fun destroy()
 }

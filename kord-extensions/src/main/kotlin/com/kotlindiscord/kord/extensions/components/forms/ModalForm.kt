@@ -6,5 +6,35 @@
 
 package com.kotlindiscord.kord.extensions.components.forms
 
+import com.kotlindiscord.kord.extensions.components.forms.widgets.LineTextWidget
+import com.kotlindiscord.kord.extensions.components.forms.widgets.ParagraphTextWidget
+
 public open class ModalForm : Form() {
+    public suspend fun lineText(
+        coordinate: CoordinatePair? = null,
+        builder: suspend LineTextWidget.() -> Unit,
+    ): LineTextWidget {
+        val widget = LineTextWidget()
+
+        builder(widget)
+        widget.validate()
+
+        grid.setAtCoordinateOrFirstRow(coordinate, widget)
+
+        return widget
+    }
+
+    public suspend fun paragraphText(
+        coordinate: CoordinatePair? = null,
+        builder: suspend ParagraphTextWidget.() -> Unit,
+    ): ParagraphTextWidget {
+        val widget = ParagraphTextWidget()
+
+        builder(widget)
+        widget.validate()
+
+        grid.setAtCoordinateOrFirstRow(coordinate, widget)
+
+        return widget
+    }
 }

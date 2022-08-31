@@ -6,11 +6,13 @@
 
 package com.kotlindiscord.kord.extensions.components.forms
 
-import com.kotlindiscord.kord.extensions.components.forms.widget.Widget
+import com.kotlindiscord.kord.extensions.components.forms.widgets.Widget
 import com.kotlindiscord.kord.extensions.utils.map
 
 
-public typealias WidgetGrid = Array<MutableList<Widget>>
+public typealias WidgetGrid = Array<MutableList<Widget<*>?>>
+
+/** A coordinate pair, represented by a `Pair(row, column)`. **/
 public typealias CoordinatePair = Pair<Int, Int>
 
 public const val GRID_WIDTH: Int = 5
@@ -137,23 +139,62 @@ public fun CoordinatePair.throwIfInvalid(name: String = "Coordinate") {
 }
 
 public fun CoordinatePair.toString(): String =
-    "($first, $second)"
+    "($first x $second)"
 
 // endregion
 
 // region: Grid functions
 
+public fun WidgetGrid.toString(): String = buildString {
+    val grid = this@toString
+
+    appendLine("WidgetGrid@${hashCode()} -> ")
+
+    append(
+        grid.joinToString(",\n") { row ->
+            val rowString = row.joinToString(" | ") { widget ->
+                if (widget == null) {
+                    "null"
+                } else {
+                    widget::class.simpleName ?: "null"
+                }.padEnd(20)
+            }
+
+            "  | $rowString |"
+        }
+    )
+}
+
+@Suppress("USELESS_CAST")  // You're just wrong here, IJ
 public fun WidgetGrid(): WidgetGrid = arrayOf(
-    *GRID_HEIGHT.map { mutableListOf<Widget>() }.toTypedArray()
+    *GRID_HEIGHT.map {
+        GRID_WIDTH.map { null as Widget<*>? }.toMutableList()
+    }.toTypedArray()
 )
 
-public fun WidgetGrid.get(coordinate: CoordinatePair): Widget? {
+public fun WidgetGrid.get(coordinate: CoordinatePair): Widget<*>? {
     coordinate.throwIfInvalid()
 
     return this[coordinate.first].getOrNull(coordinate.second)
 }
 
-public fun WidgetGrid.set(coordinate: CoordinatePair, widget: Widget) {
+public fun WidgetGrid.setAtCoordinateOrFirstRow(coordinate: CoordinatePair?, widget: Widget<*>) {
+    if (coordinate == null) {
+        val row = indexOfFirst { (GRID_WIDTH - it.count()) <= widget.width }
+
+        if (row == -1) {
+            error("No rows are available to fit this widget into.")
+        }
+
+        val column = get(row).indexOf(null)
+
+        set(row x column, widget)
+    } else {
+        set(coordinate, widget)
+    }
+}
+
+public fun WidgetGrid.set(coordinate: CoordinatePair, widget: Widget<*>) {
     coordinate.throwIfInvalid("Start coordinate")
 
     val end = coordinate + (widget.width x widget.height)
@@ -182,7 +223,7 @@ public fun WidgetGrid.removeAt(coordinate: CoordinatePair): Boolean =
     }
 
 
-public fun WidgetGrid.remove(widget: Widget): Boolean {
+public fun WidgetGrid.remove(widget: Widget<*>): Boolean {
     val coordinates = coordinatesFor(widget)
 
     if (coordinates.isEmpty()) {
@@ -194,13 +235,27 @@ public fun WidgetGrid.remove(widget: Widget): Boolean {
     return true
 }
 
-public fun WidgetGrid.coordinatesFor(widget: Widget): MutableList<CoordinatePair> {
+public fun WidgetGrid.coordinatesFor(widget: Widget<*>): List<CoordinatePair> {
     val values = mutableListOf<CoordinatePair>()
 
     forEachIndexed { rowIndex, row ->
         row.forEachIndexed { columnIndex, storedWidget ->
             if (widget === storedWidget) {
                 values.add(rowIndex to columnIndex)
+            }
+        }
+    }
+
+    return values
+}
+
+public fun WidgetGrid.getWidgetSet(): Set<Widget<*>> {
+    val values = mutableSetOf<Widget<*>>()
+
+    forEach { row ->
+        row.forEach { widget ->
+            if (widget != null) {
+                values.add(widget)
             }
         }
     }
