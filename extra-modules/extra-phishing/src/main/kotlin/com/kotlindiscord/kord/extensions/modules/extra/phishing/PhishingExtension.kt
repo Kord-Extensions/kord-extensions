@@ -53,13 +53,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
     private var websocket: PhishingWebsocketWrapper = api.websocket(::handleChange)
 
     private val httpClient = HttpClient {
-        @Suppress("TooGenericExceptionCaught")
-        try {
             followRedirects = false
             expectSuccess = true
-        } catch (e: Exception) {
-            logger.debug(e) { e.message }
-        }
     }
 
     override suspend fun setup() {

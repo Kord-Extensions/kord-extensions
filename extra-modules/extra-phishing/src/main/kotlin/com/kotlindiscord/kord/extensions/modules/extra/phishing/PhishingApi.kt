@@ -24,16 +24,11 @@ class PhishingApi(internal val appName: String) {
     private val logger = KotlinLogging.logger { }
 
     internal val client = HttpClient {
-        @Suppress("TooGenericExceptionCaught")
-        try {
-            install(ContentNegotiation) {
-                json()
-            }
-
-            install(WebSockets)
-        } catch (e: Exception) {
-            logger.debug(e) { e.message }
+        install(ContentNegotiation) {
+            json()
         }
+
+        install(WebSockets)
 
         expectSuccess = true
     }

@@ -45,15 +45,11 @@ class PhishingWebsocketWrapper(
 
     internal val client =
         HttpClient {
-            try {
-                install(ContentNegotiation) {
-                    json()
-                }
-
-                install(WebSockets)
-            } catch (e: Exception) {
-                logger.debug(e) { e.message }
+            install(ContentNegotiation) {
+                json()
             }
+
+            install(WebSockets)
 
             expectSuccess = true
         }
