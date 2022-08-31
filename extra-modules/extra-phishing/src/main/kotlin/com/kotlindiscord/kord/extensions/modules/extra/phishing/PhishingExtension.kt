@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
-import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 
 /** The maximum number of redirects to attempt to follow for a URL. **/
@@ -346,22 +345,6 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                 Jsoup.connect(url).get()
             } catch (e: Exception) {
                 logger.debug(e) { e.message }
-
-                return url
-            } catch (e: HttpStatusException) {
-                logger.debug { "$url -> HTTP error fetching URL. Status=${e.statusCode}" }
-
-                return url
-            } catch (e: MalformedURLException) {
-                logger.debug { "$url -> Illegal character in query" }
-
-                return url
-            } catch (e: IOException) {
-                logger.debug { "$url -> Resetting to invalid mark" }
-
-                return url
-            } catch (e: SocketTimeoutException) {
-                logger.debug { "$url -> Connection timed out" }
 
                 return url
             }
