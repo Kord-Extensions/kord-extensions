@@ -33,7 +33,7 @@ public suspend fun <T : Arguments> SlashCommand<*, *>.unsafeSubCommand(
     arguments: () -> T,
     body: suspend UnsafeSlashCommand<T>.() -> Unit
 ): UnsafeSlashCommand<T> {
-    val commandObj = UnsafeSlashCommand(extension, arguments, parentCommand, parentGroup)
+    val commandObj = UnsafeSlashCommand(extension, arguments, this, parentGroup)
     body(commandObj)
 
     return unsafeSubCommand(commandObj)
