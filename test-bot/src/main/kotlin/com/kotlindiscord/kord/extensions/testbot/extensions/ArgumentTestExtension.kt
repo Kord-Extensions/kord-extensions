@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.testbot.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
+import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
@@ -27,6 +28,20 @@ public class ArgumentTestExtension : Extension() {
                 }
             }
         }
+        publicSlashCommand(::LengthConstrainedArgs) {
+            name = "length-constrained"
+            description = "Check if length limits work"
+            action {
+                respond {
+                    content = buildString {
+                        append("You name is: `${arguments.name}`")
+                        arguments.lastName?.let {
+                            append(" `$it`")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public inner class OptionalArgs : Arguments() {
@@ -43,6 +58,21 @@ public class ArgumentTestExtension : Extension() {
                     )
                 )
             }
+        }
+    }
+
+    public inner class LengthConstrainedArgs : Arguments() {
+        public val name: String by string {
+            name = "name"
+            description = "The user's name."
+            minLength = 3
+            maxLength = 10
+        }
+        public val lastName: String? by optionalString {
+            name = "last_name"
+            description = "The user's last name."
+            minLength = 4
+            maxLength = 15
         }
     }
 }
