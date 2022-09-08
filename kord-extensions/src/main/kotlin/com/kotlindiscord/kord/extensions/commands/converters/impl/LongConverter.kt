@@ -23,6 +23,9 @@ private const val DEFAULT_RADIX = 10
 
 /**
  * Argument converter for long arguments, converting them into [Long].
+ *
+ * @property maxValue The maximum value allowed for this argument.
+ * @property minValue The minimum value allowed for this argument.
  */
 @Converter(
     "long",
@@ -38,8 +41,8 @@ private const val DEFAULT_RADIX = 10
 )
 public class LongConverter(
     private val radix: Int = DEFAULT_RADIX,
-    private val maxValue: Long? = null,
-    private val minValue: Long? = null,
+    public val maxValue: Long? = null,
+    public val minValue: Long? = null,
 
     override var validator: Validator<Long> = null
 ) : SingleConverter<Long>() {
