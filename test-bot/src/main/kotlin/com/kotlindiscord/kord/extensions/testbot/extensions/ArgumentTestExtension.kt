@@ -28,9 +28,11 @@ public class ArgumentTestExtension : Extension() {
                 }
             }
         }
+
         publicSlashCommand(::LengthConstrainedArgs) {
             name = "length-constrained"
             description = "Check if length limits work"
+
             action {
                 respond {
                     content = buildString {
@@ -68,6 +70,7 @@ public class ArgumentTestExtension : Extension() {
             minLength = 3
             maxLength = 10
         }
+
         public val lastName: String? by optionalString {
             name = "last_name"
             description = "The user's last name."
