@@ -6,6 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
@@ -21,6 +22,8 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
  * Argument converter for Discord attachments.
+ *
+ * This converter can only be used in slash commands.
  */
 @Converter(
     "attachment",
@@ -32,7 +35,8 @@ public class AttachmentConverter(
 ) : SingleConverter<Attachment>() {
     override val signatureTypeString: String = "converters.attachment.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean = false
+    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean =
+        throw DiscordRelayedException(context.translate("converters.attachment.error.slashCommandsOnly"))
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         AttachmentBuilder(arg.displayName, arg.description).apply { required = true }
