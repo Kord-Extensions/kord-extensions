@@ -50,6 +50,7 @@ public suspend fun <T : Arguments> SlashCommand<*, *>.unsafeSubCommand(
 public fun <T : Arguments> SlashCommand<*, *>.unsafeSubCommand(
     commandObj: UnsafeSlashCommand<T>
 ): UnsafeSlashCommand<T> {
+    commandObj.guildId = null
     if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
         throw InvalidCommandException(
             commandObj.name,
@@ -80,7 +81,7 @@ public fun <T : Arguments> SlashCommand<*, *>.unsafeSubCommand(
 public suspend fun SlashCommand<*, *>.unsafeSubCommand(
     body: suspend UnsafeSlashCommand<Arguments>.() -> Unit
 ): UnsafeSlashCommand<Arguments> {
-    val commandObj = UnsafeSlashCommand<Arguments>(extension, null, parentCommand, parentGroup)
+    val commandObj = UnsafeSlashCommand<Arguments>(extension, null, this, parentGroup)
     body(commandObj)
 
     return unsafeSubCommand(commandObj)
