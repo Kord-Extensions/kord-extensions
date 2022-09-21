@@ -11,6 +11,7 @@ package com.kotlindiscord.kord.extensions.testbot.extensions
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.commands.converters.impl.int
 import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
@@ -94,6 +95,23 @@ public class I18nTestExtension : Extension() {
                 }
             }
         }
+
+        publicSlashCommand(::I18nTestNamedArguments) {
+            name = "command.apple"
+            description = "command.apple"
+
+            action {
+                respond {
+                    content = translate(
+                        "command.apple.response",
+                        mapOf(
+                            "name" to arguments.name,
+                            "appleCount" to arguments.count
+                        )
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -106,5 +124,17 @@ internal class I18nTestArguments : Arguments() {
                 listOf("Banana", "Apple", "Cherry").forEach { choice(it, it) }
             }
         }
+    }
+}
+
+internal class I18nTestNamedArguments : Arguments() {
+    val name by string {
+        name = "command.apple.argument.name"
+        description = "command.apple.argument.name"
+    }
+
+    val count by int {
+        name = "command.apple.argument.count"
+        description = "command.apple.argument.count"
     }
 }

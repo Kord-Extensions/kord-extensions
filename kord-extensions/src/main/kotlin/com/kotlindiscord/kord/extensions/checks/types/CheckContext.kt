@@ -153,8 +153,30 @@ public open class CheckContext<out T : Event>(public val event: T, public val lo
     /** Quick access to translate strings using this check context's [locale]. **/
     public fun translate(
         key: String,
-        bundle: String? = defaultBundle,
+        bundle: String?,
         replacements: Array<Any?> = arrayOf()
+    ): String =
+        translations.translate(key, locale, bundleName = bundle, replacements = replacements)
+
+    /** Quick access to translate strings using this check context's [locale]. **/
+    public fun translate(
+        key: String,
+        replacements: Array<Any?> = arrayOf()
+    ): String =
+        translations.translate(key, locale, bundleName = defaultBundle, replacements = replacements)
+
+    /** Quick access to translate strings using this check context's [locale]. **/
+    public fun translate(
+        key: String,
+        replacements: Map<String, Any?>
+    ): String =
+        translations.translate(key, locale, bundleName = defaultBundle, replacements = replacements)
+
+    /** Quick access to translate strings using this check context's [locale]. **/
+    public fun translate(
+        key: String,
+        bundle: String?,
+        replacements: Map<String, Any?>
     ): String =
         translations.translate(key, locale, bundleName = bundle, replacements = replacements)
 

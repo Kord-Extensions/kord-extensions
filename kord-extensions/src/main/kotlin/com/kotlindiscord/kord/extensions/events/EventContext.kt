@@ -47,21 +47,25 @@ public open class EventContext<T : Event>(
         bundleName: String?,
         replacements: Array<Any?> = arrayOf()
     ): String {
-        val eventObj = event as Event
-        var locale: Locale? = null
+        val locale: Locale? = resolveLocale()
 
-        val guild = guildFor(eventObj)
-        val channel = channelFor(eventObj)
-        val user = userFor(eventObj)
-
-        for (resolver in eventHandler.extension.bot.settings.i18nBuilder.localeResolvers) {
-            val result = resolver(guild, channel, user, interactionFor(eventObj))
-
-            if (result != null) {
-                locale = result
-                break
-            }
+        return if (locale != null) {
+            translationsProvider.translate(key, locale, bundleName, replacements)
+        } else {
+            translationsProvider.translate(key, bundleName, replacements)
         }
+    }
+
+    /**
+     * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
+     * configured locale resolvers.
+     */
+    public suspend fun translate(
+        key: String,
+        bundleName: String?,
+        replacements: Map<String, Any?>
+    ): String {
+        val locale: Locale? = resolveLocale()
 
         return if (locale != null) {
             translationsProvider.translate(key, locale, bundleName, replacements)
@@ -78,4 +82,30 @@ public open class EventContext<T : Event>(
         key: String,
         replacements: Array<Any?> = arrayOf()
     ): String = translate(key, eventHandler.extension.bundle, replacements)
+
+    /**
+     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
+     */
+    public suspend fun translate(
+        key: String,
+        replacements: Map<String, Any?>
+    ): String = translate(key, eventHandler.extension.bundle, replacements)
+
+    private suspend fun resolveLocale(): Locale? {
+        val eventObj = event as Event
+
+        val guild = guildFor(eventObj)
+        val channel = channelFor(eventObj)
+        val user = userFor(eventObj)
+
+        for (resolver in eventHandler.extension.bot.settings.i18nBuilder.localeResolvers) {
+            val result = resolver(guild, channel, user, interactionFor(eventObj))
+
+            if (result != null) {
+                return result
+            }
+        }
+        return null
+    }
 }

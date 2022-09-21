@@ -120,7 +120,7 @@ public open class ResourceBundleTranslations(
         return result
     }
 
-    override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Array<Any?>): String {
+    private fun getTranslatedString(key: String, locale: Locale, bundleName: String?): String {
         var string = try {
             get(key, locale, bundleName)
         } catch (e: MissingResourceException) {
@@ -134,10 +134,7 @@ public open class ResourceBundleTranslations(
 
                 string = get(key, locale, KORDEX_KEY)
             }
-
-            val formatter = MessageFormat(string, locale)
-
-            formatter.format(replacements)
+            string
         } catch (e: MissingResourceException) {
             logger.trace {
                 if (bundleName == null) {
@@ -149,6 +146,22 @@ public open class ResourceBundleTranslations(
 
             key
         }
+    }
+
+    override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Array<Any?>): String {
+        val string = getTranslatedString(key, locale, bundleName)
+
+        val formatter = MessageFormat(string, locale)
+
+        return formatter.format(replacements)
+    }
+
+    override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Map<String, Any?>): String {
+        val string = getTranslatedString(key, locale, bundleName)
+
+        val formatter = MessageFormat(string, locale)
+
+        return formatter.format(replacements)
     }
 
     private fun ResourceBundle.getStringOrNull(key: String): String? {
