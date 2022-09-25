@@ -159,6 +159,28 @@ public class ValidationContext<out T>(public val value: T, public val context: C
     ): String =
         translations.translate(key, context.getLocale(), bundleName = bundle, replacements = replacements)
 
+    /** Quick access to translate strings using this validator context's [locale]. **/
+    public suspend fun translate(
+        key: String,
+        replacements: Array<Any?> = arrayOf()
+    ): String =
+        translations.translate(key, context.getLocale(), bundleName = defaultBundle, replacements = replacements)
+
+    /** Quick access to translate strings using this validator context's [locale]. **/
+    public suspend fun translate(
+        key: String,
+        replacements: Map<String, Any?>
+    ): String =
+        translations.translate(key, context.getLocale(), bundleName = defaultBundle, replacements = replacements)
+
+    /** Quick access to translate strings using this validator context's [locale]. **/
+    public suspend fun translate(
+        key: String,
+        bundle: String?,
+        replacements: Map<String, Any?>
+    ): String =
+        translations.translate(key, context.getLocale(), bundleName = bundle, replacements = replacements)
+
     /**
      * If this validator has failed, throw a [DiscordRelayedException] with the translated message, if any.
      */

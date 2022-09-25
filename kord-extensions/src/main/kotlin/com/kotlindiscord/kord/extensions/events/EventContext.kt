@@ -75,7 +75,7 @@ public open class EventContext<T : Event>(
     }
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * Given a translation key and possible replacements, return the translation for the given locale in the
      * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
      */
     public suspend fun translate(
@@ -84,7 +84,7 @@ public open class EventContext<T : Event>(
     ): String = translate(key, eventHandler.extension.bundle, replacements)
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * Given a translation key and possible replacements, return the translation for the given locale in the
      * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
      */
     public suspend fun translate(
@@ -106,6 +106,7 @@ public open class EventContext<T : Event>(
                 return result
             }
         }
+
         return null
     }
 }

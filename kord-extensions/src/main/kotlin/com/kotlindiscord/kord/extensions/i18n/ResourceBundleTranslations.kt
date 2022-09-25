@@ -59,7 +59,7 @@ public open class ResourceBundleTranslations(
     ): ResourceBundle = ResourceBundle.getBundle(bundle, locale, control)
 
     /**
-     * Retrieves a pair of the [ResourceBundle] and the overide resource bundle for [bundleName] in locale.
+     * Retrieves a pair of the [ResourceBundle] and the override resource bundle for [bundleName] in locale.
      */
     @Throws(MissingResourceException::class)
     protected open fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
@@ -120,7 +120,12 @@ public open class ResourceBundleTranslations(
         return result
     }
 
-    private fun getTranslatedString(key: String, locale: Locale, bundleName: String?): String {
+    /**
+     * Retrieve a translated string from a [key] in a given [bundleName].
+     *
+     * The string's parameters are not replaced.
+     */
+    protected fun getTranslatedString(key: String, locale: Locale, bundleName: String?): String {
         var string = try {
             get(key, locale, bundleName)
         } catch (e: MissingResourceException) {

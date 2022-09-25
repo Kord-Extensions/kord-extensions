@@ -146,7 +146,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     }
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * Given a translation key and possible replacements, return the translation for the given locale in the
      * component's configured bundle, for the locale provided by the bot's configured locale resolvers.
      */
     public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(

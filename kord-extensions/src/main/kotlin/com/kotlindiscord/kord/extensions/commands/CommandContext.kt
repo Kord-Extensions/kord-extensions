@@ -120,7 +120,7 @@ public abstract class CommandContext(
     }
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * Given a translation key and possible replacements, return the translation for the given locale in the
      * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
      */
     public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
@@ -130,7 +130,7 @@ public abstract class CommandContext(
     )
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * Given a translation key and possible replacements, return the translation for the given locale in the
      * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
      */
     public suspend fun translate(key: String, replacements: Map<String, Any?>): String = translate(
