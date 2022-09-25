@@ -129,4 +129,13 @@ public open class ChatCommandContext<T : Arguments>(
         replacements: Array<Any?> = arrayOf(),
         useReply: Boolean = true
     ): Message = respond(translate(key, command.resolvedBundle, replacements), useReply)
+
+    /**
+     * Convenience function allowing for message responses with translated content.
+     */
+    public suspend fun Message.respondTranslated(
+        key: String,
+        replacements: Map<String, Any?>,
+        useReply: Boolean = true
+    ): Message = respond(translate(key, command.resolvedBundle, replacements), useReply)
 }
