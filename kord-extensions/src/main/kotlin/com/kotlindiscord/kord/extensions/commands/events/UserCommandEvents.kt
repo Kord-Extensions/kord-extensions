@@ -15,7 +15,7 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
 /** Basic event emitted when a user command is invoked. **/
 public interface UserCommandInvocationEvent<C : UserCommand<*>> :
-    CommandInvocationEvent<C, UserCommandInteractionCreateEvent>
+    ApplicationCommandInvocationEvent<C, UserCommandInteractionCreateEvent>
 
 /** Event emitted when an ephemeral user command is invoked. **/
 public data class EphemeralUserCommandInvocationEvent(

@@ -172,6 +172,7 @@ public open class ExtensibleBot(
         }
 
     /** This function sets up all of the bot's default event listeners. **/
+    @OptIn(PrivilegedIntent::class)
     public open suspend fun registerListeners() {
         on<GuildCreateEvent> {
             withLock {  // If configured, this won't be concurrent, saving larger bots from spammy rate limits

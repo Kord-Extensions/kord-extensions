@@ -40,9 +40,14 @@ public class PublicMessageCommand(
     }
 
     override suspend fun call(event: MessageCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(PublicMessageCommandInvocationEvent(this, event))
+        val invocationEvent = PublicMessageCommandInvocationEvent(this, event)
+        emitEventAsync(invocationEvent)
 
         try {
+            // cooldown and rate-limits
+            if (useLimited(invocationEvent)) return
+
+            // checks
             if (!runChecks(event, cache)) {
                 emitEventAsync(
                     PublicMessageCommandFailedChecksEvent(
@@ -89,6 +94,7 @@ public class PublicMessageCommand(
             body(context)
         } catch (t: Throwable) {
             emitEventAsync(PublicMessageCommandFailedWithExceptionEvent(this, event, t))
+            onSuccessUseLimitUpdate(context, invocationEvent, false)
 
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -101,6 +107,7 @@ public class PublicMessageCommand(
             return
         }
 
+        onSuccessUseLimitUpdate(context, invocationEvent, true)
         emitEventAsync(PublicMessageCommandSucceededEvent(this, event))
     }
 

@@ -25,7 +25,7 @@ import java.util.*
 public open class ChatSubCommand<T : Arguments>(
     extension: Extension,
     arguments: (() -> T)? = null,
-    public open val parent: ChatGroupCommand<out Arguments>,
+    public override val parent: ChatGroupCommand<out Arguments>,
 ) : ChatCommand<T>(extension, arguments) {
 
     override suspend fun runChecks(

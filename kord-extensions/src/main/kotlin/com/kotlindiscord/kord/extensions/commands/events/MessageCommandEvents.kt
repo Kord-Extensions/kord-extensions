@@ -15,7 +15,7 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
 /** Basic event emitted when a message command is invoked. **/
 public interface MessageCommandInvocationEvent<C : MessageCommand<*>> :
-    CommandInvocationEvent<C, MessageCommandInteractionCreateEvent>
+    ApplicationCommandInvocationEvent<C, MessageCommandInteractionCreateEvent>
 
 /** Event emitted when an ephemeral message command is invoked. **/
 public data class EphemeralMessageCommandInvocationEvent(

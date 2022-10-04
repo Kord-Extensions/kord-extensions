@@ -46,9 +46,14 @@ public class EphemeralSlashCommand<A : Arguments>(
     }
 
     override suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(EphemeralSlashCommandInvocationEvent(this, event))
+        val invocationEvent = EphemeralSlashCommandInvocationEvent(this, event)
+        emitEventAsync(invocationEvent)
 
         try {
+            // cooldown and rate-limits
+            if (useLimited(invocationEvent)) return
+
+            // checks
             if (!runChecks(event, cache)) {
                 emitEventAsync(
                     EphemeralSlashCommandFailedChecksEvent(
@@ -120,6 +125,7 @@ public class EphemeralSlashCommand<A : Arguments>(
             body(context)
         } catch (t: Throwable) {
             emitEventAsync(EphemeralSlashCommandFailedWithExceptionEvent(this, event, t))
+            onSuccessUseLimitUpdate(context, invocationEvent, false)
 
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -132,6 +138,7 @@ public class EphemeralSlashCommand<A : Arguments>(
             return
         }
 
+        onSuccessUseLimitUpdate(context, invocationEvent, true)
         emitEventAsync(EphemeralSlashCommandSucceededEvent(this, event))
     }
 

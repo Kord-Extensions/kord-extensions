@@ -55,6 +55,12 @@ public open class ChatCommand<T : Arguments>(
     /** Whether to allow the parser to parse keyword arguments. Defaults to `true`. **/
     public open var allowKeywordArguments: Boolean = true
 
+    /** @suppress **/
+    public open val commands: MutableList<ChatCommand<out Arguments>> = mutableListOf()
+
+    /** @suppress **/
+    public open val parent: ChatGroupCommand<out Arguments>? = null
+
     /**
      * @suppress
      */
@@ -352,11 +358,16 @@ public open class ChatCommand<T : Arguments>(
         parser: StringParser,
         argString: String,
         skipChecks: Boolean = false,
-        cache: MutableStringKeyedMap<Any> = mutableMapOf()
+        cache: MutableStringKeyedMap<Any> = mutableMapOf(),
     ): Unit = withLock {
-        emitEventAsync(ChatCommandInvocationEvent(this, event))
+        val invocationEvent = ChatCommandInvocationEvent(this, event)
+        emitEventAsync(invocationEvent)
 
         try {
+            // cooldown and rate-limits
+            if (useLimited(invocationEvent)) return@withLock
+
+            // checks
             if (!skipChecks && !runChecks(event, cache = cache)) {
                 emitEventAsync(
                     ChatCommandFailedChecksEvent(
@@ -439,6 +450,7 @@ public open class ChatCommand<T : Arguments>(
             this.body(context)
         } catch (t: Throwable) {
             emitEventAsync(ChatCommandFailedWithExceptionEvent(this, event, t))
+            onSuccessUseLimitUpdate(context, invocationEvent, false)
 
             if (t is DiscordRelayedException) {
                 event.message.respond {
@@ -522,10 +534,20 @@ public open class ChatCommand<T : Arguments>(
                     )
                 }
             }
-
             return@withLock
         }
+        onSuccessUseLimitUpdate(context, invocationEvent, true)
 
         emitEventAsync(ChatCommandSucceededEvent(this, event))
     }
+
+    /** Override this to implement the useLimited logic for your subclass. **/
+    private suspend fun useLimited(invocationEvent: ChatCommandInvocationEvent): Boolean =
+        isOnCooldown(invocationEvent) || isRateLimited(invocationEvent)
+
+    private suspend fun isRateLimited(invocationEvent: ChatCommandInvocationEvent): Boolean =
+        settings.chatCommandsBuilder.useLimiterBuilder.rateLimiter.checkCommandRatelimit(invocationEvent)
+
+    private suspend fun isOnCooldown(invocationEvent: ChatCommandInvocationEvent): Boolean =
+        settings.chatCommandsBuilder.useLimiterBuilder.cooldownHandler.checkCommandOnCooldown(invocationEvent)
 }

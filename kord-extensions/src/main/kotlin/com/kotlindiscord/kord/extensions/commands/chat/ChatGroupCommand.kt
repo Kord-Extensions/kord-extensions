@@ -37,13 +37,10 @@ private val logger = KotlinLogging.logger {}
 public open class ChatGroupCommand<T : Arguments>(
     extension: Extension,
     arguments: (() -> T)? = null,
-    public open val parent: ChatGroupCommand<out Arguments>? = null
+    public override val parent: ChatGroupCommand<out Arguments>? = null
 ) : ChatCommand<T>(extension, arguments) {
     /** @suppress **/
     public val botSettings: ExtensibleBotBuilder by inject()
-
-    /** @suppress **/
-    public open val commands: MutableList<ChatCommand<out Arguments>> = mutableListOf()
 
     override lateinit var name: String
 

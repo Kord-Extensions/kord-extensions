@@ -47,9 +47,14 @@ public class PublicSlashCommand<A : Arguments>(
     }
 
     override suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(PublicSlashCommandInvocationEvent(this, event))
+        val invocationEvent = PublicSlashCommandInvocationEvent(this, event)
+        emitEventAsync(invocationEvent)
 
         try {
+            // cooldown and rate-limits
+            if (useLimited(invocationEvent)) return
+
+            // checks
             if (!runChecks(event, cache)) {
                 emitEventAsync(
                     PublicSlashCommandFailedChecksEvent(
@@ -108,6 +113,7 @@ public class PublicSlashCommand<A : Arguments>(
             body(context)
         } catch (t: Throwable) {
             emitEventAsync(PublicSlashCommandFailedWithExceptionEvent(this, event, t))
+            onSuccessUseLimitUpdate(context, invocationEvent, false)
 
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -120,6 +126,7 @@ public class PublicSlashCommand<A : Arguments>(
             return
         }
 
+        onSuccessUseLimitUpdate(context, invocationEvent, true)
         emitEventAsync(PublicSlashCommandSucceededEvent(this, event))
     }
 

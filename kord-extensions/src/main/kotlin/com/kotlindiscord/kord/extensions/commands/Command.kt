@@ -13,11 +13,16 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.events.CommandEvent
+import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.types.Lockable
+import com.kotlindiscord.kord.extensions.usagelimits.DiscriminatingContext
+import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.CooldownType
+import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.RateLimit
+import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.RateLimitType
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
@@ -29,6 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.time.Duration
 
 /**
  * Abstract base class representing the few things that command objects can have in common.
@@ -78,6 +84,45 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /**
+     * @suppress
+     */
+    public open val cooldownMap: MutableMap<CooldownType, suspend (context: DiscriminatingContext) -> Duration> =
+        HashMap()
+
+    /**
+     * @suppress
+     */
+    public open val ratelimitMap: MutableMap<RateLimitType, suspend (context: DiscriminatingContext) -> RateLimit> =
+        HashMap()
+
+    // region: DSL functions
+
+    /**
+     * Defines a cooldown for this command.
+     *
+     * @param cooldownType The type of cooldown.
+     * @param func Can be run when the cooldown gets updated.
+     */
+    public open fun cooldown(cooldownType: CooldownType, func: suspend (context: DiscriminatingContext) -> Duration) {
+        cooldownMap[cooldownType] = func
+    }
+
+    /**
+     * Defines a rateLimit for this command.
+     *
+     * @param rateLimitType The type of rateLimit.
+     * @param func Can be run when the usageHistory gets updated.
+     */
+    public open fun ratelimit(
+        rateLimitType: RateLimitType,
+        func: suspend (context: DiscriminatingContext) -> RateLimit,
+    ) {
+        ratelimitMap[rateLimitType] = func
+    }
+
+    // endregion
+
+    /**
      * An internal function used to ensure that all of a command's required arguments are present and correct.
      *
      * @throws InvalidCommandException Thrown when a required argument hasn't been set or is invalid.
@@ -98,6 +143,15 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
         kord.launch {
             extension.bot.send(event)
         }
+
+    internal suspend fun onSuccessUseLimitUpdate(
+        commandContext: CommandContext,
+        invocationEvent: CommandInvocationEvent<*, *>,
+        success: Boolean
+    ) {
+        settings.chatCommandsBuilder.useLimiterBuilder.cooldownHandler
+            .onExecCooldownUpdate(commandContext, invocationEvent, success)
+    }
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(DiscordRelayedException::class)

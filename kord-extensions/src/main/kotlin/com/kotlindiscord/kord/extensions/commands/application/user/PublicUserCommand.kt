@@ -40,9 +40,14 @@ public class PublicUserCommand(
     }
 
     override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(PublicUserCommandInvocationEvent(this, event))
+        val invocationEvent = PublicUserCommandInvocationEvent(this, event)
+        emitEventAsync(invocationEvent)
 
         try {
+            // cooldown and rate-limits
+            if (useLimited(invocationEvent)) return
+
+            // checks
             if (!runChecks(event, cache)) {
                 emitEventAsync(
                     PublicUserCommandFailedChecksEvent(
@@ -89,6 +94,7 @@ public class PublicUserCommand(
             body(context)
         } catch (t: Throwable) {
             emitEventAsync(PublicUserCommandFailedWithExceptionEvent(this, event, t))
+            onSuccessUseLimitUpdate(context, invocationEvent, true)
 
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -99,6 +105,7 @@ public class PublicUserCommand(
             handleError(context, t)
         }
 
+        onSuccessUseLimitUpdate(context, invocationEvent, true)
         emitEventAsync(PublicUserCommandSucceededEvent(this, event))
     }
 

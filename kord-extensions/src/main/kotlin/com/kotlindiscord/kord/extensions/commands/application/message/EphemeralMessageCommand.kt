@@ -28,7 +28,7 @@ public typealias InitialEphemeralMessageResponseBuilder =
 
 /** Ephemeral message command. **/
 public class EphemeralMessageCommand(
-    extension: Extension
+    extension: Extension,
 ) : MessageCommand<EphemeralMessageCommandContext>(extension) {
     /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialEphemeralMessageResponseBuilder = null
@@ -39,9 +39,14 @@ public class EphemeralMessageCommand(
     }
 
     override suspend fun call(event: MessageCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(EphemeralMessageCommandInvocationEvent(this, event))
+        val invocationEvent = EphemeralMessageCommandInvocationEvent(this, event)
+        emitEventAsync(invocationEvent)
 
         try {
+            // cooldown and rate-limits
+            if (useLimited(invocationEvent)) return
+
+            // checks
             if (!runChecks(event, cache)) {
                 emitEventAsync(
                     EphemeralMessageCommandFailedChecksEvent(
@@ -88,6 +93,7 @@ public class EphemeralMessageCommand(
             body(context)
         } catch (t: Throwable) {
             emitEventAsync(EphemeralMessageCommandFailedWithExceptionEvent(this, event, t))
+            onSuccessUseLimitUpdate(context, invocationEvent, false)
 
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -99,6 +105,7 @@ public class EphemeralMessageCommand(
 
             return
         }
+        onSuccessUseLimitUpdate(context, invocationEvent, true)
 
         emitEventAsync(EphemeralMessageCommandSucceededEvent(this, event))
     }
@@ -106,7 +113,7 @@ public class EphemeralMessageCommand(
     override suspend fun respondText(
         context: EphemeralMessageCommandContext,
         message: String,
-        failureType: FailureReason<*>
+        failureType: FailureReason<*>,
     ) {
         context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }

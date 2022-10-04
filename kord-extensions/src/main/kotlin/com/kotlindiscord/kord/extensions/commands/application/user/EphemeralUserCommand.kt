@@ -39,9 +39,14 @@ public class EphemeralUserCommand(
     }
 
     override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(EphemeralUserCommandInvocationEvent(this, event))
+        val invocationEvent = EphemeralUserCommandInvocationEvent(this, event)
+        emitEventAsync(invocationEvent)
 
         try {
+            // cooldown and rate-limits
+            if (useLimited(invocationEvent)) return
+
+            // checks
             if (!runChecks(event, cache)) {
                 emitEventAsync(
                     EphemeralUserCommandFailedChecksEvent(
@@ -88,7 +93,7 @@ public class EphemeralUserCommand(
             body(context)
         } catch (t: Throwable) {
             emitEventAsync(EphemeralUserCommandFailedWithExceptionEvent(this, event, t))
-
+            onSuccessUseLimitUpdate(context, invocationEvent, false)
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
 
@@ -96,8 +101,10 @@ public class EphemeralUserCommand(
             }
 
             handleError(context, t)
+            return
         }
 
+        onSuccessUseLimitUpdate(context, invocationEvent, true)
         emitEventAsync(EphemeralUserCommandSucceededEvent(this, event))
     }
 

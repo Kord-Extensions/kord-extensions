@@ -28,6 +28,11 @@ import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.storage.DataAdapter
 import com.kotlindiscord.kord.extensions.storage.toml.TomlDataAdapter
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.usagelimits.*
+import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.CooldownHandler
+import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.CooldownType
+import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.DefaultCooldownHandler
+import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.*
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
@@ -62,8 +67,10 @@ import org.koin.logger.slf4jLogger
 import java.io.File
 import java.nio.file.Path
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.io.path.Path
 import kotlin.io.path.div
+import kotlin.time.Duration
 import dev.kord.common.Locale as KLocale
 
 internal typealias LocaleResolver = suspend (
@@ -286,6 +293,7 @@ public open class ExtensibleBotBuilder {
      *
      * @see Intents.IntentsBuilder
      */
+    @OptIn(PrivilegedIntent::class)
     @BotBuilderDSL
     public fun intents(
         addDefaultIntents: Boolean = true,
@@ -1162,12 +1170,25 @@ public open class ExtensibleBotBuilder {
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var registryBuilder: () -> ChatCommandRegistry = { ChatCommandRegistry() }
 
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var useLimiterBuilder: UseLimiterBuilder = UseLimiterBuilder()
+
         /**
          * List of command checks.
          *
          * These checks will be checked against all commands.
          */
         public val checkList: MutableList<ChatCommandCheck> = mutableListOf()
+
+        /**
+         * DSL function used to configure the bot's chat command use limiters.
+         *
+         * @see
+         */
+        @BotBuilderDSL
+        public suspend fun useLimiter(builder: suspend UseLimiterBuilder.() -> Unit) {
+            builder(useLimiterBuilder)
+        }
 
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
@@ -1258,6 +1279,9 @@ public open class ExtensibleBotBuilder {
          * These checks will be checked against all user commands.
          */
         public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
+
+        /** @suppress Builder that shouldn't be set directly by the user. **/
+        public var useLimiterBuilder: UseLimiterBuilder = UseLimiterBuilder()
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake?) {
@@ -1355,6 +1379,33 @@ public open class ExtensibleBotBuilder {
          */
         public fun userCommandCheck(check: UserCommandCheck) {
             userCommandChecks.add(check)
+        }
+    }
+
+    /** Builder used for configuring cool-downs and rate-limits on bot commands. **/
+    @BotBuilderDSL
+    public class UseLimiterBuilder {
+
+        /** Ratelimit handler, supply your implementation to customize the behaviour. **/
+        public var rateLimiter: RateLimiter = DefaultRateLimiter()
+
+        /** Cooldown handler, supply your implementation to customize the behaviour. **/
+        public var cooldownHandler: CooldownHandler = DefaultCooldownHandler()
+
+        /** Bot wide ratelimit configuration, you should probably use the [ratelimit] function instead. **/
+        public var rateLimits: HashMap<RateLimitType, suspend (DiscriminatingContext) -> RateLimit> = HashMap()
+
+        /** Bot wide cooldown configuration, you should probably use the [cooldown] function instead. **/
+        public var cooldowns: HashMap<CooldownType, suspend (DiscriminatingContext) -> Duration> = HashMap()
+
+        /** Configures a bot wide ratelimit by type. **/
+        public fun ratelimit(type: RateLimitType, func: suspend (DiscriminatingContext) -> RateLimit) {
+            rateLimits[type] = func
+        }
+
+        /** Configures a bot wide cooldown by type. **/
+        public fun cooldown(type: CooldownType, func: suspend (DiscriminatingContext) -> Duration) {
+            cooldowns[type] = func
         }
     }
 }

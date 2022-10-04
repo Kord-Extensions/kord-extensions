@@ -16,7 +16,7 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
 /** Basic event emitted when a slash command is invoked. **/
 public interface SlashCommandInvocationEvent<C : SlashCommand<*, *>> :
-    CommandInvocationEvent<C, ChatInputCommandInteractionCreateEvent>
+    ApplicationCommandInvocationEvent<C, ChatInputCommandInteractionCreateEvent>
 
 /** Event emitted when an ephemeral slash command is invoked. **/
 public data class EphemeralSlashCommandInvocationEvent(

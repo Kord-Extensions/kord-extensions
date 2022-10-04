@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.CooldownType
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
@@ -22,6 +23,8 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.event.Event
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.collections.HashMap
+import kotlin.time.Duration
 
 /**
  * Light wrapper class representing the context for a command's action.
@@ -49,6 +52,12 @@ public abstract class CommandContext(
 
     /** Cached locale variable, stored and retrieved by [getLocale]. **/
     public open var resolvedLocale: Locale? = null
+
+    /**
+     * Progressive cooldown counters, can be set using [incCooldown], [decCooldown], [setCooldown]
+     * These cooldowns are stored after command execution.
+     * **/
+    public open var cooldownCounters: MutableMap<CooldownType, Duration> = HashMap()
 
     /** Called before processing, used to populate any extra variables from event data. **/
     public abstract suspend fun populate()
@@ -114,4 +123,36 @@ public abstract class CommandContext(
         command.resolvedBundle,
         replacements
     )
+
+    /**
+     * Increases the cooldown for [cooldownType] with [amount] duration.
+     *
+     * @return the new cooldown duration for [cooldownType]
+     */
+    public fun incCooldown(cooldownType: CooldownType, amount: Duration): Duration {
+        val currentCooldown = cooldownCounters[cooldownType] ?: Duration.ZERO
+        val sum = currentCooldown + amount
+        cooldownCounters[cooldownType] = sum
+        return sum
+    }
+
+    /**
+     * Decreases the cooldown for [cooldownType] with [amount] duration.
+     *
+     * @return the new cooldown duration for [cooldownType]
+     */
+    public fun decCooldown(cooldownType: CooldownType, amount: Duration): Duration {
+        val currentCooldown = cooldownCounters[cooldownType] ?: Duration.ZERO
+        val difference = currentCooldown - amount
+        val boundedDifference = if (difference < Duration.ZERO) Duration.ZERO else difference
+        cooldownCounters[cooldownType] = boundedDifference
+        return boundedDifference
+    }
+
+    /**
+     * Sets the cooldown for [cooldownType] to [amount] duration.
+     */
+    public fun setCooldown(cooldownType: CooldownType, amount: Duration) {
+        cooldownCounters[cooldownType] = amount
+    }
 }
