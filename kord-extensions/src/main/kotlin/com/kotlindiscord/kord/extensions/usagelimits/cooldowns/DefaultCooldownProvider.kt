@@ -4,13 +4,13 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.events.ChatCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.SlashCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.usagelimits.DiscriminatingContext
-import org.koin.java.KoinJavaComponent.inject
+import com.kotlindiscord.kord.extensions.utils.getKoin
 import kotlin.time.Duration
 
 /** Default [CooldownProvider] implementation, this serves as a usable example. **/
 public class DefaultCooldownProvider : CooldownProvider {
 
-    private val settings: ExtensibleBotBuilder by inject(ExtensibleBotBuilder::class.java)
+    private val settings: ExtensibleBotBuilder by lazy { getKoin().get() }
 
     /** Fetches/resolves the configured cooldown [Duration] for the given [type] and [context]. **/
     override suspend fun getCooldown(context: DiscriminatingContext, type: CooldownType): Duration {

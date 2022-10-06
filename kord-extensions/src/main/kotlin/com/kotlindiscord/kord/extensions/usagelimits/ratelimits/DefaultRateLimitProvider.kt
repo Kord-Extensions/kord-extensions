@@ -5,12 +5,12 @@ import com.kotlindiscord.kord.extensions.commands.events.ChatCommandInvocationEv
 import com.kotlindiscord.kord.extensions.commands.events.SlashCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.usagelimits.CachedUsageLimitType
 import com.kotlindiscord.kord.extensions.usagelimits.DiscriminatingContext
-import org.koin.java.KoinJavaComponent.inject
+import com.kotlindiscord.kord.extensions.utils.getKoin
 
 /** Default [RateLimitProvider] implementation, this serves as a usable example. **/
 public class DefaultRateLimitProvider : RateLimitProvider {
 
-    private val settings: ExtensibleBotBuilder by inject(ExtensibleBotBuilder::class.java)
+    private val settings: ExtensibleBotBuilder by lazy { getKoin().get()  }
 
     public override suspend fun getRateLimit(context: DiscriminatingContext, type: CachedUsageLimitType): RateLimit {
         return when (context.event) {
