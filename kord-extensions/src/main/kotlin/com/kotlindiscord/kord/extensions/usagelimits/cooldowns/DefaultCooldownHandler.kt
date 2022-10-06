@@ -37,22 +37,33 @@ public open class DefaultCooldownHandler : CooldownHandler {
     override suspend fun checkCommandOnCooldown(context: DiscriminatingContext): Boolean {
         val hitCooldowns = ArrayList<Triple<CooldownType, UsageHistory, Long>>()
         val currentTime = System.currentTimeMillis()
+        val encapsulateStart = currentTime - backOffTime.inWholeMilliseconds
         var shouldSendMessage = true
 
         for (type in CachedUsageLimitType.values()) {
             val until = type.getCooldown(context)
             val usageHistory = type.getUsageHistory(context)
+
+            // keeps only the crossedCooldowns which are in the cooldowns range.
+            var i = 0
+            while (i < usageHistory.crossedCooldowns.size && usageHistory.crossedCooldowns[i] < encapsulateStart) {
+                usageHistory.crossedCooldowns.removeAt(i++)
+            }
+
             if (until > currentTime) {
                 if (!shouldSendMessage(until, usageHistory, type)) shouldSendMessage = false
+                usageHistory.crossedCooldowns.add(currentTime)
 
                 hitCooldowns.add(Triple(type, usageHistory, until))
             }
+
+            type.setUsageHistory(context, usageHistory)
         }
 
         if (shouldSendMessage) {
-            val (maxType, maxUsageHistory, maxUntil) = hitCooldowns.maxBy {
+            val (maxType, maxUsageHistory, maxUntil) = hitCooldowns.maxByOrNull {
                 it.third
-            }
+            } ?: return false
             sendCooldownMessage(context, maxType, maxUsageHistory, maxUntil)
         }
 
@@ -66,7 +77,8 @@ public open class DefaultCooldownHandler : CooldownHandler {
         cooldownUntil: Long,
         usageHistory: UsageHistory,
         type: RateLimitType,
-    ): Boolean = usageHistory.crossedCooldowns.last() < System.currentTimeMillis() - backOffTime.inWholeMilliseconds
+    ): Boolean =
+        (usageHistory.crossedCooldowns.lastOrNull() ?: 0) < System.currentTimeMillis() - backOffTime.inWholeMilliseconds
 
     /**
      * Sends a message in the discord channel where the command was used with information about what cooldown
@@ -102,15 +114,16 @@ public open class DefaultCooldownHandler : CooldownHandler {
         success: Boolean
     ) {
         if (!success) return
-        for ((t, u) in commandContext.command.cooldownMap) {
-            val commandDuration = u(context)
+        for (t in CachedUsageLimitType.values()) {
+            val u = commandContext.command.cooldownMap[t]
+            val commandDuration = u?.let { it(context) } ?: Duration.ZERO
             val providedCooldown = cooldownProvider.getCooldown(context, t)
             val progressiveCommandDuration = commandContext.cooldownCounters[t] ?: Duration.ZERO
 
             val cooldowns = arrayOf(commandDuration, providedCooldown, progressiveCommandDuration)
             val longestDuration = cooldowns.max()
 
-            t.setCooldown(context, longestDuration.inWholeMilliseconds)
+            t.setCooldown(context, System.currentTimeMillis() + longestDuration.inWholeMilliseconds)
         }
     }
 }

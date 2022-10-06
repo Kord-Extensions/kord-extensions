@@ -52,8 +52,7 @@ public open class DefaultRateLimiter : RateLimiter {
             }
             i = 0
 
-            // keeps only the crossedLimits which is in the rateLimit's range, this is a subjective take.
-            // You can implement this how you want.
+            // keeps only the crossedLimits which are in the rateLimit's range.
             while (i < usageHistory.crossedLimits.size && usageHistory.crossedLimits[i] < encapsulateStart) {
                 usageHistory.crossedLimits.removeAt(i++)
             }
@@ -68,9 +67,9 @@ public open class DefaultRateLimiter : RateLimiter {
         }
 
         if (shouldSendMessage) {
-            val (maxType, maxUsageHistory, maxRateLimit) = hitRateLimits.maxBy { (_, usageHistory, rateLimit) ->
+            val (maxType, maxUsageHistory, maxRateLimit) = hitRateLimits.maxByOrNull { (_, usageHistory, rateLimit) ->
                 rateLimit.duration.minus(usageHistory.usages.first().milliseconds)
-            }
+            } ?: return false
             sendRateLimitedMessage(context, maxType, maxUsageHistory, maxRateLimit)
         }
 
@@ -84,7 +83,8 @@ public open class DefaultRateLimiter : RateLimiter {
         usageHistory: UsageHistory,
         rateLimit: RateLimit,
         type: RateLimitType,
-    ): Boolean = System.currentTimeMillis() - usageHistory.crossedLimits.last() > backOffTime.inWholeMilliseconds
+    ): Boolean =
+        System.currentTimeMillis() - (usageHistory.crossedLimits.lastOrNull() ?: 0) > backOffTime.inWholeMilliseconds
 
     /**
      * Sends a message in the discord channel where the command was used with information about what ratelimit
