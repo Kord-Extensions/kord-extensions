@@ -9,6 +9,9 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // a specific user can have a usageLimit
     COMMAND_USER {
+        private val userCommandCooldowns: HashMap<Pair<Snowflake, String>, Long> = HashMap()
+        private val userCommandHistory: MutableMap<Pair<Snowflake, String>, UsageHistory> = HashMap()
+
         override fun getCooldown(context: DiscriminatingContext): Long {
             val commandId = context.event.command.hashCode().toString()
             val userId = context.user.id
@@ -40,6 +43,10 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // a specific user can have a usageLimit in a specific channel for a command
     COMMAND_USER_CHANNEL {
+        private val userChannelCommandCooldowns: HashMap<Triple<Snowflake, Snowflake, String>, Long> = HashMap()
+        private val userChannelCommandUsageHistory: MutableMap<Triple<Snowflake, Snowflake, String>, UsageHistory> =
+            HashMap()
+
         override fun getCooldown(context: DiscriminatingContext): Long {
             val commandId = context.event.command.hashCode().toString()
             val userId = context.user.id
@@ -75,6 +82,10 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // user usageLimit in specific guild for a command
     COMMAND_USER_GUILD {
+        private val userGuildCommandCooldowns: HashMap<Triple<Snowflake, Snowflake, String>, Long> = HashMap()
+        private val userGuildCommandUsageHistory: MutableMap<Triple<Snowflake, Snowflake, String>, UsageHistory> =
+            HashMap()
+
         override fun getCooldown(context: DiscriminatingContext): Long {
             val commandId = context.event.command.hashCode().toString()
             val userId = context.user.id
@@ -110,6 +121,9 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // a specific user can have a usageLimit across all commands
     GLOBAL_USER {
+        private val userGlobalCooldowns: HashMap<Snowflake, Long> = HashMap()
+        private val userGlobalHistory: MutableMap<Snowflake, UsageHistory> = HashMap()
+
         override fun getCooldown(context: DiscriminatingContext): Long =
             userGlobalCooldowns[context.user.id] ?: 0
 
@@ -127,6 +141,9 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // a specific user can have a usageLimit in a specific channel across all commands
     GLOBAL_USER_CHANNEL {
+        private val userChannelCooldowns: HashMap<Pair<Snowflake, Snowflake>, Long> = HashMap()
+        private val userChannelUsageHistory: MutableMap<Pair<Snowflake, Snowflake>, UsageHistory> = HashMap()
+
         override fun getCooldown(context: DiscriminatingContext): Long =
             userChannelCooldowns[context.user.id to context.channel.id] ?: 0
 
@@ -144,6 +161,9 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // user usageLimit in specific guild across all commands
     GLOBAL_USER_GUILD {
+        private val userGuildCooldowns: HashMap<Pair<Snowflake, Snowflake>, Long> = HashMap()
+        private val userGuildUsageHistory: MutableMap<Pair<Snowflake, Snowflake>, UsageHistory> = HashMap()
+
         override fun getCooldown(context: DiscriminatingContext): Long {
             val guildId = context.guildId ?: return 0
             return userGuildCooldowns[context.user.id to guildId] ?: 0
@@ -167,6 +187,9 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // a usageLimit across all commands :thonk: (don't use this lol)
     GLOBAL {
+        private var globalCooldown: Long = 0
+        private var globalHistory: UsageHistory = UsageHistoryImpl()
+
         override fun getCooldown(context: DiscriminatingContext): Long = globalCooldown
 
         override fun setCooldown(context: DiscriminatingContext, until: Long) {
@@ -182,6 +205,9 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // a usageLimit for a specific channel across all commands
     GLOBAL_CHANNEL {
+        private val channelCooldowns: HashMap<Snowflake, Long> = HashMap()
+        private val channelUsageHistory: MutableMap<Snowflake, UsageHistory> = HashMap()
+
         override fun getCooldown(context: DiscriminatingContext): Long = channelCooldowns[context.channel.id] ?: 0
 
         override fun setCooldown(context: DiscriminatingContext, until: Long) {
@@ -198,6 +224,9 @@ public enum class CachedUsageLimitType : UsageLimitType {
 
     // a usageLimit for a guild across all commands
     GLOBAL_GUILD {
+        private val guildCooldowns: HashMap<Snowflake, Long> = HashMap()
+        private val guildUsageHistory: MutableMap<Snowflake, UsageHistory> = HashMap()
+
         override fun getCooldown(context: DiscriminatingContext): Long {
             val guildId = context.guildId ?: return 0
             return guildCooldowns[guildId] ?: 0
@@ -218,31 +247,4 @@ public enum class CachedUsageLimitType : UsageLimitType {
             guildUsageHistory[guildId] = usageHistory
         }
     };
-
-    internal val userCommandCooldowns: HashMap<Pair<Snowflake, String>, Long> = HashMap()
-    internal val userChannelCommandCooldowns: HashMap<Triple<Snowflake, Snowflake, String>, Long> = HashMap()
-    internal val userGuildCommandCooldowns: HashMap<Triple<Snowflake, Snowflake, String>, Long> = HashMap()
-    internal val userGlobalCooldowns: HashMap<Snowflake, Long> = HashMap()
-    internal val userChannelCooldowns: HashMap<Pair<Snowflake, Snowflake>, Long> = HashMap()
-    internal val userGuildCooldowns: HashMap<Pair<Snowflake, Snowflake>, Long> = HashMap()
-    internal var globalCooldown: Long = 0
-    internal val channelCooldowns: HashMap<Snowflake, Long> = HashMap()
-    internal val guildCooldowns: HashMap<Snowflake, Long> = HashMap()
-
-    internal val userChannelUsageHistory: MutableMap<Pair<Snowflake, Snowflake>, UsageHistory> = HashMap()
-    internal val userChannelCommandUsageHistory: MutableMap<Triple<Snowflake, Snowflake, String>, UsageHistory> =
-        HashMap()
-
-    internal val userGuildUsageHistory: MutableMap<Pair<Snowflake, Snowflake>, UsageHistory> = HashMap()
-    internal val userGuildCommandUsageHistory: MutableMap<Triple<Snowflake, Snowflake, String>, UsageHistory> =
-        HashMap()
-
-    internal val guildUsageHistory: MutableMap<Snowflake, UsageHistory> = HashMap()
-
-    internal val channelUsageHistory: MutableMap<Snowflake, UsageHistory> = HashMap()
-
-    internal val userGlobalHistory: MutableMap<Snowflake, UsageHistory> = HashMap()
-    internal val userCommandHistory: MutableMap<Pair<Snowflake, String>, UsageHistory> = HashMap()
-
-    internal var globalHistory: UsageHistory = UsageHistoryImpl()
 }
