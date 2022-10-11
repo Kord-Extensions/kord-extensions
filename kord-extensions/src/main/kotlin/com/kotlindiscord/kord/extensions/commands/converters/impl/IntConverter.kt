@@ -23,6 +23,9 @@ private const val DEFAULT_RADIX = 10
 
 /**
  * Argument converter for integer arguments, converting them into [Int].
+ *
+ * @property maxValue The maximum value allowed for this argument.
+ * @property minValue The minimum value allowed for this argument.
  */
 @Converter(
     "int",
@@ -38,8 +41,8 @@ private const val DEFAULT_RADIX = 10
 )
 public class IntConverter(
     private val radix: Int = DEFAULT_RADIX,
-    private val maxValue: Int? = null,
-    private val minValue: Int? = null,
+    public val maxValue: Int? = null,
+    public val minValue: Int? = null,
 
     override var validator: Validator<Int> = null
 ) : SingleConverter<Int>() {

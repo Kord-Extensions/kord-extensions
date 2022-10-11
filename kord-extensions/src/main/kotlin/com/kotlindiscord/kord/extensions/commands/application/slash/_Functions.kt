@@ -70,7 +70,7 @@ public suspend fun <T : Arguments> SlashCommand<*, *>.ephemeralSubCommand(
     arguments: () -> T,
     body: suspend EphemeralSlashCommand<T>.() -> Unit
 ): EphemeralSlashCommand<T> {
-    val commandObj = EphemeralSlashCommand(extension, arguments, parentCommand, parentGroup)
+    val commandObj = EphemeralSlashCommand(extension, arguments, this, parentGroup)
     body(commandObj)
 
     return ephemeralSubCommand(commandObj)
@@ -139,7 +139,7 @@ public suspend fun <T : Arguments> SlashCommand<*, *>.publicSubCommand(
     arguments: () -> T,
     body: suspend PublicSlashCommand<T>.() -> Unit
 ): PublicSlashCommand<T> {
-    val commandObj = PublicSlashCommand(extension, arguments, parentCommand, parentGroup)
+    val commandObj = PublicSlashCommand(extension, arguments, this, parentGroup)
     body(commandObj)
 
     return publicSubCommand(commandObj)

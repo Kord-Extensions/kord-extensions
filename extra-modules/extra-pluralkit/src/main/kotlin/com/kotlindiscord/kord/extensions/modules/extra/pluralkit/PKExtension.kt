@@ -46,12 +46,14 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.request.KtorRequestException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Clock
+import mu.KotlinLogging
 import kotlin.time.Duration.Companion.seconds
 
 const val NEGATIVE_EMOTE = "❌"
@@ -61,6 +63,10 @@ const val POSITIVE_EMOTE = "✅"
 class PKExtension : Extension() {
     override val name: String = "ext-pluralkit"
     override val bundle: String = "kordex.pluralkit"
+
+    private val logger = KotlinLogging.logger(
+        "com.kotlindiscord.kord.extensions.modules.extra.pluralkit.PKExtension"
+    )
 
     private val guildConfig = StorageUnit(
         StorageType.Config,
@@ -145,10 +151,16 @@ class PKExtension : Extension() {
 
                 val channel = topChannelFor(event)!!.asChannelOf<TopGuildMessageChannel>()
 
-                val webhook = channel
-                    .asChannelOf<TopGuildMessageChannel>()
-                    .webhooks
-                    .firstOrNull { it.id == webhookId }
+                val webhook = try {
+                    channel
+                        .asChannelOf<TopGuildMessageChannel>()
+                        .webhooks
+                        .firstOrNull { it.id == webhookId }
+                } catch (e: KtorRequestException) {
+                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel.id}" }
+
+                    null
+                }
 
                 if (webhook == null || webhook.creatorId != config.botId) {
                     return@action
@@ -220,10 +232,16 @@ class PKExtension : Extension() {
 
                 val channel = topChannelFor(event)!!.asChannelOf<TopGuildMessageChannel>()
 
-                val webhook = channel
-                    .asChannelOf<TopGuildMessageChannel>()
-                    .webhooks
-                    .firstOrNull { it.id == webhookId }
+                val webhook = try {
+                    channel
+                        .asChannelOf<TopGuildMessageChannel>()
+                        .webhooks
+                        .firstOrNull { it.id == webhookId }
+                } catch (e: KtorRequestException) {
+                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel.id}" }
+
+                    null
+                }
 
                 if (webhook == null || webhook.creatorId != config.botId) {
                     kord.launch {
@@ -281,10 +299,16 @@ class PKExtension : Extension() {
 
                 val channel = topChannelFor(event)!!.asChannelOf<TopGuildMessageChannel>()
 
-                val webhook = channel
-                    .asChannelOf<TopGuildMessageChannel>()
-                    .webhooks
-                    .firstOrNull { it.id == webhookId }
+                val webhook = try {
+                    channel
+                        .asChannelOf<TopGuildMessageChannel>()
+                        .webhooks
+                        .firstOrNull { it.id == webhookId }
+                } catch (e: KtorRequestException) {
+                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel.id}" }
+
+                    null
+                }
 
                 if (webhook == null || webhook.creatorId != config.botId) {
                     kord.launch {
