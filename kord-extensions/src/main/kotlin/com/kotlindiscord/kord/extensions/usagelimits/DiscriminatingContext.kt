@@ -3,9 +3,11 @@ package com.kotlindiscord.kord.extensions.usagelimits
 import com.kotlindiscord.kord.extensions.commands.events.ApplicationCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.ChatCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.cache.data.UserData
+import java.util.*
 
 /** Data holder for information about command invocation. **/
 public data class DiscriminatingContext(
@@ -18,6 +20,8 @@ public data class DiscriminatingContext(
     public val guildId: Snowflake?,
     /** Command invoker's [UserData]. **/
     public val event: CommandInvocationEvent<*, *>,
+    /** Locale of this command's executor. **/
+    public val locale: suspend () -> Locale
 ) {
     public constructor(
         event: ChatCommandInvocationEvent,
@@ -25,7 +29,8 @@ public data class DiscriminatingContext(
         event.event.message.data.author,
         event.event.message.channel,
         event.event.message.data.guildId.value,
-        event
+        event,
+        { event.event.getLocale() },
     )
 
     public constructor(
@@ -34,6 +39,7 @@ public data class DiscriminatingContext(
         event.event.interaction.user.data,
         event.event.interaction.channel,
         event.event.interaction.invokedCommandGuildId,
-        event
+        event,
+        { event.event.getLocale() }
     )
 }

@@ -78,6 +78,7 @@ public open class DefaultCooldownHandler : CooldownHandler {
         usageHistory: UsageHistory,
         type: RateLimitType,
     ): Boolean =
+        @Suppress("UnnecessaryParentheses")
         (usageHistory.crossedCooldowns.lastOrNull() ?: 0) < System.currentTimeMillis() - backOffTime.inWholeMilliseconds
 
     /**
@@ -88,7 +89,7 @@ public open class DefaultCooldownHandler : CooldownHandler {
      *
      * @param context the [DiscriminatingContext] that caused this ratelimit hit
      * @param usageHistory the involved [UsageHistory]
-     * @param cooldownUntil the involved [epochMillis][Long] timestamp which indicated when the cooldown will ended
+     * @param cooldownUntil the involved [epochMillis][Long] timestamp which indicated when the cooldown will end
      */
     override suspend fun sendCooldownMessage(
         context: DiscriminatingContext,
@@ -98,7 +99,8 @@ public open class DefaultCooldownHandler : CooldownHandler {
     ) {
         val discordTimeStamp = Instant.fromEpochMilliseconds(cooldownUntil)
             .toMessageFormat(DiscordTimestampStyle.RelativeTime)
-        val message = "You are on cooldown until $discordTimeStamp for $type"
+
+        val message = getMessage(context, discordTimeStamp, type)
 
         when (val discordEvent = context.event.event) {
             is MessageCreateEvent -> discordEvent.message.channel.createMessage(message)
@@ -108,10 +110,81 @@ public open class DefaultCooldownHandler : CooldownHandler {
         }
     }
 
+    private suspend fun getMessage(
+        context: DiscriminatingContext,
+        discordTimeStamp: String,
+        type: CooldownType,
+    ): String {
+        val locale = context.locale()
+        val translationsProvider = context.event.command.translationsProvider
+        val commandName = context.event.command.getFullName(locale)
+        return when (type) {
+            CachedUsageLimitType.COMMAND_USER -> translationsProvider.translate(
+                "cooldown.notifier.commandUser",
+                locale,
+                replacements = arrayOf(discordTimeStamp, commandName)
+            )
+
+            CachedUsageLimitType.COMMAND_USER_CHANNEL -> translationsProvider.translate(
+                "cooldown.notifier.commandUserChannel",
+                locale,
+                replacements = arrayOf(discordTimeStamp, commandName, context.channel.mention)
+            )
+
+            CachedUsageLimitType.COMMAND_USER_GUILD -> translationsProvider.translate(
+                "cooldown.notifier.commandUserGuild",
+                locale,
+                replacements = arrayOf(discordTimeStamp, commandName)
+            )
+
+            CachedUsageLimitType.GLOBAL_USER -> translationsProvider.translate(
+                "cooldown.notifier.globalUser",
+                locale,
+                replacements = arrayOf(discordTimeStamp)
+            )
+
+            CachedUsageLimitType.GLOBAL_USER_CHANNEL -> translationsProvider.translate(
+                "cooldown.notifier.globalUserChannel",
+                locale,
+                replacements = arrayOf(discordTimeStamp, context.channel.mention)
+            )
+
+            CachedUsageLimitType.GLOBAL_USER_GUILD -> translationsProvider.translate(
+                "cooldown.notifier.globalUserGuild",
+                locale,
+                replacements = arrayOf(discordTimeStamp)
+            )
+
+            CachedUsageLimitType.GLOBAL -> translationsProvider.translate(
+                "cooldown.notifier.global",
+                locale,
+                replacements = arrayOf(discordTimeStamp)
+            )
+
+            CachedUsageLimitType.GLOBAL_CHANNEL -> translationsProvider.translate(
+                "cooldown.notifier.globalChannel",
+                locale,
+                replacements = arrayOf(discordTimeStamp, commandName)
+            )
+
+            CachedUsageLimitType.GLOBAL_GUILD -> translationsProvider.translate(
+                "cooldown.notifier.globalGuild",
+                locale,
+                replacements = arrayOf(discordTimeStamp)
+            )
+
+            else -> translationsProvider.translate(
+                "cooldown.notifier.generic",
+                locale,
+                replacements = arrayOf(type.toString().lowercase())
+            )
+        }
+    }
+
     override suspend fun onExecCooldownUpdate(
         commandContext: CommandContext,
         context: DiscriminatingContext,
-        success: Boolean
+        success: Boolean,
     ) {
         if (!success) return
         for (t in CachedUsageLimitType.values()) {

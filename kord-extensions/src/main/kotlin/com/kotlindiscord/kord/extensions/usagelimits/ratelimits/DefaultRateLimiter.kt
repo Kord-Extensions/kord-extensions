@@ -61,6 +61,8 @@ public open class DefaultRateLimiter : RateLimiter {
                 hitRateLimits.add(Triple(type, usageHistory, rateLimit))
                 if (!shouldSendMessage(usageHistory, rateLimit, type)) shouldSendMessage = false
                 usageHistory.crossedLimits.add(currentTimeMillis)
+            } else {
+                usageHistory.usages.add(currentTimeMillis)
             }
 
             type.setUsageHistory(context, usageHistory)
@@ -86,6 +88,71 @@ public open class DefaultRateLimiter : RateLimiter {
     ): Boolean =
         System.currentTimeMillis() - (usageHistory.crossedLimits.lastOrNull() ?: 0) > backOffTime.inWholeMilliseconds
 
+    private suspend fun getMessage(
+        context: DiscriminatingContext,
+        discordTimeStamp: String,
+        type: RateLimitType,
+    ): String {
+        val locale = context.locale()
+        val translationsProvider = context.event.command.translationsProvider
+        val commandName = context.event.command.getFullName(locale)
+
+        /** "You are being RateLimited until $discordTimeStamp, please stop spamming.\n" +
+        " ${rateLimit.limit} actions per ${rateLimit.duration.toIsoString()} is the limit." **/
+        return when (type) {
+            CachedUsageLimitType.COMMAND_USER -> translationsProvider.translate(
+                "ratelimit.notifier.commandUser",
+                locale,
+                replacements = arrayOf(discordTimeStamp, commandName)
+            )
+            CachedUsageLimitType.COMMAND_USER_CHANNEL -> translationsProvider.translate(
+                "ratelimit.notifier.commandUserChannel",
+                locale,
+                replacements = arrayOf(discordTimeStamp, commandName, context.channel.mention)
+            )
+            CachedUsageLimitType.COMMAND_USER_GUILD -> translationsProvider.translate(
+                "ratelimit.notifier.commandUserGuild",
+                locale,
+                replacements = arrayOf(discordTimeStamp, commandName)
+            )
+            CachedUsageLimitType.GLOBAL_USER -> translationsProvider.translate(
+                "ratelimit.notifier.globalUser",
+                locale,
+                replacements = arrayOf(discordTimeStamp)
+            )
+            CachedUsageLimitType.GLOBAL_USER_CHANNEL -> translationsProvider.translate(
+                "ratelimit.notifier.globalUserChannel",
+                locale,
+                replacements = arrayOf(discordTimeStamp, context.channel.mention)
+            )
+            CachedUsageLimitType.GLOBAL_USER_GUILD -> translationsProvider.translate(
+                "ratelimit.notifier.globalUserGuild",
+                locale,
+                replacements = arrayOf(discordTimeStamp)
+            )
+            CachedUsageLimitType.GLOBAL -> translationsProvider.translate(
+                "ratelimit.notifier.global",
+                locale,
+                replacements = arrayOf(discordTimeStamp)
+            )
+            CachedUsageLimitType.GLOBAL_CHANNEL -> translationsProvider.translate(
+                "ratelimit.notifier.globalChannel",
+                locale,
+                replacements = arrayOf(discordTimeStamp, context.channel.mention)
+            )
+            CachedUsageLimitType.GLOBAL_GUILD -> translationsProvider.translate(
+                "ratelimit.notifier.globalGuild",
+                locale,
+                replacements = arrayOf(discordTimeStamp)
+            )
+            else -> translationsProvider.translate(
+                "ratelimit.notifier.generic",
+                locale,
+                replacements = arrayOf(type.toString().lowercase())
+            )
+        }
+    }
+
     /**
      * Sends a message in the discord channel where the command was used with information about what ratelimit
      * was hit and when the user can use the/a command again.
@@ -102,13 +169,12 @@ public open class DefaultRateLimiter : RateLimiter {
         usageHistory: UsageHistory,
         rateLimit: RateLimit,
     ) {
-        val restOfRateLimitDuration = rateLimit.duration.minus(usageHistory.usages.first().milliseconds)
+        val restOfRateLimitDuration =  rateLimit.duration -
+            (System.currentTimeMillis().milliseconds - usageHistory.usages.first().milliseconds)
         val endOfRateLimit = System.currentTimeMillis() + restOfRateLimitDuration.inWholeMilliseconds
-        val discordTimeStamp =
-            Instant.fromEpochMilliseconds(endOfRateLimit).toMessageFormat(DiscordTimestampStyle.RelativeTime)
-        val message =
-            "You are being RateLimited until $discordTimeStamp, please stop spamming.\n" +
-                " ${rateLimit.limit} actions per ${rateLimit.duration.toIsoString()} is the limit."
+        val discordTimeStamp = Instant.fromEpochMilliseconds(endOfRateLimit)
+            .toMessageFormat(DiscordTimestampStyle.RelativeTime)
+        val message = getMessage(context, discordTimeStamp, type)
 
         when (val discordEvent = context.event.event) {
             is MessageCreateEvent -> discordEvent.message.channel.createMessage(message)
