@@ -67,7 +67,6 @@ import org.koin.logger.slf4jLogger
 import java.io.File
 import java.nio.file.Path
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.io.path.Path
 import kotlin.io.path.div
 import kotlin.time.Duration
@@ -1282,6 +1281,16 @@ public open class ExtensibleBotBuilder {
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var useLimiterBuilder: UseLimiterBuilder = UseLimiterBuilder()
+
+        /**
+         * DSL function used to configure the bot's application command use limiters.
+         *
+         * @see
+         */
+        @BotBuilderDSL
+        public suspend fun useLimiter(builder: suspend UseLimiterBuilder.() -> Unit) {
+            builder(useLimiterBuilder)
+        }
 
         /** Set a guild ID to use for all global application commands. Intended for testing. **/
         public fun defaultGuild(id: Snowflake?) {
