@@ -233,11 +233,4 @@ public open class ChatGroupCommand<T : Arguments>(
             subCommand.call(event, commandName, StringParser(parser.consumeRemaining()), argString)
         }
     }
-
-    /** Get the full command name, translated, with parent commands taken into account. **/
-    public open suspend fun getFullTranslatedName(locale: Locale): String {
-        parent ?: return this.getTranslatedName(locale)
-
-        return parent!!.getFullTranslatedName(locale) + " " + this.getTranslatedName(locale)
-    }
 }

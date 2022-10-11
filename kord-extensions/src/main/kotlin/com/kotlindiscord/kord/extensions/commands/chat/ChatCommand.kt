@@ -170,6 +170,19 @@ public open class ChatCommand<T : Arguments>(
         return nameTranslationCache[locale]!!
     }
 
+    /**
+     * Returns the highest ancestor's name followed by its children's names.
+     * Optionally translatable.
+     */
+    override fun getFullName(locale: Locale?): String = locale?.let { getFullTranslatedName(it) }
+        ?: (this.parent?.getFullName()?.let { "$it $name" } ?: name)
+
+    /** Get the full command name, translated, with parent commands taken into account. **/
+    public open fun getFullTranslatedName(locale: Locale): String {
+        val parentCmd = parent ?: return this.getTranslatedName(locale)
+        return parentCmd.getFullTranslatedName(locale) + " " + this.getTranslatedName(locale)
+    }
+
     /** Return this command's aliases translated for the given locale, cached as required. **/
     public open fun getTranslatedAliases(locale: Locale): Set<String> {
         if (!aliasTranslationCache.containsKey(locale)) {

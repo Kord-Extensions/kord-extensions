@@ -29,6 +29,7 @@ import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
+import java.util.*
 
 /**
  * Slash command, executed directly in the chat input.
@@ -73,6 +74,19 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         settings.applicationCommandsBuilder.defaultGuild
     } else {
         null
+    }
+
+    /**
+     * Does not support translations because discord doesn't support them either.
+     * @param locale does not have effect here
+     * @return the highest ancestor's name followed by its children's names.
+     */
+    override fun getFullName(locale: Locale?): String {
+        val parentCmd = parentCommand
+        val parentGrp = parentGroup
+        if (parentCmd != null) return "${parentCmd.getFullName()} $name"
+        if (parentGrp != null) return "${parentGrp.parent.getFullName()} ${parentGrp.name} $name"
+        return name
     }
 
     override fun validate() {

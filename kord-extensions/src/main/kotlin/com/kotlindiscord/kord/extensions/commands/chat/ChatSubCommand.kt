@@ -11,7 +11,6 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.event.message.MessageCreateEvent
-import java.util.*
 
 /**
  * Class representing a subcommand.
@@ -35,20 +34,4 @@ public open class ChatSubCommand<T : Arguments>(
     ): Boolean =
         parent.runChecks(event, sendMessage, cache) &&
             super.runChecks(event, sendMessage, cache)
-
-    /** Get the full command name, translated, with parent commands taken into account. **/
-    public open suspend fun getFullTranslatedName(locale: Locale): String =
-        parent.getFullTranslatedName(locale) + " " + this.getTranslatedName(locale)
-
-    override fun getTranslatedName(locale: Locale): String {
-        if (!nameTranslationCache.containsKey(locale)) {
-            nameTranslationCache[locale] = translationsProvider.translate(
-                this.name,
-                this.resolvedBundle,
-                locale
-            ).lowercase()
-        }
-
-        return nameTranslationCache[locale]!!
-    }
 }
