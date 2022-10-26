@@ -20,6 +20,6 @@ data class PKMessage(
     val sender: Snowflake,
     val channel: Snowflake,
 
-    val system: PKSystem,
-    val member: PKMember,
+    val system: PKSystem? = null,
+    val member: PKMember? = null,
 )

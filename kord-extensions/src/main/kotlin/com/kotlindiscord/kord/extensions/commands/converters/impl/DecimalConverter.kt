@@ -22,6 +22,9 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 /**
  * Argument converter for decimal arguments, converting them into [Double].
  *
+ * @property maxValue The maximum value allowed for this argument.
+ * @property minValue The minimum value allowed for this argument.
+ *
  * @see decimal
  * @see decimalList
  */
@@ -36,8 +39,8 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
     ],
 )
 public class DecimalConverter(
-    private val maxValue: Double? = null,
-    private val minValue: Double? = null,
+    public val maxValue: Double? = null,
+    public val minValue: Double? = null,
 
     override var validator: Validator<Double> = null
 ) : SingleConverter<Double>() {
