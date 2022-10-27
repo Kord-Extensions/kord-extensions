@@ -24,7 +24,7 @@ internal const val PK_BASE_URL = "https://api.pluralkit.me/v2"
 internal const val MESSAGE_URL = "$PK_BASE_URL/messages/{id}"
 
 class PluralKit(baseUrl: String = PK_BASE_URL, cacheSize: Int = 10_000) {
-    private val _baseUrl: String = "$baseUrl/v2"
+    private val _baseUrl: String = baseUrl
     private val messageUrl: String = "${this._baseUrl}/messages/{id}"
     private val messageCache: LRUHashMap<String, PKMessage> = LRUHashMap(cacheSize)
 
