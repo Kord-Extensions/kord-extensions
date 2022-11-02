@@ -22,7 +22,7 @@ import net.peanuuutz.tomlkt.TomlComment
 @Suppress("DataClassShouldBeImmutable", "MagicNumber")
 data class PKGuildConfig(
     @TomlComment(
-        "Base URL to use when attempting to hit the PluralKit API, without the /vX used to specify the version."
+        "Base URL to use when attempting to hit the PluralKit API."
     )
     var apiUrl: String = "https://api.pluralkit.me/v2",
 
