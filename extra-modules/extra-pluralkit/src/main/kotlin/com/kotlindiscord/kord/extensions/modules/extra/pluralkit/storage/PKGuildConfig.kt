@@ -24,7 +24,7 @@ data class PKGuildConfig(
     @TomlComment(
         "Base URL to use when attempting to hit the PluralKit API, without the /vX used to specify the version."
     )
-    var apiUrl: String = "https://api.pluralkit.me",
+    var apiUrl: String = "https://api.pluralkit.me/v2",
 
     @TomlComment(
         "The ID of the PluralKit instance to use, if not the default instance."
