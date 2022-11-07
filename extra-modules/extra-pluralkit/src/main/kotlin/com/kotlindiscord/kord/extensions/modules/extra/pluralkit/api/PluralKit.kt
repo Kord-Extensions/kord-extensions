@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "UndocumentedPublicProperty",)
+@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "UndocumentedPublicProperty")
 
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api
 
@@ -20,15 +20,13 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 
-internal const val PK_BASE_URL = "https://api.pluralkit.me/v2"
-internal const val MESSAGE_URL = "$PK_BASE_URL/messages/{id}"
+internal const val PK_API_VERSION = 2
 
-class PluralKit(baseUrl: String = PK_BASE_URL, cacheSize: Int = 10_000) {
-    private val _baseUrl: String = baseUrl
-    private val messageUrl: String = "${this._baseUrl}/messages/{id}"
-    private val messageCache: LRUHashMap<String, PKMessage> = LRUHashMap(cacheSize)
-
+class PluralKit(private val baseUrl: String = "https://api.pluralkit.me", cacheSize: Int = 10_000) {
     private val logger = KotlinLogging.logger { }
+
+    private val messageUrl: String = "${this.baseUrl}/v$PK_API_VERSION/messages/{id}"
+    private val messageCache: LRUHashMap<String, PKMessage> = LRUHashMap(cacheSize)
 
     private val client = HttpClient {
         install(ContentNegotiation) {

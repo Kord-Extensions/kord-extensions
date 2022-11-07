@@ -22,7 +22,7 @@ import kotlinx.datetime.Clock
 public typealias LogBody = (suspend () -> Any?)?
 
 public suspend fun Extension.logRaw(builder: MessageCreateBuilder.() -> Unit): Message? {
-    val channel = kord.getGuild(TEST_SERVER_ID)
+    val channel = kord.getGuildOrNull(TEST_SERVER_ID)
         ?.channels
         ?.filter { it is TextChannel }
         ?.first {
