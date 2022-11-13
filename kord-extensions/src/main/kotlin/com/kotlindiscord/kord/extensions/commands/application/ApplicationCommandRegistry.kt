@@ -239,7 +239,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
-            kord.getGuild(command.guildId!!)
+            kord.getGuildOrNull(command.guildId!!)
         } else {
             null
         }
@@ -281,7 +281,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
-            kord.getGuild(command.guildId!!)
+            kord.getGuildOrNull(command.guildId!!)
         } else {
             null
         }
@@ -318,7 +318,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
-            kord.getGuild(command.guildId!!)
+            kord.getGuildOrNull(command.guildId!!)
         } else {
             null
         }

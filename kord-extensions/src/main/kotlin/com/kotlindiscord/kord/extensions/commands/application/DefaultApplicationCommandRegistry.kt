@@ -119,7 +119,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (guildId != null) {
-            kord.getGuild(guildId)
+            kord.getGuildOrNull(guildId)
                 ?: return logger.debug {
                     "Cannot register application commands for guild ID $guildId, " +
                         "as it seems to be missing."
