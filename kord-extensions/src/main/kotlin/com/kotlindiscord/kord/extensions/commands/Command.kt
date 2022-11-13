@@ -147,14 +147,11 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
     /** Returns the full hierarchy of names until this command, locale can be used for translation. **/
     public open fun getFullName(locale: Locale? = null): String = name
 
-    internal suspend fun onSuccessUseLimitUpdate(
+    internal open suspend fun onSuccessUseLimitUpdate(
         commandContext: CommandContext,
         invocationEvent: CommandInvocationEvent<*, *>,
         success: Boolean
-    ) {
-        settings.chatCommandsBuilder.useLimiterBuilder.cooldownHandler
-            .onExecCooldownUpdate(commandContext, invocationEvent, success)
-    }
+    ) { }
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(DiscordRelayedException::class)

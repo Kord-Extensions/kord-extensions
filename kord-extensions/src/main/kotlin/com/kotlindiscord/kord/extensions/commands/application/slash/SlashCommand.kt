@@ -9,8 +9,10 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.commands.application.Localized
+import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -74,6 +76,15 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         settings.applicationCommandsBuilder.defaultGuild
     } else {
         null
+    }
+
+    override suspend fun onSuccessUseLimitUpdate(
+        commandContext: CommandContext,
+        invocationEvent: CommandInvocationEvent<*, *>,
+        success: Boolean,
+    ) {
+        settings.applicationCommandsBuilder.useLimiterBuilder.cooldownHandler
+            .onExecCooldownUpdate(commandContext, invocationEvent, success)
     }
 
     /**

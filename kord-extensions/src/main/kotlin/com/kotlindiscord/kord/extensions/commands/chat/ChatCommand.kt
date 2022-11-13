@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.types.*
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
@@ -168,6 +169,15 @@ public open class ChatCommand<T : Arguments>(
         }
 
         return nameTranslationCache[locale]!!
+    }
+
+    override suspend fun onSuccessUseLimitUpdate(
+        commandContext: CommandContext,
+        invocationEvent: CommandInvocationEvent<*, *>,
+        success: Boolean,
+    ) {
+        settings.chatCommandsBuilder.useLimiterBuilder.cooldownHandler
+            .onExecCooldownUpdate(commandContext, invocationEvent, success)
     }
 
     /**
