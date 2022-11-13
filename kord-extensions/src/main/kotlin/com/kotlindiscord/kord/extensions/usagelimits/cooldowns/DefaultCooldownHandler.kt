@@ -24,12 +24,12 @@ import kotlin.time.Duration.Companion.seconds
  * want to create your own implementation. **/
 public open class DefaultCooldownHandler : CooldownHandler {
 
+    /** Cooldown settings provider, collects configured settings for cooldowns. **/
+    public open var cooldownProvider: CooldownProvider = DefaultCooldownProvider()
+
     /** Holds the message back-off duration, if the user triggered a cooldown within [backOffTime] ago and now,
      * no message will be sent as the user is considered spamming and wasting our discord api uses. **/
     public open var backOffTime: Duration = 10.seconds
-
-    // cooldown settings provider, collects configured settings for cooldowns :)
-    private val cooldownProvider = DefaultCooldownProvider()
 
     /**
      * Checks if the command should not be run due to a cooldown.
@@ -116,7 +116,8 @@ public open class DefaultCooldownHandler : CooldownHandler {
         }
     }
 
-    private suspend fun getMessage(
+    /** Returns a message with info about what cooldown has been hit. **/
+    public suspend fun getMessage(
         context: DiscriminatingContext,
         discordTimeStamp: String,
         type: CooldownType,

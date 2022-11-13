@@ -23,7 +23,8 @@ import kotlin.time.Duration.Companion.seconds
  * want to create your own implementation. **/
 public open class DefaultRateLimiter : RateLimiter {
 
-    private var rateLimitProvider: RateLimitProvider = DefaultRateLimitProvider()
+    /** rateLimit settings provider, collects configured settings for rateLimits. **/
+    public open var rateLimitProvider: RateLimitProvider = DefaultRateLimitProvider()
 
     /** Holds the message back-off duration, if the user triggered a ratelimit within [backOffTime] ago and now,
      * no message will be sent as the user is considered spamming and wasting our discord api uses. **/
@@ -94,7 +95,8 @@ public open class DefaultRateLimiter : RateLimiter {
     ): Boolean =
         System.currentTimeMillis() - (usageHistory.crossedLimits.lastOrNull() ?: 0) > backOffTime.inWholeMilliseconds
 
-    private suspend fun getMessage(
+    /** Returns a message with info about what ratelimit has been hit. **/
+    public suspend fun getMessage(
         context: DiscriminatingContext,
         discordTimeStamp: String,
         type: RateLimitType,
