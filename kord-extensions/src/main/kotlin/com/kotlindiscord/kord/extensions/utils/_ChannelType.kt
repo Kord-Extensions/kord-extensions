@@ -19,7 +19,6 @@ public fun ChannelType.toTranslationKey(): String = when (this) {
     ChannelType.GuildCategory -> "channelType.guildCategory"
     ChannelType.GuildNews -> "channelType.guildNews"
     ChannelType.GuildStageVoice -> "channelType.guildStageVoice"
-    ChannelType.GuildStore -> "channelType.guildStore"
     ChannelType.GuildText -> "channelType.guildText"
     ChannelType.GuildVoice -> "channelType.guildVoice"
     ChannelType.PublicNewsThread -> "channelType.publicNewsThread"
