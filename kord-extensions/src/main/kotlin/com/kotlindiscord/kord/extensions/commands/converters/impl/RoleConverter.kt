@@ -65,7 +65,7 @@ public class RoleConverter(
             context.getGuild()?.id
         } ?: return null
 
-        val guild: Guild = kord.getGuild(guildId) ?: return null
+        val guild: Guild = kord.getGuildOrNull(guildId) ?: return null
 
         @Suppress("MagicNumber")
         return if (arg.startsWith("<@&") && arg.endsWith(">")) { // It's a mention

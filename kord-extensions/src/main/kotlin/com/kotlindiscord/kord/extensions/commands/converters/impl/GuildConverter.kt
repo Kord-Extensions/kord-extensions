@@ -68,7 +68,7 @@ public class GuildConverter(
         try { // Try for a guild ID first
             val id = Snowflake(arg)
 
-            kord.getGuild(id)
+            kord.getGuildOrNull(id)
         } catch (e: NumberFormatException) { // It's not an ID, let's try the name
             kord.guilds.firstOrNull { it.name.equals(arg, true) }
         }

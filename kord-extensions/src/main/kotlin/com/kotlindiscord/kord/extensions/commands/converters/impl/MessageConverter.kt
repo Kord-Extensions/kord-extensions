@@ -129,7 +129,7 @@ public class MessageConverter(
                 )
             }
 
-            val channel: GuildChannel? = kord.getGuild(gid)?.getChannel(cid)
+            val channel: GuildChannel? = kord.getGuildOrNull(gid)?.getChannel(cid)
 
             if (channel == null) {
                 logger.trace { "Unable to find channel ($cid) for guild ($gid)." }
