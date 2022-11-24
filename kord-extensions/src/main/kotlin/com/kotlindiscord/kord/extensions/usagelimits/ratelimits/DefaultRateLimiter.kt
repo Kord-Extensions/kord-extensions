@@ -50,26 +50,20 @@ public open class DefaultRateLimiter : RateLimiter {
 
             val usageHistory = type.getUsageHistory(context)
             val encapsulateStart = currentTimeMillis - rateLimit.duration.inWholeMilliseconds
-            var i = 0
 
             // keeps only the usageHistory which is in the rateLimit's range,
             // usage that doesn't affect the ratelimit is thus discarded.
-            while (i < usageHistory.usages.size && usageHistory.usages[i] < encapsulateStart) {
-                usageHistory.usages.removeAt(i++)
-            }
-            i = 0
+            usageHistory.removeExpiredUsages(encapsulateStart)
 
             // keeps only the crossedLimits which are in the rateLimit's range.
-            while (i < usageHistory.crossedLimits.size && usageHistory.crossedLimits[i] < encapsulateStart) {
-                usageHistory.crossedLimits.removeAt(i++)
-            }
+            usageHistory.removeExpiredCrossedLimits(encapsulateStart)
 
             if (usageHistory.usages.size > rateLimit.limit) {
                 hitRateLimits.add(Triple(type, usageHistory, rateLimit))
                 if (!shouldSendMessage(usageHistory, rateLimit, type)) shouldSendMessage = false
-                usageHistory.crossedLimits.add(currentTimeMillis)
+                usageHistory.addCrossedLimit(currentTimeMillis)
             } else {
-                usageHistory.usages.add(currentTimeMillis)
+                usageHistory.addUsage(currentTimeMillis)
             }
 
             type.setUsageHistory(context, usageHistory)
@@ -113,46 +107,55 @@ public open class DefaultRateLimiter : RateLimiter {
                 locale,
                 replacements = arrayOf(discordTimeStamp, commandName)
             )
+
             CachedUsageLimitType.COMMAND_USER_CHANNEL -> translationsProvider.translate(
                 "ratelimit.notifier.commandUserChannel",
                 locale,
                 replacements = arrayOf(discordTimeStamp, commandName, context.channel.mention)
             )
+
             CachedUsageLimitType.COMMAND_USER_GUILD -> translationsProvider.translate(
                 "ratelimit.notifier.commandUserGuild",
                 locale,
                 replacements = arrayOf(discordTimeStamp, commandName)
             )
+
             CachedUsageLimitType.GLOBAL_USER -> translationsProvider.translate(
                 "ratelimit.notifier.globalUser",
                 locale,
                 replacements = arrayOf(discordTimeStamp)
             )
+
             CachedUsageLimitType.GLOBAL_USER_CHANNEL -> translationsProvider.translate(
                 "ratelimit.notifier.globalUserChannel",
                 locale,
                 replacements = arrayOf(discordTimeStamp, context.channel.mention)
             )
+
             CachedUsageLimitType.GLOBAL_USER_GUILD -> translationsProvider.translate(
                 "ratelimit.notifier.globalUserGuild",
                 locale,
                 replacements = arrayOf(discordTimeStamp)
             )
+
             CachedUsageLimitType.GLOBAL -> translationsProvider.translate(
                 "ratelimit.notifier.global",
                 locale,
                 replacements = arrayOf(discordTimeStamp)
             )
+
             CachedUsageLimitType.GLOBAL_CHANNEL -> translationsProvider.translate(
                 "ratelimit.notifier.globalChannel",
                 locale,
                 replacements = arrayOf(discordTimeStamp, context.channel.mention)
             )
+
             CachedUsageLimitType.GLOBAL_GUILD -> translationsProvider.translate(
                 "ratelimit.notifier.globalGuild",
                 locale,
                 replacements = arrayOf(discordTimeStamp)
             )
+
             else -> translationsProvider.translate(
                 "ratelimit.notifier.generic",
                 locale,
@@ -177,7 +180,7 @@ public open class DefaultRateLimiter : RateLimiter {
         usageHistory: UsageHistory,
         rateLimit: RateLimit,
     ) {
-        val restOfRateLimitDuration =  rateLimit.duration -
+        val restOfRateLimitDuration = rateLimit.duration -
             (System.currentTimeMillis().milliseconds - usageHistory.usages.first().milliseconds)
         val endOfRateLimit = System.currentTimeMillis() + restOfRateLimitDuration.inWholeMilliseconds
         val discordTimeStamp = Instant.fromEpochMilliseconds(endOfRateLimit)
