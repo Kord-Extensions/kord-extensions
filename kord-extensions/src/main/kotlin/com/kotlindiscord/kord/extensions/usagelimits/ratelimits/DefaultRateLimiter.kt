@@ -90,7 +90,7 @@ public open class DefaultRateLimiter : RateLimiter {
         System.currentTimeMillis() - (usageHistory.crossedLimits.lastOrNull() ?: 0) > backOffTime.inWholeMilliseconds
 
     /** Returns a message with info about what ratelimit has been hit. **/
-    public suspend fun getMessage(
+    public open suspend fun getMessage(
         context: DiscriminatingContext,
         discordTimeStamp: String,
         type: RateLimitType,

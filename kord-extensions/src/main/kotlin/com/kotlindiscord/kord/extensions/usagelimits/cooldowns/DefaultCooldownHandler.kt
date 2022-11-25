@@ -114,7 +114,7 @@ public open class DefaultCooldownHandler : CooldownHandler {
     }
 
     /** Returns a message with info about what cooldown has been hit. **/
-    public suspend fun getMessage(
+    public open suspend fun getMessage(
         context: DiscriminatingContext,
         discordTimeStamp: String,
         type: CooldownType,
