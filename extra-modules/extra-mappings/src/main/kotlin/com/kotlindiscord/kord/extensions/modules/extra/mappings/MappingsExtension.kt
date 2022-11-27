@@ -20,6 +20,7 @@ import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.builders.ExtMappingsBuilder
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.exceptions.UnsupportedNamespaceException
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.stroage.MappingsConfig
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.*
 import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
@@ -27,6 +28,8 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.plugins.extra.MappingsPlugin
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
+import com.kotlindiscord.kord.extensions.storage.StorageType
+import com.kotlindiscord.kord.extensions.storage.StorageUnit
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -58,6 +61,13 @@ class MappingsExtension : Extension() {
     private val logger = KotlinLogging.logger { }
     override val name: String = MappingsPlugin.PLUGIN_ID
 
+    private val guildConfig = StorageUnit(
+        StorageType.Config,
+        name,
+        "guild-config",
+        MappingsConfig::class
+        )
+
     override suspend fun setup() {
         // Fix issue where Linkie doesn't create its cache directory
         val cacheDirectory = Path("./.linkie-cache")
@@ -66,7 +76,7 @@ class MappingsExtension : Extension() {
         }
 
         val namespaces = mutableListOf<Namespace>()
-        val enabledNamespaces = builder.config.getEnabledNamespaces()
+        val enabledNamespaces = config().namespaces
 
         enabledNamespaces.forEach {
             when (it) {
@@ -100,15 +110,15 @@ class MappingsExtension : Extension() {
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
 
         val categoryCheck: SlashCommandCheck = {
-            allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
+            allowedCategory(config().allowedCategories, config().bannedCategories)
         }
 
         val channelCheck: SlashCommandCheck = {
-            allowedGuild(builder.config.getAllowedChannels(), builder.config.getBannedChannels())
+            allowedGuild(config().allowedChannels, config().bannedChannels)
         }
 
         val guildCheck: SlashCommandCheck = {
-            allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
+            allowedGuild(config().allowedGuilds, config().bannedChannels)
         }
 
         val yarnChannels = Channels.values().joinToString(", ") { "`${it.readableName}`" }
@@ -1040,7 +1050,7 @@ class MappingsExtension : Extension() {
         }
     }
 
-    private suspend fun getTimeout() = builder.config.getTimeout()
+    private suspend fun getTimeout() = config().timeout.toLong()
 
     private suspend fun CheckContextWithCache<ChatInputCommandInteractionCreateEvent>.customChecks(
         command: String,
@@ -1062,6 +1072,8 @@ class MappingsExtension : Extension() {
             }
         }
     }
+
+    private suspend fun config(): MappingsConfig = guildConfig.get() ?: guildConfig.save(MappingsConfig())
 
     companion object {
         private lateinit var builder: ExtMappingsBuilder
