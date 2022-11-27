@@ -43,8 +43,6 @@ dependencies {
 
     detektPlugins(libs.detekt)
 
-    implementation(libs.konf.core)
-    implementation(libs.konf.toml)
     implementation(libs.logging)
     implementation(libs.kotlin.stdlib)
 
