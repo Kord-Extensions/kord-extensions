@@ -66,7 +66,7 @@ class MappingsExtension : Extension() {
         name,
         "guild-config",
         MappingsConfig::class
-        )
+    )
 
     override suspend fun setup() {
         // Fix issue where Linkie doesn't create its cache directory
@@ -128,7 +128,7 @@ class MappingsExtension : Extension() {
             friendlyName: String,
             namespace: Namespace,
             arguments: () -> T,
-            customInfoCommand: (suspend PublicSlashCommandContext<out Arguments>.() -> Unit)? = null
+            customInfoCommand: (suspend PublicSlashCommandContext<out Arguments>.() -> Unit)? = null,
         ) = publicSlashCommand {
             name = parentName
             description = "Look up $friendlyName mappings."
@@ -672,7 +672,7 @@ class MappingsExtension : Extension() {
         type: String,
         channel: String? = null,
         queryProvider: suspend (QueryContext) -> QueryResult<A, B>,
-        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>
+        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>,
     ) where A : MappingsMetadata, B : List<*> {
         sentry.breadcrumb(BreadcrumbType.Query) {
             message = "Beginning mapping lookup"
@@ -1041,11 +1041,13 @@ class MappingsExtension : Extension() {
             } else {
                 MojangReleaseContainer.latestRelease
             }
+
             is YarnNamespace -> if (channel == "snapshot") {
                 YarnReleaseContainer.latestSnapshot
             } else {
                 YarnReleaseContainer.latestRelease
             }
+
             else -> null
         }
     }
@@ -1054,7 +1056,7 @@ class MappingsExtension : Extension() {
 
     private suspend fun CheckContextWithCache<ChatInputCommandInteractionCreateEvent>.customChecks(
         command: String,
-        namespace: Namespace
+        namespace: Namespace,
     ) {
         builder.commandChecks.forEach {
             it(command)()
