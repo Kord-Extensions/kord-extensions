@@ -146,7 +146,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
                                     converter.getErrorString(context),
                                 )
                             ),
@@ -173,7 +173,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
 
                                     converter.handleError(e, context)
                                 )
@@ -230,7 +230,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
 
                                     converter.handleError(e, context)
                                 )
@@ -283,7 +283,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
 
                                     converter.handleError(e, context)
                                 )
@@ -317,7 +317,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
                                     converter.getErrorString(context)
                                 )
                             ),
@@ -337,7 +337,11 @@ public open class ChatCommandParser : KordExKoinComponent {
                                     "argumentParser.error.notAllValid",
 
                                     replacements = arrayOf(
-                                        currentArg.displayName,
+                                        context.translate(
+                                            currentArg.displayName,
+                                            bundleName = converter.bundle
+                                        ),
+
                                         kwValue.size,
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
@@ -369,7 +373,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
 
                                     converter.handleError(e, context)
                                 )
@@ -403,7 +407,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
                                     converter.getErrorString(context),
                                 )
                             ),
@@ -423,7 +427,11 @@ public open class ChatCommandParser : KordExKoinComponent {
                                     "argumentParser.error.notAllValid",
 
                                     replacements = arrayOf(
-                                        currentArg.displayName,
+                                        context.translate(
+                                            currentArg.displayName,
+                                            bundleName = converter.bundle
+                                        ),
+
                                         kwValue.size,
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
@@ -457,7 +465,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
 
                                     converter.handleError(e, context)
                                 )
@@ -491,7 +499,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
                                     converter.getErrorString(context),
                                 )
                             ),
@@ -511,7 +519,11 @@ public open class ChatCommandParser : KordExKoinComponent {
                                     "argumentParser.error.notAllValid",
 
                                     replacements = arrayOf(
-                                        currentArg.displayName,
+                                        context.translate(
+                                            currentArg.displayName,
+                                            bundleName = converter.bundle
+                                        ),
+
                                         kwValue.size,
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
@@ -543,7 +555,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
 
                                     converter.handleError(e, context)
                                 )
@@ -577,7 +589,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
                                     converter.getErrorString(context),
                                 )
                             ),
@@ -597,7 +609,8 @@ public open class ChatCommandParser : KordExKoinComponent {
                                     "argumentParser.error.notAllValid",
 
                                     replacements = arrayOf(
-                                        currentArg.displayName,
+                                        context.translate(currentArg.displayName, bundleName = converter.bundle),
+
                                         kwValue.size,
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
@@ -629,7 +642,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
 
                                     converter.handleError(e, context)
                                 )
@@ -655,7 +668,7 @@ public open class ChatCommandParser : KordExKoinComponent {
                         "argumentParser.error.errorInArgument",
 
                         replacements = arrayOf(
-                            currentArg.displayName,
+                            context.translate(currentArg.displayName, bundleName = converter.bundle),
 
                             context.translate(
                                 "argumentParser.error.unknownConverterType",

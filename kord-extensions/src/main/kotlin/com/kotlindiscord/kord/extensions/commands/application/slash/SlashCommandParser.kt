@@ -89,7 +89,7 @@ public open class SlashCommandParser {
                             context.translate(
                                 "argumentParser.error.invalidValue",
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
                                     converter.getErrorString(context),
                                     currentValue
                                 )
@@ -142,7 +142,7 @@ public open class SlashCommandParser {
                             context.translate(
                                 "argumentParser.error.invalidValue",
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
                                     converter.getErrorString(context),
                                     currentValue
                                 )
