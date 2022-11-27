@@ -86,6 +86,9 @@ internal typealias FailureResponseBuilder =
 public open class ExtensibleBotBuilder {
     protected val logger: KLogger = KotlinLogging.logger {}
 
+    /** Called to create an [ExtensibleBot], can be set to the constructor of your own subtype if needed. **/
+    public var constructor: (ExtensibleBotBuilder, String) -> ExtensibleBot = ::ExtensibleBot
+
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
@@ -466,7 +469,7 @@ public open class ExtensibleBotBuilder {
 
         setupKoin()
 
-        val bot = ExtensibleBot(this, token)
+        val bot = constructor(this, token)
 
         loadModule { single { bot } bind ExtensibleBot::class }
 
@@ -555,7 +558,7 @@ public open class ExtensibleBotBuilder {
          * Number of messages to keep in the cache. Defaults to 10,000.
          *
          * To disable automatic configuration of the message cache, set this to `null` or `0`. You can configure the
-         * cache yourself using the [kordHook] function, and interact with the resulting [DataCache] object using the
+         * cache yourself using the [kord] function, and interact with the resulting [DataCache] object using the
          * [transformCache] function.
          */
         @Suppress("MagicNumber")
