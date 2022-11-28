@@ -61,10 +61,10 @@ class MappingsExtension : Extension() {
     private val logger = KotlinLogging.logger { }
     override val name: String = MappingsPlugin.PLUGIN_ID
 
-    private val guildConfig = StorageUnit(
+    private val config = StorageUnit(
         StorageType.Config,
         name,
-        "guild-config",
+        "config",
         MappingsConfig::class
     )
 
@@ -1075,7 +1075,7 @@ class MappingsExtension : Extension() {
         }
     }
 
-    private suspend fun config(): MappingsConfig = guildConfig.get() ?: guildConfig.save(MappingsConfig())
+    private suspend fun config(): MappingsConfig = config.get() ?: config.save(MappingsConfig())
 
     companion object {
         private lateinit var builder: ExtMappingsBuilder
