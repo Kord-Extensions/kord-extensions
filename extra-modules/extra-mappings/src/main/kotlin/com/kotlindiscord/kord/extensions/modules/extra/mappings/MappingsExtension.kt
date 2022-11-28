@@ -63,7 +63,7 @@ class MappingsExtension : Extension() {
 
     private val config = StorageUnit(
         StorageType.Config,
-        name,
+        "mappings",
         "config",
         MappingsConfig::class
     )
@@ -114,11 +114,11 @@ class MappingsExtension : Extension() {
         }
 
         val channelCheck: SlashCommandCheck = {
-            allowedGuild(config().allowedChannels, config().bannedChannels)
+            allowedChannel(config().allowedChannels, config().bannedChannels)
         }
 
         val guildCheck: SlashCommandCheck = {
-            allowedGuild(config().allowedGuilds, config().bannedChannels)
+            allowedGuild(config().allowedGuilds, config().bannedGuilds)
         }
 
         val yarnChannels = Channels.values().joinToString(", ") { "`${it.readableName}`" }

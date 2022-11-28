@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.storage.Data
 import dev.kord.common.entity.Snowflake
 import kotlinx.serialization.Serializable
 import net.peanuuutz.tomlkt.TomlComment
+import net.peanuuutz.tomlkt.TomlInteger
 
 @Serializable
 @Suppress("DataClassShouldBeImmutable")
@@ -61,5 +62,6 @@ data class MappingsConfig(
     @TomlComment(
         "How long to wait before closing mappings paginators (in seconds), defaults to 5 mins"
     )
-    var timeout: String = "300",
+    @TomlInteger(TomlInteger.Base.DEC)
+    var timeout: Int = 300,
 ) : Data
