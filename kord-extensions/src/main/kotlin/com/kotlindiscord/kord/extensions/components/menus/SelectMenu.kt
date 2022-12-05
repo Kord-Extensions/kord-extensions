@@ -37,7 +37,7 @@ public const val VALUE_MAX: Int = 100
 
 /** Abstract class representing a select (dropdown) menu component. **/
 public abstract class SelectMenu<C : SelectMenuContext>(
-    timeoutTask: Task?
+    timeoutTask: Task?,
 ) : ComponentWithAction<SelectMenuInteractionCreateEvent, C>(timeoutTask) {
     internal val logger: KLogger = KotlinLogging.logger {}
 
@@ -77,7 +77,7 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
         // TODO: Check this is fixed in later versions of the compiler
         // This is nullable like this due to a compiler bug: https://youtrack.jetbrains.com/issue/KT-51820
-        body: (suspend SelectOptionBuilder.() -> Unit)? = null
+        body: (suspend SelectOptionBuilder.() -> Unit)? = null,
     ) {
         val builder = SelectOptionBuilder(label, value)
 
@@ -105,9 +105,10 @@ public abstract class SelectMenu<C : SelectMenuContext>(
             maximumChoices = options.size
         }
 
-        builder.selectMenu(id) {
-            allowedValues = minimumChoices..maximumChoices!!
+        builder.stringSelect(id) {
+            this.allowedValues = minimumChoices..maximumChoices!!
 
+            @Suppress("DEPRECATION")  // Kord suppresses this in their own class
             this.options.addAll(this@SelectMenu.options)
             this.placeholder = this@SelectMenu.placeholder
 

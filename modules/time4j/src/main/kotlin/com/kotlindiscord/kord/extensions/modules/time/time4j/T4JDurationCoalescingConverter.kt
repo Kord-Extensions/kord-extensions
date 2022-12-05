@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
@@ -61,6 +62,8 @@ public class T4JDurationCoalescingConverter(
     override var validator: Validator<Duration<IsoUnit>> = null
 ) : CoalescingConverter<Duration<IsoUnit>>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+
     private val logger: KLogger = KotlinLogging.logger {}
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {

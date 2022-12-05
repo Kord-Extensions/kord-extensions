@@ -11,6 +11,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -42,6 +43,7 @@ public class GuildConverter(
     override var validator: Validator<Guild> = null
 ) : SingleConverter<Guild>() {
     override val signatureTypeString: String = "converters.guild.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -68,7 +70,7 @@ public class GuildConverter(
         try { // Try for a guild ID first
             val id = Snowflake(arg)
 
-            kord.getGuild(id)
+            kord.getGuildOrNull(id)
         } catch (e: NumberFormatException) { // It's not an ID, let's try the name
             kord.guilds.firstOrNull { it.name.equals(arg, true) }
         }

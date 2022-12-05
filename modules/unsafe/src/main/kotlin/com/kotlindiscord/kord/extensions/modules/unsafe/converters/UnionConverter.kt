@@ -19,6 +19,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -44,7 +45,7 @@ public class UnionConverter(
     typeName: String? = null,
     shouldThrow: Boolean = false,
 
-    override val bundle: String? = null,
+    override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
     override var validator: Validator<Any> = null
 ) : CoalescingConverter<Any>(shouldThrow) {
     private val translations: TranslationsProvider by inject()

@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -37,6 +38,7 @@ public class ColorConverter(
     override var validator: Validator<Color> = null
 ) : SingleConverter<Color>() {
     override val signatureTypeString: String = "converters.color.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false

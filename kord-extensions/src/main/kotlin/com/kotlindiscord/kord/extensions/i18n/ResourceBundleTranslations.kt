@@ -7,8 +7,11 @@
 package com.kotlindiscord.kord.extensions.i18n
 
 import com.ibm.icu.text.MessageFormat
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -177,13 +180,27 @@ public open class ResourceBundleTranslations(
         }
     }
 
-    private object Control : ResourceBundle.Control() {
+    private object Control : ResourceBundle.Control(), KordExKoinComponent {
+        val builder: ExtensibleBotBuilder by inject()
+
         override fun getFormats(baseName: String?): MutableList<String> {
             if (baseName == null) {
                 throw NullPointerException()
             }
 
             return FORMAT_PROPERTIES
+        }
+
+        override fun getFallbackLocale(baseName: String?, locale: Locale?): Locale? {
+            if (baseName == null) {
+                throw NullPointerException()
+            }
+
+            return if (locale == builder.i18nBuilder.defaultLocale) {
+                null
+            } else {
+                builder.i18nBuilder.defaultLocale
+            }
         }
     }
 }

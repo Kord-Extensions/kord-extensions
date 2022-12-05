@@ -168,7 +168,7 @@ public suspend fun <T : Event> CheckContext<T>.inGuild(id: Snowflake) {
     }
 
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
-    val guild = event.kord.getGuild(id)
+    val guild = event.kord.getGuildOrNull(id)
 
     if (guild == null) {
         logger.noGuildId(id)
@@ -193,7 +193,7 @@ public suspend fun <T : Event> CheckContext<T>.notInGuild(id: Snowflake) {
     }
 
     val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
-    val guild = event.kord.getGuild(id)
+    val guild = event.kord.getGuildOrNull(id)
 
     if (guild == null) {
         logger.noGuildId(id)

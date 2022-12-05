@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -59,6 +60,7 @@ public class MemberConverter(
     override var validator: Validator<Member> = null,
 ) : SingleConverter<Member>() {
     override val signatureTypeString: String = "converters.member.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val guild = context.getGuild()

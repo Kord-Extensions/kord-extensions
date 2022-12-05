@@ -31,9 +31,11 @@ import dev.kord.rest.builder.message.create.embed
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.network.sockets.*
+import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
@@ -228,7 +230,10 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             matches.joinToString("\n") { "* `$it`" }
 
         channel.createMessage {
-            addFile("matches.md", matchList.byteInputStream())
+            addFile(
+                "matches.md",
+                ChannelProvider { matchList.byteInputStream().toByteReadChannel() }
+            )
 
             embed {
                 title = "Phishing domain detected"
