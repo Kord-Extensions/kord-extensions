@@ -6,7 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.utils
 
-import dev.kord.core.behavior.interaction.suggestInt
+import dev.kord.core.behavior.interaction.suggestInteger
 import dev.kord.core.behavior.interaction.suggestNumber
 import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
@@ -45,7 +45,8 @@ public val AutoCompleteInteractionCreateEvent.focusedOption: OptionValue<*>
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestStringMap(
     map: Map<String, String>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
+    suggestInputWithoutMatches: Boolean = false,
 ) {
     val option = focusedOption.value as? String
     var options = map
@@ -59,7 +60,11 @@ public suspend inline fun AutoCompleteInteraction.suggestStringMap(
     }
 
     suggestString {
-        options.forEach(::choice)
+        if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
+            choice(option, option)
+        } else {
+            options.forEach(::choice)
+        }
     }
 }
 
@@ -69,7 +74,7 @@ public suspend inline fun AutoCompleteInteraction.suggestStringMap(
  */
 public suspend inline fun AutoCompleteInteraction.suggestStringCollection(
     collection: Collection<String>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
 ) {
     suggestStringMap(
         collection.associateBy { it },
@@ -80,7 +85,7 @@ public suspend inline fun AutoCompleteInteraction.suggestStringCollection(
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestIntMap(
     map: Map<String, Int>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
 ) {
     suggestLongMap(map.mapValues { it.value.toLong() }, strategy)
 }
@@ -91,7 +96,7 @@ public suspend inline fun AutoCompleteInteraction.suggestIntMap(
  */
 public suspend inline fun AutoCompleteInteraction.suggestIntCollection(
     collection: Collection<Int>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
 ) {
     suggestIntMap(
         collection.associateBy { it.toString() },
@@ -102,7 +107,8 @@ public suspend inline fun AutoCompleteInteraction.suggestIntCollection(
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestLongMap(
     map: Map<String, Long>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
+    suggestInputWithoutMatches: Boolean = false,
 ) {
     val option = focusedOption.value as? String
     var options = map
@@ -115,8 +121,16 @@ public suspend inline fun AutoCompleteInteraction.suggestLongMap(
         options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
     }
 
-    suggestInt {
-        options.forEach(::choice)
+    suggestInteger {
+        if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
+            val longValue = option.toLongOrNull()
+
+            if (longValue != null) {
+                choice(option, longValue)
+            }
+        } else {
+            options.forEach(::choice)
+        }
     }
 }
 
@@ -126,7 +140,7 @@ public suspend inline fun AutoCompleteInteraction.suggestLongMap(
  */
 public suspend inline fun AutoCompleteInteraction.suggestLongCollection(
     collection: Collection<Long>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
 ) {
     suggestLongMap(
         collection.associateBy { it.toString() },
@@ -137,7 +151,7 @@ public suspend inline fun AutoCompleteInteraction.suggestLongCollection(
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestDoubleMap(
     map: Map<String, Double>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
 ) {
     suggestNumberMap(map, strategy)
 }
@@ -148,7 +162,7 @@ public suspend inline fun AutoCompleteInteraction.suggestDoubleMap(
  */
 public suspend inline fun AutoCompleteInteraction.suggestDoubleCollection(
     collection: Collection<Double>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
 ) {
     suggestDoubleMap(
         collection.associateBy { it.toString() },
@@ -159,7 +173,8 @@ public suspend inline fun AutoCompleteInteraction.suggestDoubleCollection(
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestNumberMap(
     map: Map<String, Double>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
+    suggestInputWithoutMatches: Boolean = false,
 ) {
     val option = focusedOption.value as? String
     var options = map
@@ -173,7 +188,15 @@ public suspend inline fun AutoCompleteInteraction.suggestNumberMap(
     }
 
     suggestNumber {
-        options.forEach(::choice)
+        if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
+            val doubleValue = option.toDoubleOrNull()
+
+            if (doubleValue != null) {
+                choice(option, doubleValue)
+            }
+        } else {
+            options.forEach(::choice)
+        }
     }
 }
 
@@ -183,7 +206,7 @@ public suspend inline fun AutoCompleteInteraction.suggestNumberMap(
  */
 public suspend inline fun AutoCompleteInteraction.suggestNumberCollection(
     collection: Collection<Double>,
-    strategy: FilterStrategy = FilterStrategy.Prefix
+    strategy: FilterStrategy = FilterStrategy.Prefix,
 ) {
     suggestNumberMap(
         collection.associateBy { it.toString() },
