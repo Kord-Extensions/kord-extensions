@@ -127,6 +127,7 @@ public class I18nTestExtension : Extension() {
             }
 
             action {
+                // This command is expected to always fail, in order to test checks.
                 respond {
                     content = "It is impossible to get here."
                 }
@@ -138,6 +139,7 @@ public class I18nTestExtension : Extension() {
             description = "Command with arguments that always fail validations."
 
             action {
+                // This command is expected to always fail, in order to test argument validations.
                 respond {
                     content = "It is impossible to get here."
                 }
@@ -165,7 +167,7 @@ public class I18nTestExtension : Extension() {
                 // Translate with a different bundle, and positional parameters
                 add(translate("check.positionalParameters", "custom", arrayOf(user.mention, user.id)))
                 // Translate with default bundle, named parameters
-                add(translate("check.namedParameters", mapOf("user" to user.mention, "id" to user.id)))
+                add(translate("check.namedParameters", replacements = mapOf("user" to user.mention, "id" to user.id)))
                 // Translate with a different bundle, and named parameters
                 add(translate("check.namedParameters", "custom", mapOf("user" to user.mention, "id" to user.id)))
             }.joinToString("\n")
