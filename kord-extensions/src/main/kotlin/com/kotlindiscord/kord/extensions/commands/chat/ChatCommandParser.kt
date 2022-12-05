@@ -20,6 +20,7 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import mu.KotlinLogging
@@ -105,7 +106,12 @@ public open class ChatCommandParser : KordExKoinComponent {
             currentArg = args.removeFirstOrNull()
             currentArg ?: break  // If it's null, we're out of arguments
 
-            val kwValue = keywordArgs[currentArg.displayName.lowercase()]
+            val kwValue = keywordArgs[
+                currentArg
+                    .getDefaultTranslatedDisplayName(context.translationsProvider, context.command)
+                    .lowercase(context.getLocale())
+            ]
+
             val hasKwargs = kwValue != null
 
             logger.trace { "Current argument: ${currentArg.displayName}" }
