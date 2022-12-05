@@ -117,7 +117,7 @@ public suspend fun CheckContext<*>.notHasPermission(perm: Permission) {
 }
 
 /**
- * Check asserting that the user an [Event] fired for has a given permission set, or the Administrator permission.
+ * Check asserting that the user an [Event] fired for has the given permissions set, or the Administrator permission.
  *
  * Only events that can reasonably be associated with a guild member are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
@@ -157,7 +157,7 @@ public suspend fun CheckContext<*>.hasPermissions(perms: Permissions) {
             fail(
                 translate(
                     "checks.hasPermissions.failed",
-                    replacements = arrayOf(perms.values.forEach { it.translate(locale) })
+                    replacements = arrayOf(perms.values.joinToString(", ") { it.translate(locale) })
                 )
             )
         }
@@ -165,8 +165,8 @@ public suspend fun CheckContext<*>.hasPermissions(perms: Permissions) {
 }
 
 /**
- * Check asserting that the user an [Event] fired for **does not have** a given permission set **or** the Administrator
- * permission.
+ * Check asserting that the user an [Event] fired for **does not have** the given permissions set **or** the
+ * Administrator permission.
  *
  * Only events that can reasonably be associated with a guild member are supported. Please raise
  * an issue if an event you expected to be supported, isn't.
@@ -202,7 +202,7 @@ public suspend fun CheckContext<*>.notHasPermissions(perms: Permissions) {
             fail(
                 translate(
                     "checks.notHasPermissions.failed",
-                    replacements = arrayOf(perms.values.forEach { it.translate(locale) })
+                    replacements = arrayOf(perms.values.joinToString(", ") { it.translate(locale) })
                 )
             )
         } else {
