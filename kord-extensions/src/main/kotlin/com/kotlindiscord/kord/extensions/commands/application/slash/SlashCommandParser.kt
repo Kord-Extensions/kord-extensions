@@ -88,8 +88,13 @@ public open class SlashCommandParser {
                         throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
+
                                 replacements = arrayOf(
-                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context),
                                     currentValue
                                 )
@@ -142,7 +147,11 @@ public open class SlashCommandParser {
                             context.translate(
                                 "argumentParser.error.invalidValue",
                                 replacements = arrayOf(
-                                    context.translate(currentArg.displayName, bundleName = converter.bundle),
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context),
                                     currentValue
                                 )
