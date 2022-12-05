@@ -36,7 +36,7 @@ public class ValidationContext<out T>(public val value: T, public val context: C
     public var errorResponseKey: String = "checks.responseTemplate"
 
     /** Translation bundle used by [translate] by default and the error response translation, if not the default. **/
-    public var defaultBundle: String? = null
+    public var defaultBundle: String? = context.command.resolvedBundle
 
     /** Human-readable message for the user, if any. **/
     public var message: String? = null
