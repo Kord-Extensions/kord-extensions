@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -44,6 +45,7 @@ public class RegexCoalescingConverter(
 ) : CoalescingConverter<Regex>(shouldThrow) {
     override val signatureTypeString: String = "converters.regex.signatureType.plural"
     override val showTypeInSignature: Boolean = false
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val args: String = named?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0

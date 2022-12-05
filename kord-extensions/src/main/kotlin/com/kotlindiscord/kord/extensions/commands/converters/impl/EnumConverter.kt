@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -52,7 +53,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 public class EnumConverter<E : Enum<E>>(
     typeName: String,
     private val getter: suspend (String) -> E?,
-    override val bundle: String? = null,
+    override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
     override var validator: Validator<E> = null
 ) : SingleConverter<E>() {
     override val signatureTypeString: String = typeName

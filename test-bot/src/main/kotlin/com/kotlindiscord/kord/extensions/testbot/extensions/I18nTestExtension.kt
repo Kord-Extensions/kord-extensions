@@ -101,6 +101,7 @@ internal class I18nTestArguments : Arguments() {
     val fruit by string {
         name = "command.fruit"
         description = "command.fruit"
+
         autoComplete {
             suggestString {
                 listOf("Banana", "Apple", "Cherry").forEach { choice(it, it) }

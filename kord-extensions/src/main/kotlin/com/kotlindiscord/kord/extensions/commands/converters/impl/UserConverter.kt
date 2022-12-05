@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
@@ -47,6 +48,7 @@ public class UserConverter(
     override var validator: Validator<User> = null
 ) : SingleConverter<User>() {
     override val signatureTypeString: String = "converters.user.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         if (useReply && context is ChatCommandContext<*>) {
