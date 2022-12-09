@@ -17,11 +17,13 @@
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommandParser
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.common.annotation.KordExperimental
@@ -44,6 +46,7 @@ import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
+import javax.naming.InvalidNameException
 
 /**
  * Abstract class representing common behavior for application command registries.
@@ -374,7 +377,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
                     val option = converter.toSlashOption(arg)
 
-                    option.translate(command)
+                    option.translate(command, arg)
 
                     if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
                         option.choices?.clear()
@@ -396,7 +399,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
                     val option = converter.toSlashOption(arg)
 
-                    option.translate(command)
+                    option.translate(command, arg)
 
                     if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
                         option.choices?.clear()
@@ -443,7 +446,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
                             val option = converter.toSlashOption(arg)
 
-                            option.translate(command)
+                            option.translate(command, arg)
 
                             if (
                                 option is BaseChoiceBuilder<*> &&
@@ -534,8 +537,27 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
     // endregion
 
-    private fun OptionsBuilder.translate(command: ApplicationCommand<*>) {
+    private fun OptionsBuilder.translate(command: ApplicationCommand<*>, argObj: Argument<*>) {
+        val defaultName = argObj.getDefaultTranslatedDisplayName(command.translationsProvider, command)
+
+        if (defaultName != defaultName.lowercase(command.translationsProvider.defaultLocale)) {
+            throw InvalidNameException(
+                "Argument $name for command ${command.name} does not have a lower-case name in the configured " +
+                    "default locale: ${command.translationsProvider.defaultLocale} -> $defaultName - this will " +
+                    "cause issues with matching your command arguments to the options provided by users on Discord"
+            )
+        }
+
         val (name, nameLocalizations) = command.localize(name, true)
+
+        nameLocalizations.forEach { (locale, string) ->
+            if (string != string.lowercase(locale.asJavaLocale())) {
+                logger.warn {
+                    "Argument $name for command ${command.name} is not lower-case in the ${locale.asJavaLocale()} " +
+                        "locale: $string"
+                }
+            }
+        }
 
         this.name = name
         this.nameLocalizations = nameLocalizations

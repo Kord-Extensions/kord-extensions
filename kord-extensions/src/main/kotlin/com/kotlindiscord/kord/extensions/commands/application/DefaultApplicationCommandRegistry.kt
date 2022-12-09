@@ -194,18 +194,23 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                 when (it) {
                     is MessageCommand<*> -> message(name) {
                         this.nameLocalizations = nameLocalizations
+
                         this.register(locale, it)
                     }
+
                     is UserCommand<*> -> user(name) {
                         this.nameLocalizations = nameLocalizations
+
                         this.register(locale, it)
                     }
 
                     is SlashCommand<*, *> -> {
                         val (description, descriptionLocalizations) = it.localizedDescription
+
                         input(name, description) {
                             this.nameLocalizations = nameLocalizations
                             this.descriptionLocalizations = descriptionLocalizations
+
                             this.register(locale, it)
                         }
                     }
