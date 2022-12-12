@@ -146,10 +146,34 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     }
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * Given a translation key and possible replacements, return the translation for the given locale in the
      * component's configured bundle, for the locale provided by the bot's configured locale resolvers.
      */
     public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
+        key,
+        component.bundle,
+        replacements
+    )
+
+    /**
+     * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+     * locale resolvers.
+     */
+    public suspend fun translate(
+        key: String,
+        bundleName: String?,
+        replacements: Map<String, Any?>
+    ): String {
+        val locale = getLocale()
+
+        return translationsProvider.translate(key, locale, bundleName, replacements)
+    }
+
+    /**
+     * Given a translation key and possible replacements, return the translation for the given locale in the
+     * component's configured bundle, for the locale provided by the bot's configured locale resolvers.
+     */
+    public suspend fun translate(key: String, replacements: Map<String, Any?>): String = translate(
         key,
         component.bundle,
         replacements
