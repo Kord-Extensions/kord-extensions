@@ -8,8 +8,7 @@ package com.kotlindiscord.kord.extensions.components.forms.widgets
 
 import dev.kord.common.entity.TextInputStyle
 
+/** A text widget that supports a single line of text. **/
 public class LineTextWidget : TextInputWidget<LineTextWidget>() {
-    public override var callback: (LineTextWidget.(String) -> Unit)? = null
-
     override val style: TextInputStyle = TextInputStyle.Short
 }

@@ -23,7 +23,7 @@ import java.util.*
  */
 public class SlashGroup(
     public val name: String,
-    public val parent: SlashCommand<*, *>
+    public val parent: SlashCommand<*, *, *>
 ) : KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
@@ -32,7 +32,7 @@ public class SlashGroup(
     public val logger: KLogger = KotlinLogging.logger {}
 
     /** List of subcommands belonging to this group. **/
-    public val subCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
+    public val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
 
     /** Command group description, which is required and shown on Discord. **/
     public lateinit var description: String

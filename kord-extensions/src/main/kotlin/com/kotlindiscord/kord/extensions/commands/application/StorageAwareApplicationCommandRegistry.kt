@@ -54,7 +54,7 @@ public open class StorageAwareApplicationCommandRegistry(
         }
     }
 
-    override suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>? {
+    override suspend fun register(command: SlashCommand<*, *, *>): SlashCommand<*, *, *>? {
         val commandId = createDiscordCommand(command) ?: return null
 
         commandRegistry.set(commandId, command)
@@ -80,7 +80,7 @@ public open class StorageAwareApplicationCommandRegistry(
 
     override suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
+        val command = commandRegistry.get(commandId) as? SlashCommand<*, *, *>
 
         command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
 
@@ -107,7 +107,7 @@ public open class StorageAwareApplicationCommandRegistry(
 
     override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {
         val commandId = event.interaction.command.rootId
-        val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
+        val command = commandRegistry.get(commandId) as? SlashCommand<*, *, *>
 
         command ?: return logger.warn { "Received autocomplete interaction for unknown command: $commandId" }
 
@@ -139,8 +139,8 @@ public open class StorageAwareApplicationCommandRegistry(
         callback(event.interaction, event)
     }
 
-    override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? =
-        unregisterApplicationCommand(command, delete) as? SlashCommand<*, *>
+    override suspend fun unregister(command: SlashCommand<*, *, *>, delete: Boolean): SlashCommand<*, *, *>? =
+        unregisterApplicationCommand(command, delete) as? SlashCommand<*, *, *>
 
     override suspend fun unregister(command: MessageCommand<*>, delete: Boolean): MessageCommand<*>? =
         unregisterApplicationCommand(command, delete) as? MessageCommand<*>

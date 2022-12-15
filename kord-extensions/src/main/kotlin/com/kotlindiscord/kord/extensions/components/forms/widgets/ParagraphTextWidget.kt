@@ -8,8 +8,7 @@ package com.kotlindiscord.kord.extensions.components.forms.widgets
 
 import dev.kord.common.entity.TextInputStyle
 
+/** A text widget that supports multiple lines of text. **/
 public class ParagraphTextWidget : TextInputWidget<ParagraphTextWidget>() {
-    public override var callback: (ParagraphTextWidget.(String) -> Unit)? = null
-
     override val style: TextInputStyle = TextInputStyle.Paragraph
 }

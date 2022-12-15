@@ -8,7 +8,15 @@ package com.kotlindiscord.kord.extensions.components.forms
 
 import kotlin.time.Duration
 
+/**
+ * Abstract class representing a form.
+ *
+ * It's intended that this be expanded past [ModalForm] and be transformed into something that can be used directly
+ * with messages as well - but that's a job to be done by someone that needs it.
+ */
+@Suppress("UnnecessaryAbstractClass")
 public abstract class Form {
+    /** How long to wait before we stop waiting for this modal to be submitted. **/
     public open val timeout: Duration = Duration.ZERO
 
 //    /** Widgets that haven't been sorted into the grid by [pack] yet. **/

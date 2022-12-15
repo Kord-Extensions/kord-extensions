@@ -201,6 +201,10 @@ public open class ExtensibleBot(
             getKoin().get<ComponentRegistry>().handle(this)
         }
 
+        on<ModalSubmitInteractionCreateEvent> {
+            getKoin().get<ComponentRegistry>().handle(this)
+        }
+
         if (settings.chatCommandsBuilder.enabled) {
             on<MessageCreateEvent> {
                 getKoin().get<ChatCommandRegistry>().handleEvent(this)

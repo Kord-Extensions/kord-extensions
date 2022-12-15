@@ -6,27 +6,29 @@
 
 package com.kotlindiscord.kord.extensions.components.forms.widgets
 
-import com.kotlindiscord.kord.extensions.components.Component
 import dev.kord.rest.builder.component.ActionRowBuilder
+import java.util.*
 
+/** Abstract type representing a grid-based widget. **/
 public abstract class Widget <T : Any?> {
+    /** How wide this widget is, in grid cells. **/
     public abstract var width: Int
         protected set
 
+    /** How tall this widget is, in grid cells. **/
     public abstract var height: Int
         protected set
 
+    /** The final value stored in this widget, as provided by the user. **/
     public abstract var value: T
         protected set
-
-    public open lateinit var component: Component
-        protected set
-
-    protected val hasComponent: Boolean get() = this::component.isInitialized
 
     override fun toString(): String =
         "${this::class.simpleName}@${hashCode()} ($width x $height)"
 
-    public abstract suspend fun apply(builder: ActionRowBuilder)
+    /** Function called to apply this widget to a Discord action row. **/
+    public abstract suspend fun apply(builder: ActionRowBuilder, locale: Locale, bundle: String?)
+
+    /** Function called to ensure that this widget was set up correctly. **/
     public abstract fun validate()
 }

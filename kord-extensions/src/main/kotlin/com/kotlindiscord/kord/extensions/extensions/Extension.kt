@@ -95,7 +95,7 @@ public abstract class Extension : KordExKoinComponent {
      * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
      * belong to unloaded extensions will not execute.
      */
-    public open val slashCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
+    public open val slashCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
 
     /**
      * List of registered slash commands.

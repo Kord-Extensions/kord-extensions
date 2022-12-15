@@ -49,36 +49,36 @@ public data class UnsafeMessageCommandFailedWithExceptionEvent(
 
 /** Event emitted when an unsafe slash command is invoked. **/
 public data class UnsafeSlashCommandInvocationEvent(
-    override val command: UnsafeSlashCommand<*>,
+    override val command: UnsafeSlashCommand<*, *>,
     override val event: ChatInputCommandInteractionCreateEvent
-) : SlashCommandInvocationEvent<UnsafeSlashCommand<*>>
+) : SlashCommandInvocationEvent<UnsafeSlashCommand<*, *>>
 
 /** Event emitted when an unsafe slash command invocation succeeds. **/
 public data class UnsafeSlashCommandSucceededEvent(
-    override val command: UnsafeSlashCommand<*>,
+    override val command: UnsafeSlashCommand<*, *>,
     override val event: ChatInputCommandInteractionCreateEvent
-) : SlashCommandSucceededEvent<UnsafeSlashCommand<*>>
+) : SlashCommandSucceededEvent<UnsafeSlashCommand<*, *>>
 
 /** Event emitted when an unsafe slash command's checks fail. **/
 public data class UnsafeSlashCommandFailedChecksEvent(
-    override val command: UnsafeSlashCommand<*>,
+    override val command: UnsafeSlashCommand<*, *>,
     override val event: ChatInputCommandInteractionCreateEvent,
     override val reason: String
-) : SlashCommandFailedChecksEvent<UnsafeSlashCommand<*>>
+) : SlashCommandFailedChecksEvent<UnsafeSlashCommand<*, *>>
 
 /** Event emitted when an unsafe slash command's argument parsing fails. **/
 public data class UnsafeSlashCommandFailedParsingEvent(
-    override val command: UnsafeSlashCommand<*>,
+    override val command: UnsafeSlashCommand<*, *>,
     override val event: ChatInputCommandInteractionCreateEvent,
     override val exception: ArgumentParsingException,
-) : SlashCommandFailedParsingEvent<UnsafeSlashCommand<*>>
+) : SlashCommandFailedParsingEvent<UnsafeSlashCommand<*, *>>
 
 /** Event emitted when an unsafe slash command invocation fails with an exception. **/
 public data class UnsafeSlashCommandFailedWithExceptionEvent(
-    override val command: UnsafeSlashCommand<*>,
+    override val command: UnsafeSlashCommand<*, *>,
     override val event: ChatInputCommandInteractionCreateEvent,
     override val throwable: Throwable
-) : SlashCommandFailedWithExceptionEvent<UnsafeSlashCommand<*>>
+) : SlashCommandFailedWithExceptionEvent<UnsafeSlashCommand<*, *>>
 
 // endregion
 

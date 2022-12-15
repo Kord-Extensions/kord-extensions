@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("UndocumentedPublicProperty", "UndocumentedPublicFunction")
+
 package com.kotlindiscord.kord.extensions.components.forms
 
 import com.kotlindiscord.kord.extensions.components.forms.widgets.Widget
@@ -23,9 +25,11 @@ public const val GRID_CAPACITY: Int = GRID_WIDTH * GRID_HEIGHT
 public infix fun Int.x(other: Int): CoordinatePair =
     CoordinatePair(this, other)
 
+@Suppress("UnnecessaryParentheses")
 public operator fun CoordinatePair.plus(other: CoordinatePair): Pair<Int, Int> =
     (first + other.first) x (second + other.second)
 
+@Suppress("UnnecessaryParentheses")
 public operator fun CoordinatePair.minus(other: CoordinatePair): Pair<Int, Int> =
     (first - other.first) x (second - other.second)
 
@@ -34,7 +38,7 @@ public fun CoordinatePair.permutationsUpto(end: CoordinatePair): MutableList<Coo
 
     for (row in first..end.first) {
         for (column in second..end.second) {
-            values.add((row x column))
+            values.add(row x column)
         }
     }
 
@@ -46,7 +50,7 @@ public fun CoordinatePair.permutationsUptoExclusive(end: CoordinatePair): Mutabl
 
     for (row in first until end.first) {
         for (column in second until end.second) {
-            values.add((row x column))
+            values.add(row x column)
         }
     }
 
@@ -127,8 +131,8 @@ public inline fun <T> CoordinatePair.mapNotNullUptoExclusive(
 }
 
 public fun CoordinatePair.isValid(): Boolean =
-    first in 0 until GRID_WIDTH &&
-        second in 0 until GRID_HEIGHT
+    first in 0 until GRID_HEIGHT &&
+        second in 0 until GRID_WIDTH
 
 public fun CoordinatePair.throwIfInvalid(name: String = "Coordinate") {
     if (!isValid()) {
@@ -143,6 +147,7 @@ public fun CoordinatePair.toString(): String =
 
 // region: Grid functions
 
+@Suppress("MagicNumber")
 public fun WidgetGrid.toString(): String = buildString {
     val grid = this@toString
 
@@ -163,7 +168,7 @@ public fun WidgetGrid.toString(): String = buildString {
     )
 }
 
-@Suppress("USELESS_CAST")  // You're just wrong here, IJ
+@Suppress("USELESS_CAST", "SpreadOperator")  // You're just wrong here, IJ
 public fun WidgetGrid(): WidgetGrid = arrayOf(
     *GRID_HEIGHT.map {
         GRID_WIDTH.map { null as Widget<*>? }.toMutableList()
@@ -176,9 +181,10 @@ public fun WidgetGrid.get(coordinate: CoordinatePair): Widget<*>? {
     return this[coordinate.first].getOrNull(coordinate.second)
 }
 
+@Suppress("UnnecessaryParentheses")
 public fun WidgetGrid.setAtCoordinateOrFirstRow(coordinate: CoordinatePair?, widget: Widget<*>) {
     if (coordinate == null) {
-        val row = indexOfFirst { (GRID_WIDTH - it.count()) <= widget.width }
+        val row = indexOfFirst { (GRID_WIDTH - it.count { e -> e != null }) >= widget.width }
 
         if (row == -1) {
             error("No rows are available to fit this widget into.")
@@ -195,7 +201,7 @@ public fun WidgetGrid.setAtCoordinateOrFirstRow(coordinate: CoordinatePair?, wid
 public fun WidgetGrid.set(coordinate: CoordinatePair, widget: Widget<*>) {
     coordinate.throwIfInvalid("Start coordinate")
 
-    val end = coordinate + (widget.width x widget.height)
+    val end = coordinate + (widget.height - 1 x widget.width - 1)
 
     end.throwIfInvalid("End coordinate")
 

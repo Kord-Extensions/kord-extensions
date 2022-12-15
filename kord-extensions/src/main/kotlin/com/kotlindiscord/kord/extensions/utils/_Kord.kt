@@ -6,6 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.utils
 
+import com.kotlindiscord.kord.extensions.ExtensibleBot
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.entity.User
@@ -77,5 +78,23 @@ public suspend inline fun <reified T : Event> LiveKordEntity.waitFor(
         withTimeoutOrNull(timeout) {
             events.filterIsInstance<T>().firstOrNull(condition)
         }
+    }
+}
+
+/**
+ * Return the first received event that matches the condition.
+ *
+ * @param T Event to wait for.
+ * @param timeout Time before returning null, if no match can be done. Set to null to disable it.
+ * @param condition Function return true if the event object is valid and should be returned.
+ */
+public suspend inline fun <reified T : Event> ExtensibleBot.waitFor(
+    timeout: Duration? = null,
+    noinline condition: (suspend T.() -> Boolean) = { true }
+): T? = if (timeout == null) {
+    events.filterIsInstance<T>().firstOrNull(condition)
+} else {
+    withTimeoutOrNull(timeout) {
+        events.filterIsInstance<T>().firstOrNull(condition)
     }
 }
