@@ -8,9 +8,8 @@ package com.kotlindiscord.kord.extensions.components.forms.widgets
 
 import com.kotlindiscord.kord.extensions.components.Component
 import dev.kord.rest.builder.component.ActionRowBuilder
-import dev.kord.rest.builder.interaction.ModalBuilder
 
-public abstract class Widget <T: Any?> {
+public abstract class Widget <T : Any?> {
     public abstract var width: Int
         protected set
 

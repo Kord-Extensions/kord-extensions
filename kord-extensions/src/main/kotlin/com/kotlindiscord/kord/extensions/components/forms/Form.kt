@@ -6,7 +6,6 @@
 
 package com.kotlindiscord.kord.extensions.components.forms
 
-import com.kotlindiscord.kord.extensions.components.Component
 import kotlin.time.Duration
 
 public abstract class Form {

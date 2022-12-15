@@ -9,7 +9,6 @@ package com.kotlindiscord.kord.extensions.components.forms
 import com.kotlindiscord.kord.extensions.components.forms.widgets.Widget
 import com.kotlindiscord.kord.extensions.utils.map
 
-
 public typealias WidgetGrid = Array<MutableList<Widget<*>?>>
 
 /** A coordinate pair, represented by a `Pair(row, column)`. **/
@@ -18,7 +17,6 @@ public typealias CoordinatePair = Pair<Int, Int>
 public const val GRID_WIDTH: Int = 5
 public const val GRID_HEIGHT: Int = 5
 public const val GRID_CAPACITY: Int = GRID_WIDTH * GRID_HEIGHT
-
 
 // region: Coordinate Functions
 
@@ -129,8 +127,8 @@ public inline fun <T> CoordinatePair.mapNotNullUptoExclusive(
 }
 
 public fun CoordinatePair.isValid(): Boolean =
-    first in 0 until GRID_WIDTH
-        && second in 0 until GRID_HEIGHT
+    first in 0 until GRID_WIDTH &&
+        second in 0 until GRID_HEIGHT
 
 public fun CoordinatePair.throwIfInvalid(name: String = "Coordinate") {
     if (!isValid()) {
@@ -221,7 +219,6 @@ public fun WidgetGrid.removeAt(coordinate: CoordinatePair): Boolean =
     } else {
         false
     }
-
 
 public fun WidgetGrid.remove(widget: Widget<*>): Boolean {
     val coordinates = coordinatesFor(widget)
