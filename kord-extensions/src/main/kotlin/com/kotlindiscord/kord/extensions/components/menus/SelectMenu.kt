@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.components.ComponentWithAction
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
@@ -36,9 +37,9 @@ public const val PLACEHOLDER_MAX: Int = 100
 public const val VALUE_MAX: Int = 100
 
 /** Abstract class representing a select (dropdown) menu component. **/
-public abstract class SelectMenu<C : SelectMenuContext>(
+public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
     timeoutTask: Task?,
-) : ComponentWithAction<SelectMenuInteractionCreateEvent, C>(timeoutTask) {
+) : ComponentWithAction<SelectMenuInteractionCreateEvent, C, M>(timeoutTask) {
     internal val logger: KLogger = KotlinLogging.logger {}
 
     /** List of options for the user to choose from. **/
@@ -134,7 +135,7 @@ public abstract class SelectMenu<C : SelectMenuContext>(
     }
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
-    public open suspend fun firstSentryBreadcrumb(context: C, button: SelectMenu<*>) {
+    public open suspend fun firstSentryBreadcrumb(context: C, button: SelectMenu<*, *>) {
         if (sentry.enabled) {
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "component.selectMenu"
@@ -147,7 +148,7 @@ public abstract class SelectMenu<C : SelectMenuContext>(
     }
 
     /** A general way to handle errors thrown during the course of a select menu action's execution. **/
-    public open suspend fun handleError(context: C, t: Throwable, button: SelectMenu<*>) {
+    public open suspend fun handleError(context: C, t: Throwable, button: SelectMenu<*, *>) {
         logger.error(t) { "Error during execution of select menu (${button.id}) action (${context.event})" }
 
         if (sentry.enabled) {

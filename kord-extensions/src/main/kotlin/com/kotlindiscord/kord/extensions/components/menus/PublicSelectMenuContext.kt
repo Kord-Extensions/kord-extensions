@@ -6,15 +6,15 @@
 
 package com.kotlindiscord.kord.extensions.components.menus
 
-import com.kotlindiscord.kord.extensions.components.Component
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
 /** Class representing the execution context for a public-only select (dropdown) menu. **/
-public class PublicSelectMenuContext(
-    override val component: Component,
+public class PublicSelectMenuContext<M : ModalForm>(
+    override val component: PublicSelectMenu<M>,
     override val event: SelectMenuInteractionCreateEvent,
     override val interactionResponse: PublicMessageInteractionResponseBehavior,
     cache: MutableStringKeyedMap<Any>

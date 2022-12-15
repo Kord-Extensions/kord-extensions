@@ -50,22 +50,22 @@ public abstract class BaseButtonPaginator(
     private val secondRowNumber = 1
 
     /** Button builder representing the button that switches to the first page. **/
-    public open var firstPageButton: PublicInteractionButton? = null
+    public open var firstPageButton: PublicInteractionButton<*>? = null
 
     /** Button builder representing the button that switches to the previous page. **/
-    public open var backButton: PublicInteractionButton? = null
+    public open var backButton: PublicInteractionButton<*>? = null
 
     /** Button builder representing the button that switches to the next page. **/
-    public open var nextButton: PublicInteractionButton? = null
+    public open var nextButton: PublicInteractionButton<*>? = null
 
     /** Button builder representing the button that switches to the last page. **/
-    public open var lastPageButton: PublicInteractionButton? = null
+    public open var lastPageButton: PublicInteractionButton<*>? = null
 
     /** Button builder representing the button that switches between groups. **/
-    public open var switchButton: PublicInteractionButton? = null
+    public open var switchButton: PublicInteractionButton<*>? = null
 
     /** Group-specific buttons, if any. **/
-    public open val groupButtons: MutableMap<String, PublicInteractionButton> = mutableMapOf()
+    public open val groupButtons: MutableMap<String, PublicInteractionButton<*>> = mutableMapOf()
 
     /** Whether it's possible for us to have a row of group-switching buttons. **/
     @Suppress("MagicNumber")
@@ -316,14 +316,14 @@ public abstract class BaseButtonPaginator(
     }
 
     /** Replace an enabled interactive button in [components] with a disabled button of the same ID. **/
-    public fun setDisabledButton(button: PublicInteractionButton?) {
+    public fun setDisabledButton(button: PublicInteractionButton<*>?) {
         button ?: return
 
         button.disable()
     }
 
     /** Replace a disabled button in [components] with the given interactive button of the same ID. **/
-    public fun setEnabledButton(button: PublicInteractionButton?) {
+    public fun setEnabledButton(button: PublicInteractionButton<*>?) {
         button ?: return
 
         button.enable()
