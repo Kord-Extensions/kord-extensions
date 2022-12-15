@@ -91,7 +91,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     /**
      * A [Localized] version of [name]. Lower-cased if this is a slash command.
      */
-    public val localizedName: Localized<String> by lazy { localize(name, this is SlashCommand<*, *>) }
+    public val localizedName: Localized<String> by lazy { localize(name, this is SlashCommand<*, *, *>) }
 
     /**
      * This will register a requirement for [permissions] with Discord.

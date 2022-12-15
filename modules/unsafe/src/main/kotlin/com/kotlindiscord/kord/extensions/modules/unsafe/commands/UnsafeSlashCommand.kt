@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashGroup
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.contexts.UnsafeSlashCommandContext
@@ -31,13 +32,14 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
 /** Like a standard slash command, but with less safety features. **/
 @UnsafeAPI
-public class UnsafeSlashCommand<A : Arguments>(
+public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
     extension: Extension,
 
     public override val arguments: (() -> A)? = null,
-    public override val parentCommand: SlashCommand<*, *>? = null,
+    public override val modal: (() -> M)? = null,
+    public override val parentCommand: SlashCommand<*, *, *>? = null,
     public override val parentGroup: SlashGroup? = null
-) : SlashCommand<UnsafeSlashCommandContext<A>, A>(extension) {
+) : SlashCommand<UnsafeSlashCommandContext<A, M>, A, M>(extension) {
     /** Initial response type. Change this to decide what happens when this slash command is executed. **/
     public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
 
@@ -114,7 +116,7 @@ public class UnsafeSlashCommand<A : Arguments>(
         }
 
         try {
-            body(context)
+            body(context, null)
         } catch (t: Throwable) {
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -130,7 +132,7 @@ public class UnsafeSlashCommand<A : Arguments>(
     }
 
     override suspend fun respondText(
-        context: UnsafeSlashCommandContext<A>,
+        context: UnsafeSlashCommandContext<A, M>,
         message: String,
         failureType: FailureReason<*>
     ) {

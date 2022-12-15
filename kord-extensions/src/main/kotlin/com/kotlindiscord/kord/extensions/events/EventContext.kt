@@ -13,9 +13,9 @@ import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.types.TranslatableContext
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.event.Event
-import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -30,69 +30,54 @@ import java.util.*
 public open class EventContext<T : Event>(
     public open val eventHandler: EventHandler<T>,
     public open val event: T,
-    public open val cache: MutableStringKeyedMap<Any>
-) : KordExKoinComponent {
+    public open val cache: MutableStringKeyedMap<Any>,
+) : KordExKoinComponent, TranslatableContext {
     /** Translations provider, for retrieving translations. **/
-    public val translationsProvider: TranslationsProvider by inject()
+    public val translationsProvider: TranslationsProvider by lazy { getTranslationProvider() }
 
     /** Current Sentry context, containing breadcrumbs and other goodies. **/
     public val sentry: SentryContext = SentryContext()
 
+    override var resolvedLocale: Locale? = null
+
+    override val bundle: String?
+        get() = eventHandler.extension.bundle
+
     /**
      * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
      * configured locale resolvers.
      */
-    public suspend fun translate(
+    public override suspend fun translate(
         key: String,
         bundleName: String?,
-        replacements: Array<Any?> = arrayOf()
+        replacements: Array<Any?>,
     ): String {
-        val locale: Locale? = resolveLocale()
+        val locale: Locale = getLocale()
 
-        return if (locale != null) {
-            translationsProvider.translate(key, locale, bundleName, replacements)
-        } else {
-            translationsProvider.translate(key, bundleName, replacements)
-        }
+        return translationsProvider.translate(key, locale, bundleName, replacements)
     }
 
     /**
      * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
      * configured locale resolvers.
      */
-    public suspend fun translate(
+    public override suspend fun translate(
         key: String,
         bundleName: String?,
-        replacements: Map<String, Any?>
+        replacements: Map<String, Any?>,
     ): String {
-        val locale: Locale? = resolveLocale()
+        val locale: Locale = getLocale()
 
-        return if (locale != null) {
-            translationsProvider.translate(key, locale, bundleName, replacements)
-        } else {
-            translationsProvider.translate(key, bundleName, replacements)
-        }
+        return translationsProvider.translate(key, locale, bundleName, replacements)
     }
 
-    /**
-     * Given a translation key and possible replacements, return the translation for the given locale in the
-     * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
-     */
-    public suspend fun translate(
-        key: String,
-        replacements: Array<Any?> = arrayOf()
-    ): String = translate(key, eventHandler.extension.bundle, replacements)
+    override suspend fun getLocale(): Locale {
+        var locale = resolvedLocale
 
-    /**
-     * Given a translation key and possible replacements, return the translation for the given locale in the
-     * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
-     */
-    public suspend fun translate(
-        key: String,
-        replacements: Map<String, Any?>
-    ): String = translate(key, eventHandler.extension.bundle, replacements)
+        if (locale != null) {
+            return locale
+        }
 
-    private suspend fun resolveLocale(): Locale? {
         val eventObj = event as Event
 
         val guild = guildFor(eventObj)
@@ -103,10 +88,18 @@ public open class EventContext<T : Event>(
             val result = resolver(guild, channel, user, interactionFor(eventObj))
 
             if (result != null) {
-                return result
+                locale = result
+
+                break
             }
         }
 
-        return null
+        if (locale == null) {
+            locale = eventHandler.extension.bot.settings.i18nBuilder.defaultLocale
+        }
+
+        resolvedLocale = locale
+
+        return locale
     }
 }

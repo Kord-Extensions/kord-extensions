@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.commands.UnsafeMessageCommand
@@ -73,9 +74,9 @@ public suspend fun Extension.unsafeMessageCommand(
 @UnsafeAPI
 public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
     arguments: () -> T,
-    body: suspend UnsafeSlashCommand<T>.() -> Unit
-): UnsafeSlashCommand<T> {
-    val commandObj = UnsafeSlashCommand(this, arguments, null, null)
+    body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit
+): UnsafeSlashCommand<T, ModalForm> {
+    val commandObj = UnsafeSlashCommand<T, ModalForm>(this, arguments, null, null, null)
     body(commandObj)
 
     return unsafeSlashCommand(commandObj)
@@ -90,9 +91,9 @@ public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
  */
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
-    commandObj: UnsafeSlashCommand<T>
-): UnsafeSlashCommand<T> {
+public suspend fun <T : Arguments, M : ModalForm> Extension.unsafeSlashCommand(
+    commandObj: UnsafeSlashCommand<T, M>
+): UnsafeSlashCommand<T, M> {
     try {
         commandObj.validate()
         slashCommands.add(commandObj)
@@ -119,9 +120,9 @@ public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeSlashCommand(
-    body: suspend UnsafeSlashCommand<Arguments>.() -> Unit
-): UnsafeSlashCommand<Arguments> {
-    val commandObj = UnsafeSlashCommand<Arguments>(this, null, null, null)
+    body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit
+): UnsafeSlashCommand<Arguments, ModalForm> {
+    val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(this, null, null, null)
     body(commandObj)
 
     return unsafeSlashCommand(commandObj)

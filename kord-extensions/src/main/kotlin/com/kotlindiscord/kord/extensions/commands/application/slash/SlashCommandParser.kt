@@ -39,7 +39,7 @@ public open class SlashCommandParser {
      */
     public suspend fun <T : Arguments> parse(
         builder: () -> T,
-        context: SlashCommandContext<*, *>,
+        context: SlashCommandContext<*, *, *>,
     ): T {
         val argumentsObj = builder.invoke()
         argumentsObj.validate()

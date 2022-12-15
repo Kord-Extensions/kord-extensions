@@ -38,7 +38,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     public open val messageCommands: MutableMap<Snowflake, MessageCommand<*>> = mutableMapOf()
 
     /** Mapping of Discord-side command ID to a slash command object. **/
-    public open val slashCommands: MutableMap<Snowflake, SlashCommand<*, *>> = mutableMapOf()
+    public open val slashCommands: MutableMap<Snowflake, SlashCommand<*, *, *>> = mutableMapOf()
 
     /** Mapping of Discord-side command ID to a user command object. **/
     public open val userCommands: MutableMap<Snowflake, UserCommand<*>> = mutableMapOf()
@@ -139,7 +139,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                 if (existingCommand != null) {
                     when (commandObj) {
                         is MessageCommand<*> -> messageCommands[existingCommand.id] = commandObj
-                        is SlashCommand<*, *> -> slashCommands[existingCommand.id] = commandObj
+                        is SlashCommand<*, *, *> -> slashCommands[existingCommand.id] = commandObj
                         is UserCommand<*> -> userCommands[existingCommand.id] = commandObj
                     }
                 }
@@ -204,7 +204,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                         this.register(locale, it)
                     }
 
-                    is SlashCommand<*, *> -> {
+                    is SlashCommand<*, *, *> -> {
                         val (description, descriptionLocalizations) = it.localizedDescription
 
                         input(name, description) {
@@ -234,7 +234,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
             when (command) {
                 is MessageCommand<*> -> messageCommands[match.id] = command
-                is SlashCommand<*, *> -> slashCommands[match.id] = command
+                is SlashCommand<*, *, *> -> slashCommands[match.id] = command
                 is UserCommand<*> -> userCommands[match.id] = command
             }
         }
@@ -278,7 +278,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     }
 
     /** Register a slash command. **/
-    public override suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>? {
+    public override suspend fun register(command: SlashCommand<*, *, *>): SlashCommand<*, *, *>? {
         val commandId = createDiscordCommand(command) ?: return null
 
         slashCommands[commandId] = command
@@ -312,7 +312,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     }
 
     /** Unregister a slash command. **/
-    public override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? {
+    public override suspend fun unregister(command: SlashCommand<*, *, *>, delete: Boolean): SlashCommand<*, *, *>? {
         val filtered = slashCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
