@@ -81,7 +81,7 @@ public open class ComponentRegistry {
         val id = event.interaction.componentId
 
         when (val c = storage.get(id)) {
-            is InteractionButtonWithAction<*> -> c.call(event)
+            is InteractionButtonWithAction<*, *> -> c.call(event)
 
             null -> logger.debug { "Button interaction received for unknown component ID: $id" }
 
@@ -97,7 +97,7 @@ public open class ComponentRegistry {
         val id = event.interaction.componentId
 
         when (val c = storage.get(id)) {
-            is SelectMenu<*> -> c.call(event)
+            is SelectMenu<*, *> -> c.call(event)
 
             null -> logger.debug { "Select Menu interaction received for unknown component ID: $id" }
 
