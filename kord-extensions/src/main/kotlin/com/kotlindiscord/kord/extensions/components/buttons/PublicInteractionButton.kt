@@ -11,13 +11,11 @@ package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
-import com.kotlindiscord.kord.extensions.events.ModalInteractionCompleteEvent
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
-import com.kotlindiscord.kord.extensions.utils.waitFor
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.interaction.modal
@@ -82,22 +80,21 @@ public open class PublicInteractionButton<M : ModalForm>(
             val locale = event.getLocale()
 
             event.interaction.modal(
-                translationsProvider.translate(modalObj.title, locale, bundleName = bundle),
+                modalObj.translateTitle(locale, bundle),
                 modalObj.id
             ) {
                 modalObj.applyToBuilder(this, event.getLocale(), bundle)
             }
 
-            val modalReadyEvent = bot.waitFor<ModalInteractionCompleteEvent>(modalObj.timeout) { id == modalObj.id }
-                ?: return@withLock
+            modalObj.awaitCompletion {
+                componentRegistry.unregisterModal(modalObj)
 
-            componentRegistry.unregisterModal(modalObj)
-
-            if (!deferredAck) {
-                modalReadyEvent.interaction.deferPublicResponseUnsafe()
-            } else {
-                modalReadyEvent.interaction.deferPublicMessageUpdate()
-            }
+                if (!deferredAck) {
+                    it?.deferPublicResponseUnsafe()
+                } else {
+                    it?.deferPublicMessageUpdate()
+                }
+            } ?: return@withLock
         } else {
             if (!deferredAck) {
                 event.interaction.deferPublicResponseUnsafe()

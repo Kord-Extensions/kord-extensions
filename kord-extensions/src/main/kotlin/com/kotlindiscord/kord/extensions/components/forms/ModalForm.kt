@@ -12,7 +12,10 @@ import com.kotlindiscord.kord.extensions.components.forms.widgets.ParagraphTextW
 import com.kotlindiscord.kord.extensions.components.forms.widgets.TextInputWidget
 import com.kotlindiscord.kord.extensions.components.forms.widgets.Widget
 import com.kotlindiscord.kord.extensions.events.ModalInteractionCompleteEvent
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.utils.waitFor
+import dev.kord.core.entity.interaction.ModalSubmitInteraction
 import dev.kord.core.event.interaction.ModalSubmitInteractionCreateEvent
 import dev.kord.rest.builder.interaction.ModalBuilder
 import org.koin.core.component.inject
@@ -34,6 +37,9 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 
     /** @suppress Internal reference to the bot, to submit events to. **/
     protected val bot: ExtensibleBot by inject()
+
+    /** @suppress Internal reference to the bot, to submit events to. **/
+    protected val translations: TranslationsProvider by inject()
 
     override val timeout: Duration = 15.minutes
 
@@ -113,4 +119,15 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
             }
         }
     }
+
+    /** Wait for this modal to be completed and call the [callback]. Parameter will be `null` if timed out. **/
+    public suspend fun <T : Any?> awaitCompletion(callback: suspend (ModalSubmitInteraction?) -> T): T {
+        val completionEvent = bot.waitFor<ModalInteractionCompleteEvent>(timeout) { id == this@ModalForm.id }
+
+        return callback(completionEvent?.interaction)
+    }
+
+    /** Return a translated modal title using the given locale, and the given bundle if the modal doesn't have one. **/
+    public fun translateTitle(locale: Locale, otherBundle: String?): String =
+        translations.translate(title, locale, bundle ?: otherBundle)
 }

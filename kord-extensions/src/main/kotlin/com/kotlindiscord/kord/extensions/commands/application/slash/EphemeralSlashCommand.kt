@@ -15,13 +15,11 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
-import com.kotlindiscord.kord.extensions.events.ModalInteractionCompleteEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import com.kotlindiscord.kord.extensions.utils.waitFor
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -105,17 +103,17 @@ public class EphemeralSlashCommand<A : Arguments, M : ModalForm>(
             val locale = event.getLocale()
 
             event.interaction.modal(
-                translationsProvider.translate(modalObj.title, locale, bundleName = resolvedBundle),
+                modalObj.translateTitle(locale, resolvedBundle),
                 modalObj.id
             ) {
                 modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
             }
 
-            val modalReadyEvent = bot.waitFor<ModalInteractionCompleteEvent>(modalObj.timeout) { id == modalObj.id }
-                ?: return
+            modalObj.awaitCompletion {
+                componentRegistry.unregisterModal(modalObj)
 
-            componentRegistry.unregisterModal(modalObj)
-            modalReadyEvent.interaction.deferEphemeralResponseUnsafe()
+                it?.deferEphemeralResponseUnsafe()
+            } ?: return
         } else {
             event.interaction.deferEphemeralResponseUnsafe()
         }
