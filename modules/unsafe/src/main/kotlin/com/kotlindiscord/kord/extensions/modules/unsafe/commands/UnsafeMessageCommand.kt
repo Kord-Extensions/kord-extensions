@@ -11,6 +11,7 @@ package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.contexts.UnsafeMessageCommandContext
@@ -28,9 +29,10 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
 /** Like a standard message command, but with less safety features. **/
 @UnsafeAPI
-public class UnsafeMessageCommand(
-    extension: Extension
-) : MessageCommand<UnsafeMessageCommandContext>(extension) {
+public class UnsafeMessageCommand<M : ModalForm>(
+    extension: Extension,
+    public override val modal: (() -> M)? = null,
+) : MessageCommand<UnsafeMessageCommandContext<M>, M>(extension) {
     /** Initial response type. Change this to decide what happens when this message command action is executed. **/
     public var initialResponse: InitialMessageCommandResponse = InitialMessageCommandResponse.EphemeralAck
 
@@ -89,7 +91,7 @@ public class UnsafeMessageCommand(
         }
 
         try {
-            body(context)
+            body(context, null)
         } catch (t: Throwable) {
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -105,7 +107,7 @@ public class UnsafeMessageCommand(
     }
 
     override suspend fun respondText(
-        context: UnsafeMessageCommandContext,
+        context: UnsafeMessageCommandContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {

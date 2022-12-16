@@ -122,13 +122,13 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
      *
      * This method is only called after the [initialize] method and allows runtime modifications.
      */
-    public abstract suspend fun register(command: MessageCommand<*>): MessageCommand<*>?
+    public abstract suspend fun register(command: MessageCommand<*, *>): MessageCommand<*, *>?
 
     /** Register a [UserCommand] to the registry.
      *
      * This method is only called after the [initialize] method and allows runtime modifications.
      */
-    public abstract suspend fun register(command: UserCommand<*>): UserCommand<*>?
+    public abstract suspend fun register(command: UserCommand<*, *>): UserCommand<*, *>?
 
     /** Event handler for slash commands. **/
     public abstract suspend fun handle(event: ChatInputCommandInteractionCreateEvent)
@@ -149,10 +149,10 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     ): SlashCommand<*, *, *>?
 
     /** Unregister a message command. **/
-    public abstract suspend fun unregister(command: MessageCommand<*>, delete: Boolean = true): MessageCommand<*>?
+    public abstract suspend fun unregister(command: MessageCommand<*, *>, delete: Boolean = true): MessageCommand<*, *>?
 
     /** Unregister a user command. **/
-    public abstract suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>?
+    public abstract suspend fun unregister(command: UserCommand<*, *>, delete: Boolean = true): UserCommand<*, *>?
 
     // region: Utilities
 
@@ -162,9 +162,9 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
         delete: Boolean = true,
     ): ApplicationCommand<*>? =
         when (command) {
-            is MessageCommand<*> -> unregister(command, delete)
+            is MessageCommand<*, *> -> unregister(command, delete)
             is SlashCommand<*, *, *> -> unregister(command, delete)
-            is UserCommand<*> -> unregister(command, delete)
+            is UserCommand<*, *> -> unregister(command, delete)
 
             else -> error("Unsupported application command type: ${command.type.name}")
         }
@@ -202,8 +202,8 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
             try {
                 when (it) {
                     is SlashCommand<*, *, *> -> register(it) as T
-                    is MessageCommand<*> -> register(it) as T
-                    is UserCommand<*> -> register(it) as T
+                    is MessageCommand<*, *> -> register(it) as T
+                    is UserCommand<*, *> -> register(it) as T
 
                     else -> throw IllegalArgumentException(
                         "The registry does not know about this type of ApplicationCommand"
@@ -232,8 +232,8 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
      */
     public open suspend fun createDiscordCommand(command: ApplicationCommand<*>): Snowflake? = when (command) {
         is SlashCommand<*, *, *> -> createDiscordSlashCommand(command)
-        is UserCommand<*> -> createDiscordUserCommand(command)
-        is MessageCommand<*> -> createDiscordMessageCommand(command)
+        is UserCommand<*, *> -> createDiscordUserCommand(command)
+        is MessageCommand<*, *> -> createDiscordMessageCommand(command)
 
         else -> throw IllegalArgumentException("Unknown ApplicationCommand type")
     }
@@ -283,7 +283,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     /**
      * Creates a KordEx [UserCommand] as discord command and returns the created command's id as [Snowflake].
      */
-    public open suspend fun createDiscordUserCommand(command: UserCommand<*>): Snowflake? {
+    public open suspend fun createDiscordUserCommand(command: UserCommand<*, *>): Snowflake? {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
@@ -320,7 +320,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     /**
      * Creates a KordEx [MessageCommand] as discord command and returns the created command's id as [Snowflake].
      */
-    public open suspend fun createDiscordMessageCommand(command: MessageCommand<*>): Snowflake? {
+    public open suspend fun createDiscordMessageCommand(command: MessageCommand<*, *>): Snowflake? {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
@@ -487,26 +487,26 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
     /** Registration logic for message commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun MessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
+    public open fun MessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*, *>) {
         registerGuildPermissions(locale, command)
     }
 
     /** Registration logic for user commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun UserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
+    public open fun UserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*, *>) {
         registerGuildPermissions(locale, command)
     }
 
     /** Registration logic for message commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun GlobalMessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
+    public open fun GlobalMessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*, *>) {
         registerGuildPermissions(locale, command)
         registerGlobalPermissions(locale, command)
     }
 
     /** Registration logic for user commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun GlobalUserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
+    public open fun GlobalUserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*, *>) {
         registerGuildPermissions(locale, command)
         registerGlobalPermissions(locale, command)
     }

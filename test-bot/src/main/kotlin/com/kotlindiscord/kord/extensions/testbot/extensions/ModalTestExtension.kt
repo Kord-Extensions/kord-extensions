@@ -15,14 +15,69 @@ import com.kotlindiscord.kord.extensions.components.forms.widgets.LineTextWidget
 import com.kotlindiscord.kord.extensions.components.forms.widgets.ParagraphTextWidget
 import com.kotlindiscord.kord.extensions.components.publicButton
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.extensions.publicMessageCommand
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
+import com.kotlindiscord.kord.extensions.extensions.publicUserCommand
 import com.kotlindiscord.kord.extensions.types.respond
 
 public class ModalTestExtension : Extension() {
     override val name: String = "modals"
     override val bundle: String = "test.strings"
 
+    @Suppress("StringLiteralDuplication")
     override suspend fun setup() {
+        publicUserCommand(::Modal) {
+            name = "Modal"
+
+            action { modal ->
+                respond {
+                    content = buildString {
+                        if (modal == null) {
+                            append("**No modal found!**")
+
+                            return@buildString
+                        }
+
+                        append("**Line:** `")
+                        appendLine(modal.line.value)
+                        append("`")
+                        appendLine()
+
+                        appendLine("**Paragraph:** ```")
+                        appendLine(modal.paragraph.value)
+                        append("```")
+                        appendLine()
+                    }
+                }
+            }
+        }
+
+        publicMessageCommand(::Modal) {
+            name = "Modal"
+
+            action { modal ->
+                respond {
+                    content = buildString {
+                        if (modal == null) {
+                            append("**No modal found!**")
+
+                            return@buildString
+                        }
+
+                        append("**Line:** `")
+                        appendLine(modal.line.value)
+                        append("`")
+                        appendLine()
+
+                        appendLine("**Paragraph:** ```")
+                        appendLine(modal.paragraph.value)
+                        append("```")
+                        appendLine()
+                    }
+                }
+            }
+        }
+
         publicSlashCommand {
             name = "modals"
             description = "Modal testing commands"

@@ -60,9 +60,21 @@ public fun Extension.messageCommandCheck(check: MessageCommandCheck) {
 /** Register an ephemeral message command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.ephemeralMessageCommand(
-    body: suspend EphemeralMessageCommand.() -> Unit
-): EphemeralMessageCommand {
-    val commandObj = EphemeralMessageCommand(this)
+    body: suspend EphemeralMessageCommand<ModalForm>.() -> Unit
+): EphemeralMessageCommand<ModalForm> {
+    val commandObj = EphemeralMessageCommand<ModalForm>(this)
+    body(commandObj)
+
+    return ephemeralMessageCommand(commandObj)
+}
+
+/** Register an ephemeral message command, DSL-style. **/
+@ExtensionDSL
+public suspend fun <M : ModalForm>  Extension.ephemeralMessageCommand(
+    modal: (() -> M),
+    body: suspend EphemeralMessageCommand<M>.() -> Unit
+): EphemeralMessageCommand<M> {
+    val commandObj = EphemeralMessageCommand(this, modal)
     body(commandObj)
 
     return ephemeralMessageCommand(commandObj)
@@ -70,9 +82,9 @@ public suspend fun Extension.ephemeralMessageCommand(
 
 /** Register a custom instance of an ephemeral message command. **/
 @ExtensionDSL
-public suspend fun Extension.ephemeralMessageCommand(
-    commandObj: EphemeralMessageCommand
-): EphemeralMessageCommand {
+public suspend fun <M : ModalForm> Extension.ephemeralMessageCommand(
+    commandObj: EphemeralMessageCommand<M>
+): EphemeralMessageCommand<M> {
     try {
         commandObj.validate()
         messageCommands.add(commandObj)
@@ -92,9 +104,21 @@ public suspend fun Extension.ephemeralMessageCommand(
 /** Register a public message command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.publicMessageCommand(
-    body: suspend PublicMessageCommand.() -> Unit
-): PublicMessageCommand {
-    val commandObj = PublicMessageCommand(this)
+    body: suspend PublicMessageCommand<ModalForm>.() -> Unit
+): PublicMessageCommand<ModalForm> {
+    val commandObj = PublicMessageCommand<ModalForm>(this)
+    body(commandObj)
+
+    return publicMessageCommand(commandObj)
+}
+
+/** Register a public message command, DSL-style. **/
+@ExtensionDSL
+public suspend fun <M : ModalForm> Extension.publicMessageCommand(
+    modal: (() -> M),
+    body: suspend PublicMessageCommand<M>.() -> Unit
+): PublicMessageCommand<M> {
+    val commandObj = PublicMessageCommand(this, modal)
     body(commandObj)
 
     return publicMessageCommand(commandObj)
@@ -102,9 +126,9 @@ public suspend fun Extension.publicMessageCommand(
 
 /** Register a custom instance of a public message command. **/
 @ExtensionDSL
-public suspend fun Extension.publicMessageCommand(
-    commandObj: PublicMessageCommand
-): PublicMessageCommand {
+public suspend fun <M : ModalForm> Extension.publicMessageCommand(
+    commandObj: PublicMessageCommand<M>
+): PublicMessageCommand<M> {
     try {
         commandObj.validate()
         messageCommands.add(commandObj)
@@ -446,9 +470,21 @@ public fun Extension.userCommandCheck(check: UserCommandCheck) {
 /** Register an ephemeral user command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.ephemeralUserCommand(
-    body: suspend EphemeralUserCommand.() -> Unit
-): EphemeralUserCommand {
-    val commandObj = EphemeralUserCommand(this)
+    body: suspend EphemeralUserCommand<ModalForm>.() -> Unit
+): EphemeralUserCommand<ModalForm> {
+    val commandObj = EphemeralUserCommand<ModalForm>(this)
+    body(commandObj)
+
+    return ephemeralUserCommand(commandObj)
+}
+
+/** Register an ephemeral user command, DSL-style. **/
+@ExtensionDSL
+public suspend fun <M : ModalForm> Extension.ephemeralUserCommand(
+    modal: (() -> M),
+    body: suspend EphemeralUserCommand<M>.() -> Unit
+): EphemeralUserCommand<M> {
+    val commandObj = EphemeralUserCommand(this, modal)
     body(commandObj)
 
     return ephemeralUserCommand(commandObj)
@@ -456,9 +492,9 @@ public suspend fun Extension.ephemeralUserCommand(
 
 /** Register a custom instance of an ephemeral user command. **/
 @ExtensionDSL
-public suspend fun Extension.ephemeralUserCommand(
-    commandObj: EphemeralUserCommand
-): EphemeralUserCommand {
+public suspend fun <M : ModalForm> Extension.ephemeralUserCommand(
+    commandObj: EphemeralUserCommand<M>
+): EphemeralUserCommand<M> {
     try {
         commandObj.validate()
         userCommands.add(commandObj)
@@ -478,9 +514,21 @@ public suspend fun Extension.ephemeralUserCommand(
 /** Register a public user command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.publicUserCommand(
-    body: suspend PublicUserCommand.() -> Unit
-): PublicUserCommand {
-    val commandObj = PublicUserCommand(this)
+    body: suspend PublicUserCommand<ModalForm>.() -> Unit
+): PublicUserCommand<ModalForm> {
+    val commandObj = PublicUserCommand<ModalForm>(this)
+    body(commandObj)
+
+    return publicUserCommand(commandObj)
+}
+
+/** Register a public user command, DSL-style. **/
+@ExtensionDSL
+public suspend fun <M : ModalForm> Extension.publicUserCommand(
+    modal: (() -> M),
+    body: suspend PublicUserCommand<M>.() -> Unit
+): PublicUserCommand<M> {
+    val commandObj = PublicUserCommand(this, modal)
     body(commandObj)
 
     return publicUserCommand(commandObj)
@@ -488,9 +536,9 @@ public suspend fun Extension.publicUserCommand(
 
 /** Register a custom instance of a public user command. **/
 @ExtensionDSL
-public suspend fun Extension.publicUserCommand(
-    commandObj: PublicUserCommand
-): PublicUserCommand {
+public suspend fun <M : ModalForm> Extension.publicUserCommand(
+    commandObj: PublicUserCommand<M>
+): PublicUserCommand<M> {
     try {
         commandObj.validate()
         userCommands.add(commandObj)

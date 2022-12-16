@@ -19,29 +19,29 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
 /** Event emitted when an unsafe message command is invoked. **/
 public data class UnsafeMessageCommandInvocationEvent(
-    override val command: UnsafeMessageCommand,
+    override val command: UnsafeMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent
-) : MessageCommandInvocationEvent<UnsafeMessageCommand>
+) : MessageCommandInvocationEvent<UnsafeMessageCommand<*>>
 
 /** Event emitted when an unsafe message command invocation succeeds. **/
 public data class UnsafeMessageCommandSucceededEvent(
-    override val command: UnsafeMessageCommand,
+    override val command: UnsafeMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent
-) : MessageCommandSucceededEvent<UnsafeMessageCommand>
+) : MessageCommandSucceededEvent<UnsafeMessageCommand<*>>
 
 /** Event emitted when an unsafe message command's checks fail. **/
 public data class UnsafeMessageCommandFailedChecksEvent(
-    override val command: UnsafeMessageCommand,
+    override val command: UnsafeMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent,
     override val reason: String
-) : MessageCommandFailedChecksEvent<UnsafeMessageCommand>
+) : MessageCommandFailedChecksEvent<UnsafeMessageCommand<*>>
 
 /** Event emitted when an unsafe message command invocation fails with an exception. **/
 public data class UnsafeMessageCommandFailedWithExceptionEvent(
-    override val command: UnsafeMessageCommand,
+    override val command: UnsafeMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent,
     override val throwable: Throwable
-) : MessageCommandFailedWithExceptionEvent<UnsafeMessageCommand>
+) : MessageCommandFailedWithExceptionEvent<UnsafeMessageCommand<*>>
 
 // endregion
 
@@ -86,28 +86,28 @@ public data class UnsafeSlashCommandFailedWithExceptionEvent(
 
 /** Event emitted when an unsafe user command is invoked. **/
 public data class UnsafeUserCommandInvocationEvent(
-    override val command: UnsafeUserCommand,
+    override val command: UnsafeUserCommand<*>,
     override val event: UserCommandInteractionCreateEvent
-) : UserCommandInvocationEvent<UnsafeUserCommand>
+) : UserCommandInvocationEvent<UnsafeUserCommand<*>>
 
 /** Event emitted when an unsafe user command invocation succeeds. **/
 public data class UnsafeUserCommandSucceededEvent(
-    override val command: UnsafeUserCommand,
+    override val command: UnsafeUserCommand<*>,
     override val event: UserCommandInteractionCreateEvent
-) : UserCommandSucceededEvent<UnsafeUserCommand>
+) : UserCommandSucceededEvent<UnsafeUserCommand<*>>
 
 /** Event emitted when an unsafe user command's checks fail. **/
 public data class UnsafeUserCommandFailedChecksEvent(
-    override val command: UnsafeUserCommand,
+    override val command: UnsafeUserCommand<*>,
     override val event: UserCommandInteractionCreateEvent,
     override val reason: String
-) : UserCommandFailedChecksEvent<UnsafeUserCommand>
+) : UserCommandFailedChecksEvent<UnsafeUserCommand<*>>
 
 /** Event emitted when an unsafe user command invocation fails with an exception. **/
 public data class UnsafeUserCommandFailedWithExceptionEvent(
-    override val command: UnsafeUserCommand,
+    override val command: UnsafeUserCommand<*>,
     override val event: UserCommandInteractionCreateEvent,
     override val throwable: Throwable
-) : UserCommandFailedWithExceptionEvent<UnsafeUserCommand>
+) : UserCommandFailedWithExceptionEvent<UnsafeUserCommand<*>>
 
 // endregion

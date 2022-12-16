@@ -6,15 +6,16 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.message
 
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.types.EphemeralInteractionContext
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
 /** Ephemeral-only message command context. **/
-public class EphemeralMessageCommandContext(
+public class EphemeralMessageCommandContext<M : ModalForm>(
     override val event: MessageCommandInteractionCreateEvent,
-    override val command: MessageCommand<EphemeralMessageCommandContext>,
+    override val command: MessageCommand<EphemeralMessageCommandContext<M>, M>,
     override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
-) : MessageCommandContext<EphemeralMessageCommandContext>(event, command, cache), EphemeralInteractionContext
+    cache: MutableStringKeyedMap<Any>,
+) : MessageCommandContext<EphemeralMessageCommandContext<M>, M>(event, command, cache), EphemeralInteractionContext

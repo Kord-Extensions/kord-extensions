@@ -35,13 +35,13 @@ import kotlinx.coroutines.flow.toList
 public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry() {
 
     /** Mapping of Discord-side command ID to a message command object. **/
-    public open val messageCommands: MutableMap<Snowflake, MessageCommand<*>> = mutableMapOf()
+    public open val messageCommands: MutableMap<Snowflake, MessageCommand<*, *>> = mutableMapOf()
 
     /** Mapping of Discord-side command ID to a slash command object. **/
     public open val slashCommands: MutableMap<Snowflake, SlashCommand<*, *, *>> = mutableMapOf()
 
     /** Mapping of Discord-side command ID to a user command object. **/
-    public open val userCommands: MutableMap<Snowflake, UserCommand<*>> = mutableMapOf()
+    public open val userCommands: MutableMap<Snowflake, UserCommand<*, *>> = mutableMapOf()
 
     public override suspend fun initialize(commands: List<ApplicationCommand<*>>) {
         if (!bot.settings.applicationCommandsBuilder.register) {
@@ -138,9 +138,9 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 
                 if (existingCommand != null) {
                     when (commandObj) {
-                        is MessageCommand<*> -> messageCommands[existingCommand.id] = commandObj
+                        is MessageCommand<*, *> -> messageCommands[existingCommand.id] = commandObj
                         is SlashCommand<*, *, *> -> slashCommands[existingCommand.id] = commandObj
-                        is UserCommand<*> -> userCommands[existingCommand.id] = commandObj
+                        is UserCommand<*, *> -> userCommands[existingCommand.id] = commandObj
                     }
                 }
             }
@@ -192,13 +192,13 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                 logger.trace { "Adding/updating ${it.type.name} command: $name" }
 
                 when (it) {
-                    is MessageCommand<*> -> message(name) {
+                    is MessageCommand<*, *> -> message(name) {
                         this.nameLocalizations = nameLocalizations
 
                         this.register(locale, it)
                     }
 
-                    is UserCommand<*> -> user(name) {
+                    is UserCommand<*, *> -> user(name) {
                         this.nameLocalizations = nameLocalizations
 
                         this.register(locale, it)
@@ -233,9 +233,9 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
             val match = response.first { command.matches(locale, it) }
 
             when (command) {
-                is MessageCommand<*> -> messageCommands[match.id] = command
+                is MessageCommand<*, *> -> messageCommands[match.id] = command
                 is SlashCommand<*, *, *> -> slashCommands[match.id] = command
-                is UserCommand<*> -> userCommands[match.id] = command
+                is UserCommand<*, *> -> userCommands[match.id] = command
             }
         }
 
@@ -269,7 +269,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     // region: Typed registration functions
 
     /** Register a message command. **/
-    public override suspend fun register(command: MessageCommand<*>): MessageCommand<*>? {
+    public override suspend fun register(command: MessageCommand<*, *>): MessageCommand<*, *>? {
         val commandId = createDiscordCommand(command) ?: return null
 
         messageCommands[commandId] = command
@@ -287,7 +287,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     }
 
     /** Register a user command. **/
-    public override suspend fun register(command: UserCommand<*>): UserCommand<*>? {
+    public override suspend fun register(command: UserCommand<*, *>): UserCommand<*, *>? {
         val commandId = createDiscordCommand(command) ?: return null
 
         userCommands[commandId] = command
@@ -300,7 +300,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     // region: Unregistration functions
 
     /** Unregister a message command. **/
-    public override suspend fun unregister(command: MessageCommand<*>, delete: Boolean): MessageCommand<*>? {
+    public override suspend fun unregister(command: MessageCommand<*, *>, delete: Boolean): MessageCommand<*, *>? {
         val filtered = messageCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 
@@ -324,7 +324,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
     }
 
     /** Unregister a user command. **/
-    public override suspend fun unregister(command: UserCommand<*>, delete: Boolean): UserCommand<*>? {
+    public override suspend fun unregister(command: UserCommand<*, *>, delete: Boolean): UserCommand<*, *>? {
         val filtered = userCommands.filter { it.value == command }
         val id = filtered.keys.firstOrNull() ?: return null
 

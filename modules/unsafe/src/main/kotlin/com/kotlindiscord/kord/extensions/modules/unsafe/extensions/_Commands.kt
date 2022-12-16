@@ -28,9 +28,9 @@ private val logger = KotlinLogging.logger {}
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeMessageCommand(
-    body: suspend UnsafeMessageCommand.() -> Unit
-): UnsafeMessageCommand {
-    val commandObj = UnsafeMessageCommand(this)
+    body: suspend UnsafeMessageCommand<ModalForm>.() -> Unit
+): UnsafeMessageCommand<ModalForm> {
+    val commandObj = UnsafeMessageCommand<ModalForm>(this)
     body(commandObj)
 
     return unsafeMessageCommand(commandObj)
@@ -39,9 +39,9 @@ public suspend fun Extension.unsafeMessageCommand(
 /** Register a custom instance of an unsafe message command. **/
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun Extension.unsafeMessageCommand(
-    commandObj: UnsafeMessageCommand
-): UnsafeMessageCommand {
+public suspend fun <M : ModalForm> Extension.unsafeMessageCommand(
+    commandObj: UnsafeMessageCommand<M>
+): UnsafeMessageCommand<M> {
     try {
         commandObj.validate()
         messageCommands.add(commandObj)
@@ -136,9 +136,9 @@ public suspend fun Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeUserCommand(
-    body: suspend UnsafeUserCommand.() -> Unit
-): UnsafeUserCommand {
-    val commandObj = UnsafeUserCommand(this)
+    body: suspend UnsafeUserCommand<ModalForm>.() -> Unit
+): UnsafeUserCommand<ModalForm> {
+    val commandObj = UnsafeUserCommand<ModalForm>(this)
     body(commandObj)
 
     return unsafeUserCommand(commandObj)
@@ -147,9 +147,9 @@ public suspend fun Extension.unsafeUserCommand(
 /** Register a custom instance of an unsafe user command. **/
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun Extension.unsafeUserCommand(
-    commandObj: UnsafeUserCommand
-): UnsafeUserCommand {
+public suspend fun <M : ModalForm> Extension.unsafeUserCommand(
+    commandObj: UnsafeUserCommand<M>
+): UnsafeUserCommand<M> {
     try {
         commandObj.validate()
         userCommands.add(commandObj)
