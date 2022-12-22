@@ -56,14 +56,14 @@ class MappingConversionArguments(enabledNamespaces: Map<String, String>) : Argum
     }
 
     val inputChannel by optionalEnumChoice<Channels> {
-        name = "inputChannel"
+        name = "input-channel"
         description = "The mappings channel to use for input"
 
         typeName = "official/snapshot"
     }
 
     val outputChannel by optionalEnumChoice<Channels> {
-        name = "outputChannel"
+        name = "output-channel"
         description = "The mappings channel to use for output"
 
         typeName = "official/snapshot"
