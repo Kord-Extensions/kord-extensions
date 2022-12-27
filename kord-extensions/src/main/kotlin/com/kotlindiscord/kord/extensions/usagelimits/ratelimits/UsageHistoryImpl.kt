@@ -6,10 +6,51 @@
 
 package com.kotlindiscord.kord.extensions.usagelimits.ratelimits
 
-/** default example implementation of [UsageHistory]. **/
-public class UsageHistoryImpl : UsageHistory {
-    override val usages: MutableList<Long> = ArrayList()
-    override var crossedLimits: MutableList<Long> = ArrayList()
+import java.util.LinkedList
+
+/**
+ * Default example implementation of [UsageHistory].
+ * Uses linkedLists internally because we are only interested in the total size and update the list frequently.
+ * **/
+public open class UsageHistoryImpl : UsageHistory {
+
+    override var usages: LinkedList<Long> = LinkedList()
+    override var crossedLimits: LinkedList<Long> = LinkedList()
     override var rateLimitState: Boolean = false
-    override var crossedCooldowns: MutableList<Long> = ArrayList()
+    override var crossedCooldowns: LinkedList<Long> = LinkedList()
+
+    override fun removeExpiredUsages(cutoffTime: Long) {
+        usages.removeSmaller(cutoffTime)
+    }
+
+    override fun removeExpiredCrossedLimits(cutoffTime: Long) {
+        crossedLimits.removeSmaller(cutoffTime)
+    }
+
+    override fun removeExpiredCrossedCooldowns(cutoffTime: Long) {
+        crossedCooldowns.removeSmaller(cutoffTime)
+    }
+
+    override fun addUsage(moment: Long) {
+        usages.add(moment)
+    }
+
+    override fun addCrossedLimit(moment: Long) {
+        crossedLimits.add(moment)
+    }
+
+    override fun addCrossedCooldown(moment: Long) {
+        crossedCooldowns.add(moment)
+    }
+
+    private fun LinkedList<Long>.removeSmaller(cutoffTime: Long) {
+        val iterator = this.iterator()
+        while (iterator.hasNext()) {
+            if (iterator.next() < cutoffTime) {
+                iterator.remove()
+            } else {
+                break
+            }
+        }
+    }
 }

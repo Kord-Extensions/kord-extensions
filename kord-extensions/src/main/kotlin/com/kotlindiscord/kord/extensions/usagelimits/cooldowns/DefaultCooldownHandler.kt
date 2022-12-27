@@ -51,14 +51,11 @@ public open class DefaultCooldownHandler : CooldownHandler {
             val usageHistory = type.getUsageHistory(context)
 
             // keeps only the crossedCooldowns which are in the cooldowns range.
-            var i = 0
-            while (i < usageHistory.crossedCooldowns.size && usageHistory.crossedCooldowns[i] < encapsulateStart) {
-                usageHistory.crossedCooldowns.removeAt(i++)
-            }
+            usageHistory.removeExpiredCrossedCooldowns(encapsulateStart)
 
             if (until > currentTime) {
                 if (!shouldSendMessage(until, usageHistory, type)) shouldSendMessage = false
-                usageHistory.crossedCooldowns.add(currentTime)
+                usageHistory.addCrossedCooldown(currentTime)
 
                 hitCooldowns.add(Triple(type, usageHistory, until))
             }
@@ -117,7 +114,7 @@ public open class DefaultCooldownHandler : CooldownHandler {
     }
 
     /** Returns a message with info about what cooldown has been hit. **/
-    public suspend fun getMessage(
+    public open suspend fun getMessage(
         context: DiscriminatingContext,
         discordTimeStamp: String,
         type: CooldownType,

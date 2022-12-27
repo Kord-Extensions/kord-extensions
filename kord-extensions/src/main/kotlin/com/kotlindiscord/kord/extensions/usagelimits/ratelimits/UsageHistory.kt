@@ -10,14 +10,32 @@ package com.kotlindiscord.kord.extensions.usagelimits.ratelimits
 public interface UsageHistory {
 
     /** tracks moments in time when actions were used. **/
-    public val usages: MutableList<Long>
+    public val usages: List<Long>
 
     /** tracks moments in time when limits were crossed. **/
-    public var crossedLimits: MutableList<Long>
+    public val crossedLimits: List<Long>
 
     /** tracks moments in time when cooldowns were hit. **/
-    public var crossedCooldowns: MutableList<Long>
+    public val crossedCooldowns: List<Long>
 
     /** true when rate-limited. **/
-    public var rateLimitState: Boolean
+    public val rateLimitState: Boolean
+
+    /** CrossedCooldown moments before [cutoffTime] will be removed from the usageHistory. **/
+    public fun removeExpiredCrossedCooldowns(cutoffTime: Long)
+
+    /** Adds a crossedCooldown moment to the usageHistory. **/
+    public fun addCrossedCooldown(moment: Long)
+
+    /** Usage moments before [cutoffTime] will be removed from the usageHistory. **/
+    public fun removeExpiredUsages(cutoffTime: Long)
+
+    /** Adds a usage moment to the usageHistory. **/
+    public fun addUsage(moment: Long)
+
+    /** CrossedLimit moments before [cutoffTime] will be removed from the usageHistory. **/
+    public fun removeExpiredCrossedLimits(cutoffTime: Long)
+
+    /** Adds a crossedLimit moment to the usageHistory. **/
+    public fun addCrossedLimit(moment: Long)
 }
