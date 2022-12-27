@@ -10,11 +10,12 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.modules.extra.phishing.extPhishing
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.extPluralKit
-import com.kotlindiscord.kord.extensions.testbot.extensions.ArgumentTestExtension
-import com.kotlindiscord.kord.extensions.testbot.extensions.I18nTestExtension
-import com.kotlindiscord.kord.extensions.testbot.extensions.PKTestExtension
-import com.kotlindiscord.kord.extensions.testbot.extensions.PaginatorTestExtension
+import com.kotlindiscord.kord.extensions.testbot.extensions.*
 import com.kotlindiscord.kord.extensions.testbot.utils.LogLevel
+import com.kotlindiscord.kord.extensions.usagelimits.CachedUsageLimitType
+import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.DefaultCooldownHandler
+import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.DefaultRateLimiter
+import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.RateLimit
 import com.kotlindiscord.kord.extensions.utils.env
 import com.kotlindiscord.kord.extensions.utils.envOrNull
 import dev.kord.common.Locale
@@ -22,6 +23,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import org.koin.core.logger.Level
+import kotlin.time.Duration.Companion.seconds
 
 public val TEST_SERVER_ID: Snowflake = Snowflake(env("TEST_SERVER"))
 
@@ -40,6 +42,16 @@ public suspend fun main() {
 
         applicationCommands {
             defaultGuild(TEST_SERVER_ID)
+
+            useLimiter {
+                cooldownHandler = DefaultCooldownHandler()
+                rateLimiter = DefaultRateLimiter()
+
+                // Example cooldown, users can only run a command each 5 seconds in a unique server.
+                cooldown(CachedUsageLimitType.COMMAND_USER_GUILD) { 5.seconds }
+                // Example ratelimit, there can only be 20 commands ran in a channel during the last 60 seconds.
+                ratelimit(CachedUsageLimitType.GLOBAL_CHANNEL) { RateLimit(true, 20, 60.seconds) }
+            }
         }
 
         intents {
@@ -77,6 +89,7 @@ public suspend fun main() {
             add(::ArgumentTestExtension)
             add(::I18nTestExtension)
             add(::PaginatorTestExtension)
+            add(::UseLimitTestExtension)
             add(::PKTestExtension)
         }
 
