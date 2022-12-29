@@ -77,6 +77,7 @@ public suspend fun main() {
             add(::ModalTestExtension)
             add(::PaginatorTestExtension)
             add(::PKTestExtension)
+            add(::SelectorTestExtension)
         }
 
         plugins {

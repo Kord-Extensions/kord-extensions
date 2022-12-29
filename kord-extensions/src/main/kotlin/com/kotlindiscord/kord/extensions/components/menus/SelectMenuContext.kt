@@ -12,11 +12,9 @@ import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
 /** Abstract class representing the execution context of a select (dropdown) menu component. **/
+@Suppress("UnnecessaryAbstractClass")
 public abstract class SelectMenuContext(
     component: Component,
     event: SelectMenuInteractionCreateEvent,
     cache: MutableStringKeyedMap<Any>
-) : ComponentContext<SelectMenuInteractionCreateEvent>(component, event, cache) {
-    /** Menu options that were selected by the user before de-focusing the menu. **/
-    public val selected: List<String> by lazy { event.interaction.values }
-}
+) : ComponentContext<SelectMenuInteractionCreateEvent>(component, event, cache)

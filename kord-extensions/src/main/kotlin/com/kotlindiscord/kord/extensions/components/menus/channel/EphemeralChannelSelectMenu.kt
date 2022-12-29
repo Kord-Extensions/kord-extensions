@@ -4,10 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("TooGenericExceptionCaught")
-@file:OptIn(KordUnsafe::class)
-
-package com.kotlindiscord.kord.extensions.components.menus
+package com.kotlindiscord.kord.extensions.components.menus.channel
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
@@ -25,11 +22,11 @@ import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 public typealias InitialEphemeralSelectMenuResponseBuilder =
     (suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
-/** Class representing an ephemeral-only select (dropdown) menu. **/
-public open class EphemeralSelectMenu<M : ModalForm>(
+/** Class representing an ephemeral-only channel select (dropdown) menu. **/
+public open class EphemeralChannelSelectMenu<M : ModalForm>(
     timeoutTask: Task?,
     public override val modal: (() -> M)? = null,
-) : SelectMenu<EphemeralSelectMenuContext<M>, M>(timeoutTask) {
+) : ChannelSelectMenu<EphemeralChannelSelectMenuContext<M>, M>(timeoutTask) {
     /** @suppress Initial response builder. **/
     public open var initialResponseBuilder: InitialEphemeralSelectMenuResponseBuilder = null
 
@@ -46,6 +43,8 @@ public open class EphemeralSelectMenu<M : ModalForm>(
         }
     }
 
+    @OptIn(KordUnsafe::class)
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
         val cache: MutableStringKeyedMap<Any> = mutableMapOf()
 
@@ -96,7 +95,7 @@ public open class EphemeralSelectMenu<M : ModalForm>(
             }
         }
 
-        val context = EphemeralSelectMenuContext(this, event, response, cache)
+        val context = EphemeralChannelSelectMenuContext(this, event, response, cache)
 
         context.populate()
 
@@ -120,7 +119,7 @@ public open class EphemeralSelectMenu<M : ModalForm>(
     }
 
     override suspend fun respondText(
-        context: EphemeralSelectMenuContext<M>,
+        context: EphemeralChannelSelectMenuContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {

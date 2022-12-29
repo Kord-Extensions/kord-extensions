@@ -4,10 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("TooGenericExceptionCaught")
-@file:OptIn(KordUnsafe::class)
-
-package com.kotlindiscord.kord.extensions.components.menus
+package com.kotlindiscord.kord.extensions.components.menus.channel
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
@@ -26,11 +23,11 @@ import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 public typealias InitialPublicSelectMenuResponseBuilder =
     (suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
-/** Class representing a public-only select (dropdown) menu. **/
-public open class PublicSelectMenu<M : ModalForm>(
+/** Class representing a public-only channel select (dropdown) menu. **/
+public open class PublicChannelSelectMenu<M : ModalForm>(
     timeoutTask: Task?,
     public override val modal: (() -> M)? = null,
-) : SelectMenu<PublicSelectMenuContext<M>, M>(timeoutTask) {
+) : ChannelSelectMenu<PublicChannelSelectMenuContext<M>, M>(timeoutTask) {
     /** @suppress Initial response builder. **/
     public open var initialResponseBuilder: InitialPublicSelectMenuResponseBuilder = null
 
@@ -47,6 +44,8 @@ public open class PublicSelectMenu<M : ModalForm>(
         }
     }
 
+    @OptIn(KordUnsafe::class)
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
         val cache: MutableStringKeyedMap<Any> = mutableMapOf()
 
@@ -97,7 +96,7 @@ public open class PublicSelectMenu<M : ModalForm>(
             }
         }
 
-        val context = PublicSelectMenuContext(this, event, response, cache)
+        val context = PublicChannelSelectMenuContext(this, event, response, cache)
 
         context.populate()
 
@@ -121,7 +120,7 @@ public open class PublicSelectMenu<M : ModalForm>(
     }
 
     override suspend fun respondText(
-        context: PublicSelectMenuContext<M>,
+        context: PublicChannelSelectMenuContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {

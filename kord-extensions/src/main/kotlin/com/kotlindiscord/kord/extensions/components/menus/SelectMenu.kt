@@ -15,8 +15,6 @@ import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import dev.kord.rest.builder.component.ActionRowBuilder
-import dev.kord.rest.builder.component.SelectOptionBuilder
 import io.sentry.Sentry
 import mu.KLogger
 import mu.KotlinLogging
@@ -42,9 +40,6 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 ) : ComponentWithAction<SelectMenuInteractionCreateEvent, C, M>(timeoutTask) {
     internal val logger: KLogger = KotlinLogging.logger {}
 
-    /** List of options for the user to choose from. **/
-    public val options: MutableList<SelectOptionBuilder> = mutableListOf()
-
     /** The minimum number of choices that the user must make. **/
     public var minimumChoices: Int = 1
 
@@ -68,70 +63,6 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
     /** Mark this select menu as enabled. **/
     public open fun enable() {
         disabled = null  // Don't ask me why this is
-    }
-
-    /** Add an option to this select menu. **/
-    @Suppress("UnnecessaryParentheses")  // Disagrees with IDEA, amusingly.
-    public open suspend fun option(
-        label: String,
-        value: String,
-
-        // TODO: Check this is fixed in later versions of the compiler
-        // This is nullable like this due to a compiler bug: https://youtrack.jetbrains.com/issue/KT-51820
-        body: (suspend SelectOptionBuilder.() -> Unit)? = null,
-    ) {
-        val builder = SelectOptionBuilder(label, value)
-
-        if (body != null) {
-            body(builder)
-        }
-
-        if ((builder.description?.length ?: 0) > DESCRIPTION_MAX) {
-            error("Option descriptions must not be longer than $DESCRIPTION_MAX characters.")
-        }
-
-        if (builder.label.length > LABEL_MAX) {
-            error("Option labels must not be longer than $LABEL_MAX characters.")
-        }
-
-        if (builder.value.length > VALUE_MAX) {
-            error("Option values must not be longer than $VALUE_MAX characters.")
-        }
-
-        options.add(builder)
-    }
-
-    public override fun apply(builder: ActionRowBuilder) {
-        if (maximumChoices == null || maximumChoices!! > options.size) {
-            maximumChoices = options.size
-        }
-
-        builder.stringSelect(id) {
-            this.allowedValues = minimumChoices..maximumChoices!!
-
-            @Suppress("DEPRECATION")  // Kord suppresses this in their own class
-            this.options.addAll(this@SelectMenu.options)
-            this.placeholder = this@SelectMenu.placeholder
-
-            this.disabled = this@SelectMenu.disabled
-        }
-    }
-
-    @Suppress("UnnecessaryParentheses")  // Disagrees with IDEA, amusingly.
-    override fun validate() {
-        super.validate()
-
-        if (this.options.isEmpty()) {
-            error("Menu components must have at least one option.")
-        }
-
-        if (this.options.size > OPTIONS_MAX) {
-            error("Menu components must not have more than $OPTIONS_MAX options.")
-        }
-
-        if ((this.placeholder?.length ?: 0) > PLACEHOLDER_MAX) {
-            error("Menu components must not have a placeholder longer than $PLACEHOLDER_MAX characters.")
-        }
     }
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
