@@ -110,7 +110,6 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
             append(commandId)
             append(">")
         }
-        "</NAME GROUP SUB:ID>"
     }
 
     /**
