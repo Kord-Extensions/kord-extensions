@@ -12,7 +12,6 @@ jansi = "2.4.0"
 jsoup = "1.15.2"
 junit = "5.8.2"
 koin = "3.2.0"
-konf = "1.1.2"
 kord = "0.8.x-SNAPSHOT"
 #kord = "0.8.0-M14"
 kotlinpoet = "1.12.0"
@@ -26,7 +25,7 @@ pf4j = "3.7.0"
 sentry = "6.1.4"
 time4j-base = "5.9.1"
 time4j-tzdata = "5.0-2022a"
-toml = "0.1.6"
+toml = "0.1.7"
 
 [libraries]
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator" }
@@ -42,9 +41,6 @@ junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-logger = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
-
-konf-core = { module = "com.uchuhimo:konf", version.ref = "konf" }
-konf-toml = { module = "com.uchuhimo:konf-toml", version.ref = "konf" }
 
 kord = { module = "dev.kord:kord-core", version.ref = "kord" }
 kord-voice = { module = "dev.kord:core-voice", version.ref = "kord" }

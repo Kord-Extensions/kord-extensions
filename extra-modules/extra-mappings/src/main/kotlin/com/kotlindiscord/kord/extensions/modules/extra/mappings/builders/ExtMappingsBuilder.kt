@@ -7,15 +7,10 @@
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.builders
 
 import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.MappingsConfigAdapter
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.configuration.TomlMappingsConfig
 import me.shedaniel.linkie.Namespace
 
 /** Builder used for configuring the mappings extension. **/
 class ExtMappingsBuilder {
-    /** Config adapter to use to load the mappings extension configuration. **/
-    var config: MappingsConfigAdapter = TomlMappingsConfig()
-
     /** List of checks to apply against the name of the command. **/
     val commandChecks: MutableList<suspend (String) -> SlashCommandCheck> = mutableListOf()
 
