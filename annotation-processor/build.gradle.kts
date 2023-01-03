@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":annotations"))
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 }
 
 dokkaModule {

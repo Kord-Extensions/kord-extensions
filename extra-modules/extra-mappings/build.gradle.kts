@@ -42,6 +42,7 @@ dependencies {
     api(libs.linkie)
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     implementation(libs.konf.core)
     implementation(libs.konf.toml)

@@ -10,6 +10,7 @@ dependencies {
     implementation(project(":kord-extensions"))
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     testImplementation(libs.groovy)  // For logback config
     testImplementation(libs.junit)
