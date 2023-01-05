@@ -6,6 +6,8 @@
 
 package com.kotlindiscord.kord.extensions.testbot.extensions
 
+import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
+import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.components.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
@@ -23,63 +25,138 @@ public class SelectorTestExtension : Extension() {
             name = "selector"
             description = "Test selectors."
 
-            action {
-                respond {
-                    components {
-                        publicStringSelectMenu {
-                            option("hi", "1")
-                            option("hi hi", "2")
-                            maximumChoices = null
+            publicSubCommand {
+                name = "public"
+                description = "Test public selectors."
 
-                            action {
-                                respond { content = selected.joinToString("\n") }
+                action {
+                    respond {
+                        components {
+                            publicStringSelectMenu {
+                                option("hi", "1")
+                                option("hi hi", "2")
+                                maximumChoices = null
+
+                                action {
+                                    respond { content = selected.joinToString("\n") }
+                                }
                             }
-                        }
 
-                        publicUserSelectMenu {
-                            maximumChoices = null
+                            publicUserSelectMenu {
+                                maximumChoices = null
 
-                            action {
-                                respond {
-                                    content = selected.joinToString("\n") {
-                                        runBlocking { it.asUser().username }
+                                action {
+                                    respond {
+                                        content = selected.joinToString("\n") {
+                                            runBlocking { it.asUser().username }
+                                        }
+                                    }
+                                }
+                            }
+
+                            publicRoleSelectMenu {
+                                maximumChoices = null
+
+                                action {
+                                    respond {
+                                        content = selected.joinToString("\n") {
+                                            runBlocking { it.asRole().name }
+                                        }
+                                    }
+                                }
+                            }
+
+                            publicChannelSelectMenu {
+                                maximumChoices = null
+
+                                action {
+                                    respond {
+                                        content = selected.joinToString("\n") {
+                                            runBlocking { it.asChannel().id.value.toString() }
+                                        }
+                                    }
+                                }
+                            }
+
+                            publicChannelSelectMenu {
+                                maximumChoices = null
+                                channelType(ChannelType.GuildText)
+
+                                action {
+                                    respond {
+                                        content = selected.joinToString("\n") {
+                                            runBlocking { it.asChannelOf<TextChannel>().name }
+                                        }
                                     }
                                 }
                             }
                         }
+                    }
+                }
+            }
 
-                        publicRoleSelectMenu {
-                            maximumChoices = null
+            ephemeralSubCommand {
+                name = "ephemeral"
+                description = "Test ephemeral selectors."
 
-                            action {
-                                respond {
-                                    content = selected.joinToString("\n") {
-                                        runBlocking { it.asRole().name }
+                action {
+                    respond {
+                        components {
+                            ephemeralStringSelectMenu {
+                                option("hi", "1")
+                                option("hi hi", "2")
+                                maximumChoices = null
+
+                                action {
+                                    respond { content = selected.joinToString("\n") }
+                                }
+                            }
+
+                            ephemeralUserSelectMenu {
+                                maximumChoices = null
+
+                                action {
+                                    respond {
+                                        content = selected.joinToString("\n") {
+                                            runBlocking { it.asUser().username }
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        publicChannelSelectMenu {
-                            maximumChoices = null
+                            ephemeralRoleSelectMenu {
+                                maximumChoices = null
 
-                            action {
-                                respond {
-                                    content = selected.joinToString("\n") {
-                                        runBlocking { it.asChannel().id.value.toString() }
+                                action {
+                                    respond {
+                                        content = selected.joinToString("\n") {
+                                            runBlocking { it.asRole().name }
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        publicChannelSelectMenu {
-                            maximumChoices = null
-                            channelType(ChannelType.GuildText)
+                            ephemeralChannelSelectMenu {
+                                maximumChoices = null
 
-                            action {
-                                respond {
-                                    content = selected.joinToString("\n") {
-                                        runBlocking { it.asChannelOf<TextChannel>().name }
+                                action {
+                                    respond {
+                                        content = selected.joinToString("\n") {
+                                            runBlocking { it.asChannel().id.value.toString() }
+                                        }
+                                    }
+                                }
+                            }
+
+                            ephemeralChannelSelectMenu {
+                                maximumChoices = null
+                                channelType(ChannelType.GuildText)
+
+                                action {
+                                    respond {
+                                        content = selected.joinToString("\n") {
+                                            runBlocking { it.asChannelOf<TextChannel>().name }
+                                        }
                                     }
                                 }
                             }

@@ -17,5 +17,5 @@ public class EphemeralStringSelectMenuContext<M : ModalForm>(
     override val component: EphemeralStringSelectMenu<M>,
     override val event: SelectMenuInteractionCreateEvent,
     override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
+    cache: MutableStringKeyedMap<Any>,
 ) : StringSelectMenuContext(component, event, cache), EphemeralInteractionContext

@@ -122,6 +122,15 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
         }
     }
 
+    @Suppress("UnnecessaryParentheses")
+    override fun validate() {
+        super.validate()
+
+        if ((this.placeholder?.length ?: 0) > PLACEHOLDER_MAX) {
+            error("Menu components must not have a placeholder longer than $PLACEHOLDER_MAX characters.")
+        }
+    }
+
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
     public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
 }

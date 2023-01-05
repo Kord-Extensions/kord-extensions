@@ -1,41 +1,33 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
 package com.kotlindiscord.kord.extensions.components.menus.channel
 
-import com.kotlindiscord.kord.extensions.components.forms.ModalForm
-import com.kotlindiscord.kord.extensions.components.menus.*
-import com.kotlindiscord.kord.extensions.utils.scheduling.Task
+import com.kotlindiscord.kord.extensions.components.menus.OPTIONS_MAX
+import com.kotlindiscord.kord.extensions.components.menus.SelectMenu
 import dev.kord.common.entity.ChannelType
 import dev.kord.rest.builder.component.ActionRowBuilder
 
-/** Abstract class representing a channel select (dropdown) menu component. **/
-public abstract class ChannelSelectMenu<C : ChannelSelectMenuContext, M : ModalForm>(timeoutTask: Task?) :
-    SelectMenu<C, M>(timeoutTask) {
-
-    /** The channel types allowed to be selected in the dropdown. **/
-    public var channelTypes: MutableList<ChannelType> = mutableListOf()
+/** Interface for channel select menus. **/
+public interface ChannelSelectMenu {
+    /** The types allowed in the select menu. **/
+    public var channelTypes: MutableList<ChannelType>
 
     /** Add an allowed channel type to the selector. **/
     public fun channelType(vararg type: ChannelType) {
         channelTypes.addAll(type)
     }
 
-    public override fun apply(builder: ActionRowBuilder) {
-        if (maximumChoices == null) maximumChoices = OPTIONS_MAX
+    /** Apply the channel select menu to an action row builder. **/
+    public fun applyChannelSelectMenu(selectMenu: SelectMenu<*, *>, builder: ActionRowBuilder) {
+        if (selectMenu.maximumChoices == null) selectMenu.maximumChoices = OPTIONS_MAX
 
-        builder.channelSelect(id) {
+        builder.channelSelect(selectMenu.id) {
             this.channelTypes = if (this@ChannelSelectMenu.channelTypes.isEmpty()) {
                 null
             } else {
                 this@ChannelSelectMenu.channelTypes
             }
-            this.allowedValues = minimumChoices..maximumChoices!!
-            this.placeholder = this@ChannelSelectMenu.placeholder
-            this.disabled = this@ChannelSelectMenu.disabled
+            this.allowedValues = selectMenu.minimumChoices..selectMenu.maximumChoices!!
+            this.placeholder = selectMenu.placeholder
+            this.disabled = selectMenu.disabled
         }
     }
 }

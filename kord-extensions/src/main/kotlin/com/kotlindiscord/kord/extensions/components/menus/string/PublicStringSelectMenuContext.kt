@@ -17,5 +17,5 @@ public class PublicStringSelectMenuContext<M : ModalForm>(
     override val component: PublicStringSelectMenu<M>,
     override val event: SelectMenuInteractionCreateEvent,
     override val interactionResponse: PublicMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
+    cache: MutableStringKeyedMap<Any>,
 ) : StringSelectMenuContext(component, event, cache), PublicInteractionContext

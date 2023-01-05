@@ -6,7 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.components.menus.channel
 
-import com.kotlindiscord.kord.extensions.components.Component
+import com.kotlindiscord.kord.extensions.components.menus.SelectMenu
 import com.kotlindiscord.kord.extensions.components.menus.SelectMenuContext
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordExperimental
@@ -17,7 +17,7 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
 /** Abstract class representing the execution context of a channel select (dropdown) menu component. **/
 public abstract class ChannelSelectMenuContext(
-    component: Component,
+    component: SelectMenu<*, *>,
     event: SelectMenuInteractionCreateEvent,
     cache: MutableStringKeyedMap<Any>,
 ) : SelectMenuContext(component, event, cache) {
