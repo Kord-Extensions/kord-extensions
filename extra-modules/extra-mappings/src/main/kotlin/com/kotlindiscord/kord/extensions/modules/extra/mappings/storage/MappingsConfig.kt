@@ -11,7 +11,7 @@
     "UndocumentedPublicProperty",
 )
 
-package com.kotlindiscord.kord.extensions.modules.extra.mappings.stroage
+package com.kotlindiscord.kord.extensions.modules.extra.mappings.storage
 
 import com.kotlindiscord.kord.extensions.storage.Data
 import kotlinx.serialization.Serializable
