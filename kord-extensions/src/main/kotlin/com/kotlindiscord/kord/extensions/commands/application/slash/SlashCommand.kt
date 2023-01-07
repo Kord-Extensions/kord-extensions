@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.Localized
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
@@ -69,6 +70,47 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 
     /** List of subcommands, if any. **/
     public open val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
+
+    /**
+     * Clickable mention for this slash command, if applicable.
+     *
+     * If you're not using the [DefaultApplicationCommandRegistry] for your command registry, this will currently
+     * return `null`.
+     */
+    public val mention: String? by lazy {
+        if (registry !is DefaultApplicationCommandRegistry) {
+            return@lazy null
+        }
+
+        val commandRegistry = registry as DefaultApplicationCommandRegistry
+
+        lateinit var commandId: Snowflake
+
+        buildString {
+            append("</")
+
+            if (parentCommand != null) {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == parentCommand }.key
+
+                append(parentCommand!!.localizedName.default)
+                append(" ")
+            } else if (parentGroup != null) {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == parentGroup!!.parent }.key
+
+                append(parentGroup!!.parent.localizedName.default)
+                append(" ")
+                append(parentGroup!!.localizedName.default)
+                append(" ")
+            } else {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == this@SlashCommand }.key
+            }
+
+            append(localizedName.default)
+            append(":")
+            append(commandId)
+            append(">")
+        }
+    }
 
     /**
      * A [Localized] version of [description].
