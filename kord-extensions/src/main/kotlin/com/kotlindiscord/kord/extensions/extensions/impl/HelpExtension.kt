@@ -282,6 +282,7 @@ public class HelpExtension : HelpProvider, Extension() {
             } else {
                 append(
                     translationsProvider.translate(command.description, command.extension.bundle, locale)
+                        .trim()
                         .takeWhile { it != '\n' }
                 )
             }
@@ -370,24 +371,26 @@ public class HelpExtension : HelpProvider, Extension() {
                     val argsObj = command.arguments!!.invoke()
 
                     argsObj.args.joinToString("\n") {
-                        append("**»** `${it.displayName}")
+                        buildString {
+                            append("**»** `${it.displayName}")
 
-                        if (it.converter.showTypeInSignature) {
-                            append(" (")
+                            if (it.converter.showTypeInSignature) {
+                                append(" (")
 
-                            append(
-                                translationsProvider.translate(
-                                    it.converter.signatureTypeString,
-                                    it.converter.bundle,
-                                    locale
+                                append(
+                                    translationsProvider.translate(
+                                        it.converter.signatureTypeString,
+                                        it.converter.bundle,
+                                        locale
+                                    )
                                 )
-                            )
 
-                            append(")")
+                                append(")")
+                            }
+
+                            append("`: ")
+                            append(translationsProvider.translate(it.description, command.extension.bundle, locale))
                         }
-
-                        append("`: ")
-                        append(translationsProvider.translate(it.description, command.extension.bundle, locale))
                     }
                 } catch (t: Throwable) {
                     logger.error(t) { "Failed to retrieve argument list for command: $name" }
