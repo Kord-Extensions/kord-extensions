@@ -174,19 +174,19 @@ public class HelpExtension : HelpProvider, Extension() {
     override suspend fun getCommandHelpPaginator(
         event: MessageCreateEvent,
         prefix: String,
-        args: List<String>
+        args: List<String>,
     ): BasePaginator = getCommandHelpPaginator(event, prefix, getCommand(event, args))
 
     override suspend fun getCommandHelpPaginator(
         context: ChatCommandContext<*>,
-        args: List<String>
+        args: List<String>,
     ): BasePaginator =
         getCommandHelpPaginator(context, getCommand(context.event, args))
 
     override suspend fun getCommandHelpPaginator(
         event: MessageCreateEvent,
         prefix: String,
-        command: ChatCommand<out Arguments>?
+        command: ChatCommand<out Arguments>?,
     ): BasePaginator {
         val pages = Pages(COMMANDS_GROUP)
         val locale = event.getLocale()
@@ -263,7 +263,7 @@ public class HelpExtension : HelpProvider, Extension() {
         prefix: String,
         event: MessageCreateEvent,
         command: ChatCommand<out Arguments>,
-        longDescription: Boolean
+        longDescription: Boolean,
     ): Triple<String, String, String> {
         val locale = event.getLocale()
         val defaultLocale = botSettings.i18nBuilder.defaultLocale
@@ -370,28 +370,30 @@ public class HelpExtension : HelpProvider, Extension() {
                 try {
                     val argsObj = command.arguments!!.invoke()
 
-                    argsObj.args.joinToString("\n") {
-                        buildString {
-                            append("**»** `${it.displayName}")
+                    append(
+                        argsObj.args.joinToString("\n") {
+                            buildString {
+                                append("**»** `${it.displayName}")
 
-                            if (it.converter.showTypeInSignature) {
-                                append(" (")
+                                if (it.converter.showTypeInSignature) {
+                                    append(" (")
 
-                                append(
-                                    translationsProvider.translate(
-                                        it.converter.signatureTypeString,
-                                        it.converter.bundle,
-                                        locale
+                                    append(
+                                        translationsProvider.translate(
+                                            it.converter.signatureTypeString,
+                                            it.converter.bundle,
+                                            locale
+                                        )
                                     )
-                                )
 
-                                append(")")
+                                    append(")")
+                                }
+
+                                append("`: ")
+                                append(translationsProvider.translate(it.description, command.extension.bundle, locale))
                             }
-
-                            append("`: ")
-                            append(translationsProvider.translate(it.description, command.extension.bundle, locale))
                         }
-                    }
+                    )
                 } catch (t: Throwable) {
                     logger.error(t) { "Failed to retrieve argument list for command: $name" }
 
@@ -410,7 +412,7 @@ public class HelpExtension : HelpProvider, Extension() {
 
     override suspend fun getCommand(
         event: MessageCreateEvent,
-        args: List<String>
+        args: List<String>,
     ): ChatCommand<out Arguments>? {
         val firstArg = args.first()
         var command = messageCommandsRegistry.getCommand(firstArg, event)
