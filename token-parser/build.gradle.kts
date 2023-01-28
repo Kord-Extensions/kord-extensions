@@ -10,6 +10,7 @@ dependencies {
     implementation(libs.logging) // Basic logging setup
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     testApi(libs.kord)
     testImplementation(libs.groovy)  // For logback config

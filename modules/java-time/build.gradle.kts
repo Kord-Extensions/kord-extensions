@@ -16,6 +16,7 @@ dependencies {
     ksp(project(":annotation-processor"))
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     testImplementation(libs.groovy)  // For logback config
     testImplementation(libs.jansi)
