@@ -48,7 +48,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
     public open val arguments: (() -> A)? = null,
     public open val modal: (() -> M)? = null,
     public open val parentCommand: SlashCommand<*, *, *>? = null,
-    public open val parentGroup: SlashGroup? = null
+    public open val parentGroup: SlashGroup? = null,
 ) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
     /** @suppress This is only meant for use by code that extends the command system. **/
     public val kxLogger: KLogger = KotlinLogging.logger {}
@@ -89,17 +89,17 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
         buildString {
             append("</")
 
-            if (parentCommand != null) {
-                commandId = commandRegistry.slashCommands.entries.first { it.value == parentCommand }.key
-
-                append(parentCommand!!.localizedName.default)
-                append(" ")
-            } else if (parentGroup != null) {
+            if (parentGroup != null) {
                 commandId = commandRegistry.slashCommands.entries.first { it.value == parentGroup!!.parent }.key
 
                 append(parentGroup!!.parent.localizedName.default)
                 append(" ")
                 append(parentGroup!!.localizedName.default)
+                append(" ")
+            } else if (parentCommand != null) {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == parentCommand }.key
+
+                append(parentCommand!!.localizedName.default)
                 append(" ")
             } else {
                 commandId = commandRegistry.slashCommands.entries.first { it.value == this@SlashCommand }.key
@@ -163,7 +163,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
     /** Override this to implement your command's calling logic. Check subtypes for examples! **/
     public abstract override suspend fun call(
         event: ChatInputCommandInteractionCreateEvent,
-        cache: MutableStringKeyedMap<Any>
+        cache: MutableStringKeyedMap<Any>,
     )
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
@@ -208,7 +208,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 
     override suspend fun runChecks(
         event: ChatInputCommandInteractionCreateEvent,
-        cache: MutableStringKeyedMap<Any>
+        cache: MutableStringKeyedMap<Any>,
     ): Boolean {
         val locale = event.getLocale()
         var result = super.runChecks(event, cache)
