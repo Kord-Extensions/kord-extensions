@@ -282,11 +282,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         val domains: MutableSet<String> = mutableSetOf()
 
         for (match in settings.urlRegex.findAll(content)) {
-            val found = match.groups[1]?.value?.trim('/')
-
-            if (found == null) {
-                continue
-            }
+            val found = match.groups[1]?.value?.trim('/') ?: continue
 
             var domain = found
 
@@ -294,12 +290,12 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                 domain = domain
                     .split("/", limit = 2)
                     .firstOrNull()
-                    ?.lowercase()
+                    ?.lowercase() ?: continue
             }
 
-            domain = domain?.filter { it.isLetterOrDigit() || it in "-+&@#%?=~_|!:,.;" }
+            domain = domain.filter { it.isLetterOrDigit() || it in "-+&@#%?=~_|!:,.;" }
 
-            if (domain in domainCache && domain != null) {
+            if (domain in domainCache) {
                 domains.add(domain)
             } else {
                 val result = followRedirects(match.value)
@@ -341,7 +337,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
             return url
         } catch (e: Exception) {
-            logger.debug(e) { e.message }
+            logger.warn(e) { url }
 
             return url
         }

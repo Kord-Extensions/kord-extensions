@@ -148,6 +148,7 @@ class PKExtension : Extension() {
                     return@action
                 }
 
+                // This is to work around Kord's lack of support for forum channels. This can go once they're supported.
                 val channel = try {
                     topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
                 } catch (e: ClassCastException) {
@@ -235,6 +236,7 @@ class PKExtension : Extension() {
                     return@action
                 }
 
+                // This is to work around Kord's lack of support for forum channels. This can go once they're supported.
                 val channel = try {
                     topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
                 } catch (e: ClassCastException) {
@@ -308,6 +310,7 @@ class PKExtension : Extension() {
                     return@action
                 }
 
+                // This is to work around Kord's lack of support for forum channels. This can go once they're supported.
                 val channel = try {
                     topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
                 } catch (e: ClassCastException) {
