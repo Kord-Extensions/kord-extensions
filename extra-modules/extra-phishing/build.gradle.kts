@@ -7,6 +7,11 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+metadata {
+    name = "KordEx Extra: Phishing"
+    description = "KordEx extra module that provides anti-phishing functionality for bots"
+}
+
 repositories {
     maven {
         name = "KotDis"

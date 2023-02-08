@@ -17,6 +17,11 @@ plugins {
     `ksp-module`
 }
 
+metadata {
+    name = "KordEx Core"
+    description = "Core Kord Extensions module, providing everything you need to write a bot with KordEx"
+}
+
 dependencies {
     api(libs.h2)
     api(libs.hikari)

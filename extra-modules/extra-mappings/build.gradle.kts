@@ -6,6 +6,11 @@ plugins {
     `ksp-module`
 }
 
+metadata {
+    name = "KordEx Extra: Mappings"
+    description = "KordEx extra module that provides Minecraft mappings functionality for bots"
+}
+
 repositories {
     maven {
         name = "KotDis"

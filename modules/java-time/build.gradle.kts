@@ -7,6 +7,11 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+metadata {
+    name = "KordEx: Java Time"
+    description = "KordEx module that provides converters that support Java Time"
+}
+
 dependencies {
     implementation(libs.kotlin.stdlib)
 

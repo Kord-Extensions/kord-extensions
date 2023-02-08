@@ -4,6 +4,11 @@ plugins {
     `dokka-module`
 }
 
+metadata {
+    name = "KordEx: Annotation Processor"
+    description = "KSP-based annotation processor designed for KordEx converters and plugins"
+}
+
 dependencies {
     implementation(libs.kotlin.stdlib)
 
