@@ -1,6 +1,7 @@
 # Mappings Extension
 
-[![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/gjXqqCS) [![Release](https://img.shields.io/nexus/r/com.kotlindiscord.kord.extensions/extra-mappings?nexusVersion=3&logo=gradle&color=blue&label=Release&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-releases:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fextra-mappings) [![Snapshot](https://img.shields.io/nexus/s/com.kotlindiscord.kord.extensions/extra-mappings?logo=gradle&color=orange&label=Snapshot&server=https%3A%2F%2Fmaven.kotlindiscord.com&style=for-the-badge)](https://maven.kotlindiscord.com/#browse/browse:maven-snapshots:com%2Fkotlindiscord%2Fkord%2Fextensions%2Fextra-mappings)
+[![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/ZKRetPNtvY) <br />
+![Latest](https://img.shields.io/maven-metadata/v?label=Latest&metadataUrl=https%3A%2F%2Fs01.oss.sonatype.org%2Fservice%2Flocal%2Frepositories%2Fsnapshots%2Fcontent%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions%2Fmaven-metadata.xml&style=for-the-badge)
 
 This module contains an extension written to provide Minecraft mappings information on Discord. It makes heavy use
 of [linkie-core](https://github.com/shedaniel/linkie-core), which (as of this writing) supports Legacy Yarn, MCP,
@@ -12,7 +13,7 @@ If you're looking for older versions (and older tags), you can find them
 
 # Getting Started
 
-* **Maven repo:** `https://maven.kotlindiscord.com/repository/maven-public/`
+* **Maven repo:** Maven Central for releases, `https://oss.sonatype.org/content/repositories/snapshots/` for snapshots
 * **Maven coordinates:** `com.kotlindiscord.kord.extensions:extra-mappings:VERSION`
 
 * Some extra Maven repos are required:
