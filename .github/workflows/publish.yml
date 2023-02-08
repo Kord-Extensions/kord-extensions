@@ -37,8 +37,11 @@ jobs:
           ORG_GRADLE_PROJECT_signingKey: "${{ secrets.GPG_KEY }}"
           ORG_GRADLE_PROJECT_signingPassword: "${{ secrets.GPG_PASSWORD }}"
 
+          OSSRH_USERNAME: "${{ secrets.OSSRH_USERNAME }}"
+          OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
+
         with:
-          arguments: publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
+          arguments: publish
 
       - name: Upload artifact (Extra Module JARs)
         uses: actions/upload-artifact@v2

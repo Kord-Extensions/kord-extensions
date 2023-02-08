@@ -12,7 +12,7 @@ afterEvaluate {
     publishing {
         repositories {
             maven {
-                name = "KotDis"
+                name = "Sonatype"
 
                 url = if (project.version.toString().contains("SNAPSHOT")) {
                     uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
