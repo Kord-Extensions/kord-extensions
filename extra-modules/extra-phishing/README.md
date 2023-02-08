@@ -7,7 +7,7 @@ This module contains an extension written to provide some anti-phishing protecti
 
 # Getting Started
 
-* **Maven repo:** Maven Central for releases, `https://oss.sonatype.org/content/repositories/snapshots/` for snapshots
+* **Maven repo:** Maven Central for releases, `https://s01.oss.sonatype.org/content/repositories/snapshots` for snapshots
 * **Maven coordinates:** `com.kotlindiscord.kord.extensions:extra-phishing:VERSION`
 
 At its simplest, you can add this extension directly to your bot with a minimum configuration. For example:

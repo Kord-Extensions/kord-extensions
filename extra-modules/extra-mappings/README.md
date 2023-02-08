@@ -13,7 +13,7 @@ If you're looking for older versions (and older tags), you can find them
 
 # Getting Started
 
-* **Maven repo:** Maven Central for releases, `https://oss.sonatype.org/content/repositories/snapshots/` for snapshots
+* **Maven repo:** Maven Central for releases, `https://s01.oss.sonatype.org/content/repositories/snapshots` for snapshots
 * **Maven coordinates:** `com.kotlindiscord.kord.extensions:extra-mappings:VERSION`
 
 * Some extra Maven repos are required:
