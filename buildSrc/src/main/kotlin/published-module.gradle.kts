@@ -15,15 +15,17 @@ afterEvaluate {
                 name = "KotDis"
 
                 url = if (project.version.toString().contains("SNAPSHOT")) {
-                    uri("https://maven.kotlindiscord.com/repository/maven-snapshots/")
+                    uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
                 } else {
-                    uri("https://maven.kotlindiscord.com/repository/maven-releases/")
+                    uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
                 }
 
                 credentials {
-                    username = project.findProperty("kotdis.user") as String? ?: System.getenv("KOTLIN_DISCORD_USER")
-                    password = project.findProperty("kotdis.password") as String?
-                        ?: System.getenv("KOTLIN_DISCORD_PASSWORD")
+                    username = project.findProperty("ossrhUsername") as String?
+                        ?: System.getenv("OSSRH_USERNAME")
+
+                    password = project.findProperty("ossrhPassword") as String?
+                        ?: System.getenv("OSSRH_PASSWORD")
                 }
 
                 version = project.version

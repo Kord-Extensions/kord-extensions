@@ -38,7 +38,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingPassword: "${{ secrets.GPG_PASSWORD }}"
 
         with:
-          arguments: publish -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }}
+          arguments: publish -PossrhUsername=${{ secrets.OSSRH_USERNAME }} -PossrhPassword=${{ secrets.OSSRH_PASSWORD }}
 
       - name: Upload artifact (Extra Module JARs)
         uses: actions/upload-artifact@v2
