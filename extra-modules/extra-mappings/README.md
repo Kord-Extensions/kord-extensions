@@ -17,10 +17,11 @@ If you're looking for older versions (and older tags), you can find them
 * **Maven coordinates:** `com.kotlindiscord.kord.extensions:extra-mappings:VERSION`
 
 * Some extra Maven repos are required:
-    * **FabricMC**: `https://maven.fabricmc.net/`
+    * **FabricMC**: `https://maven.fabricmc.net`
     * **JitPack**: `https://jitpack.io`
-    * **QuiltMC (Releases)**: `https://maven.quiltmc.org/repository/release/`
-    * **QuiltMC (Snapshots)**: `https://maven.quiltmc.org/repository/snapshot/`
+    * **QuiltMC (Releases)**: `https://maven.quiltmc.org/repository/release`
+    * **QuiltMC (Snapshots)**: `https://maven.quiltmc.org/repository/snapshot`
+    * **Shedaniel**: `https://maven.shedaniel.me`
 
 At its simplest, you can add this extension directly to your bot with no further configuration. For example:
 
