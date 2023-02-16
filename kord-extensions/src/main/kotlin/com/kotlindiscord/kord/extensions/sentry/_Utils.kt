@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("TooGenericExceptionCaught", "unused")
+@file:Suppress("TooGenericExceptionCaught")
 
 package com.kotlindiscord.kord.extensions.sentry
 

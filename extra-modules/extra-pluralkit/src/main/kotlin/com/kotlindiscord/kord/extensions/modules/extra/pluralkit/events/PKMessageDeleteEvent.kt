@@ -163,7 +163,7 @@ class UnProxiedMessageDeleteEvent(
 }
 
 internal suspend fun MessageDeleteEvent.proxied(p: PKMessage, referencedMessage: Message?): ProxiedMessageDeleteEvent {
-    val member = getGuild()!!.getMemberOrNull(p.sender)!!
+    val member = getGuildOrNull()!!.getMemberOrNull(p.sender)!!
 
     return ProxiedMessageDeleteEvent(
         this,

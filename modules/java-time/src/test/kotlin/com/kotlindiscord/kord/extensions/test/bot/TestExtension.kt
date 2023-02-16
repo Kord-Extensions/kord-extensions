@@ -12,10 +12,8 @@ import com.kotlindiscord.kord.extensions.extensions.chatCommand
 import com.kotlindiscord.kord.extensions.modules.time.java.coalescingJ8Duration
 import com.kotlindiscord.kord.extensions.modules.time.java.toHuman
 import com.kotlindiscord.kord.extensions.utils.respond
-import dev.kord.common.annotation.KordPreview
 
 // They're IDs
-@OptIn(KordPreview::class)
 @Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
     override val name = "test"
