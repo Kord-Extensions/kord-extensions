@@ -6,10 +6,15 @@ plugins {
     `ksp-module`
 }
 
+metadata {
+    name = "KordEx Extra: Mappings"
+    description = "KordEx extra module that provides Minecraft mappings functionality for bots"
+}
+
 repositories {
     maven {
-        name = "KotDis"
-        url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+        name = "Sonatype Snapshots"
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
     maven {
@@ -42,6 +47,7 @@ dependencies {
     api(libs.linkie)
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     implementation(libs.konf.core)
     implementation(libs.konf.toml)

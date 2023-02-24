@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("unused")
-
 package com.kotlindiscord.kord.extensions.utils
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext

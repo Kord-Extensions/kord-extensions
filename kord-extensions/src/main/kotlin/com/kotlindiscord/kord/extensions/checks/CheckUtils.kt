@@ -315,7 +315,7 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
         is ReactionAddEvent -> event.userAsMember
         is ReactionRemoveEvent -> event.userAsMember
         is TypingStartEvent -> if (event.guildId != null) {
-            event.getGuild()!!.getMemberOrNull(event.userId)
+            event.getGuildOrNull()!!.getMemberOrNull(event.userId)
         } else {
             null
         }

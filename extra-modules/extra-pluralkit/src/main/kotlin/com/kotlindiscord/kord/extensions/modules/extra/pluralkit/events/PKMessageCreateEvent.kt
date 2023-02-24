@@ -144,7 +144,7 @@ class UnProxiedMessageCreateEvent(
 }
 
 internal suspend fun MessageCreateEvent.proxied(p: PKMessage, referencedMessage: Message?): ProxiedMessageCreateEvent {
-    val member = getGuild()!!.getMemberOrNull(p.sender)!!
+    val member = getGuildOrNull()!!.getMemberOrNull(p.sender)!!
 
     return ProxiedMessageCreateEvent(
         this,

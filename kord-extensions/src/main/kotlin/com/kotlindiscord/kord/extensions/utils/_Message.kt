@@ -287,7 +287,9 @@ public suspend fun Message.requireChannel(
         (allowDm && messageChannel is DmChannel) ||
         (role != null && topRole != null && topRole >= role) ||
         channelId == channel.id
-    ) return true
+    ) {
+        return true
+    }
 
     val response = respond(
         context.translate("utils.message.useThisChannel", replacements = arrayOf(channel.mention))
@@ -326,7 +328,9 @@ public suspend fun Message.requireGuildChannel(
     if (
         (role != null && topRole != null && topRole >= role) ||
         getChannelOrNull() !is DmChannel
-    ) return true
+    ) {
+        return true
+    }
 
     respond(context.translate("utils.message.commandNotAvailableInDm"))
     return false
@@ -362,7 +366,9 @@ public suspend fun Message.requireGuildChannel(
     if (
         (role != null && topRole != null && topRole >= role) ||
         getChannelOrNull() !is DmChannel
-    ) return true
+    ) {
+        return true
+    }
 
     respond(context.translate("utils.message.commandNotAvailableInDm"))
     return false
