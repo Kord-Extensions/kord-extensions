@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("RedundantSuspendModifier", "StringLiteralDuplication")
+@file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.checks
 

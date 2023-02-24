@@ -11,7 +11,6 @@ import com.kotlindiscord.kord.extensions.DISCORD_RED
 import com.kotlindiscord.kord.extensions.DISCORD_YELLOW
 import dev.kord.common.Color
 
-@Suppress("PropertyName")
 public sealed class LogLevel(
     public val name: String,
     public val color: Color?,

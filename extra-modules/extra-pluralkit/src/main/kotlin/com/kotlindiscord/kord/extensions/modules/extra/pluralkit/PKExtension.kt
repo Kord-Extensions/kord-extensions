@@ -111,7 +111,7 @@ class PKExtension : Extension() {
 
         event<MessageCreateEvent> {
             action {
-                val guild = event.getGuild()
+                val guild = event.getGuildOrNull()
 
                 if (guild == null) {
                     kord.launch {
@@ -195,7 +195,7 @@ class PKExtension : Extension() {
 
         event<MessageDeleteEvent> {
             action {
-                val guild = event.getGuild()
+                val guild = event.getGuildOrNull()
 
                 if (guild == null) {
                     kord.launch {
