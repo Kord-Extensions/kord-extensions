@@ -29,15 +29,17 @@ public data class GuildJoinRequest(
     @SerialName("application_status")
     public val status: ApplicationStatus,
 
-    public val id: Snowflake,
+    @SerialName("form_responses")
     public val formResponses: List<GuildJoinRequestResponse>,
-    public val user: DiscordUser,
 
     @SerialName("actioned_by_user")
     public val actionedByUser: DiscordUser?,
 
     @SerialName("actioned_at")
     public val actionedAtSnowflake: Snowflake,
+
+    public val id: Snowflake,
+    public val user: DiscordUser,
 
     // last_seen?
 ) {
