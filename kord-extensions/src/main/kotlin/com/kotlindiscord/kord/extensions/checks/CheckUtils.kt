@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordUnsafe::class, KordExperimental::class, KordUnsafe::class, KordUnsafe::class, KordUnsafe::class)
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.checks
 
