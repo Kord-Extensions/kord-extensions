@@ -6,7 +6,7 @@ val file = File("gradle.properties")
 
 properties.load(file.inputStream())
 
-properties["org.gradle.parallel"] = false
+properties["org.gradle.parallel"] = "false"
 
 properties.store(file.outputStream(), null)
 
