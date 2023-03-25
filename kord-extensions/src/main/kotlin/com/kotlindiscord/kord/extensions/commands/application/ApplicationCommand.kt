@@ -13,7 +13,7 @@ import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
-import com.kotlindiscord.kord.extensions.commands.events.ApplicationCommandInvocationEvent
+import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
@@ -219,13 +219,13 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public abstract suspend fun call(event: E, cache: MutableStringKeyedMap<Any>)
 
     /** Override this to implement the useLimited logic for your subclass. **/
-    public suspend fun useLimited(invocationEvent: ApplicationCommandInvocationEvent<*, *>): Boolean =
+    public suspend fun useLimited(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
         isOnCooldown(invocationEvent) || isRateLimited(invocationEvent)
 
-    private suspend fun isRateLimited(invocationEvent: ApplicationCommandInvocationEvent<*, *>): Boolean =
+    private suspend fun isRateLimited(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
         settings.chatCommandsBuilder.useLimiterBuilder.rateLimiter.checkCommandRatelimit(invocationEvent)
 
-    private suspend fun isOnCooldown(invocationEvent: ApplicationCommandInvocationEvent<*, *>): Boolean =
+    private suspend fun isOnCooldown(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
         settings.chatCommandsBuilder.useLimiterBuilder.cooldownHandler.checkCommandOnCooldown(invocationEvent)
 }
 

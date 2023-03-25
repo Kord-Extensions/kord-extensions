@@ -7,9 +7,7 @@
 package com.kotlindiscord.kord.extensions.usagelimits.cooldowns
 
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.events.ApplicationCommandInvocationEvent
-import com.kotlindiscord.kord.extensions.commands.events.ChatCommandInvocationEvent
-import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
+import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.usagelimits.DiscriminatingContext
 import com.kotlindiscord.kord.extensions.usagelimits.UsageLimitType
 import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.RateLimitType
@@ -70,6 +68,9 @@ public interface CooldownHandler {
         val context = when (invocationEvent) {
             is ApplicationCommandInvocationEvent -> DiscriminatingContext(invocationEvent)
             is ChatCommandInvocationEvent -> DiscriminatingContext(invocationEvent)
+            is MessageCommandInvocationEvent -> DiscriminatingContext(invocationEvent)
+            is SlashCommandInvocationEvent -> DiscriminatingContext(invocationEvent)
+            is UserCommandInvocationEvent -> DiscriminatingContext(invocationEvent)
         }
         return context
     }

@@ -6,9 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.usagelimits
 
-import com.kotlindiscord.kord.extensions.commands.events.ApplicationCommandInvocationEvent
-import com.kotlindiscord.kord.extensions.commands.events.ChatCommandInvocationEvent
-import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
+import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.MessageChannelBehavior
@@ -27,7 +25,7 @@ public data class DiscriminatingContext(
     /** Command invoker's [UserData]. **/
     public val event: CommandInvocationEvent<*, *>,
     /** Locale of this command's executor. **/
-    public val locale: suspend () -> Locale
+    public val locale: suspend () -> Locale,
 ) {
     public constructor(
         event: ChatCommandInvocationEvent,
@@ -41,6 +39,36 @@ public data class DiscriminatingContext(
 
     public constructor(
         event: ApplicationCommandInvocationEvent<*, *>,
+    ) : this(
+        event.event.interaction.user.data,
+        event.event.interaction.channel,
+        event.event.interaction.invokedCommandGuildId,
+        event,
+        { event.event.getLocale() }
+    )
+
+    public constructor(
+        event: MessageCommandInvocationEvent<*>,
+    ) : this(
+        event.event.interaction.user.data,
+        event.event.interaction.channel,
+        event.event.interaction.invokedCommandGuildId,
+        event,
+        { event.event.getLocale() }
+    )
+
+    public constructor(
+        event: SlashCommandInvocationEvent<*>,
+    ) : this(
+        event.event.interaction.user.data,
+        event.event.interaction.channel,
+        event.event.interaction.invokedCommandGuildId,
+        event,
+        { event.event.getLocale() }
+    )
+
+    public constructor(
+        event: UserCommandInvocationEvent<*>,
     ) : this(
         event.event.interaction.user.data,
         event.event.interaction.channel,

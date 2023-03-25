@@ -14,8 +14,8 @@ import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
-import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.CooldownType
 import com.kotlindiscord.kord.extensions.types.TranslatableContext
+import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.CooldownType
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
@@ -111,7 +111,6 @@ public abstract class CommandContext(
         return translationsProvider.translate(key, locale, bundleName, replacements)
     }
 
-
     /**
      * Increases the cooldown for [cooldownType] with [amount] duration.
      *
@@ -142,7 +141,8 @@ public abstract class CommandContext(
      */
     public fun setCooldown(cooldownType: CooldownType, amount: Duration) {
         cooldownCounters[cooldownType] = amount
-  
+    }
+
     /**
      * Given a translation key and possible replacements,return the translation for the given locale in the
      * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.

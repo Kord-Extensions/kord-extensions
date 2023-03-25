@@ -34,8 +34,8 @@ import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
-import java.util.*
 import org.koin.core.component.inject
+import java.util.*
 
 /**
  * Slash command, executed directly in the chat input.
