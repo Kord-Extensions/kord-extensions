@@ -6,15 +6,16 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.message
 
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
 /** Public-only message command context. **/
-public class PublicMessageCommandContext(
+public class PublicMessageCommandContext<M : ModalForm>(
     override val event: MessageCommandInteractionCreateEvent,
-    override val command: MessageCommand<PublicMessageCommandContext>,
+    override val command: MessageCommand<PublicMessageCommandContext<M>, M>,
     override val interactionResponse: PublicMessageInteractionResponseBehavior,
     cache: MutableStringKeyedMap<Any>
-) : MessageCommandContext<PublicMessageCommandContext>(event, command, cache), PublicInteractionContext
+) : MessageCommandContext<PublicMessageCommandContext<M>, M>(event, command, cache), PublicInteractionContext

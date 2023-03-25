@@ -14,6 +14,10 @@ import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.KordExEvent
+import com.kotlindiscord.kord.extensions.events.extra.GuildJoinRequestDeleteEvent
+import com.kotlindiscord.kord.extensions.events.extra.GuildJoinRequestUpdateEvent
+import com.kotlindiscord.kord.extensions.events.extra.models.GuildJoinRequestDelete
+import com.kotlindiscord.kord.extensions.events.extra.models.GuildJoinRequestUpdate
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
@@ -25,6 +29,7 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
+import dev.kord.core.event.UnknownEvent
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
@@ -38,6 +43,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
 import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.inject
@@ -57,7 +64,7 @@ import org.koin.dsl.bind
  */
 public open class ExtensibleBot(
     public val settings: ExtensibleBotBuilder,
-    private val token: String
+    private val token: String,
 ) : KordExKoinComponent, Lockable {
 
     override var mutex: Mutex? = Mutex()
@@ -174,6 +181,10 @@ public open class ExtensibleBot(
     /** This function sets up all of the bot's default event listeners. **/
     @OptIn(PrivilegedIntent::class)
     public open suspend fun registerListeners() {
+        val eventJson = Json {
+            ignoreUnknownKeys = true
+        }
+
         on<GuildCreateEvent> {
             withLock {  // If configured, this won't be concurrent, saving larger bots from spammy rate limits
                 if (
@@ -190,6 +201,31 @@ public open class ExtensibleBot(
             }
         }
 
+        @Suppress("TooGenericExceptionCaught")
+        on<UnknownEvent> {
+            try {
+                val eventObj = when (name) {
+                    "GUILD_JOIN_REQUEST_DELETE" -> {
+                        val data: GuildJoinRequestDelete = eventJson.decodeFromJsonElement(this.data!!)
+
+                        GuildJoinRequestDeleteEvent(data)
+                    }
+
+                    "GUILD_JOIN_REQUEST_UPDATE" -> {
+                        val data: GuildJoinRequestUpdate = eventJson.decodeFromJsonElement(this.data!!)
+
+                        GuildJoinRequestUpdateEvent(data)
+                    }
+
+                    else -> null
+                } ?: return@on
+
+                send(eventObj)
+            } catch (e: Exception) {
+                logger.error(e) { "Failed to deserialize event: $data" }
+            }
+        }
+
         on<DisconnectEvent.DiscordCloseEvent> {
             logger.warn { "Disconnected: $closeCode" }
         }
@@ -199,6 +235,10 @@ public open class ExtensibleBot(
         }
 
         on<SelectMenuInteractionCreateEvent> {
+            getKoin().get<ComponentRegistry>().handle(this)
+        }
+
+        on<ModalSubmitInteractionCreateEvent> {
             getKoin().get<ComponentRegistry>().handle(this)
         }
 
@@ -275,7 +315,7 @@ public open class ExtensibleBot(
     public inline fun <reified T : Event> on(
         launch: Boolean = true,
         scope: CoroutineScope = this.getKoin().get<Kord>(),
-        noinline consumer: suspend T.() -> Unit
+        noinline consumer: suspend T.() -> Unit,
     ): Job =
         events.buffer(Channel.UNLIMITED)
             .filterIsInstance<T>()

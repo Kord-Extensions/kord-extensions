@@ -11,6 +11,7 @@ import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.modules.extra.phishing.extPhishing
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.extPluralKit
 import com.kotlindiscord.kord.extensions.testbot.extensions.*
+import com.kotlindiscord.kord.extensions.testbot.extensions.PaginatorTestExtension
 import com.kotlindiscord.kord.extensions.testbot.utils.LogLevel
 import com.kotlindiscord.kord.extensions.usagelimits.CachedUsageLimitType
 import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.DefaultCooldownHandler
@@ -88,6 +89,7 @@ public suspend fun main() {
 
             add(::ArgumentTestExtension)
             add(::I18nTestExtension)
+            add(::ModalTestExtension)
             add(::PaginatorTestExtension)
             add(::UseLimitTestExtension)
             add(::PKTestExtension)

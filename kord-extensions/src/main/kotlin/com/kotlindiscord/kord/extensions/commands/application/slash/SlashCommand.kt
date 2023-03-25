@@ -11,8 +11,11 @@ import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.Localized
 import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
+import com.kotlindiscord.kord.extensions.components.ComponentRegistry
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -32,29 +35,35 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
 import java.util.*
+import org.koin.core.component.inject
 
 /**
  * Slash command, executed directly in the chat input.
  *
  * @param arguments Callable returning an `Arguments` object, if any
+ * @param modal Callable returning a `ModalForm` object, if any
  * @param parentCommand Parent slash command, if any
  * @param parentGroup Parent slash command group, if any
  */
-public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>(
+public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Arguments, M : ModalForm>(
     extension: Extension,
 
     public open val arguments: (() -> A)? = null,
-    public open val parentCommand: SlashCommand<*, *>? = null,
-    public open val parentGroup: SlashGroup? = null
+    public open val modal: (() -> M)? = null,
+    public open val parentCommand: SlashCommand<*, *, *>? = null,
+    public open val parentGroup: SlashGroup? = null,
 ) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
     /** @suppress This is only meant for use by code that extends the command system. **/
     public val kxLogger: KLogger = KotlinLogging.logger {}
+
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val componentRegistry: ComponentRegistry by inject()
 
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
 
     /** Command body, to be called when the command is executed. **/
-    public lateinit var body: suspend C.() -> Unit
+    public lateinit var body: suspend C.(M?) -> Unit
 
     /** Whether this command has a body/action set. **/
     public open val hasBody: Boolean get() = ::body.isInitialized
@@ -63,7 +72,48 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public open val groups: MutableMap<String, SlashGroup> = mutableMapOf()
 
     /** List of subcommands, if any. **/
-    public open val subCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
+    public open val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
+
+    /**
+     * Clickable mention for this slash command, if applicable.
+     *
+     * If you're not using the [DefaultApplicationCommandRegistry] for your command registry, this will currently
+     * return `null`.
+     */
+    public val mention: String? by lazy {
+        if (registry !is DefaultApplicationCommandRegistry) {
+            return@lazy null
+        }
+
+        val commandRegistry = registry as DefaultApplicationCommandRegistry
+
+        lateinit var commandId: Snowflake
+
+        buildString {
+            append("</")
+
+            if (parentGroup != null) {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == parentGroup!!.parent }.key
+
+                append(parentGroup!!.parent.localizedName.default)
+                append(" ")
+                append(parentGroup!!.localizedName.default)
+                append(" ")
+            } else if (parentCommand != null) {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == parentCommand }.key
+
+                append(parentCommand!!.localizedName.default)
+                append(" ")
+            } else {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == this@SlashCommand }.key
+            }
+
+            append(localizedName.default)
+            append(":")
+            append(commandId)
+            append(">")
+        }
+    }
 
     /**
      * A [Localized] version of [description].
@@ -131,14 +181,14 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     }
 
     /** Call this to supply a command [body], to be called when the command is executed. **/
-    public fun action(action: suspend C.() -> Unit) {
+    public fun action(action: suspend C.(M?) -> Unit) {
         body = action
     }
 
     /** Override this to implement your command's calling logic. Check subtypes for examples! **/
     public abstract override suspend fun call(
         event: ChatInputCommandInteractionCreateEvent,
-        cache: MutableStringKeyedMap<Any>
+        cache: MutableStringKeyedMap<Any>,
     )
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
@@ -150,7 +200,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public abstract suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>)
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
-    public open suspend fun firstSentryBreadcrumb(context: C, commandObj: SlashCommand<*, *>) {
+    public open suspend fun firstSentryBreadcrumb(context: C, commandObj: SlashCommand<*, *, *>) {
         if (sentry.enabled) {
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "command.application.slash"
@@ -183,7 +233,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
 
     override suspend fun runChecks(
         event: ChatInputCommandInteractionCreateEvent,
-        cache: MutableStringKeyedMap<Any>
+        cache: MutableStringKeyedMap<Any>,
     ): Boolean {
         val locale = event.getLocale()
         var result = super.runChecks(event, cache)
@@ -226,15 +276,15 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     }
 
     /** Given a command event, resolve the correct command or subcommand object. **/
-    public open fun findCommand(event: ChatInputCommandInteractionCreateEvent): SlashCommand<*, *> =
+    public open fun findCommand(event: ChatInputCommandInteractionCreateEvent): SlashCommand<*, *, *> =
         findCommand(event.interaction.command)
 
     /** Given an autocomplete event, resolve the correct command or subcommand object. **/
-    public open fun findCommand(event: AutoCompleteInteractionCreateEvent): SlashCommand<*, *> =
+    public open fun findCommand(event: AutoCompleteInteractionCreateEvent): SlashCommand<*, *, *> =
         findCommand(event.interaction.command)
 
     /** Given an [InteractionCommand], resolve the correct command or subcommand object. **/
-    public open fun findCommand(eventCommand: InteractionCommand): SlashCommand<*, *> =
+    public open fun findCommand(eventCommand: InteractionCommand): SlashCommand<*, *, *> =
         when (eventCommand) {
             is SubCommand -> {
                 val firstSubCommandKey = eventCommand.name
@@ -256,7 +306,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         }
 
     /** A general way to handle errors thrown during the course of a command's execution. **/
-    public open suspend fun handleError(context: C, t: Throwable, commandObj: SlashCommand<*, *>) {
+    public open suspend fun handleError(context: C, t: Throwable, commandObj: SlashCommand<*, *, *>) {
         kxLogger.error(t) { "Error during execution of ${commandObj.name} slash command (${context.event})" }
 
         if (sentry.enabled) {

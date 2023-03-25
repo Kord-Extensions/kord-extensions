@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.components.ComponentWithAction
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.components.types.HasPartialEmoji
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -21,8 +22,8 @@ import mu.KLogger
 import mu.KotlinLogging
 
 /** Abstract class representing a button component that has a click action. **/
-public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(timeoutTask: Task?) :
-    ComponentWithAction<ButtonInteractionCreateEvent, C>(timeoutTask), HasPartialEmoji {
+public abstract class InteractionButtonWithAction<C : InteractionButtonContext, M : ModalForm>(timeoutTask: Task?) :
+    ComponentWithAction<ButtonInteractionCreateEvent, C, M>(timeoutTask), HasPartialEmoji {
     internal val logger: KLogger = KotlinLogging.logger {}
 
     /** Button label, for display on Discord. **/
@@ -44,7 +45,7 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
     }
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
-    public open suspend fun firstSentryBreadcrumb(context: C, button: InteractionButtonWithAction<*>) {
+    public open suspend fun firstSentryBreadcrumb(context: C, button: InteractionButtonWithAction<*, *>) {
         if (sentry.enabled) {
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "component.button"
@@ -57,7 +58,7 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext>(
     }
 
     /** A general way to handle errors thrown during the course of a button action's execution. **/
-    public open suspend fun handleError(context: C, t: Throwable, button: InteractionButtonWithAction<*>) {
+    public open suspend fun handleError(context: C, t: Throwable, button: InteractionButtonWithAction<*, *>) {
         logger.error(t) { "Error during execution of button (${button.id}) action (${context.event})" }
 
         if (sentry.enabled) {

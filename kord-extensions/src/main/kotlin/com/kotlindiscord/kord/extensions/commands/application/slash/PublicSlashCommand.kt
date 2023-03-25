@@ -11,13 +11,17 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.events.*
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
@@ -27,19 +31,32 @@ public typealias InitialPublicSlashResponseBehavior =
     (suspend InteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
 
 /** Public slash command. **/
-public class PublicSlashCommand<A : Arguments>(
+public class PublicSlashCommand<A : Arguments, M : ModalForm>(
     extension: Extension,
 
     public override val arguments: (() -> A)? = null,
-    public override val parentCommand: SlashCommand<*, *>? = null,
+    public override val modal: (() -> M)? = null,
+    public override val parentCommand: SlashCommand<*, *, *>? = null,
     public override val parentGroup: SlashGroup? = null
-) : SlashCommand<PublicSlashCommandContext<A>, A>(extension) {
+) : SlashCommand<PublicSlashCommandContext<A, M>, A, M>(extension) {
     /** @suppress Internal builder **/
     public var initialResponseBuilder: InitialPublicSlashResponseBehavior = null
 
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialPublicSlashResponseBehavior) {
         initialResponseBuilder = body
+    }
+
+    override fun validate() {
+        super.validate()
+
+        if (modal != null && initialResponseBuilder != null) {
+            throw InvalidCommandException(
+                name,
+
+                "You may not provide a modal builder and an initial response - pick one, not both."
+            )
+        }
     }
 
     override suspend fun call(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
@@ -76,8 +93,27 @@ public class PublicSlashCommand<A : Arguments>(
             return
         }
 
+        val modalObj = modal?.invoke()
+
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
+        } else if (modalObj != null) {
+            componentRegistry.register(modalObj)
+
+            val locale = event.getLocale()
+
+            event.interaction.modal(
+                modalObj.translateTitle(locale, resolvedBundle),
+                modalObj.id
+            ) {
+                modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+            }
+
+            modalObj.awaitCompletion {
+                componentRegistry.unregisterModal(modalObj)
+
+                it?.deferPublicResponseUnsafe()
+            } ?: return
         } else {
             event.interaction.deferPublicResponseUnsafe()
         }
@@ -96,6 +132,7 @@ public class PublicSlashCommand<A : Arguments>(
 
             return
         }
+
         if (arguments != null) {
             try {
                 val args = registry.argumentParser.parse(arguments, context)
@@ -110,7 +147,7 @@ public class PublicSlashCommand<A : Arguments>(
         }
 
         try {
-            body(context)
+            body(context, modalObj)
         } catch (t: Throwable) {
             emitEventAsync(PublicSlashCommandFailedWithExceptionEvent(this, event, t))
             onSuccessUseLimitUpdate(context, invocationEvent, false)
@@ -131,7 +168,7 @@ public class PublicSlashCommand<A : Arguments>(
     }
 
     override suspend fun respondText(
-        context: PublicSlashCommandContext<A>,
+        context: PublicSlashCommandContext<A, M>,
         message: String,
         failureType: FailureReason<*>
     ) {

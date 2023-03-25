@@ -147,7 +147,7 @@ public suspend inline fun MessageBehavior.deleteReaction(emoji: GuildEmoji): Uni
 /**
  * Remove a reaction from this message, using the Unicode emoji represented by the given string.
  *
- * @param emoji Emoji to remove from the message.
+ * @param unicode Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit = deleteReaction(unicode.toReaction())
 
@@ -162,7 +162,7 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): 
 /**
  * Remove a reaction from this message belonging to the bot, using the Unicode emoji represented by the given string.
  *
- * @param emoji Emoji to remove from the message.
+ * @param unicode Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit =
     deleteOwnReaction(unicode.toReaction())
@@ -277,7 +277,7 @@ public suspend fun Message.requireChannel(
     val topRole = if (getGuildOrNull() == null) {
         null
     } else {
-        getAuthorAsMember()!!.getTopRole()
+        getAuthorAsMemberOrNull()?.getTopRole()
     }
 
     val messageChannel = getChannelOrNull()
@@ -287,7 +287,9 @@ public suspend fun Message.requireChannel(
         (allowDm && messageChannel is DmChannel) ||
         (role != null && topRole != null && topRole >= role) ||
         channelId == channel.id
-    ) return true
+    ) {
+        return true
+    }
 
     val response = respond(
         context.translate("utils.message.useThisChannel", replacements = arrayOf(channel.mention))
@@ -326,7 +328,9 @@ public suspend fun Message.requireGuildChannel(
     if (
         (role != null && topRole != null && topRole >= role) ||
         getChannelOrNull() !is DmChannel
-    ) return true
+    ) {
+        return true
+    }
 
     respond(context.translate("utils.message.commandNotAvailableInDm"))
     return false
@@ -362,7 +366,9 @@ public suspend fun Message.requireGuildChannel(
     if (
         (role != null && topRole != null && topRole >= role) ||
         getChannelOrNull() !is DmChannel
-    ) return true
+    ) {
+        return true
+    }
 
     respond(context.translate("utils.message.commandNotAvailableInDm"))
     return false

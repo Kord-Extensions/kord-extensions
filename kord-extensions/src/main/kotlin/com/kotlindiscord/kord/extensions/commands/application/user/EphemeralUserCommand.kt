@@ -10,15 +10,19 @@
 package com.kotlindiscord.kord.extensions.commands.application.user
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralUserCommandFailedChecksEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralUserCommandFailedWithExceptionEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralUserCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralUserCommandSucceededEvent
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
@@ -27,15 +31,28 @@ public typealias InitialEphemeralUserResponseBuilder =
     (suspend InteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
 
 /** Ephemeral user command. **/
-public class EphemeralUserCommand(
-    extension: Extension
-) : UserCommand<EphemeralUserCommandContext>(extension) {
+public class EphemeralUserCommand<M : ModalForm>(
+    extension: Extension,
+    public override val modal: (() -> M)? = null,
+) : UserCommand<EphemeralUserCommandContext<M>, M>(extension) {
     /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialEphemeralUserResponseBuilder = null
 
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialEphemeralUserResponseBuilder) {
         initialResponseBuilder = body
+    }
+
+    override fun validate() {
+        super.validate()
+
+        if (modal != null && initialResponseBuilder != null) {
+            throw InvalidCommandException(
+                name,
+
+                "You may not provide a modal builder and an initial response - pick one, not both."
+            )
+        }
     }
 
     override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
@@ -68,8 +85,27 @@ public class EphemeralUserCommand(
             return
         }
 
+        val modalObj = modal?.invoke()
+
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
+        } else if (modalObj != null) {
+            componentRegistry.register(modalObj)
+
+            val locale = event.getLocale()
+
+            event.interaction.modal(
+                modalObj.translateTitle(locale, resolvedBundle),
+                modalObj.id
+            ) {
+                modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+            }
+
+            modalObj.awaitCompletion {
+                componentRegistry.unregisterModal(modalObj)
+
+                it?.deferEphemeralResponseUnsafe()
+            } ?: return
         } else {
             event.interaction.deferEphemeralResponseUnsafe()
         }
@@ -90,7 +126,7 @@ public class EphemeralUserCommand(
         }
 
         try {
-            body(context)
+            body(context, modalObj)
         } catch (t: Throwable) {
             emitEventAsync(EphemeralUserCommandFailedWithExceptionEvent(this, event, t))
             onSuccessUseLimitUpdate(context, invocationEvent, false)
@@ -109,7 +145,7 @@ public class EphemeralUserCommand(
     }
 
     override suspend fun respondText(
-        context: EphemeralUserCommandContext,
+        context: EphemeralUserCommandContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {

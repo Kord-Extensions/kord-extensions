@@ -6,14 +6,15 @@
 
 package com.kotlindiscord.kord.extensions.components.buttons
 
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.types.EphemeralInteractionContext
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 
 /** Class representing the execution context for an ephemeral-only button. **/
-public class EphemeralInteractionButtonContext(
-    override val component: EphemeralInteractionButton,
+public class EphemeralInteractionButtonContext<M : ModalForm>(
+    override val component: EphemeralInteractionButton<M>,
     override val event: ButtonInteractionCreateEvent,
     override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
     cache: MutableStringKeyedMap<Any>

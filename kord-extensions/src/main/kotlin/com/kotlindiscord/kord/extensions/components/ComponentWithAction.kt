@@ -9,7 +9,7 @@ package com.kotlindiscord.kord.extensions.components
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
-import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
@@ -30,17 +30,25 @@ import org.koin.core.component.inject
  *
  * @param E Event type that triggers interaction actions for this component type
  * @param C Context type used for this component's execution context
+ * @param M Modal form type representing the ModalForm subtype used, if any.
  *
  * @param timeoutTask Timeout task that will be restarted when [call] is run, if any. This is intended to be used to
  * in the timeout mechanism for the [ComponentContainer] that contains this component.
+ *
+ * @param modal Callback returning a ModalForm object, probably the constructor of a subtype.
  */
-public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C : ComponentContext<*>>(
-    public open val timeoutTask: Task?
+public abstract class ComponentWithAction<
+    E : ComponentInteractionCreateEvent,
+    C : ComponentContext<*>,
+    M : ModalForm,
+    >(
+    public open val timeoutTask: Task?,
+    public open val modal: (() -> M)? = null,
 ) : ComponentWithID(), Lockable {
     private val logger: KLogger = KotlinLogging.logger {}
 
-    /** Quick access to the callback registry. **/
-    protected val callbackRegistry: ComponentCallbackRegistry by inject()
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val componentRegistry: ComponentRegistry by inject()
 
     /** Whether to use a deferred ack, which will prevent Discord's "Thinking..." message. **/
     public open var deferredAck: Boolean = true
@@ -56,13 +64,10 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     override var mutex: Mutex? = null
 
     /** Component body, to be called when the component is interacted with. **/
-    public lateinit var body: suspend C.() -> Unit
-
-    /** Use a registered callback instead of a provided [action]. Not evaluated until execution happens. **/
-    public abstract fun useCallback(id: String)
+    public lateinit var body: suspend C.(M?) -> Unit
 
     /** Call this to supply a component [body], to be called when the component is interacted with. **/
-    public fun action(action: suspend C.() -> Unit) {
+    public fun action(action: suspend C.(M?) -> Unit) {
         body = action
     }
 

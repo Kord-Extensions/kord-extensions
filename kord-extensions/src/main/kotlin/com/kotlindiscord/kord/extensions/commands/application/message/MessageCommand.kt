@@ -9,6 +9,8 @@ package com.kotlindiscord.kord.extensions.commands.application.message
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.components.ComponentRegistry
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
@@ -22,20 +24,28 @@ import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.inject
 
-/** Message context command, for right-click actions on messages. **/
-public abstract class MessageCommand<C : MessageCommandContext<*>>(
-    extension: Extension
+/**
+ * Message context command, for right-click actions on messages.
+ * @param modal Callable returning a `ModalForm` object, if any
+ */
+public abstract class MessageCommand<C : MessageCommandContext<C, M>, M : ModalForm>(
+    extension: Extension,
+    public open val modal: (() -> M)? = null,
 ) : ApplicationCommand<MessageCommandInteractionCreateEvent>(extension) {
     private val logger: KLogger = KotlinLogging.logger {}
 
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val componentRegistry: ComponentRegistry by inject()
+
     /** Command body, to be called when the command is executed. **/
-    public lateinit var body: suspend C.() -> Unit
+    public lateinit var body: suspend C.(M?) -> Unit
 
     override val type: ApplicationCommandType = ApplicationCommandType.Message
 
     /** Call this to supply a command [body], to be called when the command is executed. **/
-    public fun action(action: suspend C.() -> Unit) {
+    public fun action(action: suspend C.(M?) -> Unit) {
         body = action
     }
 

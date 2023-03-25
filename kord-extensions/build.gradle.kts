@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     repositories {
         maven {
-            name = "KotDis"
-            url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+            name = "Sonatype Snapshots"
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
         }
     }
 }
@@ -17,9 +17,12 @@ plugins {
     `ksp-module`
 }
 
+metadata {
+    name = "KordEx Core"
+    description = "Core Kord Extensions module, providing everything you need to write a bot with KordEx"
+}
+
 dependencies {
-    api(libs.h2)
-    api(libs.hikari)
     api(libs.icu4j)  // For translations
     api(libs.koin.core)
     api(libs.koin.logger)
@@ -40,6 +43,7 @@ dependencies {
     api(project(":token-parser"))
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     implementation(libs.bundles.commons)
     implementation(libs.kotlin.stdlib)

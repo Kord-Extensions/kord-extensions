@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.commands.application.user.EphemeralUser
 import com.kotlindiscord.kord.extensions.commands.application.user.PublicUserCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatGroupCommand
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import dev.kord.gateway.Intent
 import mu.KotlinLogging
 
@@ -59,9 +60,21 @@ public fun Extension.messageCommandCheck(check: MessageCommandCheck) {
 /** Register an ephemeral message command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.ephemeralMessageCommand(
-    body: suspend EphemeralMessageCommand.() -> Unit
-): EphemeralMessageCommand {
-    val commandObj = EphemeralMessageCommand(this)
+    body: suspend EphemeralMessageCommand<ModalForm>.() -> Unit
+): EphemeralMessageCommand<ModalForm> {
+    val commandObj = EphemeralMessageCommand<ModalForm>(this)
+    body(commandObj)
+
+    return ephemeralMessageCommand(commandObj)
+}
+
+/** Register an ephemeral message command, DSL-style. **/
+@ExtensionDSL
+public suspend fun <M : ModalForm>  Extension.ephemeralMessageCommand(
+    modal: (() -> M),
+    body: suspend EphemeralMessageCommand<M>.() -> Unit
+): EphemeralMessageCommand<M> {
+    val commandObj = EphemeralMessageCommand(this, modal)
     body(commandObj)
 
     return ephemeralMessageCommand(commandObj)
@@ -69,9 +82,9 @@ public suspend fun Extension.ephemeralMessageCommand(
 
 /** Register a custom instance of an ephemeral message command. **/
 @ExtensionDSL
-public suspend fun Extension.ephemeralMessageCommand(
-    commandObj: EphemeralMessageCommand
-): EphemeralMessageCommand {
+public suspend fun <M : ModalForm> Extension.ephemeralMessageCommand(
+    commandObj: EphemeralMessageCommand<M>
+): EphemeralMessageCommand<M> {
     try {
         commandObj.validate()
         messageCommands.add(commandObj)
@@ -91,9 +104,21 @@ public suspend fun Extension.ephemeralMessageCommand(
 /** Register a public message command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.publicMessageCommand(
-    body: suspend PublicMessageCommand.() -> Unit
-): PublicMessageCommand {
-    val commandObj = PublicMessageCommand(this)
+    body: suspend PublicMessageCommand<ModalForm>.() -> Unit
+): PublicMessageCommand<ModalForm> {
+    val commandObj = PublicMessageCommand<ModalForm>(this)
+    body(commandObj)
+
+    return publicMessageCommand(commandObj)
+}
+
+/** Register a public message command, DSL-style. **/
+@ExtensionDSL
+public suspend fun <M : ModalForm> Extension.publicMessageCommand(
+    modal: (() -> M),
+    body: suspend PublicMessageCommand<M>.() -> Unit
+): PublicMessageCommand<M> {
+    val commandObj = PublicMessageCommand(this, modal)
     body(commandObj)
 
     return publicMessageCommand(commandObj)
@@ -101,9 +126,9 @@ public suspend fun Extension.publicMessageCommand(
 
 /** Register a custom instance of a public message command. **/
 @ExtensionDSL
-public suspend fun Extension.publicMessageCommand(
-    commandObj: PublicMessageCommand
-): PublicMessageCommand {
+public suspend fun <M : ModalForm> Extension.publicMessageCommand(
+    commandObj: PublicMessageCommand<M>
+): PublicMessageCommand<M> {
     try {
         commandObj.validate()
         messageCommands.add(commandObj)
@@ -164,9 +189,64 @@ public fun Extension.slashCommandCheck(check: SlashCommandCheck) {
 @ExtensionDSL
 public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
     arguments: () -> T,
-    body: suspend EphemeralSlashCommand<T>.() -> Unit
-): EphemeralSlashCommand<T> {
-    val commandObj = EphemeralSlashCommand(this, arguments, null, null)
+    body: suspend EphemeralSlashCommand<T, ModalForm>.() -> Unit
+): EphemeralSlashCommand<T, ModalForm> {
+    val commandObj = EphemeralSlashCommand<T, ModalForm>(this, arguments, null, null)
+    body(commandObj)
+
+    return ephemeralSlashCommand(commandObj)
+}
+
+/**
+ * DSL function for easily registering an ephemeral slash command, with a modal form.
+ *
+ * Use this in your setup function to register a slash command that may be executed on Discord.
+ *
+ * @param modal ModalForm builder (probably a reference to the class constructor).
+ * @param body Builder lambda used for setting up the slash command object.
+ */
+@ExtensionDSL
+@JvmName("ephemeralSlashCommand1")
+public suspend fun <M : ModalForm> Extension.ephemeralSlashCommand(
+    modal: () -> M,
+    body: suspend EphemeralSlashCommand<Arguments, M>.() -> Unit
+): EphemeralSlashCommand<Arguments, M> {
+    val commandObj = EphemeralSlashCommand<Arguments, M>(
+        this,
+        null,
+        modal,
+        null,
+        null
+    )
+
+    body(commandObj)
+
+    return ephemeralSlashCommand(commandObj)
+}
+
+/**
+ * DSL function for easily registering an ephemeral slash command, with a modal form.
+ *
+ * Use this in your setup function to register a slash command that may be executed on Discord.
+ *
+ * @param arguments Arguments builder (probably a reference to the class constructor).
+ * @param modal ModalForm builder (probably a reference to the class constructor).
+ * @param body Builder lambda used for setting up the slash command object.
+ */
+@ExtensionDSL
+public suspend fun <A : Arguments, M : ModalForm> Extension.ephemeralSlashCommand(
+    arguments: () -> A,
+    modal: () -> M,
+    body: suspend EphemeralSlashCommand<A, M>.() -> Unit
+): EphemeralSlashCommand<A, M> {
+    val commandObj = EphemeralSlashCommand(
+        this,
+        arguments,
+        modal,
+        null,
+        null
+    )
+
     body(commandObj)
 
     return ephemeralSlashCommand(commandObj)
@@ -180,9 +260,9 @@ public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
  * @param commandObj EphemeralSlashCommand object to register.
  */
 @ExtensionDSL
-public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
-    commandObj: EphemeralSlashCommand<T>
-): EphemeralSlashCommand<T> {
+public suspend fun <T : Arguments, M : ModalForm> Extension.ephemeralSlashCommand(
+    commandObj: EphemeralSlashCommand<T, M>
+): EphemeralSlashCommand<T, M> {
     try {
         commandObj.validate()
         slashCommands.add(commandObj)
@@ -208,9 +288,16 @@ public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
  */
 @ExtensionDSL
 public suspend fun Extension.ephemeralSlashCommand(
-    body: suspend EphemeralSlashCommand<Arguments>.() -> Unit
-): EphemeralSlashCommand<Arguments> {
-    val commandObj = EphemeralSlashCommand<Arguments>(this, null, null, null)
+    body: suspend EphemeralSlashCommand<Arguments, ModalForm>.() -> Unit
+): EphemeralSlashCommand<Arguments, ModalForm> {
+    val commandObj = EphemeralSlashCommand<Arguments, ModalForm>(
+        this,
+        null,
+        null,
+        null,
+        null
+    )
+
     body(commandObj)
 
     return ephemeralSlashCommand(commandObj)
@@ -231,9 +318,70 @@ public suspend fun Extension.ephemeralSlashCommand(
 @ExtensionDSL
 public suspend fun <T : Arguments> Extension.publicSlashCommand(
     arguments: () -> T,
-    body: suspend PublicSlashCommand<T>.() -> Unit
-): PublicSlashCommand<T> {
-    val commandObj = PublicSlashCommand(this, arguments, null, null)
+    body: suspend PublicSlashCommand<T, ModalForm>.() -> Unit
+): PublicSlashCommand<T, ModalForm> {
+    val commandObj = PublicSlashCommand<T, ModalForm>(
+        this,
+        arguments,
+        null,
+        null,
+        null
+    )
+
+    body(commandObj)
+
+    return publicSlashCommand(commandObj)
+}
+
+/**
+ * DSL function for easily registering a public slash command, with a modal form.
+ *
+ * Use this in your setup function to register a slash command that may be executed on Discord.
+ *
+ * @param modal ModalForm builder (probably a reference to the class constructor).
+ * @param body Builder lambda used for setting up the slash command object.
+ */
+@ExtensionDSL
+@JvmName("publicSlashCommand1")
+public suspend fun <M : ModalForm> Extension.publicSlashCommand(
+    modal: () -> M,
+    body: suspend PublicSlashCommand<Arguments, M>.() -> Unit
+): PublicSlashCommand<Arguments, M> {
+    val commandObj = PublicSlashCommand<Arguments, M>(
+        this,
+        null,
+        modal,
+        null,
+        null
+    )
+
+    body(commandObj)
+
+    return publicSlashCommand(commandObj)
+}
+
+/**
+ * DSL function for easily registering a public slash command, with arguments and a modal form.
+ *
+ * Use this in your setup function to register a slash command that may be executed on Discord.
+ *
+ * @param arguments Arguments builder (probably a reference to the class constructor).
+ * @param modal ModalForm builder (probably a reference to the class constructor).
+ * @param body Builder lambda used for setting up the slash command object.
+ */
+@ExtensionDSL
+public suspend fun <A : Arguments, M : ModalForm> Extension.publicSlashCommand(
+    arguments: () -> A,
+    modal: () -> M,
+    body: suspend PublicSlashCommand<A, M>.() -> Unit
+): PublicSlashCommand<A, M> {
+    val commandObj = PublicSlashCommand(
+        this,
+        arguments,
+        modal,
+        null
+    )
+
     body(commandObj)
 
     return publicSlashCommand(commandObj)
@@ -247,9 +395,9 @@ public suspend fun <T : Arguments> Extension.publicSlashCommand(
  * @param commandObj PublicSlashCommand object to register.
  */
 @ExtensionDSL
-public suspend fun <T : Arguments> Extension.publicSlashCommand(
-    commandObj: PublicSlashCommand<T>
-): PublicSlashCommand<T> {
+public suspend fun <T : Arguments, M : ModalForm> Extension.publicSlashCommand(
+    commandObj: PublicSlashCommand<T, M>
+): PublicSlashCommand<T, M> {
     try {
         commandObj.validate()
         slashCommands.add(commandObj)
@@ -275,9 +423,16 @@ public suspend fun <T : Arguments> Extension.publicSlashCommand(
  */
 @ExtensionDSL
 public suspend fun Extension.publicSlashCommand(
-    body: suspend PublicSlashCommand<Arguments>.() -> Unit
-): PublicSlashCommand<Arguments> {
-    val commandObj = PublicSlashCommand<Arguments>(this, null, null, null)
+    body: suspend PublicSlashCommand<Arguments, ModalForm>.() -> Unit
+): PublicSlashCommand<Arguments, ModalForm> {
+    val commandObj = PublicSlashCommand<Arguments, ModalForm>(
+        this,
+        null,
+        null,
+        null,
+        null
+    )
+
     body(commandObj)
 
     return publicSlashCommand(commandObj)
@@ -315,9 +470,21 @@ public fun Extension.userCommandCheck(check: UserCommandCheck) {
 /** Register an ephemeral user command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.ephemeralUserCommand(
-    body: suspend EphemeralUserCommand.() -> Unit
-): EphemeralUserCommand {
-    val commandObj = EphemeralUserCommand(this)
+    body: suspend EphemeralUserCommand<ModalForm>.() -> Unit
+): EphemeralUserCommand<ModalForm> {
+    val commandObj = EphemeralUserCommand<ModalForm>(this)
+    body(commandObj)
+
+    return ephemeralUserCommand(commandObj)
+}
+
+/** Register an ephemeral user command, DSL-style. **/
+@ExtensionDSL
+public suspend fun <M : ModalForm> Extension.ephemeralUserCommand(
+    modal: (() -> M),
+    body: suspend EphemeralUserCommand<M>.() -> Unit
+): EphemeralUserCommand<M> {
+    val commandObj = EphemeralUserCommand(this, modal)
     body(commandObj)
 
     return ephemeralUserCommand(commandObj)
@@ -325,9 +492,9 @@ public suspend fun Extension.ephemeralUserCommand(
 
 /** Register a custom instance of an ephemeral user command. **/
 @ExtensionDSL
-public suspend fun Extension.ephemeralUserCommand(
-    commandObj: EphemeralUserCommand
-): EphemeralUserCommand {
+public suspend fun <M : ModalForm> Extension.ephemeralUserCommand(
+    commandObj: EphemeralUserCommand<M>
+): EphemeralUserCommand<M> {
     try {
         commandObj.validate()
         userCommands.add(commandObj)
@@ -347,9 +514,21 @@ public suspend fun Extension.ephemeralUserCommand(
 /** Register a public user command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.publicUserCommand(
-    body: suspend PublicUserCommand.() -> Unit
-): PublicUserCommand {
-    val commandObj = PublicUserCommand(this)
+    body: suspend PublicUserCommand<ModalForm>.() -> Unit
+): PublicUserCommand<ModalForm> {
+    val commandObj = PublicUserCommand<ModalForm>(this)
+    body(commandObj)
+
+    return publicUserCommand(commandObj)
+}
+
+/** Register a public user command, DSL-style. **/
+@ExtensionDSL
+public suspend fun <M : ModalForm> Extension.publicUserCommand(
+    modal: (() -> M),
+    body: suspend PublicUserCommand<M>.() -> Unit
+): PublicUserCommand<M> {
+    val commandObj = PublicUserCommand(this, modal)
     body(commandObj)
 
     return publicUserCommand(commandObj)
@@ -357,9 +536,9 @@ public suspend fun Extension.publicUserCommand(
 
 /** Register a custom instance of a public user command. **/
 @ExtensionDSL
-public suspend fun Extension.publicUserCommand(
-    commandObj: PublicUserCommand
-): PublicUserCommand {
+public suspend fun <M : ModalForm> Extension.publicUserCommand(
+    commandObj: PublicUserCommand<M>
+): PublicUserCommand<M> {
     try {
         commandObj.validate()
         userCommands.add(commandObj)

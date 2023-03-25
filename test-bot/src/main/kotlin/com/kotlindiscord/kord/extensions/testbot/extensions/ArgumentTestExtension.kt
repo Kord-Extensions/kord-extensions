@@ -7,15 +7,14 @@
 package com.kotlindiscord.kord.extensions.testbot.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.converters.impl.attachment
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalAttachment
-import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalString
-import com.kotlindiscord.kord.extensions.commands.converters.impl.string
+import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.suggestStringMap
+import dev.kord.common.entity.ChannelType
 import dev.kord.core.entity.Attachment
+import dev.kord.core.entity.channel.Channel
 
 public class ArgumentTestExtension : Extension() {
     override val name: String = "test-args"
@@ -64,6 +63,19 @@ public class ArgumentTestExtension : Extension() {
                 }
             }
         }
+
+        publicSlashCommand(::ChannelArguments) {
+            name = "channel"
+            description = "Check channel command options."
+
+            action {
+                respond {
+                    content = buildString {
+                        append("You specified: ${arguments.channel.mention}.")
+                    }
+                }
+            }
+        }
     }
 
     public inner class OptionalArgs : Arguments() {
@@ -108,6 +120,15 @@ public class ArgumentTestExtension : Extension() {
         public val optionalFile: Attachment? by optionalAttachment {
             name = "optional_file"
             description = "An optional file."
+        }
+    }
+
+    public inner class ChannelArguments : Arguments() {
+        public val channel: Channel by channel {
+            name = "channel"
+            description = "A text channel"
+
+            requireChannelType(ChannelType.GuildText)
         }
     }
 }

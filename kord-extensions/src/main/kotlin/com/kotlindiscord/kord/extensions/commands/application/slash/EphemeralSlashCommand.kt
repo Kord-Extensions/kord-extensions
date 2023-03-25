@@ -11,13 +11,17 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.events.*
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
@@ -26,19 +30,32 @@ public typealias InitialEphemeralSlashResponseBuilder =
     (suspend InteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
 
 /** Ephemeral slash command. **/
-public class EphemeralSlashCommand<A : Arguments>(
+public class EphemeralSlashCommand<A : Arguments, M : ModalForm>(
     extension: Extension,
 
     public override val arguments: (() -> A)? = null,
-    public override val parentCommand: SlashCommand<*, *>? = null,
+    public override val modal: (() -> M)? = null,
+    public override val parentCommand: SlashCommand<*, *, *>? = null,
     public override val parentGroup: SlashGroup? = null
-) : SlashCommand<EphemeralSlashCommandContext<A>, A>(extension) {
+) : SlashCommand<EphemeralSlashCommandContext<A, M>, A, M>(extension) {
     /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialEphemeralSlashResponseBuilder = null
 
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialEphemeralSlashResponseBuilder) {
         initialResponseBuilder = body
+    }
+
+    override fun validate() {
+        super.validate()
+
+        if (modal != null && initialResponseBuilder != null) {
+            throw InvalidCommandException(
+                name,
+
+                "You may not provide a modal builder and an initial response - pick one, not both."
+            )
+        }
     }
 
     override suspend fun call(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
@@ -81,8 +98,27 @@ public class EphemeralSlashCommand<A : Arguments>(
             return
         }
 
+        val modalObj = modal?.invoke()
+
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
+        } else if (modalObj != null) {
+            componentRegistry.register(modalObj)
+
+            val locale = event.getLocale()
+
+            event.interaction.modal(
+                modalObj.translateTitle(locale, resolvedBundle),
+                modalObj.id
+            ) {
+                modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+            }
+
+            modalObj.awaitCompletion {
+                componentRegistry.unregisterModal(modalObj)
+
+                it?.deferEphemeralResponseUnsafe()
+            } ?: return
         } else {
             event.interaction.deferEphemeralResponseUnsafe()
         }
@@ -122,7 +158,7 @@ public class EphemeralSlashCommand<A : Arguments>(
         }
 
         try {
-            body(context)
+            body(context, modalObj)
         } catch (t: Throwable) {
             emitEventAsync(EphemeralSlashCommandFailedWithExceptionEvent(this, event, t))
             onSuccessUseLimitUpdate(context, invocationEvent, false)
@@ -143,7 +179,7 @@ public class EphemeralSlashCommand<A : Arguments>(
     }
 
     override suspend fun respondText(
-        context: EphemeralSlashCommandContext<A>,
+        context: EphemeralSlashCommandContext<A, M>,
         message: String,
         failureType: FailureReason<*>
     ) {

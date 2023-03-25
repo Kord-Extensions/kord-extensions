@@ -63,9 +63,9 @@ class PluralKit(private val baseUrl: String = "https://api.pluralkit.me", cacheS
             if (e.response.status.value in 400 until 600) {
                 if (e.response.status.value == HttpStatusCode.NotFound.value) {
                     logger.debug { "/messages/$id -> ${e.response.status}" }
+                } else {
+                    logger.error(e) { "/messages/$id -> ${e.response.status}" }
                 }
-
-                logger.error(e) { "/messages/$id -> ${e.response.status}" }
             }
 
             throw e

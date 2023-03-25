@@ -5,9 +5,6 @@
  */
 
 @file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
     ConverterToOptional::class
 )
 @file:Suppress("StringLiteralDuplication")
@@ -19,10 +16,10 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -36,7 +33,6 @@ private typealias GenericConverter = Converter<*, *, *, *>
  *
  * This converter does not support optional or defaulting converters.
  */
-@OptIn(KordPreview::class)
 @UnsafeAPI
 public class UnionConverter(
     private val converters: Collection<GenericConverter>,
@@ -44,7 +40,7 @@ public class UnionConverter(
     typeName: String? = null,
     shouldThrow: Boolean = false,
 
-    override val bundle: String? = null,
+    override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
     override var validator: Validator<Any> = null
 ) : CoalescingConverter<Any>(shouldThrow) {
     private val translations: TranslationsProvider by inject()

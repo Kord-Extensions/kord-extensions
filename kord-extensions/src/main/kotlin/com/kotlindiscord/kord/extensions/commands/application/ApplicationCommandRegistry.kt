@@ -17,11 +17,13 @@
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommandParser
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
 import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.common.annotation.KordExperimental
@@ -44,6 +46,7 @@ import mu.KLogger
 import mu.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
+import javax.naming.InvalidNameException
 
 /**
  * Abstract class representing common behavior for application command registries.
@@ -112,20 +115,20 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
      *
      * This method is only called after the [initialize] method and allows runtime modifications.
      */
-    public abstract suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>?
+    public abstract suspend fun register(command: SlashCommand<*, *, *>): SlashCommand<*, *, *>?
 
     /**
      * Register a [MessageCommand] to the registry.
      *
      * This method is only called after the [initialize] method and allows runtime modifications.
      */
-    public abstract suspend fun register(command: MessageCommand<*>): MessageCommand<*>?
+    public abstract suspend fun register(command: MessageCommand<*, *>): MessageCommand<*, *>?
 
     /** Register a [UserCommand] to the registry.
      *
      * This method is only called after the [initialize] method and allows runtime modifications.
      */
-    public abstract suspend fun register(command: UserCommand<*>): UserCommand<*>?
+    public abstract suspend fun register(command: UserCommand<*, *>): UserCommand<*, *>?
 
     /** Event handler for slash commands. **/
     public abstract suspend fun handle(event: ChatInputCommandInteractionCreateEvent)
@@ -140,13 +143,16 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     public abstract suspend fun handle(event: AutoCompleteInteractionCreateEvent)
 
     /** Unregister a slash command. **/
-    public abstract suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean = true): SlashCommand<*, *>?
+    public abstract suspend fun unregister(
+        command: SlashCommand<*, *, *>,
+        delete: Boolean = true
+    ): SlashCommand<*, *, *>?
 
     /** Unregister a message command. **/
-    public abstract suspend fun unregister(command: MessageCommand<*>, delete: Boolean = true): MessageCommand<*>?
+    public abstract suspend fun unregister(command: MessageCommand<*, *>, delete: Boolean = true): MessageCommand<*, *>?
 
     /** Unregister a user command. **/
-    public abstract suspend fun unregister(command: UserCommand<*>, delete: Boolean = true): UserCommand<*>?
+    public abstract suspend fun unregister(command: UserCommand<*, *>, delete: Boolean = true): UserCommand<*, *>?
 
     // region: Utilities
 
@@ -156,9 +162,9 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
         delete: Boolean = true,
     ): ApplicationCommand<*>? =
         when (command) {
-            is MessageCommand<*> -> unregister(command, delete)
-            is SlashCommand<*, *> -> unregister(command, delete)
-            is UserCommand<*> -> unregister(command, delete)
+            is MessageCommand<*, *> -> unregister(command, delete)
+            is SlashCommand<*, *, *> -> unregister(command, delete)
+            is UserCommand<*, *> -> unregister(command, delete)
 
             else -> error("Unsupported application command type: ${command.type.name}")
         }
@@ -195,9 +201,9 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
         commands.sortedByDescending { it.name }.mapNotNull {
             try {
                 when (it) {
-                    is SlashCommand<*, *> -> register(it) as T
-                    is MessageCommand<*> -> register(it) as T
-                    is UserCommand<*> -> register(it) as T
+                    is SlashCommand<*, *, *> -> register(it) as T
+                    is MessageCommand<*, *> -> register(it) as T
+                    is UserCommand<*, *> -> register(it) as T
 
                     else -> throw IllegalArgumentException(
                         "The registry does not know about this type of ApplicationCommand"
@@ -225,9 +231,9 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
      * Creates a KordEx [ApplicationCommand] as discord command and returns the created command's id as [Snowflake].
      */
     public open suspend fun createDiscordCommand(command: ApplicationCommand<*>): Snowflake? = when (command) {
-        is SlashCommand<*, *> -> createDiscordSlashCommand(command)
-        is UserCommand<*> -> createDiscordUserCommand(command)
-        is MessageCommand<*> -> createDiscordMessageCommand(command)
+        is SlashCommand<*, *, *> -> createDiscordSlashCommand(command)
+        is UserCommand<*, *> -> createDiscordUserCommand(command)
+        is MessageCommand<*, *> -> createDiscordMessageCommand(command)
 
         else -> throw IllegalArgumentException("Unknown ApplicationCommand type")
     }
@@ -235,7 +241,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     /**
      * Creates a KordEx [SlashCommand] as discord command and returns the created command's id as [Snowflake].
      */
-    public open suspend fun createDiscordSlashCommand(command: SlashCommand<*, *>): Snowflake? {
+    public open suspend fun createDiscordSlashCommand(command: SlashCommand<*, *, *>): Snowflake? {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
@@ -277,7 +283,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     /**
      * Creates a KordEx [UserCommand] as discord command and returns the created command's id as [Snowflake].
      */
-    public open suspend fun createDiscordUserCommand(command: UserCommand<*>): Snowflake? {
+    public open suspend fun createDiscordUserCommand(command: UserCommand<*, *>): Snowflake? {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
@@ -314,7 +320,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
     /**
      * Creates a KordEx [MessageCommand] as discord command and returns the created command's id as [Snowflake].
      */
-    public open suspend fun createDiscordMessageCommand(command: MessageCommand<*>): Snowflake? {
+    public open suspend fun createDiscordMessageCommand(command: MessageCommand<*, *>): Snowflake? {
         val locale = bot.settings.i18nBuilder.defaultLocale
 
         val guild = if (command.guildId != null) {
@@ -352,7 +358,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
     // region: Extensions
     /** Registration logic for slash commands, extracted for clarity. **/
-    public open suspend fun ChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *>) {
+    public open suspend fun ChatInputCreateBuilder.register(locale: Locale, command: SlashCommand<*, *, *>) {
         if (this is GlobalChatInputCreateBuilder) {
             registerGlobalPermissions(locale, command)
         } else {
@@ -374,7 +380,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
                     val option = converter.toSlashOption(arg)
 
-                    option.translate(command)
+                    option.translate(command, arg)
 
                     if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
                         option.choices?.clear()
@@ -396,7 +402,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
                     val option = converter.toSlashOption(arg)
 
-                    option.translate(command)
+                    option.translate(command, arg)
 
                     if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
                         option.choices?.clear()
@@ -443,7 +449,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
                             val option = converter.toSlashOption(arg)
 
-                            option.translate(command)
+                            option.translate(command, arg)
 
                             if (
                                 option is BaseChoiceBuilder<*> &&
@@ -481,26 +487,26 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
     /** Registration logic for message commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun MessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
+    public open fun MessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*, *>) {
         registerGuildPermissions(locale, command)
     }
 
     /** Registration logic for user commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun UserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
+    public open fun UserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*, *>) {
         registerGuildPermissions(locale, command)
     }
 
     /** Registration logic for message commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun GlobalMessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*>) {
+    public open fun GlobalMessageCommandCreateBuilder.register(locale: Locale, command: MessageCommand<*, *>) {
         registerGuildPermissions(locale, command)
         registerGlobalPermissions(locale, command)
     }
 
     /** Registration logic for user commands, extracted for clarity. **/
     @Suppress("UnusedPrivateMember")  // Only for now...
-    public open fun GlobalUserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*>) {
+    public open fun GlobalUserCommandCreateBuilder.register(locale: Locale, command: UserCommand<*, *>) {
         registerGuildPermissions(locale, command)
         registerGlobalPermissions(locale, command)
     }
@@ -534,8 +540,27 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
     // endregion
 
-    private fun OptionsBuilder.translate(command: ApplicationCommand<*>) {
+    private fun OptionsBuilder.translate(command: ApplicationCommand<*>, argObj: Argument<*>) {
+        val defaultName = argObj.getDefaultTranslatedDisplayName(command.translationsProvider, command)
+
+        if (defaultName != defaultName.lowercase(command.translationsProvider.defaultLocale)) {
+            throw InvalidNameException(
+                "Argument $name for command ${command.name} does not have a lower-case name in the configured " +
+                    "default locale: ${command.translationsProvider.defaultLocale} -> $defaultName - this will " +
+                    "cause issues with matching your command arguments to the options provided by users on Discord"
+            )
+        }
+
         val (name, nameLocalizations) = command.localize(name, true)
+
+        nameLocalizations.forEach { (locale, string) ->
+            if (string != string.lowercase(locale.asJavaLocale())) {
+                logger.warn {
+                    "Argument $name for command ${command.name} is not lower-case in the ${locale.asJavaLocale()} " +
+                        "locale: $string"
+                }
+            }
+        }
 
         this.name = name
         this.nameLocalizations = nameLocalizations
@@ -550,14 +575,16 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
         }
     }
 
+    @Suppress("DEPRECATION_ERROR")
     private fun BaseChoiceBuilder<*>.translate(command: ApplicationCommand<*>) {
         choices = choices!!.map {
             val (name, nameLocalizations) = command.localize(it.name)
 
             when (it) {
-                is Choice.IntChoice -> Choice.IntChoice(name, Optional(nameLocalizations), it.value)
                 is Choice.NumberChoice -> Choice.NumberChoice(name, Optional(nameLocalizations), it.value)
                 is Choice.StringChoice -> Choice.StringChoice(name, Optional(nameLocalizations), it.value)
+                is Choice.IntegerChoice -> Choice.IntegerChoice(name, Optional(nameLocalizations), it.value)
+                is Choice.IntChoice -> Choice.IntChoice(name, Optional(nameLocalizations), it.value)
             }
         }.toMutableList()
     }

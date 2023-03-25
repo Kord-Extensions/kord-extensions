@@ -14,6 +14,7 @@ import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.PublicSlashCommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
@@ -42,8 +43,9 @@ import kotlin.io.path.Path
 import kotlin.io.path.createDirectory
 import kotlin.io.path.exists
 
-private typealias MappingSlashCommand = PublicSlashCommandContext<out MappingArguments>
-private typealias ConversionSlashCommand = PublicSlashCommandContext<MappingConversionArguments>
+private typealias MappingSlashCommand = PublicSlashCommandContext<out MappingArguments, out ModalForm>
+private typealias ConversionSlashCommand = PublicSlashCommandContext<out MappingConversionArguments, out ModalForm>
+private typealias InfoCommand = (suspend PublicSlashCommandContext<out Arguments, out ModalForm>.(ModalForm?) -> Unit)?
 
 private const val VERSION_CHUNK_SIZE = 10
 private const val PAGE_FOOTER = "Powered by Linkie"
@@ -118,7 +120,7 @@ class MappingsExtension : Extension() {
             friendlyName: String,
             namespace: Namespace,
             arguments: () -> T,
-            customInfoCommand: (suspend PublicSlashCommandContext<out Arguments>.() -> Unit)? = null
+            customInfoCommand: InfoCommand = null,
         ) = publicSlashCommand {
             name = parentName
             description = "Look up $friendlyName mappings."
@@ -532,7 +534,9 @@ class MappingsExtension : Extension() {
             name = "convert"
             description = "Convert mappings across namespaces"
 
-            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+            publicSubCommand<MappingConversionArguments>(
+                { MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+            ) {
                 name = "class"
                 description = "Convert a class mapping"
 
@@ -549,7 +553,9 @@ class MappingsExtension : Extension() {
                 }
             }
 
-            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+            publicSubCommand<MappingConversionArguments>(
+                { MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+            ) {
                 name = "field"
                 description = "Convert a field mapping"
 
@@ -573,7 +579,9 @@ class MappingsExtension : Extension() {
                 }
             }
 
-            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+            publicSubCommand<MappingConversionArguments>(
+                { MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+            ) {
                 name = "method"
                 description = "Convert a method mapping"
 
@@ -662,7 +670,7 @@ class MappingsExtension : Extension() {
         type: String,
         channel: String? = null,
         queryProvider: suspend (QueryContext) -> QueryResult<A, B>,
-        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>
+        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>,
     ) where A : MappingsMetadata, B : List<*> {
         sentry.breadcrumb(BreadcrumbType.Query) {
             message = "Beginning mapping lookup"
@@ -1018,7 +1026,7 @@ class MappingsExtension : Extension() {
         }
     }
 
-    private suspend fun PublicSlashCommandContext<*>.returnError(errorMessage: String) {
+    private suspend fun PublicSlashCommandContext<*, *>.returnError(errorMessage: String) {
         respond {
             content = errorMessage
         }
@@ -1031,11 +1039,13 @@ class MappingsExtension : Extension() {
             } else {
                 MojangReleaseContainer.latestRelease
             }
+
             is YarnNamespace -> if (channel == "snapshot") {
                 YarnReleaseContainer.latestSnapshot
             } else {
                 YarnReleaseContainer.latestRelease
             }
+
             else -> null
         }
     }
@@ -1044,7 +1054,7 @@ class MappingsExtension : Extension() {
 
     private suspend fun CheckContextWithCache<ChatInputCommandInteractionCreateEvent>.customChecks(
         command: String,
-        namespace: Namespace
+        namespace: Namespace,
     ) {
         builder.commandChecks.forEach {
             it(command)()

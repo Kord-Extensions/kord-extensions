@@ -18,13 +18,6 @@ jobs:
         with:
           java-version: 1.14
 
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v3
-
-        with:
-          gpg-private-key: ${{ secrets.GPG_KEY }}
-          passphrase: ${{ secrets.GPG_PASSWORD }}
-
       - name: Set up Kotlin
         uses: fwilhe2/setup-kotlin@main
 
@@ -47,10 +40,22 @@ jobs:
         with:
           arguments: checkLicenses build
 
+      - name: Disable parallel publish
+
+        run: kotlin .github/disable-parallel.main.kts
+
       - name: Gradle (Publish)
         uses: gradle/gradle-build-action@v2
+
+        env:
+          ORG_GRADLE_PROJECT_signingKey: "${{ secrets.GPG_KEY }}"
+          ORG_GRADLE_PROJECT_signingPassword: "${{ secrets.GPG_PASSWORD }}"
+
+          OSSRH_USERNAME: "${{ secrets.OSSRH_USERNAME }}"
+          OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
+
         with:
-          arguments: publish -Pkotdis.user=${{ secrets.MAVEN_USER }} -Pkotdis.password=${{ secrets.MAVEN_PASSWORD }}
+          arguments: publish --no-parallel
 
       - name: Create release description
         run: kotlin .github/tag.main.kts

@@ -16,7 +16,6 @@ import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
-import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
@@ -91,6 +90,9 @@ internal typealias FailureResponseBuilder =
 @BotBuilderDSL
 public open class ExtensibleBotBuilder {
     protected val logger: KLogger = KotlinLogging.logger {}
+
+    /** Called to create an [ExtensibleBot], can be set to the constructor of your own subtype if needed. **/
+    public var constructor: (ExtensibleBotBuilder, String) -> ExtensibleBot = ::ExtensibleBot
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val cacheBuilder: CacheBuilder = CacheBuilder()
@@ -406,7 +408,6 @@ public open class ExtensibleBotBuilder {
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
         loadModule { single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class }
-        loadModule { single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class }
 
         loadModule {
             single {
@@ -473,7 +474,7 @@ public open class ExtensibleBotBuilder {
 
         setupKoin()
 
-        val bot = ExtensibleBot(this, token)
+        val bot = constructor(this, token)
 
         loadModule { single { bot } bind ExtensibleBot::class }
 
@@ -562,7 +563,7 @@ public open class ExtensibleBotBuilder {
          * Number of messages to keep in the cache. Defaults to 10,000.
          *
          * To disable automatic configuration of the message cache, set this to `null` or `0`. You can configure the
-         * cache yourself using the [kordHook] function, and interact with the resulting [DataCache] object using the
+         * cache yourself using the [kord] function, and interact with the resulting [DataCache] object using the
          * [transformCache] function.
          */
         @Suppress("MagicNumber")
@@ -602,19 +603,9 @@ public open class ExtensibleBotBuilder {
     /** Builder used to configure the bot's components settings. **/
     @BotBuilderDSL
     public class ComponentsBuilder {
-        /** @suppress Component callback registry builder. **/
-        public var callbackRegistryBuilder: () -> ComponentCallbackRegistry = ::ComponentCallbackRegistry
 
         /** @suppress Component registry builder. **/
         public var registryBuilder: () -> ComponentRegistry = ::ComponentRegistry
-
-        /**
-         * Register a builder (usually a constructor) returning a [ComponentCallbackRegistry] instance, which may
-         * be useful if you need to register a custom subclass.
-         */
-        public fun callbackRegistry(builder: () -> ComponentCallbackRegistry) {
-            callbackRegistryBuilder = builder
-        }
 
         /**
          * Register a builder (usually a constructor) returning a [ComponentRegistry] instance, which may be useful

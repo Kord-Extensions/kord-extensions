@@ -193,7 +193,7 @@ internal suspend fun MessageUpdateEvent.unproxied(): UnProxiedMessageUpdateEvent
         messageId,
         old,
         new,
-        message.asMessageOrNull()?.getAuthorAsMember(),
+        message.asMessageOrNull()?.getAuthorAsMemberOrNull(),
         message.asMessageOrNull()?.referencedMessage,
         shard,
     )

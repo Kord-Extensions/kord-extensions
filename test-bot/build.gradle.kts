@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     repositories {
         maven {
-            name = "KotDis"
-            url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+            name = "Sonatype Snapshots"
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
         }
     }
 }
@@ -19,8 +19,8 @@ plugins {
 
 repositories {
     maven {
-        name = "KotDis"
-        url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+        name = "Sonatype Snapshots"
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
     maven {
@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":modules:unsafe"))
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     implementation(libs.bundles.commons)
     implementation(libs.kotlin.stdlib)

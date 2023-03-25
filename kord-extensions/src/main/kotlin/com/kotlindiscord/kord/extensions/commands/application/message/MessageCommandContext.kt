@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandContext
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.entity.Message
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
@@ -17,9 +18,9 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
  *  @param event Event that triggered this message command.
  *  @param command Message command instance.
  */
-public abstract class MessageCommandContext<C : MessageCommandContext<C>>(
+public abstract class MessageCommandContext<C : MessageCommandContext<C, M>, M : ModalForm>(
     public open val event: MessageCommandInteractionCreateEvent,
-    public override val command: MessageCommand<C>,
+    public override val command: MessageCommand<C, M>,
     cache: MutableStringKeyedMap<Any>
 ) : ApplicationCommandContext(event, command, cache) {
     /** Messages that this message command is being executed against. **/

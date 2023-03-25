@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.types.TranslatableContext
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
@@ -42,10 +43,13 @@ import java.util.*
 public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     public open val component: Component,
     public open val event: E,
-    public open val cache: MutableStringKeyedMap<Any>
-) : KordExKoinComponent {
+    public open val cache: MutableStringKeyedMap<Any>,
+) : KordExKoinComponent, TranslatableContext {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
+
+    override val bundle: String?
+        get() = component.bundle
 
     /** Configured bot settings object. **/
     public val settings: ExtensibleBotBuilder by inject()
@@ -54,7 +58,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     public val sentry: SentryContext = SentryContext()
 
     /** Cached locale variable, stored and retrieved by [getLocale]. **/
-    public open var resolvedLocale: Locale? = null
+    public override var resolvedLocale: Locale? = null
 
     /** Channel this component was interacted with within. **/
     public open lateinit var channel: MessageChannelBehavior
@@ -86,6 +90,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
         event.interaction.channel
 
     /** Extract guild information from event data, if that context is available. **/
+    @OptIn(KordUnsafe::class, KordExperimental::class)
     @JvmName("getGuild1")
     public fun getGuild(): GuildBehavior? =
         event.interaction.data.guildId.value?.let { event.kord.unsafe.guild(it) }
@@ -106,7 +111,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
         event.interaction.user
 
     /** Resolve the locale for this command context. **/
-    public suspend fun getLocale(): Locale {
+    public override suspend fun getLocale(): Locale {
         var locale: Locale? = resolvedLocale
 
         if (locale != null) {
@@ -135,10 +140,10 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
      * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
      * locale resolvers.
      */
-    public suspend fun translate(
+    public override suspend fun translate(
         key: String,
         bundleName: String?,
-        replacements: Array<Any?> = arrayOf()
+        replacements: Array<Any?>,
     ): String {
         val locale = getLocale()
 
@@ -146,14 +151,18 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     }
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
-     * component's configured bundle, for the locale provided by the bot's configured locale resolvers.
+     * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+     * locale resolvers.
      */
-    public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
-        key,
-        component.bundle,
-        replacements
-    )
+    public override suspend fun translate(
+        key: String,
+        bundleName: String?,
+        replacements: Map<String, Any?>,
+    ): String {
+        val locale = getLocale()
+
+        return translationsProvider.translate(key, locale, bundleName, replacements)
+    }
 
     /**
      * @param breadcrumb breadcrumb data will be modified to add the component context information

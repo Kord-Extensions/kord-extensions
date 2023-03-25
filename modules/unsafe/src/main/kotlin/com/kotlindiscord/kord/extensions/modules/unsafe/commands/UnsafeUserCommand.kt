@@ -11,6 +11,7 @@ package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.contexts.UnsafeUserCommandContext
@@ -28,9 +29,10 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
 /** Like a standard user command, but with less safety features. **/
 @UnsafeAPI
-public class UnsafeUserCommand(
-    extension: Extension
-) : UserCommand<UnsafeUserCommandContext>(extension) {
+public class UnsafeUserCommand<M : ModalForm>(
+    extension: Extension,
+    public override val modal: (() -> M)? = null,
+) : UserCommand<UnsafeUserCommandContext<M>, M>(extension) {
     /** Initial response type. Change this to decide what happens when this user command action is executed. **/
     public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
 
@@ -90,7 +92,7 @@ public class UnsafeUserCommand(
         }
 
         try {
-            body(context)
+            body(context, null)
         } catch (t: Throwable) {
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -106,7 +108,7 @@ public class UnsafeUserCommand(
     }
 
     override suspend fun respondText(
-        context: UnsafeUserCommandContext,
+        context: UnsafeUserCommandContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {

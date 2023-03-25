@@ -10,15 +10,19 @@
 package com.kotlindiscord.kord.extensions.commands.application.user
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandFailedChecksEvent
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandFailedWithExceptionEvent
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.PublicUserCommandSucceededEvent
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
@@ -28,15 +32,28 @@ public typealias InitialPublicUserResponseBuilder =
     (suspend InteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
 
 /** Public user command. **/
-public class PublicUserCommand(
-    extension: Extension
-) : UserCommand<PublicUserCommandContext>(extension) {
+public class PublicUserCommand<M : ModalForm>(
+    extension: Extension,
+    public override val modal: (() -> M)? = null,
+) : UserCommand<PublicUserCommandContext<M>, M>(extension) {
     /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialPublicUserResponseBuilder = null
 
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialPublicUserResponseBuilder) {
         initialResponseBuilder = body
+    }
+
+    override fun validate() {
+        super.validate()
+
+        if (modal != null && initialResponseBuilder != null) {
+            throw InvalidCommandException(
+                name,
+
+                "You may not provide a modal builder and an initial response - pick one, not both."
+            )
+        }
     }
 
     override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
@@ -69,8 +86,27 @@ public class PublicUserCommand(
             return
         }
 
+        val modalObj = modal?.invoke()
+
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
+        } else if (modalObj != null) {
+            componentRegistry.register(modalObj)
+
+            val locale = event.getLocale()
+
+            event.interaction.modal(
+                modalObj.translateTitle(locale, resolvedBundle),
+                modalObj.id
+            ) {
+                modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+            }
+
+            modalObj.awaitCompletion {
+                componentRegistry.unregisterModal(modalObj)
+
+                it?.deferPublicResponseUnsafe()
+            } ?: return
         } else {
             event.interaction.deferPublicResponseUnsafe()
         }
@@ -91,7 +127,7 @@ public class PublicUserCommand(
         }
 
         try {
-            body(context)
+            body(context, modalObj)
         } catch (t: Throwable) {
             emitEventAsync(PublicUserCommandFailedWithExceptionEvent(this, event, t))
             onSuccessUseLimitUpdate(context, invocationEvent, true)
@@ -110,7 +146,7 @@ public class PublicUserCommand(
     }
 
     override suspend fun respondText(
-        context: PublicUserCommandContext,
+        context: PublicUserCommandContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {

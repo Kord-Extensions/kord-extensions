@@ -7,8 +7,11 @@
 package com.kotlindiscord.kord.extensions.i18n
 
 import com.ibm.icu.text.MessageFormat
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -59,7 +62,7 @@ public open class ResourceBundleTranslations(
     ): ResourceBundle = ResourceBundle.getBundle(bundle, locale, control)
 
     /**
-     * Retrieves a pair of the [ResourceBundle] and the overide resource bundle for [bundleName] in locale.
+     * Retrieves a pair of the [ResourceBundle] and the override resource bundle for [bundleName] in locale.
      */
     @Throws(MissingResourceException::class)
     protected open fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
@@ -120,7 +123,12 @@ public open class ResourceBundleTranslations(
         return result
     }
 
-    override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Array<Any?>): String {
+    /**
+     * Retrieve a translated string from a [key] in a given [bundleName].
+     *
+     * The string's parameters are not replaced.
+     */
+    protected fun getTranslatedString(key: String, locale: Locale, bundleName: String?): String {
         var string = try {
             get(key, locale, bundleName)
         } catch (e: MissingResourceException) {
@@ -134,10 +142,7 @@ public open class ResourceBundleTranslations(
 
                 string = get(key, locale, KORDEX_KEY)
             }
-
-            val formatter = MessageFormat(string, locale)
-
-            formatter.format(replacements)
+            string
         } catch (e: MissingResourceException) {
             logger.trace {
                 if (bundleName == null) {
@@ -151,6 +156,22 @@ public open class ResourceBundleTranslations(
         }
     }
 
+    override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Array<Any?>): String {
+        val string = getTranslatedString(key, locale, bundleName)
+
+        val formatter = MessageFormat(string, locale)
+
+        return formatter.format(replacements)
+    }
+
+    override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Map<String, Any?>): String {
+        val string = getTranslatedString(key, locale, bundleName)
+
+        val formatter = MessageFormat(string, locale)
+
+        return formatter.format(replacements)
+    }
+
     private fun ResourceBundle.getStringOrNull(key: String): String? {
         return try {
             getString(key)
@@ -159,13 +180,27 @@ public open class ResourceBundleTranslations(
         }
     }
 
-    private object Control : ResourceBundle.Control() {
+    private object Control : ResourceBundle.Control(), KordExKoinComponent {
+        val builder: ExtensibleBotBuilder by inject()
+
         override fun getFormats(baseName: String?): MutableList<String> {
             if (baseName == null) {
                 throw NullPointerException()
             }
 
             return FORMAT_PROPERTIES
+        }
+
+        override fun getFallbackLocale(baseName: String?, locale: Locale?): Locale? {
+            if (baseName == null) {
+                throw NullPointerException()
+            }
+
+            return if (locale == builder.i18nBuilder.defaultLocale) {
+                null
+            } else {
+                builder.i18nBuilder.defaultLocale
+            }
         }
     }
 }
