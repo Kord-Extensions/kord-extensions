@@ -115,4 +115,44 @@ public abstract class TranslationsProvider(
         bundleName: String? = null,
         replacements: List<Any?>
     ): String = translate(key, language, country, bundleName, replacements.toTypedArray())
+
+    /** Get a formatted translation using the provided arguments. **/
+    public open fun translate(
+        key: String,
+        bundleName: String? = null,
+        replacements: Map<String, Any?>
+    ): String = translate(key, defaultLocale, bundleName, replacements)
+
+    /** Get a formatted translation using the provided arguments. **/
+    public open fun translate(
+        key: String,
+        bundleName: String? = null,
+        locale: Locale,
+        replacements: Map<String, Any?>
+    ): String = translate(key, locale, bundleName, replacements)
+
+    /** Get a formatted translation using the provided arguments. **/
+    public abstract fun translate(
+        key: String,
+        locale: Locale,
+        bundleName: String? = null,
+        replacements: Map<String, Any?>
+    ): String
+
+    /** Get a formatted translation using the provided arguments. **/
+    public open fun translate(
+        key: String,
+        language: String,
+        bundleName: String? = null,
+        replacements: Map<String, Any?>
+    ): String = translate(key, Locale(language), bundleName, replacements)
+
+    /** Get a formatted translation using the provided arguments. **/
+    public open fun translate(
+        key: String,
+        language: String,
+        country: String,
+        bundleName: String? = null,
+        replacements: Map<String, Any?>
+    ): String = translate(key, Locale(language, country), bundleName, replacements)
 }

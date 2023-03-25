@@ -8,12 +8,15 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
 import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.websocket.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
-import io.ktor.http.cio.websocket.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
@@ -22,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
@@ -34,16 +36,21 @@ import org.koin.core.component.inject
  */
 class PhishingWebsocketWrapper(
     private val appName: String,
-    private val callback: suspend (DomainChange) -> Unit
-) : KoinComponent {
+    private val callback: suspend (DomainChange) -> Unit,
+) : KordExKoinComponent {
     private val logger = KotlinLogging.logger { }
     private var job: Job? = null
 
     private val kord: Kord by inject()
 
     internal val client = HttpClient {
-        install(JsonFeature)
+        install(ContentNegotiation) {
+            json()
+        }
+
         install(WebSockets)
+
+        expectSuccess = true
     }
 
     /**
@@ -89,7 +96,7 @@ class PhishingWebsocketWrapper(
                 logger.debug { "Sinking Yachts <<< $frameText" }
 
                 try {
-                    val change = Json.decodeFromString<DomainChange>(frameText)
+                    val change: DomainChange = Json.decodeFromString(frameText)
 
                     callback(change)
                 } catch (e: Exception) {

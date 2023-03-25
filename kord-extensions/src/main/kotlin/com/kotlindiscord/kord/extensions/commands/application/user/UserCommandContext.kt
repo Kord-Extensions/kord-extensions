@@ -7,6 +7,8 @@
 package com.kotlindiscord.kord.extensions.commands.application.user
 
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandContext
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.entity.User
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
@@ -16,10 +18,11 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
  *  @param event Event that triggered this message command.
  *  @param command Message command instance.
  */
-public abstract class UserCommandContext<C : UserCommandContext<C>>(
+public abstract class UserCommandContext<C : UserCommandContext<C, M>, M : ModalForm>(
     public open val event: UserCommandInteractionCreateEvent,
-    public override val command: UserCommand<C>
-) : ApplicationCommandContext(event, command) {
+    public override val command: UserCommand<C, M>,
+    cache: MutableStringKeyedMap<Any>
+) : ApplicationCommandContext(event, command, cache) {
     /** Messages that this message command is being executed against. **/
     public val targetUsers: Collection<User> by lazy { event.interaction.users.values }
 }

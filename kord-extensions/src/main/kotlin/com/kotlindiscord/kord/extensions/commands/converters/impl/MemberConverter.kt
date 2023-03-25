@@ -4,12 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
+@file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
@@ -17,19 +12,17 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.users
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
+import dev.kord.core.entity.interaction.MemberOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.UserBuilder
@@ -42,6 +35,7 @@ import kotlinx.coroutines.flow.firstOrNull
  * * A user or member mention
  * * A user ID
  * * The user's tag (`username#discriminator`)
+ * * "me" to refer to the member running the command
  *
  * @param requiredGuild Lambda returning a specific guild to require the member to be in, if needed.
  * @param useReply Whether to use the author of the replied-to message (if there is one) instead of trying to parse an
@@ -56,22 +50,30 @@ import kotlinx.coroutines.flow.firstOrNull
     builderFields = [
         "public var requiredGuild: (suspend () -> Snowflake)? = null",
         "public var useReply: Boolean = true",
+        "public var requireSameGuild: Boolean = true",
     ]
 )
-@OptIn(KordPreview::class)
 public class MemberConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
     private var useReply: Boolean = true,
-    override var validator: Validator<Member> = null
+    private var requireSameGuild: Boolean = true,
+    override var validator: Validator<Member> = null,
 ) : SingleConverter<Member>() {
     override val signatureTypeString: String = "converters.member.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+        val guild = context.getGuild()
+
+        if (requireSameGuild && requiredGuild == null && guild != null) {
+            requiredGuild = { guild.id }
+        }
+
         if (useReply && context is ChatCommandContext<*>) {
             val messageReference = context.message.asMessage().messageReference
 
             if (messageReference != null) {
-                val member = messageReference.message?.asMessage()?.getAuthorAsMember()
+                val member = messageReference.message?.asMessage()?.getAuthorAsMemberOrNull()
 
                 if (member != null) {
                     parsed = member
@@ -81,6 +83,16 @@ public class MemberConverter(
         }
 
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
+        if (arg.equals("me", true)) {
+            val member = context.getMember()?.asMemberOrNull()
+
+            if (member != null) {
+                this.parsed = member
+
+                return true
+            }
+        }
 
         parsed = findMember(arg, context)
             ?: throw DiscordRelayedException(
@@ -115,20 +127,44 @@ public class MemberConverter(
             }
         }
 
-        val guildId: Snowflake = if (requiredGuild != null) {
+        val currentGuild = context.getGuild()
+
+        val guildId: Snowflake? = if (requiredGuild != null) {
             requiredGuild!!.invoke()
         } else {
-            context.getGuild()?.id
-        } ?: return null
+            currentGuild?.id
+        }
 
-        return user?.asMember(guildId)
+        if (guildId != currentGuild?.id) {
+            throw DiscordRelayedException(
+                context.translate("converters.member.error.invalid", replacements = arrayOf(user?.tag ?: arg))
+            )
+        }
+
+        return user?.asMember(
+            guildId ?: return null
+        )
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         UserBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.MemberOptionValue)?.value as? Member ?: return false
+        val optionValue = (option as? MemberOptionValue)?.resolvedObject ?: return false
+        val guild = context.getGuild()
+
+        if (requireSameGuild && requiredGuild == null && guild != null) {
+            requiredGuild = { guild.id }
+        }
+
+        val requiredGuildId = requiredGuild?.invoke()
+
+        if (requiredGuildId != null && optionValue.guildId != requiredGuildId) {
+            throw DiscordRelayedException(
+                context.translate("converters.member.error.invalid", replacements = arrayOf(optionValue.tag))
+            )
+        }
+
         this.parsed = optionValue
 
         return true

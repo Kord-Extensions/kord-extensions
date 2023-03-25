@@ -4,25 +4,18 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress(
-    "UNCHECKED_CAST"
-)
-@file:OptIn(
-    ExperimentalCoroutinesApi::class
-)
-
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.registry.RegistryStorage
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 
@@ -32,7 +25,7 @@ import kotlinx.coroutines.flow.toList
  * Discord lifecycles may not be implemented in this class and require manual updating.
  */
 public open class StorageAwareApplicationCommandRegistry(
-    builder: () -> RegistryStorage<Snowflake, ApplicationCommand<*>>
+    builder: () -> RegistryStorage<Snowflake, ApplicationCommand<*>>,
 ) : ApplicationCommandRegistry() {
 
     protected open val commandRegistry: RegistryStorage<Snowflake, ApplicationCommand<*>> = builder.invoke()
@@ -53,7 +46,7 @@ public open class StorageAwareApplicationCommandRegistry(
         }
     }
 
-    override suspend fun register(command: SlashCommand<*, *>): SlashCommand<*, *>? {
+    override suspend fun register(command: SlashCommand<*, *, *>): SlashCommand<*, *, *>? {
         val commandId = createDiscordCommand(command) ?: return null
 
         commandRegistry.set(commandId, command)
@@ -61,7 +54,7 @@ public open class StorageAwareApplicationCommandRegistry(
         return command
     }
 
-    override suspend fun register(command: MessageCommand<*>): MessageCommand<*>? {
+    override suspend fun register(command: MessageCommand<*, *>): MessageCommand<*, *>? {
         val commandId = createDiscordCommand(command) ?: return null
 
         commandRegistry.set(commandId, command)
@@ -69,7 +62,7 @@ public open class StorageAwareApplicationCommandRegistry(
         return command
     }
 
-    override suspend fun register(command: UserCommand<*>): UserCommand<*>? {
+    override suspend fun register(command: UserCommand<*, *>): UserCommand<*, *>? {
         val commandId = createDiscordCommand(command) ?: return null
 
         commandRegistry.set(commandId, command)
@@ -79,34 +72,34 @@ public open class StorageAwareApplicationCommandRegistry(
 
     override suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
+        val command = commandRegistry.get(commandId) as? SlashCommand<*, *, *>
 
         command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     override suspend fun handle(event: MessageCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = commandRegistry.get(commandId) as? MessageCommand<*>
+        val command = commandRegistry.get(commandId) as? MessageCommand<*, *>
 
         command ?: return logger.warn { "Received interaction for unknown message command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     override suspend fun handle(event: UserCommandInteractionCreateEvent) {
         val commandId = event.interaction.invokedCommandId
-        val command = commandRegistry.get(commandId) as? UserCommand<*>
+        val command = commandRegistry.get(commandId) as? UserCommand<*, *>
 
         command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
-        command.call(event)
+        command.doCall(event)
     }
 
     override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {
         val commandId = event.interaction.command.rootId
-        val command = commandRegistry.get(commandId) as? SlashCommand<*, *>
+        val command = commandRegistry.get(commandId) as? SlashCommand<*, *, *>
 
         command ?: return logger.warn { "Received autocomplete interaction for unknown command: $commandId" }
 
@@ -118,7 +111,12 @@ public open class StorageAwareApplicationCommandRegistry(
 
         option ?: return logger.trace { "Autocomplete event for command $command doesn't have a focused option." }
 
-        val arg = command.arguments!!().args.firstOrNull { it.displayName == option.first }
+        val arg = command.arguments!!().args.firstOrNull {
+            it.getDefaultTranslatedDisplayName(
+                translationsProvider,
+                command
+            ) == option.first
+        }
 
         arg ?: return logger.warn {
             "Autocomplete event for command $command has an unknown focused option: ${option.first}."
@@ -133,18 +131,18 @@ public open class StorageAwareApplicationCommandRegistry(
         callback(event.interaction, event)
     }
 
-    override suspend fun unregister(command: SlashCommand<*, *>, delete: Boolean): SlashCommand<*, *>? =
-        unregisterApplicationCommand(command, delete) as? SlashCommand<*, *>
+    override suspend fun unregister(command: SlashCommand<*, *, *>, delete: Boolean): SlashCommand<*, *, *>? =
+        unregisterApplicationCommand(command, delete) as? SlashCommand<*, *, *>
 
-    override suspend fun unregister(command: MessageCommand<*>, delete: Boolean): MessageCommand<*>? =
-        unregisterApplicationCommand(command, delete) as? MessageCommand<*>
+    override suspend fun unregister(command: MessageCommand<*, *>, delete: Boolean): MessageCommand<*, *>? =
+        unregisterApplicationCommand(command, delete) as? MessageCommand<*, *>
 
-    override suspend fun unregister(command: UserCommand<*>, delete: Boolean): UserCommand<*>? =
-        unregisterApplicationCommand(command, delete) as? UserCommand<*>
+    override suspend fun unregister(command: UserCommand<*, *>, delete: Boolean): UserCommand<*, *>? =
+        unregisterApplicationCommand(command, delete) as? UserCommand<*, *>
 
     protected open suspend fun unregisterApplicationCommand(
         command: ApplicationCommand<*>,
-        delete: Boolean
+        delete: Boolean,
     ): ApplicationCommand<*>? {
         val id = commandRegistry.constructUniqueIdentifier(command)
 
@@ -164,7 +162,7 @@ public open class StorageAwareApplicationCommandRegistry(
     }
 
     protected open fun RegistryStorage.StorageEntry<Snowflake, ApplicationCommand<*>>.hasCommand(
-        command: ApplicationCommand<*>
+        command: ApplicationCommand<*>,
     ): Boolean {
         val key = commandRegistry.constructUniqueIdentifier(value)
         val other = commandRegistry.constructUniqueIdentifier(command)

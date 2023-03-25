@@ -7,10 +7,11 @@
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.InvalidCommandException
+import com.kotlindiscord.kord.extensions.commands.application.Localized
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -22,8 +23,8 @@ import java.util.*
  */
 public class SlashGroup(
     public val name: String,
-    public val parent: SlashCommand<*, *>
-) : KoinComponent {
+    public val parent: SlashCommand<*, *, *>
+) : KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
 
@@ -31,10 +32,20 @@ public class SlashGroup(
     public val logger: KLogger = KotlinLogging.logger {}
 
     /** List of subcommands belonging to this group. **/
-    public val subCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
+    public val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
 
     /** Command group description, which is required and shown on Discord. **/
     public lateinit var description: String
+
+    /**
+     * A [Localized] version of [name].
+     */
+    public val localizedName: Localized<String> by lazy { parent.localize(name, true) }
+
+    /**
+     * A [Localized] version of [description].
+     */
+    public val localizedDescription: Localized<String> by lazy { parent.localize(description) }
 
     /** Translation cache, so we don't have to look up translations every time. **/
     public val descriptionTranslationCache: MutableMap<Locale, String> = mutableMapOf()
@@ -46,7 +57,7 @@ public class SlashGroup(
         if (!descriptionTranslationCache.containsKey(locale)) {
             descriptionTranslationCache[locale] = translationsProvider.translate(
                 this.description,
-                this.parent.extension.bundle,
+                this.parent.resolvedBundle,
                 locale
             ).lowercase()
         }

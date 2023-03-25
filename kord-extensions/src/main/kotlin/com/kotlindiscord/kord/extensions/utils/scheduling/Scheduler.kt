@@ -4,11 +4,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
+@file:OptIn(ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.utils.scheduling
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import mu.KotlinLogging
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -34,12 +37,14 @@ public class Scheduler : CoroutineScope {
         startNow: Boolean = true,
         name: String? = null,
         pollingSeconds: Long = 1,
+        repeat: Boolean = false,
         callback: suspend () -> Unit
     ): Task = schedule(
         delay = seconds.seconds,
         startNow = startNow,
         name = name,
         pollingSeconds = pollingSeconds,
+        repeat = repeat,
         callback = callback,
     )
 
@@ -50,6 +55,7 @@ public class Scheduler : CoroutineScope {
      * @param startNow Whether to start the task now - `false` if you want to start it yourself.
      * @param name Optional task name, used in logging.
      * @param pollingSeconds How often to check whether enough time has passed - `1` by default.
+     * @param repeat Whether to repeat the task indefinitely - `false` by default.
      * @param callback Callback to run when the task has waited for long enough.
      */
     public fun schedule(
@@ -57,6 +63,7 @@ public class Scheduler : CoroutineScope {
         startNow: Boolean = true,
         name: String? = null,
         pollingSeconds: Long = 1,
+        repeat: Boolean = false,
         callback: suspend () -> Unit
     ): Task {
         val taskName = name ?: UUID.randomUUID().toString()
@@ -67,6 +74,7 @@ public class Scheduler : CoroutineScope {
             pollingSeconds = pollingSeconds,
             duration = delay,
             name = taskName,
+            repeat = repeat,
             parent = this
         )
 

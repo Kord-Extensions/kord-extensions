@@ -14,7 +14,6 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.string
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.autocompleteVersions
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.toNamespace
-import dev.kord.core.entity.interaction.string
 
 /**
  * Arguments for class, field, and method conversion commands.
@@ -45,8 +44,8 @@ class MappingConversionArguments(enabledNamespaces: Map<String, String>) : Argum
         description = "Minecraft version to use for this query"
 
         autocompleteVersions {
-            val inputNamespace = command.options["input"]?.string()?.toNamespace()
-            val outputNamespace = command.options["output"]?.string()?.toNamespace()
+            val inputNamespace = command.options["input"]?.value?.toString()?.toNamespace()
+            val outputNamespace = command.options["output"]?.value?.toString()?.toNamespace()
 
             if (inputNamespace == null || outputNamespace == null) {
                 emptyList()
@@ -57,14 +56,14 @@ class MappingConversionArguments(enabledNamespaces: Map<String, String>) : Argum
     }
 
     val inputChannel by optionalEnumChoice<Channels> {
-        name = "inputChannel"
+        name = "input-channel"
         description = "The mappings channel to use for input"
 
         typeName = "official/snapshot"
     }
 
     val outputChannel by optionalEnumChoice<Channels> {
-        name = "outputChannel"
+        name = "output-channel"
         description = "The mappings channel to use for output"
 
         typeName = "official/snapshot"

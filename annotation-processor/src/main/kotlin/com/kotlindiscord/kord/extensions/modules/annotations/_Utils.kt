@@ -8,6 +8,11 @@
 
 package com.kotlindiscord.kord.extensions.modules.annotations
 
+import com.google.devtools.ksp.symbol.KSDeclaration
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSNode
+import com.google.devtools.ksp.validate
+
 public fun docComment(comment: String): String = """
     |/**
     ${comment.split("\n").joinToString("\n") { "| * $it" }}
@@ -86,3 +91,8 @@ public fun <T> List<T>.permutations(): Set<List<T>> {
         }
     }
 }
+
+public fun KSNode.validateIgnoringFunctions(): Boolean =
+    this.validate { parent, current ->
+        !(parent is KSFunctionDeclaration && current is KSDeclaration)
+    }

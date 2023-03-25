@@ -6,14 +6,16 @@
 
 package com.kotlindiscord.kord.extensions.components.menus
 
-import com.kotlindiscord.kord.extensions.components.Component
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.types.EphemeralInteractionContext
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
 /** Class representing the execution context for an ephemeral-only select (dropdown) menu. **/
-public class EphemeralSelectMenuContext(
-    override val component: Component,
+public class EphemeralSelectMenuContext<M : ModalForm>(
+    override val component: EphemeralSelectMenu<M>,
     override val event: SelectMenuInteractionCreateEvent,
-    override val interactionResponse: EphemeralInteractionResponseBehavior
-) : SelectMenuContext(component, event), EphemeralInteractionContext
+    override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
+    cache: MutableStringKeyedMap<Any>
+) : SelectMenuContext(component, event, cache), EphemeralInteractionContext

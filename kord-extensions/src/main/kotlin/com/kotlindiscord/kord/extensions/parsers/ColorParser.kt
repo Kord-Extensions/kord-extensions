@@ -7,9 +7,9 @@
 package com.kotlindiscord.kord.extensions.parsers
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.parsers.caches.ColorCache
 import dev.kord.common.Color
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -29,7 +29,7 @@ import java.util.*
  *
  * Translations may be split using commas, in which case any of the given values will be suitable.
  */
-public object ColorParser : KoinComponent {
+public object ColorParser : KordExKoinComponent {
     private val settings: ExtensibleBotBuilder by inject()
 
     /**

@@ -26,6 +26,23 @@ public class Cursor(public val input: String) {
         get() =
             index > 0
 
+    /**
+     * Consume [amount] characters from this cursor, returning them as a [String]. Will stop consuming and return
+     * when the cursor runs out of characters, instead of throwing.
+     *
+     * Returns an empty string if no characters remain.
+     */
+    public fun consumeNumber(amount: Int): String =
+        buildString {
+            var total = 0
+
+            while (hasNext && total < amount) {
+                append(next())
+
+                total += 1
+            }
+        }
+
     /** Iterate over the rest of the string, returning the result. **/
     public fun consumeRemaining(): String =
         buildString {

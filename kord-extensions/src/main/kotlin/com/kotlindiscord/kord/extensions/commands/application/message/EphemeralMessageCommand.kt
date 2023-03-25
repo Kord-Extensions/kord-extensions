@@ -5,17 +5,24 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.commands.application.message
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandFailedChecksEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandFailedWithExceptionEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandInvocationEvent
 import com.kotlindiscord.kord.extensions.commands.events.EphemeralMessageCommandSucceededEvent
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.getLocale
+import dev.kord.common.annotation.KordUnsafe
+import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
@@ -24,9 +31,10 @@ public typealias InitialEphemeralMessageResponseBuilder =
     (suspend InteractionResponseCreateBuilder.(MessageCommandInteractionCreateEvent) -> Unit)?
 
 /** Ephemeral message command. **/
-public class EphemeralMessageCommand(
-    extension: Extension
-) : MessageCommand<EphemeralMessageCommandContext>(extension) {
+public class EphemeralMessageCommand<M : ModalForm>(
+    extension: Extension,
+    public override val modal: (() -> M)? = null,
+) : MessageCommand<EphemeralMessageCommandContext<M>, M>(extension) {
     /** @suppress Internal guilder **/
     public var initialResponseBuilder: InitialEphemeralMessageResponseBuilder = null
 
@@ -35,11 +43,23 @@ public class EphemeralMessageCommand(
         initialResponseBuilder = body
     }
 
-    override suspend fun call(event: MessageCommandInteractionCreateEvent) {
+    override fun validate() {
+        super.validate()
+
+        if (modal != null && initialResponseBuilder != null) {
+            throw InvalidCommandException(
+                name,
+
+                "You may not provide a modal builder and an initial response - pick one, not both."
+            )
+        }
+    }
+
+    override suspend fun call(event: MessageCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
         emitEventAsync(EphemeralMessageCommandInvocationEvent(this, event))
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 emitEventAsync(
                     EphemeralMessageCommandFailedChecksEvent(
                         this,
@@ -60,13 +80,32 @@ public class EphemeralMessageCommand(
             return
         }
 
+        val modalObj = modal?.invoke()
+
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondEphemeral { initialResponseBuilder!!(event) }
+        } else if (modalObj != null) {
+            componentRegistry.register(modalObj)
+
+            val locale = event.getLocale()
+
+            event.interaction.modal(
+                modalObj.translateTitle(locale, resolvedBundle),
+                modalObj.id
+            ) {
+                modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+            }
+
+            modalObj.awaitCompletion {
+                componentRegistry.unregisterModal(modalObj)
+
+                it?.deferEphemeralResponseUnsafe()
+            } ?: return
         } else {
-            event.interaction.acknowledgeEphemeral()
+            event.interaction.deferEphemeralResponseUnsafe()
         }
 
-        val context = EphemeralMessageCommandContext(event, this, response)
+        val context = EphemeralMessageCommandContext(event, this, response, cache)
 
         context.populate()
 
@@ -82,7 +121,7 @@ public class EphemeralMessageCommand(
         }
 
         try {
-            body(context)
+            body(context, modalObj)
         } catch (t: Throwable) {
             emitEventAsync(EphemeralMessageCommandFailedWithExceptionEvent(this, event, t))
 
@@ -101,7 +140,7 @@ public class EphemeralMessageCommand(
     }
 
     override suspend fun respondText(
-        context: EphemeralMessageCommandContext,
+        context: EphemeralMessageCommandContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {

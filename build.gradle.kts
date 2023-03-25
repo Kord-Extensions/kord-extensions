@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     repositories {
         maven {
-            name = "KotDis"
-            url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+            name = "Sonatype Snapshots"
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
         }
     }
 }
@@ -23,7 +23,9 @@ group = "com.kotlindiscord.kord.extensions"
 version = projectVersion
 
 val printVersion = task("printVersion") {
-    print(version.toString())
+    doLast {
+        print(version.toString())
+    }
 }
 
 gitHooks {
@@ -38,11 +40,6 @@ repositories {
         name = "Sonatype Snapshots"
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
-
-    maven {
-        name = "Kotlin Discord"
-        url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
-    }
 }
 
 subprojects {
@@ -50,8 +47,8 @@ subprojects {
     version = projectVersion
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.contracts.ExperimentalContracts"
+        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.contracts.ExperimentalContracts"
     }
 
     repositories {

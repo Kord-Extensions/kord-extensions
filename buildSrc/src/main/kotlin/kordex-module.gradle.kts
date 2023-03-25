@@ -2,19 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
 
     id("io.gitlab.arturbosch.detekt")
     id("org.cadixdev.licenser")
 }
-
-abstract class KordexExtension {
-    abstract val jvmTarget: Property<String>
-    abstract val javaVersion: Property<JavaVersion>
-}
-
-val kordexExtensionName = "kordex"
-
-extensions.create<KordexExtension>(kordexExtensionName)
 
 val sourceJar = task("sourceJar", Jar::class) {
     dependsOn(tasks["classes"])
@@ -36,6 +28,10 @@ tasks {
 
     kotlin {
         explicitApi()
+
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of("11"))
+        }
     }
 
     jar {
@@ -43,17 +39,16 @@ tasks {
     }
 
     afterEvaluate {
-        val extension = project.extensions.getByName<KordexExtension>(kordexExtensionName)
-
         rootProject.file("LICENSE").copyTo(rootProject.file("build/LICENSE-kordex"), true)
 
-        java {
-            sourceCompatibility = extension.javaVersion.getOrElse(JavaVersion.VERSION_1_8)
+        tasks.withType<JavaCompile>().configureEach {
+            sourceCompatibility = "11"
+            targetCompatibility = "11"
         }
 
         withType<KotlinCompile>().configureEach {
             kotlinOptions {
-                jvmTarget = extension.jvmTarget.getOrElse("1.8")
+                jvmTarget = "11"
             }
         }
     }

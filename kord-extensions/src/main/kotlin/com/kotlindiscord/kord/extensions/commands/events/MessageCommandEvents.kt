@@ -14,83 +14,83 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 // region Invocation events
 
 /** Basic event emitted when a message command is invoked. **/
-public interface MessageCommandInvocationEvent<C : MessageCommand<*>> :
+public interface MessageCommandInvocationEvent<C : MessageCommand<*, *>> :
     CommandInvocationEvent<C, MessageCommandInteractionCreateEvent>
 
 /** Event emitted when an ephemeral message command is invoked. **/
 public data class EphemeralMessageCommandInvocationEvent(
-    override val command: EphemeralMessageCommand,
+    override val command: EphemeralMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent
-) : MessageCommandInvocationEvent<EphemeralMessageCommand>
+) : MessageCommandInvocationEvent<EphemeralMessageCommand<*>>
 
 /** Event emitted when a public message command is invoked. **/
 public data class PublicMessageCommandInvocationEvent(
-    override val command: PublicMessageCommand,
+    override val command: PublicMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent
-) : MessageCommandInvocationEvent<PublicMessageCommand>
+) : MessageCommandInvocationEvent<PublicMessageCommand<*>>
 
 // endregion
 
 // region Succeeded events
 
 /** Basic event emitted when a message command invocation succeeds. **/
-public interface MessageCommandSucceededEvent<C : MessageCommand<*>> :
+public interface MessageCommandSucceededEvent<C : MessageCommand<*, *>> :
     CommandSucceededEvent<C, MessageCommandInteractionCreateEvent>
 
 /** Event emitted when an ephemeral message command invocation succeeds. **/
 public data class EphemeralMessageCommandSucceededEvent(
-    override val command: EphemeralMessageCommand,
+    override val command: EphemeralMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent
-) : MessageCommandSucceededEvent<EphemeralMessageCommand>
+) : MessageCommandSucceededEvent<EphemeralMessageCommand<*>>
 
 /** Event emitted when a public message command invocation succeeds. **/
 public data class PublicMessageCommandSucceededEvent(
-    override val command: PublicMessageCommand,
+    override val command: PublicMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent
-) : MessageCommandSucceededEvent<PublicMessageCommand>
+) : MessageCommandSucceededEvent<PublicMessageCommand<*>>
 
 // endregion
 
 // region Failed events
 
 /** Basic event emitted when a message command invocation fails. **/
-public sealed interface  MessageCommandFailedEvent<C : MessageCommand<*>> :
+public sealed interface  MessageCommandFailedEvent<C : MessageCommand<*, *>> :
     CommandFailedEvent<C, MessageCommandInteractionCreateEvent>
 
 /** Basic event emitted when a message command's checks fail. **/
-public interface MessageCommandFailedChecksEvent<C : MessageCommand<*>> :
+public interface MessageCommandFailedChecksEvent<C : MessageCommand<*, *>> :
     MessageCommandFailedEvent<C>, CommandFailedChecksEvent<C, MessageCommandInteractionCreateEvent>
 
 /** Event emitted when an ephemeral message command's checks fail. **/
 public data class EphemeralMessageCommandFailedChecksEvent(
-    override val command: EphemeralMessageCommand,
+    override val command: EphemeralMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent,
     override val reason: String
-) : MessageCommandFailedChecksEvent<EphemeralMessageCommand>
+) : MessageCommandFailedChecksEvent<EphemeralMessageCommand<*>>
 
 /** Event emitted when a public message command's checks fail. **/
 public data class PublicMessageCommandFailedChecksEvent(
-    override val command: PublicMessageCommand,
+    override val command: PublicMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent,
     override val reason: String
-) : MessageCommandFailedChecksEvent<PublicMessageCommand>
+) : MessageCommandFailedChecksEvent<PublicMessageCommand<*>>
 
 /** Basic event emitted when a message command invocation fails with an exception. **/
-public interface MessageCommandFailedWithExceptionEvent<C : MessageCommand<*>> :
+public interface MessageCommandFailedWithExceptionEvent<C : MessageCommand<*, *>> :
     MessageCommandFailedEvent<C>, CommandFailedWithExceptionEvent<C, MessageCommandInteractionCreateEvent>
 
 /** Event emitted when an ephemeral message command invocation fails with an exception. **/
 public data class EphemeralMessageCommandFailedWithExceptionEvent(
-    override val command: EphemeralMessageCommand,
+    override val command: EphemeralMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent,
     override val throwable: Throwable
-) : MessageCommandFailedWithExceptionEvent<EphemeralMessageCommand>
+) : MessageCommandFailedWithExceptionEvent<EphemeralMessageCommand<*>>
 
 /** Event emitted when a public message command invocation fails with an exception. **/
 public data class PublicMessageCommandFailedWithExceptionEvent(
-    override val command: PublicMessageCommand,
+    override val command: PublicMessageCommand<*>,
     override val event: MessageCommandInteractionCreateEvent,
     override val throwable: Throwable
-) : MessageCommandFailedWithExceptionEvent<PublicMessageCommand>
+) : MessageCommandFailedWithExceptionEvent<PublicMessageCommand<*>>
 
 // endregion

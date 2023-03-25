@@ -4,13 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 @file:Suppress("MagicNumber", "RethrowCaughtException", "TooGenericExceptionCaught")
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
@@ -18,18 +11,16 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.ColorParser
 import dev.kord.common.Color
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
@@ -43,11 +34,11 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
     "color", "colour",
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
 )
-@OptIn(KordPreview::class)
 public class ColorConverter(
     override var validator: Validator<Color> = null
 ) : SingleConverter<Color>() {
     override val signatureTypeString: String = "converters.color.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -77,23 +68,24 @@ public class ColorConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+        val optionValue = (option as? StringOptionValue)?.value ?: return false
 
         try {
             when {
-                optionValue.startsWith("#") -> this.parsed =
-                    Color(optionValue.substring(1).toInt(16))
+                optionValue.startsWith("#") ->
+                    this.parsed = Color(optionValue.substring(1).toInt(16))
 
-                optionValue.startsWith("0x") -> this.parsed =
-                    Color(optionValue.substring(2).toInt(16))
+                optionValue.startsWith("0x") ->
+                    this.parsed = Color(optionValue.substring(2).toInt(16))
 
-                optionValue.all { it.isDigit() } -> this.parsed =
-                    Color(optionValue.toInt())
+                optionValue.all { it.isDigit() } ->
+                    this.parsed = Color(optionValue.toInt())
 
-                else -> this.parsed =
-                    ColorParser.parse(optionValue, context.getLocale()) ?: throw DiscordRelayedException(
-                        context.translate("converters.color.error.unknown", replacements = arrayOf(optionValue))
-                    )
+                else ->
+                    this.parsed = ColorParser.parse(optionValue, context.getLocale())
+                        ?: throw DiscordRelayedException(
+                            context.translate("converters.color.error.unknown", replacements = arrayOf(optionValue))
+                        )
             }
         } catch (e: DiscordRelayedException) {
             throw e

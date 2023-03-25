@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.extensions
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
@@ -14,6 +12,7 @@ import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
 import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
@@ -22,12 +21,11 @@ import com.kotlindiscord.kord.extensions.commands.chat.ChatCommand
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
-import dev.kord.common.annotation.KordPreview
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import dev.kord.gateway.Intent
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 private val logger = KotlinLogging.logger {}
@@ -39,7 +37,7 @@ private val logger = KotlinLogging.logger {}
  * This will allow you to keep distinct blocks of functionality separate, keeping the codebase
  * clean and configurable.
  */
-public abstract class Extension : KoinComponent {
+public abstract class Extension : KordExKoinComponent {
     /** The [ExtensibleBot] instance that this extension is installed to. **/
     public open val bot: ExtensibleBot by inject()
 
@@ -89,7 +87,7 @@ public abstract class Extension : KoinComponent {
      * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
      * belong to unloaded extensions will not execute.
      */
-    public open val messageCommands: MutableList<MessageCommand<*>> = mutableListOf()
+    public open val messageCommands: MutableList<MessageCommand<*, *>> = mutableListOf()
 
     /**
      * List of registered slash commands.
@@ -97,7 +95,7 @@ public abstract class Extension : KoinComponent {
      * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
      * belong to unloaded extensions will not execute.
      */
-    public open val slashCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
+    public open val slashCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
 
     /**
      * List of registered slash commands.
@@ -105,7 +103,7 @@ public abstract class Extension : KoinComponent {
      * Unlike normal commands, slash commands cannot be unregistered dynamically. However, slash commands that
      * belong to unloaded extensions will not execute.
      */
-    public open val userCommands: MutableList<UserCommand<*>> = mutableListOf()
+    public open val userCommands: MutableList<UserCommand<*, *>> = mutableListOf()
 
     /**
      * List of chat command checks.
@@ -114,6 +112,13 @@ public abstract class Extension : KoinComponent {
      */
     public open val chatCommandChecks: MutableList<ChatCommandCheck> =
         mutableListOf()
+
+    /**
+     * Whether [ApplicationCommands][ApplicationCommand] should be allowed in DMs by default.
+     *
+     * @see ApplicationCommand.allowInDms
+     */
+    public open val allowApplicationCommandInDMs: Boolean = true
 
     /**
      * List of message command checks.

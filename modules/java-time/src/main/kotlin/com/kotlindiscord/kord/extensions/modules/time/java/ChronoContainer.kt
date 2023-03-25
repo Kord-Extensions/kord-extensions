@@ -175,6 +175,7 @@ public class ChronoContainer {
     public fun <T : Temporal> apply(target: T): T {
         var result = target
 
+        @Suppress("UNCHECKED_CAST")
         values.forEach { unit, value ->
             if (target.isSupported(unit)) {
                 result = result.plus(value, unit) as T

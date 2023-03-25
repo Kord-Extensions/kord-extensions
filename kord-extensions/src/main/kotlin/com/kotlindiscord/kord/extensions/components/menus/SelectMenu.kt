@@ -7,13 +7,13 @@
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.components.ComponentWithAction
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
@@ -37,9 +37,9 @@ public const val PLACEHOLDER_MAX: Int = 100
 public const val VALUE_MAX: Int = 100
 
 /** Abstract class representing a select (dropdown) menu component. **/
-public abstract class SelectMenu<C : SelectMenuContext>(
-    timeoutTask: Task?
-) : ComponentWithAction<SelectMenuInteractionCreateEvent, C>(timeoutTask) {
+public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
+    timeoutTask: Task?,
+) : ComponentWithAction<SelectMenuInteractionCreateEvent, C, M>(timeoutTask) {
     internal val logger: KLogger = KotlinLogging.logger {}
 
     /** List of options for the user to choose from. **/
@@ -72,10 +72,19 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
     /** Add an option to this select menu. **/
     @Suppress("UnnecessaryParentheses")  // Disagrees with IDEA, amusingly.
-    public open suspend fun option(label: String, value: String, body: suspend SelectOptionBuilder.() -> Unit = {}) {
+    public open suspend fun option(
+        label: String,
+        value: String,
+
+        // TODO: Check this is fixed in later versions of the compiler
+        // This is nullable like this due to a compiler bug: https://youtrack.jetbrains.com/issue/KT-51820
+        body: (suspend SelectOptionBuilder.() -> Unit)? = null,
+    ) {
         val builder = SelectOptionBuilder(label, value)
 
-        body(builder)
+        if (body != null) {
+            body(builder)
+        }
 
         if ((builder.description?.length ?: 0) > DESCRIPTION_MAX) {
             error("Option descriptions must not be longer than $DESCRIPTION_MAX characters.")
@@ -97,9 +106,10 @@ public abstract class SelectMenu<C : SelectMenuContext>(
             maximumChoices = options.size
         }
 
-        builder.selectMenu(id) {
-            allowedValues = minimumChoices..maximumChoices!!
+        builder.stringSelect(id) {
+            this.allowedValues = minimumChoices..maximumChoices!!
 
+            @Suppress("DEPRECATION")  // Kord suppresses this in their own class
             this.options.addAll(this@SelectMenu.options)
             this.placeholder = this@SelectMenu.placeholder
 
@@ -125,40 +135,20 @@ public abstract class SelectMenu<C : SelectMenuContext>(
     }
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
-    public open suspend fun firstSentryBreadcrumb(context: C, button: SelectMenu<*>) {
+    public open suspend fun firstSentryBreadcrumb(context: C, button: SelectMenu<*, *>) {
         if (sentry.enabled) {
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "component.selectMenu"
                 message = "Select menu \"${button.id}\" submitted."
 
-                val channel = context.channel.asChannelOrNull()
-                val guild = context.guild?.asGuildOrNull()
-                val message = context.message
-
                 data["component"] = button.id
-
-                if (channel != null) {
-                    data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
-
-                        else -> channel.id.toString()
-                    }
-                }
-
-                if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id})"
-                }
-
-                if (message != null) {
-                    data["message"] = message.id.toString()
-                }
+                context.addContextDataToBreadcrumb(this)
             }
         }
     }
 
     /** A general way to handle errors thrown during the course of a select menu action's execution. **/
-    public open suspend fun handleError(context: C, t: Throwable, button: SelectMenu<*>) {
+    public open suspend fun handleError(context: C, t: Throwable, button: SelectMenu<*, *>) {
         logger.error(t) { "Error during execution of select menu (${button.id}) action (${context.event})" }
 
         if (sentry.enabled) {
@@ -167,7 +157,7 @@ public abstract class SelectMenu<C : SelectMenuContext>(
             val channel = context.channel
             val author = context.user.asUserOrNull()
 
-            val sentryId = context.sentry.captureException(t, "Select menu action execution failed.") {
+            val sentryId = context.sentry.captureException(t) {
                 if (author != null) {
                     user(author)
                 }
@@ -180,7 +170,7 @@ public abstract class SelectMenu<C : SelectMenuContext>(
 
                 tag("component", button.id)
 
-                Sentry.captureException(t, "Select menu action execution failed.")
+                Sentry.captureException(t)
             }
 
             logger.info { "Error submitted to Sentry: $sentryId" }

@@ -4,29 +4,25 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.parser.tokens.PositionalArgumentToken
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import mu.KLogger
 import mu.KotlinLogging
 import java.time.Duration
 import java.time.LocalDateTime
@@ -61,23 +57,25 @@ public class J8DurationCoalescingConverter(
     override var validator: Validator<ChronoContainer> = null
 ) : CoalescingConverter<ChronoContainer>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
-    private val logger = KotlinLogging.logger {}
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+
+    private val logger: KLogger = KotlinLogging.logger {}
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
-        val durations = mutableListOf<String>()
+        val durations: MutableList<String> = mutableListOf<String>()
 
         val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
             .split(",")
             .toMutableList()
             .apply { remove(EMPTY_VALUE_STRING) }
 
-        var skipNext = false
+        var skipNext: Boolean = false
 
-        val args = named ?: parser?.run {
+        val args: List<String> = named ?: parser?.run {
             val tokens: MutableList<String> = mutableListOf()
 
             while (hasNext) {
-                val nextToken = peekNext()
+                val nextToken: PositionalArgumentToken? = peekNext()
 
                 if (nextToken!!.data.all { J8DurationParser.charValid(it, context.getLocale()) }) {
                     tokens.add(parseNext()!!.data)
@@ -97,7 +95,7 @@ public class J8DurationCoalescingConverter(
                 continue
             }
 
-            val arg = args[index]
+            val arg: String = args[index]
 
             if (arg in ignoredWords) continue
 
@@ -109,14 +107,14 @@ public class J8DurationCoalescingConverter(
                 durations.add(arg)
             } catch (e: DurationParserException) {
                 try {
-                    val nextIndex = index + 1
+                    val nextIndex: Int = index + 1
 
                     if (nextIndex >= args.size) {
                         throw e
                     }
 
-                    val nextArg = args[nextIndex]
-                    val combined = arg + nextArg
+                    val nextArg: String = args[nextIndex]
+                    val combined: String = arg + nextArg
 
                     J8DurationParser.parse(combined, context.getLocale())
                     J8DurationParser.parse(durations.joinToString("") + combined, context.getLocale())
@@ -136,13 +134,13 @@ public class J8DurationCoalescingConverter(
         }
 
         try {
-            val result = J8DurationParser.parse(
+            val result: ChronoContainer = J8DurationParser.parse(
                 durations.joinToString(""),
                 context.getLocale()
             )
 
             if (positiveOnly) {
-                val normalized = result.clone()
+                val normalized: ChronoContainer = result.clone()
 
                 normalized.normalize(LocalDateTime.now())
 
@@ -168,7 +166,7 @@ public class J8DurationCoalescingConverter(
     ): Unit = if (shouldThrow || override) {
         when (e) {
             is InvalidTimeUnitException -> {
-                val message = context.translate(
+                val message: String = context.translate(
                     "converters.duration.error.invalidUnit",
                     replacements = arrayOf(e.unit)
                 ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
@@ -188,13 +186,13 @@ public class J8DurationCoalescingConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val arg = (option as? OptionValue.StringOptionValue)?.value ?: return false
+        val arg: String = (option as? StringOptionValue)?.value ?: return false
 
         try {
-            val result = J8DurationParser.parse(arg, context.getLocale())
+            val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
 
             if (positiveOnly) {
-                val normalized = result.clone()
+                val normalized: ChronoContainer = result.clone()
 
                 normalized.normalize(LocalDateTime.now())
 
@@ -205,7 +203,7 @@ public class J8DurationCoalescingConverter(
 
             parsed = result
         } catch (e: InvalidTimeUnitException) {
-            val message = context.translate(
+            val message: String = context.translate(
                 "converters.duration.error.invalidUnit",
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""

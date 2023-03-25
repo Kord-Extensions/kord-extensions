@@ -9,13 +9,15 @@ package com.kotlindiscord.kord.extensions.events
 import com.kotlindiscord.kord.extensions.InvalidEventHandlerException
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.checks.*
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
@@ -23,7 +25,6 @@ import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.Event
 import kotlinx.coroutines.Job
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -44,7 +45,7 @@ private val defaultLocale: Locale
  */
 public open class EventHandler<T : Event>(
     public val extension: Extension
-) : KoinComponent {
+) : KordExKoinComponent {
     /** Sentry adapter, for easy access to Sentry functions. **/
     public val sentry: SentryAdapter by inject()
 
@@ -62,7 +63,7 @@ public open class EventHandler<T : Event>(
     /**
      * @suppress
      */
-    public val checkList: MutableList<Check<T>> = mutableListOf()
+    public val checkList: MutableList<CheckWithCache<T>> = mutableListOf()
 
     /**
      * @suppress This is the job returned by `Kord#on`, which we cancel to stop listening.
@@ -109,14 +110,14 @@ public open class EventHandler<T : Event>(
      *
      * @param checks Checks to apply to this event handler.
      */
-    public fun check(vararg checks: Check<T>): Unit = checks.forEach { checkList.add(it) }
+    public fun check(vararg checks: CheckWithCache<T>): Unit = checks.forEach { checkList.add(it) }
 
     /**
      * Overloaded check function to allow for DSL syntax.
      *
      * @param check Check to apply to this event handler.
      */
-    public fun check(check: Check<T>): Boolean = checkList.add(check)
+    public fun check(check: CheckWithCache<T>): Boolean = checkList.add(check)
 
     // endregion
 
@@ -131,8 +132,10 @@ public open class EventHandler<T : Event>(
      * @param event The given event object.
      */
     public suspend fun call(event: T) {
+        val cache: MutableStringKeyedMap<Any> = mutableMapOf()
+
         for (check in checkList) {
-            val context = CheckContext(event, defaultLocale)
+            val context = CheckContextWithCache(event, defaultLocale, cache)
 
             check(context)
 
@@ -141,7 +144,7 @@ public open class EventHandler<T : Event>(
             }
         }
 
-        val context = EventContext(this, event)
+        val context = EventContext(this, event, cache)
         val eventName = event::class.simpleName
 
         if (sentry.enabled) {
@@ -209,10 +212,10 @@ public open class EventHandler<T : Event>(
         try {
             this.body(context)
         } catch (t: Throwable) {
-            if (sentry.enabled && extension.bot.extensions.containsKey("sentry")) {
+            if (sentry.enabled) {
                 logger.trace { "Submitting error to sentry." }
 
-                val sentryId = context.sentry.captureException(t, "Event processing failed.") {
+                val sentryId = context.sentry.captureException(t) {
                     tag("event", eventName ?: "Unknown")
                     tag("extension", extension.name)
                 }
@@ -239,7 +242,7 @@ public open class EventHandler<T : Event>(
         val user = userFor(this)
 
         for (resolver in extension.bot.settings.i18nBuilder.localeResolvers) {
-            val result = resolver(guild, channel, user)
+            val result = resolver(guild, channel, user, interactionFor(this))
 
             if (result != null) {
                 locale = result
@@ -267,10 +270,34 @@ public open class EventHandler<T : Event>(
     }
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
+     * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+     * locale resolvers.
+     */
+    public suspend fun Event.translate(
+        key: String,
+        bundleName: String?,
+        replacements: Map<String, Any?>
+    ): String {
+        val locale = getLocale()
+
+        return translationsProvider.translate(key, locale, bundleName, replacements)
+    }
+
+    /**
+     * Given a translation key and possible replacements, return the translation for the given locale in the
      * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
      */
     public suspend fun Event.translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
+        key,
+        extension.bundle,
+        replacements
+    )
+
+    /**
+     * Given a translation key and possible replacements, return the translation for the given locale in the
+     * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
+     */
+    public suspend fun Event.translate(key: String, replacements: Map<String, Any?>): String = translate(
         key,
         extension.bundle,
         replacements

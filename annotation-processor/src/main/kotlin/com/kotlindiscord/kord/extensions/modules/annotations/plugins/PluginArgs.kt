@@ -46,6 +46,7 @@ public data class PluginArgs(public val annotation: KSAnnotation) {
         (argMap["kordExVersion"] as String).orNull()
 
     /** @suppress **/
+    @Suppress("UNCHECKED_CAST")
     public val dependencies: ArrayList<String> =
         argMap["dependencies"] as ArrayList<String>? ?: arrayListOf()
 }

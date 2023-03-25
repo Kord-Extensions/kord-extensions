@@ -22,7 +22,7 @@ import java.util.*
  */
 public class ConverterProcessor(
     private val generator: CodeGenerator,
-    private val logger: KSPLogger
+    private val logger: KSPLogger,
 ) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(
@@ -53,9 +53,11 @@ public class ConverterProcessor(
 
             val arguments = ConverterAnnotationArgs(annotation)
 
-            logger.info("Arguments: \n" + annotation.arguments.joinToString("\n") {
-                "    ${it.name?.getShortName()} : ${it.value}"
-            })
+            logger.info(
+                "Arguments: \n" + annotation.arguments.joinToString("\n") {
+                    "    ${it.name?.getShortName()} : ${it.value}"
+                }
+            )
 
             val superTypes = classDeclaration.superTypes.map { it.resolve() }.toList()
 
@@ -211,7 +213,7 @@ public class ConverterProcessor(
         arguments: ConverterAnnotationArgs,
         converterName: String,
         argumentTypeString: String,
-        types: List<ConverterType>
+        types: List<ConverterType>,
     ): String {
         val classBuilder = builderClass {
             comment = classComment(converterName, classDeclaration.simpleName.asString())
@@ -224,6 +226,7 @@ public class ConverterProcessor(
 
             arguments.builderConstructorArguments.forEach(this::builderArg)
             arguments.builderFields.forEach(this::builderField)
+            arguments.builderBuildFunctionStatements.forEach(this::builderBuildFunctionStatement)
             arguments.builderExtraStatements.forEach(this::builderExtraStatement)
             arguments.builderInitStatements.forEach(this::builderInitStatement)
 

@@ -4,13 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.converters.builders.CoalescingConverterBuilder
-import dev.kord.common.annotation.KordPreview
 
 /**
  * Abstract base class for a coalescing converter.

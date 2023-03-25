@@ -6,13 +6,19 @@
 
 package com.kotlindiscord.kord.extensions.plugins
 
-import org.pf4j.DefaultPluginManager
-import org.pf4j.PluginDescriptorFinder
-import org.pf4j.PropertiesPluginDescriptorFinder
+import org.pf4j.*
 import java.nio.file.Path
 
+@Suppress("SpreadOperator")
 /** Module manager, in charge of loading and managing module "plugins". **/
-public open class PluginManager(roots: List<Path>) : DefaultPluginManager(roots) {
+public open class PluginManager(roots: List<Path>) : JarPluginManager(*roots.toTypedArray()) {
     override fun createPluginDescriptorFinder(): PluginDescriptorFinder =
         PropertiesPluginDescriptorFinder()
+
+    override fun createPluginLoader(): PluginLoader? {
+        return CompoundPluginLoader()
+            .add(DevelopmentLoader(this)) { this.isDevelopment }
+            .add(JarLoader(this)) { this.isNotDevelopment }
+            .add(DefaultLoader(this)) { this.isNotDevelopment }
+    }
 }

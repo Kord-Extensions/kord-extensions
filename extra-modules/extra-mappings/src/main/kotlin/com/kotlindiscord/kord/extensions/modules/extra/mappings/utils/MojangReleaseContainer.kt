@@ -11,15 +11,7 @@ import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
 
-/**
- * A wrapper to access [MojangNamespace]'s latest
- * release and snapshot fields. The code is specially
- * designed to only use kotlin reflection in hopes that
- * it could still work under Kotlin/Native.
- *
- * If updating Linkie-core, please check to make sure
- * that the fields are still present.
- */
+/** Mojang release container, allowing for retrieval of various Mojang mappings release versions. **/
 object MojangReleaseContainer {
     /**
      * A wrapper for [MojangNamespace.latestRelease], a private field.
@@ -35,11 +27,14 @@ object MojangReleaseContainer {
         get() = latestSnapshotProperty.getter.call()
         set(value) = latestSnapshotProperty.setter.call(value)
 
+    @Suppress("UNCHECKED_CAST")
     private val latestSnapshotProperty by lazy {
         MojangNamespace::class.declaredMemberProperties
             .first { it.name == "latestSnapshot" }
             .also { it.isAccessible = true } as KMutableProperty1<MojangNamespace, String>
     }
+
+    @Suppress("UNCHECKED_CAST")
     private val latestReleaseProperty by lazy {
         MojangNamespace::class.declaredMemberProperties
             .first { it.name == "latestRelease" }

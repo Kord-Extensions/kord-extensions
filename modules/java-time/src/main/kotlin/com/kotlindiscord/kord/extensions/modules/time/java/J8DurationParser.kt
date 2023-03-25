@@ -7,17 +7,17 @@
 package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.utils.splitOn
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
 /**
  * Object in charge of parsing strings into [ChronoContainer]s, using translated locale-aware units.
  */
-public object J8DurationParser : KoinComponent {
+public object J8DurationParser : KordExKoinComponent {
     private val translations: TranslationsProvider by inject()
 
     /** Check whether the given character is a valid duration unit character. **/

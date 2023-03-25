@@ -9,7 +9,7 @@
 
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import dev.kord.common.entity.Permission
 import dev.kord.core.event.Event
 import kotlin.time.Duration.Companion.minutes
@@ -33,11 +33,11 @@ class ExtPhishingBuilder {
      * The provided regex comes from https://urlregex.com/ - but you can provide a different regex if you need
      * detection to be more sensitive than just clickable links.
      */
-    var urlRegex = "(?:https?|ftp|file|discord)://([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])"
+    var urlRegex = "(?:https?|ftp|file|discord)://([-a-zA-Z\\d+&@#/%?=~_|!:,.;]*[-a-zA-Z\\d+&@#/%=~_|])"
         .toRegex(RegexOption.IGNORE_CASE)
 
     /** @suppress List of checks to apply to event handlers. **/
-    val checks: MutableList<Check<Event>> = mutableListOf()
+    val checks: MutableList<CheckWithCache<Event>> = mutableListOf()
 
     /**
      * If you want to require a permission for the phishing check commands, supply it here. Alternatively, supply
@@ -64,12 +64,12 @@ class ExtPhishingBuilder {
     var logChannelName = "logs"
 
     /** Register a check that must pass in order for an event handler to run, and for messages to be processed. **/
-    fun check(check: Check<Event>) {
+    fun check(check: CheckWithCache<Event>) {
         checks.add(check)
     }
 
     /** Register checks that must pass in order for an event handler to run, and for messages to be processed. **/
-    fun check(vararg checkList: Check<Event>) {
+    fun check(vararg checkList: CheckWithCache<Event>) {
         checks.addAll(checkList)
     }
 

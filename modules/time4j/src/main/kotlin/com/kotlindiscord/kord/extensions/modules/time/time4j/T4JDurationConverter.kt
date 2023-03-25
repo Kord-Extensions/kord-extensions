@@ -4,26 +4,20 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import net.time4j.Duration
@@ -40,7 +34,6 @@ import net.time4j.IsoUnit
  * @see t4jDurationList
  * @see parseT4JDuration
  */
-@OptIn(KordPreview::class)
 @Converter(
     names = ["t4JDuration"],
     types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
@@ -55,6 +48,7 @@ public class T4JDurationConverter(
     override var validator: Validator<Duration<IsoUnit>> = null
 ) : SingleConverter<Duration<IsoUnit>>() {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -62,7 +56,7 @@ public class T4JDurationConverter(
         try {
             this.parsed = T4JDurationParser.parse(arg, context.getLocale())
         } catch (e: InvalidTimeUnitException) {
-            val message = context.translate(
+            val message: String = context.translate(
                 "converters.duration.error.invalidUnit",
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
@@ -79,12 +73,12 @@ public class T4JDurationConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val arg = (option as? OptionValue.StringOptionValue)?.value ?: return false
+        val arg: String = (option as? StringOptionValue)?.value ?: return false
 
         try {
             this.parsed = T4JDurationParser.parse(arg, context.getLocale())
         } catch (e: InvalidTimeUnitException) {
-            val message = context.translate(
+            val message: String = context.translate(
                 "converters.duration.error.invalidUnit",
                 replacements = arrayOf(e.unit)
             ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""

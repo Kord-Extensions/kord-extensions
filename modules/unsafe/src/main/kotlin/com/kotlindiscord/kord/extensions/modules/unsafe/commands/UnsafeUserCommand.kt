@@ -5,11 +5,13 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.commands
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.contexts.UnsafeUserCommandContext
@@ -17,25 +19,28 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialUserCommand
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
 /** Like a standard user command, but with less safety features. **/
 @UnsafeAPI
-public class UnsafeUserCommand(
-    extension: Extension
-) : UserCommand<UnsafeUserCommandContext>(extension) {
+public class UnsafeUserCommand<M : ModalForm>(
+    extension: Extension,
+    public override val modal: (() -> M)? = null,
+) : UserCommand<UnsafeUserCommandContext<M>, M>(extension) {
     /** Initial response type. Change this to decide what happens when this user command action is executed. **/
     public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
 
-    override suspend fun call(event: UserCommandInteractionCreateEvent) {
+    override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
         emitEventAsync(UnsafeUserCommandInvocationEvent(this, event))
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 emitEventAsync(
                     UnsafeUserCommandFailedChecksEvent(
                         this,
@@ -57,8 +62,8 @@ public class UnsafeUserCommand(
         }
 
         val response = when (val r = initialResponse) {
-            is InitialUserCommandResponse.EphemeralAck -> event.interaction.acknowledgeEphemeral()
-            is InitialUserCommandResponse.PublicAck -> event.interaction.acknowledgePublic()
+            is InitialUserCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
+            is InitialUserCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
 
             is InitialUserCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
                 r.builder!!(event)
@@ -71,7 +76,7 @@ public class UnsafeUserCommand(
             is InitialUserCommandResponse.None -> null
         }
 
-        val context = UnsafeUserCommandContext(event, this, response)
+        val context = UnsafeUserCommandContext(event, this, response, cache)
 
         context.populate()
 
@@ -87,7 +92,7 @@ public class UnsafeUserCommand(
         }
 
         try {
-            body(context)
+            body(context, null)
         } catch (t: Throwable) {
             if (t is DiscordRelayedException) {
                 respondText(context, t.reason, FailureReason.RelayedFailure(t))
@@ -103,16 +108,16 @@ public class UnsafeUserCommand(
     }
 
     override suspend fun respondText(
-        context: UnsafeUserCommandContext,
+        context: UnsafeUserCommandContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {
         when (context.interactionResponse) {
-            is PublicInteractionResponseBehavior -> context.respondPublic {
+            is PublicMessageInteractionResponseBehavior -> context.respondPublic {
                 settings.failureResponseBuilder(this, message, failureType)
             }
 
-            is EphemeralInteractionResponseBehavior -> context.respondEphemeral {
+            is EphemeralMessageInteractionResponseBehavior -> context.respondEphemeral {
                 settings.failureResponseBuilder(this, message, failureType)
             }
         }

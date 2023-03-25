@@ -5,14 +5,16 @@
  */
 
 @file:Suppress("StringLiteralDuplication")
+@file:OptIn(DelicateCoroutinesApi::class)
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
+import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.PublicSlashCommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
@@ -24,21 +26,26 @@ import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.plugins.extra.MappingsPlugin
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
-import me.shedaniel.linkie.utils.MappingsQuery
-import me.shedaniel.linkie.utils.QueryContext
-import me.shedaniel.linkie.utils.QueryResult
-import me.shedaniel.linkie.utils.ResultHolder
+import me.shedaniel.linkie.utils.*
 import mu.KotlinLogging
+import kotlin.collections.set
+import kotlin.error
+import kotlin.io.path.Path
+import kotlin.io.path.createDirectory
+import kotlin.io.path.exists
 
-private typealias MappingSlashCommand = PublicSlashCommandContext<out MappingArguments>
-private typealias ConversionSlashCommand = PublicSlashCommandContext<MappingConversionArguments>
+private typealias MappingSlashCommand = PublicSlashCommandContext<out MappingArguments, out ModalForm>
+private typealias ConversionSlashCommand = PublicSlashCommandContext<out MappingConversionArguments, out ModalForm>
+private typealias InfoCommand = (suspend PublicSlashCommandContext<out Arguments, out ModalForm>.(ModalForm?) -> Unit)?
 
 private const val VERSION_CHUNK_SIZE = 10
 private const val PAGE_FOOTER = "Powered by Linkie"
@@ -51,9 +58,15 @@ private const val PAGE_FOOTER_ICON =
  */
 class MappingsExtension : Extension() {
     private val logger = KotlinLogging.logger { }
-    override val name: String = "mappings"
+    override val name: String = MappingsPlugin.PLUGIN_ID
 
     override suspend fun setup() {
+        // Fix issue where Linkie doesn't create its cache directory
+        val cacheDirectory = Path("./.linkie-cache")
+        if (!cacheDirectory.exists()) {
+            cacheDirectory.createDirectory()
+        }
+
         val namespaces = mutableListOf<Namespace>()
         val enabledNamespaces = builder.config.getEnabledNamespaces()
 
@@ -88,15 +101,15 @@ class MappingsExtension : Extension() {
         val yarnEnabled = enabledNamespaces.contains("yarn")
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
 
-        val categoryCheck: Check<ChatInputCommandInteractionCreateEvent> = {
+        val categoryCheck: SlashCommandCheck = {
             allowedCategory(builder.config.getAllowedCategories(), builder.config.getBannedCategories())
         }
 
-        val channelCheck: Check<ChatInputCommandInteractionCreateEvent> = {
+        val channelCheck: SlashCommandCheck = {
             allowedGuild(builder.config.getAllowedChannels(), builder.config.getBannedChannels())
         }
 
-        val guildCheck: Check<ChatInputCommandInteractionCreateEvent> = {
+        val guildCheck: SlashCommandCheck = {
             allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
         }
 
@@ -107,7 +120,7 @@ class MappingsExtension : Extension() {
             friendlyName: String,
             namespace: Namespace,
             arguments: () -> T,
-            customInfoCommand: (suspend PublicSlashCommandContext<out Arguments>.() -> Unit)? = null
+            customInfoCommand: InfoCommand = null,
         ) = publicSlashCommand {
             name = parentName
             description = "Look up $friendlyName mappings."
@@ -180,59 +193,63 @@ class MappingsExtension : Extension() {
                 check { customChecks(name, namespace) }
                 check(categoryCheck, channelCheck, guildCheck)
 
-                action(customInfoCommand ?: {
-                    val defaultVersion = namespace.defaultVersion
-                    val allVersions = namespace.getAllSortedVersions()
+                action(
+                    customInfoCommand ?: {
+                        val defaultVersion = namespace.defaultVersion
+                        val allVersions = namespace.getAllSortedVersions()
 
-                    val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
-                        it.joinToString("\n") { version ->
-                            if (version == defaultVersion) {
-                                "**» $version** (Default)"
-                            } else {
-                                "**»** $version"
-                            }
-                        }
-                    }.toMutableList()
-
-                    val versionSize = allVersions.size
-                    pages.add(
-                        0,
-                        "$friendlyName mappings are available for queries across **$versionSize** versions.\n\n" +
-
-                            "**Default version:** $defaultVersion\n" +
-                            "**Commands:** `/$parentName class`, `/$parentName field`, `/$parentName method`\n\n" +
-
-                            "For a full list of supported $friendlyName versions, please view the rest of the pages."
-                    )
-
-                    val pagesObj = Pages()
-                    val pageTitle = "Mappings info: $friendlyName"
-
-                    pages.forEach {
-                        pagesObj.addPage(
-                            Page {
-                                description = it
-                                title = pageTitle
-
-                                footer {
-                                    text = PAGE_FOOTER
-                                    icon = PAGE_FOOTER_ICON
+                        val pages = allVersions.chunked(VERSION_CHUNK_SIZE).map {
+                            it.joinToString("\n") { version ->
+                                if (version == defaultVersion) {
+                                    "**» $version** (Default)"
+                                } else {
+                                    "**»** $version"
                                 }
                             }
+                        }.toMutableList()
+
+                        val versionSize = allVersions.size
+                        pages.add(
+                            0,
+                            "$friendlyName mappings are available for queries across **$versionSize** " +
+                                "versions.\n\n" +
+
+                                "**Default version:** $defaultVersion\n" +
+                                "**Commands:** `/$parentName class`, `/$parentName field`, `/$parentName method`\n\n" +
+
+                                "For a full list of supported $friendlyName versions, please view the rest of the " +
+                                "pages."
                         )
+
+                        val pagesObj = Pages()
+                        val pageTitle = "Mappings info: $friendlyName"
+
+                        pages.forEach {
+                            pagesObj.addPage(
+                                Page {
+                                    description = it
+                                    title = pageTitle
+
+                                    footer {
+                                        text = PAGE_FOOTER
+                                        icon = PAGE_FOOTER_ICON
+                                    }
+                                }
+                            )
+                        }
+
+                        val paginator = PublicResponsePaginator(
+                            pages = pagesObj,
+                            keepEmbed = true,
+                            owner = event.interaction.user,
+                            timeoutSeconds = getTimeout(),
+                            locale = getLocale(),
+                            interaction = interactionResponse
+                        )
+
+                        paginator.send()
                     }
-
-                    val paginator = PublicResponsePaginator(
-                        pages = pagesObj,
-                        keepEmbed = true,
-                        owner = event.interaction.user,
-                        timeoutSeconds = getTimeout(),
-                        locale = getLocale(),
-                        interaction = interactionResponse
-                    )
-
-                    paginator.send()
-                })
+                )
             }
         }
 
@@ -517,7 +534,9 @@ class MappingsExtension : Extension() {
             name = "convert"
             description = "Convert mappings across namespaces"
 
-            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+            publicSubCommand<MappingConversionArguments>(
+                { MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+            ) {
                 name = "class"
                 description = "Convert a class mapping"
 
@@ -527,14 +546,16 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryClasses,
                         classMatchesToPages,
                         enabledNamespaces,
-                        obfNameProvider = { it.obfName.preferredName },
-                        classNameProvider = { it.obfName.preferredName!! },
+                        obfNameProvider = { obfName.preferredName },
+                        classNameProvider = { obfName.preferredName!! },
                         descProvider = { null }
                     )
                 }
             }
 
-            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+            publicSubCommand<MappingConversionArguments>(
+                { MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+            ) {
                 name = "field"
                 description = "Convert a field mapping"
 
@@ -544,13 +565,13 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryFields,
                         fieldMatchesToPages,
                         enabledNamespaces,
-                        obfNameProvider = { it.second.obfName.preferredName },
-                        classNameProvider = { it.first.obfName.preferredName!! },
+                        obfNameProvider = { member.obfName.preferredName },
+                        classNameProvider = { owner.obfName.preferredName!! },
                         descProvider = {
                             when {
-                                second.obfName.isMerged() -> second.getObfMergedDesc(it)
-                                second.obfName.client != null -> second.getObfClientDesc(it)
-                                second.obfName.server != null -> second.getObfServerDesc(it)
+                                member.obfName.isMerged() -> member.getObfMergedDesc(it)
+                                member.obfName.client != null -> member.getObfClientDesc(it)
+                                member.obfName.server != null -> member.getObfServerDesc(it)
                                 else -> null
                             }
                         }
@@ -558,7 +579,9 @@ class MappingsExtension : Extension() {
                 }
             }
 
-            publicSubCommand({ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }) {
+            publicSubCommand<MappingConversionArguments>(
+                { MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+            ) {
                 name = "method"
                 description = "Convert a method mapping"
 
@@ -568,13 +591,13 @@ class MappingsExtension : Extension() {
                         MappingsQuery::queryMethods,
                         methodMatchesToPages,
                         enabledNamespaces,
-                        obfNameProvider = { it.second.obfName.preferredName },
-                        classNameProvider = { it.first.obfName.preferredName!! },
+                        obfNameProvider = { member.obfName.preferredName },
+                        classNameProvider = { owner.obfName.preferredName!! },
                         descProvider = {
                             when {
-                                second.obfName.isMerged() -> second.getObfMergedDesc(it)
-                                second.obfName.client != null -> second.getObfClientDesc(it)
-                                second.obfName.server != null -> second.getObfServerDesc(it)
+                                member.obfName.isMerged() -> member.getObfMergedDesc(it)
+                                member.obfName.client != null -> member.getObfClientDesc(it)
+                                member.obfName.server != null -> member.getObfServerDesc(it)
                                 else -> null
                             }
                         }
@@ -591,13 +614,13 @@ class MappingsExtension : Extension() {
                     pages.add(
                         "Mapping conversions are available for any Minecraft version with multiple mapping sets.\n\n" +
 
-                        "The version of the output is determined in this order:\n" +
-                        "\u2022 The version specified by the command, \n" +
-                        "\u2022 The default version of the output mapping set, \n" +
-                        "\u2022 The default version of the input mapping set, or\n" +
-                        "\u2022 The latest version supported by both mapping sets.\n\n" +
+                            "The version of the output is determined in this order:\n" +
+                            "\u2022 The version specified by the command, \n" +
+                            "\u2022 The default version of the output mapping set, \n" +
+                            "\u2022 The default version of the input mapping set, or\n" +
+                            "\u2022 The latest version supported by both mapping sets.\n\n" +
 
-                        "For a list of available mappings, see the next page."
+                            "For a list of available mappings, see the next page."
                     )
                     pages.add(
                         enabledNamespaces.joinToString(
@@ -647,7 +670,7 @@ class MappingsExtension : Extension() {
         type: String,
         channel: String? = null,
         queryProvider: suspend (QueryContext) -> QueryResult<A, B>,
-        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>
+        pageGenerationMethod: (Namespace, MappingsContainer, QueryResult<A, B>, Boolean) -> List<Pair<String, String>>,
     ) where A : MappingsMetadata, B : List<*> {
         sentry.breadcrumb(BreadcrumbType.Query) {
             message = "Beginning mapping lookup"
@@ -691,10 +714,12 @@ class MappingsExtension : Extension() {
 
                 @Suppress("TooGenericExceptionCaught")
                 val result = try {
-                    queryProvider(QueryContext(
-                        provider = provider,
-                        searchKey = query
-                    ))
+                    queryProvider(
+                        QueryContext(
+                            provider = provider,
+                            searchKey = query
+                        )
+                    )
                 } catch (e: NullPointerException) {
                     respond {
                         content = e.localizedMessage
@@ -794,8 +819,8 @@ class MappingsExtension : Extension() {
         queryProvider: suspend (QueryContext) -> QueryResult<A, T>,
         pageGenerationMethod: (MappingsContainer, Map<B, B>) -> List<String>,
         enabledNamespaces: List<String>,
-        obfNameProvider: (B) -> String?,
-        classNameProvider: (B) -> String,
+        obfNameProvider: B.() -> String?,
+        classNameProvider: B.() -> String,
         descProvider: B.(MappingsContainer) -> String?,
     ) where A : MappingsMetadata, T : List<ResultHolder<B>> {
         sentry.breadcrumb(BreadcrumbType.Query) {
@@ -880,10 +905,12 @@ class MappingsExtension : Extension() {
 
                 @Suppress("TooGenericExceptionCaught")
                 val inputResult = try {
-                    queryProvider(QueryContext(
-                        provider = inputProvider,
-                        searchKey = query
-                    ))
+                    queryProvider(
+                        QueryContext(
+                            provider = inputProvider,
+                            searchKey = query
+                        )
+                    )
                 } catch (e: NullPointerException) {
                     returnError(e.localizedMessage)
                     return@withContext
@@ -934,15 +961,15 @@ class MappingsExtension : Extension() {
                             desc == inputDesc
                         }!!
 
-                        clazz to result
+                        MemberEntry<MappingsMember>(clazz, result)
                     } catch (e: NullPointerException) {
                         null // skip
                     }
                 }
                     .filterValues { it != null }
-                    .mapValues {
+                    .mapValues { (_, value) ->
                         @Suppress("UNCHECKED_CAST")
-                        it.value!! as B
+                        value as B
                     }
 
                 sentry.breadcrumb(BreadcrumbType.Info) {
@@ -999,7 +1026,7 @@ class MappingsExtension : Extension() {
         }
     }
 
-    private suspend fun PublicSlashCommandContext<*>.returnError(errorMessage: String) {
+    private suspend fun PublicSlashCommandContext<*, *>.returnError(errorMessage: String) {
         respond {
             content = errorMessage
         }
@@ -1012,20 +1039,22 @@ class MappingsExtension : Extension() {
             } else {
                 MojangReleaseContainer.latestRelease
             }
+
             is YarnNamespace -> if (channel == "snapshot") {
                 YarnReleaseContainer.latestSnapshot
             } else {
                 YarnReleaseContainer.latestRelease
             }
+
             else -> null
         }
     }
 
     private suspend fun getTimeout() = builder.config.getTimeout()
 
-    private suspend fun CheckContext<ChatInputCommandInteractionCreateEvent>.customChecks(
+    private suspend fun CheckContextWithCache<ChatInputCommandInteractionCreateEvent>.customChecks(
         command: String,
-        namespace: Namespace
+        namespace: Namespace,
     ) {
         builder.commandChecks.forEach {
             it(command)()

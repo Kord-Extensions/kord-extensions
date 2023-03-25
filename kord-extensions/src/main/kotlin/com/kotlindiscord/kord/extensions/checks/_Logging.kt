@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.kotlindiscord.kord.extensions.checks
 
 import dev.kord.common.entity.Snowflake
@@ -34,7 +36,7 @@ public inline fun KLogger.nullGuild(event: Event): Unit =
 public inline fun KLogger.nullMember(event: Event): Unit =
     debug { "Member for event $event is null. This type of event may not be supported." }
 
-/** Convenience wrapper for a "member for event is null" log message. **/
+/** Convenience wrapper for a "message for event is null" log message. **/
 public inline fun KLogger.nullMessage(event: Event): Unit =
     debug { "Message for event $event is null. This type of event may not be supported." }
 

@@ -7,15 +7,17 @@
 package com.kotlindiscord.kord.extensions.components
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
-import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.types.Lockable
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.permissionsForMember
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.Permission
+import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import kotlinx.coroutines.sync.Mutex
@@ -28,23 +30,31 @@ import org.koin.core.component.inject
  *
  * @param E Event type that triggers interaction actions for this component type
  * @param C Context type used for this component's execution context
+ * @param M Modal form type representing the ModalForm subtype used, if any.
  *
  * @param timeoutTask Timeout task that will be restarted when [call] is run, if any. This is intended to be used to
  * in the timeout mechanism for the [ComponentContainer] that contains this component.
+ *
+ * @param modal Callback returning a ModalForm object, probably the constructor of a subtype.
  */
-public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C : ComponentContext<*>>(
-    public open val timeoutTask: Task?
+public abstract class ComponentWithAction<
+    E : ComponentInteractionCreateEvent,
+    C : ComponentContext<*>,
+    M : ModalForm,
+    >(
+    public open val timeoutTask: Task?,
+    public open val modal: (() -> M)? = null,
 ) : ComponentWithID(), Lockable {
     private val logger: KLogger = KotlinLogging.logger {}
 
-    /** Quick access to the callback registry. **/
-    protected val callbackRegistry: ComponentCallbackRegistry by inject()
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val componentRegistry: ComponentRegistry by inject()
 
     /** Whether to use a deferred ack, which will prevent Discord's "Thinking..." message. **/
     public open var deferredAck: Boolean = true
 
     /** @suppress **/
-    public open val checkList: MutableList<Check<E>> = mutableListOf()
+    public open val checkList: MutableList<CheckWithCache<E>> = mutableListOf()
 
     /** Bot permissions required to be able to run execute this component's action. **/
     public open val requiredPerms: MutableSet<Permission> = mutableSetOf()
@@ -54,13 +64,10 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
     override var mutex: Mutex? = null
 
     /** Component body, to be called when the component is interacted with. **/
-    public lateinit var body: suspend C.() -> Unit
-
-    /** Use a registered callback instead of a provided [action]. Not evaluated until execution happens. **/
-    public abstract fun useCallback(id: String)
+    public lateinit var body: suspend C.(M?) -> Unit
 
     /** Call this to supply a component [body], to be called when the component is interacted with. **/
-    public fun action(action: suspend C.() -> Unit) {
+    public fun action(action: suspend C.(M?) -> Unit) {
         body = action
     }
 
@@ -75,7 +82,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
      *
      * @param checks Checks to apply to this command.
      */
-    public open fun check(vararg checks: Check<E>) {
+    public open fun check(vararg checks: CheckWithCache<E>) {
         checks.forEach { checkList.add(it) }
     }
 
@@ -84,7 +91,7 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
      *
      * @param check Check to apply to this command.
      */
-    public open fun check(check: Check<E>) {
+    public open fun check(check: CheckWithCache<E>) {
         checkList.add(check)
     }
 
@@ -102,16 +109,16 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
 
     /** If your bot requires permissions to be able to execute this component's body, add them using this function. **/
     public fun requireBotPermissions(vararg perms: Permission) {
-        perms.forEach { requiredPerms.add(it) }
+        perms.forEach(requiredPerms::add)
     }
 
     /** Runs standard checks that can be handled in a generic way, without worrying about subclass-specific checks. **/
     @Throws(DiscordRelayedException::class)
-    public open suspend fun runStandardChecks(event: E): Boolean {
+    public open suspend fun runStandardChecks(event: E, cache: MutableStringKeyedMap<Any>): Boolean {
         val locale = event.getLocale()
 
         checkList.forEach { check ->
-            val context = CheckContext(event, locale)
+            val context = CheckContextWithCache(event, locale, cache)
 
             check(context)
 
@@ -127,8 +134,8 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
 
     /** Override this in order to implement any subclass-specific checks. **/
     @Throws(DiscordRelayedException::class)
-    public open suspend fun runChecks(event: E): Boolean =
-        runStandardChecks(event)
+    public open suspend fun runChecks(event: E, cache: MutableStringKeyedMap<Any>): Boolean =
+        runStandardChecks(event, cache)
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(DiscordRelayedException::class)
@@ -138,7 +145,9 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
         }
 
         if (context.guild != null) {
-            val perms = (context.channel.asChannel() as GuildChannel)
+            val perms = context
+                .getChannel()
+                .asChannelOf<GuildChannel>()
                 .permissionsForMember(kord.selfId)
 
             val missingPerms = requiredPerms.filter { !perms.contains(it) }
@@ -150,7 +159,9 @@ public abstract class ComponentWithAction<E : ComponentInteractionCreateEvent, C
                         null,
 
                         replacements = arrayOf(
-                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
+                            missingPerms
+                                .map { it.translate(context.getLocale()) }
+                                .joinToString()
                         )
                     )
                 )

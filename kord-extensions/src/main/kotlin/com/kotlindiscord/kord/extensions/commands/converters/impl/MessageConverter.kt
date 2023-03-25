@@ -4,28 +4,18 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.entity.Message
@@ -34,6 +24,7 @@ import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -65,7 +56,6 @@ private val logger = KotlinLogging.logger {}
         "public var useReply: Boolean = true",
     ]
 )
-@OptIn(KordPreview::class)
 public class MessageConverter(
     private var requireGuild: Boolean = false,
     private var requiredGuild: (suspend () -> Snowflake)? = null,
@@ -73,6 +63,7 @@ public class MessageConverter(
     override var validator: Validator<Message> = null
 ) : SingleConverter<Message>() {
     override val signatureTypeString: String = "converters.message.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         if (useReply && context is ChatCommandContext<*>) {
@@ -140,7 +131,7 @@ public class MessageConverter(
                 )
             }
 
-            val channel: GuildChannel? = kord.getGuild(gid)?.getChannel(cid)
+            val channel: GuildChannel? = kord.getGuildOrNull(gid)?.getChannel(cid)
 
             if (channel == null) {
                 logger.trace { "Unable to find channel ($cid) for guild ($gid)." }
@@ -172,7 +163,7 @@ public class MessageConverter(
                 errorNoMessage(mid.toString(), context)
             }
         } else { // Try a message ID
-            val channel: ChannelBehavior? = context.getChannel()
+            val channel: ChannelBehavior = context.getChannel()
 
             if (channel !is GuildMessageChannel && channel !is DmChannel) {
                 logger.trace { "Current channel is not a guild message channel or DM channel." }
@@ -211,7 +202,7 @@ public class MessageConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+        val optionValue = (option as? StringOptionValue)?.value ?: return false
 
         parsed = findMessage(optionValue, context)
 

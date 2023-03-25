@@ -5,6 +5,11 @@ plugins {
     `ksp-module`
 }
 
+metadata {
+    name = "KordEx: Time4J"
+    description = "KordEx module that provides converters that support Time4J"
+}
+
 dependencies {
     api(libs.time4j.base)
     api(libs.time4j.tzdata)
@@ -17,16 +22,12 @@ dependencies {
     ksp(project(":annotation-processor"))
 
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     testImplementation(libs.groovy)  // For logback config
     testImplementation(libs.jansi)
     testImplementation(libs.junit)
     testImplementation(libs.logback)
-}
-
-kordex {
-    jvmTarget.set("9")
-    javaVersion.set(JavaVersion.VERSION_1_9)
 }
 
 dokkaModule {

@@ -7,19 +7,19 @@
 package com.kotlindiscord.kord.extensions.modules.time.time4j
 
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
 import com.kotlindiscord.kord.extensions.utils.splitOn
 import net.time4j.Duration
 import net.time4j.IsoUnit
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
 /**
  * Object in charge of parsing strings into [Duration]s, using translated locale-aware units.
  */
-public object T4JDurationParser : KoinComponent {
+public object T4JDurationParser : KordExKoinComponent {
     private val translations: TranslationsProvider by inject()
 
     /** Check whether the given character is a valid duration unit character. **/

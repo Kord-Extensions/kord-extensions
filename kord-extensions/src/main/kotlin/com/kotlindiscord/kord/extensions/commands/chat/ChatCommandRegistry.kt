@@ -11,19 +11,17 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.event.message.MessageCreateEvent
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
  * A class for the registration and dispatching of message-based commands.
  */
-@OptIn(KordPreview::class)
-public open class ChatCommandRegistry : KoinComponent {
+public open class ChatCommandRegistry : KordExKoinComponent {
     /** Current instance of the bot. **/
     public val bot: ExtensibleBot by inject()
 
@@ -48,7 +46,7 @@ public open class ChatCommandRegistry : KoinComponent {
      * Directly register a [ChatCommand] to this command registry.
      *
      * Generally speaking, you shouldn't call this directly - instead, create an [Extension] and
-     * call the [Extension.messageContentCommand] function in your [Extension.setup] function.
+     * call the [ChatGroupCommand.chatCommand] function in your [Extension.setup] function.
      *
      * This function will throw a [CommandRegistrationException] if the command has already been registered, if
      * a command with the same name exists, or if a command with one of the same aliases exists.

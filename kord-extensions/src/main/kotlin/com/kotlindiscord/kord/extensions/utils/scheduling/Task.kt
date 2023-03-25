@@ -8,10 +8,12 @@
 
 package com.kotlindiscord.kord.extensions.utils.scheduling
 
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import com.kotlindiscord.kord.extensions.sentry.tag
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.Kord
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
@@ -19,7 +21,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -35,6 +36,7 @@ import kotlin.time.TimeSource
  * @param coroutineScope Coroutine scope to launch in - Kord's by default.
  * @param parent Parent [Scheduler] object, if any.
  * @param name Optional task name, "Unnamed" by default.
+ * @param repeat Whether the task should repeat after completion. `false` by default.
  */
 public open class Task(
     public open val duration: Duration,
@@ -44,11 +46,22 @@ public open class Task(
     public open val parent: Scheduler? = null,
 
     public val name: String = "Unnamed",
-) : KoinComponent {
+    public val repeat: Boolean = false
+) : KordExKoinComponent {
+    /** Cache map for storing data for this task, if needed. **/
+    public val cache: MutableStringKeyedMap<Any> = mutableMapOf()
+
     protected val logger: KLogger = KotlinLogging.logger("Task: $name")
     protected var job: Job? = null
     protected lateinit var started: TimeMark
     protected val sentry: SentryAdapter by inject()
+
+    /**
+     * Number of times this task has been executed.
+     *
+     * If a ULong is too small for this... wyd?
+     */
+    public var executions: ULong = 0UL
 
     /** Whether this task is currently running - that is, waiting until it's time to execute the [callback]. **/
     public val running: Boolean get() = job != null
@@ -62,15 +75,18 @@ public open class Task(
 
         started = TimeSource.Monotonic.markNow()
 
-        sentryContext.breadcrumb(BreadcrumbType.Info) {
-            val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+        if (executions == 0UL) {
+            sentryContext.breadcrumb(BreadcrumbType.Info) {
+                val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 
-            message = "Starting task: waiting for configured delay to pass"
+                message = "Starting task: waiting for configured delay to pass"
 
-            data["delay"] = duration.toIsoString()
-            data["name"] = name
-            data["now"] = now.toString()
-            data["pollingSeconds"] = pollingSeconds
+                data["delay"] = duration.toIsoString()
+                data["name"] = name
+                data["now"] = now.toString()
+                data["pollingSeconds"] = pollingSeconds
+                data["repeating"] = repeat
+            }
         }
 
         job = coroutineScope.launch {
@@ -79,12 +95,14 @@ public open class Task(
                 delay(pollingSeconds * 1000)
             }
 
-            sentryContext.breadcrumb(BreadcrumbType.Info) {
-                val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+            if (executions == 0UL) {
+                sentryContext.breadcrumb(BreadcrumbType.Info) {
+                    val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 
-                message = "Delay has passed, executing task"
+                    message = "Delay has passed, executing task (for the first time)"
 
-                data["now"] = now.toString()
+                    data["now"] = now.toString()
+                }
             }
 
             @Suppress("TooGenericExceptionCaught")
@@ -97,16 +115,23 @@ public open class Task(
                     logger.error(t) { "Error running scheduled callback." }
 
                     if (sentry.enabled) {
-                        sentryContext.captureException(t, "Error running scheduled callback") {
+                        sentryContext.captureException(t) {
+                            setExtra("executions", executions.toString())
                             tag("task", name)
                         }
                     }
                 }
+            } finally {
+                executions += 1UL
             }
 
-            removeFromParent()
+            if (!repeat) {
+                removeFromParent()
 
-            job = null
+                job = null
+            } else {
+                start()
+            }
         }
     }
 
@@ -120,8 +145,6 @@ public open class Task(
         } catch (t: Throwable) {
             logger.error(t) { "Error running scheduled callback." }
         }
-
-        removeFromParent()
     }
 
     /** Stop waiting and don't execute. **/
@@ -157,7 +180,9 @@ public open class Task(
     }
 
     /** Join the running [job], if any. **/
-    public suspend fun join(): Unit? = job?.join()
+    public suspend fun join() {
+        job?.join()
+    }
 
     protected fun removeFromParent(): Boolean? = parent?.removeTask(this@Task)
 }

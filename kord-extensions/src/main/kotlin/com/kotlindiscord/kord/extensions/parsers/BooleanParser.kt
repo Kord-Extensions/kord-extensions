@@ -8,7 +8,7 @@ package com.kotlindiscord.kord.extensions.parsers
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import org.koin.core.component.KoinComponent
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
@@ -23,7 +23,7 @@ import java.util.*
  *
  * Translations may be split using commas, in which case any of the given values will be suitable.
  */
-public object BooleanParser : KoinComponent {
+public object BooleanParser : KordExKoinComponent {
     private val translations: TranslationsProvider by inject()
     private val settings: ExtensibleBotBuilder by inject()
 

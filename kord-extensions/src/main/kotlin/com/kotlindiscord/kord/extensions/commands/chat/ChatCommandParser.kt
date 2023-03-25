@@ -4,11 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 @file:Suppress(
     "TooGenericExceptionCaught",
-    "StringLiteralDuplication"
+    "StringLiteralDuplication",
+    "DuplicatedCode"
 )
 
 package com.kotlindiscord.kord.extensions.commands.chat
@@ -21,10 +20,10 @@ import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
-import dev.kord.common.annotation.KordPreview
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 import kotlin.collections.set
@@ -44,7 +43,7 @@ private val logger = KotlinLogging.logger {}
  *
  * We recommend reading over the source code if you'd like to get to grips with how this all works.
  */
-public open class ChatCommandParser : KoinComponent {
+public open class ChatCommandParser : KordExKoinComponent {
     /** Current instance of the bot. **/
     public open val bot: ExtensibleBot by inject()
 
@@ -82,14 +81,20 @@ public open class ChatCommandParser : KoinComponent {
         logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
         val args = argumentsObj.args.toMutableList()
-        val argsMap = args.map { Pair(it.displayName.lowercase(), it) }.toMap()
+        val argsMap = args.associateBy { it.displayName.lowercase() }
         val keywordArgs: MutableMap<String, MutableList<String>> = mutableMapOf()
 
-        parser.parseNamed().forEach {
-            val name = it.name.lowercase()
+        if (context.chatCommand.allowKeywordArguments) {
+            parser.parseNamed().forEach {
+                val name = it.name.lowercase()
 
-            keywordArgs[name] = keywordArgs[name] ?: mutableListOf()
-            keywordArgs[name]!!.add(it.data)
+                keywordArgs[name] = keywordArgs[name] ?: mutableListOf()
+                keywordArgs[name]!!.add(it.data)
+            }
+
+            logger.trace { "Parsed out ${keywordArgs.size} keyword args." }
+        } else {
+            logger.trace { "Skipping keyword args, command is configured to disallow them." }
         }
 
         logger.trace { "Args map: $argsMap" }
@@ -101,7 +106,12 @@ public open class ChatCommandParser : KoinComponent {
             currentArg = args.removeFirstOrNull()
             currentArg ?: break  // If it's null, we're out of arguments
 
-            val kwValue = keywordArgs[currentArg.displayName.lowercase()]
+            val kwValue = keywordArgs[
+                currentArg
+                    .getDefaultTranslatedDisplayName(context.translationsProvider, context.command)
+                    .lowercase(context.getLocale())
+            ]
+
             val hasKwargs = kwValue != null
 
             logger.trace { "Current argument: ${currentArg.displayName}" }
@@ -142,7 +152,11 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context),
                                 )
                             ),
@@ -169,7 +183,10 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
 
                                     converter.handleError(e, context)
                                 )
@@ -216,9 +233,9 @@ public open class ChatCommandParser : KoinComponent {
                         logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -226,7 +243,10 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
 
                                     converter.handleError(e, context)
                                 )
@@ -269,9 +289,9 @@ public open class ChatCommandParser : KoinComponent {
                         logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                         converter.parseSuccess = true
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -279,7 +299,10 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
 
                                     converter.handleError(e, context)
                                 )
@@ -313,7 +336,11 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context)
                                 )
                             ),
@@ -333,7 +360,11 @@ public open class ChatCommandParser : KoinComponent {
                                     "argumentParser.error.notAllValid",
 
                                     replacements = arrayOf(
-                                        currentArg.displayName,
+                                        context.translate(
+                                            currentArg.displayName,
+                                            bundleName = converter.bundle
+                                        ),
+
                                         kwValue.size,
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
@@ -354,10 +385,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required) {
                         throw ArgumentParsingException(
@@ -365,7 +396,10 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
 
                                     converter.handleError(e, context)
                                 )
@@ -399,7 +433,11 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context),
                                 )
                             ),
@@ -419,7 +457,11 @@ public open class ChatCommandParser : KoinComponent {
                                     "argumentParser.error.notAllValid",
 
                                     replacements = arrayOf(
-                                        currentArg.displayName,
+                                        context.translate(
+                                            currentArg.displayName,
+                                            bundleName = converter.bundle
+                                        ),
+
                                         kwValue.size,
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
@@ -435,6 +477,8 @@ public open class ChatCommandParser : KoinComponent {
                         }
 
                         converter.parseSuccess = true
+
+                        converter.validate(context)
                     } else {
                         if (parsedCount > 0) {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
@@ -451,7 +495,10 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
 
                                     converter.handleError(e, context)
                                 )
@@ -485,7 +532,11 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context),
                                 )
                             ),
@@ -505,7 +556,11 @@ public open class ChatCommandParser : KoinComponent {
                                     "argumentParser.error.notAllValid",
 
                                     replacements = arrayOf(
-                                        currentArg.displayName,
+                                        context.translate(
+                                            currentArg.displayName,
+                                            bundleName = converter.bundle
+                                        ),
+
                                         kwValue.size,
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
@@ -526,10 +581,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -537,7 +592,10 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
 
                                     converter.handleError(e, context)
                                 )
@@ -571,7 +629,11 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.invalidValue",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context),
                                 )
                             ),
@@ -591,7 +653,11 @@ public open class ChatCommandParser : KoinComponent {
                                     "argumentParser.error.notAllValid",
 
                                     replacements = arrayOf(
-                                        currentArg.displayName,
+                                        context.translate(
+                                            currentArg.displayName,
+                                            bundleName = context.command.resolvedBundle ?: converter.bundle
+                                        ),
+
                                         kwValue.size,
                                         parsedCount,
                                         context.translate(converter.signatureTypeString, bundleName = converter.bundle)
@@ -612,10 +678,10 @@ public open class ChatCommandParser : KoinComponent {
                             logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
 
                             converter.parseSuccess = true
-
-                            converter.validate(context)
                         }
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError || hasKwargs) {
                         throw ArgumentParsingException(
@@ -623,7 +689,10 @@ public open class ChatCommandParser : KoinComponent {
                                 "argumentParser.error.errorInArgument",
 
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
 
                                     converter.handleError(e, context)
                                 )
@@ -649,7 +718,10 @@ public open class ChatCommandParser : KoinComponent {
                         "argumentParser.error.errorInArgument",
 
                         replacements = arrayOf(
-                            currentArg.displayName,
+                            context.translate(
+                                currentArg.displayName,
+                                bundleName = context.command.resolvedBundle ?: converter.bundle
+                            ),
 
                             context.translate(
                                 "argumentParser.error.unknownConverterType",

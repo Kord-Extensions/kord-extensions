@@ -8,11 +8,11 @@
 
 package com.kotlindiscord.kord.extensions.sentry
 
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import io.sentry.*
 import io.sentry.protocol.SentryId
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 /**
@@ -21,7 +21,7 @@ import org.koin.core.component.inject
  *
  * Generally speaking, you'll probably want to use this instead of touching Sentry (or the adapter) directly.
  */
-public class SentryContext : KoinComponent {
+public class SentryContext : KordExKoinComponent {
     /** Quick access to the Sentry adapter, if required. **/
     public val adapter: SentryAdapter by inject()
 
@@ -98,7 +98,7 @@ public class SentryContext : KoinComponent {
     /** Capture a [SentryEvent], submitting it to Sentry with the breadcrumbs in this context. **/
     public inline fun captureEvent(
         event: SentryEvent,
-        hint: Any?,
+        hint: Hint,
         crossinline body: (Scope).() -> Unit
     ): SentryId {
         lateinit var id: SentryId
@@ -139,7 +139,7 @@ public class SentryContext : KoinComponent {
     /** Capture a [Throwable] exception, submitting it to Sentry with the breadcrumbs in this context. **/
     public inline fun captureException(
         t: Throwable,
-        hint: Any?,
+        hint: Hint,
         crossinline body: (Scope).() -> Unit
     ): SentryId {
         lateinit var id: SentryId

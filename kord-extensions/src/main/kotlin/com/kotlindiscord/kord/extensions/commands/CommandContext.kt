@@ -9,16 +9,18 @@ package com.kotlindiscord.kord.extensions.commands
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
+import com.kotlindiscord.kord.extensions.checks.interactionFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.types.TranslatableContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.event.Event
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -30,27 +32,31 @@ import java.util.*
  * @param command Respective command for this context object.
  * @param eventObj Event that triggered this command.
  * @param commandName Command name given by the user to invoke the command - lower-cased.
+ * @param cache Data cache map shared with the defined checks.
  */
 @ExtensionDSL
 public abstract class CommandContext(
     public open val command: Command,
     public open val eventObj: Event,
     public open val commandName: String,
-) : KoinComponent {
+    public open val cache: MutableStringKeyedMap<Any>,
+) : KordExKoinComponent, TranslatableContext {
     /** Translations provider, for retrieving translations. **/
-    public val translationsProvider: TranslationsProvider by inject()
+    public val translationsProvider: TranslationsProvider by lazy { getTranslationProvider() }
 
     /** Current Sentry context, containing breadcrumbs and other goodies. **/
     public val sentry: SentryContext = SentryContext()
 
-    /** Cached locale variable, stored and retrieved by [getLocale]. **/
-    public open var resolvedLocale: Locale? = null
+    public override var resolvedLocale: Locale? = null
+
+    override val bundle: String?
+        get() = command.resolvedBundle
 
     /** Called before processing, used to populate any extra variables from event data. **/
     public abstract suspend fun populate()
 
-    /** Extract channel information from event data, if that context is available. **/
-    public abstract suspend fun getChannel(): ChannelBehavior?
+    /** Extract channel information from event data. **/
+    public abstract suspend fun getChannel(): ChannelBehavior
 
     /** Extract guild information from event data, if that context is available. **/
     public abstract suspend fun getGuild(): GuildBehavior?
@@ -61,8 +67,7 @@ public abstract class CommandContext(
     /** Extract user information from event data, if that context is available. **/
     public abstract suspend fun getUser(): UserBehavior?
 
-    /** Resolve the locale for this command context. **/
-    public suspend fun getLocale(): Locale {
+    public override suspend fun getLocale(): Locale {
         var locale: Locale? = resolvedLocale
 
         if (locale != null) {
@@ -74,7 +79,7 @@ public abstract class CommandContext(
         val user = userFor(eventObj)
 
         for (resolver in command.extension.bot.settings.i18nBuilder.localeResolvers) {
-            val result = resolver(guild, channel, user)
+            val result = resolver(guild, channel, user, interactionFor(eventObj))
 
             if (result != null) {
                 locale = result
@@ -87,27 +92,23 @@ public abstract class CommandContext(
         return resolvedLocale!!
     }
 
-    /**
-     * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
-     * locale resolvers.
-     */
-    public suspend fun translate(
+    public override suspend fun translate(
         key: String,
         bundleName: String?,
-        replacements: Array<Any?> = arrayOf()
+        replacements: Array<Any?>,
     ): String {
         val locale = getLocale()
 
         return translationsProvider.translate(key, locale, bundleName, replacements)
     }
 
-    /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
-     * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
-     */
-    public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
-        key,
-        command.extension.bundle,
-        replacements
-    )
+    public override suspend fun translate(
+        key: String,
+        bundleName: String?,
+        replacements: Map<String, Any?>,
+    ): String {
+        val locale = getLocale()
+
+        return translationsProvider.translate(key, locale, bundleName, replacements)
+    }
 }

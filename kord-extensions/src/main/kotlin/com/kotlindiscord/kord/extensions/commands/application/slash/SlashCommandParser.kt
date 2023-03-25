@@ -4,7 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
 @file:Suppress(
     "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
 )
@@ -16,8 +15,9 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.*
-import dev.kord.common.annotation.KordPreview
+import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -37,7 +37,7 @@ public open class SlashCommandParser {
      */
     public suspend fun <T : Arguments> parse(
         builder: () -> T,
-        context: SlashCommandContext<*, *>
+        context: SlashCommandContext<*, *, *>,
     ): T {
         val argumentsObj = builder.invoke()
         argumentsObj.validate()
@@ -48,8 +48,8 @@ public open class SlashCommandParser {
         val command = context.event.interaction.command
 
         val values = command.options.mapValues {
-            if (it.value is OptionValue.StringOptionValue) {
-                OptionValue.StringOptionValue((it.value.value as String).trim(), it.value.focused)
+            if (it.value is StringOptionValue) {
+                StringOptionValue((it.value.value as String).trim(), it.value.focused)
             } else {
                 it.value
             }
@@ -65,7 +65,8 @@ public open class SlashCommandParser {
 
             logger.trace { "Current argument: ${currentArg.displayName}" }
 
-            currentValue = values[currentArg.displayName.lowercase()]
+            currentValue =
+                values[currentArg.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)]
 
             logger.trace { "Current value: $currentValue" }
 
@@ -85,8 +86,13 @@ public open class SlashCommandParser {
                         throw ArgumentParsingException(
                             context.translate(
                                 "argumentParser.error.invalidValue",
+
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context),
                                     currentValue
                                 )
@@ -139,7 +145,11 @@ public open class SlashCommandParser {
                             context.translate(
                                 "argumentParser.error.invalidValue",
                                 replacements = arrayOf(
-                                    currentArg.displayName,
+                                    context.translate(
+                                        currentArg.displayName,
+                                        bundleName = context.command.resolvedBundle ?: converter.bundle
+                                    ),
+
                                     converter.getErrorString(context),
                                     currentValue
                                 )
@@ -192,9 +202,9 @@ public open class SlashCommandParser {
 
                         converter.parseSuccess = true
                         currentValue = null
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
                         throw ArgumentParsingException(
@@ -226,9 +236,9 @@ public open class SlashCommandParser {
 
                         converter.parseSuccess = true
                         currentValue = null
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
                         throw ArgumentParsingException(
@@ -260,9 +270,9 @@ public open class SlashCommandParser {
 
                         converter.parseSuccess = true
                         currentValue = null
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
                         throw ArgumentParsingException(
@@ -294,9 +304,9 @@ public open class SlashCommandParser {
 
                         converter.parseSuccess = true
                         currentValue = null
-
-                        converter.validate(context)
                     }
+
+                    converter.validate(context)
                 } catch (e: DiscordRelayedException) {
                     if (converter.required || converter.outputError) {
                         throw ArgumentParsingException(

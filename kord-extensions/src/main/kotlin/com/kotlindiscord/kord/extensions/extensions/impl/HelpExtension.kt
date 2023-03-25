@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.extensions.impl
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
@@ -23,7 +21,6 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.deleteIgnoringNotFound
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.translate
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.event.message.MessageCreateEvent
 import mu.KotlinLogging
 import org.koin.core.component.inject
@@ -177,24 +174,24 @@ public class HelpExtension : HelpProvider, Extension() {
     override suspend fun getCommandHelpPaginator(
         event: MessageCreateEvent,
         prefix: String,
-        args: List<String>
+        args: List<String>,
     ): BasePaginator = getCommandHelpPaginator(event, prefix, getCommand(event, args))
 
     override suspend fun getCommandHelpPaginator(
         context: ChatCommandContext<*>,
-        args: List<String>
+        args: List<String>,
     ): BasePaginator =
         getCommandHelpPaginator(context, getCommand(context.event, args))
 
     override suspend fun getCommandHelpPaginator(
         event: MessageCreateEvent,
         prefix: String,
-        command: ChatCommand<out Arguments>?
+        command: ChatCommand<out Arguments>?,
     ): BasePaginator {
         val pages = Pages(COMMANDS_GROUP)
         val locale = event.getLocale()
 
-        if (command == null || !command.runChecks(event, false)) {
+        if (command == null || !command.runChecks(event, false, mutableMapOf())) {
             pages.addPage(
                 COMMANDS_GROUP,
 
@@ -215,12 +212,10 @@ public class HelpExtension : HelpProvider, Extension() {
         } else {
             val (openingLine, desc, arguments) = formatCommandHelp(prefix, event, command, longDescription = true)
 
-            val commandName = if (command is ChatSubCommand) {
-                command.getFullTranslatedName(locale)
-            } else if (command is ChatGroupCommand) {
-                command.getFullTranslatedName(locale)
-            } else {
-                command.getTranslatedName(locale)
+            val commandName = when (command) {
+                is ChatSubCommand -> command.getFullTranslatedName(locale)
+                is ChatGroupCommand -> command.getFullTranslatedName(locale)
+                else -> command.getTranslatedName(locale)
             }
 
             pages.addPage(
@@ -261,24 +256,22 @@ public class HelpExtension : HelpProvider, Extension() {
 
     override suspend fun gatherCommands(event: MessageCreateEvent): List<ChatCommand<out Arguments>> =
         messageCommandsRegistry.commands
-            .filter { !it.hidden && it.enabled && it.runChecks(event, false) }
+            .filter { !it.hidden && it.enabled && it.runChecks(event, false, mutableMapOf()) }
             .sortedBy { it.name }
 
     override suspend fun formatCommandHelp(
         prefix: String,
         event: MessageCreateEvent,
         command: ChatCommand<out Arguments>,
-        longDescription: Boolean
+        longDescription: Boolean,
     ): Triple<String, String, String> {
         val locale = event.getLocale()
         val defaultLocale = botSettings.i18nBuilder.defaultLocale
 
-        val commandName = if (command is ChatSubCommand) {
-            command.getFullTranslatedName(locale)
-        } else if (command is ChatGroupCommand) {
-            command.getFullTranslatedName(locale)
-        } else {
-            command.getTranslatedName(locale)
+        val commandName = when (command) {
+            is ChatSubCommand -> command.getFullTranslatedName(locale)
+            is ChatGroupCommand -> command.getFullTranslatedName(locale)
+            else -> command.getTranslatedName(locale)
         }
 
         val openingLine = "**$prefix$commandName ${command.getSignature(locale)}**\n"
@@ -289,6 +282,7 @@ public class HelpExtension : HelpProvider, Extension() {
             } else {
                 append(
                     translationsProvider.translate(command.description, command.extension.bundle, locale)
+                        .trim()
                         .takeWhile { it != '\n' }
                 )
             }
@@ -325,7 +319,7 @@ public class HelpExtension : HelpProvider, Extension() {
             }
 
             if (command is ChatGroupCommand) {
-                val subCommands = command.commands.filter { it.runChecks(event, false) }
+                val subCommands = command.commands.filter { it.runChecks(event, false, mutableMapOf()) }
 
                 if (subCommands.isNotEmpty()) {
                     append("\n")
@@ -357,7 +351,7 @@ public class HelpExtension : HelpProvider, Extension() {
                 )
 
                 append(" ")
-                append(command.requiredPerms.map { it.translate(locale) }.joinToString(", "))
+                append(command.requiredPerms.joinToString(", ") { it.translate(locale) })
             }
         }.trim('\n')
 
@@ -376,26 +370,30 @@ public class HelpExtension : HelpProvider, Extension() {
                 try {
                     val argsObj = command.arguments!!.invoke()
 
-                    argsObj.args.joinToString("\n") {
-                        append("**»** `${it.displayName}")
+                    append(
+                        argsObj.args.joinToString("\n") {
+                            buildString {
+                                append("**»** `${it.displayName}")
 
-                        if (it.converter.showTypeInSignature) {
-                            append(" (")
+                                if (it.converter.showTypeInSignature) {
+                                    append(" (")
 
-                            append(
-                                translationsProvider.translate(
-                                    it.converter.signatureTypeString,
-                                    it.converter.bundle,
-                                    locale
-                                )
-                            )
+                                    append(
+                                        translationsProvider.translate(
+                                            it.converter.signatureTypeString,
+                                            it.converter.bundle,
+                                            locale
+                                        )
+                                    )
 
-                            append(")")
+                                    append(")")
+                                }
+
+                                append("`: ")
+                                append(translationsProvider.translate(it.description, command.extension.bundle, locale))
+                            }
                         }
-
-                        append("`: ")
-                        append(translationsProvider.translate(it.description, command.extension.bundle, locale))
-                    }
+                    )
                 } catch (t: Throwable) {
                     logger.error(t) { "Failed to retrieve argument list for command: $name" }
 
@@ -414,12 +412,12 @@ public class HelpExtension : HelpProvider, Extension() {
 
     override suspend fun getCommand(
         event: MessageCreateEvent,
-        args: List<String>
+        args: List<String>,
     ): ChatCommand<out Arguments>? {
         val firstArg = args.first()
         var command = messageCommandsRegistry.getCommand(firstArg, event)
 
-        if (command?.runChecks(event, false) == false) {
+        if (command?.runChecks(event, false, mutableMapOf()) == false) {
             return null
         }
 
@@ -427,7 +425,7 @@ public class HelpExtension : HelpProvider, Extension() {
             if (command is ChatGroupCommand<out Arguments>) {
                 val gc = command as ChatGroupCommand<out Arguments>
 
-                command = if (gc.runChecks(event, false)) {
+                command = if (gc.runChecks(event, false, mutableMapOf())) {
                     gc.getCommand(it, event)
                 } else {
                     null

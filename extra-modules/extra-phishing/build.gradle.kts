@@ -7,15 +7,21 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+metadata {
+    name = "KordEx Extra: Phishing"
+    description = "KordEx extra module that provides anti-phishing functionality for bots"
+}
+
 repositories {
     maven {
-        name = "KotDis"
-        url = uri("https://maven.kotlindiscord.com/repository/maven-public/")
+        name = "Sonatype Snapshots"
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
 
 dependencies {
     detektPlugins(libs.detekt)
+    detektPlugins(libs.detekt.libraries)
 
     implementation(libs.jsoup)
 
@@ -23,16 +29,7 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.ktor.logging)
 
-    testImplementation(libs.groovy)  // For logback config
-    testImplementation(libs.jansi)
-    testImplementation(libs.logback)
-
     implementation(project(":kord-extensions"))
 }
 
 group = "com.kotlindiscord.kord.extensions"
-
-kordex {
-    jvmTarget.set("9")
-    javaVersion.set(JavaVersion.VERSION_1_9)
-}

@@ -11,18 +11,18 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.datetime.*
-import kotlin.time.ExperimentalTime
 
 /**
  * Argument converter for Kotlin [DateTimePeriod] arguments. You can apply these to an `Instant` using `plus` and a
@@ -42,13 +42,13 @@ import kotlin.time.ExperimentalTime
         "public var positiveOnly: Boolean = true"
     ],
 )
-@OptIn(KordPreview::class, ExperimentalTime::class)
 public class DurationConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,
     override var validator: Validator<DateTimePeriod> = null
 ) : SingleConverter<DateTimePeriod>() {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -90,7 +90,7 @@ public class DurationConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+        val optionValue = (option as? StringOptionValue)?.value ?: return false
 
         try {
             val result: DateTimePeriod = DurationParser.parse(optionValue, context.getLocale())

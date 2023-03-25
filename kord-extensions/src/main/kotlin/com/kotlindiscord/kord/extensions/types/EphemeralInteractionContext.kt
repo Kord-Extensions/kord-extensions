@@ -9,13 +9,13 @@ package com.kotlindiscord.kord.extensions.types
 import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
-import dev.kord.core.behavior.interaction.EphemeralInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.edit
-import dev.kord.core.behavior.interaction.followUp
-import dev.kord.core.behavior.interaction.followUpEphemeral
-import dev.kord.core.entity.Message
-import dev.kord.core.entity.interaction.EphemeralFollowupMessage
-import dev.kord.core.entity.interaction.PublicFollowupMessage
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.createEphemeralFollowup
+import dev.kord.core.behavior.interaction.response.createPublicFollowup
+import dev.kord.core.behavior.interaction.response.edit
+import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
+import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
+import dev.kord.core.entity.interaction.response.EphemeralMessageInteractionResponse
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import java.util.*
@@ -23,7 +23,7 @@ import java.util.*
 /** Interface representing an ephemeral-only interaction action context. **/
 public interface EphemeralInteractionContext {
     /** Response created by acknowledging the interaction ephemerally. **/
-    public val interactionResponse: EphemeralInteractionResponseBehavior
+    public val interactionResponse: EphemeralMessageInteractionResponseBehavior
 }
 
 /**
@@ -33,25 +33,25 @@ public interface EphemeralInteractionContext {
  */
 public suspend inline fun EphemeralInteractionContext.respond(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): EphemeralFollowupMessage = interactionResponse.followUpEphemeral(builder)
+): EphemeralFollowupMessage = interactionResponse.createEphemeralFollowup { builder() }
 
 /** Respond to the current interaction with a public followup. **/
-public suspend inline fun PublicInteractionContext.respondPublic(
+public suspend inline fun EphemeralInteractionContext.respondPublic(
     builder: FollowupMessageCreateBuilder.() -> Unit
-): PublicFollowupMessage = interactionResponse.followUp(builder)
+): PublicFollowupMessage = interactionResponse.createPublicFollowup { builder() }
 
 /**
  * Edit the current interaction's response.
  */
 public suspend inline fun EphemeralInteractionContext.edit(
     builder: InteractionResponseModifyBuilder.() -> Unit
-): Message = interactionResponse.edit(builder)
+): EphemeralMessageInteractionResponse = interactionResponse.edit(builder)
 
 /**
  * Create a paginator that edits the original interaction. This is the only option for an ephemeral interaction, as
  * it's impossible to edit an ephemeral follow-up.
  */
-public suspend inline fun EphemeralInteractionContext.editingPaginator(
+public inline fun EphemeralInteractionContext.editingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit
@@ -64,7 +64,7 @@ public suspend inline fun EphemeralInteractionContext.editingPaginator(
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
-public suspend inline fun EphemeralInteractionContext.publicRespondingPaginator(
+public inline fun EphemeralInteractionContext.publicRespondingPaginator(
     defaultGroup: String = "",
     locale: Locale? = null,
     builder: (PaginatorBuilder).() -> Unit

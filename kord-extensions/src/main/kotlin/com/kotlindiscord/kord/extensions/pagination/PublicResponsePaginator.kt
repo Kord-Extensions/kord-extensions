@@ -4,16 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.pagination
 
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.interaction.PublicInteractionResponseBehavior
-import dev.kord.core.behavior.interaction.edit
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.message.modify.embed
 import java.util.*
@@ -32,7 +29,7 @@ public class PublicResponsePaginator(
     bundle: String? = null,
     locale: Locale? = null,
 
-    public val interaction: PublicInteractionResponseBehavior,
+    public val interaction: PublicMessageInteractionResponseBehavior,
 ) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
     /** Whether this paginator has been set up for the first time. **/
     public var isSetup: Boolean = false
@@ -76,7 +73,7 @@ public class PublicResponsePaginator(
 @Suppress("FunctionNaming")  // Factory function
 public fun PublicResponsePaginator(
     builder: PaginatorBuilder,
-    interaction: PublicInteractionResponseBehavior
+    interaction: PublicMessageInteractionResponseBehavior
 ): PublicResponsePaginator = PublicResponsePaginator(
     pages = builder.pages,
     owner = builder.owner,

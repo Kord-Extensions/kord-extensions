@@ -10,11 +10,12 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.parseBoolean
-import dev.kord.common.annotation.KordPreview
+import dev.kord.core.entity.interaction.BooleanOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.BooleanBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
@@ -29,12 +30,13 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
-@OptIn(KordPreview::class)
+
 public class BooleanConverter(
     override var validator: Validator<Boolean> = null
 ) : SingleConverter<Boolean>() {
     public override val signatureTypeString: String = "converters.boolean.signatureType"
     public override val errorTypeString: String = "converters.boolean.errorType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -49,7 +51,7 @@ public class BooleanConverter(
         BooleanBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.BooleanOptionValue)?.value ?: return false
+        val optionValue = (option as? BooleanOptionValue)?.value ?: return false
         this.parsed = optionValue
 
         return true

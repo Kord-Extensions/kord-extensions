@@ -19,7 +19,7 @@ suspend fun main() {
         koinLogLevel = Level.DEBUG
 
         i18n {
-            localeResolver { _, _, user ->
+            localeResolver { _, _, user, _ ->
                 @Suppress("UnderscoresInNumericLiterals")
                 when (user?.id?.value) {
                     560515299388948500UL -> SupportedLocales.FINNISH

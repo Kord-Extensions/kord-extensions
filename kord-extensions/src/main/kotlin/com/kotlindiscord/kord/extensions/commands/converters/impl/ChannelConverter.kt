@@ -5,11 +5,7 @@
  */
 
 @file:OptIn(
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class,
     FlowPreview::class,
-    KordPreview::class,
 )
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
@@ -17,16 +13,18 @@ package com.kotlindiscord.kord.extensions.commands.converters.impl
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.*
+import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.translate
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.GuildChannel
+import dev.kord.core.entity.interaction.ChannelOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.ChannelBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
@@ -43,6 +41,7 @@ import kotlinx.coroutines.flow.toList
  * * A channel mention
  * * A channel ID, with or without a `#` prefix
  * * A channel name, with or without a `#` prefix (the required guild will be searched for the first matching channel)
+ * * `this` to refer to the current channel
  *
  * @param requireSameGuild Whether to require that the channel passed is on the same guild as the message.
  * @param requiredGuild Lambda returning a specific guild to require the channel to be in, if needed.
@@ -67,7 +66,6 @@ import kotlinx.coroutines.flow.toList
         "public var requiredChannelTypes: MutableSet<ChannelType> = mutableSetOf()",
     ],
 )
-@OptIn(KordPreview::class)
 public class ChannelConverter(
     private val requireSameGuild: Boolean = true,
     private var requiredGuild: (suspend () -> Snowflake)? = null,
@@ -75,9 +73,20 @@ public class ChannelConverter(
     override var validator: Validator<Channel> = null
 ) : SingleConverter<Channel>() {
     override val signatureTypeString: String = "converters.channel.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
+
+        if (arg.equals("this", true)) {
+            val channel = context.getChannel().asChannelOrNull()
+
+            if (channel != null) {
+                this.parsed = channel
+
+                return true
+            }
+        }
 
         val channel: Channel = findChannel(arg, context) ?: throw DiscordRelayedException(
             context.translate(
@@ -138,7 +147,8 @@ public class ChannelConverter(
 
             throw DiscordRelayedException(
                 context.translate(
-                    "converters.channel.error.wrongType", replacements = arrayOf(
+                    "converters.channel.error.wrongType",
+                    replacements = arrayOf(
                         channel.type,
                         requiredChannelTypes.joinToString { "**${it.translate(locale)}**" }
                     )
@@ -157,7 +167,7 @@ public class ChannelConverter(
         }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.ChannelOptionValue)?.value ?: return false
+        val optionValue = (option as? ChannelOptionValue)?.resolvedObject ?: return false
         this.parsed = optionValue
 
         return true

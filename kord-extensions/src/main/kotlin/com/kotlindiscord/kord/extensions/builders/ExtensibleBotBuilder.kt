@@ -4,35 +4,33 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
+@file:OptIn(PrivilegedIntent::class)
 
 package com.kotlindiscord.kord.extensions.builders
 
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
-import com.kotlindiscord.kord.extensions.checks.types.Check
-import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
-import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
-import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.*
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
-import com.kotlindiscord.kord.extensions.components.callbacks.ComponentCallbackRegistry
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.ResourceBundleTranslations
 import com.kotlindiscord.kord.extensions.i18n.SupportedLocales
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExContext
 import com.kotlindiscord.kord.extensions.plugins.KordExPlugin
 import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.storage.DataAdapter
+import com.kotlindiscord.kord.extensions.storage.toml.TomlDataAdapter
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.cache.api.DataCache
 import dev.kord.common.Color
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.ClientResources
@@ -42,17 +40,20 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.builder.kord.KordBuilder
 import dev.kord.core.cache.KordCacheBuilder
+import dev.kord.core.entity.interaction.Interaction
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
+import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
+import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
 import dev.kord.gateway.builder.Shards
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import dev.kord.rest.builder.message.create.allowedMentions
 import io.ktor.utils.io.*
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
 import org.koin.fileProperties
@@ -62,11 +63,13 @@ import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.Path
 import kotlin.io.path.div
+import dev.kord.common.Locale as KLocale
 
 internal typealias LocaleResolver = suspend (
     guild: GuildBehavior?,
     channel: ChannelBehavior?,
-    user: UserBehavior?
+    user: UserBehavior?,
+    interaction: Interaction?
 ) -> Locale?
 
 internal typealias FailureResponseBuilder =
@@ -82,19 +85,33 @@ internal typealias FailureResponseBuilder =
 public open class ExtensibleBotBuilder {
     protected val logger: KLogger = KotlinLogging.logger {}
 
+    /** Called to create an [ExtensibleBot], can be set to the constructor of your own subtype if needed. **/
+    public var constructor: (ExtensibleBotBuilder, String) -> ExtensibleBot = ::ExtensibleBot
+
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val cacheBuilder: CacheBuilder = CacheBuilder()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
 
+    /** Data storage adapter to use for all extensions, modules and plugins. **/
+    public var dataAdapterCallback: () -> DataAdapter<*> = ::TomlDataAdapter
+
     /**
      * @suppress Builder that shouldn't be set directly by the user.
      */
-    public var failureResponseBuilder: FailureResponseBuilder = { message, _ -> content = message }
+    public var failureResponseBuilder: FailureResponseBuilder = { message, _ ->
+        allowedMentions { }
+
+        content = message
+    }
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
+
+    /** @suppress Used for late execution of extensions builder calls, so plugins can be loaded first. **/
+    protected open val deferredExtensionsBuilders: MutableList<suspend ExtensionsBuilder.() -> Unit> =
+        mutableListOf()
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public val hooksBuilder: HooksBuilder = HooksBuilder()
@@ -108,6 +125,10 @@ public open class ExtensibleBotBuilder {
     /** @suppress Builder that shouldn't be set directly by the user. **/
     public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = {
         +Intents.nonPrivileged
+
+        if (chatCommandsBuilder.enabled) {
+            +Intent.MessageContent
+        }
 
         getKoin().get<ExtensibleBot>().extensions.values.forEach { extension ->
             extension.intents.forEach {
@@ -150,6 +171,15 @@ public open class ExtensibleBotBuilder {
     @BotBuilderDSL
     public suspend fun cache(builder: suspend CacheBuilder.() -> Unit) {
         builder(cacheBuilder)
+    }
+
+    /**
+     * Call this to register a custom data adapter class. Generally you'd pass a constructor here, but you can
+     * also provide a lambda if needed.
+     */
+    @BotBuilderDSL
+    public fun dataAdapter(builder: () -> DataAdapter<*>) {
+        dataAdapterCallback = builder
     }
 
     /**
@@ -239,13 +269,14 @@ public open class ExtensibleBotBuilder {
     }
 
     /**
-     * DSL function used to configure the bot's extension options, and add extensions.
+     * DSL function used to configure the bot's extension options, and add extensions. Calls to this function **do not
+     * run immediately**, so that plugins can be loaded beforehand.
      *
      * @see ExtensionsBuilder
      */
     @BotBuilderDSL
     public open suspend fun extensions(builder: suspend ExtensionsBuilder.() -> Unit) {
-        builder(extensionsBuilder)
+        deferredExtensionsBuilders.add(builder)
     }
 
     /**
@@ -266,6 +297,10 @@ public open class ExtensibleBotBuilder {
         this.intentsBuilder = {
             if (addDefaultIntents) {
                 +Intents.nonPrivileged
+
+                if (chatCommandsBuilder.enabled) {
+                    +Intent.MessageContent
+                }
             }
 
             if (addExtensionIntents) {
@@ -322,31 +357,50 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Internal function used to initially set up Koin. **/
     public open suspend fun setupKoin() {
-        startKoin {
-            var logLevel = koinLogLevel
-
-            if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
-                // NOTE: Temporary workaround for Koin not supporting Kotlin 1.6
-                logLevel = Level.ERROR
-            }
-
-            slf4jLogger(logLevel)
-//            environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
-
-            if (File("koin.properties").exists()) {
-                fileProperties("koin.properties")
-            }
-
-            modules()
-        }
+        startKoinIfNeeded()
 
         hooksBuilder.runBeforeKoinSetup()
 
+        addBotKoinModules()
+
+        hooksBuilder.runAfterKoinSetup()
+    }
+
+    /** @suppress Creates a new KoinApplication if it has not already been started. **/
+    private fun startKoinIfNeeded() {
+        var logLevel = koinLogLevel
+
+        if (logLevel == Level.INFO || logLevel == Level.DEBUG) {
+            // NOTE: Temporary workaround for Koin not supporting Kotlin 1.6
+            logLevel = Level.ERROR
+        }
+
+        if (koinNotStarted()) {
+            KordExContext.startKoin {
+                slf4jLogger(logLevel)
+//                environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
+
+                if (File("koin.properties").exists()) {
+                    fileProperties("koin.properties")
+                }
+            }
+        } else {
+            getKoin().logger.level = logLevel
+        }
+    }
+
+    /** @suppress Internal function that checks if Koin has been started. **/
+    private fun koinNotStarted(): Boolean = KordExContext.getOrNull() == null
+
+    /**
+     * @suppress Internal function that creates and loads the bot's main Koin modules.
+     * The modules provide important bot-related singletons.
+     **/
+    private fun addBotKoinModules() {
         loadModule { single { this@ExtensibleBotBuilder } bind ExtensibleBotBuilder::class }
         loadModule { single { i18nBuilder.translationsProvider } bind TranslationsProvider::class }
         loadModule { single { chatCommandsBuilder.registryBuilder() } bind ChatCommandRegistry::class }
         loadModule { single { componentsBuilder.registryBuilder() } bind ComponentRegistry::class }
-        loadModule { single { componentsBuilder.callbackRegistryBuilder() } bind ComponentCallbackRegistry::class }
 
         loadModule {
             single {
@@ -365,8 +419,6 @@ public open class ExtensibleBotBuilder {
                 adapter
             } bind SentryAdapter::class
         }
-
-        hooksBuilder.runAfterKoinSetup()
     }
 
     /** @suppress Plugin-loading function. **/
@@ -401,15 +453,21 @@ public open class ExtensibleBotBuilder {
 
     /** @suppress Internal function used to build a bot instance. **/
     public open suspend fun build(token: String): ExtensibleBot {
+        hooksBuilder.beforeKoinSetup {  // We have to do this super-duper early for safety
+            loadModule { single { dataAdapterCallback() } bind DataAdapter::class }
+        }
+
         hooksBuilder.beforeKoinSetup {
             if (pluginBuilder.enabled) {
                 loadPlugins()
             }
+
+            deferredExtensionsBuilders.forEach { it(extensionsBuilder) }
         }
 
         setupKoin()
 
-        val bot = ExtensibleBot(this, token)
+        val bot = constructor(this, token)
 
         loadModule { single { bot } bind ExtensibleBot::class }
 
@@ -420,7 +478,16 @@ public open class ExtensibleBotBuilder {
         hooksBuilder.runSetup(bot)
         hooksBuilder.runBeforeExtensionsAdded(bot)
 
-        extensionsBuilder.extensions.forEach { bot.addExtension(it) }
+        @Suppress("TooGenericExceptionCaught")
+        extensionsBuilder.extensions.forEach {
+            try {
+                bot.addExtension(it)
+            } catch (e: Exception) {
+                logger.error(e) {
+                    "Failed to set up extension: $it"
+                }
+            }
+        }
 
         if (pluginBuilder.enabled) {
             startPlugins()
@@ -489,7 +556,7 @@ public open class ExtensibleBotBuilder {
          * Number of messages to keep in the cache. Defaults to 10,000.
          *
          * To disable automatic configuration of the message cache, set this to `null` or `0`. You can configure the
-         * cache yourself using the [kordHook] function, and interact with the resulting [DataCache] object using the
+         * cache yourself using the [kord] function, and interact with the resulting [DataCache] object using the
          * [transformCache] function.
          */
         @Suppress("MagicNumber")
@@ -529,19 +596,9 @@ public open class ExtensibleBotBuilder {
     /** Builder used to configure the bot's components settings. **/
     @BotBuilderDSL
     public class ComponentsBuilder {
-        /** @suppress Component callback registry builder. **/
-        public var callbackRegistryBuilder: () -> ComponentCallbackRegistry = ::ComponentCallbackRegistry
 
         /** @suppress Component registry builder. **/
         public var registryBuilder: () -> ComponentRegistry = ::ComponentRegistry
-
-        /**
-         * Register a builder (usually a constructor) returning a [ComponentCallbackRegistry] instance, which may
-         * be useful if you need to register a custom subclass.
-         */
-        public fun callbackRegistry(builder: () -> ComponentCallbackRegistry) {
-            callbackRegistryBuilder = builder
-        }
 
         /**
          * Register a builder (usually a constructor) returning a [ComponentRegistry] instance, which may be useful
@@ -682,7 +739,7 @@ public open class ExtensibleBotBuilder {
             public var pingInReply: Boolean = true
 
             /** List of command checks. These checks will be checked against all commands in the help extension. **/
-            public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
+            public val checkList: MutableList<ChatCommandCheck> = mutableListOf()
 
             /** For custom help embed colours. Only one may be defined. **/
             public var colourGetter: suspend MessageCreateEvent.() -> Color = { DISCORD_BLURPLE }
@@ -707,7 +764,7 @@ public open class ExtensibleBotBuilder {
              *
              * @param checks Checks to apply to all help commands.
              */
-            public fun check(vararg checks: Check<MessageCreateEvent>) {
+            public fun check(vararg checks: ChatCommandCheck) {
                 checks.forEach { checkList.add(it) }
             }
 
@@ -716,7 +773,7 @@ public open class ExtensibleBotBuilder {
              *
              * @param check Check to apply to all help commands.
              */
-            public fun check(check: Check<MessageCreateEvent>) {
+            public fun check(check: ChatCommandCheck) {
                 checkList.add(check)
             }
         }
@@ -848,7 +905,7 @@ public open class ExtensibleBotBuilder {
                     it.invoke()
                 } catch (t: Throwable) {
                     logger.error(t) {
-                        "Failed to run beforeKoinSetup hook $it"
+                        "Failed to run afterKoinSetup hook $it"
                     }
                 }
             }
@@ -939,6 +996,11 @@ public open class ExtensibleBotBuilder {
         public var defaultLocale: Locale = SupportedLocales.ENGLISH
 
         /**
+         * List of [locales][KLocale] which are used for application command names (without [defaultLocale]).
+         */
+        public var applicationCommandLocales: MutableList<KLocale> = mutableListOf()
+
+        /**
          * Callables used to resolve a Locale object for the given guild, channel and user.
          *
          * Resolves to [defaultLocale] by default.
@@ -957,6 +1019,31 @@ public open class ExtensibleBotBuilder {
         public fun localeResolver(body: LocaleResolver) {
             localeResolvers.add(body)
         }
+
+        /**
+         * Registers [locale] as an application command language.
+         *
+         * **Do not register [defaultLocale]**
+         */
+        public fun applicationCommandLocale(vararg locale: KLocale) {
+            applicationCommandLocales.addAll(locale.toList())
+        }
+
+        /**
+         * Registers a [LocaleResolver] using [Interaction.locale].
+         */
+        public fun interactionUserLocaleResolver(): Unit =
+            localeResolver { _, _, _, interaction ->
+                interaction?.locale?.asJavaLocale()
+            }
+
+        /**
+         * Registers a [LocaleResolver] using [Interaction.guildLocale].
+         */
+        public fun interactionGuildLocaleResolver(): Unit =
+            localeResolver { _, _, _, interaction ->
+                interaction?.guildLocale?.asJavaLocale()
+            }
     }
 
     /** Builder used for configuring the bot's member-related options. **/
@@ -1071,7 +1158,7 @@ public open class ExtensibleBotBuilder {
          *
          * These checks will be checked against all commands.
          */
-        public val checkList: MutableList<Check<MessageCreateEvent>> = mutableListOf()
+        public val checkList: MutableList<ChatCommandCheck> = mutableListOf()
 
         /**
          * Register a lambda that takes a [MessageCreateEvent] object and the default prefix, and returns the
@@ -1103,7 +1190,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param checks Checks to apply to all commands.
          */
-        public fun check(vararg checks: Check<MessageCreateEvent>) {
+        public fun check(vararg checks: ChatCommandCheck) {
             checks.forEach { checkList.add(it) }
         }
 
@@ -1112,7 +1199,7 @@ public open class ExtensibleBotBuilder {
          *
          * @param check Checks to apply to all commands.
          */
-        public fun check(check: Check<MessageCreateEvent>) {
+        public fun check(check: ChatCommandCheck) {
             checkList.add(check)
         }
     }
@@ -1128,6 +1215,15 @@ public open class ExtensibleBotBuilder {
 
         /** Whether to attempt to register the bot's application commands. Intended for multi-instance sharded bots. **/
         public var register: Boolean = true
+
+        /**
+         * Whether to sync application command permissions. KordEx will still enforce them if this is disabled, but
+         * Discord won't be made aware of command restrictions based on users or roles.
+         *
+         * You may want to disable this if your bots service communities that have Discord's newest slash command
+         * permissions experiment enabled.
+         */
+        public var syncPermissions: Boolean = true
 
         /** @suppress Builder that shouldn't be set directly by the user. **/
         public var applicationCommandRegistryBuilder: () -> ApplicationCommandRegistry =
@@ -1170,7 +1266,7 @@ public open class ExtensibleBotBuilder {
         }
 
         /**
-         * Register the builder used to create the [SlashCommandRegistry]. You can change this if you need to make
+         * Register the builder used to create the [ApplicationCommandRegistry]. You can change this if you need to make
          * use of a subclass.
          */
         public fun applicationCommandRegistry(builder: () -> ApplicationCommandRegistry) {

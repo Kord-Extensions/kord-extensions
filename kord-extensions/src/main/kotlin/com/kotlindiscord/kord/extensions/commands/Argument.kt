@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands
 
 import com.kotlindiscord.kord.extensions.commands.converters.Converter
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 
 /**
  * Data class representing a single argument.
@@ -18,9 +19,12 @@ import com.kotlindiscord.kord.extensions.commands.converters.Converter
 public data class Argument<T : Any?>(
     val displayName: String,
     val description: String,
-    val converter: Converter<T, *, *, *>
+    val converter: Converter<T, *, *, *>,
 ) {
     init {
         converter.argumentObj = this
     }
 }
+
+internal fun Argument<*>.getDefaultTranslatedDisplayName(provider: TranslationsProvider, command: Command): String =
+    provider.translate(displayName, provider.defaultLocale, command.resolvedBundle ?: converter.bundle)

@@ -7,10 +7,11 @@
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.websocket.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
-import mu.KotlinLogging
+import io.ktor.serialization.kotlinx.json.*
 
 internal const val ALL_PATH = "https://phish.sinking.yachts/v2/all"
 internal const val CHECK_PATH = "https://phish.sinking.yachts/v2/check/%"
@@ -19,16 +20,20 @@ internal const val SIZE_PATH = "https://phish.sinking.yachts/v2/dbsize"
 
 /** Implementation of the Sinking Yachts phishing domain API. **/
 class PhishingApi(internal val appName: String) {
-    private val logger = KotlinLogging.logger { }
 
     internal val client = HttpClient {
-        install(JsonFeature)
+        install(ContentNegotiation) {
+            json()
+        }
+
         install(WebSockets)
+
+        expectSuccess = true
     }
 
     internal suspend inline fun <reified T> get(url: String): T = client.get(url) {
         header("X-Identity", "$appName (via Kord Extensions)")
-    }
+    }.body()
 
     /** Get all known phishing domains from the API. **/
     suspend fun getAllDomains(): Set<String> =

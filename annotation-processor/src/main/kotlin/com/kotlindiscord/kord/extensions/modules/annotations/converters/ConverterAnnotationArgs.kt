@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.modules.annotations.orNull
  *
  * @property annotation Annotation definition to extract data from.
  */
+@Suppress("UNCHECKED_CAST")
 public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
     /** @suppress **/
     private val argMap: Map<String?, Any?> =
@@ -49,6 +50,10 @@ public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
     /** @suppress **/
     public val builderFields: ArrayList<String> =
         argMap["builderFields"] as ArrayList<String>? ?: arrayListOf()
+
+    /** @suppress **/
+    public val builderBuildFunctionStatements: ArrayList<String> =
+        argMap["builderBuildFunctionStatements"] as ArrayList<String>? ?: arrayListOf()
 
     /** @suppress **/
     public val builderExtraStatements: ArrayList<String> =

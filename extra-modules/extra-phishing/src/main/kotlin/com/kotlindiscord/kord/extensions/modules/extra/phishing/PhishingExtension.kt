@@ -4,12 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ExperimentalTime::class)
 @file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import com.kotlindiscord.kord.extensions.DISCORD_RED
+import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.checks.isNotBot
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -29,16 +29,18 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.rest.builder.message.create.embed
 import io.ktor.client.*
-import io.ktor.client.features.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.network.sockets.*
+import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.jsoup.Jsoup
-import org.jsoup.UnsupportedMimeTypeException
-import kotlin.time.ExperimentalTime
 
 /** The maximum number of redirects to attempt to follow for a URL. **/
 const val MAX_REDIRECTS = 5
@@ -55,6 +57,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
     private val httpClient = HttpClient {
         followRedirects = false
+        expectSuccess = true
     }
 
     override suspend fun setup() {
@@ -65,8 +68,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
         event<MessageCreateEvent> {
             check { isNotBot() }
-            check { event.message.author != null }
-            check { event.guildId != null }
+            check { anyGuild() }
 
             check {
                 settings.checks.forEach {
@@ -75,14 +77,13 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             }
 
             action {
-                handleMessage(event.message)
+                handleMessage(event.message.asMessageOrNull())
             }
         }
 
         event<MessageUpdateEvent> {
             check { isNotBot() }
-            check { event.new.author.value != null }
-            check { event.new.guildId.value != null }
+            check { anyGuild() }
 
             check {
                 settings.checks.forEach {
@@ -91,7 +92,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             }
 
             action {
-                handleMessage(event.message.asMessage())
+                handleMessage(event.message.asMessageOrNull())
             }
         }
 
@@ -139,7 +140,11 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         }
     }
 
-    internal suspend fun handleMessage(message: Message) {
+    internal suspend fun handleMessage(message: Message?) {
+        if (message == null) {
+            return
+        }
+
         val matches = parseDomains(message.content)
 
         if (matches.isNotEmpty()) {
@@ -174,7 +179,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                                 inline = true
 
                                 name = "Server"
-                                value = message.getGuild().name
+                                value = message.getGuildOrNull()?.name ?: "Unable to get guild"
                             }
                         }
                     }
@@ -183,7 +188,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
             when (settings.detectionAction) {
                 DetectionAction.Ban -> {
-                    message.getAuthorAsMember()!!.ban {
+                    message.getAuthorAsMemberOrNull()!!.ban {
                         reason = "Message contained a phishing domain"
                     }
 
@@ -193,7 +198,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                 DetectionAction.Delete -> message.delete("Message contained a phishing domain")
 
                 DetectionAction.Kick -> {
-                    message.getAuthorAsMember()!!.kick("Message contained a phishing domain")
+                    message.getAuthorAsMemberOrNull()!!.kick("Message contained a phishing domain")
                     message.delete("Message contained a phishing domain")
                 }
 
@@ -229,7 +234,10 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             matches.joinToString("\n") { "* `$it`" }
 
         channel.createMessage {
-            addFile("matches.md", matchList.byteInputStream())
+            addFile(
+                "matches.md",
+                ChannelProvider { matchList.byteInputStream().toByteReadChannel() }
+            )
 
             embed {
                 title = "Phishing domain detected"
@@ -274,14 +282,15 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         val domains: MutableSet<String> = mutableSetOf()
 
         for (match in settings.urlRegex.findAll(content)) {
-            val found = match.groups[1]!!.value.trim('/')
+            val found = match.groups[1]?.value?.trim('/') ?: continue
+
             var domain = found
 
             if ("/" in domain) {
                 domain = domain
                     .split("/", limit = 2)
-                    .first()
-                    .lowercase()
+                    .firstOrNull()
+                    ?.lowercase() ?: continue
             }
 
             domain = domain.filter { it.isLetterOrDigit() || it in "-+&@#%?=~_|!:,.;" }
@@ -296,8 +305,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                     ?.first()
                     ?.lowercase()
 
-                if (result in domainCache) {
-                    domains.add(result!!)
+                if (result in domainCache && result != null) {
+                    domains.add(result)
                 }
             }
         }
@@ -307,7 +316,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         return domains
     }
 
-    @Suppress("MagicNumber")  // HTTP status codes
+    @Suppress("MagicNumber", "TooGenericExceptionCaught")  // HTTP status codes
     internal suspend fun followRedirects(url: String, count: Int = 0): String? {
         if (count >= MAX_REDIRECTS) {
             logger.warn { "Maximum redirect count reached for URL: $url" }
@@ -327,6 +336,10 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             }
 
             return url
+        } catch (e: Exception) {
+            logger.warn(e) { url }
+
+            return url
         }
 
         if (response.headers.contains("Location")) {
@@ -340,8 +353,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         } else {
             val soup = try {
                 Jsoup.connect(url).get()
-            } catch (e: UnsupportedMimeTypeException) {
-                logger.debug { "$url -> Unsupported MIME type; not parsing" }
+            } catch (e: Exception) {
+                logger.debug(e) { e.message }
 
                 return url
             }

@@ -5,15 +5,20 @@
  */
 
 @file:Suppress("TooGenericExceptionCaught")
+@file:OptIn(KordUnsafe::class)
 
 package com.kotlindiscord.kord.extensions.components.buttons
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
-import com.kotlindiscord.kord.extensions.components.callbacks.PublicButtonCallback
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
+import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.ButtonStyle
+import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
@@ -24,9 +29,10 @@ public typealias InitialPublicButtonResponseBuilder =
     (suspend InteractionResponseCreateBuilder.(ButtonInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only button component. **/
-public open class PublicInteractionButton(
-    timeoutTask: Task?
-) : InteractionButtonWithAction<PublicInteractionButtonContext>(timeoutTask) {
+public open class PublicInteractionButton<M : ModalForm>(
+    timeoutTask: Task?,
+    public override val modal: (() -> M)? = null,
+) : InteractionButtonWithAction<PublicInteractionButtonContext<M>, M>(timeoutTask) {
     /** Button style - anything but Link is valid. **/
     public open var style: ButtonStyle = ButtonStyle.Primary
 
@@ -36,22 +42,6 @@ public open class PublicInteractionButton(
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialPublicButtonResponseBuilder) {
         initialResponseBuilder = body
-    }
-
-    override fun useCallback(id: String) {
-        action {
-            val callback: PublicButtonCallback = callbackRegistry.getOfTypeOrNull(id)
-                ?: error("Callback \"$id\" is either missing or is the wrong type.")
-
-            callback.call(this)
-        }
-
-        check {
-            val callback: PublicButtonCallback = callbackRegistry.getOfTypeOrNull(id)
-                ?: error("Callback \"$id\" is either missing or is the wrong type.")
-
-            passed = callback.runChecks(event)
-        }
     }
 
     override fun apply(builder: ActionRowBuilder) {
@@ -64,10 +54,12 @@ public open class PublicInteractionButton(
     }
 
     override suspend fun call(event: ButtonInteractionCreateEvent): Unit = withLock {
+        val cache: MutableStringKeyedMap<Any> = mutableMapOf()
+
         super.call(event)
 
         try {
-            if (!runChecks(event)) {
+            if (!runChecks(event, cache)) {
                 return@withLock
             }
         } catch (e: DiscordRelayedException) {
@@ -78,17 +70,40 @@ public open class PublicInteractionButton(
             return@withLock
         }
 
+        val modalObj = modal?.invoke()
+
         val response = if (initialResponseBuilder != null) {
             event.interaction.respondPublic { initialResponseBuilder!!(event) }
+        } else if (modalObj != null) {
+            componentRegistry.register(modalObj)
+
+            val locale = event.getLocale()
+
+            event.interaction.modal(
+                modalObj.translateTitle(locale, bundle),
+                modalObj.id
+            ) {
+                modalObj.applyToBuilder(this, event.getLocale(), bundle)
+            }
+
+            modalObj.awaitCompletion {
+                componentRegistry.unregisterModal(modalObj)
+
+                if (!deferredAck) {
+                    it?.deferPublicResponseUnsafe()
+                } else {
+                    it?.deferPublicMessageUpdate()
+                }
+            } ?: return@withLock
         } else {
             if (!deferredAck) {
-                event.interaction.acknowledgePublic()
+                event.interaction.deferPublicResponseUnsafe()
             } else {
-                event.interaction.acknowledgePublicDeferredMessageUpdate()
+                event.interaction.deferPublicMessageUpdate()
             }
         }
 
-        val context = PublicInteractionButtonContext(this, event, response)
+        val context = PublicInteractionButtonContext(this, event, response, cache)
 
         context.populate()
 
@@ -103,7 +118,7 @@ public open class PublicInteractionButton(
         }
 
         try {
-            body(context)
+            body(context, modalObj)
         } catch (e: DiscordRelayedException) {
             respondText(context, e.reason, FailureReason.RelayedFailure(e))
         } catch (t: Throwable) {
@@ -114,13 +129,17 @@ public open class PublicInteractionButton(
     override fun validate() {
         super.validate()
 
+        if (modal != null && initialResponseBuilder != null) {
+            error("You may not provide a modal builder and an initial response - pick one, not both.")
+        }
+
         if (style == ButtonStyle.Link) {
             error("The Link button style is reserved for link buttons.")
         }
     }
 
     override suspend fun respondText(
-        context: PublicInteractionButtonContext,
+        context: PublicInteractionButtonContext<M>,
         message: String,
         failureType: FailureReason<*>
     ) {

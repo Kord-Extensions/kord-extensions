@@ -4,31 +4,22 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
-    ConverterToOptional::class
-)
-
 package com.kotlindiscord.kord.extensions.commands.converters.impl
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToDefaulting
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToMulti
-import com.kotlindiscord.kord.extensions.commands.converters.ConverterToOptional
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Role
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.RoleOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.RoleBuilder
 import kotlinx.coroutines.flow.firstOrNull
@@ -51,12 +42,12 @@ import kotlinx.coroutines.flow.firstOrNull
     imports = ["dev.kord.common.entity.Snowflake"],
     builderFields = ["public var requiredGuild: (suspend () -> Snowflake)? = null"]
 )
-@OptIn(KordPreview::class)
 public class RoleConverter(
     private var requiredGuild: (suspend () -> Snowflake)? = null,
     override var validator: Validator<Role> = null
 ) : SingleConverter<Role>() {
     override val signatureTypeString: String = "converters.role.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -76,7 +67,7 @@ public class RoleConverter(
             context.getGuild()?.id
         } ?: return null
 
-        val guild: Guild = kord.getGuild(guildId) ?: return null
+        val guild: Guild = kord.getGuildOrNull(guildId) ?: return null
 
         @Suppress("MagicNumber")
         return if (arg.startsWith("<@&") && arg.endsWith(">")) { // It's a mention
@@ -104,7 +95,7 @@ public class RoleConverter(
         RoleBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.RoleOptionValue)?.value ?: return false
+        val optionValue = (option as? RoleOptionValue)?.resolvedObject ?: return false
         this.parsed = optionValue
 
         return true

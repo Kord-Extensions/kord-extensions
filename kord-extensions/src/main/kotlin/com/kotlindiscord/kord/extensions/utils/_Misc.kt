@@ -10,7 +10,26 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlin.time.Duration
+
+/**
+ * Simple convenience function for mapping from `0` to the given [Int], exclusively.
+ */
+public inline fun <T> Int.map(body: (Int) -> T): List<T> =
+    (0 until this).map<Int, T> { body(it) }
+
+/**
+ * Simple convenience function for mapping from `0` to the given [Long], exclusively.
+ */
+public inline fun <T> Long.map(body: (Long) -> T): List<T> =
+    (0 until this).map<Long, T> { body(it) }
 
 /**
  * Run a block of code within a coroutine scope, defined by a given dispatcher.
@@ -33,3 +52,18 @@ public fun EmbedBuilder.Footer.textOrNull(): String? =
     } catch (e: UninitializedPropertyAccessException) {
         null
     }
+
+/**
+ * Returns `true` if any element in the `Flow` matches the given predicate. Consumes the `Flow`.
+ */
+public suspend inline fun <T : Any> Flow<T>.any(crossinline predicate: suspend (T) -> Boolean): Boolean =
+    firstOrNull { predicate(it) } != null
+
+/**
+ * Convert the given [DateTimePeriod] to a [Duration] based on the given timezone, relative to the current system time.
+ */
+public fun DateTimePeriod.toDuration(timezone: TimeZone): Duration {
+    val now = Clock.System.now()
+
+    return now.plus(this, timezone) - now
+}

@@ -4,11 +4,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class)
-
 package com.kotlindiscord.kord.extensions.pagination
 
-import com.kotlindiscord.kord.extensions.checks.types.Check
+import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.components.ComponentContainer
 import com.kotlindiscord.kord.extensions.components.buttons.PublicInteractionButton
 import com.kotlindiscord.kord.extensions.components.publicButton
@@ -17,7 +15,6 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
@@ -53,29 +50,29 @@ public abstract class BaseButtonPaginator(
     private val secondRowNumber = 1
 
     /** Button builder representing the button that switches to the first page. **/
-    public open var firstPageButton: PublicInteractionButton? = null
+    public open var firstPageButton: PublicInteractionButton<*>? = null
 
     /** Button builder representing the button that switches to the previous page. **/
-    public open var backButton: PublicInteractionButton? = null
+    public open var backButton: PublicInteractionButton<*>? = null
 
     /** Button builder representing the button that switches to the next page. **/
-    public open var nextButton: PublicInteractionButton? = null
+    public open var nextButton: PublicInteractionButton<*>? = null
 
     /** Button builder representing the button that switches to the last page. **/
-    public open var lastPageButton: PublicInteractionButton? = null
+    public open var lastPageButton: PublicInteractionButton<*>? = null
 
     /** Button builder representing the button that switches between groups. **/
-    public open var switchButton: PublicInteractionButton? = null
+    public open var switchButton: PublicInteractionButton<*>? = null
 
     /** Group-specific buttons, if any. **/
-    public open val groupButtons: MutableMap<String, PublicInteractionButton> = mutableMapOf()
+    public open val groupButtons: MutableMap<String, PublicInteractionButton<*>> = mutableMapOf()
 
     /** Whether it's possible for us to have a row of group-switching buttons. **/
     @Suppress("MagicNumber")
     public val canUseSwitchingButtons: Boolean by lazy { allGroups.size in 3..5 && "" !in allGroups }
 
     /** A button-oriented check function that matches based on the [owner] property. **/
-    public val defaultCheck: Check<ComponentInteractionCreateEvent> = {
+    public val defaultCheck: CheckWithCache<ComponentInteractionCreateEvent> = {
         if (!active) {
             fail()
         } else if (owner == null) {
@@ -282,7 +279,7 @@ public abstract class BaseButtonPaginator(
     /**
      * Convenience function that enables and disables buttons as necessary, depending on the current page number.
      */
-    public suspend fun updateButtons() {
+    public fun updateButtons() {
         if (currentPageNum <= 0) {
             setDisabledButton(firstPageButton)
             setDisabledButton(backButton)
@@ -319,14 +316,14 @@ public abstract class BaseButtonPaginator(
     }
 
     /** Replace an enabled interactive button in [components] with a disabled button of the same ID. **/
-    public fun setDisabledButton(button: PublicInteractionButton?) {
+    public fun setDisabledButton(button: PublicInteractionButton<*>?) {
         button ?: return
 
         button.disable()
     }
 
-    /** Replace a disabled button in [components] with the given interactive button of the same ID.. **/
-    public fun setEnabledButton(button: PublicInteractionButton?) {
+    /** Replace a disabled button in [components] with the given interactive button of the same ID. **/
+    public fun setEnabledButton(button: PublicInteractionButton<*>?) {
         button ?: return
 
         button.enable()

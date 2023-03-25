@@ -11,6 +11,7 @@ import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.CoalescingConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
@@ -19,13 +20,12 @@ import com.kotlindiscord.kord.extensions.parser.tokens.PositionalArgumentToken
 import com.kotlindiscord.kord.extensions.parsers.DurationParser
 import com.kotlindiscord.kord.extensions.parsers.DurationParserException
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.datetime.*
 import mu.KotlinLogging
-import kotlin.time.ExperimentalTime
 
 /**
  * Argument converter for Kotlin [DateTimePeriod] arguments. You can apply these to an `Instant` using `plus` and a
@@ -45,7 +45,6 @@ import kotlin.time.ExperimentalTime
         "public var shouldThrow: Boolean = false"
     ],
 )
-@OptIn(KordPreview::class, ExperimentalTime::class)
 public class DurationCoalescingConverter(
     public val longHelp: Boolean = true,
     public val positiveOnly: Boolean = true,
@@ -53,6 +52,8 @@ public class DurationCoalescingConverter(
     override var validator: Validator<DateTimePeriod> = null
 ) : CoalescingConverter<DateTimePeriod>(shouldThrow) {
     override val signatureTypeString: String = "converters.duration.error.signatureType"
+    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+
     private val logger = KotlinLogging.logger {}
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
@@ -196,7 +197,7 @@ public class DurationCoalescingConverter(
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? OptionValue.StringOptionValue)?.value ?: return false
+        val optionValue = (option as? StringOptionValue)?.value ?: return false
 
         try {
             val result: DateTimePeriod = DurationParser.parse(optionValue, context.getLocale())

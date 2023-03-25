@@ -14,32 +14,40 @@ import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.KordExEvent
+import com.kotlindiscord.kord.extensions.events.extra.GuildJoinRequestDeleteEvent
+import com.kotlindiscord.kord.extensions.events.extra.GuildJoinRequestUpdateEvent
+import com.kotlindiscord.kord.extensions.events.extra.models.GuildJoinRequestDelete
+import com.kotlindiscord.kord.extensions.events.extra.models.GuildJoinRequestUpdate
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.impl.HelpExtension
 import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
+import com.kotlindiscord.kord.extensions.koin.KordExContext
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.types.Lockable
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.behavior.requestMembers
 import dev.kord.core.event.Event
+import dev.kord.core.event.UnknownEvent
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.guild.GuildCreateEvent
 import dev.kord.core.event.interaction.*
 import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.gateway.handler.DefaultGatewayEventInterceptor
 import dev.kord.core.on
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
 import mu.KLogger
 import mu.KotlinLogging
-import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.dsl.bind
 
 /**
@@ -56,11 +64,14 @@ import org.koin.dsl.bind
  */
 public open class ExtensibleBot(
     public val settings: ExtensibleBotBuilder,
-    private val token: String
-) : KoinComponent, Lockable {
+    private val token: String,
+) : KordExKoinComponent, Lockable {
 
     override var mutex: Mutex? = Mutex()
     override var locking: Boolean = settings.membersBuilder.lockMemberRequests
+
+    /** @suppress Meant for internal use by public inline function. **/
+    public val kordRef: Kord by inject()
 
     /**
      * A list of all registered event handlers.
@@ -100,6 +111,12 @@ public open class ExtensibleBot(
             enableShutdownHook = settings.hooksBuilder.kordShutdownHook
 
             settings.kordHooks.forEach { it() }
+
+            gatewayEventInterceptor = DefaultGatewayEventInterceptor(
+                customContextCreator = { _, _ ->
+                    mutableMapOf<String, Any>()
+                }
+            )
         }
 
         loadModule { single { kord } bind Kord::class }
@@ -107,7 +124,7 @@ public open class ExtensibleBot(
         settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
         kord.on<Event> {
-            this.launch {
+            kord.launch {
                 send(this@on)
             }
         }
@@ -118,12 +135,41 @@ public open class ExtensibleBot(
     /** Start up the bot and log into Discord. **/
     public open suspend fun start() {
         settings.hooksBuilder.runBeforeStart(this)
-        registerListeners()
+
+        if (!initialized) registerListeners()
 
         getKoin().get<Kord>().login {
             this.presence(settings.presenceBuilder)
             this.intents = Intents(settings.intentsBuilder!!)
         }
+    }
+
+    /**
+     * Stop the bot by logging out [Kord].
+     *
+     * This will leave the Koin context intact, so subsequent restarting of the bot is possible.
+     *
+     * @see close
+     **/
+    public open suspend fun stop() {
+        getKoin().get<Kord>().logout()
+    }
+
+    /**
+     * Stop the bot by shutting down [Kord] and removing its Koin context.
+     *
+     * Restarting the bot after closing will result in undefined behavior
+     * because the Koin context needed to start will no longer exist.
+     *
+     * If a bot has been closed, then it must be fully rebuilt to start again.
+     *
+     * If a new bot is going to be built, then the previous bot must be closed first.
+     *
+     * @see stop
+     **/
+    public open suspend fun close() {
+        getKoin().get<Kord>().shutdown()
+        KordExContext.stopKoin()
     }
 
     /** Start up the bot and log into Discord, but launched via Kord's coroutine scope. **/
@@ -134,19 +180,48 @@ public open class ExtensibleBot(
 
     /** This function sets up all of the bot's default event listeners. **/
     public open suspend fun registerListeners() {
+        val eventJson = Json {
+            ignoreUnknownKeys = true
+        }
+
         on<GuildCreateEvent> {
             withLock {  // If configured, this won't be concurrent, saving larger bots from spammy rate limits
                 if (
                     settings.membersBuilder.guildsToFill == null ||
                     settings.membersBuilder.guildsToFill!!.contains(guild.id)
                 ) {
-                    logger.info { "Requesting members for guild: ${guild.name}" }
+                    logger.debug { "Requesting members for guild: ${guild.name}" }
 
                     guild.requestMembers {
                         presences = settings.membersBuilder.fillPresences
                         requestAllMembers()
                     }.collect()
                 }
+            }
+        }
+
+        @Suppress("TooGenericExceptionCaught")
+        on<UnknownEvent> {
+            try {
+                val eventObj = when (name) {
+                    "GUILD_JOIN_REQUEST_DELETE" -> {
+                        val data: GuildJoinRequestDelete = eventJson.decodeFromJsonElement(this.data!!)
+
+                        GuildJoinRequestDeleteEvent(data)
+                    }
+
+                    "GUILD_JOIN_REQUEST_UPDATE" -> {
+                        val data: GuildJoinRequestUpdate = eventJson.decodeFromJsonElement(this.data!!)
+
+                        GuildJoinRequestUpdateEvent(data)
+                    }
+
+                    else -> null
+                } ?: return@on
+
+                send(eventObj)
+            } catch (e: Exception) {
+                logger.error(e) { "Failed to deserialize event: $data" }
             }
         }
 
@@ -159,6 +234,10 @@ public open class ExtensibleBot(
         }
 
         on<SelectMenuInteractionCreateEvent> {
+            getKoin().get<ComponentRegistry>().handle(this)
+        }
+
+        on<ModalSubmitInteractionCreateEvent> {
             getKoin().get<ComponentRegistry>().handle(this)
         }
 
@@ -235,13 +314,13 @@ public open class ExtensibleBot(
     public inline fun <reified T : Event> on(
         launch: Boolean = true,
         scope: CoroutineScope = this.getKoin().get<Kord>(),
-        noinline consumer: suspend T.() -> Unit
+        noinline consumer: suspend T.() -> Unit,
     ): Job =
         events.buffer(Channel.UNLIMITED)
             .filterIsInstance<T>()
             .onEach {
                 runCatching {
-                    if (launch) it.launch { consumer(it) } else consumer(it)
+                    if (launch) kordRef.launch { consumer(it) } else consumer(it)
                 }.onFailure { logger.catching(it) }
             }.catch { logger.catching(it) }
             .launchIn(scope)
@@ -265,6 +344,13 @@ public open class ExtensibleBot(
     @Throws(InvalidExtensionException::class)
     public open suspend fun addExtension(builder: () -> Extension) {
         val extensionObj = builder.invoke()
+
+        if (extensions.contains(extensionObj.name)) {
+            logger.error {
+                "Extension with duplicate name ${extensionObj.name} loaded - unloading previously registered extension"
+            }
+            unloadExtension(extensionObj.name)
+        }
 
         extensions[extensionObj.name] = extensionObj
         loadExtension(extensionObj.name)

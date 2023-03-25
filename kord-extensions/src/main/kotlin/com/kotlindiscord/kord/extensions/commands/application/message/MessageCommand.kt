@@ -6,39 +6,46 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.message
 
-import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.components.ComponentRegistry
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import com.kotlindiscord.kord.extensions.utils.permissionsForMember
-import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
+import org.koin.core.component.inject
 
-/** Message context command, for right-click actions on messages. **/
-public abstract class MessageCommand<C : MessageCommandContext<*>>(
-    extension: Extension
+/**
+ * Message context command, for right-click actions on messages.
+ * @param modal Callable returning a `ModalForm` object, if any
+ */
+public abstract class MessageCommand<C : MessageCommandContext<C, M>, M : ModalForm>(
+    extension: Extension,
+    public open val modal: (() -> M)? = null,
 ) : ApplicationCommand<MessageCommandInteractionCreateEvent>(extension) {
     private val logger: KLogger = KotlinLogging.logger {}
 
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val componentRegistry: ComponentRegistry by inject()
+
     /** Command body, to be called when the command is executed. **/
-    public lateinit var body: suspend C.() -> Unit
+    public lateinit var body: suspend C.(M?) -> Unit
 
     override val type: ApplicationCommandType = ApplicationCommandType.Message
 
     /** Call this to supply a command [body], to be called when the command is executed. **/
-    public fun action(action: suspend C.() -> Unit) {
+    public fun action(action: suspend C.(M?) -> Unit) {
         body = action
     }
 
@@ -51,38 +58,13 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
     }
 
     /** Override this to implement your command's calling logic. Check subtypes for examples! **/
-    public abstract override suspend fun call(event: MessageCommandInteractionCreateEvent)
+    public abstract override suspend fun call(
+        event: MessageCommandInteractionCreateEvent,
+        cache: MutableStringKeyedMap<Any>
+    )
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
     public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
-
-    /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(DiscordRelayedException::class)
-    public open suspend fun checkBotPerms(context: C) {
-        if (requiredPerms.isEmpty()) {
-            return  // Nothing to check, don't try to hit the cache
-        }
-
-        if (context.guild != null) {
-            val perms = (context.channel.asChannel() as GuildChannel)
-                .permissionsForMember(kord.selfId)
-
-            val missingPerms = requiredPerms.filter { !perms.contains(it) }
-
-            if (missingPerms.isNotEmpty()) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        "commands.error.missingBotPermissions",
-                        null,
-
-                        replacements = arrayOf(
-                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
-                        )
-                    )
-                )
-            }
-        }
-    }
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
     public open suspend fun firstSentryBreadcrumb(context: C) {
@@ -116,13 +98,16 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
         }
     }
 
-    override suspend fun runChecks(event: MessageCommandInteractionCreateEvent): Boolean {
+    override suspend fun runChecks(
+        event: MessageCommandInteractionCreateEvent,
+        cache: MutableStringKeyedMap<Any>
+    ): Boolean {
         val locale = event.getLocale()
-        val result = super.runChecks(event)
+        val result = super.runChecks(event, cache)
 
         if (result) {
             settings.applicationCommandsBuilder.messageCommandChecks.forEach { check ->
-                val context = CheckContext(event, locale)
+                val context = CheckContextWithCache(event, locale, cache)
 
                 check(context)
 
@@ -134,7 +119,7 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
             }
 
             extension.messageCommandChecks.forEach { check ->
-                val context = CheckContext(event, locale)
+                val context = CheckContextWithCache(event, locale, cache)
 
                 check(context)
 
@@ -159,7 +144,7 @@ public abstract class MessageCommand<C : MessageCommandContext<*>>(
             val channel = context.channel
             val author = context.user.asUserOrNull()
 
-            val sentryId = context.sentry.captureException(t, "Message command execution failed.") {
+            val sentryId = context.sentry.captureException(t) {
                 if (author != null) {
                     user(author)
                 }

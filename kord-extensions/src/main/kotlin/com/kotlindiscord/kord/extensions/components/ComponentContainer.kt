@@ -5,20 +5,19 @@
  */
 
 @file:Suppress("AnnotationSpacing")
+
 // Genuinely hate having to deal with this one sometimes.
-@file:OptIn(ExperimentalTime::class)
 
 package com.kotlindiscord.kord.extensions.components
 
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 import dev.kord.rest.builder.message.modify.actionRow
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /** The maximum number of slots you can have in a row. **/
 public const val ROW_SIZE: Int = 5
@@ -40,8 +39,8 @@ public const val ROW_SIZE: Int = 5
  */
 public open class ComponentContainer(
     public val timeout: Duration? = null,
-    startTimeoutNow: Boolean = false
-) : KoinComponent {
+    startTimeoutNow: Boolean = false,
+) : KordExKoinComponent {
     internal val registry: ComponentRegistry by inject()
 
     /** If a [timeout] was provided, the scheduled timeout task will be stored here. **/
@@ -110,7 +109,7 @@ public open class ComponentContainer(
             }
 
             @Suppress("UnnecessaryParentheses")  // Yeah, but let me be paranoid. Please.
-            val freeSlots = (ROW_SIZE - row.size) + old.unitWidth
+            val freeSlots = (ROW_SIZE - rowWidth(row)) + old.unitWidth
 
             if (new.unitWidth > freeSlots) {
                 error(
@@ -144,7 +143,7 @@ public open class ComponentContainer(
             }
 
             val old = row[index]
-            val freeSlots = old.unitWidth + (ROW_SIZE - row.size)
+            val freeSlots = old.unitWidth + (ROW_SIZE - rowWidth(row))
 
             if (new.unitWidth > freeSlots) {
                 error(
@@ -184,16 +183,16 @@ public open class ComponentContainer(
 
         val row = rows[rowNum]
 
-        if (row.size >= ROW_SIZE) {
+        if (rowWidth(row) >= ROW_SIZE) {
             error(
                 "Row $rowNum is full, no more components can be added to it."
             )
         }
 
-        if (row.size + component.unitWidth > ROW_SIZE) {
+        if (rowWidth(row) + component.unitWidth > ROW_SIZE) {
             error(
                 "The given component takes up ${component.unitWidth} slots, but row $rowNum only has " +
-                    "${ROW_SIZE - row.size} available slots remaining."
+                    "${ROW_SIZE - rowWidth(row)} available slots remaining."
             )
         }
 
@@ -212,7 +211,7 @@ public open class ComponentContainer(
 
             @Suppress("UnconditionalJumpStatementInLoop")  // Yes, but this is nicer to read
             for (row in rows) {
-                if (row.size >= ROW_SIZE || row.size + component.unitWidth > ROW_SIZE) {
+                if (rowWidth(row) >= ROW_SIZE || rowWidth(row) + component.unitWidth > ROW_SIZE) {
                     continue
                 }
 
@@ -258,6 +257,19 @@ public open class ComponentContainer(
             }
         }
     }
+
+    /**
+     * Cancel the timeout task, and remove all components from this component container.
+     *
+     * This is equivalent to timing out this container early, but will not run the supplied [timeoutCallback], if one
+     * was provided in [onTimeout].
+     */
+    public open suspend fun cancel() {
+        timeoutTask?.cancel()
+        removeAll()
+    }
+
+    private fun rowWidth(row: List<Component>): Int = row.sumOf { it.unitWidth }
 }
 
 /** DSL-style factory function to make component containers these by hand easier. **/
@@ -265,7 +277,7 @@ public open class ComponentContainer(
 public suspend fun ComponentContainer(
     timeout: Duration? = null,
     startTimeoutNow: Boolean = false,
-    builder: suspend ComponentContainer.() -> Unit
+    builder: suspend ComponentContainer.() -> Unit,
 ): ComponentContainer {
     val container = ComponentContainer(timeout, startTimeoutNow)
 

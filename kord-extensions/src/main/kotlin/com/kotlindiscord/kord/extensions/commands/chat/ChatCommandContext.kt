@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(KordPreview::class, KordUnsafe::class, KordExperimental::class)
+@file:OptIn(KordUnsafe::class, KordExperimental::class)
 
 package com.kotlindiscord.kord.extensions.commands.chat
 
@@ -15,9 +15,9 @@ import com.kotlindiscord.kord.extensions.extensions.base.HelpProvider
 import com.kotlindiscord.kord.extensions.pagination.MessageButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.common.annotation.KordExperimental
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
@@ -29,18 +29,19 @@ import dev.kord.core.event.message.MessageCreateEvent
 /**
  * Command context object representing the context given to chat commands.
  *
- * @property messageCommand Chat command object
+ * @property chatCommand Chat command object
  * @param parser String parser instance, if any - will be `null` if this isn't a chat command.
  * @property argString String containing the command's unparsed arguments, raw, fresh from Discord itself.
  */
 @ExtensionDSL
 public open class ChatCommandContext<T : Arguments>(
-    public val messageCommand: ChatCommand<out T>,
+    public val chatCommand: ChatCommand<out T>,
     eventObj: MessageCreateEvent,
     commandName: String,
     public open val parser: StringParser,
-    public val argString: String
-) : CommandContext(messageCommand, eventObj, commandName) {
+    public val argString: String,
+    cache: MutableStringKeyedMap<Any>
+) : CommandContext(chatCommand, eventObj, commandName, cache) {
     /** Event that triggered this command execution. **/
     public val event: MessageCreateEvent get() = eventObj as MessageCreateEvent
 
@@ -113,7 +114,7 @@ public open class ChatCommandContext<T : Arguments>(
      */
     public suspend fun sendHelp(): Boolean {
         val helpExtension = this.command.extension.bot.findExtension<HelpProvider>() ?: return false
-        val paginator = helpExtension.getCommandHelpPaginator(this, messageCommand)
+        val paginator = helpExtension.getCommandHelpPaginator(this, chatCommand)
 
         paginator.send()
 
@@ -127,5 +128,14 @@ public open class ChatCommandContext<T : Arguments>(
         key: String,
         replacements: Array<Any?> = arrayOf(),
         useReply: Boolean = true
-    ): Message = respond(translate(key, command.extension.bundle, replacements), useReply)
+    ): Message = respond(translate(key, command.resolvedBundle, replacements), useReply)
+
+    /**
+     * Convenience function allowing for message responses with translated content.
+     */
+    public suspend fun Message.respondTranslated(
+        key: String,
+        replacements: Map<String, Any?>,
+        useReply: Boolean = true
+    ): Message = respond(translate(key, command.resolvedBundle, replacements), useReply)
 }

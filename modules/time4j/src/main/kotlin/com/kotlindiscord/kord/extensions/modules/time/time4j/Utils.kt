@@ -23,6 +23,7 @@ private const val DAYS_PER_WEEK = 7L
  * Function in charge of formatting Time4J duration objects into human-readable form, taking locales and translations
  * into account.
  */
+@Suppress("DestructuringDeclarationWithTooManyEntries")
 @Throws(IllegalStateException::class)
 public fun formatT4JDuration(
     duration: Duration<IsoUnit>,

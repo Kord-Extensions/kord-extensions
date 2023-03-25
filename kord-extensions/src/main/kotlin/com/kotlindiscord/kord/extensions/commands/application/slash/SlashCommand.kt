@@ -6,23 +6,24 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.slash
 
-import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
-import com.kotlindiscord.kord.extensions.checks.types.CheckContext
+import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
+import com.kotlindiscord.kord.extensions.commands.application.Localized
+import com.kotlindiscord.kord.extensions.components.ComponentRegistry
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
-import com.kotlindiscord.kord.extensions.utils.permissionsForMember
-import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.interaction.GroupCommand
 import dev.kord.core.entity.interaction.InteractionCommand
@@ -31,30 +32,35 @@ import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import mu.KLogger
 import mu.KotlinLogging
-import java.util.*
+import org.koin.core.component.inject
 
 /**
  * Slash command, executed directly in the chat input.
  *
  * @param arguments Callable returning an `Arguments` object, if any
+ * @param modal Callable returning a `ModalForm` object, if any
  * @param parentCommand Parent slash command, if any
  * @param parentGroup Parent slash command group, if any
  */
-public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>(
+public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Arguments, M : ModalForm>(
     extension: Extension,
 
     public open val arguments: (() -> A)? = null,
-    public open val parentCommand: SlashCommand<*, *>? = null,
-    public open val parentGroup: SlashGroup? = null
+    public open val modal: (() -> M)? = null,
+    public open val parentCommand: SlashCommand<*, *, *>? = null,
+    public open val parentGroup: SlashGroup? = null,
 ) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
-    /** @suppress **/
-    public val logger: KLogger = KotlinLogging.logger {}
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val kxLogger: KLogger = KotlinLogging.logger {}
+
+    /** @suppress This is only meant for use by code that extends the command system. **/
+    public val componentRegistry: ComponentRegistry by inject()
 
     /** Command description, as displayed on Discord. **/
     public open lateinit var description: String
 
     /** Command body, to be called when the command is executed. **/
-    public lateinit var body: suspend C.() -> Unit
+    public lateinit var body: suspend C.(M?) -> Unit
 
     /** Whether this command has a body/action set. **/
     public open val hasBody: Boolean get() = ::body.isInitialized
@@ -63,7 +69,53 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     public open val groups: MutableMap<String, SlashGroup> = mutableMapOf()
 
     /** List of subcommands, if any. **/
-    public open val subCommands: MutableList<SlashCommand<*, *>> = mutableListOf()
+    public open val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
+
+    /**
+     * Clickable mention for this slash command, if applicable.
+     *
+     * If you're not using the [DefaultApplicationCommandRegistry] for your command registry, this will currently
+     * return `null`.
+     */
+    public val mention: String? by lazy {
+        if (registry !is DefaultApplicationCommandRegistry) {
+            return@lazy null
+        }
+
+        val commandRegistry = registry as DefaultApplicationCommandRegistry
+
+        lateinit var commandId: Snowflake
+
+        buildString {
+            append("</")
+
+            if (parentGroup != null) {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == parentGroup!!.parent }.key
+
+                append(parentGroup!!.parent.localizedName.default)
+                append(" ")
+                append(parentGroup!!.localizedName.default)
+                append(" ")
+            } else if (parentCommand != null) {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == parentCommand }.key
+
+                append(parentCommand!!.localizedName.default)
+                append(" ")
+            } else {
+                commandId = commandRegistry.slashCommands.entries.first { it.value == this@SlashCommand }.key
+            }
+
+            append(localizedName.default)
+            append(":")
+            append(commandId)
+            append(">")
+        }
+    }
+
+    /**
+     * A [Localized] version of [description].
+     */
+    public val localizedDescription: Localized<String> by lazy { localize(description) }
 
     override val type: ApplicationCommandType = ApplicationCommandType.ChatInput
 
@@ -103,42 +155,16 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         }
     }
 
-    public override fun getTranslatedName(locale: Locale): String {
-        // Only slash commands need this to be lower-cased.
-
-        if (!nameTranslationCache.containsKey(locale)) {
-            nameTranslationCache[locale] = translationsProvider.translate(
-                this.name,
-                this.extension.bundle,
-                locale
-            ).lowercase()
-        }
-
-        return nameTranslationCache[locale]!!
-    }
-
-    /** Return this command's description translated for the given locale, cached as required. **/
-    public fun getTranslatedDescription(locale: Locale): String {
-        // Only slash commands need this to be lower-cased.
-
-        if (!descriptionTranslationCache.containsKey(locale)) {
-            descriptionTranslationCache[locale] = translationsProvider.translate(
-                this.description,
-                this.extension.bundle,
-                locale
-            )
-        }
-
-        return descriptionTranslationCache[locale]!!
-    }
-
     /** Call this to supply a command [body], to be called when the command is executed. **/
-    public fun action(action: suspend C.() -> Unit) {
+    public fun action(action: suspend C.(M?) -> Unit) {
         body = action
     }
 
     /** Override this to implement your command's calling logic. Check subtypes for examples! **/
-    public abstract override suspend fun call(event: ChatInputCommandInteractionCreateEvent)
+    public abstract override suspend fun call(
+        event: ChatInputCommandInteractionCreateEvent,
+        cache: MutableStringKeyedMap<Any>,
+    )
 
     /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
     public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
@@ -146,38 +172,10 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     /**
      * Override this to implement the final calling logic, including creating the command context and running with it.
      */
-    public abstract suspend fun run(event: ChatInputCommandInteractionCreateEvent)
-
-    /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
-    @Throws(DiscordRelayedException::class)
-    public open suspend fun checkBotPerms(context: C) {
-        if (requiredPerms.isEmpty()) {
-            return  // Nothing to check, don't try to hit the cache
-        }
-
-        if (context.guild != null) {
-            val perms = (context.channel.asChannel() as GuildChannel)
-                .permissionsForMember(kord.selfId)
-
-            val missingPerms = requiredPerms.filter { !perms.contains(it) }
-
-            if (missingPerms.isNotEmpty()) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        "commands.error.missingBotPermissions",
-                        null,
-
-                        replacements = arrayOf(
-                            missingPerms.map { it.translate(context.getLocale()) }.joinToString(", ")
-                        )
-                    )
-                )
-            }
-        }
-    }
+    public abstract suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>)
 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
-    public open suspend fun firstSentryBreadcrumb(context: C, commandObj: SlashCommand<*, *>) {
+    public open suspend fun firstSentryBreadcrumb(context: C, commandObj: SlashCommand<*, *, *>) {
         if (sentry.enabled) {
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "command.application.slash"
@@ -208,21 +206,24 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         }
     }
 
-    override suspend fun runChecks(event: ChatInputCommandInteractionCreateEvent): Boolean {
+    override suspend fun runChecks(
+        event: ChatInputCommandInteractionCreateEvent,
+        cache: MutableStringKeyedMap<Any>,
+    ): Boolean {
         val locale = event.getLocale()
-        var result = super.runChecks(event)
+        var result = super.runChecks(event, cache)
 
         if (result && parentCommand != null) {
-            result = parentCommand!!.runChecks(event)
+            result = parentCommand!!.runChecks(event, cache)
         }
 
         if (result && parentGroup != null) {
-            result = parentGroup!!.parent.runChecks(event)
+            result = parentGroup!!.parent.runChecks(event, cache)
         }
 
         if (result) {
             settings.applicationCommandsBuilder.slashCommandChecks.forEach { check ->
-                val context = CheckContext(event, locale)
+                val context = CheckContextWithCache(event, locale, cache)
 
                 check(context)
 
@@ -234,7 +235,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
             }
 
             extension.slashCommandChecks.forEach { check ->
-                val context = CheckContext(event, locale)
+                val context = CheckContextWithCache(event, locale, cache)
 
                 check(context)
 
@@ -250,20 +251,20 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
     }
 
     /** Given a command event, resolve the correct command or subcommand object. **/
-    public open fun findCommand(event: ChatInputCommandInteractionCreateEvent): SlashCommand<*, *> =
+    public open fun findCommand(event: ChatInputCommandInteractionCreateEvent): SlashCommand<*, *, *> =
         findCommand(event.interaction.command)
 
     /** Given an autocomplete event, resolve the correct command or subcommand object. **/
-    public open fun findCommand(event: AutoCompleteInteractionCreateEvent): SlashCommand<*, *> =
+    public open fun findCommand(event: AutoCompleteInteractionCreateEvent): SlashCommand<*, *, *> =
         findCommand(event.interaction.command)
 
     /** Given an [InteractionCommand], resolve the correct command or subcommand object. **/
-    public open fun findCommand(eventCommand: InteractionCommand): SlashCommand<*, *> =
+    public open fun findCommand(eventCommand: InteractionCommand): SlashCommand<*, *, *> =
         when (eventCommand) {
             is SubCommand -> {
                 val firstSubCommandKey = eventCommand.name
 
-                this.subCommands.firstOrNull { it.name == firstSubCommandKey }
+                this.subCommands.firstOrNull { it.localizedName.default == firstSubCommandKey }
                     ?: error("Unknown subcommand: $firstSubCommandKey")
             }
 
@@ -272,7 +273,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 val group = this.groups[firstEventGroupKey] ?: error("Unknown command group: $firstEventGroupKey")
                 val firstSubCommandKey = eventCommand.name
 
-                group.subCommands.firstOrNull { it.name == firstSubCommandKey }
+                group.subCommands.firstOrNull { it.localizedName.default == firstSubCommandKey }
                     ?: error("Unknown subcommand: $firstSubCommandKey")
             }
 
@@ -280,16 +281,16 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
         }
 
     /** A general way to handle errors thrown during the course of a command's execution. **/
-    public open suspend fun handleError(context: C, t: Throwable, commandObj: SlashCommand<*, *>) {
-        logger.error(t) { "Error during execution of ${commandObj.name} slash command (${context.event})" }
+    public open suspend fun handleError(context: C, t: Throwable, commandObj: SlashCommand<*, *, *>) {
+        kxLogger.error(t) { "Error during execution of ${commandObj.name} slash command (${context.event})" }
 
         if (sentry.enabled) {
-            logger.trace { "Submitting error to sentry." }
+            kxLogger.trace { "Submitting error to sentry." }
 
             val channel = context.channel
             val author = context.user.asUserOrNull()
 
-            val sentryId = context.sentry.captureException(t, "Slash command execution failed.") {
+            val sentryId = context.sentry.captureException(t) {
                 if (author != null) {
                     user(author)
                 }
@@ -304,7 +305,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A>, A : Arguments>
                 tag("extension", commandObj.extension.name)
             }
 
-            logger.info { "Error submitted to Sentry: $sentryId" }
+            kxLogger.info { "Error submitted to Sentry: $sentryId" }
 
             val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
                 context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))

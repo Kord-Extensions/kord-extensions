@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.utils
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createWebhook
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.Webhook
@@ -16,8 +17,8 @@ import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.TopGuildChannel
 import dev.kord.core.entity.channel.TopGuildMessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
-import dev.kord.core.firstOrNull
 import dev.kord.rest.Image
+import kotlinx.coroutines.flow.firstOrNull
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -82,10 +83,10 @@ public suspend fun GuildChannel.permissionsForMember(user: UserBehavior): Permis
 /**
  * Convenience function that returns the thread's parent message, if it was created from one.
  *
- * If it wasn't, or the parent channel can't be found, this function returns `null`.
+ * If it wasn't, the parent channel is a forum, or the parent channel can't be found, this function returns `null`.
  */
 public suspend fun ThreadChannel.getParentMessage(): Message? {
-    val parentChannel = getParentOrNull() ?: return null
+    val parentChannel = getParentOrNull() as? MessageChannelBehavior ?: return null
 
     return parentChannel.getMessageOrNull(this.id)
 }

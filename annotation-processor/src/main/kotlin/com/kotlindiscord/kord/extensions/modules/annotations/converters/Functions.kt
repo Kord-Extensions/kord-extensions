@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("StringLiteralDuplication", "UnusedPrivateMember")
+@file:Suppress("StringLiteralDuplication", "UnusedPrivateMember", "UNUSED_PARAMETER")
 
 package com.kotlindiscord.kord.extensions.modules.annotations.converters
 

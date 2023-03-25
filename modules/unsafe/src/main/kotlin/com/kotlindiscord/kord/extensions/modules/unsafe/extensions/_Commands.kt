@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.CommandRegistrationException
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.annotations.ExtensionDSL
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.commands.UnsafeMessageCommand
@@ -27,9 +28,9 @@ private val logger = KotlinLogging.logger {}
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeMessageCommand(
-    body: suspend UnsafeMessageCommand.() -> Unit
-): UnsafeMessageCommand {
-    val commandObj = UnsafeMessageCommand(this)
+    body: suspend UnsafeMessageCommand<ModalForm>.() -> Unit
+): UnsafeMessageCommand<ModalForm> {
+    val commandObj = UnsafeMessageCommand<ModalForm>(this)
     body(commandObj)
 
     return unsafeMessageCommand(commandObj)
@@ -38,9 +39,9 @@ public suspend fun Extension.unsafeMessageCommand(
 /** Register a custom instance of an unsafe message command. **/
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun Extension.unsafeMessageCommand(
-    commandObj: UnsafeMessageCommand
-): UnsafeMessageCommand {
+public suspend fun <M : ModalForm> Extension.unsafeMessageCommand(
+    commandObj: UnsafeMessageCommand<M>
+): UnsafeMessageCommand<M> {
     try {
         commandObj.validate()
         messageCommands.add(commandObj)
@@ -73,9 +74,9 @@ public suspend fun Extension.unsafeMessageCommand(
 @UnsafeAPI
 public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
     arguments: () -> T,
-    body: suspend UnsafeSlashCommand<T>.() -> Unit
-): UnsafeSlashCommand<T> {
-    val commandObj = UnsafeSlashCommand(this, arguments, null, null)
+    body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit
+): UnsafeSlashCommand<T, ModalForm> {
+    val commandObj = UnsafeSlashCommand<T, ModalForm>(this, arguments, null, null, null)
     body(commandObj)
 
     return unsafeSlashCommand(commandObj)
@@ -90,9 +91,9 @@ public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
  */
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
-    commandObj: UnsafeSlashCommand<T>
-): UnsafeSlashCommand<T> {
+public suspend fun <T : Arguments, M : ModalForm> Extension.unsafeSlashCommand(
+    commandObj: UnsafeSlashCommand<T, M>
+): UnsafeSlashCommand<T, M> {
     try {
         commandObj.validate()
         slashCommands.add(commandObj)
@@ -119,9 +120,9 @@ public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeSlashCommand(
-    body: suspend UnsafeSlashCommand<Arguments>.() -> Unit
-): UnsafeSlashCommand<Arguments> {
-    val commandObj = UnsafeSlashCommand<Arguments>(this, null, null, null)
+    body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit
+): UnsafeSlashCommand<Arguments, ModalForm> {
+    val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(this, null, null, null)
     body(commandObj)
 
     return unsafeSlashCommand(commandObj)
@@ -135,9 +136,9 @@ public suspend fun Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeUserCommand(
-    body: suspend UnsafeUserCommand.() -> Unit
-): UnsafeUserCommand {
-    val commandObj = UnsafeUserCommand(this)
+    body: suspend UnsafeUserCommand<ModalForm>.() -> Unit
+): UnsafeUserCommand<ModalForm> {
+    val commandObj = UnsafeUserCommand<ModalForm>(this)
     body(commandObj)
 
     return unsafeUserCommand(commandObj)
@@ -146,9 +147,9 @@ public suspend fun Extension.unsafeUserCommand(
 /** Register a custom instance of an unsafe user command. **/
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun Extension.unsafeUserCommand(
-    commandObj: UnsafeUserCommand
-): UnsafeUserCommand {
+public suspend fun <M : ModalForm> Extension.unsafeUserCommand(
+    commandObj: UnsafeUserCommand<M>
+): UnsafeUserCommand<M> {
     try {
         commandObj.validate()
         userCommands.add(commandObj)

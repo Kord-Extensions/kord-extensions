@@ -13,7 +13,10 @@ import com.kotlindiscord.kord.extensions.checks.channelFor
 import com.kotlindiscord.kord.extensions.checks.guildFor
 import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.types.TranslatableContext
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.GuildBehavior
@@ -22,8 +25,10 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.DmChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
-import org.koin.core.component.KoinComponent
+import io.sentry.Breadcrumb
 import org.koin.core.component.inject
 import java.util.*
 
@@ -33,13 +38,18 @@ import java.util.*
  * @param E Event type the component makes use of
  * @param component Component object that's being interacted with
  * @param event Event that triggered this execution context
+ * @param cache Data cache map shared with the defined checks.
  */
 public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     public open val component: Component,
-    public open val event: E
-) : KoinComponent {
+    public open val event: E,
+    public open val cache: MutableStringKeyedMap<Any>,
+) : KordExKoinComponent, TranslatableContext {
     /** Translations provider, for retrieving translations. **/
     public val translationsProvider: TranslationsProvider by inject()
+
+    override val bundle: String?
+        get() = component.bundle
 
     /** Configured bot settings object. **/
     public val settings: ExtensibleBotBuilder by inject()
@@ -48,7 +58,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     public val sentry: SentryContext = SentryContext()
 
     /** Cached locale variable, stored and retrieved by [getLocale]. **/
-    public open var resolvedLocale: Locale? = null
+    public override var resolvedLocale: Locale? = null
 
     /** Channel this component was interacted with within. **/
     public open lateinit var channel: MessageChannelBehavior
@@ -59,8 +69,8 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     /** Member that interacted with this component, if on a guild. **/
     public open var member: MemberBehavior? = null
 
-    /** Member that interacted with this component, if on a guild. **/
-    public open var message: Message? = null
+    /** The message the component is attached to. **/
+    public open lateinit var message: Message
 
     /** User that interacted with this component. **/
     public open lateinit var user: UserBehavior
@@ -80,18 +90,19 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
         event.interaction.channel
 
     /** Extract guild information from event data, if that context is available. **/
+    @OptIn(KordUnsafe::class, KordExperimental::class)
     @JvmName("getGuild1")
     public fun getGuild(): GuildBehavior? =
         event.interaction.data.guildId.value?.let { event.kord.unsafe.guild(it) }
 
     /** Extract member information from event data, if that context is available. **/
     @JvmName("getMember1")
-    public suspend fun getMember(): MemberBehavior? =
+    public fun getMember(): MemberBehavior? =
         getGuild()?.let { Member(event.interaction.data.member.value!!, event.interaction.user.data, event.kord) }
 
     /** Extract message information from event data, if that context is available. **/
     @JvmName("getMessage1")
-    public fun getMessage(): Message? =
+    public fun getMessage(): Message =
         event.interaction.message
 
     /** Extract user information from event data, if that context is available. **/
@@ -100,7 +111,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
         event.interaction.user
 
     /** Resolve the locale for this command context. **/
-    public suspend fun getLocale(): Locale {
+    public override suspend fun getLocale(): Locale {
         var locale: Locale? = resolvedLocale
 
         if (locale != null) {
@@ -112,7 +123,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
         val user = userFor(event)
 
         for (resolver in settings.i18nBuilder.localeResolvers) {
-            val result = resolver(guild, channel, user)
+            val result = resolver(guild, channel, user, event.interaction)
 
             if (result != null) {
                 locale = result
@@ -129,10 +140,10 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
      * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
      * locale resolvers.
      */
-    public suspend fun translate(
+    public override suspend fun translate(
         key: String,
         bundleName: String?,
-        replacements: Array<Any?> = arrayOf()
+        replacements: Array<Any?>,
     ): String {
         val locale = getLocale()
 
@@ -140,12 +151,40 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     }
 
     /**
-     * Given a translation key and possible replacements,return the translation for the given locale in the
-     * component's configured bundle, for the locale provided by the bot's configured locale resolvers.
+     * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+     * locale resolvers.
      */
-    public suspend fun translate(key: String, replacements: Array<Any?> = arrayOf()): String = translate(
-        key,
-        component.bundle,
-        replacements
-    )
+    public override suspend fun translate(
+        key: String,
+        bundleName: String?,
+        replacements: Map<String, Any?>,
+    ): String {
+        val locale = getLocale()
+
+        return translationsProvider.translate(key, locale, bundleName, replacements)
+    }
+
+    /**
+     * @param breadcrumb breadcrumb data will be modified to add the component context information
+     */
+    public suspend fun addContextDataToBreadcrumb(breadcrumb: Breadcrumb) {
+        val channel = channel.asChannelOrNull()
+        val guild = guild?.asGuildOrNull()
+        val message = message
+
+        if (channel != null) {
+            breadcrumb.data["channel"] = when (channel) {
+                is DmChannel -> "Private Message (${channel.id})"
+                is GuildMessageChannel -> "#${channel.name} (${channel.id})"
+
+                else -> channel.id.toString()
+            }
+        }
+
+        if (guild != null) {
+            breadcrumb.data["guild"] = "${guild.name} (${guild.id})"
+        }
+
+        breadcrumb.data["message"] = message.id.toString()
+    }
 }

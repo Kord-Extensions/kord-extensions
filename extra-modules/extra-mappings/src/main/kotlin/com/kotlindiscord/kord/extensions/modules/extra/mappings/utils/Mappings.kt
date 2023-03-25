@@ -44,9 +44,11 @@ fun classesToPages(
 
                     append(
                         "`${clazz.intermediaryName}`" +
-                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -59,9 +61,11 @@ fun classesToPages(
 
                     append(
                         "`${clazz.intermediaryName}`" +
-                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
             }.trimEnd('\n')
@@ -82,9 +86,11 @@ fun classesToPages(
 
                     append(
                         "`${clazz.intermediaryName}`" +
-                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -97,9 +103,11 @@ fun classesToPages(
 
                     append(
                         "`${clazz.intermediaryName}`" +
-                            (clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                clazz.mappedName.mapIfNotNullOrNotEquals(clazz.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -128,7 +136,7 @@ fun classesToPages(
 /** Given a set of result classes, format them into a list of pages for the paginator. **/
 fun classesToPages(
     namespace: Namespace,
-    queryResult: QueryResult<MappingsContainer, ClassResultList>
+    queryResult: ClassResults
 ) =
     classesToPages(namespace, queryResult.map { it.map { inner -> inner.value }.toList() }.value)
 
@@ -144,7 +152,7 @@ val classesToPages = { namespace: Namespace, _: MappingsContainer, classes: Clas
 fun fieldsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    fields: List<Pair<Class, Field>>,
+    fields: List<MemberEntry<Field>>,
     mapDescriptors: Boolean = true
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
@@ -173,9 +181,11 @@ fun fieldsToPages(
 
                     append(
                         "`${field.intermediaryName}`" +
-                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -188,9 +198,11 @@ fun fieldsToPages(
 
                     append(
                         "`${field.intermediaryName}`" +
-                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -219,9 +231,11 @@ fun fieldsToPages(
 
                     append(
                         "`${field.intermediaryName}`" +
-                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -234,9 +248,11 @@ fun fieldsToPages(
 
                     append(
                         "`${field.intermediaryName}`" +
-                            (field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                field.mappedName.mapIfNotNullOrNotEquals(field.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -298,7 +314,7 @@ fun fieldsToPages(
 fun methodsToPages(
     namespace: Namespace,
     mappings: MappingsContainer,
-    methods: List<Pair<Class, Method>>,
+    methods: List<MemberEntry<Method>>,
     mapDescriptors: Boolean = true
 ): List<Pair<String, String>> {
     val pages = mutableListOf<Pair<String, String>>()
@@ -320,9 +336,11 @@ fun methodsToPages(
 
                     append(
                         "`${method.intermediaryName}`" +
-                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -335,9 +353,11 @@ fun methodsToPages(
 
                     append(
                         "`${method.intermediaryName}`" +
-                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
             }.trimEnd('\n')
@@ -365,9 +385,11 @@ fun methodsToPages(
 
                     append(
                         "`${method.intermediaryName}`" +
-                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -380,9 +402,11 @@ fun methodsToPages(
 
                     append(
                         "`${method.intermediaryName}`" +
-                            (method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
-                                " -> `$name`"
-                            } ?: "")
+                            (
+                                method.mappedName.mapIfNotNullOrNotEquals(method.intermediaryName) { name ->
+                                    " -> `$name`"
+                                } ?: ""
+                                )
                     )
                 }
 
@@ -438,6 +462,7 @@ fun methodsToPages(
 
 /** Given a set of class mapping matches, format them into a list of pages for the paginator. **/
 fun classMatchesToPages(
+    outputContainer: MappingsContainer,
     matches: List<Pair<Class, Class>>
 ): List<String> {
     val pages = mutableListOf<String>()
@@ -446,7 +471,14 @@ fun classMatchesToPages(
         val text = match.joinToString("\n\n") { (input, output) ->
 
             val inputName = input.mappedName ?: input.optimumName
-            val outputName = output.mappedName ?: output.optimumName
+
+            val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                // Because of requests and how hashed is often used for its hashes rather than the names,
+                // we call from "intermediary" instead of mapped.
+                output.intermediaryName
+            } else {
+                output.mappedName ?: output.optimumName
+            }
 
             "**Class:** `$inputName` -> `$outputName`"
         }
@@ -457,14 +489,14 @@ fun classMatchesToPages(
 }
 
 /** Convienence function for making code more generalized. */
-val classMatchesToPages = { _: MappingsContainer, classMatches: Matches<Class> ->
-    classMatchesToPages(classMatches.toList())
+val classMatchesToPages = { outputContainer: MappingsContainer, classMatches: Matches<Class> ->
+    classMatchesToPages(outputContainer, classMatches.toList())
 }
 
 /** Given a set of field mapping matches, format them into a list of pages for the paginator. **/
 fun fieldMatchesToPages(
     outputContainer: MappingsContainer,
-    matches: List<Pair<Pair<Class, Field>, Pair<Class, Field>>>
+    matches: List<Pair<MemberEntry<Field>, MemberEntry<Field>>>
 ): List<String> {
     val pages = mutableListOf<String>()
 
@@ -475,9 +507,20 @@ fun fieldMatchesToPages(
             val mappedDesc = outputField.getMappedDesc(outputContainer)
 
             val inputName = inputField.mappedName ?: inputField.optimumName
-            val outputName = outputField.mappedName ?: outputField.optimumName
+
+            val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                outputField.intermediaryName
+            } else {
+                outputField.mappedName ?: outputField.optimumName
+            }
+
             val inputClassName = inputClass.mappedName ?: inputClass.optimumName
-            val outputClassName = outputClass.mappedName ?: outputClass.optimumName
+
+            val outputClassName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                outputClass.intermediaryName
+            } else {
+                outputClass.mappedName ?: outputClass.optimumName
+            }
 
             buildString {
                 append("**Field:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`")
@@ -502,14 +545,14 @@ fun fieldMatchesToPages(
 }
 
 /** Convenience function for making code more generalized. */
-val fieldMatchesToPages = { outputContainer: MappingsContainer, fieldMatches: Matches<Pair<Class, Field>> ->
+val fieldMatchesToPages = { outputContainer: MappingsContainer, fieldMatches: Matches<MemberEntry<Field>> ->
     fieldMatchesToPages(outputContainer, fieldMatches.toList())
 }
 
 /** Given a set of method mapping matches, format them into a list of pages for the paginator. **/
 fun methodMatchesToPages(
     outputContainer: MappingsContainer,
-    matches: List<Pair<Pair<Class, Method>, Pair<Class, Method>>>
+    matches: List<Pair<MemberEntry<Method>, MemberEntry<Method>>>
 ): List<String> {
     val pages = mutableListOf<String>()
 
@@ -520,9 +563,20 @@ fun methodMatchesToPages(
             val mappedDesc = outputMethod.getMappedDesc(outputContainer)
 
             val inputName = inputMethod.mappedName ?: inputMethod.optimumName
-            val outputName = outputMethod.mappedName ?: outputMethod.optimumName
+
+            val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                outputMethod.intermediaryName
+            } else {
+                outputMethod.mappedName ?: outputMethod.optimumName
+            }
+
             val inputClassName = inputClass.mappedName ?: inputClass.optimumName
-            val outputClassName = outputClass.mappedName ?: outputClass.optimumName
+
+            val outputClassName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+                outputClass.intermediaryName
+            } else {
+                outputClass.mappedName ?: outputClass.optimumName
+            }
 
             "**Method:** `$inputClassName::$inputName` -> `$outputClassName::$outputName`" +
                 "\n**Description:** `$mappedDesc`"
@@ -534,7 +588,7 @@ fun methodMatchesToPages(
 }
 
 /** Convienence function for making code more generalized. */
-val methodMatchesToPages = { outputContainer: MappingsContainer, methodMatches: Matches<Pair<Class, Method>> ->
+val methodMatchesToPages = { outputContainer: MappingsContainer, methodMatches: Matches<MemberEntry<Method>> ->
     methodMatchesToPages(outputContainer, methodMatches.toList())
 }
 
