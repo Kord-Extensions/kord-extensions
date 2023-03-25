@@ -109,7 +109,7 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
         builder.stringSelect(id) {
             this.allowedValues = minimumChoices..maximumChoices!!
 
-            @Suppress("DEPRECATION")  // Kord suppresses this in their own class
+            @Suppress("DEPRECATION_ERROR")  // Kord suppresses this in their own class
             this.options.addAll(this@SelectMenu.options)
             this.placeholder = this@SelectMenu.placeholder
 
