@@ -25,7 +25,10 @@ jobs:
         id: project-version
 
         run: |
-          echo "version=$(kotlin .github/get-version.main.kts)" >> $GITHUB_OUTPUT
+          VERSION=$(kotlin .github/get-version.main.kts)
+
+          echo "Project version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Set up Gradle properties
 
