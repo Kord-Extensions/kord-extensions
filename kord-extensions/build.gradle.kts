@@ -23,8 +23,6 @@ metadata {
 }
 
 dependencies {
-    api(libs.h2)
-    api(libs.hikari)
     api(libs.icu4j)  // For translations
     api(libs.koin.core)
     api(libs.koin.logger)

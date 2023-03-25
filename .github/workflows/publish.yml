@@ -3,8 +3,7 @@ name: Publish
 on:
   push:
     branches:
-      - "develop"
-      - "forums"
+      - "root"
 
 jobs:
   publish:
@@ -19,6 +18,15 @@ jobs:
         with:
           java-version: 1.14
 
+      - name: Set up Kotlin
+        uses: fwilhe2/setup-kotlin@main
+
+      - name: Get version
+        id: project-version
+
+        run: |
+          echo "version=$(kotlin .github/get-version.main.kts)" >> $GITHUB_OUTPUT
+
       - name: Set up Gradle properties
 
         run: |
@@ -28,11 +36,14 @@ jobs:
 
       - name: Gradle (Build)
         uses: gradle/gradle-build-action@v2
+
         with:
           arguments: checkLicenses build
 
       - name: Gradle (Publish)
         uses: gradle/gradle-build-action@v2
+
+        if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
 
         env:
           ORG_GRADLE_PROJECT_signingKey: "${{ secrets.GPG_KEY }}"
@@ -64,4 +75,3 @@ jobs:
         with:
           name: JARs (Modules)
           path: modules/*/build/libs/*.jar
-

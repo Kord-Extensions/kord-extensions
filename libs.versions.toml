@@ -5,17 +5,14 @@ kotlin = "1.8.0"  # Note: Plugin versions must be updated in buildSrc/build.grad
 
 commons-validator = "1.7"
 groovy = "3.0.14"
-h2 = "2.1.214"
-hikari = "5.0.1"
 icu4j = "72.1"
 jansi = "2.4.0"
 jsoup = "1.15.3"
 junit = "5.9.1"
 koin = "3.3.0"
 konf = "1.1.2"
-#kord = "forums-SNAPSHOT"
-kord = "0.8.x-SNAPSHOT"
-#kord = "0.8.0-M14"
+#kord = "0.8.x-SNAPSHOT"
+kord = "0.8.0"
 kotlinpoet = "1.12.0"
 ksp = "1.8.0-1.0.8"
 ktor = "2.2.2"
@@ -34,8 +31,6 @@ commons-validator = { module = "commons-validator:commons-validator", version.re
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 detekt-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
 groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
-h2 = { module = "com.h2database:h2", version.ref = "h2" }
-hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 icu4j = { module = "com.ibm.icu:icu4j", version.ref = "icu4j" }
 jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
