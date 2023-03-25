@@ -17,6 +17,7 @@ import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
+import dev.kord.rest.builder.component.options
 import io.sentry.Sentry
 import mu.KLogger
 import mu.KotlinLogging
@@ -109,7 +110,6 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
         builder.stringSelect(id) {
             this.allowedValues = minimumChoices..maximumChoices!!
 
-            @Suppress("DEPRECATION_ERROR")  // Kord suppresses this in their own class
             this.options.addAll(this@SelectMenu.options)
             this.placeholder = this@SelectMenu.placeholder
 
