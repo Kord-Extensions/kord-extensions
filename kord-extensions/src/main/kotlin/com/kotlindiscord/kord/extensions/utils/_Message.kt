@@ -147,7 +147,7 @@ public suspend inline fun MessageBehavior.deleteReaction(emoji: GuildEmoji): Uni
 /**
  * Remove a reaction from this message, using the Unicode emoji represented by the given string.
  *
- * @param emoji Emoji to remove from the message.
+ * @param unicode Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit = deleteReaction(unicode.toReaction())
 
@@ -162,7 +162,7 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): 
 /**
  * Remove a reaction from this message belonging to the bot, using the Unicode emoji represented by the given string.
  *
- * @param emoji Emoji to remove from the message.
+ * @param unicode Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit =
     deleteOwnReaction(unicode.toReaction())
@@ -277,7 +277,7 @@ public suspend fun Message.requireChannel(
     val topRole = if (getGuildOrNull() == null) {
         null
     } else {
-        getAuthorAsMember()!!.getTopRole()
+        getAuthorAsMemberOrNull()?.getTopRole()
     }
 
     val messageChannel = getChannelOrNull()

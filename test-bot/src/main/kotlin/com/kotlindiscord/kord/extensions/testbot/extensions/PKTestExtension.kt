@@ -41,7 +41,7 @@ public class PKTestExtension : Extension() {
         }
 
         event<UnProxiedMessageCreateEvent> {
-            check { failIf(event.message.getAuthorAsMember()?.isBot != false) }
+            check { failIf(event.message.getAuthorAsMemberOrNull()?.isBot != false) }
 
             action {
                 action {
@@ -53,7 +53,7 @@ public class PKTestExtension : Extension() {
         }
 
         event<UnProxiedMessageUpdateEvent> {
-            check { failIf(event.message.asMessageOrNull()?.getAuthorAsMember()?.isBot != false) }
+            check { failIf(event.message.asMessageOrNull()?.getAuthorAsMemberOrNull()?.isBot != false) }
 
             action {
                 event.getMessage().respond(pingInReply = false) {
@@ -63,7 +63,7 @@ public class PKTestExtension : Extension() {
         }
 
         event<UnProxiedMessageDeleteEvent> {
-            check { failIf(event.message?.getAuthorAsMember()?.isBot != false) }
+            check { failIf(event.message?.getAuthorAsMemberOrNull()?.isBot != false) }
 
             action {
                 event.channel.createMessage {

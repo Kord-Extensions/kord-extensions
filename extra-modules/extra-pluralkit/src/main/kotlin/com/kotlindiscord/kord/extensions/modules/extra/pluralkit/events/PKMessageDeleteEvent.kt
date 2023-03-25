@@ -183,7 +183,7 @@ internal suspend fun MessageDeleteEvent.unproxied(): UnProxiedMessageDeleteEvent
         channelId,
         message,
         guildId,
-        message?.getAuthorAsMember(),
+        message?.getAuthorAsMemberOrNull(),
         message?.referencedMessage,
         shard
     )
