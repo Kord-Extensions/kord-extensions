@@ -9,6 +9,7 @@
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.events
 
 import com.kotlindiscord.kord.extensions.events.KordExEvent
+import com.kotlindiscord.kord.extensions.events.interfaces.ChannelEvent
 import com.kotlindiscord.kord.extensions.events.interfaces.GuildEvent
 import com.kotlindiscord.kord.extensions.events.interfaces.MemberEvent
 import com.kotlindiscord.kord.extensions.events.interfaces.MessageEvent
@@ -19,7 +20,9 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.MemberBehavior
 import dev.kord.core.behavior.UserBehavior
+import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.entity.*
+import dev.kord.core.entity.channel.Channel
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
@@ -42,18 +45,19 @@ sealed class PKMessageCreateEvent(
     open val repliedToMessage: Message?,
     override val shard: Int,
     override val supplier: EntitySupplier = event.kord.defaultSupplier,
-) : KordExEvent, Strategizable, MessageEvent, GuildEvent, MemberEvent {
+) : KordExEvent, Strategizable, MessageEvent, GuildEvent, MemberEvent, ChannelEvent {
     /** @suppress Forwards to [repliedToMessage], **/
     val referencedMessage get() = repliedToMessage
 
     override val guild: GuildBehavior? get() = guildId?.let { kord.unsafe.guild(it) }
     override val member: MemberBehavior? get() = author
     override val user: UserBehavior? get() = author
+    override val channel: ChannelBehavior get() = message.channel
 
     override suspend fun getGuild(): Guild = getGuildOrNull()!!
     override suspend fun getGuildOrNull(): Guild? = guildId?.let { supplier.getGuildOrNull(it) }
 
-    override suspend fun getMember(): Member  = author!!
+    override suspend fun getMember(): Member = author!!
     override suspend fun getMemberOrNull(): Member? = author
 
     override suspend fun getMessage(): Message = message
@@ -61,6 +65,9 @@ sealed class PKMessageCreateEvent(
 
     override suspend fun getUser(): User = author!!
     override suspend fun getUserOrNull(): User? = author
+
+    override suspend fun getChannel(): Channel = channel.asChannel()
+    override suspend fun getChannelOrNull(): Channel? = getChannel()
 }
 
 /**

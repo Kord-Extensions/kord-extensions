@@ -19,7 +19,6 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.cache.data.toData
 import dev.kord.core.entity.Member
-import dev.kord.core.entity.interaction.GuildApplicationCommandInteraction
 import dev.kord.core.entity.interaction.Interaction
 import dev.kord.core.event.Event
 import dev.kord.core.event.channel.*
@@ -67,8 +66,6 @@ public suspend fun channelFor(event: Event): ChannelBehavior? {
         is TypingStartEvent -> event.channel
         is WebhookUpdateEvent -> event.channel
 
-        is ThreadChannelCreateEvent -> event.channel
-        is ThreadUpdateEvent -> event.channel
         is ThreadChannelDeleteEvent -> event.old
 //        is ThreadListSyncEvent -> event.
         is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()
@@ -133,8 +130,6 @@ public suspend fun channelIdFor(event: Event): ULong? {
         is TypingStartEvent -> event.channel.id.value
         is WebhookUpdateEvent -> event.channel.id.value
 
-        is ThreadChannelCreateEvent -> event.channel.id.value
-        is ThreadUpdateEvent -> event.channel.id.value
         is ThreadChannelDeleteEvent -> event.channel.id.value
 //        is ThreadListSyncEvent -> event.
         is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()?.id?.value
@@ -177,8 +172,6 @@ public suspend fun channelSnowflakeFor(event: Event): Snowflake? {
         is TypingStartEvent -> event.channel.id
         is WebhookUpdateEvent -> event.channel.id
 
-        is ThreadChannelCreateEvent -> event.channel.id
-        is ThreadUpdateEvent -> event.channel.id
         is ThreadChannelDeleteEvent -> event.channel.id
 //        is ThreadListSyncEvent -> event.
         is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()?.id
@@ -217,12 +210,9 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
 
         is InteractionCreateEvent -> {
             val guildId = event.interaction.data.guildId.value
+                ?: return null
 
-            if (guildId == null) {
-                null
-            } else {
-                event.kord.unsafe.guild(guildId)
-            }
+            event.kord.unsafe.guild(guildId)
         }
 
         is InviteCreateEvent -> event.guild
@@ -235,24 +225,18 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
 
         is MessageCreateEvent -> {
             val guildId = event.message.data.guildId.value
+                ?: return null
 
-            if (guildId == null) {
-                guildId
-            } else {
-                event.kord.unsafe.guild(guildId)
-            }
+            event.kord.unsafe.guild(guildId)
         }
 
         is MessageDeleteEvent -> event.guild
 
         is MessageUpdateEvent -> {
             val guildId = event.new.guildId.value
+                ?: return null
 
-            if (guildId == null) {
-                guildId
-            } else {
-                event.kord.unsafe.guild(guildId)
-            }
+            event.kord.unsafe.guild(guildId)
         }
 
         is NewsChannelCreateEvent -> event.channel.guild
@@ -296,41 +280,48 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
     return when (event) {
         is MemberEvent -> event.member
 
-        is InteractionCreateEvent -> (event.interaction as? GuildApplicationCommandInteraction)?.user
+        is InteractionCreateEvent -> {
+            val guildId = event.interaction.data.guildId.value
+                ?: return null
+
+            event.kord.unsafe
+                .guild(guildId)
+                .getMemberOrNull(event.interaction.user.id)
+        }
+
         is MemberJoinEvent -> event.member
         is MemberUpdateEvent -> event.member
         is MessageCreateEvent -> event.member
+
         is MessageDeleteEvent ->
             event.message?.data?.guildId?.value
-            ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
+                ?.let { event.kord.unsafe.member(it, event.message!!.data.authorId) }
+
         is MessageUpdateEvent -> {
             val message = event.new
+
             if (message.author.value != null && message.member.value != null) {
                 val userData = message.author.value!!.toData()
                 val memberData = message.member.value!!.toData(userData.id, event.new.guildId.value!!)
+
                 return Member(memberData, userData, event.kord)
             }
-            return null
-        }
-        is ReactionAddEvent -> event.userAsMember
-        is ReactionRemoveEvent -> event.userAsMember
-        is TypingStartEvent -> if (event.guildId != null) {
-            event.getGuildOrNull()!!.getMemberOrNull(event.userId)
-        } else {
+
             null
         }
+
+        is ReactionAddEvent -> event.userAsMember
+        is ReactionRemoveEvent -> event.userAsMember
+        is TypingStartEvent -> event.getGuildOrNull()?.getMemberOrNull(event.userId)
         is ThreadChannelCreateEvent -> event.channel.owner.asMember(event.channel.guildId)
 //        event is ThreadUpdateEvent -> event.
 //        event is ThreadChannelDeleteEvent -> event.
 //        event is ThreadListSyncEvent -> event.
         is ThreadMemberUpdateEvent -> {
             val thread = event.member.getThreadOrNull()
+                ?: return null
 
-            if (thread == null) {
-                null
-            } else {
-                event.member.asMember(thread.guildId)
-            }
+            event.member.asMember(thread.guildId)
         }
 
 //        event is ThreadMembersUpdateEvent -> event.
@@ -434,7 +425,7 @@ public suspend fun userFor(event: Event): UserBehavior? {
         is BanAddEvent -> event.user
         is BanRemoveEvent -> event.user
 
-        // We don't deal with selfbots, so we only want the first user - bots can't be in group DMs.
+        // We don't deal with self-bots, so we only want the first user - bots can't be in group DMs.
         is DMChannelCreateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelDeleteEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
         is DMChannelUpdateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }

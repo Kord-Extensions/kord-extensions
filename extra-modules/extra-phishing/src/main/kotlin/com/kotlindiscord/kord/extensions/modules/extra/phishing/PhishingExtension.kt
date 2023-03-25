@@ -188,7 +188,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
             when (settings.detectionAction) {
                 DetectionAction.Ban -> {
-                    message.getAuthorAsMember()!!.ban {
+                    message.getAuthorAsMemberOrNull()!!.ban {
                         reason = "Message contained a phishing domain"
                     }
 
@@ -198,7 +198,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                 DetectionAction.Delete -> message.delete("Message contained a phishing domain")
 
                 DetectionAction.Kick -> {
-                    message.getAuthorAsMember()!!.kick("Message contained a phishing domain")
+                    message.getAuthorAsMemberOrNull()!!.kick("Message contained a phishing domain")
                     message.delete("Message contained a phishing domain")
                 }
 

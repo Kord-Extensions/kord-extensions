@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     branches:
-      - "develop"
+      - "root"
 
 jobs:
   publish:
@@ -18,6 +18,18 @@ jobs:
         with:
           java-version: 1.14
 
+      - name: Set up Kotlin
+        uses: fwilhe2/setup-kotlin@main
+
+      - name: Get version
+        id: project-version
+
+        run: |
+          VERSION=$(kotlin .github/get-version.main.kts)
+
+          echo "Project version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Set up Gradle properties
 
         run: |
@@ -27,11 +39,19 @@ jobs:
 
       - name: Gradle (Build)
         uses: gradle/gradle-build-action@v2
+
         with:
           arguments: checkLicenses build
 
+      - name: Disable parallel publish
+        if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
+
+        run: kotlin .github/disable-parallel.main.kts
+
       - name: Gradle (Publish)
         uses: gradle/gradle-build-action@v2
+
+        if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
 
         env:
           ORG_GRADLE_PROJECT_signingKey: "${{ secrets.GPG_KEY }}"
@@ -41,7 +61,7 @@ jobs:
           OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
 
         with:
-          arguments: publish
+          arguments: publish --no-parallel
 
       - name: Upload artifact (Extra Module JARs)
         uses: actions/upload-artifact@v2
@@ -63,4 +83,3 @@ jobs:
         with:
           name: JARs (Modules)
           path: modules/*/build/libs/*.jar
-

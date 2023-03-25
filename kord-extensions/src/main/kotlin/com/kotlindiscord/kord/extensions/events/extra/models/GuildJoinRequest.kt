@@ -29,15 +29,17 @@ public data class GuildJoinRequest(
     @SerialName("application_status")
     public val status: ApplicationStatus,
 
-    public val id: Snowflake,
+    @SerialName("form_responses")
     public val formResponses: List<GuildJoinRequestResponse>,
-    public val user: DiscordUser,
 
     @SerialName("actioned_by_user")
-    public val actionedByUser: DiscordUser?,
+    public val actionedByUser: DiscordUser? = null,
 
     @SerialName("actioned_at")
-    public val actionedAtSnowflake: Snowflake,
+    public val actionedAtSnowflake: Snowflake? = null,
+
+    public val id: Snowflake,
+    public val user: DiscordUser,
 
     // last_seen?
 ) {
@@ -45,7 +47,7 @@ public data class GuildJoinRequest(
         user.id == actionedByUser?.id
     }
 
-    public val actionedAt: Instant by lazy {
-        actionedAtSnowflake.timestamp
+    public val actionedAt: Instant? by lazy {
+        actionedAtSnowflake?.timestamp
     }
 }
