@@ -40,6 +40,10 @@ jobs:
         with:
           arguments: checkLicenses build
 
+      - name: Disable parallel publish
+
+        run: kotlin .github/disable-parallel.main.kts
+
       - name: Gradle (Publish)
         uses: gradle/gradle-build-action@v2
 
@@ -51,7 +55,7 @@ jobs:
           OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
 
         with:
-          arguments: publish
+          arguments: publish --no-parallel
 
       - name: Create release description
         run: kotlin .github/tag.main.kts
