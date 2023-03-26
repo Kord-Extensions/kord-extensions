@@ -83,17 +83,13 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
     /** Translation cache, so we don't have to look up translations every time. **/
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
-    /**
-     * @suppress
-     */
+    /** Command specific cooldown lambdas, stored per [CooldownType], use [cooldown] to set these. **/
     public open val cooldownMap: MutableMap<CooldownType, suspend (context: DiscriminatingContext) -> Duration> =
-        HashMap()
+        mutableMapOf()
 
-    /**
-     * @suppress
-     */
+    /** Command specific ratelimit lambdas, stored per [RateLimitType], use [ratelimit] to set these. **/
     public open val ratelimitMap: MutableMap<RateLimitType, suspend (context: DiscriminatingContext) -> RateLimit> =
-        HashMap()
+        mutableMapOf()
 
     // region: DSL functions
 
@@ -147,11 +143,12 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
     /** Returns the full hierarchy of names until this command, locale can be used for translation. **/
     public open fun getFullName(locale: Locale? = null): String = name
 
-    internal open suspend fun onSuccessUseLimitUpdate(
+    /** Notifies the configured uselimitters that a command ran, so they can update their states. **/
+    public abstract suspend fun onSuccessUseLimitUpdate(
         commandContext: CommandContext,
         invocationEvent: CommandInvocationEvent<*, *>,
         success: Boolean
-    ) { }
+    )
 
     /** Checks whether the bot has the specified required permissions, throwing if it doesn't. **/
     @Throws(DiscordRelayedException::class)

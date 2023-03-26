@@ -128,15 +128,6 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
         null
     }
 
-    override suspend fun onSuccessUseLimitUpdate(
-        commandContext: CommandContext,
-        invocationEvent: CommandInvocationEvent<*, *>,
-        success: Boolean,
-    ) {
-        settings.applicationCommandsBuilder.useLimiterBuilder.cooldownHandler
-            .onExecCooldownUpdate(commandContext, invocationEvent, success)
-    }
-
     /**
      * Does not support translations because discord doesn't support them either.
      * @param locale does not have effect here

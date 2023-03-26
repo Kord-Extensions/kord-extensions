@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.checks.hasPermission
 import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.checks.types.CheckWithCache
 import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -172,6 +173,16 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
      */
     public open fun check(vararg checks: CheckWithCache<E>) {
         checkList.addAll(checks)
+    }
+
+    /** Notifies the applicationcommands' cooldownHandler that a command ran, so they can update their states. **/
+    override suspend fun onSuccessUseLimitUpdate(
+        commandContext: CommandContext,
+        invocationEvent: CommandInvocationEvent<*, *>,
+        success: Boolean,
+    ) {
+        settings.applicationCommandsBuilder.useLimiterBuilder.cooldownHandler
+            .onExecCooldownUpdate(commandContext, invocationEvent, success)
     }
 
     /**

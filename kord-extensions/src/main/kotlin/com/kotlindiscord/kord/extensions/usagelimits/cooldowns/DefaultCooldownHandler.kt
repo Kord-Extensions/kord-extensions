@@ -191,16 +191,16 @@ public open class DefaultCooldownHandler : CooldownHandler {
         success: Boolean,
     ) {
         if (!success) return
-        for (t in CachedUsageLimitType.values()) {
-            val u = commandContext.command.cooldownMap[t]
-            val commandDuration = u?.let { it(context) } ?: Duration.ZERO
-            val providedCooldown = cooldownProvider.getCooldown(context, t)
-            val progressiveCommandDuration = commandContext.cooldownCounters[t] ?: Duration.ZERO
+        for (usageLimitType in CachedUsageLimitType.values()) {
+            val cooldownDurationProvider = commandContext.command.cooldownMap[usageLimitType]
+            val commandDuration = cooldownDurationProvider?.let { it(context) } ?: Duration.ZERO
+            val providedCooldown = cooldownProvider.getCooldown(context, usageLimitType)
+            val progressiveCommandDuration = commandContext.cooldownCounters[usageLimitType] ?: Duration.ZERO
 
             val cooldowns = arrayOf(commandDuration, providedCooldown, progressiveCommandDuration)
             val longestDuration = cooldowns.max()
 
-            t.setCooldown(context, System.currentTimeMillis() + longestDuration.inWholeMilliseconds)
+            usageLimitType.setCooldown(context, System.currentTimeMillis() + longestDuration.inWholeMilliseconds)
         }
     }
 }

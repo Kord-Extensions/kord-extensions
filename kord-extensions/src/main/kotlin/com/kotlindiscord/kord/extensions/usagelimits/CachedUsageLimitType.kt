@@ -7,7 +7,7 @@
 package com.kotlindiscord.kord.extensions.usagelimits
 
 import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.UsageHistory
-import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.UsageHistoryImpl
+import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.DefaultUsageHistory
 import dev.kord.common.entity.Snowflake
 
 /** Local cache implementation for [UsageLimitType]. **/
@@ -36,7 +36,7 @@ public enum class CachedUsageLimitType : UsageLimitType {
             val commandId = context.event.command.hashCode().toString()
             val userId = context.user.id
 
-            return userCommandHistory[userId to commandId] ?: UsageHistoryImpl()
+            return userCommandHistory[userId to commandId] ?: DefaultUsageHistory()
         }
 
         override fun setUsageHistory(context: DiscriminatingContext, usageHistory: UsageHistory) {
@@ -74,7 +74,7 @@ public enum class CachedUsageLimitType : UsageLimitType {
             val userId = context.user.id
             val channelId = context.channel.id
 
-            return userChannelCommandUsageHistory[Triple(userId, channelId, commandId)] ?: UsageHistoryImpl()
+            return userChannelCommandUsageHistory[Triple(userId, channelId, commandId)] ?: DefaultUsageHistory()
         }
 
         override fun setUsageHistory(context: DiscriminatingContext, usageHistory: UsageHistory) {
@@ -111,9 +111,9 @@ public enum class CachedUsageLimitType : UsageLimitType {
         override fun getUsageHistory(context: DiscriminatingContext): UsageHistory {
             val commandId = context.event.command.hashCode().toString()
             val userId = context.user.id
-            val guildId = context.guildId ?: return UsageHistoryImpl()
+            val guildId = context.guildId ?: return DefaultUsageHistory()
 
-            return userGuildCommandUsageHistory[Triple(userId, guildId, commandId)] ?: UsageHistoryImpl()
+            return userGuildCommandUsageHistory[Triple(userId, guildId, commandId)] ?: DefaultUsageHistory()
         }
 
         override fun setUsageHistory(context: DiscriminatingContext, usageHistory: UsageHistory) {
@@ -138,7 +138,7 @@ public enum class CachedUsageLimitType : UsageLimitType {
         }
 
         override fun getUsageHistory(context: DiscriminatingContext): UsageHistory =
-            userGlobalHistory[context.user.id] ?: UsageHistoryImpl()
+            userGlobalHistory[context.user.id] ?: DefaultUsageHistory()
 
         override fun setUsageHistory(context: DiscriminatingContext, usageHistory: UsageHistory) {
             userGlobalHistory[context.user.id] = usageHistory
@@ -158,7 +158,7 @@ public enum class CachedUsageLimitType : UsageLimitType {
         }
 
         override fun getUsageHistory(context: DiscriminatingContext): UsageHistory =
-            userChannelUsageHistory[context.user.id to context.channel.id] ?: UsageHistoryImpl()
+            userChannelUsageHistory[context.user.id to context.channel.id] ?: DefaultUsageHistory()
 
         override fun setUsageHistory(context: DiscriminatingContext, usageHistory: UsageHistory) {
             userChannelUsageHistory[context.user.id to context.channel.id] = usageHistory
@@ -181,8 +181,8 @@ public enum class CachedUsageLimitType : UsageLimitType {
         }
 
         override fun getUsageHistory(context: DiscriminatingContext): UsageHistory {
-            val guildId = context.guildId ?: return UsageHistoryImpl()
-            return userGuildUsageHistory[context.user.id to guildId] ?: UsageHistoryImpl()
+            val guildId = context.guildId ?: return DefaultUsageHistory()
+            return userGuildUsageHistory[context.user.id to guildId] ?: DefaultUsageHistory()
         }
 
         override fun setUsageHistory(context: DiscriminatingContext, usageHistory: UsageHistory) {
@@ -194,7 +194,7 @@ public enum class CachedUsageLimitType : UsageLimitType {
     // a usageLimit across all commands :thonk: (don't use this lol)
     GLOBAL {
         private var globalCooldown: Long = 0
-        private var globalHistory: UsageHistory = UsageHistoryImpl()
+        private var globalHistory: UsageHistory = DefaultUsageHistory()
 
         override fun getCooldown(context: DiscriminatingContext): Long = globalCooldown
 
@@ -221,7 +221,7 @@ public enum class CachedUsageLimitType : UsageLimitType {
         }
 
         override fun getUsageHistory(context: DiscriminatingContext): UsageHistory =
-            channelUsageHistory[context.channel.id] ?: UsageHistoryImpl()
+            channelUsageHistory[context.channel.id] ?: DefaultUsageHistory()
 
         override fun setUsageHistory(context: DiscriminatingContext, usageHistory: UsageHistory) {
             channelUsageHistory[context.channel.id] = usageHistory
@@ -244,8 +244,8 @@ public enum class CachedUsageLimitType : UsageLimitType {
         }
 
         override fun getUsageHistory(context: DiscriminatingContext): UsageHistory {
-            val guildId = context.guildId ?: return UsageHistoryImpl()
-            return guildUsageHistory[guildId] ?: UsageHistoryImpl()
+            val guildId = context.guildId ?: return DefaultUsageHistory()
+            return guildUsageHistory[guildId] ?: DefaultUsageHistory()
         }
 
         override fun setUsageHistory(context: DiscriminatingContext, usageHistory: UsageHistory) {

@@ -1173,7 +1173,7 @@ public open class ExtensibleBotBuilder {
         /**
          * DSL function used to configure the bot's chat command use limiters.
          *
-         * @see
+         * @see UseLimiterBuilder
          */
         @BotBuilderDSL
         public suspend fun useLimiter(builder: suspend UseLimiterBuilder.() -> Unit) {
@@ -1276,7 +1276,7 @@ public open class ExtensibleBotBuilder {
         /**
          * DSL function used to configure the bot's application command use limiters.
          *
-         * @see
+         * @see UseLimiterBuilder
          */
         @BotBuilderDSL
         public suspend fun useLimiter(builder: suspend UseLimiterBuilder.() -> Unit) {

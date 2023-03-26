@@ -9,10 +9,10 @@ package com.kotlindiscord.kord.extensions.usagelimits.ratelimits
 import java.util.LinkedList
 
 /**
- * Default example implementation of [UsageHistory].
+ * Default implementation of [UsageHistory].
  * Uses linkedLists internally because we are only interested in the total size and update the list frequently.
- * **/
-public open class UsageHistoryImpl : UsageHistory {
+ */
+public open class DefaultUsageHistory : UsageHistory {
 
     override var usages: LinkedList<Long> = LinkedList()
     override var crossedLimits: LinkedList<Long> = LinkedList()
