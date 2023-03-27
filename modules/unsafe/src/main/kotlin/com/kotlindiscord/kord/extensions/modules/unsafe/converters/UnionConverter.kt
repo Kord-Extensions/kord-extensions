@@ -5,9 +5,6 @@
  */
 
 @file:OptIn(
-    KordPreview::class,
-    ConverterToDefaulting::class,
-    ConverterToMulti::class,
     ConverterToOptional::class
 )
 @file:Suppress("StringLiteralDuplication")
@@ -23,7 +20,6 @@ import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.parser.StringParser
-import dev.kord.common.annotation.KordPreview
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
@@ -37,7 +33,6 @@ private typealias GenericConverter = Converter<*, *, *, *>
  *
  * This converter does not support optional or defaulting converters.
  */
-@OptIn(KordPreview::class)
 @UnsafeAPI
 public class UnionConverter(
     private val converters: Collection<GenericConverter>,

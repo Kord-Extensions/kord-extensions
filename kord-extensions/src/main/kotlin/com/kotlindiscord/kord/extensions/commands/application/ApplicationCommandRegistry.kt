@@ -575,15 +575,16 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
         }
     }
 
+    @Suppress("DEPRECATION_ERROR")
     private fun BaseChoiceBuilder<*>.translate(command: ApplicationCommand<*>) {
         choices = choices!!.map {
             val (name, nameLocalizations) = command.localize(it.name)
 
             when (it) {
-                is Choice.IntChoice -> Choice.IntChoice(name, Optional(nameLocalizations), it.value)
                 is Choice.NumberChoice -> Choice.NumberChoice(name, Optional(nameLocalizations), it.value)
                 is Choice.StringChoice -> Choice.StringChoice(name, Optional(nameLocalizations), it.value)
                 is Choice.IntegerChoice -> Choice.IntegerChoice(name, Optional(nameLocalizations), it.value)
+                is Choice.IntChoice -> Choice.IntChoice(name, Optional(nameLocalizations), it.value)
             }
         }.toMutableList()
     }

@@ -20,8 +20,12 @@ idea { // We use this instead of sourceSets b/c we're all IJ users and this fixe
         sourceDirs = sourceDirs +
             file("$buildDir/generated/ksp/main/kotlin")
 
-        testSourceDirs = testSourceDirs +
-            file("$buildDir/generated/ksp/test/kotlin")
+        testSources.setFrom(
+            testSources.from + file("$buildDir/generated/ksp/test/kotlin")
+        )
+
+//        testSourceDirs = testSourceDirs +
+//            file("$buildDir/generated/ksp/test/kotlin")
 
         generatedSourceDirs = generatedSourceDirs +
             file("$buildDir/generated/ksp/main/kotlin") +

@@ -4,8 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("BlockingMethodInNonBlockingContext")
-
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.utils
 
 import kotlinx.serialization.builtins.MapSerializer

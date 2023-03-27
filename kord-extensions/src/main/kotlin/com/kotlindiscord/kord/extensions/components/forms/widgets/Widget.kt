@@ -10,7 +10,7 @@ import dev.kord.rest.builder.component.ActionRowBuilder
 import java.util.*
 
 /** Abstract type representing a grid-based widget. **/
-public abstract class Widget <T : Any?> {
+public abstract class Widget<T : Any?> {
     /** How wide this widget is, in grid cells. **/
     public abstract var width: Int
         protected set

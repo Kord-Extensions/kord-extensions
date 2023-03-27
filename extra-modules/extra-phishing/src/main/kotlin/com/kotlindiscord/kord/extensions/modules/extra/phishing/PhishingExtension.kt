@@ -77,7 +77,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             }
 
             action {
-                handleMessage(event.message)
+                handleMessage(event.message.asMessageOrNull())
             }
         }
 
@@ -92,7 +92,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             }
 
             action {
-                handleMessage(event.message.asMessage())
+                handleMessage(event.message.asMessageOrNull())
             }
         }
 
@@ -140,7 +140,11 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         }
     }
 
-    internal suspend fun handleMessage(message: Message) {
+    internal suspend fun handleMessage(message: Message?) {
+        if (message == null) {
+            return
+        }
+
         val matches = parseDomains(message.content)
 
         if (matches.isNotEmpty()) {
@@ -175,7 +179,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                                 inline = true
 
                                 name = "Server"
-                                value = message.getGuild().name
+                                value = message.getGuildOrNull()?.name ?: "Unable to get guild"
                             }
                         }
                     }
@@ -184,7 +188,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
             when (settings.detectionAction) {
                 DetectionAction.Ban -> {
-                    message.getAuthorAsMember()!!.ban {
+                    message.getAuthorAsMemberOrNull()!!.ban {
                         reason = "Message contained a phishing domain"
                     }
 
@@ -194,7 +198,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                 DetectionAction.Delete -> message.delete("Message contained a phishing domain")
 
                 DetectionAction.Kick -> {
-                    message.getAuthorAsMember()!!.kick("Message contained a phishing domain")
+                    message.getAuthorAsMemberOrNull()!!.kick("Message contained a phishing domain")
                     message.delete("Message contained a phishing domain")
                 }
 
@@ -278,14 +282,15 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         val domains: MutableSet<String> = mutableSetOf()
 
         for (match in settings.urlRegex.findAll(content)) {
-            val found = match.groups[1]!!.value.trim('/')
+            val found = match.groups[1]?.value?.trim('/') ?: continue
+
             var domain = found
 
             if ("/" in domain) {
                 domain = domain
                     .split("/", limit = 2)
-                    .first()
-                    .lowercase()
+                    .firstOrNull()
+                    ?.lowercase() ?: continue
             }
 
             domain = domain.filter { it.isLetterOrDigit() || it in "-+&@#%?=~_|!:,.;" }
@@ -300,8 +305,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
                     ?.first()
                     ?.lowercase()
 
-                if (result in domainCache) {
-                    domains.add(result!!)
+                if (result in domainCache && result != null) {
+                    domains.add(result)
                 }
             }
         }
@@ -311,7 +316,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
         return domains
     }
 
-    @Suppress("MagicNumber")  // HTTP status codes
+    @Suppress("MagicNumber", "TooGenericExceptionCaught")  // HTTP status codes
     internal suspend fun followRedirects(url: String, count: Int = 0): String? {
         if (count >= MAX_REDIRECTS) {
             logger.warn { "Maximum redirect count reached for URL: $url" }
@@ -331,12 +336,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
             }
 
             return url
-        } catch (e: HttpRequestTimeoutException) {
-            logger.warn { "$url -> Request timeout has expired." }
-
-            return url
-        } catch (e: URLParserException) {
-            logger.debug { "$url -> Failed to parse url" }
+        } catch (e: Exception) {
+            logger.warn(e) { url }
 
             return url
         }
@@ -350,7 +351,6 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
             return followRedirects(newUrl, count + 1)
         } else {
-            @Suppress("TooGenericExceptionCaught")
             val soup = try {
                 Jsoup.connect(url).get()
             } catch (e: Exception) {

@@ -76,5 +76,10 @@
       <option name="name" value="Sonatype Snapshots" />
       <option name="url" value="https://oss.sonatype.org/content/repositories/snapshots" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="OSSRH" />
+      <option name="name" value="OSSRH" />
+      <option name="url" value="https://s01.oss.sonatype.org/content/repositories/snapshots/" />
+    </remote-repository>
   </component>
 </project>

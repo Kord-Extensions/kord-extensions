@@ -37,7 +37,6 @@ import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
-import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.core.behavior.channel.asChannelOfOrNull
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.GuildChannel
@@ -112,7 +111,7 @@ class PKExtension : Extension() {
 
         event<MessageCreateEvent> {
             action {
-                val guild = event.getGuild()
+                val guild = event.getGuildOrNull()
 
                 if (guild == null) {
                     kord.launch {
@@ -149,15 +148,22 @@ class PKExtension : Extension() {
                     return@action
                 }
 
-                val channel = topChannelFor(event)!!.asChannelOf<TopGuildMessageChannel>()
+                // This is to work around Kord's lack of support for forum channels. This can go once they're supported.
+                val channel = try {
+                    topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
+                } catch (e: ClassCastException) {
+                    logger.warn(e) { "Failed to cast channel to TopGuildMessageChannel" }
+
+                    null
+                }
 
                 val webhook = try {
                     channel
-                        .asChannelOf<TopGuildMessageChannel>()
-                        .webhooks
-                        .firstOrNull { it.id == webhookId }
+                        ?.asChannelOfOrNull<TopGuildMessageChannel>()
+                        ?.webhooks
+                        ?.firstOrNull { it.id == webhookId }
                 } catch (e: KtorRequestException) {
-                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel.id}" }
+                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel?.id}" }
 
                     null
                 }
@@ -189,7 +195,7 @@ class PKExtension : Extension() {
 
         event<MessageDeleteEvent> {
             action {
-                val guild = event.getGuild()
+                val guild = event.getGuildOrNull()
 
                 if (guild == null) {
                     kord.launch {
@@ -230,15 +236,22 @@ class PKExtension : Extension() {
                     return@action
                 }
 
-                val channel = topChannelFor(event)!!.asChannelOf<TopGuildMessageChannel>()
+                // This is to work around Kord's lack of support for forum channels. This can go once they're supported.
+                val channel = try {
+                    topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
+                } catch (e: ClassCastException) {
+                    logger.warn(e) { "Failed to cast channel to TopGuildMessageChannel" }
+
+                    null
+                }
 
                 val webhook = try {
                     channel
-                        .asChannelOf<TopGuildMessageChannel>()
-                        .webhooks
-                        .firstOrNull { it.id == webhookId }
+                        ?.asChannelOfOrNull<TopGuildMessageChannel>()
+                        ?.webhooks
+                        ?.firstOrNull { it.id == webhookId }
                 } catch (e: KtorRequestException) {
-                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel.id}" }
+                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel?.id}" }
 
                     null
                 }
@@ -266,7 +279,7 @@ class PKExtension : Extension() {
 
         event<MessageUpdateEvent> {
             action {
-                val guild = event.channel.asChannelOfOrNull<GuildChannel>()?.getGuild()
+                val guild = event.channel.asChannelOfOrNull<GuildChannel>()?.getGuildOrNull()
 
                 if (guild == null) {
                     kord.launch {
@@ -297,15 +310,22 @@ class PKExtension : Extension() {
                     return@action
                 }
 
-                val channel = topChannelFor(event)!!.asChannelOf<TopGuildMessageChannel>()
+                // This is to work around Kord's lack of support for forum channels. This can go once they're supported.
+                val channel = try {
+                    topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
+                } catch (e: ClassCastException) {
+                    logger.warn(e) { "Failed to cast channel to TopGuildMessageChannel" }
+
+                    null
+                }
 
                 val webhook = try {
                     channel
-                        .asChannelOf<TopGuildMessageChannel>()
-                        .webhooks
-                        .firstOrNull { it.id == webhookId }
+                        ?.asChannelOfOrNull<TopGuildMessageChannel>()
+                        ?.webhooks
+                        ?.firstOrNull { it.id == webhookId }
                 } catch (e: KtorRequestException) {
-                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel.id}" }
+                    logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel?.id}" }
 
                     null
                 }

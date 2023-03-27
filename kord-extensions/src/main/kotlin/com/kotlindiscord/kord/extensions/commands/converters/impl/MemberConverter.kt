@@ -73,7 +73,7 @@ public class MemberConverter(
             val messageReference = context.message.asMessage().messageReference
 
             if (messageReference != null) {
-                val member = messageReference.message?.asMessage()?.getAuthorAsMember()
+                val member = messageReference.message?.asMessage()?.getAuthorAsMemberOrNull()
 
                 if (member != null) {
                     parsed = member
