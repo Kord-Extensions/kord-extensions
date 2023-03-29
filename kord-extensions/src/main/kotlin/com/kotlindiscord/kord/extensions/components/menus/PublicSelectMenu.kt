@@ -22,7 +22,7 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
-/** Class for public select menus. **/
+/** Class representing a public-only select (dropdown) menu. **/
 public abstract class PublicSelectMenu<C, M : ModalForm>(
     timeoutTask: Task?,
     public override val modal: (() -> M)? = null,

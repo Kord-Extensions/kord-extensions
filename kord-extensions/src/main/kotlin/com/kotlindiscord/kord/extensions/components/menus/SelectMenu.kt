@@ -19,20 +19,11 @@ import io.sentry.Sentry
 import mu.KLogger
 import mu.KotlinLogging
 
-/** Maximum length for an option's description. **/
-public const val DESCRIPTION_MAX: Int = 100
-
-/** Maximum length for an option's label. **/
-public const val LABEL_MAX: Int = 100
-
 /** Maximum number of options for a menu. **/
 public const val OPTIONS_MAX: Int = 25
 
 /** Maximum length for a menu's placeholder. **/
 public const val PLACEHOLDER_MAX: Int = 100
-
-/** Maximum length for an option's value. **/
-public const val VALUE_MAX: Int = 100
 
 /** Abstract class representing a select (dropdown) menu component. **/
 public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(

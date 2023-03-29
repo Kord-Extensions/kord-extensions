@@ -21,7 +21,7 @@ import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
-/** Interface for ephemeral select menus. **/
+/** Class representing an ephemeral-only select (dropdown) menu. **/
 public abstract class EphemeralSelectMenu<C, M : ModalForm>(
     timeoutTask: Task?,
     public override val modal: (() -> M)? = null,

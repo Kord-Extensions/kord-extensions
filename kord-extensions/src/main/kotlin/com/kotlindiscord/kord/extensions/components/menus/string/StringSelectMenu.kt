@@ -12,6 +12,15 @@ import dev.kord.rest.builder.component.SelectOptionBuilder
 import dev.kord.rest.builder.component.StringSelectBuilder
 import dev.kord.rest.builder.component.options
 
+/** Maximum length for an option's description. **/
+public const val DESCRIPTION_MAX: Int = 100
+
+/** Maximum length for an option's label. **/
+public const val LABEL_MAX: Int = 100
+
+/** Maximum length for an option's value. **/
+public const val VALUE_MAX: Int = 100
+
 /** Interface for string select menus. **/
 public interface StringSelectMenu {
     /** List of options for the user to choose from. **/

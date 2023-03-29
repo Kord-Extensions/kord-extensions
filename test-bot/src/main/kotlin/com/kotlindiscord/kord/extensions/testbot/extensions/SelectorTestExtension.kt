@@ -15,7 +15,6 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.ChannelType
 import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.core.entity.channel.TextChannel
-import kotlinx.coroutines.runBlocking
 
 public class SelectorTestExtension : Extension() {
     override val name: String = "Select Menus Test"
@@ -47,9 +46,7 @@ public class SelectorTestExtension : Extension() {
 
                                 action {
                                     respond {
-                                        content = selected.joinToString("\n") {
-                                            runBlocking { it.asUser().username }
-                                        }
+                                        content = selected.map { it.asUser().username }.joinToString("\n")
                                     }
                                 }
                             }
@@ -59,9 +56,7 @@ public class SelectorTestExtension : Extension() {
 
                                 action {
                                     respond {
-                                        content = selected.joinToString("\n") {
-                                            runBlocking { it.asRole().name }
-                                        }
+                                        content = selected.map { it.asRole().name }.joinToString("\n")
                                     }
                                 }
                             }
@@ -71,9 +66,7 @@ public class SelectorTestExtension : Extension() {
 
                                 action {
                                     respond {
-                                        content = selected.joinToString("\n") {
-                                            runBlocking { it.asChannel().id.value.toString() }
-                                        }
+                                        content = selected.map { it.id.value }.joinToString("\n")
                                     }
                                 }
                             }
@@ -84,9 +77,7 @@ public class SelectorTestExtension : Extension() {
 
                                 action {
                                     respond {
-                                        content = selected.joinToString("\n") {
-                                            runBlocking { it.asChannelOf<TextChannel>().name }
-                                        }
+                                        content = selected.map { it.asChannelOf<TextChannel>().name }.joinToString("\n")
                                     }
                                 }
                             }
@@ -117,9 +108,7 @@ public class SelectorTestExtension : Extension() {
 
                                 action {
                                     respond {
-                                        content = selected.joinToString("\n") {
-                                            runBlocking { it.asUser().username }
-                                        }
+                                        content = selected.map { it.asUser().username }.joinToString("\n")
                                     }
                                 }
                             }
@@ -129,9 +118,7 @@ public class SelectorTestExtension : Extension() {
 
                                 action {
                                     respond {
-                                        content = selected.joinToString("\n") {
-                                            runBlocking { it.asRole().name }
-                                        }
+                                        content = selected.map { it.asRole().name }.joinToString("\n")
                                     }
                                 }
                             }
@@ -141,9 +128,7 @@ public class SelectorTestExtension : Extension() {
 
                                 action {
                                     respond {
-                                        content = selected.joinToString("\n") {
-                                            runBlocking { it.asChannel().id.value.toString() }
-                                        }
+                                        content = selected.map { it.id.value }.joinToString("\n")
                                     }
                                 }
                             }
@@ -154,9 +139,7 @@ public class SelectorTestExtension : Extension() {
 
                                 action {
                                     respond {
-                                        content = selected.joinToString("\n") {
-                                            runBlocking { it.asChannelOf<TextChannel>().name }
-                                        }
+                                        content = selected.map { it.asChannelOf<TextChannel>().name }.joinToString("\n")
                                     }
                                 }
                             }
