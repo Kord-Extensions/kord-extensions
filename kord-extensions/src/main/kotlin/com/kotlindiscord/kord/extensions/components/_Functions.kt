@@ -26,7 +26,7 @@ import kotlin.time.Duration
 /** DSL function for creating a disabled button and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.disabledButton(
     row: Int? = null,
-    builder: suspend DisabledInteractionButton.() -> Unit
+    builder: suspend DisabledInteractionButton.() -> Unit,
 ): DisabledInteractionButton {
     val component = DisabledInteractionButton()
 
@@ -39,7 +39,7 @@ public suspend fun ComponentContainer.disabledButton(
 /** DSL function for creating an ephemeral button and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.ephemeralButton(
     row: Int? = null,
-    builder: suspend EphemeralInteractionButton<ModalForm>.() -> Unit
+    builder: suspend EphemeralInteractionButton<ModalForm>.() -> Unit,
 ): EphemeralInteractionButton<ModalForm> {
     val component = EphemeralInteractionButton<ModalForm>(timeoutTask)
 
@@ -53,7 +53,7 @@ public suspend fun ComponentContainer.ephemeralButton(
 public suspend fun <M : ModalForm> ComponentContainer.ephemeralButton(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend EphemeralInteractionButton<M>.() -> Unit
+    builder: suspend EphemeralInteractionButton<M>.() -> Unit,
 ): EphemeralInteractionButton<M> {
     val component = EphemeralInteractionButton(timeoutTask, modal)
 
@@ -66,7 +66,7 @@ public suspend fun <M : ModalForm> ComponentContainer.ephemeralButton(
 /** DSL function for creating a link button and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.linkButton(
     row: Int? = null,
-    builder: suspend LinkInteractionButton.() -> Unit
+    builder: suspend LinkInteractionButton.() -> Unit,
 ): LinkInteractionButton {
     val component = LinkInteractionButton()
 
@@ -79,7 +79,7 @@ public suspend fun ComponentContainer.linkButton(
 /** DSL function for creating a public button and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.publicButton(
     row: Int? = null,
-    builder: suspend PublicInteractionButton<ModalForm>.() -> Unit
+    builder: suspend PublicInteractionButton<ModalForm>.() -> Unit,
 ): PublicInteractionButton<ModalForm> {
     val component = PublicInteractionButton<ModalForm>(timeoutTask)
 
@@ -93,7 +93,7 @@ public suspend fun ComponentContainer.publicButton(
 public suspend fun <M : ModalForm> ComponentContainer.publicButton(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend PublicInteractionButton<M>.() -> Unit
+    builder: suspend PublicInteractionButton<M>.() -> Unit,
 ): PublicInteractionButton<M> {
     val component = PublicInteractionButton(timeoutTask, modal)
 
@@ -104,9 +104,30 @@ public suspend fun <M : ModalForm> ComponentContainer.publicButton(
 }
 
 /** DSL function for creating an ephemeral string select menu and adding it to the current [ComponentContainer]. **/
+@Deprecated(
+    message = "Deprecated to allow other option types.",
+    replaceWith = ReplaceWith("this.ephemeralStringSelectMenu(row, builder)")
+)
+public suspend fun ComponentContainer.ephemeralSelectMenu(
+    row: Int? = null,
+    builder: suspend EphemeralStringSelectMenu<ModalForm>.() -> Unit,
+): EphemeralStringSelectMenu<ModalForm> = ephemeralStringSelectMenu(row, builder)
+
+/** DSL function for creating an ephemeral string select menu and adding it to the current [ComponentContainer]. **/
+@Deprecated(
+    message = "Deprecated to allow other option types.",
+    replaceWith = ReplaceWith("this.ephemeralStringSelectMenu(modal, row, builder)")
+)
+public suspend fun <M : ModalForm> ComponentContainer.ephemeralSelectMenu(
+    modal: (() -> M)?,
+    row: Int? = null,
+    builder: suspend EphemeralStringSelectMenu<M>.() -> Unit,
+): EphemeralStringSelectMenu<M> = ephemeralStringSelectMenu(modal, row, builder)
+
+/** DSL function for creating an ephemeral string select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.ephemeralStringSelectMenu(
     row: Int? = null,
-    builder: suspend EphemeralStringSelectMenu<ModalForm>.() -> Unit
+    builder: suspend EphemeralStringSelectMenu<ModalForm>.() -> Unit,
 ): EphemeralStringSelectMenu<ModalForm> {
     val component = EphemeralStringSelectMenu<ModalForm>(timeoutTask)
 
@@ -120,9 +141,9 @@ public suspend fun ComponentContainer.ephemeralStringSelectMenu(
 public suspend fun <M : ModalForm> ComponentContainer.ephemeralStringSelectMenu(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend EphemeralStringSelectMenu<M>.() -> Unit
+    builder: suspend EphemeralStringSelectMenu<M>.() -> Unit,
 ): EphemeralStringSelectMenu<M> {
-    val component = EphemeralStringSelectMenu<M>(timeoutTask, modal)
+    val component = EphemeralStringSelectMenu(timeoutTask, modal)
 
     builder(component)
     add(component, row)
@@ -131,9 +152,30 @@ public suspend fun <M : ModalForm> ComponentContainer.ephemeralStringSelectMenu(
 }
 
 /** DSL function for creating a public string select menu and adding it to the current [ComponentContainer]. **/
+@Deprecated(
+    message = "Deprecated to allow other option types.",
+    replaceWith = ReplaceWith("this.publicStringSelectMenu(row, builder)")
+)
+public suspend fun ComponentContainer.publicSelectMenu(
+    row: Int? = null,
+    builder: suspend PublicStringSelectMenu<ModalForm>.() -> Unit,
+): PublicStringSelectMenu<ModalForm> = publicStringSelectMenu(row, builder)
+
+/** DSL function for creating a public string select menu and adding it to the current [ComponentContainer]. **/
+@Deprecated(
+    message = "Deprecated to allow other option types.",
+    replaceWith = ReplaceWith("this.publicStringSelectMenu(modal, row, builder)")
+)
+public suspend fun <M : ModalForm> ComponentContainer.publicSelectMenu(
+    modal: (() -> M)?,
+    row: Int? = null,
+    builder: suspend PublicStringSelectMenu<M>.() -> Unit,
+): PublicStringSelectMenu<M> = publicStringSelectMenu(modal, row, builder)
+
+/** DSL function for creating a public string select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.publicStringSelectMenu(
     row: Int? = null,
-    builder: suspend PublicStringSelectMenu<ModalForm>.() -> Unit
+    builder: suspend PublicStringSelectMenu<ModalForm>.() -> Unit,
 ): PublicStringSelectMenu<ModalForm> {
     val component = PublicStringSelectMenu<ModalForm>(timeoutTask)
 
@@ -147,7 +189,7 @@ public suspend fun ComponentContainer.publicStringSelectMenu(
 public suspend fun <M : ModalForm> ComponentContainer.publicStringSelectMenu(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend PublicStringSelectMenu<M>.() -> Unit
+    builder: suspend PublicStringSelectMenu<M>.() -> Unit,
 ): PublicStringSelectMenu<M> {
     val component = PublicStringSelectMenu(timeoutTask, modal)
 
@@ -160,7 +202,7 @@ public suspend fun <M : ModalForm> ComponentContainer.publicStringSelectMenu(
 /** DSL function for creating an ephemeral user select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.ephemeralUserSelectMenu(
     row: Int? = null,
-    builder: suspend EphemeralUserSelectMenu<ModalForm>.() -> Unit
+    builder: suspend EphemeralUserSelectMenu<ModalForm>.() -> Unit,
 ): EphemeralUserSelectMenu<ModalForm> {
     val component = EphemeralUserSelectMenu<ModalForm>(timeoutTask)
 
@@ -174,7 +216,7 @@ public suspend fun ComponentContainer.ephemeralUserSelectMenu(
 public suspend fun <M : ModalForm> ComponentContainer.ephemeralUserSelectMenu(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend EphemeralUserSelectMenu<M>.() -> Unit
+    builder: suspend EphemeralUserSelectMenu<M>.() -> Unit,
 ): EphemeralUserSelectMenu<M> {
     val component = EphemeralUserSelectMenu<M>(timeoutTask, modal)
 
@@ -187,7 +229,7 @@ public suspend fun <M : ModalForm> ComponentContainer.ephemeralUserSelectMenu(
 /** DSL function for creating a public user select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.publicUserSelectMenu(
     row: Int? = null,
-    builder: suspend PublicUserSelectMenu<ModalForm>.() -> Unit
+    builder: suspend PublicUserSelectMenu<ModalForm>.() -> Unit,
 ): PublicUserSelectMenu<ModalForm> {
     val component = PublicUserSelectMenu<ModalForm>(timeoutTask)
 
@@ -201,7 +243,7 @@ public suspend fun ComponentContainer.publicUserSelectMenu(
 public suspend fun <M : ModalForm> ComponentContainer.publicUserSelectMenu(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend PublicUserSelectMenu<M>.() -> Unit
+    builder: suspend PublicUserSelectMenu<M>.() -> Unit,
 ): PublicUserSelectMenu<M> {
     val component = PublicUserSelectMenu(timeoutTask, modal)
 
@@ -214,7 +256,7 @@ public suspend fun <M : ModalForm> ComponentContainer.publicUserSelectMenu(
 /** DSL function for creating an ephemeral user select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.ephemeralRoleSelectMenu(
     row: Int? = null,
-    builder: suspend EphemeralRoleSelectMenu<ModalForm>.() -> Unit
+    builder: suspend EphemeralRoleSelectMenu<ModalForm>.() -> Unit,
 ): EphemeralRoleSelectMenu<ModalForm> {
     val component = EphemeralRoleSelectMenu<ModalForm>(timeoutTask)
 
@@ -228,7 +270,7 @@ public suspend fun ComponentContainer.ephemeralRoleSelectMenu(
 public suspend fun <M : ModalForm> ComponentContainer.ephemeralRoleSelectMenu(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend EphemeralRoleSelectMenu<M>.() -> Unit
+    builder: suspend EphemeralRoleSelectMenu<M>.() -> Unit,
 ): EphemeralRoleSelectMenu<M> {
     val component = EphemeralRoleSelectMenu<M>(timeoutTask, modal)
 
@@ -241,7 +283,7 @@ public suspend fun <M : ModalForm> ComponentContainer.ephemeralRoleSelectMenu(
 /** DSL function for creating a public user select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.publicRoleSelectMenu(
     row: Int? = null,
-    builder: suspend PublicRoleSelectMenu<ModalForm>.() -> Unit
+    builder: suspend PublicRoleSelectMenu<ModalForm>.() -> Unit,
 ): PublicRoleSelectMenu<ModalForm> {
     val component = PublicRoleSelectMenu<ModalForm>(timeoutTask)
 
@@ -255,7 +297,7 @@ public suspend fun ComponentContainer.publicRoleSelectMenu(
 public suspend fun <M : ModalForm> ComponentContainer.publicRoleSelectMenu(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend PublicRoleSelectMenu<M>.() -> Unit
+    builder: suspend PublicRoleSelectMenu<M>.() -> Unit,
 ): PublicRoleSelectMenu<M> {
     val component = PublicRoleSelectMenu(timeoutTask, modal)
 
@@ -268,7 +310,7 @@ public suspend fun <M : ModalForm> ComponentContainer.publicRoleSelectMenu(
 /** DSL function for creating an ephemeral user select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.ephemeralChannelSelectMenu(
     row: Int? = null,
-    builder: suspend EphemeralChannelSelectMenu<ModalForm>.() -> Unit
+    builder: suspend EphemeralChannelSelectMenu<ModalForm>.() -> Unit,
 ): EphemeralChannelSelectMenu<ModalForm> {
     val component = EphemeralChannelSelectMenu<ModalForm>(timeoutTask)
 
@@ -282,7 +324,7 @@ public suspend fun ComponentContainer.ephemeralChannelSelectMenu(
 public suspend fun <M : ModalForm> ComponentContainer.ephemeralChannelSelectMenu(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend EphemeralChannelSelectMenu<M>.() -> Unit
+    builder: suspend EphemeralChannelSelectMenu<M>.() -> Unit,
 ): EphemeralChannelSelectMenu<M> {
     val component = EphemeralChannelSelectMenu<M>(timeoutTask, modal)
 
@@ -295,7 +337,7 @@ public suspend fun <M : ModalForm> ComponentContainer.ephemeralChannelSelectMenu
 /** DSL function for creating a public user select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.publicChannelSelectMenu(
     row: Int? = null,
-    builder: suspend PublicChannelSelectMenu<ModalForm>.() -> Unit
+    builder: suspend PublicChannelSelectMenu<ModalForm>.() -> Unit,
 ): PublicChannelSelectMenu<ModalForm> {
     val component = PublicChannelSelectMenu<ModalForm>(timeoutTask)
 
@@ -309,7 +351,7 @@ public suspend fun ComponentContainer.publicChannelSelectMenu(
 public suspend fun <M : ModalForm> ComponentContainer.publicChannelSelectMenu(
     modal: (() -> M)?,
     row: Int? = null,
-    builder: suspend PublicChannelSelectMenu<M>.() -> Unit
+    builder: suspend PublicChannelSelectMenu<M>.() -> Unit,
 ): PublicChannelSelectMenu<M> {
     val component = PublicChannelSelectMenu(timeoutTask, modal)
 
@@ -340,7 +382,7 @@ public suspend fun MessageModifyBuilder.applyComponents(components: ComponentCon
  */
 public suspend fun MessageCreateBuilder.components(
     timeout: Duration? = null,
-    builder: suspend ComponentContainer.() -> Unit
+    builder: suspend ComponentContainer.() -> Unit,
 ): ComponentContainer {
     val container = ComponentContainer(timeout, true, builder)
 
@@ -356,7 +398,7 @@ public suspend fun MessageCreateBuilder.components(
  */
 public suspend fun MessageModifyBuilder.components(
     timeout: Duration? = null,
-    builder: suspend ComponentContainer.() -> Unit
+    builder: suspend ComponentContainer.() -> Unit,
 ): ComponentContainer {
     val container = ComponentContainer(timeout, true, builder)
 
