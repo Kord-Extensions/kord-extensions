@@ -27,11 +27,7 @@ dependencies {
     api(libs.koin.core)
     api(libs.koin.logger)
 
-    api(libs.kord) {
-        capabilities {
-            requireCapability(libs.kord.voice.get().toString())
-        }
-    }
+    api(libs.kord)
 
     api(libs.logging) // Basic logging setup
     api(libs.kx.ser)
