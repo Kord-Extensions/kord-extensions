@@ -25,7 +25,7 @@ public fun Permission.toTranslationKey(): String? = when (this) {
     Permission.EmbedLinks -> "permission.embedLinks"
     Permission.KickMembers -> "permission.kickMembers"
     Permission.ManageChannels -> "permission.manageChannels"
-    Permission.ManageEmojisAndStickers -> "permission.manageEmojisAndStickers"
+    Permission.ManageGuildExpressions, Permission.ManageEmojisAndStickers -> "permission.manageEmojisAndStickers"
     Permission.ManageEvents -> "permission.manageEvents"
     Permission.ManageGuild -> "permission.manageGuild"
     Permission.ManageMessages -> "permission.manageMessages"
@@ -57,6 +57,8 @@ public fun Permission.toTranslationKey(): String? = when (this) {
 
     Permission.UseExternalStickers -> "permission.useExternalStickers"
     Permission.UseEmbeddedActivities -> "permission.useEmbeddedActivities"
+    Permission.ViewCreatorMonetizationAnalytics -> TODO()
+    Permission.UseSoundboard -> TODO()
 
     is Permission.Unknown -> null
 }

@@ -28,6 +28,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.common.asJavaLocale
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Choice
 import dev.kord.common.entity.Snowflake
