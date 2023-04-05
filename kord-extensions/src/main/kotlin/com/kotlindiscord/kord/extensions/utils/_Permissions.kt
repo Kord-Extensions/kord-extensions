@@ -57,8 +57,8 @@ public fun Permission.toTranslationKey(): String? = when (this) {
 
     Permission.UseExternalStickers -> "permission.useExternalStickers"
     Permission.UseEmbeddedActivities -> "permission.useEmbeddedActivities"
-    Permission.ViewCreatorMonetizationAnalytics -> TODO()
-    Permission.UseSoundboard -> TODO()
+    Permission.ViewCreatorMonetizationAnalytics -> "permission.viewCreatorMonetizationAnalytics"
+    Permission.UseSoundboard -> "permission.useSoundboard"
 
     is Permission.Unknown -> null
 }
