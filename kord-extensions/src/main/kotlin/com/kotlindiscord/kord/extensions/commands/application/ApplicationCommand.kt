@@ -34,7 +34,7 @@ import dev.kord.common.Locale as KLocale
  * @param extension Extension this application command belongs to.
  */
 public abstract class ApplicationCommand<E : InteractionCreateEvent>(
-    extension: Extension
+    extension: Extension,
 ) : Command(extension), KordExKoinComponent {
     /** Translations provider, for retrieving translations. **/
     protected val bot: ExtensibleBot by inject()
@@ -230,14 +230,14 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public abstract suspend fun call(event: E, cache: MutableStringKeyedMap<Any>)
 
     /** Override this to implement the useLimited logic for your subclass. **/
-    public suspend fun useLimited(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
+    public open suspend fun useLimited(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
         isOnCooldown(invocationEvent) || isRateLimited(invocationEvent)
 
-    private suspend fun isRateLimited(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
-        settings.chatCommandsBuilder.useLimiterBuilder.rateLimiter.checkCommandRatelimit(invocationEvent)
+    protected open suspend fun isRateLimited(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
+        settings.applicationCommandsBuilder.useLimiterBuilder.rateLimiter.checkCommandRatelimit(invocationEvent)
 
-    private suspend fun isOnCooldown(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
-        settings.chatCommandsBuilder.useLimiterBuilder.cooldownHandler.checkCommandOnCooldown(invocationEvent)
+    protected open suspend fun isOnCooldown(invocationEvent: CommandInvocationEvent<*, *>): Boolean =
+        settings.applicationCommandsBuilder.useLimiterBuilder.cooldownHandler.checkCommandOnCooldown(invocationEvent)
 }
 
 /**

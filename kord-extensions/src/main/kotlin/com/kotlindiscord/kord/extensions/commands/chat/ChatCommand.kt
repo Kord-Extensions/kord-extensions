@@ -565,12 +565,12 @@ public open class ChatCommand<T : Arguments>(
     }
 
     /** Override this to implement the useLimited logic for your subclass. **/
-    private suspend fun useLimited(invocationEvent: ChatCommandInvocationEvent): Boolean =
+    public open suspend fun useLimited(invocationEvent: ChatCommandInvocationEvent): Boolean =
         isOnCooldown(invocationEvent) || isRateLimited(invocationEvent)
 
-    private suspend fun isRateLimited(invocationEvent: ChatCommandInvocationEvent): Boolean =
+    protected open suspend fun isRateLimited(invocationEvent: ChatCommandInvocationEvent): Boolean =
         settings.chatCommandsBuilder.useLimiterBuilder.rateLimiter.checkCommandRatelimit(invocationEvent)
 
-    private suspend fun isOnCooldown(invocationEvent: ChatCommandInvocationEvent): Boolean =
+    protected open  suspend fun isOnCooldown(invocationEvent: ChatCommandInvocationEvent): Boolean =
         settings.chatCommandsBuilder.useLimiterBuilder.cooldownHandler.checkCommandOnCooldown(invocationEvent)
 }

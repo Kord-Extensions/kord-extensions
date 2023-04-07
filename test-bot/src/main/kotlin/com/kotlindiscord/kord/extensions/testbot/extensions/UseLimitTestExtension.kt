@@ -12,7 +12,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.impl.duration
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
-import com.kotlindiscord.kord.extensions.usagelimits.CachedUsageLimitType
+import com.kotlindiscord.kord.extensions.usagelimits.CachedCommandLimitTypes
 import com.kotlindiscord.kord.extensions.utils.toDuration
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.TimeZone
@@ -31,7 +31,7 @@ public class UseLimitTestExtension : Extension() {
                 description = "Slash command with a 10 second cooldown"
 
                 // Set cooldown which is applied on each command execution for this command
-                cooldown(CachedUsageLimitType.COMMAND_USER) { 10.seconds }
+                cooldown(CachedCommandLimitTypes.CommandUser) { 10.seconds }
 
                 action {
                     respond {
@@ -39,6 +39,7 @@ public class UseLimitTestExtension : Extension() {
                     }
                 }
             }
+
             publicSubCommand(::CustomCDArguments) {
                 name = "custom"
                 description = "Slash command with a custom cooldown"
@@ -46,8 +47,8 @@ public class UseLimitTestExtension : Extension() {
                 action {
                     val duration = arguments.cooldown.toDuration(TimeZone.UTC)
 
-                    // Set cooldowns at command runtime
-                    setCooldown(CachedUsageLimitType.COMMAND_USER, duration)
+                    // Increment cooldowns at command runtime
+                    cooldowns.inc(CachedCommandLimitTypes.CommandUser, duration)
 
                     respond {
                         content = "Not on cooldown \uD83D\uDC1F" // fish emoji
@@ -60,7 +61,7 @@ public class UseLimitTestExtension : Extension() {
     public class CustomCDArguments : Arguments() {
         public val cooldown: DateTimePeriod by duration {
             name = "duration"
-            description = "duration for the cooldown"
+            description = "Duration for the cooldown, ex. 10s, 1m, 1h, 1d, 1w, 1M, 1y."
         }
     }
 }

@@ -9,11 +9,9 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 import com.kotlindiscord.kord.extensions.InvalidCommandException
 import com.kotlindiscord.kord.extensions.checks.types.CheckContextWithCache
 import com.kotlindiscord.kord.extensions.commands.Arguments
-import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
 import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.Localized
-import com.kotlindiscord.kord.extensions.commands.events.CommandInvocationEvent
 import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
@@ -129,15 +127,24 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
     }
 
     /**
-     * Does not support translations because discord doesn't support them either.
      * @param locale does not have effect here
+     *
      * @return the highest ancestor's name followed by its children's names.
+     *
+     * This does not support translations because discord currently doesn't support them either.
      */
     override fun getFullName(locale: Locale?): String {
         val parentCmd = parentCommand
         val parentGrp = parentGroup
-        if (parentCmd != null) return "${parentCmd.getFullName()} $name"
-        if (parentGrp != null) return "${parentGrp.parent.getFullName()} ${parentGrp.name} $name"
+
+        if (parentCmd != null) {
+            return "${parentCmd.getFullName()} $name"
+        }
+
+        if (parentGrp != null) {
+            return "${parentGrp.parent.getFullName()} ${parentGrp.name} $name"
+        }
+
         return name
     }
 

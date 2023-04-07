@@ -6,151 +6,160 @@
 
 package com.kotlindiscord.kord.extensions.usagelimits.ratelimits
 
-import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.usagelimits.CachedUsageLimitType
+import com.kotlindiscord.kord.extensions.commands.Command
+import com.kotlindiscord.kord.extensions.usagelimits.CachedCommandLimitTypes
 import com.kotlindiscord.kord.extensions.usagelimits.DiscriminatingContext
+import com.kotlindiscord.kord.extensions.usagelimits.sendEphemeralMessage
 import dev.kord.common.DiscordTimestampStyle
 import dev.kord.common.toMessageFormat
-import dev.kord.core.behavior.interaction.respondEphemeral
-import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-/** Default [RateLimiter] implementation, serves as a usable example, it is however very opinionated, so you might
- * want to create your own implementation. **/
+/**
+ * Default [RateLimiter] implementation, serves as a usable example, it is however very opinionated, so you might
+ * want to create your own implementation.
+ */
 public open class DefaultRateLimiter : RateLimiter {
 
     /** rateLimit settings provider, collects configured settings for rateLimits. **/
     public open var rateLimitProvider: RateLimitProvider = DefaultRateLimitProvider()
 
-    /** Holds the message back-off duration, if the user triggered a ratelimit within [backOffTime] ago and now,
-     * no message will be sent as the user is considered spamming and wasting our discord api uses. **/
+    /**
+     * Holds the message back-off duration, if the user triggered a ratelimit within [backOffTime] ago and now,
+     * no message will be sent as the user is considered spamming and wasting our discord api uses.
+     */
     public open var backOffTime: Duration = 10.seconds
 
     /**
-     * Checks if the command should not be run due to a rateLimit.
-     * If so it saves the ratelimit hit and responds only if it is rate-limited.
+     * Checks whether the command should be run.
+     * This is called before the command is executed.
      *
-     * Mutates the associated [UsageHistory] of various [UsageLimitTypes][CachedUsageLimitType]
+     * Send a message if the user is rateLimited and the last message was sent more than [backOffTime] ago.
+     *
+     * Mutates the associated [RateLimitHistory] of [previously used][DefaultRateLimitProvider.getRateLimitTypes]
+     * [rateLimitTypes][RateLimitType] to reflect the current system state.
+     * (e.g. a command is (attempted to be/going to be) executed)
+     *
+     * @param command the [Command] that is being executed
+     * @param context the [DiscriminatingContext] that caused this ratelimit hit
      *
      * @return true if the command is rate-limited, false if not rate-limited.
      */
-    public override suspend fun checkCommandRatelimit(context: DiscriminatingContext): Boolean {
-        val currentTimeMillis = System.currentTimeMillis()
-        val numerOfTypes = CachedUsageLimitType.values().size
-        val hitRateLimits = ArrayList<Triple<RateLimitType, UsageHistory, RateLimit>>(numerOfTypes)
+    public override suspend fun checkCommandRatelimit(command: Command, context: DiscriminatingContext): Boolean {
+        val currentTime = Clock.System.now()
+        val rateLimitTypes = rateLimitProvider.getRateLimitTypes(null, context)
+        val hitRateLimits = ArrayList<Triple<RateLimitType, RateLimitHistory, RateLimit>>(rateLimitTypes.size)
         var shouldSendMessage = true
 
-        for (type in CachedUsageLimitType.values()) {
-            val rateLimit = rateLimitProvider.getRateLimit(context, type)
-            if (!rateLimit.enabled) continue
+        for (type in rateLimitTypes) {
+            val rateLimit = rateLimitProvider.getRateLimit(command, context, type)
+            if (!rateLimit.enabled) {
+                continue
+            }
 
-            val usageHistory = type.getUsageHistory(context)
-            val encapsulateStart = currentTimeMillis - rateLimit.duration.inWholeMilliseconds
+            val rateLimitHistory = type.getRateLimitUsageHistory(context)
+            val encapsulateStart = currentTime - rateLimit.duration
 
             // keeps only the usageHistory which is in the rateLimit's range,
             // usage that doesn't affect the ratelimit is thus discarded.
-            usageHistory.removeExpiredUsages(encapsulateStart)
+            rateLimitHistory.removeExpiredUsages(encapsulateStart)
 
             // keeps only the crossedLimits which are in the rateLimit's range.
-            usageHistory.removeExpiredCrossedLimits(encapsulateStart)
+            rateLimitHistory.removeExpiredRateLimitHits(encapsulateStart)
 
-            if (usageHistory.usages.size > rateLimit.limit) {
-                hitRateLimits.add(Triple(type, usageHistory, rateLimit))
-                if (!shouldSendMessage(usageHistory, rateLimit, type)) shouldSendMessage = false
-                usageHistory.addCrossedLimit(currentTimeMillis)
+            if (rateLimitHistory.usages.size > rateLimit.limit) {
+                hitRateLimits.add(Triple(type, rateLimitHistory, rateLimit))
+
+                if (!shouldSendMessage(rateLimitHistory, rateLimit, type)) {
+                    shouldSendMessage = false
+                }
+
+                rateLimitHistory.addRateLimitHit(currentTime)
             } else {
-                usageHistory.addUsage(currentTimeMillis)
+                rateLimitHistory.addUsage(currentTime)
             }
 
-            type.setUsageHistory(context, usageHistory)
+            type.setRateLimitUsageHistory(context, rateLimitHistory)
         }
 
         if (shouldSendMessage) {
-            val (maxType, maxUsageHistory, maxRateLimit) = hitRateLimits.maxByOrNull { (_, usageHistory, rateLimit) ->
-                rateLimit.duration.minus(usageHistory.usages.first().milliseconds)
+            val (
+                maxType, maxUsageHistory, maxRateLimit
+            ) = hitRateLimits.maxByOrNull { (_, usageHistory, rateLimit) ->
+                // Computes the duration until the ratelimit is lifted due to the first usage going out of range.
+                rateLimit.duration - (currentTime - usageHistory.usages.first())
             } ?: return false
+
             sendRateLimitedMessage(context, maxType, maxUsageHistory, maxRateLimit)
         }
 
         return hitRateLimits.isNotEmpty()
     }
 
-    /**
-     * @return true if a ratelimit message should be sent, false otherwise.
-     */
+    /** @return true if a ratelimit message should be sent, false otherwise. **/
     public override suspend fun shouldSendMessage(
-        usageHistory: UsageHistory,
+        usageHistory: RateLimitHistory,
         rateLimit: RateLimit,
         type: RateLimitType,
-    ): Boolean =
-        System.currentTimeMillis() - (usageHistory.crossedLimits.lastOrNull() ?: 0) > backOffTime.inWholeMilliseconds
+    ): Boolean = Clock.System.now() - (usageHistory.rateLimitHits.lastOrNull() ?: Instant.DISTANT_PAST) > backOffTime
 
-    /** Returns a message with info about what ratelimit has been hit. **/
+    /** @return Message about what ratelimit has been hit. **/
     public open suspend fun getMessage(
         context: DiscriminatingContext,
-        discordTimeStamp: String,
+        endOfRateLimit: Instant,
         type: RateLimitType,
     ): String {
         val locale = context.locale()
         val translationsProvider = context.event.command.translationsProvider
         val commandName = context.event.command.getFullName(locale)
+        val discordTimeStamp = endOfRateLimit.toMessageFormat(DiscordTimestampStyle.RelativeTime)
 
-        /** "You are being RateLimited until $discordTimeStamp, please stop spamming.\n" +
-        " ${rateLimit.limit} actions per ${rateLimit.duration.toIsoString()} is the limit." **/
         return when (type) {
-            CachedUsageLimitType.COMMAND_USER -> translationsProvider.translate(
+            CachedCommandLimitTypes.CommandUser -> translationsProvider.translate(
                 "ratelimit.notifier.commandUser",
                 locale,
                 replacements = arrayOf(discordTimeStamp, commandName)
             )
 
-            CachedUsageLimitType.COMMAND_USER_CHANNEL -> translationsProvider.translate(
+            CachedCommandLimitTypes.CommandUserChannel -> translationsProvider.translate(
                 "ratelimit.notifier.commandUserChannel",
                 locale,
                 replacements = arrayOf(discordTimeStamp, commandName, context.channel.mention)
             )
 
-            CachedUsageLimitType.COMMAND_USER_GUILD -> translationsProvider.translate(
+            CachedCommandLimitTypes.CommandUserGuild -> translationsProvider.translate(
                 "ratelimit.notifier.commandUserGuild",
                 locale,
                 replacements = arrayOf(discordTimeStamp, commandName)
             )
 
-            CachedUsageLimitType.GLOBAL_USER -> translationsProvider.translate(
+            CachedCommandLimitTypes.GlobalUser -> translationsProvider.translate(
                 "ratelimit.notifier.globalUser",
                 locale,
                 replacements = arrayOf(discordTimeStamp)
             )
 
-            CachedUsageLimitType.GLOBAL_USER_CHANNEL -> translationsProvider.translate(
+            CachedCommandLimitTypes.GlobalUserChannel -> translationsProvider.translate(
                 "ratelimit.notifier.globalUserChannel",
                 locale,
                 replacements = arrayOf(discordTimeStamp, context.channel.mention)
             )
 
-            CachedUsageLimitType.GLOBAL_USER_GUILD -> translationsProvider.translate(
+            CachedCommandLimitTypes.GlobalUserGuild -> translationsProvider.translate(
                 "ratelimit.notifier.globalUserGuild",
                 locale,
                 replacements = arrayOf(discordTimeStamp)
             )
 
-            CachedUsageLimitType.GLOBAL -> translationsProvider.translate(
-                "ratelimit.notifier.global",
-                locale,
-                replacements = arrayOf(discordTimeStamp)
-            )
-
-            CachedUsageLimitType.GLOBAL_CHANNEL -> translationsProvider.translate(
+            CachedCommandLimitTypes.GlobalChannel -> translationsProvider.translate(
                 "ratelimit.notifier.globalChannel",
                 locale,
                 replacements = arrayOf(discordTimeStamp, context.channel.mention)
             )
 
-            CachedUsageLimitType.GLOBAL_GUILD -> translationsProvider.translate(
+            CachedCommandLimitTypes.GlobalGuild -> translationsProvider.translate(
                 "ratelimit.notifier.globalGuild",
                 locale,
                 replacements = arrayOf(discordTimeStamp)
@@ -165,33 +174,25 @@ public open class DefaultRateLimiter : RateLimiter {
     }
 
     /**
-     * Sends a message in the discord channel where the command was used with information about what ratelimit
-     * was hit and when the user can use the/a command again.
+     * Sends a message in the discord channel where the command was used.
      *
      * The message wil be ephemeral for application commands.
      *
-     * @param context the [CommandContext] that caused this ratelimit hit
-     * @param usageHistory the involved [UsageHistory]
+     * @param context the [DiscriminatingContext] that caused this ratelimit hit
+     * @param type the [RateLimitType] that was hit
+     * @param rateLimitHistory the current [RateLimitHistory] for this [type]
      * @param rateLimit the involved [RateLimit]
      */
     public override suspend fun sendRateLimitedMessage(
         context: DiscriminatingContext,
         type: RateLimitType,
-        usageHistory: UsageHistory,
+        rateLimitHistory: RateLimitHistory,
         rateLimit: RateLimit,
     ) {
-        val restOfRateLimitDuration = rateLimit.duration -
-            (System.currentTimeMillis().milliseconds - usageHistory.usages.first().milliseconds)
-        val endOfRateLimit = System.currentTimeMillis() + restOfRateLimitDuration.inWholeMilliseconds
-        val discordTimeStamp = Instant.fromEpochMilliseconds(endOfRateLimit)
-            .toMessageFormat(DiscordTimestampStyle.RelativeTime)
-        val message = getMessage(context, discordTimeStamp, type)
+        val restOfRateLimitDuration = rateLimit.duration - (Clock.System.now() - rateLimitHistory.usages.first())
+        val endOfRateLimit = Clock.System.now() + restOfRateLimitDuration
+        val message = getMessage(context, endOfRateLimit, type)
 
-        when (val discordEvent = context.event.event) {
-            is MessageCreateEvent -> discordEvent.message.channel.createMessage(message)
-            is ApplicationCommandInteractionCreateEvent -> discordEvent.interaction.respondEphemeral {
-                content = message
-            }
-        }
+        context.event.event.sendEphemeralMessage(message)
     }
 }

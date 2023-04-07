@@ -6,55 +6,55 @@
 
 package com.kotlindiscord.kord.extensions.usagelimits.ratelimits
 
-import com.kotlindiscord.kord.extensions.commands.CommandContext
+import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.usagelimits.DiscriminatingContext
-import com.kotlindiscord.kord.extensions.usagelimits.UsageLimitType
 
 /**
- * Abstraction that allows you to implement custom ratelimiting behaviour.
- * **/
+ * A rateLimiter is responsible for checking if a command is rateLimited and sending a rateLimited message.
+ * As well as updating the rateLimitHistories after a command execution.
+ */
 public interface RateLimiter {
 
     /**
-     * Checks if the command should not be run due to a rateLimit.
-     * If so it should save the ratelimit hit and can give a response only if it is rate-limited.
+     * Checks whether the command should be run.
+     * This is called before the command is executed.
      *
-     * Mutates the associated [UsageHistory] of various [UsageLimitTypes][UsageLimitType]
+     * @param command the [Command] that is being executed
+     * @param context the [DiscriminatingContext] that caused this ratelimit hit
      *
-     * @return true if the command is rate-limited, false if not rate-limited
+     * @return true if the command is rateLimited, false if not rateLimited
      */
-    public suspend fun checkCommandRatelimit(context: DiscriminatingContext): Boolean
+    public suspend fun checkCommandRatelimit(command: Command, context: DiscriminatingContext): Boolean
 
     /**
-     * @return true if a ratelimit message should be sent, false otherwise
+     * @return true if a rateLimit message should be sent, false otherwise
      */
-    public suspend fun shouldSendMessage(usageHistory: UsageHistory, rateLimit: RateLimit, type: RateLimitType): Boolean
+    public suspend fun shouldSendMessage(
+        usageHistory: RateLimitHistory,
+        rateLimit: RateLimit,
+        type: RateLimitType,
+    ): Boolean
 
     /**
-     * Should send a message in the discord channel where the command was used with information about what ratelimit
-     * was hit and when the user can use the command again.
-     * Can be adapted to also log information into a logChannel (not an implementation goal)
+     * Sends a rateLimit message.
      *
-     * @param context the [CommandContext] that caused this ratelimit hit
-     * @param usageHistory the involved [UsageHistory]
+     * @param context the [DiscriminatingContext] that caused this ratelimit hit
+     * @param type the [RateLimitType] that was hit
+     * @param rateLimitHistory the current [RateLimitHistory] for this [type]
      * @param rateLimit the involved [RateLimit]
      */
     public suspend fun sendRateLimitedMessage(
         context: DiscriminatingContext,
         type: RateLimitType,
-        usageHistory: UsageHistory,
-        rateLimit: RateLimit
+        rateLimitHistory: RateLimitHistory,
+        rateLimit: RateLimit,
     )
 
     /**
-     * Wrapper function to convert invocationEvent into the required [DiscriminatingContext]
-     * Checks if the chatCommand should not be run due to a rateLimit.
-     * If so it should save the ratelimit hit and can give a response only if it is rate-limited.
+     * Checks whether the command should be run.
      *
-     * Mutates the associated [UsageHistory] of various [UsageLimitTypes][UsageLimitType]
-     *
-     * @return true if the command is rate-limited, false if not rate-limited
+     * @return true if the command is rateLimited, false if not rateLimited
      */
     public suspend fun checkCommandRatelimit(invocationEvent: CommandInvocationEvent<*, *>): Boolean {
         val context = when (invocationEvent) {
@@ -64,6 +64,7 @@ public interface RateLimiter {
             is SlashCommandInvocationEvent -> DiscriminatingContext(invocationEvent)
             is UserCommandInvocationEvent -> DiscriminatingContext(invocationEvent)
         }
-        return checkCommandRatelimit(context)
+
+        return checkCommandRatelimit(invocationEvent.command, context)
     }
 }

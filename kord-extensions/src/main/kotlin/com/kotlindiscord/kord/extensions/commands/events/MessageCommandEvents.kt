@@ -14,7 +14,6 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 // region Invocation events
 
 /** Basic event emitted when a message command is invoked. **/
-
 public interface MessageCommandInvocationEvent<C : MessageCommand<*, *>> :
     CommandInvocationEvent<C, MessageCommandInteractionCreateEvent>
 

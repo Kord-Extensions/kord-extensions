@@ -15,18 +15,24 @@ import java.util.*
 
 /** Data holder for information about command invocation. **/
 public data class DiscriminatingContext(
+
     /** Command invoker's [UserData]. **/
     public val user: UserData,
+
     /** [MessageChannelBehavior] of the messageChannel in which the command was invoked. **/
     public val channel: MessageChannelBehavior,
+
     /** guildId of the Guild in which the command was invoked, can be null if the command was invoked
      * in DMs. **/
     public val guildId: Snowflake?,
+
     /** Command invoker's [UserData]. **/
     public val event: CommandInvocationEvent<*, *>,
+
     /** Locale of this command's executor. **/
     public val locale: suspend () -> Locale,
 ) {
+
     public constructor(
         event: ChatCommandInvocationEvent,
     ) : this(

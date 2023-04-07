@@ -84,11 +84,11 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
     public open val nameTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
     /** Command specific cooldown lambdas, stored per [CooldownType], use [cooldown] to set these. **/
-    public open val cooldownMap: MutableMap<CooldownType, suspend (context: DiscriminatingContext) -> Duration> =
+    public open val cooldowns: MutableMap<CooldownType, suspend (context: DiscriminatingContext) -> Duration> =
         mutableMapOf()
 
     /** Command specific ratelimit lambdas, stored per [RateLimitType], use [ratelimit] to set these. **/
-    public open val ratelimitMap: MutableMap<RateLimitType, suspend (context: DiscriminatingContext) -> RateLimit> =
+    public open val ratelimits: MutableMap<RateLimitType, suspend (context: DiscriminatingContext) -> RateLimit> =
         mutableMapOf()
 
     // region: DSL functions
@@ -100,7 +100,7 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
      * @param func Can be run when the cooldown gets updated.
      */
     public open fun cooldown(cooldownType: CooldownType, func: suspend (context: DiscriminatingContext) -> Duration) {
-        cooldownMap[cooldownType] = func
+        cooldowns[cooldownType] = func
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
         rateLimitType: RateLimitType,
         func: suspend (context: DiscriminatingContext) -> RateLimit,
     ) {
-        ratelimitMap[rateLimitType] = func
+        ratelimits[rateLimitType] = func
     }
 
     // endregion

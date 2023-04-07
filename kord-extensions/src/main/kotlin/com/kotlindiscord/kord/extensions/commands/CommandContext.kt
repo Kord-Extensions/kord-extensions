@@ -23,7 +23,6 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.event.Event
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.time.Duration
 
 /**
@@ -56,10 +55,14 @@ public abstract class CommandContext(
         get() = command.resolvedBundle
 
     /**
-     * Progressive cooldown counters, can be set using [incCooldown], [decCooldown], [setCooldown]
-     * These cooldowns are stored after command execution.
-     * **/
-    public open var cooldownCounters: MutableMap<CooldownType, Duration> = HashMap()
+     * Progressive cooldown counters, can be set using the [inc] and [dec] extension functions on [cooldowns].
+     * Or the normal [MutableMap.set].
+     *
+     * E.g.
+     * You have a command that interacts with a user-bound api, and pass on the api rateLimits to the user as cooldown.
+     * You can then modify the cooldown based on the api response.
+     */
+    public open var cooldowns: MutableMap<CooldownType, Duration> = mutableMapOf()
 
     /** Called before processing, used to populate any extra variables from event data. **/
     public abstract suspend fun populate()
@@ -116,10 +119,12 @@ public abstract class CommandContext(
      *
      * @return the new cooldown duration for [cooldownType]
      */
-    public fun incCooldown(cooldownType: CooldownType, amount: Duration): Duration {
-        val currentCooldown = cooldownCounters[cooldownType] ?: Duration.ZERO
+    public fun MutableMap<CooldownType, Duration>.inc(cooldownType: CooldownType, amount: Duration): Duration {
+        val currentCooldown = this[cooldownType] ?: Duration.ZERO
         val sum = currentCooldown + amount
-        cooldownCounters[cooldownType] = sum
+
+        this[cooldownType] = sum
+
         return sum
     }
 
@@ -128,19 +133,18 @@ public abstract class CommandContext(
      *
      * @return the new cooldown duration for [cooldownType]
      */
-    public fun decCooldown(cooldownType: CooldownType, amount: Duration): Duration {
-        val currentCooldown = cooldownCounters[cooldownType] ?: Duration.ZERO
+    public fun MutableMap<CooldownType, Duration>.dec(cooldownType: CooldownType, amount: Duration): Duration {
+        val currentCooldown = this[cooldownType] ?: Duration.ZERO
         val difference = currentCooldown - amount
-        val boundedDifference = if (difference < Duration.ZERO) Duration.ZERO else difference
-        cooldownCounters[cooldownType] = boundedDifference
-        return boundedDifference
-    }
+        val boundedDifference = if (difference < Duration.ZERO) {
+            Duration.ZERO
+        } else {
+            difference
+        }
 
-    /**
-     * Sets the cooldown for [cooldownType] to [amount] duration.
-     */
-    public fun setCooldown(cooldownType: CooldownType, amount: Duration) {
-        cooldownCounters[cooldownType] = amount
+        this[cooldownType] = boundedDifference
+
+        return boundedDifference
     }
 
     /**

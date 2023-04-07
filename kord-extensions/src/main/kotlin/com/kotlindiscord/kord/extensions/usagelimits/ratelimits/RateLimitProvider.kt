@@ -6,14 +6,24 @@
 
 package com.kotlindiscord.kord.extensions.usagelimits.ratelimits
 
-import com.kotlindiscord.kord.extensions.usagelimits.CachedUsageLimitType
+import com.kotlindiscord.kord.extensions.commands.Command
 import com.kotlindiscord.kord.extensions.usagelimits.DiscriminatingContext
 
 /**
- * RatelimitProvider interface provides functions to get the [RateLimit] in a situation for a specific
- * [CachedUsageLimitType].
- * **/
+ * Provides ratelimit configuration info.
+ */
 public interface RateLimitProvider {
-    /** Function returns a [RateLimit] based on the [context] and [type]. **/
-    public suspend fun getRateLimit(context: DiscriminatingContext, type: CachedUsageLimitType): RateLimit
+
+    /** @return Used rateLimit types from the contexts and global settings. **/
+    public suspend fun getRateLimitTypes(
+        command: Command?,
+        context: DiscriminatingContext,
+    ): Set<RateLimitType>
+
+    /** @returns The most applicable [RateLimit] based on the contexts and [type]. **/
+    public suspend fun getRateLimit(
+        command: Command,
+        context: DiscriminatingContext,
+        type: RateLimitType,
+    ): RateLimit
 }

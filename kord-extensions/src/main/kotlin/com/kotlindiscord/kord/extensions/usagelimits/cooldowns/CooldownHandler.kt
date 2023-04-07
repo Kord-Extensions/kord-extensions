@@ -9,55 +9,50 @@ package com.kotlindiscord.kord.extensions.usagelimits.cooldowns
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.events.*
 import com.kotlindiscord.kord.extensions.usagelimits.DiscriminatingContext
-import com.kotlindiscord.kord.extensions.usagelimits.UsageLimitType
-import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.RateLimitType
-import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.UsageHistory
+import kotlinx.datetime.Instant
 
 /**
- * Abstraction that allows you to implement custom cooldown behaviour.
- * **/
+ * A cooldown handler is responsible for checking if a command is on cooldown and sending a cooldown message.
+ * As well as updating the cooldowns after a command execution.
+ */
 public interface CooldownHandler {
 
     /**
-     * Checks if the command should not be run due to a cooldown.
-     * If so it should save the cooldown hit and can give a response only if it is on cooldown.
+     * Checks if the command is on cooldown.
+     * Called before a command is executed.
      *
-     * Mutates the associated [UsageHistory] of various [UsageLimitTypes][UsageLimitType]
-     *
-     * @return true if the command is on cooldown, false if not on cooldown
+     * @return true if the command is on cooldown, false otherwise
      */
     public suspend fun checkCommandOnCooldown(context: DiscriminatingContext): Boolean
 
     /**
      * @return true if a cooldown message should be sent, false otherwise
      */
-    public suspend fun shouldSendMessage(cooldownUntil: Long, usageHistory: UsageHistory, type: RateLimitType): Boolean
+    public suspend fun shouldSendMessage(
+        cooldownUntil: Instant,
+        usageHistory: CooldownHistory,
+        type: CooldownType
+    ): Boolean
 
     /**
-     * Should send a message in the discord channel where the command was used with information about what cooldown
-     * was hit and when the user can use the command again.
-     * Can be adapted to also log information into a logChannel (not an implementation goal)
+     * Sends a cooldown message.
      *
      * @param context the [CommandContext] that caused this ratelimit hit
      * @param type the type/scope of the cooldown
      * @param usageHistory the involved [UsageHistory]
-     * @param cooldownUntil the epochMillis moment at which the cooldown ends
+     * @param cooldownUntil the moment at which the cooldown ends
      */
     public suspend fun sendCooldownMessage(
         context: DiscriminatingContext,
         type: CooldownType,
-        usageHistory: UsageHistory,
-        cooldownUntil: Long
+        usageHistory: CooldownHistory,
+        cooldownUntil: Instant
     )
 
     /**
-     * Wrapper function to convert invocationEvent into the required [DiscriminatingContext]
-     * Checks if the command should not be run due to a cooldown.
-     * If so it should save the ratelimit hit and can give a response only if it is on cooldown.
+     * Checks if the command is on cooldown.
      *
-     * Mutates the associated [UsageHistory] of various [UsageLimitTypes][UsageLimitType]
-     *
-     * @return true if the command is on cooldown, false if not on cooldown
+     * @return true if the command is on cooldown, false otherwise
      */
     public suspend fun checkCommandOnCooldown(invocationEvent: CommandInvocationEvent<*, *>): Boolean {
         val context = getContext(invocationEvent)
@@ -76,7 +71,7 @@ public interface CooldownHandler {
     }
 
     /**
-     * Executed after a command execution. Stores the longest cooldown for each configured [CooldownType].
+     * Called after a command ran.
      */
     public suspend fun onExecCooldownUpdate(
         commandContext: CommandContext,
@@ -88,7 +83,11 @@ public interface CooldownHandler {
     }
 
     /**
-     * Executed after a command execution. Stores the longest cooldown for each configured [CooldownType].
+     * Called after a command ran.
+     *
+     * @param commandContext the [CommandContext] of the command that was executed
+     * @param context the [DiscriminatingContext] that caused this cooldown
+     * @param success true if the command was executed successfully, false otherwise
      */
     public suspend fun onExecCooldownUpdate(
         commandContext: CommandContext,

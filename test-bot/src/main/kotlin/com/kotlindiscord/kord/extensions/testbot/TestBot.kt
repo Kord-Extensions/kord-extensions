@@ -13,7 +13,7 @@ import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.extPluralKit
 import com.kotlindiscord.kord.extensions.testbot.extensions.*
 import com.kotlindiscord.kord.extensions.testbot.extensions.PaginatorTestExtension
 import com.kotlindiscord.kord.extensions.testbot.utils.LogLevel
-import com.kotlindiscord.kord.extensions.usagelimits.CachedUsageLimitType
+import com.kotlindiscord.kord.extensions.usagelimits.CachedCommandLimitTypes
 import com.kotlindiscord.kord.extensions.usagelimits.cooldowns.DefaultCooldownHandler
 import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.DefaultRateLimiter
 import com.kotlindiscord.kord.extensions.usagelimits.ratelimits.RateLimit
@@ -45,13 +45,16 @@ public suspend fun main() {
             defaultGuild(TEST_SERVER_ID)
 
             useLimiter {
+                // NOTE: You might want to use the same instances for these between chatcommands and application commands.
+                // If you use seperate instances, the limits will not be shared between the two command types.
                 cooldownHandler = DefaultCooldownHandler()
                 rateLimiter = DefaultRateLimiter()
 
-                // Example cooldown, users can only run a command each 5 seconds in a unique server.
-                cooldown(CachedUsageLimitType.COMMAND_USER_GUILD) { 5.seconds }
+                // Example cooldown, users can only run  command every 5 seconds, per-server
+                cooldown(CachedCommandLimitTypes.CommandUserGuild) { 5.seconds }
+
                 // Example ratelimit, there can only be 20 commands ran in a channel during the last 60 seconds.
-                ratelimit(CachedUsageLimitType.GLOBAL_CHANNEL) { RateLimit(true, 20, 60.seconds) }
+                ratelimit(CachedCommandLimitTypes.GlobalChannel) { RateLimit(true, 20, 60.seconds) }
             }
         }
 
