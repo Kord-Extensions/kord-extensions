@@ -139,6 +139,7 @@ public class PublicUserCommand<M : ModalForm>(
             }
 
             handleError(context, t)
+            return
         }
 
         onSuccessUseLimitUpdate(context, invocationEvent, true)
