@@ -22,8 +22,10 @@ public data class DiscriminatingContext(
     /** [MessageChannelBehavior] of the messageChannel in which the command was invoked. **/
     public val channel: MessageChannelBehavior,
 
-    /** guildId of the Guild in which the command was invoked, can be null if the command was invoked
-     * in DMs. **/
+    /**
+     * guildId of the Guild in which the command was invoked, can be null if the command was invoked
+     * in DMs.
+     */
     public val guildId: Snowflake?,
 
     /** Command invoker's [UserData]. **/
