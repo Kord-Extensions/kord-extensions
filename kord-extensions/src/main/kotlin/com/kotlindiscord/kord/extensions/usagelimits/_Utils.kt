@@ -9,6 +9,7 @@ import java.util.*
 
 internal fun LinkedList<Instant>.removeSmaller(cutoffTime: Instant) {
     val iterator = this.iterator()
+
     while (iterator.hasNext()) {
         if (iterator.next() < cutoffTime) {
             iterator.remove()
