@@ -45,8 +45,9 @@ public suspend fun main() {
             defaultGuild(TEST_SERVER_ID)
 
             useLimiter {
-                // NOTE: You might want to use the same instances for these between chatcommands and application commands.
-                // If you use seperate instances, the limits will not be shared between the two command types.
+                // NOTE: You might want to use the same instances for these between chatCommands and
+                // application commands.
+                // If you use separate instances, the limits will not be shared between the two command types.
                 cooldownHandler = DefaultCooldownHandler()
                 rateLimiter = DefaultRateLimiter()
 
