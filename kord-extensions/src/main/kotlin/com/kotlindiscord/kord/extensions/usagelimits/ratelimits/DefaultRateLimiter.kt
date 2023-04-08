@@ -23,7 +23,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 public open class DefaultRateLimiter : RateLimiter {
 
-    /** rateLimit settings provider, collects configured settings for rateLimits. **/
+    /** RateLimit settings provider, collects configured settings for rateLimits. **/
     public open var rateLimitProvider: RateLimitProvider = DefaultRateLimitProvider()
 
     /**
