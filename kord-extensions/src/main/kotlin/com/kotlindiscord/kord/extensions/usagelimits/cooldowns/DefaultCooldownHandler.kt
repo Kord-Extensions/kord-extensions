@@ -53,7 +53,7 @@ public open class DefaultCooldownHandler : CooldownHandler {
             val until = type.getCooldown(context)
             val cooldownHistory = type.getCooldownUsageHistory(context)
 
-            // keeps only the crossedCooldowns which are in the cooldowns range.
+            // keeps only the cooldownHits which are in the cooldowns range.
             cooldownHistory.removeExpiredCooldownHits(encapsulateStart)
 
             if (until > currentTime) {
@@ -86,7 +86,7 @@ public open class DefaultCooldownHandler : CooldownHandler {
         usageHistory: CooldownHistory,
         type: CooldownType,
     ): Boolean =
-        (usageHistory.crossedCooldowns.lastOrNull() ?: Instant.DISTANT_PAST) < Clock.System.now() - backOffTimeSpan
+        (usageHistory.cooldownHits.lastOrNull() ?: Instant.DISTANT_PAST) < Clock.System.now() - backOffTimeSpan
 
     /**
      * Sends a cooldown message in the discord channel where the command was used.

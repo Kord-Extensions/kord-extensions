@@ -12,7 +12,7 @@ import kotlinx.datetime.Instant
 public interface CooldownHistory {
 
     /** tracks moments in time when cooldowns were hit. **/
-    public val crossedCooldowns: List<Instant>
+    public val cooldownHits: List<Instant>
 
     /** CrossedCooldown moments before [cutoffTime] will be removed from the usageHistory. **/
     public fun removeExpiredCooldownHits(cutoffTime: Instant)

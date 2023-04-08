@@ -18,13 +18,13 @@ import java.util.*
  */
 public open class DefaultCooldownHistory : CooldownHistory {
 
-    override var crossedCooldowns: LinkedList<Instant> = LinkedList()
+    override var cooldownHits: LinkedList<Instant> = LinkedList()
 
     override fun removeExpiredCooldownHits(cutoffTime: Instant) {
-        crossedCooldowns.removeSmaller(cutoffTime)
+        cooldownHits.removeSmaller(cutoffTime)
     }
 
     override fun addCooldownHit(moment: Instant) {
-        crossedCooldowns.add(moment)
+        cooldownHits.add(moment)
     }
 }
