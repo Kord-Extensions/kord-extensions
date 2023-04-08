@@ -97,7 +97,7 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
      * Defines a cooldown for this command.
      *
      * @param cooldownType The type of cooldown.
-     * @param func Can be run when the cooldown gets updated.
+     * @param func Used for retrieving a context specific cooldown.
      */
     public open fun cooldown(cooldownType: CooldownType, func: suspend (context: DiscriminatingContext) -> Duration) {
         cooldowns[cooldownType] = func
@@ -107,7 +107,7 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
      * Defines a rateLimit for this command.
      *
      * @param rateLimitType The type of rateLimit.
-     * @param func Can be run when the usageHistory gets updated.
+     * @param func Used for retrieving a context specific cooldown.
      */
     public open fun ratelimit(
         rateLimitType: RateLimitType,
