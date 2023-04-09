@@ -47,6 +47,10 @@ tasks {
         }
 
         withType<KotlinCompile>().configureEach {
+            compilerOptions {
+                freeCompilerArgs.add("-Xallow-kotlin-package")
+            }
+
             kotlinOptions {
                 jvmTarget = "11"
             }
