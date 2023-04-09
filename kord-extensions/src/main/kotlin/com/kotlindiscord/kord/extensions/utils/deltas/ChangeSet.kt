@@ -6,29 +6,31 @@
 
 package com.kotlindiscord.kord.extensions.utils.deltas
 
+import dev.kord.common.entity.optional.Optional
+import dev.kord.common.entity.optional.optional
 import dev.kord.core.entity.VoiceState
 import kotlin.internal.OnlyInputTypes
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 public class ChangeSet(public val clazz: KClass<*>) {
-    private val changes: MutableMap<KProperty<*>, Change<*, *>> = mutableMapOf()
+    private val changes: MutableMap<KProperty<*>, Change<*>> = mutableMapOf()
 
     @Suppress("UNCHECKED_CAST")
-    public operator fun <@OnlyInputTypes T : Any?, @OnlyInputTypes R : Any?> get(key: KProperty<R>): Change<T, R> =
-        changes[key] as? Change<T, R>?
+    public operator fun <@OnlyInputTypes T : Any?> get(key: KProperty<T>): Change<T> =
+        changes[key] as? Change<T>?
             ?: throw NoSuchElementException("No such element: $key")
 
-    public operator fun <@OnlyInputTypes T : Any?, @OnlyInputTypes R : Any?> set(
-        key: KProperty<R>,
-        value: Change<T, R>,
+    public operator fun <@OnlyInputTypes T : Any?> set(
+        key: KProperty<T>,
+        value: Change<T>,
     ) {
         changes[key] = value
     }
 
-    public data class Change<T : Any?, R : Any?>(
-        public val old: T,
-        public val new: R,
+    public data class Change<T : Any?>(
+        public val old: Optional<T>,
+        public val new: T,
 
         public val oldState: State,
         public val newState: State,
@@ -40,6 +42,13 @@ public class ChangeSet(public val clazz: KClass<*>) {
     }
 }
 
+private fun <T : Any> valueFor(obj: Any?, value: T?): Optional<T?> =
+    if (obj == null) {
+        Optional.Missing.invoke()
+    } else {
+        value.optional()
+    }
+
 public fun VoiceState?.compare(other: VoiceState): ChangeSet {
     val changeSet = ChangeSet(VoiceState::class)
 
@@ -50,41 +59,96 @@ public fun VoiceState?.compare(other: VoiceState): ChangeSet {
     }
 
     changeSet[VoiceState::guildId] =
-        ChangeSet.Change(this?.guildId, other.guildId, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.guildId),
+            other.guildId,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::channelId] =
-        ChangeSet.Change(this?.channelId, other.channelId, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.channelId),
+            other.channelId,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::userId] =
-        ChangeSet.Change(this?.userId, other.userId, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.userId),
+            other.userId,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::sessionId] =
-        ChangeSet.Change(this?.sessionId, other.sessionId, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.sessionId),
+            other.sessionId,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::isDeafened] =
-        ChangeSet.Change(this?.isDeafened, other.isDeafened, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.isDeafened),
+            other.isDeafened,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::isMuted] =
-        ChangeSet.Change(this?.isMuted, other.isMuted, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.isMuted),
+            other.isMuted,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::isSelfDeafened] =
-        ChangeSet.Change(this?.isSelfDeafened, other.isSelfDeafened, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.isSelfDeafened),
+            other.isSelfDeafened,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::isSelfMuted] =
-        ChangeSet.Change(this?.isSelfMuted, other.isSelfMuted, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.isSelfMuted),
+            other.isSelfMuted,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::isSelfStreaming] =
-        ChangeSet.Change(this?.isSelfStreaming, other.isSelfStreaming, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.isSelfStreaming),
+            other.isSelfStreaming,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::isSelfVideo] =
-        ChangeSet.Change(this?.isSelfVideo, other.isSelfVideo, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.isSelfVideo),
+            other.isSelfVideo,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::isSuppressed] =
-        ChangeSet.Change(this?.isSuppressed, other.isSuppressed, oldState, ChangeSet.State.Present)
+        ChangeSet.Change(
+            valueFor(this, this?.isSuppressed),
+            other.isSuppressed,
+            oldState,
+            ChangeSet.State.Present
+        )
 
     changeSet[VoiceState::requestToSpeakTimestamp] =
         ChangeSet.Change(
-            this?.requestToSpeakTimestamp,
+            valueFor(this, this?.requestToSpeakTimestamp),
             other.requestToSpeakTimestamp,
             oldState,
             ChangeSet.State.Present
