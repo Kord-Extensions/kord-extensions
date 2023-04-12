@@ -8,7 +8,7 @@ package com.kotlindiscord.kord.extensions.utils.deltas
 
 import dev.kord.common.entity.UserFlags
 import dev.kord.common.entity.optional.Optional
-import dev.kord.core.entity.Icon
+import dev.kord.core.entity.Asset
 import dev.kord.core.entity.User
 import kotlin.contracts.contract
 
@@ -23,7 +23,7 @@ import kotlin.contracts.contract
  */
 @Suppress("UndocumentedPublicProperty")
 public open class UserDelta(
-    public val avatar: Optional<Icon?>,
+    public val avatar: Optional<Asset?>,
     public val username: Optional<String>,
     public val discriminator: Optional<String>,
     public val flags: Optional<UserFlags?>
@@ -55,7 +55,7 @@ public open class UserDelta(
             old ?: return null
 
             return UserDelta(
-                if (old.avatar?.url != new.avatar?.url) Optional(new.avatar) else Optional.Missing(),
+                if (old.avatarHash != new.avatarHash) Optional(new.avatar) else Optional.Missing(),
                 if (old.username != new.username) Optional(new.username) else Optional.Missing(),
                 if (old.discriminator != new.discriminator) Optional(new.discriminator) else Optional.Missing(),
                 if (old.publicFlags != new.publicFlags) Optional(new.publicFlags) else Optional.Missing()
