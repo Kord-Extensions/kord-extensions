@@ -41,6 +41,7 @@ public fun Permission.toTranslationKey(): String? = when (this) {
     Permission.RequestToSpeak -> "permission.requestToSpeak"
     Permission.SendMessages -> "permission.sendMessages"
     Permission.SendTTSMessages -> "permission.sendTTSMessages"
+    Permission.SendVoiceMessages -> "permission.sendVoiceMessages"
     Permission.Speak -> "permission.speak"
     Permission.Stream -> "permission.stream"
     Permission.ModerateMembers -> "permission.timeoutMembers"
