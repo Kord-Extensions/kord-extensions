@@ -1,29 +1,30 @@
 [versions]
 detekt = "1.22.0"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
-dokka = "1.7.20"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
-kotlin = "1.8.0"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
+dokka = "1.8.10"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
+kotlin = "1.8.20"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
 
 commons-validator = "1.7"
 groovy = "3.0.14"
-icu4j = "72.1"
+icu4j = "73.1"
 jansi = "2.4.0"
-jsoup = "1.15.3"
-junit = "5.9.1"
-koin = "3.3.0"
+jsoup = "1.15.4"
+junit = "5.9.3"
+koin = "3.4.0"
 konf = "1.1.2"
-kord = "0.9.x-SNAPSHOT"
-kotlinpoet = "1.12.0"
-ksp = "1.8.0-1.0.8"
-ktor = "2.2.2"
-kx-ser = "1.4.1"
+#kord = "0.9.x-SNAPSHOT"
+kord = "0.9.0"
+kotlinpoet = "1.13.0"
+ksp = "1.8.20-1.0.11"
+ktor = "2.2.4"
+kx-ser = "1.5.0"
 linkie = "1.0.99"
 logback = "1.2.8"
 logging = "2.1.23"
-pf4j = "3.8.0"
-sentry = "6.11.0"
-time4j-base = "5.9.1"
-time4j-tzdata = "5.0-2022f"
-toml = "0.1.7"
+pf4j = "3.9.0"
+sentry = "6.17.0"
+time4j-base = "5.9.2"
+time4j-tzdata = "5.0-2023b"
+toml = "0.1.8"
 
 [libraries]
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator" }
