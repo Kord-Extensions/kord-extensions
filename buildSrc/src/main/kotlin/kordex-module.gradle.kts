@@ -68,4 +68,7 @@ detekt {
 license {
     setHeader(rootProject.file("LICENSE"))
     ignoreFailures(System.getenv()["CI"] == null)
+
+    include ("**/src/**.*")
+    include ("src/**.*")
 }
