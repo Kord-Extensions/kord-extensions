@@ -1,7 +1,5 @@
 rootProject.name = "kord-extensions"
 
-enableFeaturePreview("VERSION_CATALOGS")
-
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
