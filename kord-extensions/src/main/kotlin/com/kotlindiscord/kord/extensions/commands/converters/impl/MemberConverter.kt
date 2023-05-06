@@ -24,6 +24,7 @@ import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
 import dev.kord.core.entity.interaction.MemberOptionValue
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.UserBuilder
 import kotlinx.coroutines.flow.firstOrNull
@@ -150,7 +151,15 @@ public class MemberConverter(
         UserBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? MemberOptionValue)?.resolvedObject ?: return false
+        val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
+            val id = (option as? MemberOptionValue)?.value ?: return false
+            val guild = context.getGuild() ?: return false
+
+            kord.getUser(id)?.asMemberOrNull(guild.id) ?: return false
+        } else {
+            (option as? MemberOptionValue)?.resolvedObject ?: return false
+        }
+
         val guild = context.getGuild()
 
         if (requireSameGuild && requiredGuild == null && guild != null) {

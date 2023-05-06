@@ -13,17 +13,22 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
 import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
+import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ForumTag
 import dev.kord.core.behavior.channel.asChannelOfOrNull
 import dev.kord.core.entity.channel.ForumChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import org.koin.core.component.inject
 
 /**
  * Argument converter for [ForumTag] arguments.
@@ -32,17 +37,32 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  */
 @Converter(
     "tag",
-
     types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    imports = ["dev.kord.core.entity.channel.ForumChannel"],
-
+    imports = [
+        "com.kotlindiscord.kord.extensions.utils.suggestStringCollection",
+        "dev.kord.core.entity.channel.ForumChannel",
+    ],
     builderFields = [
         "public var channelGetter: (suspend () -> ForumChannel?)? = null"
     ],
+    builderInitStatements = [
+        "" +
+            "        autoComplete { event ->\n" +
+            "            try {\n" +
+            "                val tags = TagConverter.getTags(event, channelGetter)\n" +
+            "                \n" +
+            "                suggestStringCollection(tags.map { it.name })\n" +
+            "            } catch (e: Exception) {\n" +
+            "               // kordLogger.warn{ \"Failed to process autocomplete event for tag converter: " +
+            "\${e.reason}\" }\n" +
+            "            }\n" +
+            "        }"
+    ]
 )
-
+@Suppress("UnusedPrivateMember")
 public class TagConverter(
-    private var channelGetter: (suspend () -> ForumChannel?)? = null,
+    private val channelGetter: (suspend () -> ForumChannel?)? = null,
+
     override var validator: Validator<ForumTag> = null,
 ) : SingleConverter<ForumTag>() {
     public override val signatureTypeString: String = "converters.tag.signatureType"
@@ -57,7 +77,7 @@ public class TagConverter(
     }
 
     private suspend fun getTag(input: String, context: CommandContext): ForumTag {
-        val tags: List<ForumTag> = getTags(context)
+        val tags: List<ForumTag> = getTags(context, channelGetter)
         val locale: ULocale = ULocale(context.getLocale().toString())
 
         val tag: ForumTag = tags.firstOrNull {
@@ -80,30 +100,6 @@ public class TagConverter(
         return tag
     }
 
-    private suspend fun getTags(context: CommandContext): List<ForumTag> {
-        val channel: ForumChannel? = if (channelGetter != null) {
-            channelGetter!!()
-        } else {
-            val thread = context.getChannel().asChannelOfOrNull<ThreadChannel>()
-
-            thread?.parent?.asChannelOfOrNull<ForumChannel>()
-        }
-
-        if (channel == null) {
-            throw DiscordRelayedException(
-                context.translate(
-                    if (channelGetter == null) {
-                        "converters.tag.error.wrongChannelType"
-                    } else {
-                        "converters.tag.error.wrongChannelTypeWithGetter"
-                    }
-                )
-            )
-        }
-
-        return channel.availableTags
-    }
-
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
         StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
@@ -113,5 +109,67 @@ public class TagConverter(
         this.parsed = getTag(optionValue, context)
 
         return true
+    }
+
+    public companion object : KordExKoinComponent {
+        /** Translations provider, for retrieving translations. **/
+        private val translationsProvider: TranslationsProvider by inject()
+
+        public suspend fun getTags(
+            context: CommandContext,
+            getter: (suspend () -> ForumChannel?)? = null,
+        ): List<ForumTag> {
+            val channel: ForumChannel? = if (getter != null) {
+                getter()
+            } else {
+                val thread = context.getChannel().asChannelOfOrNull<ThreadChannel>()
+
+                thread?.parent?.asChannelOfOrNull<ForumChannel>()
+            }
+
+            if (channel == null) {
+                throw DiscordRelayedException(
+                    context.translate(
+                        if (getter == null) {
+                            "converters.tag.error.wrongChannelType"
+                        } else {
+                            "converters.tag.error.wrongChannelTypeWithGetter"
+                        }
+                    )
+                )
+            }
+
+            return channel.availableTags
+        }
+
+        public suspend fun getTags(
+            event: AutoCompleteInteractionCreateEvent,
+            getter: (suspend () -> ForumChannel?)? = null,
+        ): List<ForumTag> {
+            val channel: ForumChannel? = if (getter != null) {
+                getter()
+            } else {
+                val thread = event.interaction.getChannel().asChannelOfOrNull<ThreadChannel>()
+
+                thread?.parent?.asChannelOfOrNull<ForumChannel>()
+            }
+
+            if (channel == null) {
+                throw DiscordRelayedException(
+                    translationsProvider.translate(
+                        if (getter == null) {
+                            "converters.tag.error.wrongChannelType"
+                        } else {
+                            "converters.tag.error.wrongChannelTypeWithGetter"
+                        },
+
+                        event.getLocale(),
+                        DEFAULT_KORDEX_BUNDLE
+                    )
+                )
+            }
+
+            return channel.availableTags
+        }
     }
 }

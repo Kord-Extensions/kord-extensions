@@ -19,7 +19,6 @@ import dev.kord.common.entity.ForumTag
 import dev.kord.core.behavior.channel.asChannelOfOrNull
 import dev.kord.core.entity.Attachment
 import dev.kord.core.entity.channel.Channel
-import dev.kord.core.entity.channel.ForumChannel
 
 public class ArgumentTestExtension : Extension() {
     override val name: String = "test-args"
@@ -95,17 +94,22 @@ public class ArgumentTestExtension : Extension() {
     }
 
     public inner class TagArgs : Arguments() {
+        override val parseForAutocomplete: Boolean = true
+
         public val channel: Channel? by optionalChannel {
             name = "channel"
             description = "Channel to select a tag from"
 
             requireChannelType(ChannelType.GuildForum)
         }
+
         public val tag: ForumTag? by optionalTag {
             name = "tag"
             description = "Tag to use"
 
-            channelGetter = { this@TagArgs.channel?.asChannelOfOrNull<ForumChannel>() }
+            channelGetter = {
+                channel?.asChannelOfOrNull()
+            }
         }
     }
 

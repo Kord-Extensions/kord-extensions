@@ -49,6 +49,7 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     internal val builderFields: MutableList<String> = mutableListOf()
     internal val builderFieldNames: MutableList<String> = mutableListOf()
 
+    internal val builderBuildFunctionPreStatements: MutableList<String> = mutableListOf()
     internal val builderBuildFunctionStatements: MutableList<String> = mutableListOf()
     internal val builderExtraStatements: MutableList<String> = mutableListOf()
     internal val builderInitStatements: MutableList<String> = mutableListOf()
@@ -76,6 +77,11 @@ public class ConverterBuilderClassBuilder : KoinComponent {
     public fun builderField(field: String) {
         builderFields.add(field)
         builderFieldNames.add(field.split(":").first().split(" ").last())
+    }
+
+    /** Add a builder build function statement. **/
+    public fun builderBuildFunctionPreStatement(line: String) {
+        builderBuildFunctionPreStatements.add(line)
     }
 
     /** Add a builder build function statement. **/
@@ -215,6 +221,14 @@ public class ConverterBuilderClassBuilder : KoinComponent {
         builder.append("\n")
 
         builder.append("    public override fun build(arguments: Arguments): $converterType<$argumentType> {\n")
+        builder.append("        /** @inject: builderBuildFunctionPreStatements **/\n\n")
+
+        if (builderBuildFunctionPreStatements.isNotEmpty()) {
+            builderBuildFunctionPreStatements.forEach {
+                builder.append("        $it\n")
+            }
+        }
+
         builder.append("        val converter = $converterClass(\n")
 
         if (!types.containsAny(ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.DEFAULTING)) {

@@ -26,6 +26,7 @@ import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.interaction.ChannelOptionValue
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.rest.builder.interaction.ChannelBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import kotlinx.coroutines.FlowPreview
@@ -167,7 +168,13 @@ public class ChannelConverter(
         }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? ChannelOptionValue)?.resolvedObject ?: return false
+        val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
+            val id = (option as? ChannelOptionValue)?.value ?: return false
+            kord.getChannel(id) ?: return false
+        } else {
+            (option as? ChannelOptionValue)?.resolvedObject ?: return false
+        }
+
         this.parsed = optionValue
 
         return true
