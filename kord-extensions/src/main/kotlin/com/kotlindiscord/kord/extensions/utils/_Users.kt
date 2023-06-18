@@ -20,6 +20,25 @@ import kotlin.contracts.contract
 private const val DISCORD_USERS_URI = "https://discord.com/users"
 
 /**
+ * If the given user still has a discriminator, return `"username#discrim"`.
+ * Otherwise, only return their new-style username.
+ *
+ * @return User's tag or username, depending on whether they've migrated or not.
+ */
+@Deprecated(
+    "This will be removed quickly once Discord's migration to usernames has fully completed.",
+
+    replaceWith = ReplaceWith("username")
+)
+@Suppress("Deprecation")
+public fun User.tagOrUsername(): String =
+    if (discriminator == "0") {
+        username
+    } else {
+        tag
+    }
+
+/**
  * The user's Discord profile URL.
  */
 public val User.profileLink: String

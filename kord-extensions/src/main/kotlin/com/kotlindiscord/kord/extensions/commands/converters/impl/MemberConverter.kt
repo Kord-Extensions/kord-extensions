@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import com.kotlindiscord.kord.extensions.utils.users
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Member
@@ -122,7 +123,7 @@ public class MemberConverter(
                     null
                 } else {
                     kord.users.firstOrNull { user ->
-                        user.tag.equals(arg, true)
+                        user.tagOrUsername().equals(arg, true)
                     }
                 }
             }
@@ -138,7 +139,7 @@ public class MemberConverter(
 
         if (guildId != currentGuild?.id) {
             throw DiscordRelayedException(
-                context.translate("converters.member.error.invalid", replacements = arrayOf(user?.tag ?: arg))
+                context.translate("converters.member.error.invalid", replacements = arrayOf(arg))
             )
         }
 
@@ -170,7 +171,7 @@ public class MemberConverter(
 
         if (requiredGuildId != null && optionValue.guildId != requiredGuildId) {
             throw DiscordRelayedException(
-                context.translate("converters.member.error.invalid", replacements = arrayOf(optionValue.tag))
+                context.translate("converters.member.error.invalid", replacements = arrayOf(optionValue.username))
             )
         }
 

@@ -21,6 +21,7 @@ import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.dm
 import com.kotlindiscord.kord.extensions.utils.getJumpUrl
+import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.Message
@@ -33,8 +34,6 @@ import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.network.sockets.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
@@ -249,7 +248,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
                     name = "Author"
                     value = "${message.author!!.mention} (" +
-                        "`${message.author!!.tag}` / " +
+                        "`${message.author!!.tagOrUsername()}` / " +
                         "`${message.author!!.id.value}`" +
                         ")"
                 }
