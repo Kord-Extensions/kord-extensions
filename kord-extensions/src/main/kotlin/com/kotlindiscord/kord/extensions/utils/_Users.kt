@@ -12,6 +12,7 @@ import dev.kord.core.entity.Message
 import dev.kord.core.entity.Role
 import dev.kord.core.entity.User
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
+import dev.kord.rest.json.JsonErrorCode
 import dev.kord.rest.request.RestRequestException
 import io.ktor.http.*
 import kotlinx.datetime.Instant
@@ -60,7 +61,7 @@ public suspend inline fun User.dm(builder: MessageCreateBuilder.() -> Unit): Mes
     return try {
         this.getDmChannel().createMessage { builder() }
     } catch (e: RestRequestException) {
-        if (e.hasStatus(HttpStatusCode.Forbidden)) {
+        if (e.hasStatus(HttpStatusCode.BadRequest) && e.error?.code == JsonErrorCode.CannotSendMessagesToUser) {
             null
         } else {
             throw e
