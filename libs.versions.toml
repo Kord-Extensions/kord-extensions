@@ -5,7 +5,7 @@ kotlin = "1.8.20"  # Note: Plugin versions must be updated in buildSrc/build.gra
 
 commons-validator = "1.7"
 groovy = "3.0.14"
-icu4j = "73.1"
+icu4j = "73.2"
 jansi = "2.4.0"
 jsoup = "1.15.4"
 junit = "5.9.3"
