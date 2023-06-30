@@ -8,6 +8,7 @@
 
 package com.kotlindiscord.kord.extensions.sentry
 
+import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import io.sentry.*
 import io.sentry.Sentry.startTransaction
 import io.sentry.protocol.User
@@ -33,7 +34,7 @@ public fun Scope.user(tag: String, id: String) {
  * @param userObj Kord user object to add to this scope.
  */
 public fun Scope.user(userObj: dev.kord.core.entity.User): Unit =
-    user(userObj.tag, userObj.id.toString())
+    user(userObj.tagOrUsername(), userObj.id.toString())
 
 /**
  * Convenience function to quickly set a Sentry tag in the current scope.

@@ -12,13 +12,14 @@ junit = "5.9.3"
 koin = "3.4.0"
 konf = "1.1.2"
 #kord = "0.9.x-SNAPSHOT"
-kord = "0.9.0"
+kord = "0.10.0-SNAPSHOT"
 kotlinpoet = "1.13.0"
 ksp = "1.8.20-1.0.11"
 ktor = "2.2.4"
 kx-ser = "1.5.0"
 linkie = "1.0.99"
-logback = "1.2.8"
+logback = "1.4.5"
+logback-groovy = "1.14.0"
 logging = "2.1.23"
 pf4j = "3.9.0"
 sentry = "6.17.0"
@@ -52,6 +53,7 @@ ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
 linkie = { module = "me.shedaniel:linkie-core", version.ref = "linkie" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logback-groovy = { module = "io.github.virtualdogbert:logback-groovy-config", version.ref = "logback-groovy" }
 logging = { module = "io.github.microutils:kotlin-logging", version.ref = "logging" }
 pf4j = { module = "org.pf4j:pf4j", version.ref = "pf4j" }
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }

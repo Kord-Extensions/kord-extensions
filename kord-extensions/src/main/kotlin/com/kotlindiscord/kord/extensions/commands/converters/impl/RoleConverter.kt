@@ -20,6 +20,7 @@ import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Role
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.RoleOptionValue
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.RoleBuilder
 import kotlinx.coroutines.flow.firstOrNull
@@ -95,7 +96,15 @@ public class RoleConverter(
         RoleBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? RoleOptionValue)?.resolvedObject ?: return false
+        val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
+            val id = (option as? RoleOptionValue)?.value ?: return false
+            val guild = context.getGuild() ?: return false
+
+            guild.getRoleOrNull(id) ?: return false
+        } else {
+            (option as? RoleOptionValue)?.resolvedObject ?: return false
+        }
+
         this.parsed = optionValue
 
         return true

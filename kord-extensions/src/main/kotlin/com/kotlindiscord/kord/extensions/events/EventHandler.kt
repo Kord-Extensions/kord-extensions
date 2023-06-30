@@ -19,6 +19,7 @@ import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getKoin
+import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
@@ -200,7 +201,7 @@ public open class EventHandler<T : Event>(
                     val user = userBehavior.asUserOrNull()
 
                     data["user"] = if (user != null) {
-                        "${user.tag} (${user.id})"
+                        "${user.tagOrUsername()} (${user.id})"
                     } else {
                         userBehavior.id.toString()
                     }

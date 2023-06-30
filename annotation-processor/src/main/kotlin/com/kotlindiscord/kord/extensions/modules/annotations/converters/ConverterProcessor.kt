@@ -226,6 +226,7 @@ public class ConverterProcessor(
 
             arguments.builderConstructorArguments.forEach(this::builderArg)
             arguments.builderFields.forEach(this::builderField)
+            arguments.builderBuildFunctionPreStatements.forEach(this::builderBuildFunctionPreStatement)
             arguments.builderBuildFunctionStatements.forEach(this::builderBuildFunctionStatement)
             arguments.builderExtraStatements.forEach(this::builderExtraStatement)
             arguments.builderInitStatements.forEach(this::builderInitStatement)

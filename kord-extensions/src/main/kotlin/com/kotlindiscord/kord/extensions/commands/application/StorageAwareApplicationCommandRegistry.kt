@@ -4,11 +4,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("TooGenericExceptionCaught")
+
 package com.kotlindiscord.kord.extensions.commands.application
 
 import com.kotlindiscord.kord.extensions.commands.application.message.MessageCommand
 import com.kotlindiscord.kord.extensions.commands.application.slash.SlashCommand
 import com.kotlindiscord.kord.extensions.commands.application.user.UserCommand
+import com.kotlindiscord.kord.extensions.commands.converters.SlashCommandConverter
 import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.registry.RegistryStorage
 import dev.kord.common.entity.Snowflake
@@ -111,7 +114,9 @@ public open class StorageAwareApplicationCommandRegistry(
 
         option ?: return logger.trace { "Autocomplete event for command $command doesn't have a focused option." }
 
-        val arg = command.arguments!!().args.firstOrNull {
+        val arguments = command.arguments!!()
+
+        val arg = arguments.args.firstOrNull {
             it.getDefaultTranslatedDisplayName(
                 translationsProvider,
                 command
@@ -126,6 +131,29 @@ public open class StorageAwareApplicationCommandRegistry(
 
         callback ?: return logger.trace {
             "Autocomplete event for command $command has an focused option without a callback: ${option.first}."
+        }
+
+        if (arguments.parseForAutocomplete) {
+            val context = DummyAutocompleteCommandContext(command, event, command.name)
+
+            for (priorArg in arguments.args) {
+                if (priorArg == arg) {
+                    break
+                }
+
+                val argName = priorArg.getDefaultTranslatedDisplayName(translationsProvider, command)
+                val currentOption = event.interaction.command.options[argName]
+
+                if (currentOption == null) {
+                    continue
+                }
+
+                try {
+                    (priorArg.converter as SlashCommandConverter).parseOption(context, currentOption)
+                } catch (e: Exception) {
+                    logger.error(e) { "Failed to parse option $argName" }
+                }
+            }
         }
 
         callback(event.interaction, event)

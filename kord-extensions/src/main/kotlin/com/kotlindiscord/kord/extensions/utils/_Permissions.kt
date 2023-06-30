@@ -11,7 +11,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import dev.kord.common.entity.Permission
 import java.util.*
 
-/** Given a [Permission], return a string representing its translation key. **/
+@Suppress("DEPRECATION", "DEPRECATION_ERROR")
 public fun Permission.toTranslationKey(): String? = when (this) {
     Permission.AddReactions -> "permission.addReactions"
     Permission.Administrator -> "permission.administrator"
@@ -25,7 +25,7 @@ public fun Permission.toTranslationKey(): String? = when (this) {
     Permission.EmbedLinks -> "permission.embedLinks"
     Permission.KickMembers -> "permission.kickMembers"
     Permission.ManageChannels -> "permission.manageChannels"
-    Permission.ManageGuildExpressions, Permission.ManageEmojisAndStickers -> "permission.manageEmojisAndStickers"
+    Permission.ManageGuildExpressions, Permission.ManageEmojisAndStickers -> "permission.manageExpressions"
     Permission.ManageEvents -> "permission.manageEvents"
     Permission.ManageGuild -> "permission.manageGuild"
     Permission.ManageMessages -> "permission.manageMessages"
@@ -45,8 +45,9 @@ public fun Permission.toTranslationKey(): String? = when (this) {
     Permission.Speak -> "permission.speak"
     Permission.Stream -> "permission.stream"
     Permission.ModerateMembers -> "permission.timeoutMembers"
-    Permission.UseExternalEmojis -> "permission.useExternalEmojis"
     Permission.UseApplicationCommands -> "permission.useApplicationCommands"
+    Permission.UseExternalEmojis -> "permission.useExternalEmojis"
+    Permission.UseExternalSounds -> "permission.useExternalSounds"
     Permission.UseVAD -> "permission.useVAD"
     Permission.ViewAuditLog -> "permission.viewAuditLog"
     Permission.ViewChannel -> "permission.viewChannel"
