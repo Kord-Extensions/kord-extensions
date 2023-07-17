@@ -39,9 +39,9 @@ import kotlin.time.TimeSource
  * @param repeat Whether the task should repeat after completion. `false` by default.
  */
 public open class Task(
-    public open val duration: Duration,
+    public open var duration: Duration,
     public open val callback: suspend () -> Unit,
-    public open val pollingSeconds: Long = 1,
+    public open var pollingSeconds: Long = 1,
     public open val coroutineScope: CoroutineScope = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>(),
     public open val parent: Scheduler? = null,
 
