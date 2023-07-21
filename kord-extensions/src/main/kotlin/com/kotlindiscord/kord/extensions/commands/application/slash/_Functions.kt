@@ -32,10 +32,6 @@ public suspend fun SlashCommand<*, *, *>.group(name: String, body: suspend Slash
         error("Command groups may not be nested inside subcommands.")
     }
 
-    if (subCommands.isNotEmpty()) {
-        error("Commands may only contain subcommands or command groups, not both.")
-    }
-
     if (groups.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
         error("Commands may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT command groups.")
     }
