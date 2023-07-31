@@ -18,12 +18,14 @@ import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import com.kotlindiscord.kord.extensions.utils.users
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.User
 import dev.kord.core.entity.interaction.MemberOptionValue
 import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.UserBuilder
 import kotlinx.coroutines.flow.firstOrNull
@@ -121,7 +123,7 @@ public class MemberConverter(
                     null
                 } else {
                     kord.users.firstOrNull { user ->
-                        user.tag.equals(arg, true)
+                        user.tagOrUsername().equals(arg, true)
                     }
                 }
             }
@@ -137,7 +139,7 @@ public class MemberConverter(
 
         if (guildId != currentGuild?.id) {
             throw DiscordRelayedException(
-                context.translate("converters.member.error.invalid", replacements = arrayOf(user?.tag ?: arg))
+                context.translate("converters.member.error.invalid", replacements = arrayOf(arg))
             )
         }
 
@@ -150,7 +152,15 @@ public class MemberConverter(
         UserBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? MemberOptionValue)?.resolvedObject ?: return false
+        val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
+            val id = (option as? MemberOptionValue)?.value ?: return false
+            val guild = context.getGuild() ?: return false
+
+            kord.getUser(id)?.asMemberOrNull(guild.id) ?: return false
+        } else {
+            (option as? MemberOptionValue)?.resolvedObject ?: return false
+        }
+
         val guild = context.getGuild()
 
         if (requireSameGuild && requiredGuild == null && guild != null) {
@@ -161,7 +171,7 @@ public class MemberConverter(
 
         if (requiredGuildId != null && optionValue.guildId != requiredGuildId) {
             throw DiscordRelayedException(
-                context.translate("converters.member.error.invalid", replacements = arrayOf(optionValue.tag))
+                context.translate("converters.member.error.invalid", replacements = arrayOf(optionValue.username))
             )
         }
 

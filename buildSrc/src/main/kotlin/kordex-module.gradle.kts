@@ -47,6 +47,10 @@ tasks {
         }
 
         withType<KotlinCompile>().configureEach {
+            compilerOptions {
+                freeCompilerArgs.add("-Xallow-kotlin-package")
+            }
+
             kotlinOptions {
                 jvmTarget = "11"
             }
@@ -64,4 +68,7 @@ detekt {
 license {
     setHeader(rootProject.file("LICENSE"))
     ignoreFailures(System.getenv()["CI"] == null)
+
+    include ("**/src/**.*")
+    include ("src/**.*")
 }

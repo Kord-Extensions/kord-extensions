@@ -1,4 +1,4 @@
-import gradle.kotlin.dsl.accessors._0a1b0feab67dedd28ab92e8d9de7aa93.ext
+import gradle.kotlin.dsl.accessors._6f0d4de64e119f738e1f647c2e25e6b5.ext
 import org.gradle.api.Project
 
 class MetadataBuilder {

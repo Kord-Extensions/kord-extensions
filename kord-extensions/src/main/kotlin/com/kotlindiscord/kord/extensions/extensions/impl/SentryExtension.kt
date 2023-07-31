@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.sentryId
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.respond
+import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import io.sentry.Sentry
 import io.sentry.UserFeedback
 import io.sentry.protocol.SentryId
@@ -58,7 +59,7 @@ public class SentryExtension : Extension() {
 
                     val feedback = UserFeedback(
                         arguments.id,
-                        member!!.asMember().tag,
+                        member!!.asMember().tagOrUsername(),
                         member!!.id.toString(),
                         arguments.feedback
                     )
@@ -91,7 +92,7 @@ public class SentryExtension : Extension() {
                     val author = message.author!!
                     val feedback = UserFeedback(
                         arguments.id,
-                        author.tag,
+                        author.tagOrUsername(),
                         author.id.toString(),
                         arguments.feedback
                     )

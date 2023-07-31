@@ -55,6 +55,7 @@ dependencies {
     testImplementation(libs.groovy)  // For logback config
     testImplementation(libs.jansi)
     testImplementation(libs.logback)
+    testImplementation(libs.logback.groovy)
 
     implementation(project(":kord-extensions"))
     implementation(project(":annotations"))
