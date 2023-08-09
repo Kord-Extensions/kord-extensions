@@ -65,7 +65,7 @@ abstract class PKMessageDeleteEvent(
     override suspend fun getGuild(): Guild = getGuildOrNull()!!
     override suspend fun getGuildOrNull(): Guild? = guildId?.let { supplier.getGuildOrNull(it) }
 
-    override suspend fun getMember(): Member  = author!!
+    override suspend fun getMember(): Member = author!!
     override suspend fun getMemberOrNull(): Member? = author
 
     override suspend fun getMessage(): Message = message!!

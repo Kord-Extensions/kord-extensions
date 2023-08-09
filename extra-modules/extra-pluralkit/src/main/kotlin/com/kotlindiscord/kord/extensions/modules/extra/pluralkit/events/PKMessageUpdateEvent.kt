@@ -67,7 +67,7 @@ abstract class PKMessageUpdateEvent(
     override suspend fun getGuild(): Guild = getGuildOrNull()!!
     override suspend fun getGuildOrNull(): Guild? = member?.guild?.asGuildOrNull()
 
-    override suspend fun getMember(): Member  = author!!
+    override suspend fun getMember(): Member = author!!
     override suspend fun getMemberOrNull(): Member? = author
 
     override suspend fun getMessage(): Message =
