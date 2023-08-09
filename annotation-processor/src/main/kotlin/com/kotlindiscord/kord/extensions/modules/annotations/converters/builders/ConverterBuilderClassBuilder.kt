@@ -335,7 +335,8 @@ public class ConverterBuilderClassBuilder : KoinComponent {
                 ConverterType.COALESCING -> before.add("coalescing")
                 ConverterType.CHOICE -> after.add("choice")
 
-                ConverterType.SINGLE -> { /* Don't add anything */
+                ConverterType.SINGLE -> {
+                    /* Don't add anything */
                 }
             }
         }
