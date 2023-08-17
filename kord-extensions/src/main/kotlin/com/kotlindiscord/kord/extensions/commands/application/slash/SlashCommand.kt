@@ -136,6 +136,21 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
             throw InvalidCommandException(name, "No command action or subcommands/groups given.")
         }
 
+        val subCommandWithSubCommand = if (parentCommand != null && subCommands.isNotEmpty()) {
+            this
+        } else {
+            subCommands.firstOrNull { it.subCommands.isNotEmpty() }
+        }
+
+        if (subCommandWithSubCommand != null) {
+            throw InvalidCommandException(
+                parentCommand?.name ?: name,
+
+                "Subcommand ${subCommandWithSubCommand.name} has its own subcommands, but subcommands may not be " +
+                    "nested."
+            )
+        }
+
         if (::body.isInitialized && !(groups.isEmpty() && subCommands.isEmpty())) {
             throw InvalidCommandException(
                 name,
