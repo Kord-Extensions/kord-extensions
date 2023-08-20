@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-java@v1
 
         with:
-          java-version: 1.14
+          java-version: 1.17
 
       - name: Set up Kotlin
         uses: fwilhe2/setup-kotlin@main

@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-java@v1
 
         with:
-          java-version: 1.14
+          java-version: 1.17
 
       - name: Set up Kotlin
         uses: fwilhe2/setup-kotlin@main
@@ -42,6 +42,12 @@ jobs:
 
         with:
           arguments: checkLicenses build
+
+      - name: Upload dependency graph to GitHub
+        uses: mikepenz/gradle-dependency-submission@{latest}
+
+        with:
+          sub-module-mode: INDIVIDUAL_DEEP
 
       - name: Disable parallel publish
         if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
