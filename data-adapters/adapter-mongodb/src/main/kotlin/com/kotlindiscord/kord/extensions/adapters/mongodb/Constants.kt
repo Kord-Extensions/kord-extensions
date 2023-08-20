@@ -6,17 +6,6 @@
 
 package com.kotlindiscord.kord.extensions.adapters.mongodb
 
-import com.kotlindiscord.kord.extensions.adapters.mongodb.codecs.InstantCodec
-import com.kotlindiscord.kord.extensions.adapters.mongodb.codecs.SnowflakeCodec
-import com.kotlindiscord.kord.extensions.adapters.mongodb.codecs.StorageTypeCodec
 import com.kotlindiscord.kord.extensions.utils.env
-import org.bson.codecs.configuration.CodecRegistries
-import org.bson.codecs.configuration.CodecRegistry
 
 internal val MONGODB_URI: String = env("ADAPTER_MONGODB_URI")
-
-public val kordExCodecRegistry: CodecRegistry = CodecRegistries.fromCodecs(
-	InstantCodec(),
-	SnowflakeCodec(),
-	StorageTypeCodec(),
-)
