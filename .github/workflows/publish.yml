@@ -47,7 +47,7 @@ jobs:
         uses: mikepenz/gradle-dependency-submission@v0.9.0
 
         with:
-          sub-module-mode: INDIVIDUAL_DEEP
+          sub-module-mode: COMBINED
 
       - name: Disable parallel publish
         if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
