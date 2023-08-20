@@ -44,7 +44,7 @@ jobs:
           arguments: checkLicenses build
 
       - name: Upload dependency graph to GitHub
-        uses: mikepenz/gradle-dependency-submission@{latest}
+        uses: mikepenz/gradle-dependency-submission@v0.9.0
 
         with:
           sub-module-mode: INDIVIDUAL_DEEP
