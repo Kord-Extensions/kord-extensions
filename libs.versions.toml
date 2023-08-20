@@ -16,11 +16,13 @@ kord = "0.11.0-SNAPSHOT"
 kotlinpoet = "1.14.2"
 ksp = "1.9.0-1.0.12"
 ktor = "2.3.2"
+kx-coro = "1.7.3"
 kx-ser = "1.5.1"
 linkie = "1.0.99"
 logback = "1.4.5"
 logback-groovy = "1.14.4"
 logging = "3.0.5"
+mongodb = "4.10.1"
 pf4j = "3.9.0"
 sentry = "6.28.0"
 time4j-base = "5.9.2"
@@ -50,11 +52,13 @@ kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+kx-coro = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kx-coro"}
 kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
 linkie = { module = "me.shedaniel:linkie-core", version.ref = "linkie" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logback-groovy = { module = "io.github.virtualdogbert:logback-groovy-config", version.ref = "logback-groovy" }
 logging = { module = "io.github.microutils:kotlin-logging", version.ref = "logging" }
+mongodb = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
 pf4j = { module = "org.pf4j:pf4j", version.ref = "pf4j" }
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
 time4j-base = { module = "net.time4j:time4j-base", version.ref = "time4j-base" }

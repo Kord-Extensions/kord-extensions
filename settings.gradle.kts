@@ -11,6 +11,8 @@ dependencyResolutionManagement {
 include("annotations")
 include("annotation-processor")
 
+include("data-adapters:adapter-mongodb")
+
 include("kord-extensions")
 
 include("extra-modules:extra-mappings")
