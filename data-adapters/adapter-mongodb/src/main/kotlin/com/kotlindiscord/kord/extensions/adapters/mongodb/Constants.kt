@@ -10,18 +10,13 @@ import com.kotlindiscord.kord.extensions.adapters.mongodb.codecs.InstantCodec
 import com.kotlindiscord.kord.extensions.adapters.mongodb.codecs.SnowflakeCodec
 import com.kotlindiscord.kord.extensions.adapters.mongodb.codecs.StorageTypeCodec
 import com.kotlindiscord.kord.extensions.utils.env
-import com.mongodb.MongoClientSettings
 import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.configuration.CodecRegistry
 
 internal val MONGODB_URI: String = env("ADAPTER_MONGODB_URI")
 
-public val kordExCodecRegistry: CodecRegistry = CodecRegistries.fromRegistries(
-	CodecRegistries.fromCodecs(
-		InstantCodec(),
-		SnowflakeCodec(),
-		StorageTypeCodec(),
-	),
-
-	MongoClientSettings.getDefaultCodecRegistry(),
+public val kordExCodecRegistry: CodecRegistry = CodecRegistries.fromCodecs(
+	InstantCodec(),
+	SnowflakeCodec(),
+	StorageTypeCodec(),
 )
