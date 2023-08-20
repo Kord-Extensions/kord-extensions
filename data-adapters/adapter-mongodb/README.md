@@ -32,7 +32,7 @@ To switch to the MongoDB data adapter follow these steps:
    ```kotlin
    // import: com.kotlindiscord.kord.extensions.adapters.mongodb.kordExCodecRegistry
    val registry = CodecRegistries.fromRegistries(
-       kordexCodecRegistry,
+       kordExCodecRegistry,
        MongoClientSettings.getDefaultCodecRegistry(),
    )
 
