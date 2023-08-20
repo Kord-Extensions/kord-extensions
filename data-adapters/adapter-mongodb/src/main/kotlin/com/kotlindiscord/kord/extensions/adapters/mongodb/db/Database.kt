@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.adapters.mongodb.db
 
 import com.kotlindiscord.kord.extensions.adapters.mongodb.MONGODB_URI
 import com.kotlindiscord.kord.extensions.adapters.mongodb.kordExCodecRegistry
+import com.mongodb.MongoClientSettings
 import com.mongodb.MongoException
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
@@ -15,10 +16,16 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import mu.KotlinLogging
 import org.bson.BsonInt64
 import org.bson.Document
+import org.bson.codecs.configuration.CodecRegistries
 
 internal object Database {
 	private val logger = KotlinLogging.logger {}
 	private val client = MongoClient.create(MONGODB_URI)
+
+	private val codecRegistry = CodecRegistries.fromRegistries(
+		kordExCodecRegistry,
+		MongoClientSettings.getDefaultCodecRegistry(),
+	)
 
 	val db: MongoDatabase = client.getDatabase("kordex-data")
 
@@ -36,5 +43,5 @@ internal object Database {
 	inline fun <reified T : Any> getCollection(name: String): MongoCollection<T> =
 		db
 			.getCollection<T>(name)
-			.withCodecRegistry(kordExCodecRegistry)
+			.withCodecRegistry(codecRegistry)
 }
