@@ -15,7 +15,7 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.message.EmbedBuilder
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
 

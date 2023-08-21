@@ -7,7 +7,7 @@
 package com.kotlindiscord.kord.extensions.adapters.mongodb.db
 
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 private const val META_NAME: String = "data-adapter"
 

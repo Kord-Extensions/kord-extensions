@@ -51,7 +51,7 @@ dependencies {
 
     implementation(libs.konf.core)
     implementation(libs.konf.toml)
-    implementation(libs.logging)
+    implementation(libs.bundles.logging)
     implementation(libs.kotlin.stdlib)
 
     testImplementation(libs.groovy)  // For logback config

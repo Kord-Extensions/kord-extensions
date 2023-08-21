@@ -6,7 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.utils
 
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlin.io.path.Path
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.readLines

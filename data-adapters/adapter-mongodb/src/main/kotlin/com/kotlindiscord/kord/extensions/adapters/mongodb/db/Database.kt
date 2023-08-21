@@ -13,7 +13,7 @@ import com.mongodb.MongoException
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.bson.BsonInt64
 import org.bson.Document
 import org.bson.codecs.configuration.CodecRegistries

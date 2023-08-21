@@ -15,12 +15,12 @@ import com.kotlindiscord.kord.extensions.sentry.SentryContext
 import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.Kord
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import mu.KLogger
-import mu.KotlinLogging
 import org.koin.core.component.inject
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

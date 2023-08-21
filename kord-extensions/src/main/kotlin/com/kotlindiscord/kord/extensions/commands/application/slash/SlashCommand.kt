@@ -30,8 +30,8 @@ import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 
 /**

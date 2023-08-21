@@ -15,8 +15,8 @@ import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.ModalSubmitInteractionCreateEvent
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * Component registry, keeps track of components and handles incoming interaction events, dispatching as needed to

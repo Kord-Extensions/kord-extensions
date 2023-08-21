@@ -12,7 +12,7 @@ metadata {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
-    implementation(libs.logging) // Basic logging setup
+    implementation(libs.bundles.logging) // Basic logging setup
 
     detektPlugins(libs.detekt)
     detektPlugins(libs.detekt.libraries)

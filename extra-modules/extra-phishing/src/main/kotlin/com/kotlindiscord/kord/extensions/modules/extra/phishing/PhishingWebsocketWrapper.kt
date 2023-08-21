@@ -10,8 +10,8 @@ package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
-import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -22,9 +22,7 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
 import org.koin.core.component.inject
 
 /**
@@ -35,74 +33,74 @@ import org.koin.core.component.inject
  * @property callback Callback to invoke with domain changes
  */
 class PhishingWebsocketWrapper(
-    private val appName: String,
-    private val callback: suspend (DomainChange) -> Unit,
+	private val appName: String,
+	private val callback: suspend (DomainChange) -> Unit,
 ) : KordExKoinComponent {
-    private val logger = KotlinLogging.logger { }
-    private var job: Job? = null
+	private val logger = KotlinLogging.logger { }
+	private var job: Job? = null
 
-    private val kord: Kord by inject()
+	private val kord: Kord by inject()
 
-    internal val client = HttpClient {
-        install(ContentNegotiation) {
-            json()
-        }
+	internal val client = HttpClient {
+		install(ContentNegotiation) {
+			json()
+		}
 
-        install(WebSockets)
+		install(WebSockets)
 
-        expectSuccess = true
-    }
+		expectSuccess = true
+	}
 
-    /**
-     * Connect the websocket, and start processing incoming data. This will also stop any current websocket connection.
-     */
-    suspend fun start() {
-        stop()
+	/**
+	 * Connect the websocket, and start processing incoming data. This will also stop any current websocket connection.
+	 */
+	suspend fun start() {
+		stop()
 
-        job = kord.launch {
-            while (true) {
-                try {
-                    websocket()
-                } catch (e: ClosedReceiveChannelException) {
-                    logger.info { "Websocket closed by the server." }
-                } catch (e: Exception) {
-                    logger.error(e) { "Exception thrown during webhook connection/processing." }
-                }
+		job = kord.launch {
+			while (true) {
+				try {
+					websocket()
+				} catch (e: ClosedReceiveChannelException) {
+					logger.info { "Websocket closed by the server." }
+				} catch (e: Exception) {
+					logger.error(e) { "Exception thrown during webhook connection/processing." }
+				}
 
-                logger.info { "Reconnecting..." }
+				logger.info { "Reconnecting..." }
 
-                delay(1000)
-            }
-        }
-    }
+				delay(1000)
+			}
+		}
+	}
 
-    /** If the websocket is connected, disconnect by killing its job. **/
-    fun stop() {
-        job?.cancel()
-        job = null
-    }
+	/** If the websocket is connected, disconnect by killing its job. **/
+	fun stop() {
+		job?.cancel()
+		job = null
+	}
 
-    private suspend fun websocket() {
-        client.webSocket(
-            "wss://phish.sinking.yachts/feed",
-            { header("X-Identity", "$appName (via Kord Extensions)") }
-        ) {
-            logger.info { "Websocket connected." }
+	private suspend fun websocket() {
+		client.webSocket(
+			"wss://phish.sinking.yachts/feed",
+			{ header("X-Identity", "$appName (via Kord Extensions)") }
+		) {
+			logger.info { "Websocket connected." }
 
-            while (isActive) {
-                val frame = incoming.receive() as Frame.Text
-                val frameText = frame.readText()
+			while (isActive) {
+				val frame = incoming.receive() as Frame.Text
+				val frameText = frame.readText()
 
-                logger.debug { "Sinking Yachts <<< $frameText" }
+				logger.debug { "Sinking Yachts <<< $frameText" }
 
-                try {
-                    val change: DomainChange = Json.decodeFromString(frameText)
+				try {
+					val change: DomainChange = Json.decodeFromString(frameText)
 
-                    callback(change)
-                } catch (e: Exception) {
-                    logger.error(e) { "Failed to handle incoming domain change." }
-                }
-            }
-        }
-    }
+					callback(change)
+				} catch (e: Exception) {
+					logger.error(e) { "Failed to handle incoming domain change." }
+				}
+			}
+		}
+	}
 }

@@ -379,23 +379,3 @@ public fun builderClass(body: ConverterBuilderClassBuilder.() -> Unit): Converte
 
     return builder
 }
-
-/** @suppress TODO: Remove this later, it's for testing **/
-public fun main() {
-    println(
-        builderClass {
-            name = "enum"
-            converterClass = "EnumConverter"
-            argumentType = "E"
-
-            builderGeneric = "E: Enum<E>"
-
-            builderArg("public var getter: suspend (String) -> E?")
-
-            builderField("public lateinit var typeName: String")
-            builderField("public var bundle: String? = null")
-
-            types(ConverterType.COALESCING)
-        }.result
-    )
-}

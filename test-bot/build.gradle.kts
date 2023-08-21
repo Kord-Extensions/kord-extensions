@@ -86,5 +86,5 @@ application {
 }
 
 detekt {
-    config = files("$projectDir/detekt.yml")
+    config.from(files("$projectDir/detekt.yml"))
 }

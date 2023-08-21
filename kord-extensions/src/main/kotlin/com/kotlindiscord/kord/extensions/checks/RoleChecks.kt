@@ -13,8 +13,8 @@ import com.kotlindiscord.kord.extensions.utils.getTopRole
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.event.Event
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.toList
-import mu.KotlinLogging
 
 // region: Entity DSL versions
 

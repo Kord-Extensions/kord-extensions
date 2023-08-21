@@ -17,9 +17,9 @@ import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.sentry.Sentry
-import mu.KLogger
-import mu.KotlinLogging
 
 /** Abstract class representing a button component that has a click action. **/
 public abstract class InteractionButtonWithAction<C : InteractionButtonContext, M : ModalForm>(timeoutTask: Task?) :

@@ -12,7 +12,7 @@ import com.kotlindiscord.kord.extensions.events.EventHandler
 import dev.kord.core.enableEvent
 import dev.kord.core.event.Event
 import dev.kord.gateway.Intents
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * DSL function for easily registering an event handler.

@@ -12,8 +12,8 @@ import dev.kord.core.behavior.channel.CategoryBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.entity.channel.Category
 import dev.kord.core.event.Event
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.toList
-import mu.KotlinLogging
 
 // region: Entity DSL versions
 

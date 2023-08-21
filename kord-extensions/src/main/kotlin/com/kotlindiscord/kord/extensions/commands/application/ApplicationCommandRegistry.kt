@@ -43,8 +43,8 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.request.KtorRequestException
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
 import javax.naming.InvalidNameException

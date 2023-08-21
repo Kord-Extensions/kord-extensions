@@ -39,14 +39,14 @@ import dev.kord.core.gateway.handler.DefaultGatewayEventInterceptor
 import dev.kord.core.on
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
-import mu.KLogger
-import mu.KotlinLogging
 import org.koin.core.component.inject
 import org.koin.dsl.bind
 

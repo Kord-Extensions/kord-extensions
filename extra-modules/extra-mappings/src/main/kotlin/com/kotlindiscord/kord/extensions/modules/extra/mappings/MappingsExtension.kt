@@ -30,13 +30,13 @@ import com.kotlindiscord.kord.extensions.plugins.extra.MappingsPlugin
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.*
-import mu.KotlinLogging
 import kotlin.collections.set
 import kotlin.error
 import kotlin.io.path.Path

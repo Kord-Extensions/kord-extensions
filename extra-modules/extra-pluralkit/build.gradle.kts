@@ -23,7 +23,7 @@ dependencies {
     detektPlugins(libs.detekt)
     detektPlugins(libs.detekt.libraries)
 
-    implementation(libs.logging)
+    implementation(libs.bundles.logging)
     implementation(libs.kotlin.stdlib)
     implementation(libs.ktor.logging)
 

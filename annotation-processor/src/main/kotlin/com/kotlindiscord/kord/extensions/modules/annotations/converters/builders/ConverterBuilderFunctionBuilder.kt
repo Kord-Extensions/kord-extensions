@@ -138,21 +138,3 @@ public fun builderFunction(body: ConverterBuilderFunctionBuilder.() -> Unit): St
 
     return builder.build()
 }
-
-/** @suppress TODO: Remove this later, it's for testing **/
-public fun main() {
-    println(
-        builderFunction {
-            functionGeneric = "E: Enum<E>"
-            builderGeneric = "E: Enum<E>"
-
-            argumentType = "E"
-            converterType = "SingleConverter"
-
-            name = "enum"
-            builderType = "EnumConverterBuilder"
-
-            builderArg("getter = { getEnum(it) }")
-        }
-    )
-}

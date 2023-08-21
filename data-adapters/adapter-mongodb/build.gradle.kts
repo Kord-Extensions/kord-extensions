@@ -22,7 +22,7 @@ dependencies {
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.kx.coro)
-    implementation(libs.logging)
+    implementation(libs.bundles.logging)
     implementation(libs.mongodb)
 
     implementation(project(":kord-extensions"))

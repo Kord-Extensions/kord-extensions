@@ -20,9 +20,9 @@ import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.sync.Mutex
-import mu.KLogger
-import mu.KotlinLogging
 import org.koin.core.component.inject
 
 /**
