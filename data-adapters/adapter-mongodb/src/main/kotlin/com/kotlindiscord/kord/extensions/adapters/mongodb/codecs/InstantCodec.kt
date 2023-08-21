@@ -13,7 +13,7 @@ import org.bson.codecs.Codec
 import org.bson.codecs.DecoderContext
 import org.bson.codecs.EncoderContext
 
-public class InstantCodec : Codec<Instant> {
+public object InstantCodec : Codec<Instant> {
     override fun decode(reader: BsonReader, decoderContext: DecoderContext): Instant =
         Instant.parse(reader.readString())
 
