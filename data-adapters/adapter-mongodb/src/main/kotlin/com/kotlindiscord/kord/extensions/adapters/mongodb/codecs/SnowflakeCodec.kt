@@ -13,7 +13,7 @@ import org.bson.codecs.Codec
 import org.bson.codecs.DecoderContext
 import org.bson.codecs.EncoderContext
 
-public class SnowflakeCodec : Codec<Snowflake> {
+public object SnowflakeCodec : Codec<Snowflake> {
     override fun decode(reader: BsonReader, decoderContext: DecoderContext): Snowflake =
         Snowflake(reader.readString())
 
