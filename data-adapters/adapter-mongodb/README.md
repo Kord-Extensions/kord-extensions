@@ -25,7 +25,8 @@ To switch to the MongoDB data adapter follow these steps:
    ```
 
 3. If you use MongoDB elsewhere in your project, you can use the provided codecs to handle these types:
-	- `Instant` (Kotlin Datetime)
+    - `DateTimePeriod` (kotlinx Datetime)
+	- `Instant` (Kotlinx Datetime)
 	- `Snowflake` (Kord)
 	- `StorageType` (KordEx)
 
