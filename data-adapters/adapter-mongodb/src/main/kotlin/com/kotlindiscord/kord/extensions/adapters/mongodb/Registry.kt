@@ -5,6 +5,7 @@ import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.configuration.CodecRegistry
 
 public val kordExCodecRegistry: CodecRegistry = CodecRegistries.fromCodecs(
+	DateTimePeriodCodec,
 	InstantCodec,
 	SnowflakeCodec,
 	StorageTypeCodec,
