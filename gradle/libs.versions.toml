@@ -26,7 +26,7 @@ mongodb = "4.10.1"
 pf4j = "3.9.0"
 sentry = "6.28.0"
 slf4j = "2.0.7"
-time4j-base = "5.9.2"
+time4j-base = "5.9.3"
 time4j-tzdata = "5.0-2023b"
 toml = "0.2.0"
 
