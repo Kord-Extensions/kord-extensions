@@ -13,7 +13,6 @@ koin = "3.4.3"
 konf = "1.1.2"
 #kord = "0.9.x-SNAPSHOT"
 kord = "0.11.0-SNAPSHOT"
-kotlinpoet = "1.14.2"
 ksp = "1.9.0-1.0.13"
 ktor = "2.3.3"
 kx-coro = "1.7.3"
@@ -22,11 +21,11 @@ linkie = "1.0.99"
 logback = "1.4.11"
 logback-groovy = "1.14.4"
 logging = "5.1.0"
-mongodb = "4.10.1"
+mongodb = "4.10.2"
 pf4j = "3.9.0"
 sentry = "6.28.0"
 slf4j = "2.0.7"
-time4j-base = "5.9.2"
+time4j-base = "5.9.3"
 time4j-tzdata = "5.0-2023b"
 toml = "0.2.0"
 
@@ -49,7 +48,6 @@ konf-toml = { module = "com.uchuhimo:konf-toml", version.ref = "konf" }
 
 kord = { module = "dev.kord:kord-core-voice", version.ref = "kord" }
 
-kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }

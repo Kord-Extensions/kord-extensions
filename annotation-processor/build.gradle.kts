@@ -13,7 +13,6 @@ dependencies {
     implementation(libs.kotlin.stdlib)
 
     implementation(libs.koin.core)
-    implementation(libs.kotlinpoet)
     implementation(libs.ksp)
 
     implementation(project(":annotations"))
