@@ -8,7 +8,6 @@ package com.kotlindiscord.kord.extensions.koin
 
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
-import org.koin.core.context.GlobalContext
 import org.koin.core.context.KoinContext
 import org.koin.core.error.KoinAppAlreadyStartedException
 import org.koin.core.module.Module
@@ -98,12 +97,12 @@ public object KordExContext : KoinContext {
 
 	/** Mirroring the global Koin instance implementation. **/
 	override fun loadKoinModules(module: Module, createEagerInstances: Boolean): Unit = synchronized(this) {
-		GlobalContext.get().loadModules(listOf(module), createEagerInstances = createEagerInstances)
+		get().loadModules(listOf(module), createEagerInstances = createEagerInstances)
 	}
 
 	/** Mirroring the global Koin instance implementation. **/
 	override fun loadKoinModules(modules: List<Module>, createEagerInstances: Boolean): Unit = synchronized(this) {
-		GlobalContext.get().loadModules(modules, createEagerInstances = createEagerInstances)
+		get().loadModules(modules, createEagerInstances = createEagerInstances)
 	}
 
 	/**
