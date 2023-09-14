@@ -5,7 +5,7 @@
  */
 
 @file:OptIn(
-    FlowPreview::class,
+    ExperimentalCoroutinesApi::class,
 )
 
 package com.kotlindiscord.kord.extensions.commands.converters.impl
@@ -29,7 +29,7 @@ import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.rest.builder.interaction.ChannelBuilder
 import dev.kord.rest.builder.interaction.OptionsBuilder
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList

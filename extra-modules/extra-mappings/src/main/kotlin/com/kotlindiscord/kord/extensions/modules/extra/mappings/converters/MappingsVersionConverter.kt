@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(DelicateCoroutinesApi::class)
+@file:OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings.converters
 
@@ -21,6 +21,7 @@ import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.MappingsContainer
