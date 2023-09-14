@@ -7,6 +7,7 @@ on:
       - "root"
 
   pull_request:
+  merge_group:
 
 jobs:
   build:

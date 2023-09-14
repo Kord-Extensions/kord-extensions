@@ -32,7 +32,9 @@ internal data class Metadata(
 				eq(Metadata::_id.name, id)
 		}
 
-		private val collection = Database.getCollection<Metadata>(COLLECTION_NAME)
+		private val collection by lazy {
+			Database.getCollection<Metadata>(COLLECTION_NAME)
+		}
 
 		suspend fun get(id: String): Int? =
 			collection

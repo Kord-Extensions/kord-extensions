@@ -25,6 +25,7 @@ public fun ChannelType.toTranslationKey(): String = when (this) {
     ChannelType.PrivateThread -> "channelType.privateThread"
     ChannelType.GuildDirectory -> "channelType.guildDirectory"
     ChannelType.GuildForum -> "channelType.guildForum"
+	ChannelType.GuildMedia -> "channelType.guildMedia"
 
     is ChannelType.Unknown -> "channelType.unknown"
 }
