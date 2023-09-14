@@ -14,8 +14,11 @@ import org.bson.codecs.DecoderContext
 import org.bson.codecs.EncoderContext
 
 public object SnowflakeCodec : Codec<Snowflake> {
-    override fun decode(reader: BsonReader, decoderContext: DecoderContext): Snowflake =
+    override fun decode(reader: BsonReader, decoderContext: DecoderContext): Snowflake = try {
         Snowflake(reader.readString())
+	} catch (e: BsonInvalidOperationException) {
+		Snowflake(reader.readInt64())
+	}
 
     override fun encode(writer: BsonWriter, value: Snowflake, encoderContext: EncoderContext) {
         writer.writeString(value.toString())
