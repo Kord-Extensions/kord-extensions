@@ -30,7 +30,6 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
-
 public class BooleanConverter(
     override var validator: Validator<Boolean> = null
 ) : SingleConverter<Boolean>() {

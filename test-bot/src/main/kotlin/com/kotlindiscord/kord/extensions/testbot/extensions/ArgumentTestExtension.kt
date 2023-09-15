@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("StringLiteralDuplication")
+
 package com.kotlindiscord.kord.extensions.testbot.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -13,6 +15,8 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.entity.ChannelType
+import dev.kord.common.entity.ForumTag
+import dev.kord.core.behavior.channel.asChannelOfOrNull
 import dev.kord.core.entity.Attachment
 import dev.kord.core.entity.channel.Channel
 
@@ -20,6 +24,17 @@ public class ArgumentTestExtension : Extension() {
     override val name: String = "test-args"
 
     override suspend fun setup() {
+        publicSlashCommand(::TagArgs) {
+            name = "test-tag"
+            description = "Test the tags converter"
+
+            action {
+                respond {
+                    content = "Tag provided: `${arguments.tag?.name}`"
+                }
+            }
+        }
+
         publicSlashCommand(::OptionalArgs) {
             name = "optional-autocomplete"
             description = "Check whether autocomplete works with an optional converter."
@@ -74,6 +89,26 @@ public class ArgumentTestExtension : Extension() {
                         append("You specified: ${arguments.channel.mention}.")
                     }
                 }
+            }
+        }
+    }
+
+    public inner class TagArgs : Arguments() {
+        override val parseForAutocomplete: Boolean = true
+
+        public val channel: Channel? by optionalChannel {
+            name = "channel"
+            description = "Channel to select a tag from"
+
+            requireChannelType(ChannelType.GuildForum)
+        }
+
+        public val tag: ForumTag? by optionalTag {
+            name = "tag"
+            description = "Tag to use"
+
+            channelGetter = {
+                channel?.asChannelOfOrNull()
             }
         }
     }

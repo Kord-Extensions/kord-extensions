@@ -17,6 +17,7 @@ import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.sentryId
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.respond
+import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import io.sentry.Sentry
 import io.sentry.UserFeedback
 import io.sentry.protocol.SentryId
@@ -58,7 +59,7 @@ public class SentryExtension : Extension() {
 
                     val feedback = UserFeedback(
                         arguments.id,
-                        member!!.asMember().tag,
+                        member!!.asMember().tagOrUsername(),
                         member!!.id.toString(),
                         arguments.feedback
                     )
@@ -91,7 +92,7 @@ public class SentryExtension : Extension() {
                     val author = message.author!!
                     val feedback = UserFeedback(
                         arguments.id,
-                        author.tag,
+                        author.tagOrUsername(),
                         author.id.toString(),
                         arguments.feedback
                     )
@@ -110,7 +111,10 @@ public class SentryExtension : Extension() {
     /** Arguments for the feedback command. **/
     public class FeedbackMessageArgs : Arguments() {
         /** Sentry event ID. **/
-        public val id: SentryId by sentryId("id", "extensions.sentry.arguments.id")
+        public val id: SentryId by sentryId {
+			name = "id"
+			description = "extensions.sentry.arguments.id"
+		}
 
         /** Feedback message to submit to Sentry. **/
         public val feedback: String by coalescingString {
@@ -121,15 +125,16 @@ public class SentryExtension : Extension() {
 
     /** Arguments for the feedback command. **/
     public class FeedbackSlashArgs : Arguments() {
-        // TODO: It's impossible to translate these right now
-
         /** Sentry event ID. **/
-        public val id: SentryId by sentryId("id", "Sentry event ID")
+        public val id: SentryId by sentryId {
+			name = "id"
+			description = "extensions.sentry.arguments.id"
+		}
 
-        /** Feedback message to submit to Sentry. **/
+			/** Feedback message to submit to Sentry. **/
         public val feedback: String by string {
             name = "feedback"
-            description = "Feedback to send to the developers"
+            description = "extensions.sentry.arguments.feedback"
         }
     }
 }

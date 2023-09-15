@@ -27,13 +27,9 @@ dependencies {
     api(libs.koin.core)
     api(libs.koin.logger)
 
-    api(libs.kord) {
-        capabilities {
-            requireCapability(libs.kord.voice.get().toString())
-        }
-    }
+    api(libs.kord)
 
-    api(libs.logging) // Basic logging setup
+    api(libs.bundles.logging) // Basic logging setup
     api(libs.kx.ser)
     api(libs.sentry)  // Needs to be transitive or bots will start breaking
     api(libs.toml)
@@ -53,6 +49,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.logback)
+    testImplementation(libs.logback.groovy)
 
     ksp(project(":annotation-processor"))
     kspTest(project(":annotation-processor"))

@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.groovy)  // For logback config
     implementation(libs.jansi)
     implementation(libs.logback)
+    implementation(libs.logback.groovy)
 
     ksp(project(":annotation-processor"))
     kspTest(project(":annotation-processor"))
@@ -85,5 +86,5 @@ application {
 }
 
 detekt {
-    config = files("$projectDir/detekt.yml")
+    config.from(files("$projectDir/detekt.yml"))
 }

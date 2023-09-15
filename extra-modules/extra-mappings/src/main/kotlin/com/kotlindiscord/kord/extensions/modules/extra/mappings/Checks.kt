@@ -13,7 +13,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.channel.CategorizableChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * Check ensuring that a command was sent within an allowed category, or not within a banned one.

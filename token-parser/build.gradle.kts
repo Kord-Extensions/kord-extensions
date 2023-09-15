@@ -12,7 +12,7 @@ metadata {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
-    implementation(libs.logging) // Basic logging setup
+    implementation(libs.bundles.logging) // Basic logging setup
 
     detektPlugins(libs.detekt)
     detektPlugins(libs.detekt.libraries)
@@ -23,6 +23,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.logback)
+    testImplementation(libs.logback.groovy)
 }
 
 dokkaModule {

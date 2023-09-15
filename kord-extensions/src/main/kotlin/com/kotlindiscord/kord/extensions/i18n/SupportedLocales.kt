@@ -30,6 +30,9 @@ public object SupportedLocales {
     /** German locale. **/
     public val GERMAN: Locale = Locale("de", "de")
 
+    /** Korean locale. **/
+    public val KOREAN: Locale = Locale("ko")
+
     /** Polish locale. **/
     public val POLISH: Locale = Locale("pl", "pl")
 
@@ -38,6 +41,15 @@ public object SupportedLocales {
 
     /** Russian locale. **/
     public val RUSSIAN: Locale = Locale("ru", "ru")
+
+    /** Spanish locale. **/
+    public val SPANISH: Locale = Locale("es")
+
+    /** Toki Pona locale. **/
+    public val TOKI_PONA: Locale = Locale("tok")
+
+    /** Turkish locale. **/
+    public val TURKISH: Locale = Locale("tr")
 
     /** Map of string names to supported Locale objects.. **/
     public val ALL_LOCALES: Map<String, Locale> = mapOf(
@@ -53,6 +65,14 @@ public object SupportedLocales {
         "en_gb" to ENGLISH,
         "en_us" to ENGLISH,
         "english" to ENGLISH,
+
+        "es" to SPANISH,
+        "es_es" to SPANISH,
+        "spanish" to SPANISH,
+        "espanol" to SPANISH,
+        "espanola" to SPANISH,
+        "español" to SPANISH,
+        "española" to SPANISH,
 
         "fi" to FINNISH,
         "fi_fi" to FINNISH,
@@ -72,6 +92,11 @@ public object SupportedLocales {
         "deutsch" to GERMAN,
         "german" to GERMAN,
 
+        "ko" to KOREAN,
+        "ko_ko" to KOREAN,
+        "korean" to KOREAN,
+        "한국어" to KOREAN,
+
         "portugues" to PORTUGUESE,
         "portuguese" to PORTUGUESE,
         "português" to PORTUGUESE,
@@ -90,5 +115,19 @@ public object SupportedLocales {
         "русская" to RUSSIAN,
         "русскии" to RUSSIAN,
         "русский" to RUSSIAN,
+
+        "tok" to TOKI_PONA,
+        "tok_tok" to TOKI_PONA,
+        "toki" to TOKI_PONA,
+        "toki_pona" to TOKI_PONA,
+        "toki pona" to TOKI_PONA,
+
+        "tr" to TURKISH,
+        "tr_tr" to TURKISH,
+        "turkish" to TURKISH,
+        "turkce" to TURKISH,
+        "turkçe" to TURKISH,
+        "türkce" to TURKISH,
+        "türkçe" to TURKISH,
     )
 }

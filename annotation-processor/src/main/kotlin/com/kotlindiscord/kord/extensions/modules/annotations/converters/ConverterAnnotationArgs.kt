@@ -56,6 +56,10 @@ public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
         argMap["builderBuildFunctionStatements"] as ArrayList<String>? ?: arrayListOf()
 
     /** @suppress **/
+    public val builderBuildFunctionPreStatements: ArrayList<String> =
+        argMap["builderBuildFunctionPreStatements"] as ArrayList<String>? ?: arrayListOf()
+
+    /** @suppress **/
     public val builderExtraStatements: ArrayList<String> =
         argMap["builderExtraStatements"] as ArrayList<String>? ?: arrayListOf()
 

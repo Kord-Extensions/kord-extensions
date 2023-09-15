@@ -28,6 +28,7 @@ dependencies {
     testImplementation(libs.jansi)
     testImplementation(libs.junit)
     testImplementation(libs.logback)
+    testImplementation(libs.logback.groovy)
 }
 
 dokkaModule {

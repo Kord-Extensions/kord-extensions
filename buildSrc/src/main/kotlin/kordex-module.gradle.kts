@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
 
+	id("com.github.ben-manes.versions")
     id("io.gitlab.arturbosch.detekt")
     id("org.cadixdev.licenser")
 }
@@ -47,6 +48,10 @@ tasks {
         }
 
         withType<KotlinCompile>().configureEach {
+            compilerOptions {
+                freeCompilerArgs.add("-Xallow-kotlin-package")
+            }
+
             kotlinOptions {
                 jvmTarget = "11"
             }
@@ -56,7 +61,7 @@ tasks {
 
 detekt {
     buildUponDefaultConfig = true
-    config = files("$rootDir/detekt.yml")
+    config.from(files("$rootDir/detekt.yml"))
 
     autoCorrect = true
 }
@@ -64,4 +69,7 @@ detekt {
 license {
     setHeader(rootProject.file("LICENSE"))
     ignoreFailures(System.getenv()["CI"] == null)
+
+    include ("**/src/**.*")
+    include ("src/**.*")
 }

@@ -571,7 +571,7 @@ style:
   NewLineAtEndOfFile:
     active: true
   NoTabs:
-    active: true
+    active: false
   OptionalAbstractKeyword:
     active: true
   OptionalUnit:

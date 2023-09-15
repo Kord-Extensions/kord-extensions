@@ -9,8 +9,8 @@ package com.kotlindiscord.kord.extensions.i18n
 import com.ibm.icu.text.MessageFormat
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
 

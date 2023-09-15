@@ -25,9 +25,9 @@ import dev.kord.core.event.message.*
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.request.RestRequestException
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.*
 import kotlinx.coroutines.*
-import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 

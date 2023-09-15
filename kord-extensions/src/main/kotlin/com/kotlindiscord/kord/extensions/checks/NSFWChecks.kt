@@ -14,7 +14,7 @@ import com.kotlindiscord.kord.extensions.utils.translate
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.NsfwLevel
 import dev.kord.core.event.Event
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * Check asserting an [Event] was fired within a guild with the given NSFW level.

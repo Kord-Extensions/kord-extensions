@@ -20,6 +20,18 @@ public open class Arguments {
     public val args: MutableList<Argument<*>> = mutableListOf()
 
     /**
+     * During an autocomplete interaction, whether to try to fill the defined arguments from that event before calling
+     * the registered callback.
+     *
+     * This is only required when you're using a converter that references a previous argument in its autocomplete
+     * callback, or you've provided a custom autocomplete callback that does the same thing.
+     *
+     * When enabled, this will only fill in previous arguments up to the current one.
+     * Don't enable this if you don't need it, as it may significantly slow down your bot's autocomplete processing.
+     */
+    public open val parseForAutocomplete: Boolean = false
+
+    /**
      * Add a [SingleConverter] argument to this set of arguments.
      *
      * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which

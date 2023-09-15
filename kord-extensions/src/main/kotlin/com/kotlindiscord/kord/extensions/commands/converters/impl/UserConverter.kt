@@ -16,11 +16,13 @@ import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import com.kotlindiscord.kord.extensions.utils.users
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.User
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.UserOptionValue
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.UserBuilder
 import kotlinx.coroutines.flow.firstOrNull
@@ -45,7 +47,7 @@ import kotlinx.coroutines.flow.firstOrNull
 )
 public class UserConverter(
     private var useReply: Boolean = true,
-    override var validator: Validator<User> = null
+    override var validator: Validator<User> = null,
 ) : SingleConverter<User>() {
     override val signatureTypeString: String = "converters.user.signatureType"
     override val bundle: String = DEFAULT_KORDEX_BUNDLE
@@ -103,7 +105,7 @@ public class UserConverter(
                     null
                 } else {
                     kord.users.firstOrNull { user ->
-                        user.tag.equals(arg, true)
+                        user.tagOrUsername().equals(arg, true)
                     }
                 }
             }
@@ -113,7 +115,14 @@ public class UserConverter(
         UserBuilder(arg.displayName, arg.description).apply { required = true }
 
     override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? UserOptionValue)?.resolvedObject ?: return false
+        val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
+            val id = (option as? UserOptionValue)?.value ?: return false
+
+            kord.getUser(id) ?: return false
+        } else {
+            (option as? UserOptionValue)?.resolvedObject ?: return false
+        }
+
         this.parsed = optionValue
 
         return true

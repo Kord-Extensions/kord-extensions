@@ -28,6 +28,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.common.asJavaLocale
 import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Choice
 import dev.kord.common.entity.Snowflake
@@ -42,8 +43,8 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.request.KtorRequestException
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
 import javax.naming.InvalidNameException
@@ -584,7 +585,6 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
                 is Choice.NumberChoice -> Choice.NumberChoice(name, Optional(nameLocalizations), it.value)
                 is Choice.StringChoice -> Choice.StringChoice(name, Optional(nameLocalizations), it.value)
                 is Choice.IntegerChoice -> Choice.IntegerChoice(name, Optional(nameLocalizations), it.value)
-                is Choice.IntChoice -> Choice.IntChoice(name, Optional(nameLocalizations), it.value)
             }
         }.toMutableList()
     }

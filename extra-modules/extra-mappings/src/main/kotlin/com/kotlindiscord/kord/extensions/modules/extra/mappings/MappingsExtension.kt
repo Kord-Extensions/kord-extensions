@@ -5,7 +5,7 @@
  */
 
 @file:Suppress("StringLiteralDuplication")
-@file:OptIn(DelicateCoroutinesApi::class)
+@file:OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
@@ -30,13 +30,14 @@ import com.kotlindiscord.kord.extensions.plugins.extra.MappingsPlugin
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.*
-import mu.KotlinLogging
 import kotlin.collections.set
 import kotlin.error
 import kotlin.io.path.Path
@@ -113,7 +114,7 @@ class MappingsExtension : Extension() {
             allowedGuild(builder.config.getAllowedGuilds(), builder.config.getBannedGuilds())
         }
 
-        val yarnChannels = Channels.values().joinToString(", ") { "`${it.readableName}`" }
+        val yarnChannels = Channels.entries.joinToString(", ") { "`${it.readableName}`" }
 
         suspend fun <T : MappingArguments> slashCommand(
             parentName: String,
@@ -308,7 +309,7 @@ class MappingsExtension : Extension() {
 
                         "**Default version:** $defaultVersion\n\n" +
 
-                        "**Channels:** " + Channels.values().joinToString(", ") { "`${it.readableName}`" } +
+                        "**Channels:** " + Channels.entries.joinToString(", ") { "`${it.readableName}`" } +
                         "\n" +
                         "**Commands:** `/mojang class`, `/mojang field`, `/mojang method`\n\n" +
 
@@ -375,7 +376,7 @@ class MappingsExtension : Extension() {
 
                         "**Default version:** $defaultVersion\n\n" +
 
-                        "**Channels:** " + Channels.values().joinToString(", ") { "`${it.readableName}`" } +
+                        "**Channels:** " + Channels.entries.joinToString(", ") { "`${it.readableName}`" } +
                         "\n" +
                         "**Commands:** `/hashed class`, `/hashed field`, `/hashed method`\n\n" +
 
