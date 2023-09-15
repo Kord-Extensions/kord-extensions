@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.adapters.mongodb.codecs
 
 import dev.kord.common.entity.Snowflake
+import org.bson.BsonInvalidOperationException
 import org.bson.BsonReader
 import org.bson.BsonWriter
 import org.bson.codecs.Codec
@@ -15,10 +16,10 @@ import org.bson.codecs.EncoderContext
 
 public object SnowflakeCodec : Codec<Snowflake> {
     override fun decode(reader: BsonReader, decoderContext: DecoderContext): Snowflake = try {
-        Snowflake(reader.readString())
-	} catch (e: BsonInvalidOperationException) {
-		Snowflake(reader.readInt64())
-	}
+	    Snowflake(reader.readString())
+    } catch (e: BsonInvalidOperationException) {
+	    Snowflake(reader.readInt64())
+    }
 
     override fun encode(writer: BsonWriter, value: Snowflake, encoderContext: EncoderContext) {
         writer.writeString(value.toString())
