@@ -122,6 +122,8 @@ public suspend fun <T : Arguments> SlashGroup.unsafeSubCommand(
 public fun <T : Arguments, M : ModalForm> SlashGroup.unsafeSubCommand(
     commandObj: UnsafeSlashCommand<T, M>
 ): UnsafeSlashCommand<T, M> {
+	commandObj.guildId = null
+
     if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
         throw InvalidCommandException(
             commandObj.name,
