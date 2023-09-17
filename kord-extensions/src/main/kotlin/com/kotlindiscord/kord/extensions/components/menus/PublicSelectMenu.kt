@@ -4,14 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("TooGenericExceptionCaught")
-@file:OptIn(KordUnsafe::class)
-
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
+import com.kotlindiscord.kord.extensions.components.menus.channel.InitialEphemeralSelectMenuResponseBuilder
 import com.kotlindiscord.kord.extensions.types.FailureReason
+import com.kotlindiscord.kord.extensions.types.PublicInteractionContext
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
@@ -20,22 +19,19 @@ import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
-
-public typealias InitialPublicSelectMenuResponseBuilder =
-    (suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only select (dropdown) menu. **/
-public open class PublicSelectMenu<M : ModalForm>(
+public abstract class PublicSelectMenu<C, M : ModalForm>(
     timeoutTask: Task?,
     public override val modal: (() -> M)? = null,
-) : SelectMenu<PublicSelectMenuContext<M>, M>(timeoutTask) {
-    /** @suppress Initial response builder. **/
-    public open var initialResponseBuilder: InitialPublicSelectMenuResponseBuilder = null
+    /** The initial response builder, omit to ack instead. **/
+    public open var initialResponseBuilder: InitialEphemeralSelectMenuResponseBuilder = null,
+) : SelectMenu<C, M>(timeoutTask) where C : SelectMenuContext, C : PublicInteractionContext {
 
     /** Call this to open with a response, omit it to ack instead. **/
-    public fun initialResponse(body: InitialPublicSelectMenuResponseBuilder) {
+    public fun initialResponse(body: InitialEphemeralSelectMenuResponseBuilder) {
         initialResponseBuilder = body
     }
 
@@ -47,6 +43,15 @@ public open class PublicSelectMenu<M : ModalForm>(
         }
     }
 
+    /** Function to create the context for the select menu. **/
+    public abstract fun createContext(
+        event: SelectMenuInteractionCreateEvent,
+        interactionResponse: PublicMessageInteractionResponseBehavior,
+        cache: MutableStringKeyedMap<Any>,
+    ): C
+
+    @OptIn(KordUnsafe::class)
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
         val cache: MutableStringKeyedMap<Any> = mutableMapOf()
 
@@ -97,7 +102,7 @@ public open class PublicSelectMenu<M : ModalForm>(
             }
         }
 
-        val context = PublicSelectMenuContext(this, event, response, cache)
+        val context = createContext(event, response, cache)
 
         context.populate()
 
@@ -121,9 +126,9 @@ public open class PublicSelectMenu<M : ModalForm>(
     }
 
     override suspend fun respondText(
-        context: PublicSelectMenuContext<M>,
+        context: C,
         message: String,
-        failureType: FailureReason<*>
+        failureType: FailureReason<*>,
     ) {
         context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
