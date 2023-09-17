@@ -4,13 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("TooGenericExceptionCaught")
-@file:OptIn(KordUnsafe::class)
-
 package com.kotlindiscord.kord.extensions.components.menus
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
+import com.kotlindiscord.kord.extensions.components.menus.channel.InitialEphemeralSelectMenuResponseBuilder
+import com.kotlindiscord.kord.extensions.types.EphemeralInteractionContext
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
@@ -19,19 +18,16 @@ import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
+import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
-
-public typealias InitialEphemeralSelectMenuResponseBuilder =
-    (suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing an ephemeral-only select (dropdown) menu. **/
-public open class EphemeralSelectMenu<M : ModalForm>(
+public abstract class EphemeralSelectMenu<C, M : ModalForm>(
     timeoutTask: Task?,
     public override val modal: (() -> M)? = null,
-) : SelectMenu<EphemeralSelectMenuContext<M>, M>(timeoutTask) {
-    /** @suppress Initial response builder. **/
-    public open var initialResponseBuilder: InitialEphemeralSelectMenuResponseBuilder = null
+    /** Builder for the initial response, omit to ack instead. **/
+    public open var initialResponseBuilder: InitialEphemeralSelectMenuResponseBuilder = null,
+) : SelectMenu<C, M>(timeoutTask) where C : SelectMenuContext, C : EphemeralInteractionContext {
 
     /** Call this to open with a response, omit it to ack instead. **/
     public fun initialResponse(body: InitialEphemeralSelectMenuResponseBuilder) {
@@ -46,6 +42,15 @@ public open class EphemeralSelectMenu<M : ModalForm>(
         }
     }
 
+    /** Function to create the context of the select menu. **/
+    public abstract fun createContext(
+        event: SelectMenuInteractionCreateEvent,
+        interactionResponse: EphemeralMessageInteractionResponseBehavior,
+        cache: MutableStringKeyedMap<Any>,
+    ): C
+
+    @OptIn(KordUnsafe::class)
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
         val cache: MutableStringKeyedMap<Any> = mutableMapOf()
 
@@ -96,7 +101,7 @@ public open class EphemeralSelectMenu<M : ModalForm>(
             }
         }
 
-        val context = EphemeralSelectMenuContext(this, event, response, cache)
+        val context = createContext(event, response, cache)
 
         context.populate()
 
@@ -120,9 +125,9 @@ public open class EphemeralSelectMenu<M : ModalForm>(
     }
 
     override suspend fun respondText(
-        context: EphemeralSelectMenuContext<M>,
+        context: C,
         message: String,
-        failureType: FailureReason<*>
+        failureType: FailureReason<*>,
     ) {
         context.respond { settings.failureResponseBuilder(this, message, failureType) }
     }
