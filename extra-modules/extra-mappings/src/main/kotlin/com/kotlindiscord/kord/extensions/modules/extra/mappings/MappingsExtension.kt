@@ -73,12 +73,15 @@ class MappingsExtension : Extension() {
 
         enabledNamespaces.forEach {
             when (it) {
+				"barn" -> namespaces.add(BarnNamespace)
+				"feather" -> namespaces.add(FeatherNamespace)
                 "legacy-yarn" -> namespaces.add(LegacyYarnNamespace)
                 "mcp" -> namespaces.add(McpNamespaceReplacement)
                 "mojang" -> namespaces.add(MojangNamespace)
                 "hashed-mojang" -> namespaces.add(MojangHashedNamespace)
                 "plasma" -> namespaces.add(PlasmaNamespace)
                 "quilt-mappings" -> namespaces.add(QuiltMappingsNamespace)
+				"srg-mojang" -> namespaces.add(MojangSrgNamespace)
                 "yarn" -> namespaces.add(YarnNamespace)
                 "yarrn" -> namespaces.add(YarrnNamespace)
 
@@ -93,12 +96,15 @@ class MappingsExtension : Extension() {
 
         Namespaces.init(LinkieConfig.DEFAULT.copy(namespaces = namespaces))
 
+		val barnEnabled = enabledNamespaces.contains("barn")
+		val featherEnabled = enabledNamespaces.contains("feather")
         val legacyYarnEnabled = enabledNamespaces.contains("legacy-yarn")
         val mcpEnabled = enabledNamespaces.contains("mcp")
         val mojangEnabled = enabledNamespaces.contains("mojang")
         val hashedMojangEnabled = enabledNamespaces.contains("hashed-mojang")
         val plasmaEnabled = enabledNamespaces.contains("plasma")
         val quiltMappingsEnabled = enabledNamespaces.contains("quilt-mappings")
+		val srgMojangEnabled = enabledNamespaces.contains("srg-mojang")
         val yarnEnabled = enabledNamespaces.contains("yarn")
         val yarrnEnabled = enabledNamespaces.contains("yarrn")
 
@@ -253,6 +259,32 @@ class MappingsExtension : Extension() {
                 )
             }
         }
+
+		// region: Barn mappings lookups
+
+		if (barnEnabled) {
+			slashCommand(
+				"barn",
+				"Barn",
+				BarnNamespace,
+				::BarnArguments
+			)
+		}
+
+		// endregion
+
+		// region: Feather mappings lookups
+
+		if (featherEnabled) {
+			slashCommand(
+				"feather",
+				"Feather",
+				FeatherNamespace,
+				::FeatherArguments
+			)
+		}
+
+		// endregion
 
         // region: Legacy Yarn mappings lookups
 
@@ -440,6 +472,19 @@ class MappingsExtension : Extension() {
         }
 
         // endregion
+
+		// region: SRG Mojang mappings lookups
+
+		if (srgMojangEnabled) {
+			slashCommand(
+				"srg",
+				"SRG Mojang",
+				MojangSrgNamespace,
+				::SrgMojangArguments
+			)
+		}
+
+		// endregion
 
         // region: Yarn mappings lookups
 
