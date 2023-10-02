@@ -30,6 +30,9 @@ public object SupportedLocales {
     /** German locale. **/
     public val GERMAN: Locale = Locale("de", "de")
 
+    /** Korean locale. **/
+    public val KOREAN: Locale = Locale("ko")
+
     /** Polish locale. **/
     public val POLISH: Locale = Locale("pl", "pl")
 
@@ -88,6 +91,11 @@ public object SupportedLocales {
         "de_de" to GERMAN,
         "deutsch" to GERMAN,
         "german" to GERMAN,
+
+        "ko" to KOREAN,
+        "ko_ko" to KOREAN,
+        "korean" to KOREAN,
+        "한국어" to KOREAN,
 
         "portugues" to PORTUGUESE,
         "portuguese" to PORTUGUESE,

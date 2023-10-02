@@ -32,7 +32,6 @@ private const val DEFAULT_RADIX = 10
     types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
     builderFields = ["public var radix: Int = $DEFAULT_RADIX"]
 )
-
 public class NumberChoiceConverter(
     private val radix: Int = DEFAULT_RADIX,
     choices: Map<String, Long>,

@@ -335,7 +335,8 @@ public class ConverterBuilderClassBuilder : KoinComponent {
                 ConverterType.COALESCING -> before.add("coalescing")
                 ConverterType.CHOICE -> after.add("choice")
 
-                ConverterType.SINGLE -> { /* Don't add anything */
+                ConverterType.SINGLE -> {
+                    /* Don't add anything */
                 }
             }
         }
@@ -377,24 +378,4 @@ public fun builderClass(body: ConverterBuilderClassBuilder.() -> Unit): Converte
     builder.build()
 
     return builder
-}
-
-/** @suppress TODO: Remove this later, it's for testing **/
-public fun main() {
-    println(
-        builderClass {
-            name = "enum"
-            converterClass = "EnumConverter"
-            argumentType = "E"
-
-            builderGeneric = "E: Enum<E>"
-
-            builderArg("public var getter: suspend (String) -> E?")
-
-            builderField("public lateinit var typeName: String")
-            builderField("public var bundle: String? = null")
-
-            types(ConverterType.COALESCING)
-        }.result
-    )
 }

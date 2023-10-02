@@ -11,7 +11,7 @@
     "UndocumentedPublicProperty",
 )
 
-@file:OptIn(DelicateCoroutinesApi::class)
+@file:OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 
 package com.kotlindiscord.kord.extensions.modules.extra.mappings
 
@@ -47,13 +47,14 @@ import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.*
 import me.shedaniel.linkie.utils.*
-import mu.KotlinLogging
 import kotlin.collections.set
 import kotlin.error
 import kotlin.io.path.Path
@@ -231,6 +232,32 @@ class MappingsExtension : Extension() {
             }
         }
 
+		// region: Barn mappings lookups
+
+		if (barnEnabled) {
+			slashCommand(
+				"barn",
+				"Barn",
+				BarnNamespace,
+				::BarnArguments
+			)
+		}
+
+		// endregion
+
+		// region: Feather mappings lookups
+
+		if (featherEnabled) {
+			slashCommand(
+				"feather",
+				"Feather",
+				FeatherNamespace,
+				::FeatherArguments
+			)
+		}
+
+		// endregion
+
         // region: Legacy Yarn mappings lookups
 
         slashCommand(
@@ -405,6 +432,19 @@ class MappingsExtension : Extension() {
         )
 
         // endregion
+
+		// region: SRG Mojang mappings lookups
+
+		if (srgMojangEnabled) {
+			slashCommand(
+				"srg",
+				"SRG Mojang",
+				MojangSrgNamespace,
+				::SrgMojangArguments
+			)
+		}
+
+		// endregion
 
         // region: Yarn mappings lookups
 

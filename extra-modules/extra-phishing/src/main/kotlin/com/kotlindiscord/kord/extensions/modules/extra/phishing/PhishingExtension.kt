@@ -29,6 +29,7 @@ import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.rest.builder.message.create.embed
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
@@ -38,7 +39,6 @@ import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
 import org.jsoup.Jsoup
 
 /** The maximum number of redirects to attempt to follow for a URL. **/

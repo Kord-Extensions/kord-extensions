@@ -58,7 +58,6 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
     functionSuffixedWhere = "E : Enum<E>, E : ChoiceEnum"
 )
-
 public class EnumChoiceConverter<E>(
     typeName: String,
     private val getter: suspend (String) -> E?,

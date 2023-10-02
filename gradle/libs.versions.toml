@@ -1,31 +1,33 @@
 [versions]
-detekt = "1.22.0"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
-dokka = "1.8.10"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
-kotlin = "1.8.20"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
+detekt = "1.23.1"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
+dokka = "1.9.0"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
+kotlin = "1.9.10"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
 
 commons-validator = "1.7"
-groovy = "3.0.14"
+groovy = "3.0.19"
 icu4j = "73.2"
 jansi = "2.4.0"
-jsoup = "1.15.4"
-junit = "5.9.3"
-koin = "3.4.0"
+jsoup = "1.16.1"
+junit = "5.10.0"
+koin = "3.5.0"
 konf = "1.1.2"
 #kord = "0.9.x-SNAPSHOT"
-kord = "0.10.0-SNAPSHOT"
-kotlinpoet = "1.13.0"
-ksp = "1.8.20-1.0.11"
-ktor = "2.2.4"
-kx-ser = "1.5.0"
-linkie = "1.0.99"
-logback = "1.4.5"
-logback-groovy = "1.14.0"
-logging = "2.1.23"
-pf4j = "3.9.0"
-sentry = "6.17.0"
-time4j-base = "5.9.2"
+kord = "0.11.0-SNAPSHOT"
+ksp = "1.9.10-1.0.13"
+ktor = "2.3.4"
+kx-coro = "1.7.3"
+kx-ser = "1.6.0"
+linkie = "1.0.114"
+logback = "1.4.11"
+logback-groovy = "1.14.5"
+logging = "5.1.0"
+mongodb = "4.10.2"
+pf4j = "3.10.0"
+sentry = "6.29.0"
+slf4j = "2.0.9"
+time4j-base = "5.9.3"
 time4j-tzdata = "5.0-2023b"
-toml = "0.1.8"
+toml = "0.2.0"
 
 [libraries]
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator" }
@@ -43,20 +45,23 @@ koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
 kord = { module = "dev.kord:kord-core-voice", version.ref = "kord" }
 
-kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+kx-coro = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kx-coro"}
 kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
 linkie = { module = "me.shedaniel:linkie-core", version.ref = "linkie" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logback-groovy = { module = "io.github.virtualdogbert:logback-groovy-config", version.ref = "logback-groovy" }
-logging = { module = "io.github.microutils:kotlin-logging", version.ref = "logging" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "logging" }
+mongodb = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
 pf4j = { module = "org.pf4j:pf4j", version.ref = "pf4j" }
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
+slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 time4j-base = { module = "net.time4j:time4j-base", version.ref = "time4j-base" }
 time4j-tzdata = { module = "net.time4j:time4j-tzdata", version.ref = "time4j-tzdata" }
 toml = { module = "net.peanuuutz:tomlkt", version.ref = "toml" }
 
 [bundles]
 commons = [ "commons-validator" ]
+logging = [ "kotlin-logging", "slf4j" ]

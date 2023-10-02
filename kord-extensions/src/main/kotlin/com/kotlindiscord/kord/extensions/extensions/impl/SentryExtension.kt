@@ -111,7 +111,10 @@ public class SentryExtension : Extension() {
     /** Arguments for the feedback command. **/
     public class FeedbackMessageArgs : Arguments() {
         /** Sentry event ID. **/
-        public val id: SentryId by sentryId("id", "extensions.sentry.arguments.id")
+        public val id: SentryId by sentryId {
+			name = "id"
+			description = "extensions.sentry.arguments.id"
+		}
 
         /** Feedback message to submit to Sentry. **/
         public val feedback: String by coalescingString {
@@ -122,15 +125,16 @@ public class SentryExtension : Extension() {
 
     /** Arguments for the feedback command. **/
     public class FeedbackSlashArgs : Arguments() {
-        // TODO: It's impossible to translate these right now
-
         /** Sentry event ID. **/
-        public val id: SentryId by sentryId("id", "Sentry event ID")
+        public val id: SentryId by sentryId {
+			name = "id"
+			description = "extensions.sentry.arguments.id"
+		}
 
-        /** Feedback message to submit to Sentry. **/
+			/** Feedback message to submit to Sentry. **/
         public val feedback: String by string {
             name = "feedback"
-            description = "Feedback to send to the developers"
+            description = "extensions.sentry.arguments.feedback"
         }
     }
 }

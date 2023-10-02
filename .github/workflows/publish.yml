@@ -5,18 +5,22 @@ on:
     branches:
       - "root"
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
 
       - name: Set up Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
 
         with:
-          java-version: 1.14
+          java-version: 17
+          distribution: temurin
 
       - name: Set up Kotlin
         uses: fwilhe2/setup-kotlin@main
@@ -42,6 +46,7 @@ jobs:
 
         with:
           arguments: checkLicenses build
+          dependency-graph: generate-and-submit
 
       - name: Disable parallel publish
         if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
@@ -64,21 +69,21 @@ jobs:
           arguments: publish --no-parallel
 
       - name: Upload artifact (Extra Module JARs)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
 
         with:
           name: JARs (Extra Modules)
           path: extra-modules/*/build/libs/*.jar
 
       - name: Upload artifact (Main JARs)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
 
         with:
           name: JARs (Main)
           path: kord-extensions/build/libs/*.jar
 
       - name: Upload artifact (Module JARs)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
 
         with:
           name: JARs (Modules)

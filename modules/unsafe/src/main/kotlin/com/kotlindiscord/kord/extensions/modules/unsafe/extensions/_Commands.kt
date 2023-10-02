@@ -18,7 +18,7 @@ import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.commands.UnsafeMessageCommand
 import com.kotlindiscord.kord.extensions.modules.unsafe.commands.UnsafeSlashCommand
 import com.kotlindiscord.kord.extensions.modules.unsafe.commands.UnsafeUserCommand
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 

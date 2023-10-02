@@ -8,7 +8,7 @@ package com.kotlindiscord.kord.extensions.parser
 
 import com.kotlindiscord.kord.extensions.parser.tokens.NamedArgumentToken
 import com.kotlindiscord.kord.extensions.parser.tokens.PositionalArgumentToken
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * String parser, tokenizing the input as requested by the function calls. Intended for command argument parsing, but

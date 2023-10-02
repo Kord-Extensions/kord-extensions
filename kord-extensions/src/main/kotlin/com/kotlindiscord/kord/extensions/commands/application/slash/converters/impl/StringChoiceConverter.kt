@@ -26,7 +26,6 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
     types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
-
 public class StringChoiceConverter(
     choices: Map<String, String>,
     override var validator: Validator<String> = null

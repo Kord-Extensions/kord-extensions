@@ -24,8 +24,8 @@ import dev.kord.core.Kord
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.Event
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Job
-import mu.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
 

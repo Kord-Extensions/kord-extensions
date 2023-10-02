@@ -22,8 +22,8 @@ import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 
 /**

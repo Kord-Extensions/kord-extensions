@@ -10,6 +10,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api
 
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.utils.LRUHashMap
 import dev.kord.common.entity.Snowflake
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -18,7 +19,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
 
 internal const val PK_API_VERSION = 2
 

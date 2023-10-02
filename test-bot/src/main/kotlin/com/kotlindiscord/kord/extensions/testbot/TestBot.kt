@@ -18,6 +18,7 @@ import com.kotlindiscord.kord.extensions.utils.env
 import com.kotlindiscord.kord.extensions.utils.envOrNull
 import dev.kord.common.Locale
 import dev.kord.common.entity.Snowflake
+import dev.kord.gateway.ALL
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import org.koin.core.logger.Level
@@ -42,7 +43,7 @@ public suspend fun main() {
         }
 
         intents {
-            +Intents.all
+            +Intents.ALL
         }
 
         i18n {
@@ -82,6 +83,7 @@ public suspend fun main() {
             add(::ModalTestExtension)
             add(::PaginatorTestExtension)
             add(::PKTestExtension)
+            add(::SelectorTestExtension)
             add(::NestingTestExtension)
         }
 

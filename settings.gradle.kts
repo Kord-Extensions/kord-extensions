@@ -1,15 +1,9 @@
 rootProject.name = "kord-extensions"
 
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
-        }
-    }
-}
-
 include("annotations")
 include("annotation-processor")
+
+include("data-adapters:adapter-mongodb")
 
 include("kord-extensions")
 

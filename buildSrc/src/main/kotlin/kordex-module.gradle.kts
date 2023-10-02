@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
 
+	id("com.github.ben-manes.versions")
     id("io.gitlab.arturbosch.detekt")
     id("org.cadixdev.licenser")
 }
@@ -60,7 +61,7 @@ tasks {
 
 detekt {
     buildUponDefaultConfig = true
-    config = files("$rootDir/detekt.yml")
+    config.from(files("$rootDir/detekt.yml"))
 
     autoCorrect = true
 }

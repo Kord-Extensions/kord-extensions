@@ -15,7 +15,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.Event
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * Check asserting that the user an [Event] fired for has a given permission, or the Administrator permission.

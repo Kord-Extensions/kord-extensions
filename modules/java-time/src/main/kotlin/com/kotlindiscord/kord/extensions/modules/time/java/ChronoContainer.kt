@@ -7,8 +7,8 @@
 package com.kotlindiscord.kord.extensions.modules.time.java
 
 import com.kotlindiscord.kord.extensions.parsers.InvalidTimeUnitException
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.Serializable
-import mu.KotlinLogging
 import java.time.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.Temporal

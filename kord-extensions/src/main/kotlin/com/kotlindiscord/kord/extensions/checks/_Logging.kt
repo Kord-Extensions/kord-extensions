@@ -10,7 +10,7 @@ package com.kotlindiscord.kord.extensions.checks
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.Event
-import mu.KLogger
+import io.github.oshai.kotlinlogging.KLogger
 
 /** Convenience wrapper for a "failing check" log message. **/
 public inline fun KLogger.failed(reason: String): Unit =

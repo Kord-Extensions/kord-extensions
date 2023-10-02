@@ -11,7 +11,10 @@ package com.kotlindiscord.kord.extensions.builders
 import com.kotlindiscord.kord.extensions.DISCORD_BLURPLE
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.annotations.BotBuilderDSL
-import com.kotlindiscord.kord.extensions.checks.types.*
+import com.kotlindiscord.kord.extensions.checks.types.ChatCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.MessageCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.SlashCommandCheck
+import com.kotlindiscord.kord.extensions.checks.types.UserCommandCheck
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.application.DefaultApplicationCommandRegistry
 import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
@@ -48,14 +51,15 @@ import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
+import dev.kord.gateway.NON_PRIVILEGED
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.gateway.builder.PresenceBuilder
 import dev.kord.gateway.builder.Shards
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.allowedMentions
-import io.ktor.utils.io.*
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
 import org.koin.fileProperties
@@ -125,8 +129,8 @@ public open class ExtensibleBotBuilder {
     public val pluginBuilder: PluginBuilder = PluginBuilder(this)
 
     /** @suppress Builder that shouldn't be set directly by the user. **/
-    public var intentsBuilder: (Intents.IntentsBuilder.() -> Unit)? = {
-        +Intents.nonPrivileged
+    public var intentsBuilder: (Intents.Builder.() -> Unit)? = {
+        +Intents.NON_PRIVILEGED
 
         if (chatCommandsBuilder.enabled) {
             +Intent.MessageContent
@@ -294,11 +298,11 @@ public open class ExtensibleBotBuilder {
     public fun intents(
         addDefaultIntents: Boolean = true,
         addExtensionIntents: Boolean = true,
-        builder: Intents.IntentsBuilder.() -> Unit
+        builder: Intents.Builder.() -> Unit
     ) {
         this.intentsBuilder = {
             if (addDefaultIntents) {
-                +Intents.nonPrivileged
+                +Intents.NON_PRIVILEGED
 
                 if (chatCommandsBuilder.enabled) {
                     +Intent.MessageContent
@@ -369,6 +373,7 @@ public open class ExtensibleBotBuilder {
     }
 
     /** @suppress Creates a new KoinApplication if it has not already been started. **/
+    @OptIn(KoinInternalApi::class)
     private fun startKoinIfNeeded() {
         var logLevel = koinLogLevel
 

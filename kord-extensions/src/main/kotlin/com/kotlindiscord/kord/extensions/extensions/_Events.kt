@@ -12,7 +12,7 @@ import com.kotlindiscord.kord.extensions.events.EventHandler
 import dev.kord.core.enableEvent
 import dev.kord.core.event.Event
 import dev.kord.gateway.Intents
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * DSL function for easily registering an event handler.
@@ -44,10 +44,10 @@ public suspend inline fun <reified T : Event> Extension.event(
         logger.error(e) { "Failed to register event handler - $e" }
     }
 
-    val fakeBuilder = Intents.IntentsBuilder()
+    val fakeBuilder = Intents.Builder()
 
     fakeBuilder.enableEvent<T>()
-    intents += fakeBuilder.flags().values
+    intents += fakeBuilder.build().values
 
     return eventHandler
 }

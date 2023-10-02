@@ -30,8 +30,8 @@ import dev.kord.core.entity.interaction.InteractionCommand
 import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 
 /**
@@ -134,6 +134,21 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 
         if (!::body.isInitialized && groups.isEmpty() && subCommands.isEmpty()) {
             throw InvalidCommandException(name, "No command action or subcommands/groups given.")
+        }
+
+        val subCommandWithSubCommand = if (parentCommand != null && subCommands.isNotEmpty()) {
+            this
+        } else {
+            subCommands.firstOrNull { it.subCommands.isNotEmpty() }
+        }
+
+        if (subCommandWithSubCommand != null) {
+            throw InvalidCommandException(
+                parentCommand?.name ?: name,
+
+                "Subcommand ${subCommandWithSubCommand.name} has its own subcommands, but subcommands may not be " +
+                    "nested."
+            )
         }
 
         if (::body.isInitialized && !(groups.isEmpty() && subCommands.isEmpty())) {

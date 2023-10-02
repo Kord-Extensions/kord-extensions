@@ -11,7 +11,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.event.Event
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 // region: Entity DSL versions
 

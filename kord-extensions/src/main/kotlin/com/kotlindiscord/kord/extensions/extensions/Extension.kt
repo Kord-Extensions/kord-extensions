@@ -25,7 +25,7 @@ import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import dev.kord.gateway.Intent
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 
 private val logger = KotlinLogging.logger {}

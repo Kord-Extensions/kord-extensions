@@ -9,10 +9,10 @@
 package com.kotlindiscord.kord.extensions.sentry
 
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.sentry.*
 import io.sentry.protocol.SentryId
-import mu.KLogger
-import mu.KotlinLogging
 import org.koin.core.component.inject
 
 /**

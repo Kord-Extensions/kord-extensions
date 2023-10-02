@@ -8,11 +8,11 @@
 
 package com.kotlindiscord.kord.extensions.utils.scheduling
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import mu.KotlinLogging
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration

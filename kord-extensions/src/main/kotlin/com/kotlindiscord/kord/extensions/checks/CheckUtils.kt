@@ -31,6 +31,7 @@ import dev.kord.core.event.role.RoleDeleteEvent
 import dev.kord.core.event.role.RoleUpdateEvent
 import dev.kord.core.event.user.PresenceUpdateEvent
 import dev.kord.core.event.user.UserUpdateEvent
+import dev.kord.core.event.user.VoiceStateUpdateEvent
 import kotlinx.coroutines.flow.first
 
 /**
@@ -64,6 +65,7 @@ public suspend fun channelFor(event: Event): ChannelBehavior? {
         is ReactionRemoveEmojiEvent -> event.channel
         is ReactionRemoveEvent -> event.channel
         is TypingStartEvent -> event.channel
+        is VoiceStateUpdateEvent -> event.kord.unsafe.channel(event.state.channelId ?: return null)
         is WebhookUpdateEvent -> event.channel
 
         is ThreadChannelDeleteEvent -> event.old
@@ -128,6 +130,7 @@ public suspend fun channelIdFor(event: Event): ULong? {
         is ReactionRemoveEmojiEvent -> event.channel.id.value
         is ReactionRemoveEvent -> event.channel.id.value
         is TypingStartEvent -> event.channel.id.value
+        is VoiceStateUpdateEvent -> event.state.channelId?.value
         is WebhookUpdateEvent -> event.channel.id.value
 
         is ThreadChannelDeleteEvent -> event.channel.id.value
@@ -170,6 +173,7 @@ public suspend fun channelSnowflakeFor(event: Event): Snowflake? {
         is ReactionRemoveEmojiEvent -> event.channel.id
         is ReactionRemoveEvent -> event.channel.id
         is TypingStartEvent -> event.channel.id
+        is VoiceStateUpdateEvent -> event.state.channelId
         is WebhookUpdateEvent -> event.channel.id
 
         is ThreadChannelDeleteEvent -> event.channel.id
@@ -252,6 +256,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
         is VoiceChannelDeleteEvent -> event.channel.guild
         is VoiceChannelUpdateEvent -> event.channel.guild
         is VoiceServerUpdateEvent -> event.guild
+        is VoiceStateUpdateEvent -> event.state.getGuildOrNull()
         is WebhookUpdateEvent -> event.guild
 
         is ThreadChannelCreateEvent -> event.channel.guild
@@ -323,6 +328,11 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
 
             event.member.asMember(thread.guildId)
         }
+
+        is VoiceStateUpdateEvent -> event.kord.unsafe.member(
+            event.state.guildId,
+            event.state.userId
+        )
 
 //        event is ThreadMembersUpdateEvent -> event.
         else -> null
@@ -442,6 +452,8 @@ public suspend fun userFor(event: Event): UserBehavior? {
         is ReactionRemoveEvent -> event.user
         is TypingStartEvent -> event.user
         is UserUpdateEvent -> event.user
+
+        is VoiceStateUpdateEvent -> event.kord.unsafe.user(event.state.userId)
 
         is ThreadChannelCreateEvent -> event.channel.owner
 //        is ThreadUpdateEvent -> event.

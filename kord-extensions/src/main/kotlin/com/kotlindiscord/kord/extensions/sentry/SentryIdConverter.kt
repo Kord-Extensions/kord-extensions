@@ -10,6 +10,10 @@ import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.converters.SingleConverter
+import com.kotlindiscord.kord.extensions.commands.converters.Validator
+import com.kotlindiscord.kord.extensions.i18n.DEFAULT_KORDEX_BUNDLE
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
+import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
@@ -23,8 +27,15 @@ import io.sentry.protocol.SentryId
  * @see sentryId
  * @see sentryIdList
  */
-public class SentryIdConverter : SingleConverter<SentryId>() {
+@Converter(
+	"sentryId",
+	types = [ConverterType.SINGLE, ConverterType.LIST, ConverterType.OPTIONAL]
+)
+public class SentryIdConverter(
+	override var validator: Validator<SentryId> = null
+) : SingleConverter<SentryId>() {
     override val signatureTypeString: String = "extensions.sentry.converter.sentryId.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val arg: String = named ?: parser?.parseNext()?.data ?: return false

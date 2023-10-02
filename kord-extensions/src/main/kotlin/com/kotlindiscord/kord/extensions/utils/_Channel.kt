@@ -18,8 +18,8 @@ import dev.kord.core.entity.channel.TopGuildChannel
 import dev.kord.core.entity.channel.TopGuildMessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.rest.Image
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.firstOrNull
-import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
