@@ -38,8 +38,8 @@ dependencies {
 }
 
 val copyTestJars = tasks.register<Copy>("copyTestJars") {
-	dependsOn(project(":plugins:test-plugin-1").tasks.build)
-	dependsOn(project(":plugins:test-plugin-2").tasks.build)
+	dependsOn(project(":plugins:test-plugin-1").tasks.jar)
+	dependsOn(project(":plugins:test-plugin-2").tasks.jar)
 
 	val matchRegex = Regex("^.*(\\d|-SNAPSHOT)\\.jar\$")
 
