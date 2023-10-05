@@ -46,15 +46,13 @@ val copyTestJars = tasks.register<Copy>("copyTestJars") {
 	val root = rootProject.rootDir
 	val pluginDir = root.resolve("plugins/plugin-load-test/tmp/plugins")
 
-	val testOneJar = root.resolve("plugins/test-plugin-1/build/libs")
-		.listFiles()
-		?.first {
+	val testOneJar = project(":plugins:test-plugin-1").tasks.jar.get().outputs.files
+		.first {
 			it.name.matches(matchRegex)
 		}
 
-	val testTwoJar = root.resolve("plugins/test-plugin-2/build/libs")
-		.listFiles()
-		?.first {
+	val testTwoJar = project(":plugins:test-plugin-2").tasks.jar.get().outputs.files
+		.first {
 			it.name.matches(matchRegex)
 		}
 
