@@ -23,6 +23,7 @@ logback-groovy = "1.14.5"
 logging = "5.1.0"
 mongodb = "4.10.2"
 pf4j = "3.10.0"
+semver = "1.4.2"
 sentry = "6.29.0"
 slf4j = "2.0.9"
 time4j-base = "5.9.3"
@@ -53,12 +54,14 @@ ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = 
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 kx-coro = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kx-coro"}
 kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
+kx-ser-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kx-ser" }
 linkie = { module = "me.shedaniel:linkie-core", version.ref = "linkie" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logback-groovy = { module = "io.github.virtualdogbert:logback-groovy-config", version.ref = "logback-groovy" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "logging" }
 mongodb = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
 pf4j = { module = "org.pf4j:pf4j", version.ref = "pf4j" }
+semver = { module = "io.github.z4kn4fein:semver", version.ref = "semver" }
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 time4j-base = { module = "net.time4j:time4j-base", version.ref = "time4j-base" }
