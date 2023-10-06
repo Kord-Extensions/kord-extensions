@@ -29,10 +29,6 @@ tasks {
 
     kotlin {
         explicitApi()
-
-        jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of("11"))
-        }
     }
 
     jar {
@@ -43,8 +39,8 @@ tasks {
         rootProject.file("LICENSE").copyTo(rootProject.file("build/LICENSE-kordex"), true)
 
         tasks.withType<JavaCompile>().configureEach {
-            sourceCompatibility = "11"
-            targetCompatibility = "11"
+            sourceCompatibility = "13"
+            targetCompatibility = "13"
         }
 
         withType<KotlinCompile>().configureEach {
@@ -53,7 +49,7 @@ tasks {
             }
 
             kotlinOptions {
-                jvmTarget = "11"
+                jvmTarget = "13"
             }
         }
     }

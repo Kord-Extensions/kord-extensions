@@ -16,5 +16,11 @@ include("modules:java-time")
 include("modules:time4j")
 include("modules:unsafe")
 
+include("plugins")
+include("plugins:plugin-load-test")
+include("plugins:test-plugin-1")
+include("plugins:test-plugin-2")
+include("plugins:test-plugin-core")
+
 include("test-bot")
 include("token-parser")
