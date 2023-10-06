@@ -27,7 +27,6 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments.*
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.builders.ExtMappingsBuilder
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.enums.Channels
-import com.kotlindiscord.kord.extensions.modules.extra.mappings.exceptions.UnsupportedNamespaceException
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.storage.MappingsConfig
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.*
 import com.kotlindiscord.kord.extensions.pagination.EXPAND_EMOJI
@@ -40,11 +39,13 @@ import com.kotlindiscord.kord.extensions.storage.StorageType
 import com.kotlindiscord.kord.extensions.storage.StorageUnit
 import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import me.shedaniel.linkie.*
@@ -530,34 +531,44 @@ class MappingsExtension : Extension() {
 		// region: Mapping conversions
 
 		var enabledNamespaces = mutableListOf<String>()
-		val namespaces = mutableListOf<Namespace>()
+
+		val namespaceGetter: suspend (Snowflake?) -> Map<String, String>? = { guildId ->
+			if (guildId == null) {
+				null
+			} else {
+				GuildBehavior(guildId, kord).config().namespaces.associateBy { it.lowercase() }
+			}
+		}
+
+		val namespaceNames = mutableSetOf<String>()
+		kord.guilds.flatMapMerge { it.config().namespaces.toList().asFlow() }.toSet(namespaceNames)
+
+		val namespaces = namespaceNames.map {
+			when (it) {
+				"barn" -> BarnNamespace
+				"feather" -> FeatherNamespace
+				"hashed-mojang" -> MojangHashedNamespace
+				"legacy-yarn" -> LegacyYarnNamespace
+				"mcp" -> McpNamespaceReplacement
+				"mojang" -> MojangNamespace
+				"plasma" -> PlasmaNamespace
+				"quilt-mappings" -> QuiltMappingsNamespace
+				"srg-mojang" -> MojangSrgNamespace
+				"yarn" -> YarnNamespace
+				"yarrn" -> YarrnNamespace
+
+				else -> error("Unknown namespace: $it")
+			}
+		}
 
 		publicSlashCommand {
 			name = "convert"
 			description = "Convert mappings across namespaces"
 
-			val configNamespaces = GuildBehavior(guildId!!, kord).config().namespaces
-
-			enabledNamespaces.addAll(configNamespaces)
-			configNamespaces.forEach {
-				when (it) {
-					"legacy-yarn" -> namespaces.add(LegacyYarnNamespace)
-					"mcp" -> namespaces.add(McpNamespaceReplacement)
-					"mojang" -> namespaces.add(MojangNamespace)
-					"hashed-mojang" -> namespaces.add(MojangHashedNamespace)
-					"plasma" -> namespaces.add(PlasmaNamespace)
-					"quilt-mappings" -> namespaces.add(QuiltMappingsNamespace)
-					"yarn" -> namespaces.add(YarnNamespace)
-					"yarrn" -> namespaces.add(YarrnNamespace)
-
-					else -> throw UnsupportedNamespaceException(it)
-				}
-			}
-
 			Namespaces.init(LinkieConfig.DEFAULT.copy(namespaces = namespaces))
 
 			publicSubCommand<MappingConversionArguments>(
-				{ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+				{ MappingConversionArguments(namespaceGetter) }
 			) {
 				name = "class"
 				description = "Convert a class mapping"
@@ -576,7 +587,7 @@ class MappingsExtension : Extension() {
 			}
 
 			publicSubCommand<MappingConversionArguments>(
-				{ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+				{ MappingConversionArguments(namespaceGetter) }
 			) {
 				name = "field"
 				description = "Convert a field mapping"
@@ -602,7 +613,7 @@ class MappingsExtension : Extension() {
 			}
 
 			publicSubCommand<MappingConversionArguments>(
-				{ MappingConversionArguments(enabledNamespaces.associateBy { it.lowercase() }) }
+				{ MappingConversionArguments(namespaceGetter) }
 			) {
 				name = "method"
 				description = "Convert a method mapping"
