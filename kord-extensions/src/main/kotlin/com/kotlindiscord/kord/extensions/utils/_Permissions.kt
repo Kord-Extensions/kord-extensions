@@ -25,7 +25,7 @@ public fun Permission.toTranslationKey(): String? = when (this) {
     Permission.EmbedLinks -> "permission.embedLinks"
     Permission.KickMembers -> "permission.kickMembers"
     Permission.ManageChannels -> "permission.manageChannels"
-    Permission.ManageGuildExpressions, Permission.ManageEmojisAndStickers -> "permission.manageExpressions"
+    Permission.ManageGuildExpressions -> "permission.manageExpressions"
     Permission.ManageEvents -> "permission.manageEvents"
     Permission.ManageGuild -> "permission.manageGuild"
     Permission.ManageMessages -> "permission.manageMessages"
