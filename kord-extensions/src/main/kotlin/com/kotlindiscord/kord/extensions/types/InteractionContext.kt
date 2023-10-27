@@ -18,11 +18,17 @@ import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import java.util.*
 
+/** Type alias for a generic interaction context, meant to be used with extension functions. **/
+public typealias GenericInteractionContext = InteractionContext<*, *, *, *>
+
 /**
  * Interface representing an interaction context. Provides a generic base type for action contexts when working
  * with interactions.
  *
  * More specific types representing each interaction type (ephemeral/public) extend this class.
+ *
+ * If you're writing an extension function, you'll likely want to use [GenericInteractionContext] as the
+ * receiver type.
  *
  * @param ResponseBehavior Generic representing the relevant interaction response behavior.
  * @param FollowupType Generic representing the follow-up type for the current interaction type.
