@@ -4,14 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/com.kotlindiscord.kord.extensions.kord-extensions.extra-modules.extra-mappings.main.iml" filepath="$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/com.kotlindiscord.kord.extensions.kord-extensions.extra-modules.extra-mappings.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/com.kotlindiscord.kord.extensions.kord-extensions.extra-modules.extra-mappings.test.iml" filepath="$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/com.kotlindiscord.kord.extensions.kord-extensions.extra-modules.extra-mappings.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test-bot/com.kotlindiscord.kord.extensions.kord-extensions.test-bot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/test-bot/com.kotlindiscord.kord.extensions.kord-extensions.test-bot.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test-bot/com.kotlindiscord.kord.extensions.kord-extensions.test-bot.test.iml" filepath="$PROJECT_DIR$/.idea/modules/test-bot/com.kotlindiscord.kord.extensions.kord-extensions.test-bot.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/kord-extensions.extra-modules.extra-mappings.main.iml" filepath="$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/kord-extensions.extra-modules.extra-mappings.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/kord-extensions.extra-modules.extra-mappings.test.iml" filepath="$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/kord-extensions.extra-modules.extra-mappings.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/plugins/kord-extensions.plugins.main.iml" filepath="$PROJECT_DIR$/.idea/modules/plugins/kord-extensions.plugins.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/plugins/kord-extensions.plugins.test.iml" filepath="$PROJECT_DIR$/.idea/modules/plugins/kord-extensions.plugins.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test-bot/kord-extensions.test-bot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/test-bot/kord-extensions.test-bot.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test-bot/kord-extensions.test-bot.test.iml" filepath="$PROJECT_DIR$/.idea/modules/test-bot/kord-extensions.test-bot.test.iml" />
     </modules>
   </component>
 </project>

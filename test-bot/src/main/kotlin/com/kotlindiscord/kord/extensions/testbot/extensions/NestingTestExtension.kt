@@ -10,7 +10,6 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.group
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
 
 public class NestingTestExtension : Extension() {
     override val name: String = "test-nesting"

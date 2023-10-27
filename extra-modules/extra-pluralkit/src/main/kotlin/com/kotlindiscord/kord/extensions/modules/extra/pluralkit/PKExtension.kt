@@ -31,7 +31,6 @@ import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.storage.PKGuild
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.utils.LRUHashMap
 import com.kotlindiscord.kord.extensions.storage.StorageType
 import com.kotlindiscord.kord.extensions.storage.StorageUnit
-import com.kotlindiscord.kord.extensions.types.respond
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.Permission

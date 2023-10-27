@@ -6,6 +6,8 @@
 
 package com.kotlindiscord.kord.extensions.types
 
+import com.kotlindiscord.kord.extensions.annotations.AlwaysPublicResponse
+import com.kotlindiscord.kord.extensions.annotations.UnexpectedBehaviour
 import com.kotlindiscord.kord.extensions.pagination.EphemeralResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
@@ -20,58 +22,53 @@ import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import java.util.*
 
-/** Interface representing an ephemeral-only interaction action context. **/
-public interface EphemeralInteractionContext {
-    /** Response created by acknowledging the interaction ephemerally. **/
-    public val interactionResponse: EphemeralMessageInteractionResponseBehavior
-}
-
 /**
- * Respond to the current interaction with an ephemeral followup.
+ * Interface representing an ephemeral interaction context.
  *
- * **Note:** Calling this twice (or at all after [edit]) will result in a public followup!
+ * @see InteractionContext
  */
-public suspend inline fun EphemeralInteractionContext.respond(
-    builder: FollowupMessageCreateBuilder.() -> Unit
-): EphemeralFollowupMessage = interactionResponse.createEphemeralFollowup { builder() }
+public interface EphemeralInteractionContext : InteractionContext<
+	EphemeralMessageInteractionResponseBehavior,
+	EphemeralMessageInteractionResponse,
+	EphemeralFollowupMessage,
+	PublicFollowupMessage,
+	> {
 
-/** Respond to the current interaction with a public followup. **/
-public suspend inline fun EphemeralInteractionContext.respondPublic(
-    builder: FollowupMessageCreateBuilder.() -> Unit
-): PublicFollowupMessage = interactionResponse.createPublicFollowup { builder() }
+	public override suspend fun respond(
+		builder: suspend FollowupMessageCreateBuilder.() -> Unit,
+	): EphemeralFollowupMessage = interactionResponse.createEphemeralFollowup { builder() }
 
-/**
- * Edit the current interaction's response.
- */
-public suspend inline fun EphemeralInteractionContext.edit(
-    builder: InteractionResponseModifyBuilder.() -> Unit
-): EphemeralMessageInteractionResponse = interactionResponse.edit(builder)
+	@UnexpectedBehaviour
+	public override suspend fun respondOpposite(
+		builder: suspend FollowupMessageCreateBuilder.() -> Unit,
+	): PublicFollowupMessage = interactionResponse.createPublicFollowup { builder() }
 
-/**
- * Create a paginator that edits the original interaction. This is the only option for an ephemeral interaction, as
- * it's impossible to edit an ephemeral follow-up.
- */
-public inline fun EphemeralInteractionContext.editingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
-): EphemeralResponsePaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+	public override suspend fun edit(
+		builder: suspend InteractionResponseModifyBuilder.() -> Unit,
+	): EphemeralMessageInteractionResponse = interactionResponse.edit { builder() }
 
-    builder(pages)
+	public override fun editingPaginator(
+		defaultGroup: String,
+		locale: Locale?,
+		builder: (PaginatorBuilder).() -> Unit,
+	): EphemeralResponsePaginator {
+		val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
-    return EphemeralResponsePaginator(pages, interactionResponse)
-}
+		builder(pages)
 
-/** Create a paginator that creates a follow-up message, and edits that. **/
-public inline fun EphemeralInteractionContext.publicRespondingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
-): PublicFollowUpPaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+		return EphemeralResponsePaginator(pages, interactionResponse)
+	}
 
-    builder(pages)
+	@AlwaysPublicResponse
+	public override fun respondingPaginator(
+		defaultGroup: String,
+		locale: Locale?,
+		builder: (PaginatorBuilder).() -> Unit,
+	): PublicFollowUpPaginator {
+		val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
-    return PublicFollowUpPaginator(pages, interactionResponse)
+		builder(pages)
+
+		return PublicFollowUpPaginator(pages, interactionResponse)
+	}
 }
