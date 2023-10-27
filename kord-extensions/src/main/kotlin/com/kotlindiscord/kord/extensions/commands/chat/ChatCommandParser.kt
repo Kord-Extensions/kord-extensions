@@ -135,6 +135,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                                 "argumentParser.error.requiresOneValue",
 
+								context.getLocale(),
+								context.command.resolvedBundle ?: converter.bundle,
+
                                 currentArg,
                                 argumentsObj,
                                 parser
@@ -162,6 +165,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                             ),
 
                             "argumentParser.error.invalidValue",
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -194,6 +200,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                             "argumentParser.error.errorInArgument",
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             parser
@@ -218,6 +227,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                                 "argumentParser.error.requiresOneValue",
 
+								context.getLocale(),
+								context.command.resolvedBundle ?: converter.bundle,
+
                                 currentArg,
                                 argumentsObj,
                                 parser
@@ -253,6 +265,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                             ),
 
                             "argumentParser.error.errorInArgument",
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -274,6 +289,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                                 "argumentParser.error.requiresOneValue",
 
+								context.getLocale(),
+								context.command.resolvedBundle ?: converter.bundle,
+
                                 currentArg,
                                 argumentsObj,
                                 parser
@@ -309,6 +327,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                             ),
 
                             "argumentParser.error.errorInArgument",
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -347,6 +368,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                             "argumentParser.error.invalidValue",
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             parser
@@ -372,6 +396,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 ),
 
                                 "argumentParser.error.notAllValid",
+
+								context.getLocale(),
+								context.command.resolvedBundle ?: converter.bundle,
 
                                 currentArg,
                                 argumentsObj,
@@ -406,6 +433,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                             ),
 
                             "argumentParser.error.errorInArgument",
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -444,6 +474,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                             "argumentParser.error.invalidValue",
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             parser
@@ -469,6 +502,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 ),
 
                                 "argumentParser.error.notAllValid",
+
+								context.getLocale(),
+								context.command.resolvedBundle ?: converter.bundle,
 
                                 currentArg,
                                 argumentsObj,
@@ -505,6 +541,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                             ),
 
                             "argumentParser.error.errorInArgument",
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -543,6 +582,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                             "argumentParser.error.invalidValue",
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             parser
@@ -568,6 +610,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 ),
 
                                 "argumentParser.error.notAllValid",
+
+								context.getLocale(),
+								context.command.resolvedBundle ?: converter.bundle,
 
                                 currentArg,
                                 argumentsObj,
@@ -602,6 +647,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                             ),
 
                             "argumentParser.error.errorInArgument",
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -640,6 +688,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                             "argumentParser.error.invalidValue",
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             parser
@@ -665,6 +716,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                                 ),
 
                                 "argumentParser.error.notAllValid",
+
+								context.getLocale(),
+								context.command.resolvedBundle ?: converter.bundle,
 
                                 currentArg,
                                 argumentsObj,
@@ -700,6 +754,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                             "argumentParser.error.errorInArgument",
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             parser
@@ -732,6 +789,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                     "argumentParser.error.errorInArgument",
 
+					context.getLocale(),
+					context.command.resolvedBundle ?: converter.bundle,
+
                     currentArg,
                     argumentsObj,
                     parser
@@ -757,6 +817,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
                     "argumentParser.error.noFilledArguments",
 
+					context.getLocale(),
+					context.command.resolvedBundle,
+
                     null,
                     argumentsObj,
                     parser
@@ -773,6 +836,9 @@ public open class ChatCommandParser : KordExKoinComponent {
                     ),
 
                     "argumentParser.error.someFilledArguments",
+
+					context.getLocale(),
+					context.command.resolvedBundle,
 
                     null,
                     argumentsObj,

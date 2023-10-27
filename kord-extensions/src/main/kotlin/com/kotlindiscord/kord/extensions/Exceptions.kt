@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.builders.ConverterB
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
@@ -27,13 +28,13 @@ public open class ExtensionsException : Exception()
  * @property reason Reason for the validation failure
  **/
 public class InvalidArgumentException(
-    public val builder: ConverterBuilder<*>,
-    public val reason: String
+	public val builder: ConverterBuilder<*>,
+	public val reason: String,
 ) : ExtensionsException() {
-    override val message: String = toString()
+	override val message: String = toString()
 
-    override fun toString(): String =
-        "Invalid argument: $builder ($reason)"
+	override fun toString(): String =
+		"Invalid argument: $builder ($reason)"
 }
 
 /**
@@ -43,20 +44,20 @@ public class InvalidArgumentException(
  * @param reason Why this [Extension] is considered invalid.
  */
 public class InvalidExtensionException(
-    public val clazz: KClass<out Extension>,
-    public val reason: String?
+	public val clazz: KClass<out Extension>,
+	public val reason: String?,
 ) : ExtensionsException() {
-    override val message: String = toString()
+	override val message: String = toString()
 
-    override fun toString(): String {
-        val formattedReason = if (reason != null) {
-            " ($reason)"
-        } else {
-            ""
-        }
+	override fun toString(): String {
+		val formattedReason = if (reason != null) {
+			" ($reason)"
+		} else {
+			""
+		}
 
-        return "Invalid extension class: ${clazz.qualifiedName}$formattedReason"
-    }
+		return "Invalid extension class: ${clazz.qualifiedName}$formattedReason"
+	}
 }
 
 /**
@@ -65,9 +66,9 @@ public class InvalidExtensionException(
  * @param reason Why this [EventHandler] is considered invalid.
  */
 public class InvalidEventHandlerException(public val reason: String) : ExtensionsException() {
-    override val message: String = toString()
+	override val message: String = toString()
 
-    override fun toString(): String = "Invalid event handler: $reason"
+	override fun toString(): String = "Invalid event handler: $reason"
 }
 
 /**
@@ -76,9 +77,9 @@ public class InvalidEventHandlerException(public val reason: String) : Extension
  * @param reason Why this [EventHandler] could not be registered.
  */
 public class EventHandlerRegistrationException(public val reason: String) : ExtensionsException() {
-    override val message: String = toString()
+	override val message: String = toString()
 
-    override fun toString(): String = "Failed to register event handler: $reason"
+	override fun toString(): String = "Failed to register event handler: $reason"
 }
 
 /**
@@ -88,15 +89,15 @@ public class EventHandlerRegistrationException(public val reason: String) : Exte
  * @param reason Why this [ChatCommand] is considered invalid.
  */
 public class InvalidCommandException(public val name: String?, public val reason: String) : ExtensionsException() {
-    override val message: String = toString()
+	override val message: String = toString()
 
-    override fun toString(): String {
-        if (name == null) {
-            return "Invalid command: $reason"
-        }
+	override fun toString(): String {
+		if (name == null) {
+			return "Invalid command: $reason"
+		}
 
-        return "Invalid command $name: $reason"
-    }
+		return "Invalid command $name: $reason"
+	}
 }
 
 /**
@@ -106,15 +107,15 @@ public class InvalidCommandException(public val name: String?, public val reason
  * @param reason Why this [ChatCommand] could not be registered.
  */
 public class CommandRegistrationException(public val name: String?, public val reason: String) : ExtensionsException() {
-    override val message: String = toString()
+	override val message: String = toString()
 
-    override fun toString(): String {
-        if (name == null) {
-            return "Failed to register command: $reason"
-        }
+	override fun toString(): String {
+		if (name == null) {
+			return "Failed to register command: $reason"
+		}
 
-        return "Failed to register command $name: $reason"
-    }
+		return "Failed to register command $name: $reason"
+	}
 }
 
 /**
@@ -126,14 +127,14 @@ public class CommandRegistrationException(public val name: String?, public val r
  * @param translationKey Translation key used to create the [reason] string, if any.
  */
 public open class DiscordRelayedException(
-    public open val reason: String,
-    public open val translationKey: String? = null
+	public open val reason: String,
+	public open val translationKey: String? = null,
 ) : ExtensionsException() {
-    override val message: String by lazy { toString() }
+	override val message: String by lazy { toString() }
 
-    public constructor(other: DiscordRelayedException) : this(other.reason)
+	public constructor(other: DiscordRelayedException) : this(other.reason)
 
-    override fun toString(): String = reason
+	override fun toString(): String = reason
 }
 
 /**
@@ -146,16 +147,23 @@ public open class DiscordRelayedException(
  * @param parser Tokenizing string parser used for this parse attempt, if this was a chat command.
  */
 public open class ArgumentParsingException(
-    public override val reason: String,
-    public override val translationKey: String?,
-    public val argument: Argument<*>?,
-    public val arguments: Arguments,
-    public val parser: StringParser?
+	public override val reason: String,
+	public override val translationKey: String?,
+	public val locale: Locale,
+	public val bundle: String?,
+	public val argument: Argument<*>?,
+	public val arguments: Arguments,
+	public val parser: StringParser?,
 ) : DiscordRelayedException(reason, translationKey) {
-    override val message: String by lazy { toString() }
+	override val message: String by lazy { toString() }
 
-    public constructor(other: ArgumentParsingException) :
-        this(other.reason, other.translationKey, other.argument, other.arguments, other.parser)
+	public constructor(other: ArgumentParsingException) :
+		this(
+			other.reason,
+			other.translationKey, other.locale, other.bundle,
+			other.argument, other.arguments,
+			other.parser
+		)
 
-    override fun toString(): String = reason
+	override fun toString(): String = reason
 }
