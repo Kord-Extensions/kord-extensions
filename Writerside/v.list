@@ -2,5 +2,5 @@
 <!DOCTYPE vars SYSTEM "https://resources.jetbrains.com/writerside/1.0/vars.dtd">
 <vars>
     <var name="product" value="Kord Extensions" />
-	<var name="version" value="1.5.10-SNAPSHOT" />
+	<var name="version" value="1.6.0-SNAPSHOT" />
 </vars>

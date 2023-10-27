@@ -11,7 +11,6 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCom
 import com.kotlindiscord.kord.extensions.components.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.ChannelType
 import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.core.entity.channel.TextChannel

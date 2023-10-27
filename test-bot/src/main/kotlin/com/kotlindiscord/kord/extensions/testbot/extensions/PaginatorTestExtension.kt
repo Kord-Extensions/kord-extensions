@@ -11,7 +11,6 @@ package com.kotlindiscord.kord.extensions.testbot.extensions
 import com.kotlindiscord.kord.extensions.commands.application.slash.publicSubCommand
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
-import com.kotlindiscord.kord.extensions.types.editingPaginator
 
 public class PaginatorTestExtension : Extension() {
     override val name: String = "test-paginator"
