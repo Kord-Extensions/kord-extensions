@@ -1,4 +1,4 @@
-import java.net.URL
+import java.net.URI
 
 plugins {
     id("org.jetbrains.dokka")
@@ -38,21 +38,21 @@ tasks {
                         localDirectory.set(file("${project.projectDir}/src/main/kotlin"))
 
                         remoteUrl.set(
-                            URL(
+                            URI(
                                 "https://github.com/Kotlin-Discord/kord-extensions/" +
                                     "tree/${getCurrentGitBranch()}/${projectDir}/src/main/kotlin"
-                            )
+                            ).toURL()
                         )
 
                         remoteLineSuffix.set("#L")
                     }
 
                     externalDocumentationLink {
-                        url.set(URL("http://kordlib.github.io/kord/common/common/"))
+                        url.set(URI("http://kordlib.github.io/kord/common/common/").toURL())
                     }
 
                     externalDocumentationLink {
-                        url.set(URL("http://kordlib.github.io/kord/core/core/"))
+                        url.set(URI("http://kordlib.github.io/kord/core/core/").toURL())
                     }
                 }
             }

@@ -37,7 +37,6 @@ import com.kotlindiscord.kord.extensions.plugins.extra.MappingsPlugin
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.storage.StorageType
 import com.kotlindiscord.kord.extensions.storage.StorageUnit
-import com.kotlindiscord.kord.extensions.types.respond
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
@@ -1194,7 +1193,8 @@ class MappingsExtension : Extension() {
 
 	private suspend fun GuildBehavior.getTimeout() = config().timeout.toLong()
 
-	private suspend fun CheckContextWithCache<ChatInputCommandInteractionCreateEvent>.customChecks(
+	private suspend fun CheckContextWithCache<
+  >.customChecks(
 		command: String,
 		namespace: Namespace,
 	) {

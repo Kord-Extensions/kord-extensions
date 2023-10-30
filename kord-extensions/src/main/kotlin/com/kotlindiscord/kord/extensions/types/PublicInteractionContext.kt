@@ -6,6 +6,8 @@
 
 package com.kotlindiscord.kord.extensions.types
 
+import com.kotlindiscord.kord.extensions.annotations.AlwaysPublicResponse
+import com.kotlindiscord.kord.extensions.annotations.UnexpectedBehaviour
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
@@ -20,51 +22,52 @@ import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import java.util.*
 
-/** Interface representing a public-only interaction action context. **/
-public interface PublicInteractionContext {
-    /** Response created by acknowledging the interaction publicly. **/
-    public val interactionResponse: PublicMessageInteractionResponseBehavior
-}
-
-/** Respond to the current interaction with a public followup. **/
-public suspend inline fun PublicInteractionContext.respond(
-    builder: FollowupMessageCreateBuilder.() -> Unit
-): PublicFollowupMessage = interactionResponse.createPublicFollowup { builder() }
-
-/** Respond to the current interaction with an ephemeral followup. **/
-public suspend inline fun PublicInteractionContext.respondEphemeral(
-    builder: FollowupMessageCreateBuilder.() -> Unit
-): EphemeralFollowupMessage = interactionResponse.createEphemeralFollowup { builder() }
-
 /**
- * Edit the current interaction's response.
+ * Interface representing a public interaction context.
+ *
+ * @see InteractionContext
  */
-public suspend inline fun PublicInteractionContext.edit(
-    builder: InteractionResponseModifyBuilder.() -> Unit
-): PublicMessageInteractionResponse = interactionResponse.edit(builder)
+public interface PublicInteractionContext : InteractionContext<
+	PublicMessageInteractionResponseBehavior,
+	PublicMessageInteractionResponse,
+	PublicFollowupMessage,
+	EphemeralFollowupMessage,
+	> {
+	public override suspend fun respond(
+		builder: suspend FollowupMessageCreateBuilder.() -> Unit,
+	): PublicFollowupMessage = interactionResponse.createPublicFollowup { builder() }
 
-/** Create a paginator that edits the original interaction. **/
-public inline fun PublicInteractionContext.editingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
-): PublicResponsePaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+	@UnexpectedBehaviour
+	public override suspend fun respondOpposite(
+		builder: suspend FollowupMessageCreateBuilder.() -> Unit,
+	): EphemeralFollowupMessage = interactionResponse.createEphemeralFollowup { builder() }
 
-    builder(pages)
+	public override suspend fun edit(
+		builder: suspend InteractionResponseModifyBuilder.() -> Unit,
+	): PublicMessageInteractionResponse = interactionResponse.edit { builder() }
 
-    return PublicResponsePaginator(pages, interactionResponse)
-}
+	public override fun editingPaginator(
+		defaultGroup: String,
+		locale: Locale?,
+		builder: (PaginatorBuilder).() -> Unit,
+	): PublicResponsePaginator {
+		val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
-/** Create a paginator that creates a follow-up message, and edits that. **/
-public inline fun PublicInteractionContext.respondingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
-): PublicFollowUpPaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+		builder(pages)
 
-    builder(pages)
+		return PublicResponsePaginator(pages, interactionResponse)
+	}
 
-    return PublicFollowUpPaginator(pages, interactionResponse)
+	@AlwaysPublicResponse
+	public override fun respondingPaginator(
+		defaultGroup: String,
+		locale: Locale?,
+		builder: (PaginatorBuilder).() -> Unit,
+	): PublicFollowUpPaginator {
+		val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+
+		builder(pages)
+
+		return PublicFollowUpPaginator(pages, interactionResponse)
+	}
 }

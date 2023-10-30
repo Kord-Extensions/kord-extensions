@@ -14,7 +14,6 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.plugins.extra.MappingsPlugin
 import com.kotlindiscord.kord.extensions.testbot.utils.assert
-import com.kotlindiscord.kord.extensions.types.respond
 import org.koin.core.component.inject
 import org.pf4j.PluginState
 

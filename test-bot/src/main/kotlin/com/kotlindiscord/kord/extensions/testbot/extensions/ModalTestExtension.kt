@@ -18,7 +18,6 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicMessageCommand
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.publicUserCommand
-import com.kotlindiscord.kord.extensions.types.respond
 
 public class ModalTestExtension : Extension() {
     override val name: String = "modals"

@@ -100,6 +100,9 @@ public open class SlashCommandParser {
 
                             "argumentParser.error.invalidValue",
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             null
@@ -119,6 +122,9 @@ public open class SlashCommandParser {
                         throw ArgumentParsingException(
                             converter.handleError(e, context),
                             null,
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -157,6 +163,9 @@ public open class SlashCommandParser {
 
                             "argumentParser.error.invalidValue",
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             null
@@ -176,6 +185,9 @@ public open class SlashCommandParser {
                         throw ArgumentParsingException(
                             converter.handleError(e, context),
                             null,
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -211,6 +223,9 @@ public open class SlashCommandParser {
                             converter.handleError(e, context),
                             null,
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             null
@@ -244,6 +259,9 @@ public open class SlashCommandParser {
                         throw ArgumentParsingException(
                             converter.handleError(e, context),
                             null,
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
@@ -279,6 +297,9 @@ public open class SlashCommandParser {
                             converter.handleError(e, context),
                             null,
 
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
                             currentArg,
                             argumentsObj,
                             null
@@ -312,6 +333,9 @@ public open class SlashCommandParser {
                         throw ArgumentParsingException(
                             converter.handleError(e, context),
                             null,
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
 
                             currentArg,
                             argumentsObj,
