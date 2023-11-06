@@ -60,10 +60,10 @@ public interface EphemeralInteractionContext : InteractionContext<
 	}
 
 	@AlwaysPublicResponse
-	public override fun respondingPaginator(
+	public override suspend fun respondingPaginator(
 		defaultGroup: String,
 		locale: Locale?,
-		builder: (PaginatorBuilder).() -> Unit,
+		builder: suspend PaginatorBuilder.() -> Unit,
 	): PublicFollowUpPaginator {
 		val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
