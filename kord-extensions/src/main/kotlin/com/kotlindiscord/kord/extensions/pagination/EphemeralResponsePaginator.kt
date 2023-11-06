@@ -6,6 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.pagination
 
+import com.kotlindiscord.kord.extensions.pagination.builders.PageTransitionCallback
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.behavior.UserBehavior
@@ -21,15 +22,16 @@ import java.util.*
  * @param interaction Interaction response behaviour to work with.
  */
 public class EphemeralResponsePaginator(
-    pages: Pages,
-    owner: UserBehavior? = null,
-    timeoutSeconds: Long? = null,
-    switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
-    bundle: String? = null,
-    locale: Locale? = null,
+	pages: Pages,
+	owner: UserBehavior? = null,
+	timeoutSeconds: Long? = null,
+	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+	mutator: PageTransitionCallback? = null,
+	bundle: String? = null,
+	locale: Locale? = null,
 
-    public val interaction: EphemeralMessageInteractionResponseBehavior,
-) : BaseButtonPaginator(pages, owner, timeoutSeconds, true, switchEmoji, bundle, locale) {
+	public val interaction: EphemeralMessageInteractionResponseBehavior,
+) : BaseButtonPaginator(pages, owner, timeoutSeconds, true, switchEmoji, mutator, bundle, locale) {
     /** Whether this paginator has been set up for the first time. **/
     public var isSetup: Boolean = false
 
@@ -77,6 +79,7 @@ public fun EphemeralResponsePaginator(
     pages = builder.pages,
     owner = builder.owner,
     timeoutSeconds = builder.timeoutSeconds,
+	mutator = builder.mutator,
     bundle = builder.bundle,
     locale = builder.locale,
     interaction = interaction,

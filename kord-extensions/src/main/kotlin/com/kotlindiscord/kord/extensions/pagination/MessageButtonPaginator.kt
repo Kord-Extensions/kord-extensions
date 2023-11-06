@@ -6,6 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.pagination
 
+import com.kotlindiscord.kord.extensions.pagination.builders.PageTransitionCallback
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.behavior.UserBehavior
@@ -28,18 +29,19 @@ import java.util.*
  * @param targetChannel Target channel to send the paginator to, if [targetMessage] isn't provided.
  */
 public class MessageButtonPaginator(
-    pages: Pages,
-    owner: UserBehavior? = null,
-    timeoutSeconds: Long? = null,
-    keepEmbed: Boolean = true,
-    switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
-    bundle: String? = null,
-    locale: Locale? = null,
+	pages: Pages,
+	owner: UserBehavior? = null,
+	timeoutSeconds: Long? = null,
+	keepEmbed: Boolean = true,
+	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+	mutator: PageTransitionCallback? = null,
+	bundle: String? = null,
+	locale: Locale? = null,
 
-    public val pingInReply: Boolean = true,
-    public val targetChannel: MessageChannelBehavior? = null,
-    public val targetMessage: Message? = null,
-) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
+	public val pingInReply: Boolean = true,
+	public val targetChannel: MessageChannelBehavior? = null,
+	public val targetMessage: Message? = null,
+) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
     init {
         if (targetChannel == null && targetMessage == null) {
             throw IllegalArgumentException("Must provide either a target channel or target message")
@@ -115,6 +117,7 @@ public fun MessageButtonPaginator(
         owner = builder.owner,
         timeoutSeconds = builder.timeoutSeconds,
         keepEmbed = builder.keepEmbed,
+		mutator = builder.mutator,
         bundle = builder.bundle,
         locale = builder.locale,
 
