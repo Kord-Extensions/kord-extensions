@@ -56,10 +56,10 @@ public interface InteractionContext<
 	 * This function always creates a public follow-up, as Discord prevents bots from editing ephemeral follow-ups.
 	 */
 	@AlwaysPublicResponse
-	public fun respondingPaginator(
+	public suspend fun respondingPaginator(
 		defaultGroup: String = "",
 		locale: Locale? = null,
-		builder: (PaginatorBuilder).() -> Unit,
+		builder: suspend (PaginatorBuilder).() -> Unit,
 	): BaseButtonPaginator
 
 	/** Edit the original interaction response. **/
