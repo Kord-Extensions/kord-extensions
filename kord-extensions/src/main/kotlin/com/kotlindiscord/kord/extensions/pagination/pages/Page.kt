@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.pagination.pages
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.pagination.builders.PageMutator
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import com.kotlindiscord.kord.extensions.utils.textOrNull
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -33,14 +34,19 @@ public open class Page(
 
     /** Create an embed builder for this page. **/
     public open suspend fun build(
-        locale: Locale,
-        pageNum: Int,
-        pages: Int,
-        group: String?,
-        groupIndex: Int,
-        groups: Int,
+		locale: Locale,
+		pageNum: Int,
+		pages: Int,
+		group: String?,
+		groupIndex: Int,
+		groups: Int,
+		mutator: PageMutator? = null,
     ): suspend EmbedBuilder.() -> Unit = {
         builder()
+
+		if (mutator != null) {
+			mutator(this, this@Page)
+		}
 
         val curFooterText = footer?.textOrNull()
         val curFooterIcon = footer?.icon

@@ -41,6 +41,9 @@ public class PaginatorBuilder(
     /** Translations bundle to use for page groups, if any. **/
     public var bundle: String? = null
 
+	/** Object containing paginator mutation functions. **/
+	public var mutator: PageTransitionCallback? = null
+
     /** Add a page to [pages], using the default group. **/
     public fun page(page: Page): Unit = pages.addPage(page)
 
@@ -61,4 +64,19 @@ public class PaginatorBuilder(
         builder: suspend EmbedBuilder.() -> Unit
     ): Unit =
         page(group, Page(builder = builder, bundle = bundle))
+
+	/**
+	 * Mutate the paginator and pages, as pages are generated and sent.
+	 *
+	 * @see PageTransitionCallback
+	 */
+	public suspend fun mutate(
+		body: suspend PageTransitionCallback.() -> Unit
+	) {
+		val obj = PageTransitionCallback()
+
+		body(obj)
+
+		this.mutator = obj
+	}
 }

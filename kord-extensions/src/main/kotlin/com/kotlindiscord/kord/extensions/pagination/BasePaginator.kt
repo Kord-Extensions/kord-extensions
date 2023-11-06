@@ -9,6 +9,7 @@ package com.kotlindiscord.kord.extensions.pagination
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.pagination.builders.PageTransitionCallback
 import com.kotlindiscord.kord.extensions.pagination.pages.Page
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.Kord
@@ -62,6 +63,7 @@ public abstract class BasePaginator(
     public open val timeoutSeconds: Long? = null,
     public open val keepEmbed: Boolean = true,
     public open val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+	public open val mutator: PageTransitionCallback? = null,
     public open val bundle: String? = null,
 
     locale: Locale? = null
@@ -118,8 +120,13 @@ public abstract class BasePaginator(
             pages.groups[currentGroup]!!.size,
             groupEmoji,
             allGroups.indexOf(currentGroup),
-            allGroups.size
+            allGroups.size,
+			mutator?.pageMutator
         )()
+
+		mutator?.paginatorMutator?.let {
+			it(this@BasePaginator)
+		}
     }
 
     /** Send the paginator, given the current context. If it's already sent, update it. **/

@@ -11,6 +11,7 @@ import com.kotlindiscord.kord.extensions.components.ComponentContainer
 import com.kotlindiscord.kord.extensions.components.buttons.PublicInteractionButton
 import com.kotlindiscord.kord.extensions.components.publicButton
 import com.kotlindiscord.kord.extensions.components.types.emoji
+import com.kotlindiscord.kord.extensions.pagination.builders.PageTransitionCallback
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
@@ -30,9 +31,10 @@ public abstract class BaseButtonPaginator(
     timeoutSeconds: Long? = null,
     keepEmbed: Boolean = true,
     switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+	mutator: PageTransitionCallback? = null,
     bundle: String? = null,
     locale: Locale? = null,
-) : BasePaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, bundle, locale) {
+) : BasePaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
     /** [ComponentContainer] instance managing the buttons for this paginator. **/
     public open var components: ComponentContainer = ComponentContainer()
 
