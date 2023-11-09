@@ -130,4 +130,7 @@ public object SupportedLocales {
         "türkce" to TURKISH,
         "türkçe" to TURKISH,
     )
+
+	/** Set containing all supported locales. **/
+	public val ALL_LOCALES_SET: Set<Locale> = ALL_LOCALES.values.toSet()
 }
