@@ -102,12 +102,6 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
                 }
             }
         }
-
-        if (!bot.settings.applicationCommandsBuilder.syncPermissions) {
-            logger.debug { "Skipping permissions synchronisation, as it was disabled." }
-
-            return
-        }
     }
 
     /** Register multiple generic application commands. **/
