@@ -1193,8 +1193,7 @@ class MappingsExtension : Extension() {
 
 	private suspend fun GuildBehavior.getTimeout() = config().timeout.toLong()
 
-	private suspend fun CheckContextWithCache<
-  >.customChecks(
+	private suspend fun CheckContextWithCache<ChatInputCommandInteractionCreateEvent>.customChecks(
 		command: String,
 		namespace: Namespace,
 	) {
