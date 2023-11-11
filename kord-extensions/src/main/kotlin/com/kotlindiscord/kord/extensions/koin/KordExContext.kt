@@ -9,7 +9,7 @@ package com.kotlindiscord.kord.extensions.koin
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.context.KoinContext
-import org.koin.core.error.KoinAppAlreadyStartedException
+import org.koin.core.error.ApplicationAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -51,7 +51,7 @@ public object KordExContext : KoinContext {
 	 */
 	private fun register(koinApplication: KoinApplication) {
 		if (koin != null) {
-			throw KoinAppAlreadyStartedException("KordEx Koin Application has already been started")
+			throw ApplicationAlreadyStartedException("KordEx Koin Application has already been started")
 		}
 
 		koinApp = koinApplication
