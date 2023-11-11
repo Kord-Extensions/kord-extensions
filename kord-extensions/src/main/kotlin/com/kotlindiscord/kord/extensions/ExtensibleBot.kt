@@ -173,7 +173,7 @@ public open class ExtensibleBot(
     }
 
     /** Start up the bot and log into Discord, but launched via Kord's coroutine scope. **/
-    public open suspend fun startAsync(): Job =
+    public open fun startAsync(): Job =
         getKoin().get<Kord>().launch {
             start()
         }
