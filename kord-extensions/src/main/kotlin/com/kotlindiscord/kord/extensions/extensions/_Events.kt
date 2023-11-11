@@ -22,9 +22,10 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  * @param body Builder lambda used for setting up the event handler object.
  */
 public suspend inline fun <reified T : Event> Extension.event(
+	noinline constructor: (Extension) -> EventHandler<T> = ::EventHandler,
     noinline body: suspend EventHandler<T>.() -> Unit
 ): EventHandler<T> {
-    val eventHandler = EventHandler<T>(this)
+    val eventHandler = constructor(this)
     val logger = KotlinLogging.logger {}
 
     body.invoke(eventHandler)
