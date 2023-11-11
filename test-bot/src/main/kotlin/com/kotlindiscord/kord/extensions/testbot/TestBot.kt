@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.testbot
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.checks.isNotBot
+import com.kotlindiscord.kord.extensions.modules.extra.mappings.extMappings
 import com.kotlindiscord.kord.extensions.modules.extra.phishing.extPhishing
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.extPluralKit
 import com.kotlindiscord.kord.extensions.testbot.extensions.*
@@ -71,6 +72,10 @@ public suspend fun main() {
 
             if (envOrNull("PLURALKIT_TESTING") != null) {
                 extPluralKit()
+            }
+
+            if (envOrNull("MAPPINGS_TESTING") != null) {
+                extMappings { }
             }
 
             add(::ArgumentTestExtension)
