@@ -21,5 +21,5 @@ public interface KordExEvent : Event, KordExKoinComponent {
 
     @KordPreview
     override val customContext: MutableStringKeyedMap<Any>
-        get() = mutableMapOf<String, Any>()
+        get() = mutableMapOf()
 }

@@ -8,9 +8,7 @@ package com.kotlindiscord.kord.extensions.events.extra
 
 import com.kotlindiscord.kord.extensions.events.KordExEvent
 import com.kotlindiscord.kord.extensions.events.extra.models.GuildJoinRequestDelete
-import com.kotlindiscord.kord.extensions.events.interfaces.GuildEvent
 import com.kotlindiscord.kord.extensions.events.interfaces.MemberEvent
-import com.kotlindiscord.kord.extensions.events.interfaces.UserEvent
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
@@ -32,7 +30,7 @@ public class GuildJoinRequestDeleteEvent(
 
     override val kord: Kord = getKoin().get(),
     override val supplier: EntitySupplier = kord.defaultSupplier,
-) : KordExEvent, Strategizable, GuildEvent, UserEvent, MemberEvent {
+) : KordExEvent, Strategizable, MemberEvent {
     public val guildId: Snowflake get() = data.guildId
     public val userId: Snowflake get() = data.userId
     public val requestId: Snowflake get() = data.id
