@@ -10,9 +10,7 @@ import com.kotlindiscord.kord.extensions.events.KordExEvent
 import com.kotlindiscord.kord.extensions.events.extra.models.ApplicationStatus
 import com.kotlindiscord.kord.extensions.events.extra.models.GuildJoinRequest
 import com.kotlindiscord.kord.extensions.events.extra.models.GuildJoinRequestUpdate
-import com.kotlindiscord.kord.extensions.events.interfaces.GuildEvent
 import com.kotlindiscord.kord.extensions.events.interfaces.MemberEvent
-import com.kotlindiscord.kord.extensions.events.interfaces.UserEvent
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
@@ -34,7 +32,7 @@ public class GuildJoinRequestUpdateEvent(
 
     override val kord: Kord = getKoin().get(),
     override val supplier: EntitySupplier = kord.defaultSupplier,
-) : KordExEvent, Strategizable, GuildEvent, UserEvent, MemberEvent {
+) : KordExEvent, Strategizable, MemberEvent {
     public val status: ApplicationStatus get() = data.status
     public val guildId: Snowflake get() = data.guildId
     public val userId: Snowflake get() = data.request.userId
