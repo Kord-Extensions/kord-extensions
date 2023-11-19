@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 /**
  * A base class for all custom exceptions in our bot framework.
  */
-public open class ExtensionsException : Exception()
+public open class KordExException : Exception()
 
 /**
  * Exception thrown when a converter builder hasn't been set up properly.
@@ -30,7 +30,7 @@ public open class ExtensionsException : Exception()
 public class InvalidArgumentException(
 	public val builder: ConverterBuilder<*>,
 	public val reason: String,
-) : ExtensionsException() {
+) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String =
@@ -46,7 +46,7 @@ public class InvalidArgumentException(
 public class InvalidExtensionException(
 	public val clazz: KClass<out Extension>,
 	public val reason: String?,
-) : ExtensionsException() {
+) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String {
@@ -65,7 +65,7 @@ public class InvalidExtensionException(
  *
  * @param reason Why this [EventHandler] is considered invalid.
  */
-public class InvalidEventHandlerException(public val reason: String) : ExtensionsException() {
+public class InvalidEventHandlerException(public val reason: String) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String = "Invalid event handler: $reason"
@@ -76,19 +76,19 @@ public class InvalidEventHandlerException(public val reason: String) : Extension
  *
  * @param reason Why this [EventHandler] could not be registered.
  */
-public class EventHandlerRegistrationException(public val reason: String) : ExtensionsException() {
+public class EventHandlerRegistrationException(public val reason: String) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String = "Failed to register event handler: $reason"
 }
 
 /**
- * Thrown when a [ChatCommand] could not be validated.
+ * Thrown when a command could not be validated.
  *
- * @param name The [ChatCommand] name
- * @param reason Why this [ChatCommand] is considered invalid.
+ * @param name The command name
+ * @param reason Why this command is considered invalid.
  */
-public class InvalidCommandException(public val name: String?, public val reason: String) : ExtensionsException() {
+public class InvalidCommandException(public val name: String?, public val reason: String) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String {
@@ -106,16 +106,10 @@ public class InvalidCommandException(public val name: String?, public val reason
  * @param name The [ChatCommand] name
  * @param reason Why this [ChatCommand] could not be registered.
  */
-public class CommandRegistrationException(public val name: String?, public val reason: String) : ExtensionsException() {
+public class CommandRegistrationException(public val name: String, public val reason: String) : KordExException() {
 	override val message: String = toString()
 
-	override fun toString(): String {
-		if (name == null) {
-			return "Failed to register command: $reason"
-		}
-
-		return "Failed to register command $name: $reason"
-	}
+	override fun toString(): String = "Failed to register command $name: $reason"
 }
 
 /**
@@ -129,7 +123,7 @@ public class CommandRegistrationException(public val name: String?, public val r
 public open class DiscordRelayedException(
 	public open val reason: String,
 	public open val translationKey: String? = null,
-) : ExtensionsException() {
+) : KordExException() {
 	override val message: String by lazy { toString() }
 
 	public constructor(other: DiscordRelayedException) : this(other.reason)

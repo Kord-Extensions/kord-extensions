@@ -15,6 +15,7 @@ plugins {
     kotlin("jvm")
 
     id("com.github.jakemarsden.git-hooks")
+    id("org.jetbrains.dokka")
 }
 
 val projectVersion: String by project

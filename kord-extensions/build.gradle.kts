@@ -12,7 +12,6 @@ buildscript {
 plugins {
     `kordex-module`
     `published-module`
-    `dokka-module`
     `tested-module`
     `ksp-module`
 }
@@ -62,5 +61,6 @@ compileKotlin.kotlinOptions {
 }
 
 dokkaModule {
+	moduleName = "Kord Extensions"
     includes.add("packages.md")
 }

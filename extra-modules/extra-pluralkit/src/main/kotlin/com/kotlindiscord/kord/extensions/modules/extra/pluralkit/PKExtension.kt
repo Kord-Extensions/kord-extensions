@@ -533,7 +533,7 @@ class PKExtension : Extension() {
             NEGATIVE_EMOTE
         }
 
-    private suspend fun GuildBehavior.configUnit() =
+    private fun GuildBehavior.configUnit() =
         guildConfig.withGuild(id)
 
     private suspend fun GuildBehavior.config(): PKGuildConfig {

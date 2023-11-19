@@ -1,7 +1,6 @@
 plugins {
     `kordex-module`
     `published-module`
-    `dokka-module`
 }
 
 metadata {
@@ -29,3 +28,7 @@ dependencies {
 }
 
 group = "com.kotlindiscord.kord.extensions"
+
+dokkaModule {
+	moduleName = "Kord Extensions: MongoDB Data Adapter"
+}

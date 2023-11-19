@@ -1,7 +1,6 @@
 plugins {
     `kordex-module`
     `published-module`
-    `dokka-module`
     `ksp-module`
 
     kotlin("plugin.serialization")
@@ -33,3 +32,4 @@ dependencies {
 dokkaModule {
     moduleName.set("Kord Extensions: Java Time")
 }
+

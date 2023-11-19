@@ -13,7 +13,6 @@ plugins {
     application
 
     `kordex-module`
-    `dokka-module`
     `ksp-module`
 }
 
@@ -87,4 +86,8 @@ application {
 
 detekt {
     config.from(files("$projectDir/detekt.yml"))
+}
+
+dokkaModule {
+	moduleName = "Kord Extensions: Test Bot"
 }

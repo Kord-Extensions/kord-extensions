@@ -64,14 +64,14 @@ public open class ChatCommandRegistry : KordExKoinComponent {
         if (existingCommand) {
             throw CommandRegistrationException(
                 command.name,
-                "MessageCommand with this name already registered in '${command.extension.name}' extension."
+                "Chat command with this name already registered in '${command.extension.name}' extension."
             )
         }
 
         if (existingAlias != null) {
             throw CommandRegistrationException(
                 command.name,
-                "MessageCommand with alias '$existingAlias' already registered in '${command.extension.name}' " +
+                "Chat command with alias '$existingAlias' already registered in '${command.extension.name}' " +
                     "extension."
             )
         }
@@ -79,7 +79,7 @@ public open class ChatCommandRegistry : KordExKoinComponent {
         if (commands.contains(command)) {
             throw CommandRegistrationException(
                 command.name,
-                "MessageCommand already registered in '${command.extension.name}' extension."
+                "Chat command already registered in '${command.extension.name}' extension."
             )
         }
 
@@ -150,82 +150,6 @@ public open class ChatCommandRegistry : KordExKoinComponent {
 
         commandName = content.split(" ").first()
         content = content.substring(commandName.length).trim()  // Remove the command name and extra whitespace
-
-//        if (parts.size == 1) {
-//            // It's just the command with no arguments
-//
-//            if (parts[0].startsWith(prefix)) {
-//                commandName = parts[0]
-//                parts = arrayOf()
-//            } else {
-//                // Doesn't start with the right prefix
-//                return
-//            }
-//        } else {
-//            val matchedMention = parts[0].startsWithSelfMention()
-//
-//            when {
-//                parts[0].startsWith(prefix) -> {
-//                    // MessageCommand with args
-//
-//                    commandName = parts[0]
-//                    parts = parts.sliceArray(1 until parts.size)
-//
-//                    argString = argString.replaceFirst(prefix, "")
-//                        .trim()
-//                }
-//
-//                botSettings.messageCommandsBuilder.invokeOnMention &&
-//                    matchedMention != null && parts[0] == matchedMention -> {
-//                    // MessageCommand with a mention; first part is exactly the mention
-//
-//                    commandName = parts[1]
-//
-//                    parts = if (parts.size > 2) {
-//                        parts.sliceArray(2 until parts.size)
-//                    } else {
-//                        arrayOf()
-//                    }
-//
-//                    argString = argString.replaceFirst(matchedMention, "")
-//                        .trim()
-//                }
-//
-//                botSettings.messageCommandsBuilder.invokeOnMention &&
-//                    matchedMention != null && parts[0].startsWith(matchedMention) -> {
-//                    // MessageCommand with a mention; no space between mention and command
-//
-//                    commandName = parts[0].slice(matchedMention.length until parts[0].length)
-//                    parts = parts.sliceArray(1 until parts.size)
-//
-//                    argString = argString.replaceFirst(matchedMention, "")
-//                        .trim()
-//                }
-//            }
-//        }
-//
-//        if (commandName == null || commandName == prefix) {
-//            return  // After all that, we couldn't find a command.
-//        }
-//
-//        if (commandName.startsWith(prefix)) {
-//            commandName = commandName.slice(prefix.length until commandName.length)
-//        }
-//
-//        argString = argString.replaceFirst(commandName, "")
-//            .trim()
-//
-//        if (commandName.contains("\n")) {
-//            val split = commandName.split("\n", limit = 2)
-//
-//            commandName = split.first()
-//
-//            parts = if (parts.isEmpty()) {
-//                arrayOf("\n${split.last()}")
-//            } else {
-//                arrayOf("\n${split.last()}") + parts
-//            }
-//        }
 
         commandName = commandName.lowercase()
 

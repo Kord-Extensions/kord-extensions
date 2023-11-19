@@ -1,9 +1,10 @@
-import gradle.kotlin.dsl.accessors._6f0d4de64e119f738e1f647c2e25e6b5.ext
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtraPropertiesExtension
+import org.gradle.kotlin.dsl.getByType
 
 class MetadataBuilder {
-    public lateinit var name: String
-    public lateinit var description: String
+    lateinit var name: String
+    lateinit var description: String
 }
 
 fun Project.metadata(body: (MetadataBuilder).() -> Unit) {
@@ -11,6 +12,8 @@ fun Project.metadata(body: (MetadataBuilder).() -> Unit) {
 
     body(builder)
 
-    ext.set("pubName", builder.name)
-    ext.set("pubDesc", builder.description)
+	extensions.getByType<ExtraPropertiesExtension>().apply {
+		set("pubName", builder.name)
+		set("pubDesc", builder.description)
+	}
 }

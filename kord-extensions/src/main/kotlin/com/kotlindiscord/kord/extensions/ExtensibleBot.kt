@@ -349,6 +349,7 @@ public open class ExtensibleBot(
             logger.error {
                 "Extension with duplicate name ${extensionObj.name} loaded - unloading previously registered extension"
             }
+
             unloadExtension(extensionObj.name)
         }
 

@@ -1,7 +1,6 @@
 plugins {
     `kordex-module`
     `published-module`
-    `dokka-module`
     `ksp-module`
 }
 
@@ -25,5 +24,5 @@ dependencies {
 }
 
 dokkaModule {
-    moduleName.set("Kord Extensions: Unsafe")
+    moduleName.set("Kord Extensions: Unsafe Module")
 }

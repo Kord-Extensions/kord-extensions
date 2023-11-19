@@ -1,7 +1,6 @@
 plugins {
     `kordex-module`
     `published-module`
-    `dokka-module`
     `disable-explicit-api-mode`
 
     kotlin("plugin.serialization")
@@ -31,3 +30,7 @@ dependencies {
 }
 
 group = "com.kotlindiscord.kord.extensions"
+
+dokkaModule {
+	moduleName = "Kord Extensions: PluralKit Module"
+}

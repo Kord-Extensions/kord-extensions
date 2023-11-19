@@ -1,7 +1,6 @@
 plugins {
     `kordex-module`
     `published-module`
-    `dokka-module`
 }
 
 metadata {
@@ -17,5 +16,5 @@ dependencies {
 }
 
 dokkaModule {
-    moduleName.set("Kord Extensions: Annotation Processor")
+    moduleName.set("Kord Extensions: Annotations")
 }

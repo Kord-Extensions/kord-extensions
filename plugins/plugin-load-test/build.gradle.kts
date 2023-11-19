@@ -9,7 +9,6 @@ buildscript {
 
 plugins {
 	`kordex-module`
-	`dokka-module`
 	`tested-module`
 }
 
@@ -64,4 +63,8 @@ val copyTestJars = tasks.register<Copy>("copyTestJars") {
 
 tasks.test {
 	dependsOn(copyTestJars)
+}
+
+dokkaModule {
+	moduleName = "Kord Extensions Plugin Framework: Load Test"
 }

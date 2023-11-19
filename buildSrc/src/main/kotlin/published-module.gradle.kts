@@ -7,6 +7,7 @@ plugins {
 
 val sourceJar: Task by tasks.getting
 val javadocJar: Task by tasks.getting
+//val dokkaJar: Task by tasks.getting
 
 afterEvaluate {
     publishing {
@@ -38,6 +39,7 @@ afterEvaluate {
 
                 artifact(sourceJar)
                 artifact(javadocJar)
+//                artifact(dokkaJar)
 
                 pom {
                     name.set(project.ext.get("pubName").toString())

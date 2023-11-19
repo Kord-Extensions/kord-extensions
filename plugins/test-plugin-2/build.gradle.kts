@@ -9,7 +9,6 @@ buildscript {
 
 plugins {
 	`kordex-module`
-	`dokka-module`
 }
 
 group = "com.kotlindiscord.kord.extensions"
@@ -22,4 +21,8 @@ dependencies {
 	implementation(libs.kotlin.stdlib)
 
 	implementation(project(":plugins:test-plugin-core"))
+}
+
+dokkaModule {
+	moduleName = "Kord Extensions Plugin Framework: Test Plugin 2"
 }

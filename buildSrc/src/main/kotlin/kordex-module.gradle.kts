@@ -1,71 +1,131 @@
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
+	kotlin("jvm")
+	kotlin("plugin.serialization")
 
 	id("com.github.ben-manes.versions")
-    id("io.gitlab.arturbosch.detekt")
-    id("org.cadixdev.licenser")
+	id("io.gitlab.arturbosch.detekt")
+	id("org.cadixdev.licenser")
+
+	id("org.jetbrains.dokka")
 }
+
+val dokkaModuleExtensionName = "dokkaModule"
+
+abstract class DokkaModuleExtension {
+	abstract val moduleName: Property<String>
+	abstract val includes: ListProperty<String>
+}
+
+extensions.create<DokkaModuleExtension>(dokkaModuleExtensionName)
 
 val sourceJar = task("sourceJar", Jar::class) {
-    dependsOn(tasks["classes"])
-    archiveClassifier.set("sources")
-    from(sourceSets.main.get().allSource)
+	dependsOn(tasks["classes"])
+	archiveClassifier = "sources"
+	from(sourceSets.main.get().allSource)
 }
 
-val javadocJar = task("javadocJar", Jar::class) {
-    dependsOn("dokkaJavadoc")
-    archiveClassifier.set("javadoc")
-    from(tasks.javadoc)
-    from(tasks.javadoc)
+val javadocJar = tasks.register<Jar>("javadocJar") {
+	dependsOn(tasks.dokkaJavadoc)
+	from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+	archiveClassifier = "javadoc"
 }
+
+//val dokkaJar = tasks.register<Jar>("dokkaJar") {
+//	dependsOn(tasks.dokkaHtml)
+//	from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+//	archiveClassifier = "html-docs"
+//}
 
 tasks {
-    build {
-        finalizedBy(sourceJar, javadocJar)
-    }
+	val projectDir = project.projectDir.relativeTo(rootProject.rootDir).toString()
 
-    kotlin {
-        explicitApi()
-    }
+	build {
+		finalizedBy(sourceJar, javadocJar /*dokkaJar*/)
+	}
 
-    jar {
-        from(rootProject.file("build/LICENSE-kordex"))
-    }
+	kotlin {
+		explicitApi()
+	}
 
-    afterEvaluate {
-        rootProject.file("LICENSE").copyTo(rootProject.file("build/LICENSE-kordex"), true)
+	jar {
+		from(rootProject.file("build/LICENSE-kordex"))
+	}
 
-        tasks.withType<JavaCompile>().configureEach {
-            sourceCompatibility = "13"
-            targetCompatibility = "13"
-        }
+	afterEvaluate {
+		rootProject.file("LICENSE").copyTo(rootProject.file("build/LICENSE-kordex"), true)
 
-        withType<KotlinCompile>().configureEach {
-            compilerOptions {
-                freeCompilerArgs.add("-Xallow-kotlin-package")
-            }
+		tasks.withType<JavaCompile>().configureEach {
+			sourceCompatibility = "13"
+			targetCompatibility = "13"
+		}
 
-            kotlinOptions {
-                jvmTarget = "13"
-            }
-        }
-    }
+		withType<KotlinCompile>().configureEach {
+			compilerOptions {
+				freeCompilerArgs.add("-Xallow-kotlin-package")
+			}
+
+			kotlinOptions {
+				jvmTarget = "13"
+			}
+		}
+
+		dokkaHtml {
+			val extension = project.extensions.getByName<DokkaModuleExtension>(dokkaModuleExtensionName)
+
+			extension.moduleName.orNull?.let {
+				moduleName = it
+			}
+
+			dokkaSourceSets {
+				configureEach {
+					includeNonPublic = false
+					skipDeprecated = false
+
+					extension.moduleName.orNull?.let {
+						displayName = it
+					}
+
+					extension.includes.orNull?.let {
+						includes.from(*it.toTypedArray())
+					}
+
+					jdkVersion = 13
+
+					sourceLink {
+						localDirectory = file("${project.projectDir}/src/main/kotlin")
+
+						remoteUrl = uri(
+							"https://github.com/kord-extensions/kord-extensions/" +
+								"tree/${getCurrentGitBranch()}/${projectDir}/src/main/kotlin"
+						).toURL()
+
+						remoteLineSuffix = "#L"
+					}
+
+					externalDocumentationLink {
+						url = uri("https://dokka.kord.dev/").toURL()
+					}
+				}
+			}
+		}
+	}
 }
 
 detekt {
-    buildUponDefaultConfig = true
-    config.from(files("$rootDir/detekt.yml"))
+	buildUponDefaultConfig = true
+	config.from(files("$rootDir/detekt.yml"))
 
-    autoCorrect = true
+	autoCorrect = true
 }
 
 license {
-    setHeader(rootProject.file("LICENSE"))
-    ignoreFailures(System.getenv()["CI"] == null)
+	setHeader(rootProject.file("LICENSE"))
+	ignoreFailures(System.getenv()["CI"] == null)
 
-    include ("**/src/**.*")
-    include ("src/**.*")
+	include("**/src/**.*")
+	include("src/**.*")
 }

@@ -6,12 +6,12 @@
 
 package com.kotlindiscord.kord.extensions.parsers
 
-import com.kotlindiscord.kord.extensions.ExtensionsException
+import com.kotlindiscord.kord.extensions.KordExException
 
 /**
  * A base exception class for parsers.
  */
-public open class BaseParserException : ExtensionsException()
+public open class BaseParserException : KordExException()
 
 /**
  * Generic duration parser exception.

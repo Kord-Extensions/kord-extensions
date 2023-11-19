@@ -10,7 +10,6 @@ buildscript {
 plugins {
 	`kordex-module`
 	`published-module`
-	`dokka-module`
 	`tested-module`
 }
 
@@ -36,4 +35,8 @@ dependencies {
 	testImplementation(libs.junit)
 	testImplementation(libs.logback)
 	testImplementation(libs.logback.groovy)
+}
+
+dokkaModule {
+	moduleName = "Kord Extensions: Plugin Framework"
 }

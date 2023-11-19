@@ -1,7 +1,6 @@
 plugins {
     `kordex-module`
     `published-module`
-    `dokka-module`
     `disable-explicit-api-mode`
     `ksp-module`
 }
@@ -64,3 +63,7 @@ dependencies {
 }
 
 group = "com.kotlindiscord.kord.extensions"
+
+dokkaModule {
+	moduleName = "Kord Extensions: Mappings Extension"
+}
