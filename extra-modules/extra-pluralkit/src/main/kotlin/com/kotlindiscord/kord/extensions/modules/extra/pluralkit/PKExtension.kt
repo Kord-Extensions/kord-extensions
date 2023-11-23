@@ -43,7 +43,7 @@ import dev.kord.core.entity.channel.TopGuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
-import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.KtorRequestException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay

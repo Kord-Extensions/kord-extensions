@@ -27,7 +27,7 @@ import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageUpdateEvent
-import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.*
