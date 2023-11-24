@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   publish:
@@ -141,5 +142,5 @@ jobs:
           sudo rm -rf docs/
 
           git add .
-          git commit -am "Automatic deployment"
-          git push --force origin deployment
+          git commit -qam "Automatic deployment"
+          git push --force origin dokka
