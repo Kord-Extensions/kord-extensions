@@ -90,7 +90,7 @@ jobs:
           name: JARs (Modules)
           path: modules/*/build/libs/*.jar
 
-      - name: Upload artifact (Module JARs)
+      - name: Upload artifact (Dokka)
         uses: actions/upload-artifact@v3
 
         with:
