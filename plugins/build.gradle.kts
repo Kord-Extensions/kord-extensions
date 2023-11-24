@@ -40,3 +40,9 @@ dependencies {
 dokkaModule {
 	moduleName = "Kord Extensions: Plugin Framework"
 }
+
+tasks {
+	dokkaHtmlMultiModule {
+		enabled = false
+	}
+}
