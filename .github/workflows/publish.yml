@@ -117,6 +117,9 @@ jobs:
         run: |
           git checkout --orphan dokka
 
+          shopt -s extglob
+          sudo rm -rf !(".git")
+
       - uses: actions/download-artifact@v3
 
         with:
