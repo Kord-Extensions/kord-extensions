@@ -49,11 +49,9 @@ jobs:
           dependency-graph: generate-and-submit
 
       - name: Zip Dokka docs
-        uses: montudor/action-zip@v1
+        working-directory: build/dokka/
 
-        with:
-          args: zip -qq -r dokka.zip htmlMultiModule
-          working-directory: build/dokka/
+        run: zip -qq -r dokka.zip htmlMultiModule
 
       - name: Disable parallel publish
         if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
