@@ -98,6 +98,7 @@ jobs:
           path: build/dokka/htmlMultiModule/*
 
   dokka:
+    needs: publish
     runs-on: ubuntu-latest
 
     steps:
