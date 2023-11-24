@@ -48,6 +48,12 @@ jobs:
           arguments: checkLicenses build dokkaHtmlMultiModule
           dependency-graph: generate-and-submit
 
+      - name: Zip Dokka docs
+        uses: montudor/action-zip@v1
+
+        with:
+          args: zip -qq -r dokka.zip build/dokka/htmlMultiModule/*
+
       - name: Disable parallel publish
         if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
 
@@ -94,7 +100,7 @@ jobs:
 
         with:
           name: Dokka HTML
-          path: build/dokka/htmlMultiModule/*
+          path: dokka.zip
 
   dokka:
     needs: publish
@@ -117,6 +123,12 @@ jobs:
           name: Dokka HTML
           path: docs/
 
+      - name: Unzip Dokka docs
+        uses: montudor/action-zip@v1
+
+        with:
+          args: unzip -qq docs/dokka.zip -d docs
+
       - name: Copy files, commit and push
 
         run: |
@@ -126,6 +138,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions-user@users.noreply.github.com"
 
+          sudo rm docs/dokka.zip
           cp -r docs/* .
           sudo rm -rf docs/
 
