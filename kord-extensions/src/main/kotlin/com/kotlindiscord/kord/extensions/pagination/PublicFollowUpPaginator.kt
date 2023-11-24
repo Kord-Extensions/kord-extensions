@@ -16,6 +16,7 @@ import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
@@ -46,6 +47,7 @@ public class PublicFollowUpPaginator(
 
             embedInteraction = interaction.createPublicFollowup {
                 embed { applyPage() }
+
                 with(this@PublicFollowUpPaginator.components) {
                     this@createPublicFollowup.applyToMessage()
                 }

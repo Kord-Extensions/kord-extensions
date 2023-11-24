@@ -13,6 +13,7 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.core.entity.ReactionEmoji
+import dev.kord.rest.builder.message.embed
 import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
