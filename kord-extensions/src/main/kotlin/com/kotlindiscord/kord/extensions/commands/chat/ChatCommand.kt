@@ -26,7 +26,6 @@ import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.respond
-import dev.kord.common.entity.Permission
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
@@ -198,11 +197,6 @@ public open class ChatCommand<T : Arguments>(
         if (!::body.isInitialized) {
             throw InvalidCommandException(name, "No command action given.")
         }
-    }
-
-    /** If your bot requires permissions to be able to execute the command, add them using this function. **/
-    public fun requireBotPermissions(vararg perms: Permission) {
-        perms.forEach { requiredPerms.add(it) }
     }
 
     // region: DSL functions

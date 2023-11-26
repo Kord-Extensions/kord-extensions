@@ -29,6 +29,8 @@ import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.storage.DataAdapter
 import com.kotlindiscord.kord.extensions.storage.toml.TomlDataAdapter
+import com.kotlindiscord.kord.extensions.tooling.Translatable
+import com.kotlindiscord.kord.extensions.tooling.TranslatableType
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.getKoin
 import com.kotlindiscord.kord.extensions.utils.loadModule
@@ -58,7 +60,6 @@ import dev.kord.gateway.builder.PresenceBuilder
 import dev.kord.gateway.builder.Shards
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
-import dev.kord.rest.builder.message.create.allowedMentions
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.annotation.KoinInternalApi
@@ -1003,6 +1004,7 @@ public open class ExtensibleBotBuilder {
 	@BotBuilderDSL
 	public class I18nBuilder {
 		/** Locale that should be used by default. **/
+		@Translatable(TranslatableType.LOCALE)
 		public var defaultLocale: Locale = SupportedLocales.ENGLISH
 
 		/**
@@ -1036,7 +1038,10 @@ public open class ExtensibleBotBuilder {
 		 * **Do not register [defaultLocale]!**
 		 */
 		@JvmName("applicationCommandLocale_v1")
-		public fun applicationCommandLocale(vararg locales: KLocale) {
+		public fun applicationCommandLocale(
+			@Translatable(TranslatableType.LOCALE)
+			vararg locales: KLocale,
+		) {
 			applicationCommandLocales.addAll(locales.toList())
 		}
 
@@ -1046,7 +1051,10 @@ public open class ExtensibleBotBuilder {
 		 * **Do not register [defaultLocale]!**
 		 */
 		@JvmName("applicationCommandLocale_v2")
-		public fun applicationCommandLocale(vararg locales: Locale) {
+		public fun applicationCommandLocale(
+			@Translatable(TranslatableType.LOCALE)
+			vararg locales: Locale,
+		) {
 			applicationCommandLocales.addAll(locales.map { it.kLocale })
 		}
 
@@ -1056,7 +1064,10 @@ public open class ExtensibleBotBuilder {
 		 * **Do not register [defaultLocale]!**
 		 */
 		@JvmName("applicationCommandLocale_c1")
-		public fun applicationCommandLocale(locales: Collection<KLocale>) {
+		public fun applicationCommandLocale(
+			@Translatable(TranslatableType.LOCALE)
+			locales: Collection<KLocale>,
+		) {
 			applicationCommandLocales.addAll(locales)
 		}
 
@@ -1066,7 +1077,10 @@ public open class ExtensibleBotBuilder {
 		 * **Do not register [defaultLocale]!**
 		 */
 		@JvmName("applicationCommandLocale_c2")
-		public fun applicationCommandLocale(locales: Collection<Locale>) {
+		public fun applicationCommandLocale(
+			@Translatable(TranslatableType.LOCALE)
+			locales: Collection<Locale>,
+		) {
 			applicationCommandLocales.addAll(locales.map { it.kLocale })
 		}
 

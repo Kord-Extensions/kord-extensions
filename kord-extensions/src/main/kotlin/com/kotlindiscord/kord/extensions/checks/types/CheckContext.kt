@@ -9,6 +9,8 @@ package com.kotlindiscord.kord.extensions.checks.types
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.tooling.Translatable
+import com.kotlindiscord.kord.extensions.tooling.TranslatableType
 import dev.kord.core.event.Event
 import org.koin.core.component.inject
 import java.util.*
@@ -20,7 +22,12 @@ import java.util.*
  * @property event Event of type [T]
  * @property locale Locale for the current check context
  */
-public open class CheckContext<out T : Event>(public val event: T, public val locale: Locale) : KordExKoinComponent {
+public open class CheckContext<out T : Event>(
+	public val event: T,
+
+	@Translatable(TranslatableType.LOCALE)
+	public val locale: Locale
+) : KordExKoinComponent {
     /** Translations provider. **/
     public val translations: TranslationsProvider by inject()
 
@@ -32,10 +39,12 @@ public open class CheckContext<out T : Event>(public val event: T, public val lo
      * **Note:** This *must* be a translation key. A bare string may not work, as the error response function uses
      * the replacement functionality of the translations system.
      */
-    public var errorResponseKey: String = "checks.responseTemplate"
+	@Translatable(TranslatableType.STRING)
+	public var errorResponseKey: String = "checks.responseTemplate"
 
     /** Translation bundle used by [translate] by default and the error response translation, if not the default. **/
-    public var defaultBundle: String? = null
+	@Translatable(TranslatableType.BUNDLE)
+	public var defaultBundle: String? = null
 
     /** Human-readable message for the user, if any. **/
     public var message: String? = null
@@ -152,30 +161,41 @@ public open class CheckContext<out T : Event>(public val event: T, public val lo
 
     /** Quick access to translate strings using this check context's [locale]. **/
     public fun translate(
-        key: String,
-        bundle: String? = defaultBundle,
+		@Translatable(TranslatableType.STRING)
+		key: String,
+
+		@Translatable(TranslatableType.BUNDLE)
+		bundle: String? = defaultBundle,
+
         replacements: Array<Any?> = arrayOf()
     ): String =
         translations.translate(key, locale, bundleName = bundle, replacements = replacements)
 
     /** Quick access to translate strings using this check context's [locale]. **/
     public fun translate(
-        key: String,
+		@Translatable(TranslatableType.STRING)
+		key: String,
+
         replacements: Array<Any?> = arrayOf()
     ): String =
         translations.translate(key, locale, bundleName = defaultBundle, replacements = replacements)
 
     /** Quick access to translate strings using this check context's [locale]. **/
     public fun translate(
-        key: String,
+		@Translatable(TranslatableType.STRING)
+		key: String,
+
         replacements: Map<String, Any?>
     ): String =
         translations.translate(key, locale, bundleName = defaultBundle, replacements = replacements)
 
     /** Quick access to translate strings using this check context's [locale]. **/
     public fun translate(
-        key: String,
-        bundle: String?,
+		@Translatable(TranslatableType.STRING)
+		key: String,
+
+		@Translatable(TranslatableType.BUNDLE)
+		bundle: String?,
         replacements: Map<String, Any?>
     ): String =
         translations.translate(key, locale, bundleName = bundle, replacements = replacements)

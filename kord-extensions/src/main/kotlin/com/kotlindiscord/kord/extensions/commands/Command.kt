@@ -130,4 +130,9 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
             }
         }
     }
+
+	/** If your bot requires permissions to be able to execute the command, add them using this function. **/
+	public fun requireBotPermissions(vararg perms: Permission) {
+		perms.forEach(requiredPerms::add)
+	}
 }
