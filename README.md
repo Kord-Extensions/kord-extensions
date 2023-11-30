@@ -2,7 +2,7 @@
 
 [![Ko-Fi badge](https://img.shields.io/badge/Donate-Buy_me_a_coffee-purple?style=for-the-badge&logo=ko-fi)](https://ko-fi.com/gsc)
 
-[![Docs: Click here](https://img.shields.io/static/v1?label=Docs&message=Click%20here&color=7289DA&style=for-the-badge&logo=read-the-docs)](https://kordex.kotlindiscord.com/) [![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/nYzQWcjAmK) <br />
+[![Docs: Click here](https://img.shields.io/static/v1?label=Docs&message=Click%20here&color=7289DA&style=for-the-badge&logo=read-the-docs)](https://docs.kordex.dev/) [![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/nYzQWcjAmK) <br />
 [![Weblate project translated](https://img.shields.io/weblate/progress/kord-extensions?style=for-the-badge)]((https://hosted.weblate.org/engage/kord-extensions/)) <br />
 ![Latest](https://img.shields.io/maven-metadata/v?label=Latest&metadataUrl=https%3A%2F%2Fs01.oss.sonatype.org%2Fservice%2Flocal%2Frepositories%2Fsnapshots%2Fcontent%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions%2Fmaven-metadata.xml&style=for-the-badge)
 
@@ -18,7 +18,7 @@ for quickly prototyping or implementing a small application. Instead,
 for our fairly object-oriented design, especially where it comes to its extensions (which are known as cogs in
 Discord.py). Despite this, we still strive to provide an idiomatic API that makes full use of Kotlin's niceties.
 
-If you're ready to get started, please [take a look at the documentation](https://kordex.kotlindiscord.com/).
+If you're ready to get started, please [take a look at the documentation](https://docs.kordex.dev/).
 
 # Patrons
 
