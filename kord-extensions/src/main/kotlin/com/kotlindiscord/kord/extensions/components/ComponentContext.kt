@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.checks.userFor
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
+import com.kotlindiscord.kord.extensions.sentry.captures.SentryBreadcrumbCapture
 import com.kotlindiscord.kord.extensions.types.TranslatableContext
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.annotation.KordExperimental
@@ -25,10 +26,7 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Message
-import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
-import io.sentry.Breadcrumb
 import org.koin.core.component.inject
 import java.util.*
 
@@ -165,26 +163,12 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
     }
 
     /**
-     * @param breadcrumb breadcrumb data will be modified to add the component context information
+     * @param capture breadcrumb data will be modified to add the component context information
      */
-    public suspend fun addContextDataToBreadcrumb(breadcrumb: Breadcrumb) {
-        val channel = channel.asChannelOrNull()
-        val guild = guild?.asGuildOrNull()
-        val message = message
+    public suspend fun addContextDataToBreadcrumb(capture: SentryBreadcrumbCapture) {
+		capture.channel = channel.asChannelOrNull()
+		capture.guild = guild?.asGuildOrNull()
 
-        if (channel != null) {
-            breadcrumb.data["channel"] = when (channel) {
-                is DmChannel -> "Private Message (${channel.id})"
-                is GuildMessageChannel -> "#${channel.name} (${channel.id})"
-
-                else -> channel.id.toString()
-            }
-        }
-
-        if (guild != null) {
-            breadcrumb.data["guild"] = "${guild.name} (${guild.id})"
-        }
-
-        breadcrumb.data["message"] = message.id.toString()
+        capture.data["message.id"] = message.id.toString()
     }
 }

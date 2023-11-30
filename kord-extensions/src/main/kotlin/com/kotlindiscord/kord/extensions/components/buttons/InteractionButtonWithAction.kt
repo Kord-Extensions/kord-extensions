@@ -10,16 +10,12 @@ import com.kotlindiscord.kord.extensions.components.ComponentWithAction
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.components.types.HasPartialEmoji
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
-import com.kotlindiscord.kord.extensions.sentry.tag
-import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.DiscordPartialEmoji
-import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.sentry.Sentry
 
 /** Abstract class representing a button component that has a click action. **/
 public abstract class InteractionButtonWithAction<C : InteractionButtonContext, M : ModalForm>(timeoutTask: Task?) :
@@ -51,47 +47,42 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext, 
                 category = "component.button"
                 message = "Button \"${button.id}\" clicked."
 
-                data["component"] = button.id
+                data["component.id"] = button.id
+
                 context.addContextDataToBreadcrumb(this)
             }
         }
     }
 
     /** A general way to handle errors thrown during the course of a button action's execution. **/
-    public open suspend fun handleError(context: C, t: Throwable, button: InteractionButtonWithAction<*, *>) {
+	@Suppress("StringLiteralDuplication")
+	public open suspend fun handleError(context: C, t: Throwable, button: InteractionButtonWithAction<*, *>) {
         logger.error(t) { "Error during execution of button (${button.id}) action (${context.event})" }
 
         if (sentry.enabled) {
             logger.trace { "Submitting error to sentry." }
 
-            val channel = context.channel
-            val author = context.user.asUserOrNull()
+            val sentryId = context.sentry.captureThrowable(t) {
+				channel = context.channel.asChannelOrNull()
+				user = context.user.asUserOrNull()
 
-            val sentryId = context.sentry.captureException(t) {
-                if (author != null) {
-                    user(author)
-                }
-
-                tag("private", "false")
-
-                if (channel is DmChannel) {
-                    tag("private", "true")
-                }
-
-                tag("component", button.id)
-
-                Sentry.captureException(t)
+				tags["component.id"] = button.id
+				tags["component.type"] = "button"
             }
 
-            logger.info { "Error submitted to Sentry: $sentryId" }
+			val errorMessage = if (sentryId != null) {
+				logger.info { "Error submitted to Sentry: $sentryId" }
 
-            val errorMessage = if (bot.extensions.containsKey("sentry")) {
-                context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
-            } else {
-                context.translate("commands.error.user", null)
-            }
+				if (bot.extensions.containsKey("sentry")) {
+					context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
+				} else {
+					context.translate("commands.error.user", null)
+				}
+			} else {
+				context.translate("commands.error.user", null)
+			}
 
-            respondText(context, errorMessage, FailureReason.ExecutionError(t))
+			respondText(context, errorMessage, FailureReason.ExecutionError(t))
         } else {
             respondText(
                 context,

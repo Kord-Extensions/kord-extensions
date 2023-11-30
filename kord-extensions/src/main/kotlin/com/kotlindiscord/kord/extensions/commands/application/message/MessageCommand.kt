@@ -13,14 +13,10 @@ import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
-import com.kotlindiscord.kord.extensions.sentry.tag
-import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ApplicationCommandType
-import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -31,149 +27,126 @@ import org.koin.core.component.inject
  * @param modal Callable returning a `ModalForm` object, if any
  */
 public abstract class MessageCommand<C : MessageCommandContext<C, M>, M : ModalForm>(
-    extension: Extension,
-    public open val modal: (() -> M)? = null,
+	extension: Extension,
+	public open val modal: (() -> M)? = null,
 ) : ApplicationCommand<MessageCommandInteractionCreateEvent>(extension) {
-    private val logger: KLogger = KotlinLogging.logger {}
+	private val logger: KLogger = KotlinLogging.logger {}
 
-    /** @suppress This is only meant for use by code that extends the command system. **/
-    public val componentRegistry: ComponentRegistry by inject()
+	/** @suppress This is only meant for use by code that extends the command system. **/
+	public val componentRegistry: ComponentRegistry by inject()
 
-    /** Command body, to be called when the command is executed. **/
-    public lateinit var body: suspend C.(M?) -> Unit
+	/** Command body, to be called when the command is executed. **/
+	public lateinit var body: suspend C.(M?) -> Unit
 
-    override val type: ApplicationCommandType = ApplicationCommandType.Message
+	override val type: ApplicationCommandType = ApplicationCommandType.Message
 
-    /** Call this to supply a command [body], to be called when the command is executed. **/
-    public fun action(action: suspend C.(M?) -> Unit) {
-        body = action
-    }
+	/** Call this to supply a command [body], to be called when the command is executed. **/
+	public fun action(action: suspend C.(M?) -> Unit) {
+		body = action
+	}
 
-    override fun validate() {
-        super.validate()
+	override fun validate() {
+		super.validate()
 
-        if (!::body.isInitialized) {
-            throw InvalidCommandException(name, "No command body given.")
-        }
-    }
+		if (!::body.isInitialized) {
+			throw InvalidCommandException(name, "No command body given.")
+		}
+	}
 
-    /** Override this to implement your command's calling logic. Check subtypes for examples! **/
-    public abstract override suspend fun call(
-        event: MessageCommandInteractionCreateEvent,
-        cache: MutableStringKeyedMap<Any>
-    )
+	/** Override this to implement your command's calling logic. Check subtypes for examples! **/
+	public abstract override suspend fun call(
+		event: MessageCommandInteractionCreateEvent,
+		cache: MutableStringKeyedMap<Any>,
+	)
 
-    /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
-    public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
+	/** Override this to implement a way to respond to the user, regardless of whatever happens. **/
+	public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
 
-    /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
-    public open suspend fun firstSentryBreadcrumb(context: C) {
-        if (sentry.enabled) {
-            context.sentry.breadcrumb(BreadcrumbType.User) {
-                category = "command.application.message"
-                message = "Message command \"$name\" called."
+	/** If enabled, adds the initial Sentry breadcrumb to the given context. **/
+	public open suspend fun firstSentryBreadcrumb(context: C) {
+		if (sentry.enabled) {
+			context.sentry.breadcrumb(BreadcrumbType.User) {
+				category = "command.application.message"
+				message = "Message command \"$name\" called."
 
-                val channel = context.channel.asChannelOrNull()
-                val guild = context.guild?.asGuildOrNull()
+				data["command.name"] = name
+			}
+		}
+	}
 
-                data["command"] = name
+	override suspend fun runChecks(
+		event: MessageCommandInteractionCreateEvent,
+		cache: MutableStringKeyedMap<Any>,
+	): Boolean {
+		val locale = event.getLocale()
+		val result = super.runChecks(event, cache)
 
-                if (guildId != null) {
-                    data["command.guild"] = guildId.toString()
-                }
+		if (result) {
+			settings.applicationCommandsBuilder.messageCommandChecks.forEach { check ->
+				val context = CheckContextWithCache(event, locale, cache)
 
-                if (channel != null) {
-                    data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
+				check(context)
 
-                        else -> channel.id.toString()
-                    }
-                }
+				if (!context.passed) {
+					context.throwIfFailedWithMessage()
 
-                if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id})"
-                }
-            }
-        }
-    }
+					return false
+				}
+			}
 
-    override suspend fun runChecks(
-        event: MessageCommandInteractionCreateEvent,
-        cache: MutableStringKeyedMap<Any>
-    ): Boolean {
-        val locale = event.getLocale()
-        val result = super.runChecks(event, cache)
+			extension.messageCommandChecks.forEach { check ->
+				val context = CheckContextWithCache(event, locale, cache)
 
-        if (result) {
-            settings.applicationCommandsBuilder.messageCommandChecks.forEach { check ->
-                val context = CheckContextWithCache(event, locale, cache)
+				check(context)
 
-                check(context)
+				if (!context.passed) {
+					context.throwIfFailedWithMessage()
 
-                if (!context.passed) {
-                    context.throwIfFailedWithMessage()
+					return false
+				}
+			}
+		}
 
-                    return false
-                }
-            }
+		return result
+	}
 
-            extension.messageCommandChecks.forEach { check ->
-                val context = CheckContextWithCache(event, locale, cache)
+	/** A general way to handle errors thrown during the course of a command's execution. **/
+	@Suppress("StringLiteralDuplication")
+	public open suspend fun handleError(context: C, t: Throwable) {
+		logger.error(t) { "Error during execution of $name message command (${context.event})" }
 
-                check(context)
+		if (sentry.enabled) {
+			logger.trace { "Submitting error to sentry." }
 
-                if (!context.passed) {
-                    context.throwIfFailedWithMessage()
+			val sentryId = context.sentry.captureThrowable(t) {
+				user = context.user.asUserOrNull()
+				channel = context.channel.asChannelOrNull()
 
-                    return false
-                }
-            }
-        }
+				tags["command.name"] = name
+				tags["command.type"] = "message"
 
-        return result
-    }
+				tags["extension"] = extension.name
+			}
 
-    /** A general way to handle errors thrown during the course of a command's execution. **/
-    public open suspend fun handleError(context: C, t: Throwable) {
-        logger.error(t) { "Error during execution of $name message command (${context.event})" }
+			val errorMessage = if (sentryId != null) {
+				logger.info { "Error submitted to Sentry: $sentryId" }
 
-        if (sentry.enabled) {
-            logger.trace { "Submitting error to sentry." }
+				if (extension.bot.extensions.containsKey("sentry")) {
+					context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
+				} else {
+					context.translate("commands.error.user", null)
+				}
+			} else {
+				context.translate("commands.error.user", null)
+			}
 
-            val channel = context.channel
-            val author = context.user.asUserOrNull()
-
-            val sentryId = context.sentry.captureException(t) {
-                if (author != null) {
-                    user(author)
-                }
-
-                tag("private", "false")
-
-                if (channel is DmChannel) {
-                    tag("private", "true")
-                }
-
-                tag("command", name)
-                tag("extension", extension.name)
-            }
-
-            logger.info { "Error submitted to Sentry: $sentryId" }
-
-            val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
-                context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
-            } else {
-                context.translate("commands.error.user", null)
-            }
-
-            respondText(context, errorMessage, FailureReason.ExecutionError(t))
-        } else {
-            respondText(
-                context,
-                context.translate("commands.error.user", null),
-                FailureReason.ExecutionError(t)
-            )
-        }
-    }
+			respondText(context, errorMessage, FailureReason.ExecutionError(t))
+		} else {
+			respondText(
+				context,
+				context.translate("commands.error.user", null),
+				FailureReason.ExecutionError(t)
+			)
+		}
+	}
 }

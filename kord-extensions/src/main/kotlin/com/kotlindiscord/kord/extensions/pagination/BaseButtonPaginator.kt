@@ -20,6 +20,7 @@ import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 /**
@@ -43,7 +44,9 @@ public abstract class BaseButtonPaginator(
 
     /** Scheduler used to schedule the paginator's timeout. **/
     public var task: Task? = if (timeoutSeconds != null) {
-        scheduler.schedule(timeoutSeconds) { destroy() }
+		runBlocking { // This is a trivially quick block, so it should be fine.
+			scheduler.schedule(timeoutSeconds) { destroy() }
+		}
     } else {
         null
     }

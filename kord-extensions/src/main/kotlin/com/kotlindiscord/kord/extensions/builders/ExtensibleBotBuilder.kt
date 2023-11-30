@@ -27,6 +27,7 @@ import com.kotlindiscord.kord.extensions.koin.KordExContext
 import com.kotlindiscord.kord.extensions.plugins.KordExPlugin
 import com.kotlindiscord.kord.extensions.plugins.PluginManager
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
+import com.kotlindiscord.kord.extensions.sentry.captures.SentryCapture
 import com.kotlindiscord.kord.extensions.storage.DataAdapter
 import com.kotlindiscord.kord.extensions.storage.toml.TomlDataAdapter
 import com.kotlindiscord.kord.extensions.tooling.Translatable
@@ -65,6 +66,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
+import org.koin.environmentProperties
 import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import java.io.File
@@ -83,6 +85,12 @@ internal typealias LocaleResolver = suspend (
 
 internal typealias FailureResponseBuilder =
 	suspend (MessageCreateBuilder).(message: String, type: FailureReason<*>) -> Unit
+
+internal typealias SentryDataTypeBuilder =
+	ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder.SentryExtensionDataTypeBuilder
+
+internal typealias SentryDataTypeTransformer =
+	suspend (SentryDataTypeBuilder).(SentryCapture) -> Unit
 
 /**
  * Builder class used for configuring and creating an [ExtensibleBot].
@@ -389,7 +397,7 @@ public open class ExtensibleBotBuilder {
 		if (koinNotStarted()) {
 			KordExContext.startKoin {
 				slf4jLogger(logLevel)
-//                environmentProperties()  // https://github.com/InsertKoinIO/koin/issues/1099
+                environmentProperties()
 
 				if (File("koin.properties").exists()) {
 					fileProperties("koin.properties")
@@ -690,15 +698,57 @@ public open class ExtensibleBotBuilder {
 			 * required.
 			 */
 			public open var setupCallback: SentryAdapter.() -> Unit = {
-				this.setup(
-					dsn = dsn,
-					debug = debug,
+				this.init {
+					dsn = dsn
+					isDebug = debug
 
-					distribution = distribution,
-					environment = environment,
-					release = release,
-					serverName = serverName,
-				)
+					dist = distribution
+					environment = environment
+					release = release
+					serverName = serverName
+				}
+			}
+
+			/** @suppress Storage for Sentry datatype settings container. **/
+			public val dataTypeBuilder: SentryExtensionDataTypeBuilder = SentryExtensionDataTypeBuilder()
+
+			/** @suppress Storage for Sentry datatype transformers. **/
+			public val dataTypeTransformers: MutableList<SentryDataTypeTransformer> = mutableListOf()
+
+			/** @suppress Storage for Sentry submission predicates. **/
+			public val predicates: MutableList<suspend SentryCapture.() -> Boolean> = mutableListOf()
+
+			/**
+			 * Register a Sentry submission predicate.
+			 *
+			 * You can use a submission predicate to filter which captures Kord Extensions sends to Sentry.
+			 * Return `false` from your predicate to prevent the capture from being sent.
+			 *
+			 * The Sentry adapter will iterate the predicates in order of definition, stopping when one returns `false`
+			 * or there's none left.
+			 */
+			public fun predicate(body: suspend SentryCapture.() -> Boolean) {
+				predicates.add(body)
+			}
+
+			/**
+			 * Configure the default data types sent via (or omitted from) Sentry captures.
+			 */
+			public fun defaultDataTypes(body: SentryExtensionDataTypeBuilder.() -> Unit) {
+				body(dataTypeBuilder)
+			}
+
+			/**
+			 * Registry a Sentry data type transformer.
+			 *
+			 * This allows you to dynamically change which data types are sent to Sentry, depending on the given capture
+			 * object.
+			 *
+			 * Transformers may modify a clone of the default [SentryExtensionDataTypeBuilder] freely, which will be
+			 * based on the one configured via [defaultDataTypes].
+			 */
+			public fun dataTypeTransformer(body: SentryDataTypeTransformer) {
+				dataTypeTransformers.add(body)
 			}
 
 			/** Register a builder used to construct a [SentryAdapter] instance, usually the constructor. **/
@@ -725,6 +775,66 @@ public open class ExtensibleBotBuilder {
 			 */
 			public fun setup(body: SentryAdapter.() -> Unit) {
 				setupCallback = body
+			}
+
+			public class SentryExtensionDataTypeBuilder {
+				/** Whether to send command arguments to Sentry. **/
+				public var arguments: Boolean = true
+
+				/** Whether to send channel information to Sentry. **/
+				public var channels: Boolean = true
+
+				/** Whether to send guild information to Sentry. **/
+				public var guilds: Boolean = true
+
+				/** Whether to send guild information to Sentry. **/
+				public var roles: Boolean = true
+
+				/** Whether to send user information to Sentry. **/
+				public var users: Boolean = true
+
+				/** Comma-separated list of omitted data types, based on this object's configured booleans. **/
+				public val omittedData: String? by lazy {
+					val omitted: MutableList<String> = mutableListOf()
+
+					if (!arguments) {
+						omitted.add("arguments")
+					}
+
+					if (!channels) {
+						omitted.add("channels")
+					}
+
+					if (!guilds) {
+						omitted.add("guilds")
+					}
+
+					if (!roles) {
+						omitted.add("roles")
+					}
+
+					if (!users) {
+						omitted.add("users")
+					}
+
+					if (omitted.isEmpty()) {
+						null
+					} else {
+						omitted.joinToString()
+					}
+				}
+
+				/** Clone this object, allowing for just-in-time customisation where needed. **/
+				public fun clone(): SentryExtensionDataTypeBuilder {
+					val other = SentryExtensionDataTypeBuilder()
+
+					other.arguments = this.arguments
+					other.channels = this.channels
+					other.guilds = this.guilds
+					other.users = this.users
+
+					return other
+				}
 			}
 		}
 

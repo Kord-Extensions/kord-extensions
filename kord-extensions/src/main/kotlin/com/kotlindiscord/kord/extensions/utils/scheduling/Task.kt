@@ -4,15 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:OptIn(ExperimentalTime::class)
-
 package com.kotlindiscord.kord.extensions.utils.scheduling
 
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.SentryContext
-import com.kotlindiscord.kord.extensions.sentry.tag
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.Kord
 import io.github.oshai.kotlinlogging.KLogger
@@ -38,6 +35,7 @@ import kotlin.time.TimeSource
  * @param name Optional task name, "Unnamed" by default.
  * @param repeat Whether the task should repeat after completion. `false` by default.
  */
+@OptIn(ExperimentalTime::class)
 public open class Task(
     public open var duration: Duration,
     public open val callback: suspend () -> Unit,
@@ -67,10 +65,10 @@ public open class Task(
     public val running: Boolean get() = job != null
 
     /** Calculate whether it's time to start this task, returning `true` if so. **/
-    public fun shouldStart(): Boolean = started.elapsedNow() >= duration
+	public fun shouldStart(): Boolean = started.elapsedNow() >= duration
 
     /** Mark the start time and begin waiting until the execution time has been reached. **/
-    public fun start() {
+    public suspend fun start() {
         val sentryContext = SentryContext()
 
         started = TimeSource.Monotonic.markNow()
@@ -81,11 +79,12 @@ public open class Task(
 
                 message = "Starting task: waiting for configured delay to pass"
 
-                data["delay"] = duration.toIsoString()
-                data["name"] = name
-                data["now"] = now.toString()
-                data["pollingSeconds"] = pollingSeconds
-                data["repeating"] = repeat
+				data["task.delay"] = duration.toIsoString()
+				data["task.name"] = name
+				data["task.pollingSeconds"] = pollingSeconds
+				data["task.repeating"] = repeat
+
+				data["time.now"] = now.toString()
             }
         }
 
@@ -101,7 +100,7 @@ public open class Task(
 
                     message = "Delay has passed, executing task (for the first time)"
 
-                    data["now"] = now.toString()
+					data["time.now"] = now.toString()
                 }
             }
 
@@ -115,9 +114,9 @@ public open class Task(
                     logger.error(t) { "Error running scheduled callback." }
 
                     if (sentry.enabled) {
-                        sentryContext.captureException(t) {
-                            setExtra("executions", executions.toString())
-                            tag("task", name)
+                        sentryContext.captureThrowable(t) {
+                            hints["executions"] = executions.toString()
+							tags["task"] = name
                         }
                     }
                 }
@@ -164,7 +163,7 @@ public open class Task(
     }
 
     /** If the task is running, cancel it and restart it. **/
-    public fun restart() {
+    public suspend fun restart() {
         job?.cancel()
         job = null
 
@@ -184,5 +183,6 @@ public open class Task(
         job?.join()
     }
 
-    protected fun removeFromParent(): Boolean? = parent?.removeTask(this@Task)
+    protected fun removeFromParent(): Boolean? =
+		parent?.removeTask(this@Task)
 }

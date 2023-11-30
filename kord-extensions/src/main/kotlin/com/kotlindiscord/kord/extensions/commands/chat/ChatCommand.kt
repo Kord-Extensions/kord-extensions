@@ -20,14 +20,10 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.i18n.EMPTY_VALUE_STRING
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
-import com.kotlindiscord.kord.extensions.sentry.tag
-import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import com.kotlindiscord.kord.extensions.utils.respond
-import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
@@ -381,24 +377,13 @@ public open class ChatCommand<T : Arguments>(
                 category = "command.chat"
                 message = "Command \"$name\" called."
 
-                val channel = event.message.getChannelOrNull()
-                val guild = event.message.getGuildOrNull()
+                channel = event.message.getChannelOrNull()
+                guild = event.message.getGuildOrNull()
 
                 data["arguments"] = argString
-                data["message"] = event.message.content
 
-                if (channel != null) {
-                    data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
-
-                        else -> channel.id.toString()
-                    }
-                }
-
-                if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id})"
-                }
+                data["message.id"] = event.message.id.toString()
+                data["message.content::arguments"] = event.message.content
             }
         }
 
@@ -454,21 +439,14 @@ public open class ChatCommand<T : Arguments>(
                     else -> this.getTranslatedName(context.getLocale())
                 }
 
-                val sentryId = context.sentry.captureException(t) {
-                    val author = event.message.author
+                val sentryId = context.sentry.captureThrowable(t) {
+					this.user = event.message.author
+					this.channel = channel
 
-                    if (author != null) {
-                        user(author)
-                    }
+					tags["command.name"] = translatedName
+					tags["command.type"] = "chat"
 
-                    tag("private", "false")
-
-                    if (channel is DmChannel) {
-                        tag("private", "true")
-                    }
-
-                    tag("command", translatedName)
-                    tag("extension", extension.name)
+					tags["extension"] = extension.name
                 }
 
                 logger.info { "Error submitted to Sentry: $sentryId" }

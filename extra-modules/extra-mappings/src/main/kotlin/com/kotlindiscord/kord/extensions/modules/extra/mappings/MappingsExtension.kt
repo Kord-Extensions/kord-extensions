@@ -816,11 +816,12 @@ class MappingsExtension : Extension() {
 		sentry.breadcrumb(BreadcrumbType.Query) {
 			message = "Beginning mapping lookup"
 
-			data["type"] = type
-			data["channel"] = channel ?: "N/A"
-			data["namespace"] = arguments.namespace.id
-			data["query"] = arguments.query
-			data["version"] = arguments.version?.version ?: "N/A"
+			data["mappings.type"] = type
+			data["mappings.channel"] = channel ?: "N/A"
+			data["mappings.namespace"] = arguments.namespace.id
+			data["mappings.version"] = arguments.version?.version ?: "N/A"
+
+			data["mappings.query::argument"] = arguments.query
 		}
 
 		newSingleThreadContext("/query $type: ${arguments.query}").use { context ->
@@ -841,7 +842,7 @@ class MappingsExtension : Extension() {
 				sentry.breadcrumb(BreadcrumbType.Info) {
 					message = "Provider resolved, with injected default version"
 
-					data["version"] = provider.version ?: "Unknown"
+					data["mappings.version"] = provider.version ?: "Unknown"
 				}
 
 				val query = arguments.query.replace('.', '/')
@@ -850,7 +851,7 @@ class MappingsExtension : Extension() {
 				sentry.breadcrumb(BreadcrumbType.Info) {
 					message = "Attempting to run sanitized query"
 
-					data["query"] = query
+					data["mappings.query::argument"] = query
 				}
 
 				@Suppress("TooGenericExceptionCaught")
@@ -871,7 +872,7 @@ class MappingsExtension : Extension() {
 				sentry.breadcrumb(BreadcrumbType.Info) {
 					message = "Generating pages for results"
 
-					data["resultCount"] = result.value.size
+					data["results.count"] = result.value.size
 				}
 
 				val container = provider.get()
@@ -967,13 +968,14 @@ class MappingsExtension : Extension() {
 		sentry.breadcrumb(BreadcrumbType.Query) {
 			message = "Beginning mapping conversion"
 
-			data["type"] = type
-			data["query"] = arguments.query
-			data["inputNamespace"] = arguments.inputNamespace
-			data["inputChannel"] = arguments.inputChannel?.readableName ?: "N/A"
-			data["outputNamespace"] = arguments.outputNamespace
-			data["outputChannel"] = arguments.outputChannel?.readableName ?: "N/A"
-			data["version"] = arguments.version ?: "N/A"
+			data["mappings.type"] = type
+			data["mappings.inputNamespace"] = arguments.inputNamespace
+			data["mappings.inputChannel"] = arguments.inputChannel?.readableName ?: "N/A"
+			data["mappings.outputNamespace"] = arguments.outputNamespace
+			data["mappings.outputChannel"] = arguments.outputChannel?.readableName ?: "N/A"
+			data["mappings.version"] = arguments.version ?: "N/A"
+
+			data["mappings.query::argument"] = arguments.query
 		}
 
 		newSingleThreadContext("/convert $type: ${arguments.query}").use { context ->
@@ -1032,7 +1034,7 @@ class MappingsExtension : Extension() {
 				sentry.breadcrumb(BreadcrumbType.Info) {
 					message = "Providers and namespaces resolved"
 
-					data["version"] = inputProvider.version ?: "Unknown"
+					data["mappings.version"] = inputProvider.version ?: "Unknown"
 				}
 
 				val query = arguments.query.replace('.', '/')
@@ -1041,7 +1043,7 @@ class MappingsExtension : Extension() {
 				sentry.breadcrumb(BreadcrumbType.Info) {
 					message = "Attempting to run sanitized query"
 
-					data["query"] = query
+					data["mappings.query::argument"] = query
 				}
 
 				@Suppress("TooGenericExceptionCaught")
@@ -1116,7 +1118,7 @@ class MappingsExtension : Extension() {
 				sentry.breadcrumb(BreadcrumbType.Info) {
 					message = "Generating pages for results"
 
-					data["resultCount"] = outputResults.size
+					data["results.count"] = outputResults.size
 				}
 
 				pages = pageGenerationMethod(outputContainer, outputResults)

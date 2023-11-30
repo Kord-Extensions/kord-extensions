@@ -38,8 +38,12 @@ jobs:
 
       - name: Gradle (Build)
         uses: gradle/gradle-build-action@v2
+
         with:
           arguments: checkLicenses build
+
+        env:
+          TOKEN: "${{ secrets.TOKEN }}"
 
       - name: Disable parallel publish
 
@@ -54,6 +58,8 @@ jobs:
 
           OSSRH_USERNAME: "${{ secrets.OSSRH_USERNAME }}"
           OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
+
+          TOKEN: "${{ secrets.TOKEN }}"
 
         with:
           arguments: publish --no-parallel

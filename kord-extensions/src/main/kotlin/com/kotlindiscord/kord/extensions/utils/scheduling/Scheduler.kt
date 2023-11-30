@@ -32,7 +32,7 @@ public class Scheduler : CoroutineScope {
     override val coroutineContext: CoroutineContext = Dispatchers.Default + SupervisorJob()
 
     /** Convenience function to schedule a [Task] using [seconds] instead of a [Duration]. **/
-    public fun schedule(
+    public suspend fun schedule(
         seconds: Long,
         startNow: Boolean = true,
         name: String? = null,
@@ -58,7 +58,7 @@ public class Scheduler : CoroutineScope {
      * @param repeat Whether to repeat the task indefinitely - `false` by default.
      * @param callback Callback to run when the task has waited for long enough.
      */
-    public fun schedule(
+    public suspend fun schedule(
         delay: Duration,
         startNow: Boolean = true,
         name: String? = null,
@@ -103,5 +103,6 @@ public class Scheduler : CoroutineScope {
         tasks.clear()
     }
 
-    internal fun removeTask(task: Task) = tasks.remove(task)
+    internal fun removeTask(task: Task) =
+		tasks.remove(task)
 }

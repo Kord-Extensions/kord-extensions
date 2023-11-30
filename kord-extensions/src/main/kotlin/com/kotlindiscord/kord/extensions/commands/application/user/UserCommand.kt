@@ -13,14 +13,10 @@ import com.kotlindiscord.kord.extensions.components.ComponentRegistry
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
-import com.kotlindiscord.kord.extensions.sentry.tag
-import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.common.entity.ApplicationCommandType
-import dev.kord.core.entity.channel.DmChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -73,27 +69,10 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
                 category = "command.application.user"
                 message = "User command \"$name\" called."
 
-                val channel = context.channel.asChannelOrNull()
-                val guild = context.guild?.asGuildOrNull()
+                channel = context.channel.asChannelOrNull()
+                guild = context.guild?.asGuildOrNull()
 
                 data["command"] = name
-
-                if (guildId != null) {
-                    data["command.guild"] = guildId.toString()
-                }
-
-                if (channel != null) {
-                    data["channel"] = when (channel) {
-                        is DmChannel -> "Private Message (${channel.id})"
-                        is GuildMessageChannel -> "#${channel.name} (${channel.id})"
-
-                        else -> channel.id.toString()
-                    }
-                }
-
-                if (guild != null) {
-                    data["guild"] = "${guild.name} (${guild.id})"
-                }
             }
         }
     }
@@ -135,39 +114,36 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
     }
 
     /** A general way to handle errors thrown during the course of a command's execution. **/
-    public open suspend fun handleError(context: C, t: Throwable) {
+	@Suppress("StringLiteralDuplication")
+	public open suspend fun handleError(context: C, t: Throwable) {
         logger.error(t) { "Error during execution of $name user command (${context.event})" }
 
         if (sentry.enabled) {
             logger.trace { "Submitting error to sentry." }
 
-            val channel = context.channel
-            val author = context.user.asUserOrNull()
+            val sentryId = context.sentry.captureThrowable(t) {
+				user = context.user.asUserOrNull()
+				channel = context.channel.asChannelOrNull()
 
-            val sentryId = context.sentry.captureException(t) {
-                if (author != null) {
-                    user(author)
-                }
+				tags["command.name"] = name
+				tags["command.type"] = "user"
 
-                tag("private", "false")
-
-                if (channel is DmChannel) {
-                    tag("private", "true")
-                }
-
-                tag("command", name)
-                tag("extension", extension.name)
+				tags["extension"] = extension.name
             }
 
-            logger.info { "Error submitted to Sentry: $sentryId" }
+			val errorMessage = if (sentryId != null) {
+				logger.info { "Error submitted to Sentry: $sentryId" }
 
-            val errorMessage = if (extension.bot.extensions.containsKey("sentry")) {
-                context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
-            } else {
-                context.translate("commands.error.user", null)
-            }
+				if (extension.bot.extensions.containsKey("sentry")) {
+					context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
+				} else {
+					context.translate("commands.error.user", null)
+				}
+			} else {
+				context.translate("commands.error.user", null)
+			}
 
-            respondText(context, errorMessage, FailureReason.ExecutionError(t))
+			respondText(context, errorMessage, FailureReason.ExecutionError(t))
         } else {
             respondText(
                 context,

@@ -6,138 +6,127 @@
 
 package com.kotlindiscord.kord.extensions.sentry
 
+import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.builders.SentryDataTypeBuilder
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.sentry.captures.SentryCapture
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.sentry.*
 import io.sentry.protocol.SentryId
+import org.koin.core.component.inject
 
 /**
  * A class that wraps the Sentry APIs in order to make them a bit easier to integrate.
  */
-public open class SentryAdapter {
-    /** Whether Sentry integration has been enabled. **/
-    public val enabled: Boolean get() = this._enabled
+public open class SentryAdapter : KordExKoinComponent {
+	/** Whether Sentry integration has been enabled. **/
+	public val enabled: Boolean get() = this._enabled
 
-    private var _enabled: Boolean = false
-    private val eventIds: MutableSet<SentryId> = mutableSetOf()
+	private val logger = KotlinLogging.logger { }
 
-    /**
-     * Set up Sentry and enable Sentry integration.
-     *
-     * This function is a convenience for users that may not want to use a lambda
-     * to configure Sentry. As there are *so many options*, not everything is
-     * included here - please use [init] if you need to change any
-     * other settings.
-     *
-     * We recommend using keyword arguments for this function. Every single parameter
-     * has a default value that should match Sentry's default setup.
-     */
-    @Suppress("UsePropertyAccessSyntax")
-    public fun setup(
-        dsn: String? = null,
+	private val botSettings: ExtensibleBotBuilder by inject()
+	private val settings get() = botSettings.extensionsBuilder.sentryExtensionBuilder
 
-        diagnosticLevel: SentryLevel? = null,
-        distribution: String? = null,
-        environment: String? = null,
-        release: String? = null,
-        sampleRate: Double? = null,
-        serverName: String? = null,
-        shutdownTimeout: Long? = null,
+	private var _enabled: Boolean = false
+	private val eventIds: MutableSet<SentryId> = mutableSetOf()
 
-        attachStacktrace: Boolean = true,
-        attachThreads: Boolean = false,
-        debug: Boolean = false,
-        enableExternalConfiguration: Boolean = true,
-        enableNdk: Boolean = true,
-        enableScopeSync: Boolean = false,
-        enableUncaughtExceptionHandler: Boolean = true,
-        sendDefaultPii: Boolean = false,
+	@Suppress("TooGenericExceptionCaught")
+	public suspend fun setCaptureTypes(capture: SentryCapture) {
+		if (capture.hasAllowedTypes()) {
+			return
+		}
 
-        inAppExcludes: Array<String> = arrayOf(),
-        inAppIncludes: Array<String> = arrayOf(),
+		val types = settings.dataTypeBuilder.clone()
 
-        beforeBreadcrumb: ((Breadcrumb, Any?) -> Breadcrumb?)? = null,
-        beforeSend: ((SentryEvent?, Any?) -> SentryEvent?)? = null
-    ) {
-        Sentry.init {
-            if (dsn != null) it.dsn = dsn
+		settings.dataTypeTransformers.forEach {
+			try {
+				it(types, capture)
+			} catch (e: Exception) {
+				logger.warn(e) {
+					"Exception thrown in Sentry data type transformer"
+				}
+			}
+		}
 
-            if (diagnosticLevel != null) it.setDiagnosticLevel(diagnosticLevel)
-            if (distribution != null) it.dist = distribution
-            if (environment != null) it.environment = environment
-            if (release != null) it.release = release
-            if (sampleRate != null) it.sampleRate = sampleRate
-            if (serverName != null) it.serverName = serverName
-            if (shutdownTimeout != null) it.shutdownTimeoutMillis = shutdownTimeout
+		capture.setAllowedTypes(types)
+	}
 
-            it.isAttachStacktrace = attachStacktrace
-            it.isAttachThreads = attachThreads
-            it.setDebug(debug)
-            it.isEnableExternalConfiguration = enableExternalConfiguration
-            it.isEnableNdk = enableNdk
-            it.isEnableScopeSync = enableScopeSync
-            it.isEnableUncaughtExceptionHandler = enableUncaughtExceptionHandler
-            it.isSendDefaultPii = sendDefaultPii
+	@Suppress("TooGenericExceptionCaught")
+	public suspend fun checkCapturePredicates(capture: SentryCapture): Boolean {
+		for (predicate in settings.predicates) {
+			try {
+				if (!predicate(capture)) {
+					return false
+				}
+			} catch (e: Exception) {
+				logger.warn(e) {
+					"Exception thrown in Sentry capture predicate"
+				}
+			}
+		}
 
-            inAppExcludes.forEach { exclude -> it.addInAppExclude(exclude) }
-            inAppIncludes.forEach { include -> it.addInAppInclude(include) }
+		return true
+	}
 
-            if (beforeBreadcrumb != null) it.setBeforeBreadcrumb(beforeBreadcrumb)
-            if (beforeSend != null) it.setBeforeSend(beforeSend)
-        }
+	/**
+	 * Set up Sentry and enable Sentry integration.
+	 *
+	 * This function takes a lambda that matches Sentry's, albeit using a receiver
+	 * function instead for brevity. Please see the Sentry documentation for
+	 * information on how to configure it.
+	 */
+	public fun init(callback: SentryOptions.() -> Unit) {
+		Sentry.init(callback)
 
-        this._enabled = true
-    }
+		this._enabled = true
+	}
 
-    /**
-     * Set up Sentry and enable Sentry integration.
-     *
-     * This function takes a lambda that matches Sentry's, albeit using a receiver
-     * function instead for brevity. Please see the Sentry documentation for
-     * information on how to configure it.
-     *
-     * Use [setup] if you don't want to use a lambda for this.
-     */
-    public fun init(callback: SentryOptions.() -> Unit) {
-        Sentry.init(callback)
+	/**
+	 * Convenience wrapper around the Sentry user feedback API.
+	 *
+	 * **Note:** Doesn't use the [SentryCapture] system, and thus ignores the [SentryDataTypeBuilder].
+	 * Disable the Sentry feedback extension if you don't want these to be submitted.
+	 */
+	public fun sendFeedback(
+		id: SentryId,
 
-        this._enabled = true
-    }
+		comments: String? = null,
+		name: String? = null,
 
-    /**
-     * Convenience wrapper around the Sentry user feedback API.
-     */
-    public fun sendFeedback(
-        id: SentryId,
+		removeId: Boolean = true,
+	) {
+		if (!enabled) error("Sentry integration has not yet been configured.")
 
-        comments: String? = null,
-        email: String? = null,
-        name: String? = null,
+		val feedback = UserFeedback(id)
 
-        removeId: Boolean = true
-    ) {
-        if (!enabled) error("Sentry integration has not yet been configured.")
+		if (comments != null) feedback.comments = comments
+		if (name != null) feedback.name = name
 
-        val feedback = UserFeedback(id)
+		Sentry.captureUserFeedback(feedback)
 
-        if (comments != null) feedback.comments = comments
-        if (email != null) feedback.email = email
-        if (name != null) feedback.name = name
+		if (removeId) {
+			removeEventId(id)
+		}
+	}
 
-        Sentry.captureUserFeedback(feedback)
+	/** Register an event ID that a user may provide feedback for. **/
+	public fun addEventId(id: SentryId?): Boolean {
+		id ?: return false
 
-        if (removeId) {
-            removeEventId(id)
-        }
-    }
+		return eventIds.add(id)
+	}
 
-    /** Register an event ID that a user may provide feedback for. **/
-    public fun addEventId(id: SentryId): Boolean =
-        eventIds.add(id)
+	/** Given an event ID, check whether it's awaiting feedback. **/
+	public fun hasEventId(id: SentryId?): Boolean {
+		id ?: return false
 
-    /** Given an event ID, check whether it's awaiting feedback. **/
-    public fun hasEventId(id: SentryId): Boolean =
-        eventIds.contains(id)
+		return eventIds.contains(id)
+	}
 
-    /** Remove an event ID that feedback has already been provided for. **/
-    public fun removeEventId(id: SentryId): Boolean =
-        eventIds.remove(id)
+	/** Remove an event ID that feedback has already been provided for. **/
+	public fun removeEventId(id: SentryId?): Boolean {
+		id ?: return false
+
+		return eventIds.remove(id)
+	}
 }

@@ -49,6 +49,9 @@ jobs:
           arguments: checkLicenses build dokkaHtmlMultiModule
           dependency-graph: generate-and-submit
 
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+
       - name: Zip Dokka docs
         working-directory: build/dokka/
 
@@ -70,6 +73,8 @@ jobs:
 
           OSSRH_USERNAME: "${{ secrets.OSSRH_USERNAME }}"
           OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
+
+          TOKEN: "${{ secrets.TOKEN }}"
 
         with:
           arguments: publish --no-parallel

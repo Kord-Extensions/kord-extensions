@@ -17,6 +17,7 @@ import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.actionRow
 import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 import dev.kord.rest.builder.message.modify.actionRow
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.inject
 import kotlin.time.Duration
 
@@ -46,10 +47,13 @@ public open class ComponentContainer(
 
     /** If a [timeout] was provided, the scheduled timeout task will be stored here. **/
     public open val timeoutTask: Task? = if (timeout != null) {
-        registry.scheduler.schedule(timeout, startNow = startTimeoutNow) {
-            removeAll()
-            timeoutCallback?.invoke(this)
-        }
+        runBlocking { // This is a trivially quick block, so it should be fine.
+			registry.scheduler.schedule(timeout, startNow = startTimeoutNow) {
+				removeAll()
+
+				timeoutCallback?.invoke(this@ComponentContainer)
+			}
+		}
     } else {
         null
     }

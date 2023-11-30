@@ -6,6 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.test
 
+import com.kotlindiscord.kord.extensions.KoinExtension
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import kotlinx.coroutines.delay
@@ -13,11 +14,13 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import kotlin.time.Duration.Companion.seconds
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(KoinExtension::class)
 class SchedulerTest {
     @Test
     @Execution(ExecutionMode.CONCURRENT)

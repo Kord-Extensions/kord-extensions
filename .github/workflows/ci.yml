@@ -30,8 +30,12 @@ jobs:
 
       - name: Gradle (Build)
         uses: gradle/gradle-build-action@v2
+
         with:
           arguments: checkLicenses build
+
+        env:
+          TOKEN: "${{ secrets.TOKEN }}"
 
       - name: Upload artifact (Extra Module JARs)
         uses: actions/upload-artifact@v3

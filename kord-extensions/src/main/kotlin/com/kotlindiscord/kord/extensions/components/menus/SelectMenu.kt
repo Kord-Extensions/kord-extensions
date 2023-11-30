@@ -9,13 +9,9 @@ package com.kotlindiscord.kord.extensions.components.menus
 import com.kotlindiscord.kord.extensions.components.ComponentWithAction
 import com.kotlindiscord.kord.extensions.components.forms.ModalForm
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
-import com.kotlindiscord.kord.extensions.sentry.tag
-import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
-import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import io.sentry.Sentry
 import mu.KLogger
 import mu.KotlinLogging
 
@@ -66,48 +62,43 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 	}
 
 	/** If enabled, adds the initial Sentry breadcrumb to the given context. **/
-	public open suspend fun firstSentryBreadcrumb(context: C, button: SelectMenu<*, *>) {
+	public open suspend fun firstSentryBreadcrumb(context: C, component: SelectMenu<*, *>) {
 		if (sentry.enabled) {
 			context.sentry.breadcrumb(BreadcrumbType.User) {
 				category = "component.selectMenu"
-				message = "Select menu \"${button.id}\" submitted."
+				message = "Select menu \"${component.id}\" submitted."
 
-				data["component"] = button.id
+				data["component.id"] = component.id
+
 				context.addContextDataToBreadcrumb(this)
 			}
 		}
 	}
 
 	/** A general way to handle errors thrown during the course of a select menu action's execution. **/
+	@Suppress("StringLiteralDuplication")
 	public open suspend fun handleError(context: C, t: Throwable, button: SelectMenu<*, *>) {
 		logger.error(t) { "Error during execution of select menu (${button.id}) action (${context.event})" }
 
 		if (sentry.enabled) {
 			logger.trace { "Submitting error to sentry." }
 
-			val channel = context.channel
-			val author = context.user.asUserOrNull()
+			val sentryId = context.sentry.captureThrowable(t) {
+				channel = context.channel.asChannelOrNull()
+				user = context.user.asUserOrNull()
 
-			val sentryId = context.sentry.captureException(t) {
-				if (author != null) {
-					user(author)
-				}
-
-				tag("private", "false")
-
-				if (channel is DmChannel) {
-					tag("private", "true")
-				}
-
-				tag("component", button.id)
-
-				Sentry.captureException(t)
+				tags["component.id"] = button.id
+				tags["component.type"] = "select-menu"
 			}
 
-			logger.info { "Error submitted to Sentry: $sentryId" }
+			val errorMessage = if (sentryId != null) {
+				logger.info { "Error submitted to Sentry: $sentryId" }
 
-			val errorMessage = if (bot.extensions.containsKey("sentry")) {
-				context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
+				if (bot.extensions.containsKey("sentry")) {
+					context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
+				} else {
+					context.translate("commands.error.user", null)
+				}
 			} else {
 				context.translate("commands.error.user", null)
 			}
