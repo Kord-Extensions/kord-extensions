@@ -22,6 +22,8 @@ import com.kotlindiscord.kord.extensions.commands.chat.ChatCommandRegistry
 import com.kotlindiscord.kord.extensions.events.EventHandler
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.tooling.Translatable
+import com.kotlindiscord.kord.extensions.tooling.TranslatableType
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import dev.kord.gateway.Intent
@@ -142,7 +144,8 @@ public abstract class Extension : KordExKoinComponent {
     public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
 
     /** String representing the bundle to get translations from for command names/descriptions. **/
-    public open val bundle: String? = null
+	@Translatable(TranslatableType.BUNDLE)
+	public open val bundle: String? = null
 
     /** Set of intents required by this extension's event handlers and commands. **/
     public open val intents: MutableSet<Intent> = mutableSetOf()
