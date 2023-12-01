@@ -7,6 +7,7 @@ commons-validator = "1.7"
 groovy = "3.0.19"
 icu4j = "74.1"
 jansi = "2.4.1"
+jemoji = "1.3.2"
 jsoup = "1.16.2"
 junit = "5.10.1"
 koin = "3.5.0"
@@ -37,6 +38,7 @@ detekt-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-librarie
 groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
 icu4j = { module = "com.ibm.icu:icu4j", version.ref = "icu4j" }
 jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
+jemoji = { module = "net.fellbaum:jemoji", version.ref = "jemoji" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 

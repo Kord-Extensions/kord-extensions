@@ -29,6 +29,7 @@ dependencies {
     api(libs.kord)
 
     api(libs.bundles.logging) // Basic logging setup
+    api(libs.jemoji) // Basic logging setup
     api(libs.kx.ser)
     api(libs.sentry)  // Needs to be transitive or bots will start breaking
     api(libs.toml)

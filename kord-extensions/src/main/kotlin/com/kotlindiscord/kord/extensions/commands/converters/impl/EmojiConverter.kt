@@ -16,93 +16,107 @@ import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converte
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.GuildEmoji
+import dev.kord.core.entity.Emoji
+import dev.kord.core.entity.StandardEmoji
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
+import net.fellbaum.jemoji.EmojiManager
 
 /**
- * Argument converter for Discord [GuildEmoji] arguments.
+ * Argument converter for [Emoji] arguments.
  *
  * This converter supports specifying emojis by supplying:
  *
- * * The actual emoji itself
- * * The emoji ID, either with or without surrounding colons
- * * The emoji name, either with or without surrounding colons -
- * the first matching emoji available to the bot will be used
+ * * The actual emoji itself, unicode or custom.
+ * * The custom emoji ID, either with or without surrounding colons.
+ * * The custom emoji name, either with or without surrounding colons,
+ *   using the first matching emoji available to the bot.
+ * * The Unicode emoji name, as used by Discord.
  *
  * @see emoji
  * @see emojiList
  */
 @Converter(
-    "emoji",
+	"emoji",
 
-    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+	types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
 public class EmojiConverter(
-    override var validator: Validator<GuildEmoji> = null
-) : SingleConverter<GuildEmoji>() {
-    override val signatureTypeString: String = "converters.emoji.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override var validator: Validator<Emoji> = null,
+) : SingleConverter<Emoji>() {
+	override val signatureTypeString: String = "converters.emoji.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        val emoji: GuildEmoji = findEmoji(arg, context)
-            ?: throw DiscordRelayedException(
-                context.translate("converters.emoji.error.missing", replacements = arrayOf(arg))
-            )
+		val emoji: Emoji = findEmoji(arg, context)
+			?: throw DiscordRelayedException(
+				context.translate("converters.emoji.error.missing", replacements = arrayOf(arg))
+			)
 
-        parsed = emoji
-        return true
-    }
+		parsed = emoji
 
-    private suspend fun findEmoji(arg: String, context: CommandContext): GuildEmoji? =
-        if (arg.startsWith("<a:") || arg.startsWith("<:") && arg.endsWith('>')) { // Emoji mention
-            val id: String = arg.substring(0, arg.length - 1).split(":").last()
+		return true
+	}
 
-            try {
-                val snowflake = Snowflake(id)
+	private suspend fun findEmoji(arg: String, context: CommandContext): Emoji? =
+		if (EmojiManager.isEmoji(arg)) {  // That's a Unicode emoji
+			StandardEmoji(arg)
+		} else if (arg.startsWith("<a:") || arg.startsWith("<:") && arg.endsWith('>')) { // Emoji mention
+			val id: String = arg.substring(0, arg.length - 1).split(":").last()
 
-                kord.guilds.mapNotNull {
-                    it.getEmojiOrNull(snowflake)
-                }.firstOrNull()
-            } catch (e: NumberFormatException) {
-                throw DiscordRelayedException(
-                    context.translate("converters.emoji.error.invalid", replacements = arrayOf(id))
-                )
-            }
-        } else { // ID or name
-            val name = if (arg.startsWith(":") && arg.endsWith(":")) arg.substring(1, arg.length - 1) else arg
+			try {
+				val snowflake = Snowflake(id)
 
-            try {
-                val snowflake = Snowflake(name)
+				kord.guilds.mapNotNull {
+					it.getEmojiOrNull(snowflake)
+				}.firstOrNull()
+			} catch (e: NumberFormatException) {
+				throw DiscordRelayedException(
+					context.translate("converters.emoji.error.invalid", replacements = arrayOf(id))
+				)
+			}
+		} else { // ID or name
+			val name = if (arg.startsWith(":") && arg.endsWith(":")) {
+				arg.substring(1, arg.length - 1)
+			} else {
+				arg
+			}
 
-                kord.guilds.mapNotNull {
-                    it.getEmojiOrNull(snowflake)
-                }.firstOrNull()
-            } catch (e: NumberFormatException) {  // Not an ID, let's check names
-                kord.guilds.mapNotNull {
-                    it.emojis.firstOrNull { emojiObj -> emojiObj.name?.lowercase().equals(name, true) }
-                }.firstOrNull()
-            }
-        }
+			try {
+				val snowflake = Snowflake(name)
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+				kord.guilds.mapNotNull {
+					it.getEmojiOrNull(snowflake)
+				}.firstOrNull()
+			} catch (e: NumberFormatException) {  // Not an ID, let's check names
+				val currentResult = kord.guilds.mapNotNull {
+					it.emojis.firstOrNull { emojiObj -> emojiObj.name?.lowercase().equals(name, true) }
+				}.firstOrNull()
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+				currentResult ?: EmojiManager.getByDiscordAlias(arg)?.get()?.unicode?.let {
+					StandardEmoji(it)
+				}
+			}
+		}
 
-        val emoji: GuildEmoji = findEmoji(optionValue, context)
-            ?: throw DiscordRelayedException(
-                context.translate("converters.emoji.error.missing", replacements = arrayOf(optionValue))
-            )
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-        parsed = emoji
-        return true
-    }
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
+
+		val emoji: Emoji = findEmoji(optionValue, context)
+			?: throw DiscordRelayedException(
+				context.translate("converters.emoji.error.missing", replacements = arrayOf(optionValue))
+			)
+
+		parsed = emoji
+		return true
+	}
 }

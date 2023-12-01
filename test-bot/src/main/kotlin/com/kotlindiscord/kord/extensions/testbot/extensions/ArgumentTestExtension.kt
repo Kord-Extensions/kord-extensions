@@ -17,6 +17,8 @@ import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.ForumTag
 import dev.kord.core.behavior.channel.asChannelOfOrNull
 import dev.kord.core.entity.Attachment
+import dev.kord.core.entity.Emoji
+import dev.kord.core.entity.GuildEmoji
 import dev.kord.core.entity.channel.Channel
 
 public class ArgumentTestExtension : Extension() {
@@ -30,6 +32,23 @@ public class ArgumentTestExtension : Extension() {
             action {
                 respond {
                     content = "Tag provided: `${arguments.tag?.name}`"
+                }
+            }
+        }
+
+        publicSlashCommand(::EmojiArguments) {
+            name = "test-emoji"
+            description = "Test the emoji converter"
+
+            action {
+                respond {
+					val type = if (arguments.emoji is GuildEmoji) {
+						"Guild"
+					} else {
+						"Unicode"
+					}
+
+                    content = "$type emoji provided: `${arguments.emoji.mention}` (`${arguments.emoji.name}`)"
                 }
             }
         }
@@ -163,6 +182,13 @@ public class ArgumentTestExtension : Extension() {
             description = "A text channel"
 
             requireChannelType(ChannelType.GuildText)
+        }
+    }
+
+    public inner class EmojiArguments : Arguments() {
+        public val emoji: Emoji by emoji {
+            name = "emoji"
+            description = "A custom or Unicode emoji"
         }
     }
 }
