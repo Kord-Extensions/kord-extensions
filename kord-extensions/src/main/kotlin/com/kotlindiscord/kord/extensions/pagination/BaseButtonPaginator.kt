@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.components.publicButton
 import com.kotlindiscord.kord.extensions.components.types.emoji
 import com.kotlindiscord.kord.extensions.pagination.builders.PageTransitionCallback
 import com.kotlindiscord.kord.extensions.pagination.pages.Pages
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
@@ -70,7 +71,7 @@ public abstract class BaseButtonPaginator(
     public open var switchButton: PublicInteractionButton<*>? = null
 
     /** Group-specific buttons, if any. **/
-    public open val groupButtons: MutableMap<String, PublicInteractionButton<*>> = mutableMapOf()
+    public open val groupButtons: MutableStringKeyedMap<PublicInteractionButton<*>> = mutableMapOf()
 
     /** Whether it's possible for us to have a row of group-switching buttons. **/
     @Suppress("MagicNumber")

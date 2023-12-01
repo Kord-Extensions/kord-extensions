@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.storage.Data
 import com.kotlindiscord.kord.extensions.storage.DataAdapter
 import com.kotlindiscord.kord.extensions.storage.StorageUnit
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
@@ -33,7 +34,7 @@ import org.bson.conversions.Bson
  * this class.
  */
 public class MongoDBDataAdapter : DataAdapter<String>(), KordExKoinComponent {
-	private val collectionCache: MutableMap<String, MongoCollection<AdaptedData>> = mutableMapOf()
+	private val collectionCache: MutableStringKeyedMap<MongoCollection<AdaptedData>> = mutableMapOf()
 
 	private fun StorageUnit<*>.getIdentifier(): String =
 		buildString {

@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.plugins
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.core.Kord
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -22,7 +23,7 @@ import org.pf4j.PluginWrapper
  * and ready to be used.
  */
 public abstract class KordExPlugin(wrapper: PluginWrapper) : Plugin(wrapper), KordExKoinComponent {
-    internal val extensions: MutableMap<String, ExtensionBuilder> = mutableMapOf()
+    internal val extensions: MutableStringKeyedMap<ExtensionBuilder> = mutableMapOf()
     internal val settingsCallbacks: MutableList<SettingsCallback> = mutableListOf()
 
     /** Quick access to the bot object. **/

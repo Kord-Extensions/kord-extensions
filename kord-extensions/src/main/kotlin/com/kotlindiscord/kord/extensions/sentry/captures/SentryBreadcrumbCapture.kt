@@ -2,6 +2,7 @@ package com.kotlindiscord.kord.extensions.sentry.captures
 
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.sentryName
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import io.sentry.Breadcrumb
 import io.sentry.Scope
@@ -23,7 +24,7 @@ public class SentryBreadcrumbCapture(
 	 *
 	 * For more information, see [the Sentry docs](https://develop.sentry.dev/sdk/event-payloads/breadcrumbs/).
 	 */
-	public val data: MutableMap<String, Any> = mutableMapOf()
+	public val data: MutableStringKeyedMap<Any> = mutableMapOf()
 
 	/** Breadcrumb category. Arbitrary, but some categories change how Sentry renders the breadcrumb. **/
 	public var category: String? = null

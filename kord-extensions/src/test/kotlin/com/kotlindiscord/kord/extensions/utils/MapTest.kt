@@ -23,7 +23,7 @@ class MapTest {
     @Test
     @Execution(ExecutionMode.CONCURRENT)
     fun `check typed getters`() {
-        val map: MutableMap<String, Any> = mutableMapOf(
+        val map: MutableStringKeyedMap<Any> = mutableMapOf(
             "string" to "value",
             "number" to 1
         )

@@ -62,7 +62,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
     public open val hasBody: Boolean get() = ::body.isInitialized
 
     /** Map of group names to slash command groups, if any. **/
-    public open val groups: MutableMap<String, SlashGroup> = mutableMapOf()
+    public open val groups: MutableStringKeyedMap<SlashGroup> = mutableMapOf()
 
     /** List of subcommands, if any. **/
     public open val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()

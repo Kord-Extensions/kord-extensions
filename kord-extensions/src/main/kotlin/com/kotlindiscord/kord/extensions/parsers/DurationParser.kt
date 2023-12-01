@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.parsers.caches.TimeUnitCache
 import com.kotlindiscord.kord.extensions.time.name
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.splitOn
 import kotlinx.datetime.DateTimePeriod
 import org.koin.core.component.inject
@@ -60,7 +61,7 @@ public object DurationParser : KordExKoinComponent {
             throw DurationParserException(translations.translate("converters.duration.error.badUnitPairs", locale))
         }
 
-        val allValues: MutableMap<String, Int> = mutableMapOf()
+        val allValues: MutableStringKeyedMap<Int> = mutableMapOf()
 
         while (units.isNotEmpty()) {
             val (unitString, valueString) = units.removeFirst() to values.removeFirst()

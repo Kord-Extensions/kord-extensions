@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.extensions.impl.SentryExtension
 import com.kotlindiscord.kord.extensions.koin.KordExContext
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.types.Lockable
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.loadModule
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
@@ -81,7 +82,7 @@ public open class ExtensibleBot(
     /**
      * A map of the names of all loaded [Extension]s to their instances.
      */
-    public open val extensions: MutableMap<String, Extension> = mutableMapOf()
+    public open val extensions: MutableStringKeyedMap<Extension> = mutableMapOf()
 
     /** @suppress **/
     public open val eventPublisher: MutableSharedFlow<Any> = MutableSharedFlow()

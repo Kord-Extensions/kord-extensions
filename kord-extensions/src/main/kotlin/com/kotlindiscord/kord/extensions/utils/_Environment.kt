@@ -13,7 +13,7 @@ import kotlin.io.path.readLines
 
 private var firstLoad: Boolean = true
 private var logger = KotlinLogging.logger {}
-private val envMap: MutableMap<String, String> = mutableMapOf()
+private val envMap: MutableStringMap = mutableMapOf()
 
 /**
  * Returns the value of an environmental variable, loading from a `.env` file in the current working directory if

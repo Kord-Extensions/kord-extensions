@@ -9,10 +9,17 @@ package com.kotlindiscord.kord.extensions.utils
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.event.Event
 
-internal typealias StringKeyedMap<T> = Map<String, T & Any>
+/** Type alias representing a string keyed map. **/
+public typealias StringKeyedMap<T> = Map<String, T & Any>
+
+/** Type alias representing a map with string keys and values. **/
+public typealias StringMap = StringKeyedMap<String>
 
 /** Type alias representing a mutable string keyed map. **/
 public typealias MutableStringKeyedMap<T> = MutableMap<String, T & Any>
+
+/** Type alias representing a mutable map with string keys and values. **/
+public typealias MutableStringMap = MutableStringKeyedMap<String>
 
 /** Provides direct access to the map KordEx registers for [Event.customContext]. **/
 @OptIn(KordPreview::class)

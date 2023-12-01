@@ -31,6 +31,7 @@ import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.storage.PKGuild
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.utils.LRUHashMap
 import com.kotlindiscord.kord.extensions.storage.StorageType
 import com.kotlindiscord.kord.extensions.storage.StorageUnit
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.Permission
@@ -81,7 +82,7 @@ class PKExtension : Extension() {
     private val scheduler: Scheduler = Scheduler()
     private var checkTask: Task? = null
 
-    private val apiMap: MutableMap<String, PluralKit> = mutableMapOf()
+    private val apiMap: MutableStringKeyedMap<PluralKit> = mutableMapOf()
 
     override suspend fun setup() {
         checkTask = scheduler.schedule(

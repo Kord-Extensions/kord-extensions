@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.registry
 
 import com.kotlindiscord.kord.extensions.commands.application.ApplicationCommand
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import dev.kord.common.entity.Snowflake
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
@@ -23,7 +24,7 @@ public abstract class AbstractDeconstructingApplicationCommandRegistryStorage<T 
     /**
      * Mapping of command-key to command-object.
      */
-    protected open val commandMapping: MutableMap<String, T> = mutableMapOf()
+    protected open val commandMapping: MutableStringKeyedMap<T> = mutableMapOf()
 
     /**
      * Upserts simplified data.

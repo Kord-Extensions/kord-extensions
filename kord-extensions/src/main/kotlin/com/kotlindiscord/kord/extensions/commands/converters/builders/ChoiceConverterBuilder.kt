@@ -6,10 +6,12 @@
 
 package com.kotlindiscord.kord.extensions.commands.converters.builders
 
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+
 /** Converter builder for choice converters. **/
 public interface ChoiceConverterBuilder<T> {
     /** List of possible choices, if any. **/
-    public var choices: MutableMap<String, T>
+    public var choices: MutableStringKeyedMap<T>
 
     /** Add a choice to the list of possible choices. **/
     public fun choice(key: String, value: T) {

@@ -23,6 +23,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
@@ -82,7 +83,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 
         val args = argumentsObj.args.toMutableList()
         val argsMap = args.associateBy { it.displayName.lowercase() }
-        val keywordArgs: MutableMap<String, MutableList<String>> = mutableMapOf()
+        val keywordArgs: MutableStringKeyedMap<MutableList<String>> = mutableMapOf()
 
         if (context.chatCommand.allowKeywordArguments) {
             parser.parseNamed().forEach {
