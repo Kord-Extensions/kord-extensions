@@ -22,7 +22,6 @@ import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import org.koin.core.component.inject
 import dev.kord.common.Locale as KLocale
@@ -80,7 +79,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     public open var allowInDms: Boolean = extension.allowApplicationCommandInDMs
         get() {
             if (guildId != null) {
-                return true
+                return false
             }
 
             return field
@@ -140,18 +139,8 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
     }
 
     /** Specify a specific guild for this application command to be locked to. **/
-    public open fun guild(guild: Snowflake) {
+    public open fun guild(guild: Snowflake?) {
         this.guildId = guild
-    }
-
-    /** Specify a specific guild for this application command to be locked to. **/
-    public open fun guild(guild: Long) {
-        this.guildId = Snowflake(guild)
-    }
-
-    /** Specify a specific guild for this application command to be locked to. **/
-    public open fun guild(guild: GuildBehavior) {
-        this.guildId = guild.id
     }
 
     /**

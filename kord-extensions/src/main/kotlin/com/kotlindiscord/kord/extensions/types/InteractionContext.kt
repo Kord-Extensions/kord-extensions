@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.annotations.AlwaysPublicResponse
 import com.kotlindiscord.kord.extensions.annotations.UnexpectedBehaviour
 import com.kotlindiscord.kord.extensions.pagination.BaseButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
+import dev.kord.core.behavior.interaction.response.InteractionResponseBehavior
 import dev.kord.core.entity.interaction.followup.FollowupMessage
 import dev.kord.core.entity.interaction.response.MessageInteractionResponse
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
@@ -35,7 +36,7 @@ public typealias GenericInteractionContext = InteractionContext<*, *, *, *>
  * @param OppositeFollowupType Generic representing the opposite follow-up type for the current interaction type.
  */
 public interface InteractionContext<
-	ResponseBehavior,
+	ResponseBehavior : InteractionResponseBehavior,
 	ResponseType : MessageInteractionResponse,
 	FollowupType : FollowupMessage,
 	OppositeFollowupType : FollowupMessage,
