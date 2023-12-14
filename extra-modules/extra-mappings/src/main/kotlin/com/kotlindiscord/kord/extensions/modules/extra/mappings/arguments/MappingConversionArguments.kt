@@ -15,6 +15,7 @@ import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.autocomple
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.toNamespace
 import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.entity.Snowflake
+import me.shedaniel.linkie.utils.tryToVersion
 
 /**
  * Arguments for class, field, and method conversion commands.
@@ -69,7 +70,8 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
             if (inputNamespace == null || outputNamespace == null) {
                 emptyList()
             } else {
-                inputNamespace.getAllSortedVersions().filter { it in outputNamespace.getAllSortedVersions() }
+                inputNamespace.getAllVersions().toSet().intersect(outputNamespace.getAllVersions().toSet())
+					.sortedByDescending { it.tryToVersion() }
             }
         }
     }
