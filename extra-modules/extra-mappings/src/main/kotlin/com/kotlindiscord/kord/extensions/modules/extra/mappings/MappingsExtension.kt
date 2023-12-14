@@ -552,7 +552,7 @@ class MappingsExtension : Extension() {
 			}
 		}
 
-		val namespaceGetter: suspend (Snowflake?) -> Map<String, String>? = { guildId ->
+		val namespaceGetter: suspend (Snowflake?) -> Map<String, String> = { guildId ->
 			if (guildId == null) {
 				namespaceNames.associateBy { it.lowercase() }
 			} else {

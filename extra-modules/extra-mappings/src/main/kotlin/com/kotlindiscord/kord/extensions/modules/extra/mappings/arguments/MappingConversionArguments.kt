@@ -21,7 +21,7 @@ import me.shedaniel.linkie.utils.tryToVersion
  * Arguments for class, field, and method conversion commands.
  */
 @Suppress("UndocumentedPublicProperty")
-class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<String, String>?) : Arguments() {
+class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<String, String>) : Arguments() {
     val query by string {
         name = "query"
         description = "Name to query mappings for"
@@ -39,7 +39,9 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 
 		@Suppress("UnnecessaryParentheses")
 		validate {
-			failIf("Must be a valid namespace") { value !in (enabledNamespaces(context.getGuild()!!.id) ?: emptyMap()) }
+			failIf("Must be a valid namespace") {
+				context.getGuild() != null && value !in enabledNamespaces(context.getGuild()!!.id)
+			}
 		}
     }
 
@@ -55,7 +57,9 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 
 		@Suppress("UnnecessaryParentheses")
 		validate {
-			failIf("Must be a valid namespace") { value !in (enabledNamespaces(context.getGuild()!!.id) ?: emptyMap()) }
+			failIf("Must be a valid namespace") {
+				context.getGuild() != null && value !in enabledNamespaces(context.getGuild()!!.id)
+			}
 		}
 	}
 
