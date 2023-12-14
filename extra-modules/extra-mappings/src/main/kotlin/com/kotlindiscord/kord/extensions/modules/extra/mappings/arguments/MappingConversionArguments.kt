@@ -33,7 +33,7 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 
         autoComplete {
 			val guildId = command.data.guildId.value
-			val values = enabledNamespaces(guildId) ?: emptyMap()
+			val values = enabledNamespaces(guildId)
 			suggestStringMap(values)
 		}
 
@@ -51,7 +51,7 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 
 		autoComplete {
 			val guildId = command.data.guildId.value
-			val values = enabledNamespaces(guildId) ?: emptyMap()
+			val values = enabledNamespaces(guildId)
 			suggestStringMap(values)
 		}
 
