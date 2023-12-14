@@ -15,12 +15,13 @@ import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.autocomple
 import com.kotlindiscord.kord.extensions.modules.extra.mappings.utils.toNamespace
 import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.entity.Snowflake
+import me.shedaniel.linkie.utils.tryToVersion
 
 /**
  * Arguments for class, field, and method conversion commands.
  */
 @Suppress("UndocumentedPublicProperty")
-class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<String, String>?) : Arguments() {
+class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<String, String>) : Arguments() {
     val query by string {
         name = "query"
         description = "Name to query mappings for"
@@ -32,13 +33,15 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 
         autoComplete {
 			val guildId = command.data.guildId.value
-			val values = enabledNamespaces(guildId) ?: emptyMap()
+			val values = enabledNamespaces(guildId)
 			suggestStringMap(values)
 		}
 
 		@Suppress("UnnecessaryParentheses")
 		validate {
-			failIf("Must be a valid namespace") { value !in (enabledNamespaces(context.getGuild()!!.id) ?: emptyMap()) }
+			failIf("Must be a valid namespace") {
+				context.getGuild() != null && value !in enabledNamespaces(context.getGuild()!!.id)
+			}
 		}
     }
 
@@ -48,13 +51,15 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 
 		autoComplete {
 			val guildId = command.data.guildId.value
-			val values = enabledNamespaces(guildId) ?: emptyMap()
+			val values = enabledNamespaces(guildId)
 			suggestStringMap(values)
 		}
 
 		@Suppress("UnnecessaryParentheses")
 		validate {
-			failIf("Must be a valid namespace") { value !in (enabledNamespaces(context.getGuild()!!.id) ?: emptyMap()) }
+			failIf("Must be a valid namespace") {
+				context.getGuild() != null && value !in enabledNamespaces(context.getGuild()!!.id)
+			}
 		}
 	}
 
@@ -69,7 +74,8 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
             if (inputNamespace == null || outputNamespace == null) {
                 emptyList()
             } else {
-                inputNamespace.getAllSortedVersions().filter { it in outputNamespace.getAllSortedVersions() }
+                inputNamespace.getAllVersions().toSet().intersect(outputNamespace.getAllVersions().toSet())
+					.sortedByDescending { it.tryToVersion() }
             }
         }
     }
