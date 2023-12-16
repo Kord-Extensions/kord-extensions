@@ -7,9 +7,12 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import dev.kord.core.entity.interaction.OptionValue
+import dev.kord.rest.builder.interaction.OptionsBuilder
 
 /**
  * A special [ListConverter] that wraps a [SingleConverter], effectively turning it into a list-handling converter
@@ -38,9 +41,10 @@ public class SingleToListConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
+	private val dummyArgs = Arguments()
+
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val values = mutableListOf<T>()
-        val dummyArgs = Arguments()
 
         if (named == null) {
             while (true) {
@@ -85,7 +89,20 @@ public class SingleToListConverter<T : Any>(
         return parsed.size
     }
 
-    override suspend fun handleError(
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		singleConverter.toSlashOption(arg)
+
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val result = singleConverter.parseOption(context, option)
+
+		if (result) {
+			parsed = listOf(singleConverter.getValue(dummyArgs, singleConverter::parsed))
+		}
+
+		return result
+	}
+
+	override suspend fun handleError(
         t: Throwable,
         context: CommandContext
     ): String = singleConverter.handleError(t, context)

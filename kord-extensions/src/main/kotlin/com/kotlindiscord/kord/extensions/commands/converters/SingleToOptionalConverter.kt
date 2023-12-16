@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.core.entity.interaction.OptionValue
@@ -26,53 +27,55 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
 public class SingleToOptionalConverter<T : Any>(
-    public val singleConverter: SingleConverter<T>,
+	public val singleConverter: SingleConverter<T>,
 
-    newSignatureTypeString: String? = null,
-    newShowTypeInSignature: Boolean? = null,
-    newErrorTypeString: String? = null,
-    outputError: Boolean = false,
+	newSignatureTypeString: String? = null,
+	newShowTypeInSignature: Boolean? = null,
+	newErrorTypeString: String? = null,
+	outputError: Boolean = false,
 
-    override var validator: Validator<T?> = null
+	override var validator: Validator<T?> = null,
 ) : OptionalConverter<T>(outputError) {
-    override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
-    override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
-    override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
+	override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
+	override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
+	override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val token = parser?.peekNext()
-        val result = singleConverter.parse(parser, context, named ?: token?.data)
+	private val dummyArgs = Arguments()
 
-        if (result) {
-            this.parsed = singleConverter.parsed
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val token = parser?.peekNext()
+		val result = singleConverter.parse(parser, context, named ?: token?.data)
 
-            if (named == null) {
-                parser?.parseNext()  // Move the cursor ahead
-            }
-        }
+		if (result) {
+			this.parsed = singleConverter.getValue(dummyArgs, singleConverter::parsed)
 
-        return result
-    }
+			if (named == null) {
+				parser?.parseNext()  // Move the cursor ahead
+			}
+		}
 
-    override suspend fun handleError(
-        t: Throwable,
-        context: CommandContext
+		return result
+	}
+
+	override suspend fun handleError(
+		t: Throwable,
+		context: CommandContext,
     ): String = singleConverter.handleError(t, context)
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
-        val option = singleConverter.toSlashOption(arg)
-        option.required = false
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
+		val option = singleConverter.toSlashOption(arg)
+		option.required = false
 
-        return option
-    }
+		return option
+	}
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val result = singleConverter.parseOption(context, option)
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val result = singleConverter.parseOption(context, option)
 
-        if (result) {
-            this.parsed = singleConverter.parsed
-        }
+		if (result) {
+			this.parsed = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+		}
 
-        return result
-    }
+		return result
+	}
 }

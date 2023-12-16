@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.core.entity.interaction.OptionValue
@@ -40,11 +41,13 @@ public class CoalescingToDefaultingConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
 
+	private val dummyArgs = Arguments()
+
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
         val result = coalescingConverter.parse(parser, context, named)
 
         if (result > 0) {
-            this.parsed = coalescingConverter.parsed
+            this.parsed = coalescingConverter.getValue(dummyArgs, coalescingConverter::parsed)
         }
 
         return result
@@ -66,7 +69,7 @@ public class CoalescingToDefaultingConverter<T : Any>(
         val result = coalescingConverter.parseOption(context, option)
 
         if (result) {
-            this.parsed = coalescingConverter.parsed
+            this.parsed = coalescingConverter.getValue(dummyArgs, coalescingConverter::parsed)
         }
 
         return result

@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 import com.kotlindiscord.kord.extensions.commands.Argument
+import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.parser.StringParser
 import dev.kord.core.entity.interaction.OptionValue
@@ -38,12 +39,14 @@ public class SingleToDefaultingConverter<T : Any>(
     override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
     override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
+	private val dummyArgs = Arguments()
+
     override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
         val token = parser?.peekNext()
         val result = singleConverter.parse(parser, context, named ?: token?.data)
 
         if (result) {
-            this.parsed = singleConverter.parsed
+            this.parsed = singleConverter.getValue(dummyArgs, singleConverter::parsed)
 
             if (named == null) {
                 parser?.parseNext()  // Move the cursor ahead
@@ -71,7 +74,7 @@ public class SingleToDefaultingConverter<T : Any>(
         val result = singleConverter.parseOption(context, option)
 
         if (result) {
-            this.parsed = singleConverter.parsed
+            this.parsed = singleConverter.getValue(dummyArgs, singleConverter::parsed)
         }
 
         return result

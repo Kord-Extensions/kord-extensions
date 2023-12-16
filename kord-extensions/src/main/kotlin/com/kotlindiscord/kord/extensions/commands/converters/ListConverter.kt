@@ -23,7 +23,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.builders.ListConver
 public abstract class ListConverter<T : Any>(
     required: Boolean = true,
     override var validator: Validator<List<T>> = null
-) : Converter<List<T>, List<T>, List<String>, Int>(required) {
+) : Converter<List<T>, List<T>, List<String>, Int>(required), SlashCommandConverter {
     /**
      * The parsed value.
      *
