@@ -65,7 +65,7 @@ public class EmojiConverter(
 	}
 
 	private suspend fun findEmoji(arg: String, context: CommandContext): Emoji? =
-		if (EmojiManager.isEmoji(arg)) {  // That's a Unicode emoji
+		if (EmojiManager.isEmoji(arg)) {  // Unicode emoji
 			StandardEmoji(arg)
 		} else if (arg.startsWith("<a:") || arg.startsWith("<:") && arg.endsWith('>')) { // Emoji mention
 			val id: String = arg.substring(0, arg.length - 1).split(":").last()

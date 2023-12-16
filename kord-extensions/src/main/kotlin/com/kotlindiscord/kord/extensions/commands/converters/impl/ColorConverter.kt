@@ -31,70 +31,76 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * palette.
  */
 @Converter(
-    "color", "colour",
-    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	"color", "colour",
+	types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
 )
 public class ColorConverter(
-    override var validator: Validator<Color> = null
+	override var validator: Validator<Color> = null,
 ) : SingleConverter<Color>() {
-    override val signatureTypeString: String = "converters.color.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.color.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        try {
-            when {
-                arg.startsWith("#") -> this.parsed = Color(arg.substring(1).toInt(16))
-                arg.startsWith("0x") -> this.parsed = Color(arg.substring(2).toInt(16))
-                arg.all { it.isDigit() } -> this.parsed = Color(arg.toInt())
+		try {
+			when {
+				arg.startsWith("#") ->
+					this.parsed = Color(arg.substring(1).toInt(16))
 
-                else -> this.parsed = ColorParser.parse(arg, context.getLocale()) ?: throw DiscordRelayedException(
-                    context.translate("converters.color.error.unknown", replacements = arrayOf(arg))
-                )
-            }
-        } catch (e: DiscordRelayedException) {
-            throw e
-        } catch (t: Throwable) {
-            throw DiscordRelayedException(
-                context.translate("converters.color.error.unknownOrFailed", replacements = arrayOf(arg))
-            )
-        }
+				arg.startsWith("0x") ->
+					this.parsed = Color(arg.substring(2).toInt(16))
 
-        return true
-    }
+				arg.all { it.isDigit() } ->
+					this.parsed = Color(arg.toInt())
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+				else -> this.parsed = ColorParser.parse(arg, context.getLocale())
+					?: throw DiscordRelayedException(
+						context.translate("converters.color.error.unknown", replacements = arrayOf(arg))
+					)
+			}
+		} catch (e: DiscordRelayedException) {
+			throw e
+		} catch (t: Throwable) {
+			throw DiscordRelayedException(
+				context.translate("converters.color.error.unknownOrFailed", replacements = arrayOf(arg))
+			)
+		}
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+		return true
+	}
 
-        try {
-            when {
-                optionValue.startsWith("#") ->
-                    this.parsed = Color(optionValue.substring(1).toInt(16))
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-                optionValue.startsWith("0x") ->
-                    this.parsed = Color(optionValue.substring(2).toInt(16))
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
-                optionValue.all { it.isDigit() } ->
-                    this.parsed = Color(optionValue.toInt())
+		try {
+			when {
+				optionValue.startsWith("#") ->
+					this.parsed = Color(optionValue.substring(1).toInt(16))
 
-                else ->
-                    this.parsed = ColorParser.parse(optionValue, context.getLocale())
-                        ?: throw DiscordRelayedException(
-                            context.translate("converters.color.error.unknown", replacements = arrayOf(optionValue))
-                        )
-            }
-        } catch (e: DiscordRelayedException) {
-            throw e
-        } catch (t: Throwable) {
-            throw DiscordRelayedException(
-                context.translate("converters.color.error.unknownOrFailed", replacements = arrayOf(optionValue))
-            )
-        }
+				optionValue.startsWith("0x") ->
+					this.parsed = Color(optionValue.substring(2).toInt(16))
 
-        return true
-    }
+				optionValue.all { it.isDigit() } ->
+					this.parsed = Color(optionValue.toInt())
+
+				else ->
+					this.parsed = ColorParser.parse(optionValue, context.getLocale())
+						?: throw DiscordRelayedException(
+							context.translate("converters.color.error.unknown", replacements = arrayOf(optionValue))
+						)
+			}
+		} catch (e: DiscordRelayedException) {
+			throw e
+		} catch (t: Throwable) {
+			throw DiscordRelayedException(
+				context.translate("converters.color.error.unknownOrFailed", replacements = arrayOf(optionValue))
+			)
+		}
+
+		return true
+	}
 }

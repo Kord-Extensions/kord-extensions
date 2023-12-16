@@ -96,6 +96,16 @@ public class MemberConverter(
             }
         }
 
+        if (arg.equals("you", true) && guild != null) {
+			val member = bot.kordRef.getSelf().asMemberOrNull(guild.id)
+
+			if (member != null) {
+				this.parsed = member
+
+				return true
+			}
+        }
+
         parsed = findMember(arg, context)
             ?: throw DiscordRelayedException(
                 context.translate("converters.member.error.missing", replacements = arrayOf(arg))
@@ -131,21 +141,22 @@ public class MemberConverter(
 
         val currentGuild = context.getGuild()
 
-        val guildId: Snowflake? = if (requiredGuild != null) {
-            requiredGuild!!.invoke()
-        } else {
-            currentGuild?.id
-        }
+		if (requiredGuild != null || requireSameGuild) {
+			val requiredGuildId: Snowflake = requiredGuild?.invoke()
+				?: currentGuild?.id
+				?: return null  // May happen if cache-only resolution doesn't return a guild, or we're in a DM.
 
-        if (guildId != currentGuild?.id) {
-            throw DiscordRelayedException(
-                context.translate("converters.member.error.invalid", replacements = arrayOf(arg))
-            )
-        }
+			if (requiredGuildId != currentGuild?.id) {
+				return null
+			}
 
-        return user?.asMember(
-            guildId ?: return null
-        )
+			return user?.asMember(requiredGuildId)
+		}
+
+		return user?.asMember(
+			currentGuild?.id
+				?: return null
+		)
     }
 
     override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
