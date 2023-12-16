@@ -96,6 +96,8 @@ class MappingsExtension : Extension() {
 		MappingsConfig::class
 	)
 
+	private val namespaceCache = mutableMapOf<Snowflake, Map<String, String>>()
+
 	override suspend fun setup() {
 		// Fix issue where Linkie doesn't create its cache directory
 		val cacheDirectory = Path("./.linkie-cache")
@@ -529,16 +531,6 @@ class MappingsExtension : Extension() {
 
 		// region: Mapping conversions
 
-		var enabledNamespaces = mutableListOf<String>()
-
-		val namespaceGetter: suspend (Snowflake?) -> Map<String, String>? = { guildId ->
-			if (guildId == null) {
-				null
-			} else {
-				GuildBehavior(guildId, kord).config().namespaces.associateBy { it.lowercase() }
-			}
-		}
-
 		val namespaceNames = mutableSetOf<String>()
 		kord.guilds.flatMapMerge { it.config().namespaces.toList().asFlow() }.toSet(namespaceNames)
 
@@ -560,6 +552,16 @@ class MappingsExtension : Extension() {
 			}
 		}
 
+		val namespaceGetter: suspend (Snowflake?) -> Map<String, String> = { guildId ->
+			if (guildId == null) {
+				namespaceNames.associateBy { it.lowercase() }
+			} else {
+				namespaceCache.getOrPut(guildId) {
+					GuildBehavior(guildId, kord).config().namespaces.associateBy { it.lowercase() }
+				}
+			}
+		}
+
 		publicSlashCommand {
 			name = "convert"
 			description = "Convert mappings across namespaces"
@@ -573,6 +575,9 @@ class MappingsExtension : Extension() {
 				description = "Convert a class mapping"
 
 				action {
+					val config = guild?.config()
+					val enabledNamespaces = config?.namespaces ?: namespaceNames.toList()
+
 					convertMapping(
 						"class",
 						MappingsQuery::queryClasses,
@@ -592,6 +597,9 @@ class MappingsExtension : Extension() {
 				description = "Convert a field mapping"
 
 				action {
+					val config = guild?.config()
+					val enabledNamespaces = config?.namespaces ?: namespaceNames.toList()
+
 					convertMapping(
 						"field",
 						MappingsQuery::queryFields,
@@ -618,6 +626,9 @@ class MappingsExtension : Extension() {
 				description = "Convert a method mapping"
 
 				action {
+					val config = guild?.config()
+					val enabledNamespaces = config?.namespaces ?: namespaceNames.toList()
+
 					convertMapping(
 						"method",
 						MappingsQuery::queryMethods,
@@ -642,6 +653,9 @@ class MappingsExtension : Extension() {
 				description = "Get information about /convert and its subcommands"
 
 				action {
+					val config = guild?.config()
+					val enabledNamespaces = config?.namespaces ?: namespaceNames.toList()
+
 					val pages = mutableListOf<String>()
 					pages.add(
 						"Mapping conversions are available for any Minecraft version with multiple mapping sets.\n\n" +
@@ -785,8 +799,6 @@ class MappingsExtension : Extension() {
 
 									config.namespaces = currentNamespaces
 									configUnit.save(config)
-									// Set the namespaces for the conversion commands to update
-									enabledNamespaces = currentNamespaces
 
 									respond {
 										content = context.translate(
@@ -804,7 +816,7 @@ class MappingsExtension : Extension() {
 
 		// endregion
 
-		logger.info { "Mappings extension set up - namespaces: " + enabledNamespaces.joinToString(", ") }
+		logger.info { "Mappings extension set up - namespaces: " + namespaceNames.joinToString(", ") }
 	}
 
 	private suspend fun <A, B> MappingSlashCommand.queryMapping(
