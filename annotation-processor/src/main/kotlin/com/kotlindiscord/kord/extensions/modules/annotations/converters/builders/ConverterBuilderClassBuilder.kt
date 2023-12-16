@@ -235,6 +235,10 @@ public class ConverterBuilderClassBuilder : KoinComponent {
             builder.append("            validator = validator,\n")
         }
 
+		if (ConverterType.COALESCING in types) {
+			builder.append("            shouldThrow = !ignoreErrors,\n")
+		}
+
         if (ConverterType.CHOICE in types) {
             builder.append("            choices = choices,\n")
         }

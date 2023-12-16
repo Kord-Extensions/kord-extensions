@@ -16,7 +16,7 @@ import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 public typealias Validator<T> = (suspend ValidationContext<T>.() -> Unit)?
 
 /** Type alias representing a mutator callable. Keeps things relatively maintainable. **/
-public typealias Mutator<T> = ((T) -> T)?
+public typealias Mutator<T> = ((value: T) -> T)?
 
 /** Type alias representing an autocomplete callable. **/
 public typealias AutoCompleteCallback =

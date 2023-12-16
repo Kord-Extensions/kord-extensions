@@ -45,7 +45,6 @@ import net.time4j.IsoUnit
 
     builderFields = [
         "public var longHelp: Boolean = true",
-        "public var shouldThrow: Boolean = true"
     ],
 )
 public class T4JDurationCoalescingConverter(

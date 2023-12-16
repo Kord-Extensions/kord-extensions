@@ -42,7 +42,6 @@ import kotlinx.datetime.*
     builderFields = [
         "public var longHelp: Boolean = true",
         "public var positiveOnly: Boolean = true",
-        "public var shouldThrow: Boolean = false"
     ],
 )
 public class DurationCoalescingConverter(

@@ -47,7 +47,6 @@ import java.time.LocalDateTime
     builderFields = [
         "public var longHelp: Boolean = true",
         "public var positiveOnly: Boolean = true",
-        "public var shouldThrow: Boolean = true"
     ],
 )
 public class J8DurationCoalescingConverter(
