@@ -34,7 +34,7 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
     types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
     imports = ["kotlin.text.RegexOption"],
-    builderFields = ["public var options: Set<RegexOption> = setOf()"]
+    builderFields = ["public var options: MutableSet<RegexOption> = mutableSetOf()"]
 )
 public class RegexConverter(
     private val options: Set<RegexOption> = setOf(),

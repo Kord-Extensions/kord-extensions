@@ -78,6 +78,12 @@ public class UserConverter(
             }
         }
 
+        if (arg.equals("you", true)) {
+			this.parsed = bot.kordRef.getSelf()
+
+			return true
+        }
+
         this.parsed = findUser(arg, context)
             ?: throw DiscordRelayedException(
                 context.translate("converters.user.error.missing", replacements = arrayOf(arg))
