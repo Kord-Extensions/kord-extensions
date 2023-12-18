@@ -38,21 +38,21 @@ jobs:
           TOKEN: "${{ secrets.TOKEN }}"
 
       - name: Upload artifact (Extra Module JARs)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
 
         with:
           name: JARs (Extra Modules)
           path: extra-modules/*/build/libs/*.jar
 
       - name: Upload artifact (Main JARs)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
 
         with:
           name: JARs (Main)
           path: kord-extensions/build/libs/*.jar
 
       - name: Upload artifact (Module JARs)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
 
         with:
           name: JARs (Modules)
