@@ -88,7 +88,7 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 
     /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
     public operator fun getValue(thisRef: Arguments, property: KProperty<*>): OutputType =
-        if (genericBuilder.mutator != null) {
+        if (::genericBuilder.isInitialized && genericBuilder.mutator != null) {
             genericBuilder.mutator!!(parsed)
         } else {
             parsed

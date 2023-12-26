@@ -31,7 +31,8 @@ public class ArgumentTestExtension : Extension() {
 
             action {
                 respond {
-                    content = "Tag provided: `${arguments.tag?.name}`"
+                    content = "Channel provided: `${arguments.channel?.mention}`\n" +
+						"Tag provided: `${arguments.tag?.name}`"
                 }
             }
         }
