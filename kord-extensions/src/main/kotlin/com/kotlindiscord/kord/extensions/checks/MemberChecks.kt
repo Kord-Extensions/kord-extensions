@@ -26,43 +26,43 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  * @param perm The permission to check for.
  */
 public suspend fun CheckContext<*>.hasPermission(perm: Permission) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasPermission")
-    val channel = channelFor(event) as? GuildChannel
-    val member = memberFor(event)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasPermission")
+	val channel = channelFor(event) as? GuildChannel
+	val member = memberFor(event)
 
-    if (member == null) {
-        logger.nullMember(event)
+	if (member == null) {
+		logger.nullMember(event)
 
-        fail()
-    } else {
-        val memberObj = member.asMember()
+		fail()
+	} else {
+		val memberObj = member.asMember()
 
-        val result = when {
-            memberObj.hasPermission(Permission.Administrator) -> true
-            channel != null -> channel.permissionsForMember(member.id).contains(perm)
+		val result = when {
+			memberObj.hasPermission(Permission.Administrator) -> true
+			channel != null -> channel.permissionsForMember(member.id).contains(perm)
 
-            else -> memberObj.hasPermission(perm)
-        }
+			else -> memberObj.hasPermission(perm)
+		}
 
-        if (result) {
-            logger.passed()
+		if (result) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Member $member does not have permission $perm")
+			pass()
+		} else {
+			logger.failed("Member $member does not have permission $perm")
 
-            fail(
-                translate(
-                    "checks.hasPermission.failed",
-                    replacements = arrayOf(perm.translate(locale))
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.hasPermission.failed",
+					replacements = arrayOf(perm.translate(locale))
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -75,43 +75,43 @@ public suspend fun CheckContext<*>.hasPermission(perm: Permission) {
  * @param perm The permission to check for.
  */
 public suspend fun CheckContext<*>.notHasPermission(perm: Permission) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasPermission")
-    val channel = channelFor(event) as? GuildChannel
-    val member = memberFor(event)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasPermission")
+	val channel = channelFor(event) as? GuildChannel
+	val member = memberFor(event)
 
-    if (member == null) {
-        logger.nullMember(event)
+	if (member == null) {
+		logger.nullMember(event)
 
-        pass()
-    } else {
-        val memberObj = member.asMember()
+		pass()
+	} else {
+		val memberObj = member.asMember()
 
-        val result = when {
-            memberObj.hasPermission(Permission.Administrator) -> true
-            channel != null -> channel.permissionsForMember(member.id).contains(perm)
+		val result = when {
+			memberObj.hasPermission(Permission.Administrator) -> true
+			channel != null -> channel.permissionsForMember(member.id).contains(perm)
 
-            else -> memberObj.hasPermission(perm)
-        }
+			else -> memberObj.hasPermission(perm)
+		}
 
-        if (result) {
-            logger.failed("Member $member has permission $perm")
+		if (result) {
+			logger.failed("Member $member has permission $perm")
 
-            fail(
-                translate(
-                    "checks.notHasPermission.failed",
-                    replacements = arrayOf(perm.translate(locale)),
-                )
-            )
-        } else {
-            logger.passed()
+			fail(
+				translate(
+					"checks.notHasPermission.failed",
+					replacements = arrayOf(perm.translate(locale)),
+				)
+			)
+		} else {
+			logger.passed()
 
-            pass()
-        }
-    }
+			pass()
+		}
+	}
 }
 
 /**
@@ -123,43 +123,43 @@ public suspend fun CheckContext<*>.notHasPermission(perm: Permission) {
  * @param perms The permissions to check for.
  */
 public suspend fun CheckContext<*>.hasPermissions(perms: Permissions) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasPermissions")
-    val channel = channelFor(event) as? GuildChannel
-    val member = memberFor(event)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasPermissions")
+	val channel = channelFor(event) as? GuildChannel
+	val member = memberFor(event)
 
-    if (member == null) {
-        logger.nullMember(event)
+	if (member == null) {
+		logger.nullMember(event)
 
-        fail()
-    } else {
-        val memberObj = member.asMember()
+		fail()
+	} else {
+		val memberObj = member.asMember()
 
-        val result = when {
-            memberObj.hasPermission(Permission.Administrator) -> true
-            channel != null -> channel.permissionsForMember(member.id).contains(perms)
+		val result = when {
+			memberObj.hasPermission(Permission.Administrator) -> true
+			channel != null -> channel.permissionsForMember(member.id).contains(perms)
 
-            else -> memberObj.hasPermissions(perms.values)
-        }
+			else -> memberObj.hasPermissions(perms.values)
+		}
 
-        if (result) {
-            logger.passed()
+		if (result) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Member $member does not have permissions $perms")
+			pass()
+		} else {
+			logger.failed("Member $member does not have permissions $perms")
 
-            fail(
-                translate(
-                    "checks.hasPermissions.failed",
-                    replacements = arrayOf(perms.values.joinToString(", ") { it.translate(locale) })
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.hasPermissions.failed",
+					replacements = arrayOf(perms.values.joinToString(", ") { it.translate(locale) })
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -172,41 +172,41 @@ public suspend fun CheckContext<*>.hasPermissions(perms: Permissions) {
  * @param perms The permissions to check for.
  */
 public suspend fun CheckContext<*>.notHasPermissions(perms: Permissions) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasPermissions")
-    val channel = channelFor(event) as? GuildChannel
-    val member = memberFor(event)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasPermissions")
+	val channel = channelFor(event) as? GuildChannel
+	val member = memberFor(event)
 
-    if (member == null) {
-        logger.nullMember(event)
+	if (member == null) {
+		logger.nullMember(event)
 
-        fail()
-    } else {
-        val memberObj = member.asMember()
+		fail()
+	} else {
+		val memberObj = member.asMember()
 
-        val result = when {
-            memberObj.hasPermission(Permission.Administrator) -> true
-            channel != null -> channel.permissionsForMember(member.id).contains(perms)
+		val result = when {
+			memberObj.hasPermission(Permission.Administrator) -> true
+			channel != null -> channel.permissionsForMember(member.id).contains(perms)
 
-            else -> memberObj.hasPermissions(perms.values)
-        }
+			else -> memberObj.hasPermissions(perms.values)
+		}
 
-        if (result) {
-            logger.failed("Member $member has permissions $perms")
+		if (result) {
+			logger.failed("Member $member has permissions $perms")
 
-            fail(
-                translate(
-                    "checks.notHasPermissions.failed",
-                    replacements = arrayOf(perms.values.joinToString(", ") { it.translate(locale) })
-                )
-            )
-        } else {
-            logger.passed()
+			fail(
+				translate(
+					"checks.notHasPermissions.failed",
+					replacements = arrayOf(perms.values.joinToString(", ") { it.translate(locale) })
+				)
+			)
+		} else {
+			logger.passed()
 
-            pass()
-        }
-    }
+			pass()
+		}
+	}
 }

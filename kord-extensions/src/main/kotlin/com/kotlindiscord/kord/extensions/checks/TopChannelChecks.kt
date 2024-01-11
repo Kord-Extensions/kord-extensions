@@ -25,35 +25,35 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  * @param builder Lambda returning the channel to compare to.
  */
 public suspend fun <T : Event> CheckContext<T>.inTopChannel(builder: suspend (T) -> ChannelBehavior) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
-    val eventChannel = topChannelFor(event)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
+	val eventChannel = topChannelFor(event)
 
-    if (eventChannel == null) {
-        logger.nullChannel(event)
+	if (eventChannel == null) {
+		logger.nullChannel(event)
 
-        fail()
-    } else {
-        val channel = builder(event)
+		fail()
+	} else {
+		val channel = builder(event)
 
-        if (eventChannel.id == channel.id) {
-            logger.passed()
+		if (eventChannel.id == channel.id) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Channel $eventChannel is not the same as channel $channel")
+			pass()
+		} else {
+			logger.failed("Channel $eventChannel is not the same as channel $channel")
 
-            fail(
-                translate(
-                    "checks.inChannel.failed",
-                    replacements = arrayOf(channel.mention),
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.inChannel.failed",
+					replacements = arrayOf(channel.mention),
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -66,35 +66,35 @@ public suspend fun <T : Event> CheckContext<T>.inTopChannel(builder: suspend (T)
  * @param builder Lambda returning the channel to compare to.
  */
 public suspend fun <T : Event> CheckContext<T>.notInTopChannel(builder: suspend (T) -> ChannelBehavior) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
-    val eventChannel = topChannelFor(event)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
+	val eventChannel = topChannelFor(event)
 
-    if (eventChannel == null) {
-        logger.nullChannel(event)
+	if (eventChannel == null) {
+		logger.nullChannel(event)
 
-        pass()
-    } else {
-        val channel = builder(event)
+		pass()
+	} else {
+		val channel = builder(event)
 
-        if (eventChannel.id != channel.id) {
-            logger.passed()
+		if (eventChannel.id != channel.id) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Channel $eventChannel is the same as channel $channel")
+			pass()
+		} else {
+			logger.failed("Channel $eventChannel is the same as channel $channel")
 
-            fail(
-                translate(
-                    "checks.notInChannel.failed",
-                    replacements = arrayOf(channel.mention)
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.notInChannel.failed",
+					replacements = arrayOf(channel.mention)
+				)
+			)
+		}
+	}
 }
 
 // endregion
@@ -111,24 +111,24 @@ public suspend fun <T : Event> CheckContext<T>.notInTopChannel(builder: suspend 
  * @param id Channel snowflake to compare to.
  */
 public suspend fun <T : Event> CheckContext<T>.inTopChannel(id: Snowflake) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
-    var channel = event.kord.getChannel(id)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inChannel")
+	var channel = event.kord.getChannel(id)
 
-    if (channel is ThreadChannel) {
-        channel = channel.parent.asChannel()
-    }
+	if (channel is ThreadChannel) {
+		channel = channel.parent.asChannel()
+	}
 
-    if (channel == null) {
-        logger.noChannelId(id)
+	if (channel == null) {
+		logger.noChannelId(id)
 
-        fail()
-    } else {
-        inTopChannel { channel }
-    }
+		fail()
+	} else {
+		inTopChannel { channel }
+	}
 }
 
 /**
@@ -141,24 +141,24 @@ public suspend fun <T : Event> CheckContext<T>.inTopChannel(id: Snowflake) {
  * @param id Channel snowflake to compare to.
  */
 public suspend fun <T : Event> CheckContext<T>.notInTopChannel(id: Snowflake) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
-    var channel = event.kord.getChannel(id)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInChannel")
+	var channel = event.kord.getChannel(id)
 
-    if (channel is ThreadChannel) {
-        channel = channel.parent.asChannel()
-    }
+	if (channel is ThreadChannel) {
+		channel = channel.parent.asChannel()
+	}
 
-    if (channel == null) {
-        logger.noChannelId(id)
+	if (channel == null) {
+		logger.noChannelId(id)
 
-        pass()
-    } else {
-        notInTopChannel { channel }
-    }
+		pass()
+	} else {
+		notInTopChannel { channel }
+	}
 }
 
 // endregion

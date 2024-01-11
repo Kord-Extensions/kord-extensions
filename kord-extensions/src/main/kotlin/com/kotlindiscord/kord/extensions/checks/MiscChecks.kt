@@ -97,87 +97,89 @@ public suspend fun CheckContext<*>.isBotAdmin() {
  * Check asserting the user for an [Event] is a bot. Will fail if the event doesn't concern a user.
  */
 public suspend fun CheckContext<*>.isBot() {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isBot")
-    val user = userFor(event)?.asUserOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isBot")
+	val user = userFor(event)?.asUserOrNull()
 
-    if (user == null) {
-        logger.failed("Event did not concern a user.")
+	if (user == null) {
+		logger.failed("Event did not concern a user.")
 
-        fail()
-    } else if (user.isBot) {
-        logger.passed()
+		fail()
+	} else if (user.isBot) {
+		logger.passed()
 
-        pass()
-    } else {
-        logger.failed("User is not a bot.")
+		pass()
+	} else {
+		logger.failed("User is not a bot.")
 
-        fail(
-            translate("checks.isBot.failed")
-        )
-    }
+		fail(
+			translate("checks.isBot.failed")
+		)
+	}
 }
 
 /**
  * Check asserting the user for an [Event] is **not** a bot. Will fail if the event doesn't concern a user.
  */
 public suspend fun CheckContext<*>.isNotBot() {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotBot")
-    val user = userFor(event)?.asUserOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotBot")
+	val user = userFor(event)?.asUserOrNull()
 
-    if (user == null) {
-        logger.failed("Event did not concern a user.")
+	if (user == null) {
+		logger.failed("Event did not concern a user.")
 
-        fail()
-    } else if (!user.isBot) {
-        logger.passed()
+		fail()
+	} else if (!user.isBot) {
+		logger.passed()
 
-        pass()
-    } else {
-        logger.failed("User is a bot.")
+		pass()
+	} else {
+		logger.failed("User is a bot.")
 
-        fail(
-            translate("checks.isNotBot.failed")
-        )
-    }
+		fail(
+			translate("checks.isNotBot.failed")
+		)
+	}
 }
 
 /**
  * Check asserting that the event was triggered within a thread.
  */
 public suspend fun CheckContext<*>.isInThread() {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isInThread")
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isInThread")
 
-    when (channelFor(event)?.asChannelOrNull()) {
-        null -> {
-            logger.failed("Event did not concern a channel.")
+	when (channelFor(event)?.asChannelOrNull()) {
+		null -> {
+			logger.failed("Event did not concern a channel.")
 
-            fail()
-        }
-        is ThreadChannelBehavior -> {
-            logger.passed()
+			fail()
+		}
 
-            pass()
-        }
-        else -> {
-            logger.failed("Channel is not a thread.")
+		is ThreadChannelBehavior -> {
+			logger.passed()
 
-            fail(
-                translate("checks.isInThread.failed")
-            )
-        }
-    }
+			pass()
+		}
+
+		else -> {
+			logger.failed("Channel is not a thread.")
+
+			fail(
+				translate("checks.isInThread.failed")
+			)
+		}
+	}
 }
 
 /**
@@ -185,29 +187,31 @@ public suspend fun CheckContext<*>.isInThread() {
  * specific channel.
  */
 public suspend fun CheckContext<*>.isNotInThread() {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotInThread")
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotInThread")
 
-    when (channelFor(event)?.asChannelOrNull()) {
-        null -> {
-            logger.passed("Event did not concern a channel.")
+	when (channelFor(event)?.asChannelOrNull()) {
+		null -> {
+			logger.passed("Event did not concern a channel.")
 
-            pass()
-        }
-        !is ThreadChannelBehavior -> {
-            logger.passed()
+			pass()
+		}
 
-            pass()
-        }
-        else -> {
-            logger.failed("Channel is a thread.")
+		!is ThreadChannelBehavior -> {
+			logger.passed()
 
-            fail(
-                translate("checks.isNotInThread.failed")
-            )
-        }
-    }
+			pass()
+		}
+
+		else -> {
+			logger.failed("Channel is a thread.")
+
+			fail(
+				translate("checks.isNotInThread.failed")
+			)
+		}
+	}
 }

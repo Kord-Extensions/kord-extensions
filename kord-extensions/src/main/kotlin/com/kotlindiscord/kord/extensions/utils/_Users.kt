@@ -26,11 +26,13 @@ private const val DISCORD_USERS_URI = "https://discord.com/users"
  * @return User's tag or username, depending on whether they've migrated or not.
  */
 @Deprecated(
-    "This will be removed quickly once Discord's migration to usernames has fully completed.",
+    "As it appears that bots will keep their discriminators, their use is no longer deprecated. Instead, " +
+		"use the [tag] property, which will return only the username if the user doesn't have a discriminator, or " +
+		"`user#discriminator` if they do.",
 
-    replaceWith = ReplaceWith("username")
+	level = DeprecationLevel.ERROR,
+    replaceWith = ReplaceWith("tag")
 )
-@Suppress("Deprecation")
 public fun User.tagOrUsername(): String =
     if (discriminator == "0") {
         username

@@ -8,7 +8,6 @@
 
 package com.kotlindiscord.kord.extensions.sentry
 
-import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
@@ -50,7 +49,7 @@ public fun Scope.user(tag: String, id: String) {
  * @param obj Kord user object to add to this scope.
  */
 public fun Scope.user(obj: dev.kord.core.entity.User): Unit =
-	user(obj.tagOrUsername(), obj.id.toString())
+	user(obj.tag, obj.id.toString())
 
 /** Convenience function for creating and testing a sub-transaction. **/
 public inline fun <T> ITransaction.transaction(name: String, operation: String, body: ITransaction.() -> T) {

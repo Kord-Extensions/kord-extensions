@@ -4,15 +4,18 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("StringLiteralDuplication")
+
 package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.UserBehavior
-import dev.kord.core.behavior.channel.MessageChannelBehavior
-import dev.kord.core.behavior.channel.createWebhook
+import dev.kord.core.behavior.channel.*
+import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.Webhook
+import dev.kord.core.entity.channel.CategorizableChannel
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.entity.channel.TopGuildChannel
 import dev.kord.core.entity.channel.TopGuildMessageChannel
@@ -90,3 +93,187 @@ public suspend fun ThreadChannel.getParentMessage(): Message? {
 
     return parentChannel.getMessageOrNull(this.id)
 }
+
+// region: Channel position utils
+
+/**
+ * Get the corresponding top guild channel for the given channel.
+ *
+ * * If this is a thread channel, return the parent channel.
+ * * If this is a top guild channel, return it.
+ * * Otherwise, return `null`.
+ */
+public fun GuildChannelBehavior.getTopChannel(): TopGuildChannelBehavior? = when (this) {
+	is ThreadChannelBehavior -> this.parent
+	is TopGuildChannelBehavior -> this
+
+	else -> null
+}
+
+/**
+ * Get the corresponding category channel for the given channel.
+ *
+ * * If this is a thread channel, return the parent channel's category.
+ * * If this is a categorizable channel, return its parent.
+ * * If this is a category, return it.
+ * * Otherwise, return `null`.
+ */
+public fun GuildChannelBehavior.getCategory(): CategoryBehavior? = when (this) {
+	is ThreadChannelBehavior -> (this.parent as? CategorizableChannel)?.category
+	is CategorizableChannel -> this.category
+	is CategoryBehavior -> this
+
+	else -> null
+}
+
+/**
+ * Check whether the receiver ([this]) is above the given [other] channel in the channel list.
+ *
+ * This function attempts to calculate this the same way the Discord client does:
+ *
+ * * Channels outside a category are always at the top.
+ * * Compare channels within the same category (or both at the top) by position.
+ * * Compare parent categories by position.
+ *
+ * This function throws an exception if the comparison doesn't make sense.
+ * This shouldn't ever happen unless Kord's type system breaks.
+ */
+public suspend fun GuildChannelBehavior.isAbove(other: GuildChannelBehavior): Boolean {
+	val thisChannel = this.getTopChannel()
+	val otherChannel = other.getTopChannel()
+
+	if (thisChannel is CategoryBehavior) {
+		if (otherChannel is CategoryBehavior) {
+			// Check based on category positions.
+			return thisChannel.getPosition() > otherChannel.getPosition()
+		}
+
+		if (otherChannel is CategorizableChannelBehavior) {
+			val otherCategory = otherChannel.asChannelOf<CategorizableChannel>().category
+				?: return false // The other channel is at the top, outside a category.
+
+			if (thisChannel.id == otherCategory.id) {
+				return true // The other channel is within this category.
+			}
+
+			// Check based on category positions.
+			return thisChannel.getPosition() > otherCategory.getPosition()
+		}
+
+		// Comparison doesn't make sense.
+		error("Positional comparison between $this and $other doesn't make sense.")
+	}
+
+	if (otherChannel is CategoryBehavior) {
+		if (thisChannel is CategorizableChannelBehavior) {
+			val thisCategory = thisChannel.asChannelOf<CategorizableChannel>().category
+				?: return true // This channel is at the top, outside a category.
+
+			if (thisCategory.id == otherChannel.id) {
+				return false // This channel is within the other category.
+			}
+
+			// Check based on category positions.
+			return thisCategory.getPosition() > otherChannel.getPosition()
+		}
+
+		// Comparison doesn't make sense.
+		error("Positional comparison between $this and $other doesn't make sense.")
+	}
+
+	if (thisChannel is CategorizableChannelBehavior && otherChannel is CategorizableChannelBehavior) {
+		val thisCategory = thisChannel.asChannelOf<CategorizableChannel>().category
+		val otherCategory = otherChannel.asChannelOf<CategorizableChannel>().category
+
+		if (thisCategory?.id == otherCategory?.id) {
+			// Both channels are at the top or in the same category, compare by position.
+			return thisChannel.getPosition() > otherChannel.getPosition()
+		}
+
+		thisCategory ?: return true // This channel is at the top, but the other one isn't.
+		otherCategory ?: return false // This channel isn't at the top, but the other one is.
+
+		// Check based on category positions.
+		return thisCategory.getPosition() > otherCategory.getPosition()
+	}
+
+	// Comparison doesn't make sense.
+	error("Positional comparison between $this and $other doesn't make sense.")
+}
+
+/**
+ * Check whether the receiver ([this]) is below the given [other] channel in the channel list.
+ *
+ * This function attempts to calculate this the same way the Discord client does:
+ *
+ * * Channels outside a category are always at the top.
+ * * Compare channels within the same category (or both at the top) by position.
+ * * Compare parent categories by position.
+ *
+ * This function throws an exception if the comparison doesn't make sense.
+ * This shouldn't ever happen unless Kord's type system breaks.
+ */
+public suspend fun GuildChannelBehavior.isBelow(other: GuildChannelBehavior): Boolean {
+	val thisChannel = this.getTopChannel()
+	val otherChannel = other.getTopChannel()
+
+	if (thisChannel is CategoryBehavior) {
+		if (otherChannel is CategoryBehavior) {
+			// Check based on category positions.
+			return thisChannel.getPosition() < otherChannel.getPosition()
+		}
+
+		if (otherChannel is CategorizableChannelBehavior) {
+			val otherCategory = otherChannel.asChannelOf<CategorizableChannel>().category
+				?: return true // The other channel is at the top, outside a category.
+
+			if (thisChannel.id == otherCategory.id) {
+				return false // The other channel is within this category.
+			}
+
+			// Check based on category positions.
+			return thisChannel.getPosition() < otherCategory.getPosition()
+		}
+
+		// Comparison doesn't make sense.
+		error("Positional comparison between $this and $other doesn't make sense.")
+	}
+
+	if (otherChannel is CategoryBehavior) {
+		if (thisChannel is CategorizableChannelBehavior) {
+			val thisCategory = thisChannel.asChannelOf<CategorizableChannel>().category
+				?: return false // This channel is at the top, outside a category.
+
+			if (thisCategory.id == otherChannel.id) {
+				return true // This channel is within the other category.
+			}
+
+			// Check based on category positions.
+			return thisCategory.getPosition() < otherChannel.getPosition()
+		}
+
+		// Comparison doesn't make sense.
+		error("Positional comparison between $this and $other doesn't make sense.")
+	}
+
+	if (thisChannel is CategorizableChannelBehavior && otherChannel is CategorizableChannelBehavior) {
+		val thisCategory = thisChannel.asChannelOf<CategorizableChannel>().category
+		val otherCategory = otherChannel.asChannelOf<CategorizableChannel>().category
+
+		if (thisCategory?.id == otherCategory?.id) {
+			// Both channels are at the top or in the same category, compare by position.
+			return thisChannel.getPosition() < otherChannel.getPosition()
+		}
+
+		thisCategory ?: return false // This channel is at the top, but the other one isn't.
+		otherCategory ?: return true // This channel isn't at the top, but the other one is.
+
+		// Check based on category positions.
+		return thisCategory.getPosition() < otherCategory.getPosition()
+	}
+
+	// Comparison doesn't make sense.
+	error("Positional comparison between $this and $other doesn't make sense.")
+}
+
+// endregion

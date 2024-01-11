@@ -143,18 +143,8 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
     /**
      * Return a translated, formatted error string.
      *
-     * This will attempt to use the [errorTypeString], falling back to [signatureTypeString]. If this is a
-     * [SingleConverter], it will add "an" or "a" to it, depending on whether the given type string starts with a
-     * vowel.
+     * This will attempt to use the [errorTypeString], falling back to [signatureTypeString].
      */
-    public open suspend fun getErrorString(context: CommandContext): String = when (this) {
-        is ListConverter<*> -> context.translate(errorTypeString ?: signatureTypeString)
-        is CoalescingConverter<*> -> context.translate(errorTypeString ?: signatureTypeString)
-
-        else -> if (errorTypeString != null) {
-            context.translate(errorTypeString!!)
-        } else {
-            context.translate(signatureTypeString)
-        }
-    }
+    public open suspend fun getErrorString(context: CommandContext): String =
+		context.translate(errorTypeString ?: signatureTypeString)
 }

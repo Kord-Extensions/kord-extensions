@@ -29,7 +29,7 @@ package com.kotlindiscord.kord.extensions.modules.annotations.converters
  * @property builderSuffixedWhere Extra generic bounds to place after `where` in the builder's signature.
  *
  * @property functionBuilderArguments Arguments to pass into the builder's constructor, if any.
- * @property functionGeneric Generic typevar that the builder should take, if any. Will be `reified`.
+ * @property functionGeneric Generic typevar that the function should take, if any. Will be `reified`.
  * @property functionSuffixedWhere Extra generic bounds to place after `where` in the function's signature.
  */
 @Retention(AnnotationRetention.SOURCE)

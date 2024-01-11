@@ -18,8 +18,8 @@ import java.util.*
  * or your action block.
  */
 public class CheckContextWithCache<out T : Event>(
-    event: T,
-    locale: Locale,
+	event: T,
+	locale: Locale,
 
-    public val cache: MutableStringKeyedMap<Any>,
+	public val cache: MutableStringKeyedMap<Any>,
 ) : CheckContext<T>(event, locale)

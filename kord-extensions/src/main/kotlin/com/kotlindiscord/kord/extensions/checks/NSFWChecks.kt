@@ -24,38 +24,38 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  * example, due to a niche Kord configuration).
  */
 public suspend fun CheckContext<*>.hasGuildNsfwLevel(level: NsfwLevel) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasGuildNsfwLevel")
-    val guild = guildFor(event)?.asGuildOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.hasGuildNsfwLevel")
+	val guild = guildFor(event)?.asGuildOrNull()
 
-    if (guild == null) {
-        logger.failed("Event did not happen within a guild.")
+	if (guild == null) {
+		logger.failed("Event did not happen within a guild.")
 
-        fail(
-            translate("checks.anyGuild.failed")
-        )
-    } else {
-        if (guild.nsfw == level) {
-            logger.passed()
+		fail(
+			translate("checks.anyGuild.failed")
+		)
+	} else {
+		if (guild.nsfw == level) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Guild did not have the correct NSFW level: $level")
+			pass()
+		} else {
+			logger.failed("Guild did not have the correct NSFW level: $level")
 
-            fail(
-                translate(
-                    "checks.guildNsfwLevelEqual.failed",
+			fail(
+				translate(
+					"checks.guildNsfwLevelEqual.failed",
 
-                    replacements = arrayOf(
-                        level.translate(locale)
-                    )
-                )
-            )
-        }
-    }
+					replacements = arrayOf(
+						level.translate(locale)
+					)
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -66,38 +66,38 @@ public suspend fun CheckContext<*>.hasGuildNsfwLevel(level: NsfwLevel) {
  * example, due to a niche Kord configuration).
  */
 public suspend fun CheckContext<*>.notHasGuildNsfwLevel(level: NsfwLevel) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasGuildNsfwLevel")
-    val guild = guildFor(event)?.asGuildOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notHasGuildNsfwLevel")
+	val guild = guildFor(event)?.asGuildOrNull()
 
-    if (guild == null) {
-        logger.failed("Event did not happen within a guild.")
+	if (guild == null) {
+		logger.failed("Event did not happen within a guild.")
 
-        fail(
-            translate("checks.anyGuild.failed")
-        )
-    } else {
-        if (guild.nsfw == level) {
-            logger.failed("Guild matched the given NSFW level: $level")
+		fail(
+			translate("checks.anyGuild.failed")
+		)
+	} else {
+		if (guild.nsfw == level) {
+			logger.failed("Guild matched the given NSFW level: $level")
 
-            fail(
-                translate(
-                    "checks.guildNsfwLevelNotEqual.failed",
+			fail(
+				translate(
+					"checks.guildNsfwLevelNotEqual.failed",
 
-                    replacements = arrayOf(
-                        level.translate(locale)
-                    )
-                )
-            )
-        } else {
-            logger.passed()
+					replacements = arrayOf(
+						level.translate(locale)
+					)
+				)
+			)
+		} else {
+			logger.passed()
 
-            pass()
-        }
-    }
+			pass()
+		}
+	}
 }
 
 /**
@@ -108,38 +108,38 @@ public suspend fun CheckContext<*>.notHasGuildNsfwLevel(level: NsfwLevel) {
  * example, due to a niche Kord configuration).
  */
 public suspend fun CheckContext<*>.guildNsfwLevelHigher(level: NsfwLevel) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.guildNsfwLevelHigher")
-    val guild = guildFor(event)?.asGuildOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.guildNsfwLevelHigher")
+	val guild = guildFor(event)?.asGuildOrNull()
 
-    if (guild == null) {
-        logger.failed("Event did not happen within a guild.")
+	if (guild == null) {
+		logger.failed("Event did not happen within a guild.")
 
-        fail(
-            translate("checks.anyGuild.failed")
-        )
-    } else {
-        if (guild.nsfw > level) {
-            logger.passed()
+		fail(
+			translate("checks.anyGuild.failed")
+		)
+	} else {
+		if (guild.nsfw > level) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Guild did not have a NSFW level higher than: $level")
+			pass()
+		} else {
+			logger.failed("Guild did not have a NSFW level higher than: $level")
 
-            fail(
-                translate(
-                    "checks.guildNsfwLevelHigher.failed",
+			fail(
+				translate(
+					"checks.guildNsfwLevelHigher.failed",
 
-                    replacements = arrayOf(
-                        level.translate(locale)
-                    )
-                )
-            )
-        }
-    }
+					replacements = arrayOf(
+						level.translate(locale)
+					)
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -150,38 +150,38 @@ public suspend fun CheckContext<*>.guildNsfwLevelHigher(level: NsfwLevel) {
  * example, due to a niche Kord configuration).
  */
 public suspend fun CheckContext<*>.guildNsfwLevelHigherOrEqual(level: NsfwLevel) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.guildNsfwLevelHigherOrEqual")
-    val guild = guildFor(event)?.asGuildOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.guildNsfwLevelHigherOrEqual")
+	val guild = guildFor(event)?.asGuildOrNull()
 
-    if (guild == null) {
-        logger.failed("Event did not happen within a guild.")
+	if (guild == null) {
+		logger.failed("Event did not happen within a guild.")
 
-        fail(
-            translate("checks.anyGuild.failed")
-        )
-    } else {
-        if (guild.nsfw >= level) {
-            logger.passed()
+		fail(
+			translate("checks.anyGuild.failed")
+		)
+	} else {
+		if (guild.nsfw >= level) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Guild did not have a NSFW level higher than or equal to: $level")
+			pass()
+		} else {
+			logger.failed("Guild did not have a NSFW level higher than or equal to: $level")
 
-            fail(
-                translate(
-                    "checks.guildNsfwLevelHigherOrEqual.failed",
+			fail(
+				translate(
+					"checks.guildNsfwLevelHigherOrEqual.failed",
 
-                    replacements = arrayOf(
-                        level.translate(locale)
-                    )
-                )
-            )
-        }
-    }
+					replacements = arrayOf(
+						level.translate(locale)
+					)
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -192,38 +192,38 @@ public suspend fun CheckContext<*>.guildNsfwLevelHigherOrEqual(level: NsfwLevel)
  * example, due to a niche Kord configuration).
  */
 public suspend fun CheckContext<*>.guildNsfwLevelLower(level: NsfwLevel) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.guildNsfwLevelLower")
-    val guild = guildFor(event)?.asGuildOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.guildNsfwLevelLower")
+	val guild = guildFor(event)?.asGuildOrNull()
 
-    if (guild == null) {
-        logger.failed("Event did not happen within a guild.")
+	if (guild == null) {
+		logger.failed("Event did not happen within a guild.")
 
-        fail(
-            translate("checks.anyGuild.failed")
-        )
-    } else {
-        if (guild.nsfw < level) {
-            logger.passed()
+		fail(
+			translate("checks.anyGuild.failed")
+		)
+	} else {
+		if (guild.nsfw < level) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Guild did not have a NSFW level lower than: $level")
+			pass()
+		} else {
+			logger.failed("Guild did not have a NSFW level lower than: $level")
 
-            fail(
-                translate(
-                    "checks.guildNsfwLevelLower.failed",
+			fail(
+				translate(
+					"checks.guildNsfwLevelLower.failed",
 
-                    replacements = arrayOf(
-                        level.translate(locale)
-                    )
-                )
-            )
-        }
-    }
+					replacements = arrayOf(
+						level.translate(locale)
+					)
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -234,38 +234,38 @@ public suspend fun CheckContext<*>.guildNsfwLevelLower(level: NsfwLevel) {
  * example, due to a niche Kord configuration).
  */
 public suspend fun CheckContext<*>.guildNsfwLevelLowerOrEqual(level: NsfwLevel) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.guildNsfwLevelLowerOrEqual")
-    val guild = guildFor(event)?.asGuildOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.guildNsfwLevelLowerOrEqual")
+	val guild = guildFor(event)?.asGuildOrNull()
 
-    if (guild == null) {
-        logger.failed("Event did not happen within a guild.")
+	if (guild == null) {
+		logger.failed("Event did not happen within a guild.")
 
-        fail(
-            translate("checks.anyGuild.failed")
-        )
-    } else {
-        if (guild.nsfw <= level) {
-            logger.passed()
+		fail(
+			translate("checks.anyGuild.failed")
+		)
+	} else {
+		if (guild.nsfw <= level) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Guild did not have a NSFW level lower than or equal to: $level")
+			pass()
+		} else {
+			logger.failed("Guild did not have a NSFW level lower than or equal to: $level")
 
-            fail(
-                translate(
-                    "checks.guildNsfwLevelLowerOrEqual.failed",
+			fail(
+				translate(
+					"checks.guildNsfwLevelLowerOrEqual.failed",
 
-                    replacements = arrayOf(
-                        level.translate(locale)
-                    )
-                )
-            )
-        }
-    }
+					replacements = arrayOf(
+						level.translate(locale)
+					)
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -275,32 +275,32 @@ public suspend fun CheckContext<*>.guildNsfwLevelLowerOrEqual(level: NsfwLevel) 
  * an issue if an event you expected to be supported, isn't.
  */
 public suspend fun CheckContext<*>.channelIsNsfw() {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelIsNsfw")
-    val eventChannel = channelFor(event)?.asChannel()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelIsNsfw")
+	val eventChannel = channelFor(event)?.asChannel()
 
-    if (eventChannel == null) {
-        logger.nullChannel(event)
+	if (eventChannel == null) {
+		logger.nullChannel(event)
 
-        fail()
-    } else {
-        if (eventChannel.data.nsfw.discordBoolean) {
-            logger.passed()
+		fail()
+	} else {
+		if (eventChannel.data.nsfw.discordBoolean) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Channel is not marked as NSFW")
+			pass()
+		} else {
+			logger.failed("Channel is not marked as NSFW")
 
-            fail(
-                translate(
-                    "checks.channelIsNsfw.failed"
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.channelIsNsfw.failed"
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -309,50 +309,50 @@ public suspend fun CheckContext<*>.channelIsNsfw() {
  * DM channels can't be marked as NSFW, so this will always pass for a DM channel.
  */
 public suspend fun CheckContext<*>.notChannelIsNsfw() {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notChannelIsNsfw")
-    val eventChannel = channelFor(event)?.asChannel()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notChannelIsNsfw")
+	val eventChannel = channelFor(event)?.asChannel()
 
-    if (eventChannel == null) {
-        logger.nullChannel(event)
+	if (eventChannel == null) {
+		logger.nullChannel(event)
 
-        fail()
-    } else if (eventChannel.type == ChannelType.DM) {
-        logger.passed()
+		fail()
+	} else if (eventChannel.type == ChannelType.DM) {
+		logger.passed()
 
-        pass()
-    } else {
-        if (!eventChannel.data.nsfw.discordBoolean) {
-            logger.passed()
+		pass()
+	} else {
+		if (!eventChannel.data.nsfw.discordBoolean) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Channel is marked as NSFW")
+			pass()
+		} else {
+			logger.failed("Channel is marked as NSFW")
 
-            fail(
-                translate(
-                    "checks.notChannelIsNsfw.failed"
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.notChannelIsNsfw.failed"
+				)
+			)
+		}
+	}
 }
 
 /**
  * Check asserting that the channel an [Event] fired in is marked as NSFW, or is in an NSFW guild.
  */
 public suspend fun CheckContext<*>.channelOrGuildIsNsfw() {
-    channelIsNsfw()
-    or { guildNsfwLevelHigherOrEqual(NsfwLevel.AgeRestricted) }
+	channelIsNsfw()
+	or { guildNsfwLevelHigherOrEqual(NsfwLevel.AgeRestricted) }
 }
 
 /**
  * Check asserting that the channel an [Event] fired in is not marked as NSFW, and is not in an NSFW guild.
  */
 public suspend fun CheckContext<*>.notChannelOrGuildIsNsfw() {
-    notChannelIsNsfw()
-    or { guildNsfwLevelLower(NsfwLevel.AgeRestricted) }
+	notChannelIsNsfw()
+	or { guildNsfwLevelLower(NsfwLevel.AgeRestricted) }
 }

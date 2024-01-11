@@ -100,7 +100,7 @@ public class ConverterProcessor(
             for (name in arguments.names) {
                 if (arguments.types.count { type -> type.order == 1 } != 1) {
                     error(
-                        "Types list must contain exactly one of COALESCING or SINGLE. Convreter: " +
+                        "Types list must contain exactly one of COALESCING or SINGLE. Converter: " +
                             classDeclaration.simpleName.asString()
                     )
                 }
@@ -160,12 +160,12 @@ public class ConverterProcessor(
                         ConverterToMulti::class,
                         ConverterToOptional::class
                     )
-    
+
                     package ${classDeclaration.packageName.asString()}
-                    
+
                     // Original converter class, for safety
                     import ${classDeclaration.qualifiedName!!.asString()}
-                    
+
                     // Imports that all converters need
                     import com.kotlindiscord.kord.extensions.InvalidArgumentException
                     import com.kotlindiscord.kord.extensions.commands.Arguments
@@ -266,13 +266,13 @@ public class ConverterProcessor(
 
     internal fun classComment(name: String, see: String): String = """
         Builder class for $name converters. Used to construct a converter based on the given options.
-        
+
         @see $see
     """.trimIndent()
 
     internal fun functionComment(name: String, type: String, see: String): String = """
         Converter creation function: $name $type
-        
+
         @see $see
     """.trimIndent()
 }

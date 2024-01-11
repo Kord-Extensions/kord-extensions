@@ -22,10 +22,12 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 
 /**
- * Argument converter for long arguments, converting them into [Long].
+ * Argument converter for Discord ID arguments, converting them into [Snowflake].
  *
- * @see long
- * @see longList
+ * @see defaultingSnowflake
+ * @see optionalSnowflake
+ * @see snowflake
+ * @see snowflakeList
  */
 @Converter(
     "snowflake",
@@ -52,20 +54,20 @@ public class SnowflakeConverter(
         return true
     }
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
-        try {
-            this.parsed = Snowflake(optionValue)
-        } catch (e: NumberFormatException) {
-            throw DiscordRelayedException(
-                context.translate("converters.snowflake.error.invalid", replacements = arrayOf(optionValue))
-            )
-        }
+		try {
+			this.parsed = Snowflake(optionValue)
+		} catch (e: NumberFormatException) {
+			throw DiscordRelayedException(
+				context.translate("converters.snowflake.error.invalid", replacements = arrayOf(optionValue))
+			)
+		}
 
-        return true
-    }
+		return true
+	}
 }

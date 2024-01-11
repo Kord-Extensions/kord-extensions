@@ -20,23 +20,23 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  * example, due to a niche Kord configuration).
  */
 public suspend fun CheckContext<*>.anyGuild() {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.anyGuild")
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.anyGuild")
 
-    if (guildFor(event) != null) {
-        logger.passed()
+	if (guildFor(event) != null) {
+		logger.passed()
 
-        pass()
-    } else {
-        logger.failed("Event did not happen within a guild.")
+		pass()
+	} else {
+		logger.failed("Event did not happen within a guild.")
 
-        fail(
-            translate("checks.anyGuild.failed")
-        )
-    }
+		fail(
+			translate("checks.anyGuild.failed")
+		)
+	}
 }
 
 /**
@@ -47,23 +47,23 @@ public suspend fun CheckContext<*>.anyGuild() {
  * example, due to a niche Kord configuration).
  */
 public suspend fun CheckContext<*>.noGuild() {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.noGuild")
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.noGuild")
 
-    if (guildFor(event) == null) {
-        logger.passed()
+	if (guildFor(event) == null) {
+		logger.passed()
 
-        pass()
-    } else {
-        logger.failed("Event happened within a guild.")
+		pass()
+	} else {
+		logger.failed("Event happened within a guild.")
 
-        fail(
-            translate("checks.noGuild.failed")
-        )
-    }
+		fail(
+			translate("checks.noGuild.failed")
+		)
+	}
 }
 
 // region: Entity DSL versions
@@ -77,35 +77,35 @@ public suspend fun CheckContext<*>.noGuild() {
  * @param builder Lambda returning the guild to compare to.
  */
 public suspend fun <T : Event> CheckContext<T>.inGuild(builder: suspend (T) -> GuildBehavior) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
-    val eventGuild = guildFor(event)?.asGuildOrNull()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
+	val eventGuild = guildFor(event)?.asGuildOrNull()
 
-    if (eventGuild == null) {
-        logger.nullGuild(event)
+	if (eventGuild == null) {
+		logger.nullGuild(event)
 
-        fail()
-    } else {
-        val guild = builder(event)
+		fail()
+	} else {
+		val guild = builder(event)
 
-        if (eventGuild.id == guild.id) {
-            logger.passed()
+		if (eventGuild.id == guild.id) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Guild $eventGuild does not match $guild")
+			pass()
+		} else {
+			logger.failed("Guild $eventGuild does not match $guild")
 
-            fail(
-                translate(
-                    "checks.inGuild.failed",
-                    replacements = arrayOf(eventGuild.name),
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.inGuild.failed",
+					replacements = arrayOf(eventGuild.name),
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -117,35 +117,35 @@ public suspend fun <T : Event> CheckContext<T>.inGuild(builder: suspend (T) -> G
  * @param builder Lambda returning the guild to compare to.
  */
 public suspend fun <T : Event> CheckContext<T>.notInGuild(builder: suspend (T) -> GuildBehavior) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
-    val eventGuild = guildFor(event)?.asGuild()
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
+	val eventGuild = guildFor(event)?.asGuild()
 
-    if (eventGuild == null) {
-        logger.nullGuild(event)
+	if (eventGuild == null) {
+		logger.nullGuild(event)
 
-        pass()
-    } else {
-        val guild = builder(event)
+		pass()
+	} else {
+		val guild = builder(event)
 
-        if (eventGuild.id != guild.id) {
-            logger.passed()
+		if (eventGuild.id != guild.id) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Guild $eventGuild matches $guild")
+			pass()
+		} else {
+			logger.failed("Guild $eventGuild matches $guild")
 
-            fail(
-                translate(
-                    "checks.notInGuild.failed",
-                    replacements = arrayOf(eventGuild.name),
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.notInGuild.failed",
+					replacements = arrayOf(eventGuild.name),
+				)
+			)
+		}
+	}
 }
 
 // endregion
@@ -161,20 +161,20 @@ public suspend fun <T : Event> CheckContext<T>.notInGuild(builder: suspend (T) -
  * @param id Guild snowflake to compare to.
  */
 public suspend fun <T : Event> CheckContext<T>.inGuild(id: Snowflake) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
-    val guild = event.kord.getGuildOrNull(id)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.inGuild")
+	val guild = event.kord.getGuildOrNull(id)
 
-    if (guild == null) {
-        logger.noGuildId(id)
+	if (guild == null) {
+		logger.noGuildId(id)
 
-        fail()
-    } else {
-        inGuild { guild }
-    }
+		fail()
+	} else {
+		inGuild { guild }
+	}
 }
 
 /**
@@ -186,20 +186,20 @@ public suspend fun <T : Event> CheckContext<T>.inGuild(id: Snowflake) {
  * @param id Guild snowflake to compare to.
  */
 public suspend fun <T : Event> CheckContext<T>.notInGuild(id: Snowflake) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
-    val guild = event.kord.getGuildOrNull(id)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notInGuild")
+	val guild = event.kord.getGuildOrNull(id)
 
-    if (guild == null) {
-        logger.noGuildId(id)
+	if (guild == null) {
+		logger.noGuildId(id)
 
-        pass()
-    } else {
-        notInGuild { guild }
-    }
+		pass()
+	} else {
+		notInGuild { guild }
+	}
 }
 
 // endregion

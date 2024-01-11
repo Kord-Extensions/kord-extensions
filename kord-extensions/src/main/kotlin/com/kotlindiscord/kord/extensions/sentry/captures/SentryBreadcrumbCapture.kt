@@ -3,7 +3,6 @@ package com.kotlindiscord.kord.extensions.sentry.captures
 import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.sentry.sentryName
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
-import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import io.sentry.Breadcrumb
 import io.sentry.Scope
 import io.sentry.SentryLevel
@@ -74,7 +73,7 @@ public class SentryBreadcrumbCapture(
 
 		if (allowedTypes.users && user != null) {
 			data["user.id"] = user!!.id.toString()
-			data["user.name"] = user!!.tagOrUsername()
+			data["user.name"] = user!!.tag
 		}
 
 		if (allowedTypes.roles && role != null) {

@@ -21,35 +21,35 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  * @param channelTypes The channel types to compare to.
  */
 public suspend fun CheckContext<*>.channelType(vararg channelTypes: ChannelType) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelType")
-    val eventChannel = channelFor(event)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.channelType")
+	val eventChannel = channelFor(event)
 
-    if (eventChannel == null) {
-        logger.nullChannel(event)
+	if (eventChannel == null) {
+		logger.nullChannel(event)
 
-        fail()
-    } else {
-        val type = eventChannel.asChannel().type
+		fail()
+	} else {
+		val type = eventChannel.asChannel().type
 
-        if (channelTypes.contains(type)) {
-            logger.passed()
+		if (channelTypes.contains(type)) {
+			logger.passed()
 
-            pass()
-        } else {
-            logger.failed("Types $type is not within $channelTypes")
+			pass()
+		} else {
+			logger.failed("Types $type is not within $channelTypes")
 
-            fail(
-                translate(
-                    "checks.channelType.failed",
-                    replacements = arrayOf(type.translate(locale)),
-                )
-            )
-        }
-    }
+			fail(
+				translate(
+					"checks.channelType.failed",
+					replacements = arrayOf(type.translate(locale)),
+				)
+			)
+		}
+	}
 }
 
 /**
@@ -61,33 +61,33 @@ public suspend fun CheckContext<*>.channelType(vararg channelTypes: ChannelType)
  * @param channelTypes The channel types to compare to.
  */
 public suspend fun CheckContext<*>.notChannelType(vararg channelTypes: ChannelType) {
-    if (!passed) {
-        return
-    }
+	if (!passed) {
+		return
+	}
 
-    val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notChannelType")
-    val eventChannel = channelFor(event)
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.notChannelType")
+	val eventChannel = channelFor(event)
 
-    if (eventChannel == null) {
-        logger.nullChannel(event)
+	if (eventChannel == null) {
+		logger.nullChannel(event)
 
-        pass()
-    } else {
-        val type = eventChannel.asChannel().type
+		pass()
+	} else {
+		val type = eventChannel.asChannel().type
 
-        if (channelTypes.contains(type)) {
-            logger.failed("Types $type is within $channelTypes")
+		if (channelTypes.contains(type)) {
+			logger.failed("Types $type is within $channelTypes")
 
-            fail(
-                translate(
-                    "checks.notChannelType.failed",
-                    replacements = arrayOf(type.translate(locale)),
-                )
-            )
-        } else {
-            logger.passed()
+			fail(
+				translate(
+					"checks.notChannelType.failed",
+					replacements = arrayOf(type.translate(locale)),
+				)
+			)
+		} else {
+			logger.passed()
 
-            pass()
-        }
-    }
+			pass()
+		}
+	}
 }

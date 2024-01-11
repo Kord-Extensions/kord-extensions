@@ -20,7 +20,6 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.utils.dm
 import com.kotlindiscord.kord.extensions.utils.getJumpUrl
-import com.kotlindiscord.kord.extensions.utils.tagOrUsername
 import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.Message
@@ -247,7 +246,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 
                     name = "Author"
                     value = "${message.author!!.mention} (" +
-                        "`${message.author!!.tagOrUsername()}` / " +
+                        "`${message.author!!.tag}` / " +
                         "`${message.author!!.id.value}`" +
                         ")"
                 }
