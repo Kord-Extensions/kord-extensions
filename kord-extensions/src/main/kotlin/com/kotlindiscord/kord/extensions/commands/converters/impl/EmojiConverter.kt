@@ -99,7 +99,7 @@ public class EmojiConverter(
 					it.emojis.firstOrNull { emojiObj -> emojiObj.name?.lowercase().equals(name, true) }
 				}.firstOrNull()
 
-				currentResult ?: EmojiManager.getByDiscordAlias(arg)?.get()?.unicode?.let {
+				currentResult ?: EmojiManager.getByDiscordAlias(arg).get().unicode.let {
 					StandardEmoji(it)
 				}
 			}

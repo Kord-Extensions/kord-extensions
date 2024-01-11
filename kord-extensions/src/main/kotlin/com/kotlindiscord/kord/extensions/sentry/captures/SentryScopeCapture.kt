@@ -3,6 +3,7 @@ package com.kotlindiscord.kord.extensions.sentry.captures
 import com.kotlindiscord.kord.extensions.sentry.sentryName
 import com.kotlindiscord.kord.extensions.sentry.user
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import io.sentry.IScope
 import io.sentry.ITransaction
 import io.sentry.Scope
 import io.sentry.SentryLevel
@@ -39,7 +40,7 @@ public open class SentryScopeCapture : SentryCapture() {
 	 * This function is in charge of applying the data stored within this class, and filtering it as required by
 	 * the [allowedTypes] property.
 	 */
-	public open fun apply(scope: Scope) {
+	public open fun apply(scope: IScope) {
 		scope.level = level
 		scope.transaction = transaction
 

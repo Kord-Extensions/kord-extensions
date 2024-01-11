@@ -11,8 +11,8 @@ package com.kotlindiscord.kord.extensions.sentry
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.DmChannel
 import dev.kord.core.entity.channel.GuildChannel
+import io.sentry.IScope
 import io.sentry.ITransaction
-import io.sentry.Scope
 import io.sentry.Sentry.startTransaction
 import io.sentry.SpanStatus
 import io.sentry.protocol.User
@@ -34,7 +34,7 @@ public val Channel.sentryName: String
  * @param tag User's Discord tag
  * @param id User's Discord ID
  */
-public fun Scope.user(tag: String, id: String) {
+public fun IScope.user(tag: String, id: String) {
 	val userObj = User()
 
 	userObj.username = tag
@@ -48,7 +48,7 @@ public fun Scope.user(tag: String, id: String) {
  *
  * @param obj Kord user object to add to this scope.
  */
-public fun Scope.user(obj: dev.kord.core.entity.User): Unit =
+public fun IScope.user(obj: dev.kord.core.entity.User): Unit =
 	user(obj.tag, obj.id.toString())
 
 /** Convenience function for creating and testing a sub-transaction. **/
