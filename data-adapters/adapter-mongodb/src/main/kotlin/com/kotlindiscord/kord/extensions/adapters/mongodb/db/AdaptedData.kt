@@ -8,13 +8,13 @@ package com.kotlindiscord.kord.extensions.adapters.mongodb.db
 
 import com.kotlindiscord.kord.extensions.storage.StorageType
 import dev.kord.common.entity.Snowflake
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import org.bson.codecs.pojo.annotations.BsonId
 
 @Serializable
 @Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable")
 internal data class AdaptedData(
-	@BsonId
+	@Contextual
 	override val _id: String,
 
 	val identifier: String,
