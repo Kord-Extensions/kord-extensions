@@ -14,10 +14,7 @@ import kotlinx.serialization.Serializable
  * @property type Human-readable storage type name.
  */
 @Serializable(with = StorageTypeSerializer::class)
-public sealed class StorageType(public val type: String) {
-    /** Configuration data. **/
-    public object Config : StorageType("config")
-
-    /** Long-term dynamic data. **/
-    public object Data : StorageType("data")
+public enum class StorageType(public val type: String) {
+	Config("config"),
+	Data("data")
 }

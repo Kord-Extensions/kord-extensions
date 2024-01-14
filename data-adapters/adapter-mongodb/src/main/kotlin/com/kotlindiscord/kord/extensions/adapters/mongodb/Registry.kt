@@ -20,6 +20,4 @@ public val kordExCodecRegistry: CodecRegistry = CodecRegistries.fromCodecs(
 	KotlinSerializerCodec.create<Snowflake>(),
 
 	KotlinSerializerCodec.create<StorageType>(),
-	KotlinSerializerCodec.create<StorageType.Config>(),
-	KotlinSerializerCodec.create<StorageType.Data>(),
 )
