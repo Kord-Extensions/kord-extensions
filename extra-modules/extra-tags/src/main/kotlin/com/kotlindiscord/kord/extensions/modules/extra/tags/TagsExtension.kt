@@ -138,7 +138,7 @@ class TagsExtension : Extension() {
 
 						tags.forEach { tag ->
 							page {
-								title = "tag.title"
+								title = tag.title
 								description = tag.description
 								color = tag.color
 
@@ -173,7 +173,7 @@ class TagsExtension : Extension() {
 
 						tags.forEach { tag ->
 							page {
-								title = "tag.title"
+								title = tag.title
 								description = tag.description
 								color = tag.color
 
