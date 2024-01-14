@@ -16,6 +16,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.contexts.UnsafeUserCommandContext
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialUserCommandResponse
+import com.kotlindiscord.kord.extensions.modules.unsafe.types.ackEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
@@ -30,96 +31,100 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 /** Like a standard user command, but with less safety features. **/
 @UnsafeAPI
 public class UnsafeUserCommand<M : ModalForm>(
-    extension: Extension,
-    public override val modal: (() -> M)? = null,
+	extension: Extension,
+	public override val modal: (() -> M)? = null,
 ) : UserCommand<UnsafeUserCommandContext<M>, M>(extension) {
-    /** Initial response type. Change this to decide what happens when this user command action is executed. **/
-    public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
+	/** Initial response type. Change this to decide what happens when this user command action is executed. **/
+	public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
 
-    override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(UnsafeUserCommandInvocationEvent(this, event))
+	override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
+		emitEventAsync(UnsafeUserCommandInvocationEvent(this, event))
 
-        try {
-            if (!runChecks(event, cache)) {
-                emitEventAsync(
-                    UnsafeUserCommandFailedChecksEvent(
-                        this,
-                        event,
-                        "Checks failed without a message."
-                    )
-                )
+		try {
+			if (!runChecks(event, cache)) {
+				emitEventAsync(
+					UnsafeUserCommandFailedChecksEvent(
+						this,
+						event,
+						"Checks failed without a message."
+					)
+				)
 
-                return
-            }
-        } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
-            }
+				return
+			}
+		} catch (e: DiscordRelayedException) {
+			event.interaction.respondEphemeral {
+				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+			}
 
-            emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
+			emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
 
-            return
-        }
+			return
+		}
 
-        val response = when (val r = initialResponse) {
-            is InitialUserCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
-            is InitialUserCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
+		val response = when (val r = initialResponse) {
+			is InitialUserCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
+			is InitialUserCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
 
-            is InitialUserCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
-                r.builder!!(event)
-            }
+			is InitialUserCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
+				r.builder!!(event)
+			}
 
-            is InitialUserCommandResponse.PublicResponse -> event.interaction.respondPublic {
-                r.builder!!(event)
-            }
+			is InitialUserCommandResponse.PublicResponse -> event.interaction.respondPublic {
+				r.builder!!(event)
+			}
 
-            is InitialUserCommandResponse.None -> null
-        }
+			is InitialUserCommandResponse.None -> null
+		}
 
-        val context = UnsafeUserCommandContext(event, this, response, cache)
+		val context = UnsafeUserCommandContext(event, this, response, cache)
 
-        context.populate()
+		context.populate()
 
-        firstSentryBreadcrumb(context)
+		firstSentryBreadcrumb(context)
 
-        try {
-            checkBotPerms(context)
-        } catch (t: DiscordRelayedException) {
-            emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, t.reason))
-            respondText(context, t.reason, FailureReason.OwnPermissionsCheckFailure(t))
+		try {
+			checkBotPerms(context)
+		} catch (t: DiscordRelayedException) {
+			emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, t.reason))
+			respondText(context, t.reason, FailureReason.OwnPermissionsCheckFailure(t))
 
-            return
-        }
+			return
+		}
 
-        try {
-            body(context, null)
-        } catch (t: Throwable) {
-            if (t is DiscordRelayedException) {
-                respondText(context, t.reason, FailureReason.RelayedFailure(t))
-            }
+		try {
+			body(context, null)
+		} catch (t: Throwable) {
+			if (t is DiscordRelayedException) {
+				respondText(context, t.reason, FailureReason.RelayedFailure(t))
+			}
 
-            emitEventAsync(UnsafeUserCommandFailedWithExceptionEvent(this, event, t))
-            handleError(context, t)
+			emitEventAsync(UnsafeUserCommandFailedWithExceptionEvent(this, event, t))
+			handleError(context, t)
 
-            return
-        }
+			return
+		}
 
-        emitEventAsync(UnsafeUserCommandSucceededEvent(this, event))
-    }
+		emitEventAsync(UnsafeUserCommandSucceededEvent(this, event))
+	}
 
-    override suspend fun respondText(
-        context: UnsafeUserCommandContext<M>,
-        message: String,
-        failureType: FailureReason<*>
+	override suspend fun respondText(
+		context: UnsafeUserCommandContext<M>,
+		message: String,
+		failureType: FailureReason<*>,
     ) {
-        when (context.interactionResponse) {
-            is PublicMessageInteractionResponseBehavior -> context.respondPublic {
-                settings.failureResponseBuilder(this, message, failureType)
-            }
+		when (context.interactionResponse) {
+			is PublicMessageInteractionResponseBehavior -> context.respondPublic {
+				settings.failureResponseBuilder(this, message, failureType)
+			}
 
-            is EphemeralMessageInteractionResponseBehavior -> context.respondEphemeral {
-                settings.failureResponseBuilder(this, message, failureType)
-            }
-        }
-    }
+			is EphemeralMessageInteractionResponseBehavior -> context.respondEphemeral {
+				settings.failureResponseBuilder(this, message, failureType)
+			}
+
+			null -> context.ackEphemeral {
+				settings.failureResponseBuilder(this, message, failureType)
+			}
+		}
+	}
 }

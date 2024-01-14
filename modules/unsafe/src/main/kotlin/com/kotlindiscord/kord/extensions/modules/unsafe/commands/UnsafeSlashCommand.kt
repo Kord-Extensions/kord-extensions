@@ -19,6 +19,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.modules.unsafe.annotations.UnsafeAPI
 import com.kotlindiscord.kord.extensions.modules.unsafe.contexts.UnsafeSlashCommandContext
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.InitialSlashCommandResponse
+import com.kotlindiscord.kord.extensions.modules.unsafe.types.ackEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondEphemeral
 import com.kotlindiscord.kord.extensions.modules.unsafe.types.respondPublic
 import com.kotlindiscord.kord.extensions.types.FailureReason
@@ -33,117 +34,121 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 /** Like a standard slash command, but with less safety features. **/
 @UnsafeAPI
 public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
-    extension: Extension,
+	extension: Extension,
 
-    public override val arguments: (() -> A)? = null,
-    public override val modal: (() -> M)? = null,
-    public override val parentCommand: SlashCommand<*, *, *>? = null,
-    public override val parentGroup: SlashGroup? = null
+	public override val arguments: (() -> A)? = null,
+	public override val modal: (() -> M)? = null,
+	public override val parentCommand: SlashCommand<*, *, *>? = null,
+	public override val parentGroup: SlashGroup? = null,
 ) : SlashCommand<UnsafeSlashCommandContext<A, M>, A, M>(extension) {
-    /** Initial response type. Change this to decide what happens when this slash command is executed. **/
-    public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
+	/** Initial response type. Change this to decide what happens when this slash command is executed. **/
+	public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
 
-    override suspend fun call(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        findCommand(event).run(event, cache)
-    }
+	override suspend fun call(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
+		findCommand(event).run(event, cache)
+	}
 
-    override suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(UnsafeSlashCommandInvocationEvent(this, event))
+	override suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
+		emitEventAsync(UnsafeSlashCommandInvocationEvent(this, event))
 
-        try {
-            if (!runChecks(event, cache)) {
-                emitEventAsync(
-                    UnsafeSlashCommandFailedChecksEvent(
-                        this,
-                        event,
-                        "Checks failed without a message."
-                    )
-                )
+		try {
+			if (!runChecks(event, cache)) {
+				emitEventAsync(
+					UnsafeSlashCommandFailedChecksEvent(
+						this,
+						event,
+						"Checks failed without a message."
+					)
+				)
 
-                return
-            }
-        } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
-            }
+				return
+			}
+		} catch (e: DiscordRelayedException) {
+			event.interaction.respondEphemeral {
+				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+			}
 
-            emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
+			emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
 
-            return
-        }
+			return
+		}
 
-        val response = when (val r = initialResponse) {
-            is InitialSlashCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
-            is InitialSlashCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
+		val response = when (val r = initialResponse) {
+			is InitialSlashCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
+			is InitialSlashCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
 
-            is InitialSlashCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
-                r.builder!!(event)
-            }
+			is InitialSlashCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
+				r.builder!!(event)
+			}
 
-            is InitialSlashCommandResponse.PublicResponse -> event.interaction.respondPublic {
-                r.builder!!(event)
-            }
+			is InitialSlashCommandResponse.PublicResponse -> event.interaction.respondPublic {
+				r.builder!!(event)
+			}
 
-            is InitialSlashCommandResponse.None -> null
-        }
+			is InitialSlashCommandResponse.None -> null
+		}
 
-        val context = UnsafeSlashCommandContext(event, this, response, cache)
+		val context = UnsafeSlashCommandContext(event, this, response, cache)
 
-        context.populate()
+		context.populate()
 
-        firstSentryBreadcrumb(context, this)
+		firstSentryBreadcrumb(context, this)
 
-        try {
-            checkBotPerms(context)
-        } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
-            emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
+		try {
+			checkBotPerms(context)
+		} catch (e: DiscordRelayedException) {
+			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			emitEventAsync(UnsafeSlashCommandFailedChecksEvent(this, event, e.reason))
 
-            return
-        }
+			return
+		}
 
-        try {
-            if (arguments != null) {
-                val args = registry.argumentParser.parse(arguments, context)
+		try {
+			if (arguments != null) {
+				val args = registry.argumentParser.parse(arguments, context)
 
-                context.populateArgs(args)
-            }
-        } catch (e: ArgumentParsingException) {
-            respondText(context, e.reason, FailureReason.ArgumentParsingFailure(e))
-            emitEventAsync(UnsafeSlashCommandFailedParsingEvent(this, event, e))
+				context.populateArgs(args)
+			}
+		} catch (e: ArgumentParsingException) {
+			respondText(context, e.reason, FailureReason.ArgumentParsingFailure(e))
+			emitEventAsync(UnsafeSlashCommandFailedParsingEvent(this, event, e))
 
-            return
-        }
+			return
+		}
 
-        try {
-            body(context, null)
-        } catch (t: Throwable) {
-            if (t is DiscordRelayedException) {
-                respondText(context, t.reason, FailureReason.RelayedFailure(t))
-            }
+		try {
+			body(context, null)
+		} catch (t: Throwable) {
+			if (t is DiscordRelayedException) {
+				respondText(context, t.reason, FailureReason.RelayedFailure(t))
+			}
 
-            emitEventAsync(UnsafeSlashCommandFailedWithExceptionEvent(this, event, t))
-            handleError(context, t, this)
+			emitEventAsync(UnsafeSlashCommandFailedWithExceptionEvent(this, event, t))
+			handleError(context, t, this)
 
-            return
-        }
+			return
+		}
 
-        emitEventAsync(UnsafeSlashCommandSucceededEvent(this, event))
-    }
+		emitEventAsync(UnsafeSlashCommandSucceededEvent(this, event))
+	}
 
-    override suspend fun respondText(
-        context: UnsafeSlashCommandContext<A, M>,
-        message: String,
-        failureType: FailureReason<*>
+	override suspend fun respondText(
+		context: UnsafeSlashCommandContext<A, M>,
+		message: String,
+		failureType: FailureReason<*>,
     ) {
-        when (context.interactionResponse) {
-            is PublicMessageInteractionResponseBehavior -> context.respondPublic {
-                settings.failureResponseBuilder(this, message, failureType)
-            }
+		when (context.interactionResponse) {
+			is PublicMessageInteractionResponseBehavior -> context.respondPublic {
+				settings.failureResponseBuilder(this, message, failureType)
+			}
 
-            is EphemeralMessageInteractionResponseBehavior -> context.respondEphemeral {
-                settings.failureResponseBuilder(this, message, failureType)
-            }
-        }
-    }
+			is EphemeralMessageInteractionResponseBehavior -> context.respondEphemeral {
+				settings.failureResponseBuilder(this, message, failureType)
+			}
+
+			null -> context.ackEphemeral {
+				settings.failureResponseBuilder(this, message, failureType)
+			}
+		}
+	}
 }
