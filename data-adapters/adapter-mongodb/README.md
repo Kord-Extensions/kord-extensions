@@ -11,20 +11,24 @@ This includes some codecs, for commonly-used types - which you can use in your o
 
 To switch to the MongoDB data adapter follow these steps:
 
-1. Set the `ADAPTER_MONGODB_URI` environmental variable to a MongoDB connection string.
-2. Use the `mongoDB` function to set up the data adapter.
+1. Add the MongoDB dependencies to your project. You can get the latest version number
+   [from Maven Central](https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-kotlin-sync):
+   - `org.mongodb:mongodb-driver-kotlin-coroutine`
+   - `org.mongodb:bson-kotlinx`
+2. Set the `ADAPTER_MONGODB_URI` environmental variable to a MongoDB connection string.
+3. Use the `mongoDB` function to set up the data adapter.
 
    ```kotlin
    suspend fun main() {
-	   val bot = ExtensibleBot(System.getenv("TOKEN")) {
-		   mongoDB()
-	   }
+       val bot = ExtensibleBot(System.getenv("TOKEN")) {
+           mongoDB()
+       }
 
-	   bot.start()
+       bot.start()
    }
    ```
 
-3. If you use MongoDB elsewhere in your project, you can use the provided codecs to handle these types:
+4. If you use MongoDB elsewhere in your project, you can use the provided codecs to handle these types:
     - `DateTimePeriod` (kotlinx Datetime)
 	- `Instant` (Kotlinx Datetime)
 	- `Snowflake` (Kord)

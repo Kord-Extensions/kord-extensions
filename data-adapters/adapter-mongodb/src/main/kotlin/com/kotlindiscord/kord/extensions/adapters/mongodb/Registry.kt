@@ -1,16 +1,19 @@
 package com.kotlindiscord.kord.extensions.adapters.mongodb
 
-import com.kotlindiscord.kord.extensions.adapters.mongodb.codecs.*
+import com.kotlindiscord.kord.extensions.adapters.mongodb.db.Metadata
+import com.kotlindiscord.kord.extensions.storage.StorageType
+import dev.kord.common.entity.Snowflake
+import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.Instant
 import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.configuration.CodecRegistry
+import org.bson.codecs.kotlinx.KotlinSerializerCodec
 
 public val kordExCodecRegistry: CodecRegistry = CodecRegistries.fromCodecs(
-	DateTimePeriodCodec,
-	InstantCodec,
-	SnowflakeCodec,
-	StorageTypeCodec,
+	Metadata.codec,
 
-	// Required b/c the BSON codec library doesn't support standard polymorphism.
-	ConfigStorageTypeCodec,
-	DataStorageTypeCodec,
+	KotlinSerializerCodec.create<DateTimePeriod>(),
+	KotlinSerializerCodec.create<Instant>(),
+	KotlinSerializerCodec.create<Snowflake>(),
+	KotlinSerializerCodec.create<StorageType>(),
 )

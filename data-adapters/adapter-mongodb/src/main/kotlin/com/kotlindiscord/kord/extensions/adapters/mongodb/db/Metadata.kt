@@ -10,21 +10,25 @@ import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.result.UpdateResult
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import org.bson.codecs.pojo.annotations.BsonId
+import org.bson.codecs.kotlinx.KotlinSerializerCodec
 
 @Serializable
 @Suppress("DataClassContainsFunctions", "DataClassShouldBeImmutable")
 internal data class Metadata(
-	@BsonId
+	@Contextual
 	override val _id: String,
 
 	var version: Int,
 ) : Entity<String> {
+
 	suspend inline fun save(): UpdateResult =
 		Companion.save(this)
 
 	companion object {
+		val codec = KotlinSerializerCodec.create<Metadata>()
+
 		const val COLLECTION_NAME: String = "metadata"
 
 		private val Filters = object {

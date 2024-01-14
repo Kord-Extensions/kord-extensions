@@ -61,6 +61,7 @@ logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logback-groovy = { module = "io.github.virtualdogbert:logback-groovy-config", version.ref = "logback-groovy" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "logging" }
 mongodb = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
+mongodb-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongodb" }
 pf4j = { module = "org.pf4j:pf4j", version.ref = "pf4j" }
 semver = { module = "io.github.z4kn4fein:semver", version.ref = "semver" }
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }

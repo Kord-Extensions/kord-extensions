@@ -8,5 +8,5 @@ package com.kotlindiscord.kord.extensions.adapters.mongodb.db
 
 @Suppress("VariableNaming", "PropertyName")
 internal interface Entity<ID> {
-    val _id: ID
+	val _id: ID
 }

@@ -14,17 +14,17 @@ import org.bson.codecs.pojo.annotations.BsonId
 @Serializable
 @Suppress("ConstructorParameterNaming", "DataClassShouldBeImmutable")
 internal data class AdaptedData(
-    @BsonId
-    override val _id: String,
+	@BsonId
+	override val _id: String,
 
-    val identifier: String,
+	val identifier: String,
 
-    val type: StorageType? = null,
+	val type: StorageType? = null,
 
-    val channel: Snowflake? = null,
-    val guild: Snowflake? = null,
-    val message: Snowflake? = null,
-    val user: Snowflake? = null,
+	val channel: Snowflake? = null,
+	val guild: Snowflake? = null,
+	val message: Snowflake? = null,
+	val user: Snowflake? = null,
 
-    var data: String,
+	var data: String,
 ) : Entity<String>

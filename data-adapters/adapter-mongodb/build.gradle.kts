@@ -23,6 +23,7 @@ dependencies {
     implementation(libs.kx.coro)
     implementation(libs.bundles.logging)
     implementation(libs.mongodb)
+    implementation(libs.mongodb.bson.kotlinx)
 
     implementation(project(":kord-extensions"))
 }
