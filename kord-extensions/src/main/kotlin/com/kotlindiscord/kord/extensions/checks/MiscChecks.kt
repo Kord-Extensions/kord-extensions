@@ -53,6 +53,44 @@ public suspend fun CheckContext<*>.isBotOwner() {
 }
 
 /**
+ * For bots with single owners, check asserting the user for an [Event] is not the bot's owner.
+ *
+ * Will pass if the event doesn't concern a user, or the bot doesn't have a single owner (e.g. it is part of a team).
+ */
+public suspend fun CheckContext<*>.isNotBotOwner() {
+	if (!passed) {
+		return
+	}
+
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotBotOwner")
+	val owner = event.kord.getApplicationInfo().ownerId
+
+	if (owner == null) {
+		logger.passed("Bot does not have an owner.")
+
+		return pass()
+	}
+
+	val user = userFor(event)?.asUserOrNull()
+
+	if (user == null) {
+		logger.passed("Event did not concern a user.")
+
+		pass()
+	} else if (user.id == owner) {
+		logger.failed("User owns this bot.")
+
+		fail(
+			translate("checks.isNotBotOwner.failed")
+		)
+	} else {
+		logger.failed("User does not own this bot.")
+
+		pass()
+	}
+}
+
+/**
  * For bots owned by a team, check asserting the user for an [Event] is one of the bot's admins.
  *
  * Will fail if the event doesn't concern a user, or the bot doesn't have any admins (e.g. it has a single owner).
@@ -94,6 +132,47 @@ public suspend fun CheckContext<*>.isBotAdmin() {
 }
 
 /**
+ * For bots owned by a team, check asserting the user for an [Event] is not one of the bot's admins.
+ *
+ * Will pass if the event doesn't concern a user, or the bot doesn't have any admins (e.g. it has a single owner).
+ */
+public suspend fun CheckContext<*>.isNotBotAdmin() {
+	if (!passed) {
+		return
+	}
+
+	val logger = KotlinLogging.logger("com.kotlindiscord.kord.extensions.checks.isNotBotAdmin")
+	val admins = event.kord.getApplicationInfo().team
+		?.members
+		?.filter { it.role == TeamMemberRole.Admin }
+		?.map { it.userId }
+
+	if (admins.isNullOrEmpty()) {
+		logger.passed("Bot does not have any admins.")
+
+		return pass()
+	}
+
+	val user = userFor(event)?.asUserOrNull()
+
+	if (user == null) {
+		logger.passed("Event did not concern a user.")
+
+		pass()
+	} else if (user.id in admins) {
+		logger.failed("User administrates this bot.")
+
+		fail(
+			translate("checks.isNotBotAdmin.failed")
+		)
+	} else {
+		logger.passed("User does not administrate this bot.")
+
+		pass()
+	}
+}
+
+/**
  * Check asserting the user for an [Event] is a bot. Will fail if the event doesn't concern a user.
  */
 public suspend fun CheckContext<*>.isBot() {
@@ -122,7 +201,7 @@ public suspend fun CheckContext<*>.isBot() {
 }
 
 /**
- * Check asserting the user for an [Event] is **not** a bot. Will fail if the event doesn't concern a user.
+ * Check asserting the user for an [Event] is **not** a bot. Will pass if the event doesn't concern a user.
  */
 public suspend fun CheckContext<*>.isNotBot() {
 	if (!passed) {
@@ -133,9 +212,9 @@ public suspend fun CheckContext<*>.isNotBot() {
 	val user = userFor(event)?.asUserOrNull()
 
 	if (user == null) {
-		logger.failed("Event did not concern a user.")
+		logger.passed("Event did not concern a user.")
 
-		fail()
+		pass()
 	} else if (!user.isBot) {
 		logger.passed()
 

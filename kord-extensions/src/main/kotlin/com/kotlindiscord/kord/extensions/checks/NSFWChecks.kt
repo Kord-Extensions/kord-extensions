@@ -74,11 +74,9 @@ public suspend fun CheckContext<*>.notHasGuildNsfwLevel(level: NsfwLevel) {
 	val guild = guildFor(event)?.asGuildOrNull()
 
 	if (guild == null) {
-		logger.failed("Event did not happen within a guild.")
+		logger.passed("Event did not happen within a guild.")
 
-		fail(
-			translate("checks.anyGuild.failed")
-		)
+		pass()
 	} else {
 		if (guild.nsfw == level) {
 			logger.failed("Guild matched the given NSFW level: $level")
@@ -319,7 +317,7 @@ public suspend fun CheckContext<*>.notChannelIsNsfw() {
 	if (eventChannel == null) {
 		logger.nullChannel(event)
 
-		fail()
+		pass()
 	} else if (eventChannel.type == ChannelType.DM) {
 		logger.passed()
 

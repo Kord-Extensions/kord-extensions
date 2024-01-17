@@ -183,7 +183,7 @@ public suspend fun CheckContext<*>.notHasPermissions(perms: Permissions) {
 	if (member == null) {
 		logger.nullMember(event)
 
-		fail()
+		pass()
 	} else {
 		val memberObj = member.asMember()
 

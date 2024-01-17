@@ -12,7 +12,6 @@ import com.kotlindiscord.kord.extensions.events.interfaces.*
 import com.kotlindiscord.kord.extensions.utils.authorId
 import dev.kord.common.annotation.KordExperimental
 import dev.kord.common.annotation.KordUnsafe
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.*
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
@@ -95,92 +94,6 @@ public suspend fun topChannelFor(event: Event): ChannelBehavior? {
 		channel.parent
 	} else {
 		channel
-	}
-}
-
-/**
- * Retrieves a channel ID representing a channel that is the subject of a given event, if possible.
- *
- * This function only supports a specific set of events - any unsupported events will
- * simply result in a `null` value. Please note that some events may support a
- * null value for this type of object, and this will also be reflected in the return
- * value.
- *
- * @param event The event concerning to the channel to retrieve.
- * @return A [Long] representing the channel ID, or null if there isn't one.
- */
-public suspend fun channelIdFor(event: Event): ULong? {
-	return when (event) {
-		is ChannelEvent -> event.channel?.id?.value
-
-		is ChannelCreateEvent -> event.channel.id.value
-		is ChannelDeleteEvent -> event.channel.id.value
-		is ChannelPinsUpdateEvent -> event.channel.id.value
-		is ChannelUpdateEvent -> event.channel.id.value
-		is InteractionCreateEvent -> event.interaction.channel.id.value
-		is InviteCreateEvent -> event.channel.id.value
-		is InviteDeleteEvent -> event.channel.id.value
-		is MessageBulkDeleteEvent -> event.channelId.value
-		is MessageCreateEvent -> event.message.channel.id.value
-		is MessageDeleteEvent -> event.channelId.value
-		is MessageUpdateEvent -> event.channel.id.value
-		is ReactionAddEvent -> event.channel.id.value
-		is ReactionRemoveAllEvent -> event.channel.id.value
-		is ReactionRemoveEmojiEvent -> event.channel.id.value
-		is ReactionRemoveEvent -> event.channel.id.value
-		is TypingStartEvent -> event.channel.id.value
-		is VoiceStateUpdateEvent -> event.state.channelId?.value
-		is WebhookUpdateEvent -> event.channel.id.value
-
-		is ThreadChannelDeleteEvent -> event.channel.id.value
-//        is ThreadListSyncEvent -> event.
-		is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()?.id?.value
-//        is ThreadMembersUpdateEvent -> event.
-
-		else -> null
-	}
-}
-
-/**
- * Retrieves a channel ID representing a channel that is the subject of a given event, if possible.
- *
- * This function only supports a specific set of events - any unsupported events will
- * simply result in a `null` value. Please note that some events may support a
- * null value for this type of object, and this will also be reflected in the return
- * value.
- *
- * @param event The event concerning to the channel to retrieve.
- * @return A [Snowflake] representing the channel ID, or null if there isn't one.
- */
-public suspend fun channelSnowflakeFor(event: Event): Snowflake? {
-	return when (event) {
-		is ChannelEvent -> event.channel?.id
-
-		is ChannelCreateEvent -> event.channel.id
-		is ChannelDeleteEvent -> event.channel.id
-		is ChannelPinsUpdateEvent -> event.channel.id
-		is ChannelUpdateEvent -> event.channel.id
-		is InteractionCreateEvent -> event.interaction.channel.id
-		is InviteCreateEvent -> event.channel.id
-		is InviteDeleteEvent -> event.channel.id
-		is MessageBulkDeleteEvent -> event.channelId
-		is MessageCreateEvent -> event.message.channel.id
-		is MessageDeleteEvent -> event.channelId
-		is MessageUpdateEvent -> event.channel.id
-		is ReactionAddEvent -> event.channel.id
-		is ReactionRemoveAllEvent -> event.channel.id
-		is ReactionRemoveEmojiEvent -> event.channel.id
-		is ReactionRemoveEvent -> event.channel.id
-		is TypingStartEvent -> event.channel.id
-		is VoiceStateUpdateEvent -> event.state.channelId
-		is WebhookUpdateEvent -> event.channel.id
-
-		is ThreadChannelDeleteEvent -> event.channel.id
-//        is ThreadListSyncEvent -> event.
-		is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()?.id
-//        is ThreadMembersUpdateEvent -> event.
-
-		else -> null
 	}
 }
 
