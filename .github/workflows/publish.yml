@@ -43,7 +43,7 @@ jobs:
           echo -e "\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
 
       - name: Gradle (Build)
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
 
         with:
           arguments: checkLicenses build dokkaHtmlMultiModule
@@ -63,7 +63,7 @@ jobs:
         run: kotlin .github/disable-parallel.main.kts
 
       - name: Gradle (Publish)
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
 
         if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
 
