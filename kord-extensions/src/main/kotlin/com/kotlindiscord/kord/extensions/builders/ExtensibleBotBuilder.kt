@@ -397,7 +397,7 @@ public open class ExtensibleBotBuilder {
 		if (koinNotStarted()) {
 			KordExContext.startKoin {
 				slf4jLogger(logLevel)
-                environmentProperties()
+				environmentProperties()
 
 				if (File("koin.properties").exists()) {
 					fileProperties("koin.properties")
@@ -1317,6 +1317,9 @@ public open class ExtensibleBotBuilder {
 
 		/** @suppress Builder that shouldn't be set directly by the user. **/
 		public var registryBuilder: () -> ChatCommandRegistry = { ChatCommandRegistry() }
+
+		/** Whether to ignore command invocations in messages sent by the bot. Defaults to `true`. **/
+		public var ignoreSelf: Boolean = true
 
 		/**
 		 * List of command checks.
