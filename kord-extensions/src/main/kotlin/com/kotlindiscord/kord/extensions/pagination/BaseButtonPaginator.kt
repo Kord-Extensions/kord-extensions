@@ -147,7 +147,7 @@ public abstract class BaseButtonPaginator(
 			nextButton = components.publicButton {
 				deferredAck = true
 				style = ButtonStyle.Secondary
-				disabled = pages.groups[currentGroup]!!.size <= 1
+				disabled = pages.groups[currentGroup]!!.size <= chunkedPages
 
 				check(defaultCheck)
 
@@ -164,7 +164,7 @@ public abstract class BaseButtonPaginator(
 			lastPageButton = components.publicButton {
 				deferredAck = true
 				style = ButtonStyle.Secondary
-				disabled = pages.groups[currentGroup]!!.size <= 1
+				disabled = pages.groups[currentGroup]!!.size <= chunkedPages
 
 				check(defaultCheck)
 
