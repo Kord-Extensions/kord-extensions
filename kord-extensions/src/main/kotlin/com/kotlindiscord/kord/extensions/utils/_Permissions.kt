@@ -17,7 +17,6 @@ public fun Permission.toTranslationKey(): String? = when (this) {
 	Permission.CreateGuildExpressions -> "permission.createGuildExpressions"
     Permission.AddReactions -> "permission.addReactions"
     Permission.Administrator -> "permission.administrator"
-    Permission.All -> "permission.all"
     Permission.AttachFiles -> "permission.attachFiles"
     Permission.BanMembers -> "permission.banMembers"
     Permission.ChangeNickname -> "permission.changeNickname"
@@ -66,11 +65,11 @@ public fun Permission.toTranslationKey(): String? = when (this) {
 }
 
 /** Because "Stream" is a confusing name, people may look for "Video" instead. **/
-public val Permission.Video: Permission.Stream
+public val Permission.Companion.Video: Permission.Stream
     inline get() = Permission.Stream
 
 /** Because it hasn't been called "Moderate Members" since the DMD testing finished. **/
-public val Permission.TimeoutMembers: Permission.ModerateMembers
+public val Permission.Companion.TimeoutMembers: Permission.ModerateMembers
     inline get() = Permission.ModerateMembers
 
 /** Given a [CommandContext], translate the [Permission] to a human-readable string based on the context's locale. **/

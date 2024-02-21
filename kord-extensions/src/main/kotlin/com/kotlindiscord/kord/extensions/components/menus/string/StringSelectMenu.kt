@@ -10,7 +10,6 @@ import com.kotlindiscord.kord.extensions.components.menus.*
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
 import dev.kord.rest.builder.component.StringSelectBuilder
-import dev.kord.rest.builder.component.options
 
 /** Maximum length for an option's description. **/
 public const val DESCRIPTION_MAX: Int = 100
