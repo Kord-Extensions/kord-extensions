@@ -26,6 +26,9 @@ public class PaginatorBuilder(
     /** Pages container object. **/
     public val pages: Pages = Pages(defaultGroup)
 
+	/** How many "pages" should be displayed at once, from 1 to 9. **/
+	public var chunkedPages: Int = 1
+
     /** Paginator owner, if only one person should be able to interact. **/
     public var owner: UserBehavior? = null
 

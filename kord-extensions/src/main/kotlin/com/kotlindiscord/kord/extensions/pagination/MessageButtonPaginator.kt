@@ -16,7 +16,6 @@ import dev.kord.core.behavior.edit
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.message.allowedMentions
-import dev.kord.rest.builder.message.embed
 import java.util.*
 
 /**
@@ -28,6 +27,7 @@ import java.util.*
  */
 public class MessageButtonPaginator(
 	pages: Pages,
+	chunkedPages: Int = 1,
 	owner: UserBehavior? = null,
 	timeoutSeconds: Long? = null,
 	keepEmbed: Boolean = true,
@@ -39,7 +39,7 @@ public class MessageButtonPaginator(
 	public val pingInReply: Boolean = true,
 	public val targetChannel: MessageChannelBehavior? = null,
 	public val targetMessage: Message? = null,
-) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
     init {
         if (targetChannel == null && targetMessage == null) {
             throw IllegalArgumentException("Must provide either a target channel or target message")
@@ -60,7 +60,7 @@ public class MessageButtonPaginator(
                 this.messageReference = targetMessage?.id
 
                 allowedMentions { repliedUser = pingInReply }
-                embed { applyPage() }
+				applyPage()
 
                 with(this@MessageButtonPaginator.components) {
                     this@createMessage.applyToMessage()
@@ -70,7 +70,7 @@ public class MessageButtonPaginator(
             updateButtons()
 
             message!!.edit {
-                embed { applyPage() }
+				applyPage()
 
                 with(this@MessageButtonPaginator.components) {
                     this@edit.applyToMessage()
@@ -91,7 +91,7 @@ public class MessageButtonPaginator(
         } else {
             message!!.edit {
                 allowedMentions { repliedUser = pingInReply }
-                embed { applyPage() }
+				applyPage()
 
                 this.components = mutableListOf()
             }
@@ -112,6 +112,7 @@ public fun MessageButtonPaginator(
 ): MessageButtonPaginator =
     MessageButtonPaginator(
         pages = builder.pages,
+		chunkedPages = builder.chunkedPages,
         owner = builder.owner,
         timeoutSeconds = builder.timeoutSeconds,
         keepEmbed = builder.keepEmbed,

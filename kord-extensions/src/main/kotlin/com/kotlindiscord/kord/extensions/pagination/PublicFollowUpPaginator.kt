@@ -15,9 +15,6 @@ import dev.kord.core.behavior.interaction.response.FollowupPermittingInteraction
 import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
-import dev.kord.rest.builder.message.create.embed
-import dev.kord.rest.builder.message.embed
-import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
 /**
@@ -28,6 +25,7 @@ import java.util.*
  */
 public class PublicFollowUpPaginator(
 	pages: Pages,
+	chunkedPages: Int = 1,
 	owner: UserBehavior? = null,
 	timeoutSeconds: Long? = null,
 	keepEmbed: Boolean = true,
@@ -37,7 +35,7 @@ public class PublicFollowUpPaginator(
 	locale: Locale? = null,
 
 	public val interaction: FollowupPermittingInteractionResponseBehavior,
-) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
     /** Follow-up interaction to use for this paginator's embeds. Will be created by [send]. **/
     public var embedInteraction: PublicFollowupMessage? = null
 
@@ -46,7 +44,7 @@ public class PublicFollowUpPaginator(
             setup()
 
             embedInteraction = interaction.createPublicFollowup {
-                embed { applyPage() }
+				applyPage()
 
                 with(this@PublicFollowUpPaginator.components) {
                     this@createPublicFollowup.applyToMessage()
@@ -56,7 +54,7 @@ public class PublicFollowUpPaginator(
             updateButtons()
 
             embedInteraction!!.edit {
-                embed { applyPage() }
+				applyPage()
 
                 with(this@PublicFollowUpPaginator.components) {
                     this@edit.applyToMessage()
@@ -76,7 +74,7 @@ public class PublicFollowUpPaginator(
             embedInteraction?.delete()
         } else {
             embedInteraction?.edit {
-                embed { applyPage() }
+				applyPage()
 
                 this.components = mutableListOf()
             }
@@ -93,6 +91,7 @@ public fun PublicFollowUpPaginator(
     interaction: FollowupPermittingInteractionResponseBehavior
 ): PublicFollowUpPaginator = PublicFollowUpPaginator(
     pages = builder.pages,
+	chunkedPages = builder.chunkedPages,
     owner = builder.owner,
     timeoutSeconds = builder.timeoutSeconds,
     keepEmbed = builder.keepEmbed,

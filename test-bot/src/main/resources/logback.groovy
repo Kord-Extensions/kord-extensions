@@ -10,9 +10,13 @@ import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.FileAppender
 
 def environment = System.getenv("ENVIRONMENT") ?: "dev"
-def defaultLevel = TRACE
+def defaultLevel = INFO
 
-if (environment == "spam") {
+if (environment == "dev") {
+	defaultLevel = DEBUG
+} else if (environment == "spam") {
+	defaultLevel = TRACE
+
     logger("dev.kord.rest.DefaultGateway", TRACE)
 } else {
     // Silence warning about missing native PRNG

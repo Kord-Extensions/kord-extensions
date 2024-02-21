@@ -13,8 +13,6 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.rest.builder.message.embed
-import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
 /**
@@ -24,6 +22,7 @@ import java.util.*
  */
 public class PublicResponsePaginator(
 	pages: Pages,
+	chunkedPages: Int = 1,
 	owner: UserBehavior? = null,
 	timeoutSeconds: Long? = null,
 	keepEmbed: Boolean = true,
@@ -33,7 +32,7 @@ public class PublicResponsePaginator(
 	locale: Locale? = null,
 
 	public val interaction: PublicMessageInteractionResponseBehavior,
-) : BaseButtonPaginator(pages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
     /** Whether this paginator has been set up for the first time. **/
     public var isSetup: Boolean = false
 
@@ -47,7 +46,7 @@ public class PublicResponsePaginator(
         }
 
         interaction.edit {
-            embed { applyPage() }
+			applyPage()
 
             with(this@PublicResponsePaginator.components) {
                 this@edit.applyToMessage()
@@ -63,7 +62,7 @@ public class PublicResponsePaginator(
         active = false
 
         interaction.edit {
-            embed { applyPage() }
+			applyPage()
 
             this.components = mutableListOf()
         }
@@ -79,6 +78,7 @@ public fun PublicResponsePaginator(
     interaction: PublicMessageInteractionResponseBehavior
 ): PublicResponsePaginator = PublicResponsePaginator(
     pages = builder.pages,
+	chunkedPages = builder.chunkedPages,
     owner = builder.owner,
     timeoutSeconds = builder.timeoutSeconds,
     keepEmbed = builder.keepEmbed,

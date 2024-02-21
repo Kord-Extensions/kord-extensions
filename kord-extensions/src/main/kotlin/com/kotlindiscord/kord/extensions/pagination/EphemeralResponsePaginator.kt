@@ -13,8 +13,6 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.core.entity.ReactionEmoji
-import dev.kord.rest.builder.message.embed
-import dev.kord.rest.builder.message.modify.embed
 import java.util.*
 
 /**
@@ -25,6 +23,7 @@ import java.util.*
 public class EphemeralResponsePaginator(
 	pages: Pages,
 	owner: UserBehavior? = null,
+	chunkedPages: Int = 1,
 	timeoutSeconds: Long? = null,
 	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	mutator: PageTransitionCallback? = null,
@@ -32,7 +31,7 @@ public class EphemeralResponsePaginator(
 	locale: Locale? = null,
 
 	public val interaction: EphemeralMessageInteractionResponseBehavior,
-) : BaseButtonPaginator(pages, owner, timeoutSeconds, true, switchEmoji, mutator, bundle, locale) {
+) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, true, switchEmoji, mutator, bundle, locale) {
     /** Whether this paginator has been set up for the first time. **/
     public var isSetup: Boolean = false
 
@@ -46,7 +45,7 @@ public class EphemeralResponsePaginator(
         }
 
         interaction.edit {
-            embed { applyPage() }
+			applyPage()
 
             with(this@EphemeralResponsePaginator.components) {
                 this@edit.applyToMessage()
@@ -62,7 +61,7 @@ public class EphemeralResponsePaginator(
         active = false
 
         interaction.edit {
-            embed { applyPage() }
+			applyPage()
 
             this.components = mutableListOf()
         }
@@ -78,6 +77,7 @@ public fun EphemeralResponsePaginator(
     interaction: EphemeralMessageInteractionResponseBehavior
 ): EphemeralResponsePaginator = EphemeralResponsePaginator(
     pages = builder.pages,
+	chunkedPages = builder.chunkedPages,
     owner = builder.owner,
     timeoutSeconds = builder.timeoutSeconds,
 	mutator = builder.mutator,

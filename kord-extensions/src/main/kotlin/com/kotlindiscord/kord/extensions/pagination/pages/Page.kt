@@ -13,8 +13,11 @@ import com.kotlindiscord.kord.extensions.pagination.builders.PageMutator
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import com.kotlindiscord.kord.extensions.utils.textOrNull
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.ktor.http.cio.*
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 /**
  * Representation of a single paginator page. You can extend this to customize it if you wish!
@@ -36,10 +39,13 @@ public open class Page(
     public open suspend fun build(
 		locale: Locale,
 		pageNum: Int,
+		chunkSize: Int,
 		pages: Int,
 		group: String?,
 		groupIndex: Int,
 		groups: Int,
+		shouldMutateFooter: Boolean = true,
+		shouldPutFooterInDescription: Boolean = false,
 		mutator: PageMutator? = null,
     ): suspend EmbedBuilder.() -> Unit = {
         builder()
@@ -48,53 +54,76 @@ public open class Page(
 			mutator(this, this@Page)
 		}
 
-        val curFooterText = footer?.textOrNull()
-        val curFooterIcon = footer?.icon
+		if (shouldMutateFooter) {
+			val curFooterText = footer?.textOrNull()
 
-        footer {
-            icon = curFooterIcon
+			val footerText = buildString {
+				if (pages > 1) {
+					if (chunkSize > 1) {
+						append(
+							translationsProvider.translate(
+								"paginator.footer.page.chunked",
+								locale,
+								replacements = arrayOf(
+									ceil((pageNum + 1).div(chunkSize.toFloat())).roundToInt(), // Current page
+									ceil(pages.div(chunkSize.toFloat())).roundToInt(), // Total pages
+									pages, // Total chunks
+								)
+							)
+						)
+					} else {
+						append(
+							translationsProvider.translate(
+								"paginator.footer.page",
+								locale,
+								replacements = arrayOf(pageNum + 1, pages)
+							)
+						)
+					}
+				}
 
-            text = buildString {
-                if (pages > 1) {
-                    append(
-                        translationsProvider.translate(
-                            "paginator.footer.page",
-                            locale,
-                            replacements = arrayOf(pageNum + 1, pages)
-                        )
-                    )
-                }
+				if (!group.isNullOrBlank() || groups > 2) {
+					if (isNotBlank()) {
+						append(" • ")
+					}
 
-                if (group != null && group.isNotBlank() || groups > 2) {
-                    if (isNotBlank()) {
-                        append(" • ")
-                    }
+					if (group.isNullOrBlank()) {
+						append(
+							translationsProvider.translate(
+								"paginator.footer.group",
+								locale,
+								replacements = arrayOf(groupIndex + 1, groups)
+							)
+						)
+					} else {
+						val groupName = translationsProvider.translate(
+							group, locale, bundle
+						).capitalizeWords(locale)
 
-                    if (group.isNullOrBlank()) {
-                        append(
-                            translationsProvider.translate(
-                                "paginator.footer.group",
-                                locale,
-                                replacements = arrayOf(groupIndex + 1, groups)
-                            )
-                        )
-                    } else {
-                        val groupName = translationsProvider.translate(
-                            group, locale, bundle
-                        ).capitalizeWords(locale)
+						append("$groupName (${groupIndex + 1}/$groups)")
+					}
+				}
 
-                        append("$groupName (${groupIndex + 1}/$groups)")
-                    }
-                }
+				if (!curFooterText.isNullOrEmpty()) {
+					if (isNotBlank()) {
+						append(" • ")
+					}
 
-                if (!curFooterText.isNullOrEmpty()) {
-                    if (isNotBlank()) {
-                        append(" • ")
-                    }
+					append(curFooterText)
+				}
+			}
 
-                    append(curFooterText)
-                }
-            }
-        }
+			if (shouldPutFooterInDescription) {
+				description = footerText
+			} else {
+				val curFooterIcon = footer?.icon
+
+				footer {
+					icon = curFooterIcon
+
+					text = footerText
+				}
+			}
+		}
     }
 }
