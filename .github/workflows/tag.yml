@@ -37,7 +37,7 @@ jobs:
           token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Gradle (Build)
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
 
         with:
           arguments: checkLicenses build
@@ -50,7 +50,7 @@ jobs:
         run: kotlin .github/disable-parallel.main.kts
 
       - name: Gradle (Publish)
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
 
         env:
           ORG_GRADLE_PROJECT_signingKey: "${{ secrets.GPG_KEY }}"
