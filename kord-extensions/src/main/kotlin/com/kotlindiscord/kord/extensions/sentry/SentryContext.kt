@@ -71,6 +71,8 @@ public class SentryContext : KordExKoinComponent {
 	/** Capture a [SentryEvent], submitting it to Sentry with the breadcrumbs in this context. **/
 	public suspend fun captureEvent(
 		event: SentryEvent,
+		contexts: Map<String, Any> = mapOf(),
+		scopeBody: (IScope) -> Unit = {},
 		body: suspend SentryScopeCapture.() -> Unit,
 	): SentryId? {
 		val capture = SentryScopeCapture()
@@ -85,7 +87,10 @@ public class SentryContext : KordExKoinComponent {
 			Sentry.withScope {
 				capture.apply(it)
 
+				contexts.forEach { (key, value) -> it.setContexts(key, value) }
 				breadcrumbs.forEach(it::addBreadcrumb)
+
+				scopeBody(it)
 
 				id = Sentry.captureEvent(event)
 			}
@@ -101,6 +106,8 @@ public class SentryContext : KordExKoinComponent {
 	/** Capture a [Throwable] exception, submitting it to Sentry with the breadcrumbs in this context. **/
 	public suspend fun captureThrowable(
 		t: Throwable,
+		contexts: Map<String, Any> = mapOf(),
+		scopeBody: (IScope) -> Unit = {},
 		body: suspend (SentryExceptionCapture).() -> Unit,
 	): SentryId? {
 		val capture = SentryExceptionCapture(t)
@@ -115,7 +122,10 @@ public class SentryContext : KordExKoinComponent {
 			Sentry.withScope {
 				capture.apply(it)
 
+				contexts.forEach { (key, value) -> it.setContexts(key, value) }
 				breadcrumbs.forEach(it::addBreadcrumb)
+
+				scopeBody(it)
 
 				id = capture.captureThrowable()
 			}
@@ -131,6 +141,8 @@ public class SentryContext : KordExKoinComponent {
 	/** Capture a [UserFeedback] object, submitting it to Sentry with the breadcrumbs in this context. **/
 	public suspend fun captureFeedback(
 		feedback: UserFeedback,
+		contexts: Map<String, Any> = mapOf(),
+		scopeBody: (IScope) -> Unit = {},
 		body: suspend SentryScopeCapture.() -> Unit,
 	) {
 		val capture = SentryScopeCapture()
@@ -143,7 +155,10 @@ public class SentryContext : KordExKoinComponent {
 			Sentry.withScope {
 				capture.apply(it)
 
+				contexts.forEach { (key, value) -> it.setContexts(key, value) }
 				breadcrumbs.forEach(it::addBreadcrumb)
+
+				scopeBody(it)
 
 				Sentry.captureUserFeedback(feedback)
 			}
@@ -153,6 +168,8 @@ public class SentryContext : KordExKoinComponent {
 	/** Capture a [message] String, submitting it to Sentry with the breadcrumbs in this context. **/
 	public suspend fun captureMessage(
 		message: String,
+		contexts: Map<String, Any> = mapOf(),
+		scopeBody: (IScope) -> Unit = {},
 		body: suspend SentryScopeCapture.() -> Unit,
 	): SentryId? {
 		val capture = SentryScopeCapture()
@@ -167,7 +184,10 @@ public class SentryContext : KordExKoinComponent {
 			Sentry.withScope {
 				capture.apply(it)
 
+				contexts.forEach { (key, value) -> it.setContexts(key, value) }
 				breadcrumbs.forEach(it::addBreadcrumb)
+
+				scopeBody(it)
 
 				id = Sentry.captureMessage(message)
 			}
