@@ -75,7 +75,7 @@ public open class SentryAdapter : KordExKoinComponent {
 	 * function instead for brevity. Please see the Sentry documentation for
 	 * information on how to configure it.
 	 */
-	public fun init(callback: SentryOptions.() -> Unit) {
+	public fun init(callback: (SentryOptions) -> Unit) {
 		Sentry.init(callback)
 
 		this._enabled = true

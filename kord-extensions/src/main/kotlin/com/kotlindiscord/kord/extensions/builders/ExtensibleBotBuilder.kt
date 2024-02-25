@@ -698,14 +698,14 @@ public open class ExtensibleBotBuilder {
 			 * required.
 			 */
 			public open var setupCallback: SentryAdapter.() -> Unit = {
-				this.init {
-					dsn = dsn
-					isDebug = debug
+				this.init { options ->
+					options.dsn = dsn
+					options.isDebug = debug
 
-					dist = distribution
-					environment = environment
-					release = release
-					serverName = serverName
+					options.dist = distribution
+					options.environment = environment
+					options.release = release
+					options.serverName = serverName
 				}
 			}
 
