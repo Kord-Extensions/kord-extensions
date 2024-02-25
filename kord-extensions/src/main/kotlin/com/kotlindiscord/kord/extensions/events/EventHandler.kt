@@ -145,6 +145,14 @@ public open class EventHandler<T : Event>(
         val eventName = event::class.simpleName
 
         if (sentry.enabled) {
+			context.sentry.context(
+				"event", eventName ?: "Unknown",
+			)
+
+			context.sentry.context(
+				"extension", extension.name
+			)
+
             context.sentry.breadcrumb(BreadcrumbType.Info) {
                 val messageBehavior = messageFor(event)
                 val thread = threadFor(event)?.asChannel()
@@ -176,10 +184,7 @@ public open class EventHandler<T : Event>(
             if (sentry.enabled) {
                 logger.trace { "Submitting error to sentry." }
 
-                val sentryId = context.sentry.captureThrowable(t) {
-                    tags["event.type"] = eventName ?: "Unknown"
-					tags["extension"] = extension.name
-                }
+                val sentryId = context.sentry.captureThrowable(t)
 
 				if (sentryId != null) {
 					logger.info { "Error submitted to Sentry: $sentryId" }

@@ -64,6 +64,15 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 	/** If enabled, adds the initial Sentry breadcrumb to the given context. **/
 	public open suspend fun firstSentryBreadcrumb(context: C, component: SelectMenu<*, *>) {
 		if (sentry.enabled) {
+			context.sentry.context(
+				"component",
+
+				mapOf(
+					"id" to component.id,
+					"type" to "select-menu"
+				)
+			)
+
 			context.sentry.breadcrumb(BreadcrumbType.User) {
 				category = "component.selectMenu"
 				message = "Select menu \"${component.id}\" submitted."
@@ -86,9 +95,6 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 			val sentryId = context.sentry.captureThrowable(t) {
 				channel = context.channel.asChannelOrNull()
 				user = context.user.asUserOrNull()
-
-				tags["component.id"] = button.id
-				tags["component.type"] = "select-menu"
 			}
 
 			val errorMessage = if (sentryId != null) {

@@ -43,6 +43,15 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext, 
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
     public open suspend fun firstSentryBreadcrumb(context: C, button: InteractionButtonWithAction<*, *>) {
         if (sentry.enabled) {
+			context.sentry.context(
+				"component",
+
+				mapOf(
+					"id" to button.id,
+					"type" to "button"
+				)
+			)
+
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "component.button"
                 message = "Button \"${button.id}\" clicked."
@@ -65,9 +74,6 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext, 
             val sentryId = context.sentry.captureThrowable(t) {
 				channel = context.channel.asChannelOrNull()
 				user = context.user.asUserOrNull()
-
-				tags["component.id"] = button.id
-				tags["component.type"] = "button"
             }
 
 			val errorMessage = if (sentryId != null) {

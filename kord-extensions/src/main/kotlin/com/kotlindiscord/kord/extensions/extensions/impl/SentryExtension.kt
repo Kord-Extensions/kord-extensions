@@ -47,7 +47,7 @@ public class SentryExtension : Extension() {
                 description = "extensions.sentry.commandDescription.short"
 
                 action {
-                    if (!sentryAdapter.hasEventId(arguments.id)) {
+                    if (!sentry.adapter.hasEventId(arguments.id)) {
                         respond {
                             content = translate("extensions.sentry.error.invalidId")
                         }
@@ -62,8 +62,8 @@ public class SentryExtension : Extension() {
                         arguments.feedback
                     )
 
-                    Sentry.captureUserFeedback(feedback)
-                    sentryAdapter.removeEventId(arguments.id)
+					sentry.captureFeedback(feedback)
+					sentry.adapter.removeEventId(arguments.id)
 
                     respond {
                         content = translate("extensions.sentry.thanks")
@@ -78,7 +78,7 @@ public class SentryExtension : Extension() {
                 aliasKey = "extensions.sentry.commandAliases"
 
                 action {
-                    if (!sentryAdapter.hasEventId(arguments.id)) {
+                    if (!sentry.adapter.hasEventId(arguments.id)) {
                         message.respond(
                             translate("extensions.sentry.error.invalidId"),
                             pingInReply = sentrySettings.pingInReply
@@ -96,7 +96,7 @@ public class SentryExtension : Extension() {
                     )
 
                     Sentry.captureUserFeedback(feedback)
-                    sentryAdapter.removeEventId(arguments.id)
+					sentry.adapter.removeEventId(arguments.id)
 
                     message.respond(
                         translate("extensions.sentry.thanks")

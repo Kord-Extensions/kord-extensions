@@ -65,6 +65,19 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
     public open suspend fun firstSentryBreadcrumb(context: C) {
         if (sentry.enabled) {
+			context.sentry.context(
+				"command",
+
+				mapOf(
+					"name" to name,
+					"type" to "user"
+				)
+			)
+
+			context.sentry.context(
+				"extension", extension.name
+			)
+
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "command.application.user"
                 message = "User command \"$name\" called."
@@ -124,11 +137,6 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
             val sentryId = context.sentry.captureThrowable(t) {
 				user = context.user.asUserOrNull()
 				channel = context.channel.asChannelOrNull()
-
-				tags["command.name"] = name
-				tags["command.type"] = "user"
-
-				tags["extension"] = extension.name
             }
 
 			val errorMessage = if (sentryId != null) {

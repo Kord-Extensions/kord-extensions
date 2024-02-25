@@ -188,6 +188,19 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
     /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
     public open suspend fun firstSentryBreadcrumb(context: C, commandObj: SlashCommand<*, *, *>) {
         if (sentry.enabled) {
+			context.sentry.context(
+				"command",
+
+				mapOf(
+					"name" to name,
+					"type" to "slash"
+				)
+			)
+
+			context.sentry.context(
+				"extension", extension.name
+			)
+
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "command.application.slash"
                 message = "Slash command \"${commandObj.name}\" called."
@@ -285,11 +298,6 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
             val sentryId = context.sentry.captureThrowable(t) {
 				channel = context.channel.asChannelOrNull()
 				user = context.user.asUserOrNull()
-
-				tags["command.name"] = name
-				tags["command.type"] = "slash"
-
-				tags["extension"] = extension.name
             }
 
 			val errorMessage = if (sentryId != null) {

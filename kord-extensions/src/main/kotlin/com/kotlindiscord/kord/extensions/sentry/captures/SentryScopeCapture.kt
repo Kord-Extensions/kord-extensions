@@ -49,6 +49,7 @@ public open class SentryScopeCapture : SentryCapture() {
 
 			scope.setContexts(
 				"channel",
+
 				mutableMapOf(
 					"id" to channel!!.id.toString(),
 					"name" to channel!!.sentryName
@@ -74,6 +75,7 @@ public open class SentryScopeCapture : SentryCapture() {
 
 			scope.setContexts(
 				"role",
+
 				mutableMapOf(
 					"id" to role!!.id.toString(),
 					"name" to role!!.name

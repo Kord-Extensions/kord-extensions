@@ -373,6 +373,26 @@ public open class ChatCommand<T : Arguments>(
         context.populate()
 
         if (sentry.enabled) {
+			val translatedName = when (this) {
+				is ChatSubCommand -> this.getFullTranslatedName(context.getLocale())
+				is ChatGroupCommand -> this.getFullTranslatedName(context.getLocale())
+
+				else -> this.getTranslatedName(context.getLocale())
+			}
+
+			context.sentry.context(
+				"command",
+
+				mapOf(
+					"name" to translatedName,
+					"type" to "chat"
+				)
+			)
+
+			context.sentry.context(
+				"extension", extension.name
+			)
+
             context.sentry.breadcrumb(BreadcrumbType.User) {
                 category = "command.chat"
                 message = "Command \"$name\" called."
@@ -432,21 +452,9 @@ public open class ChatCommand<T : Arguments>(
 
                 val channel = event.message.getChannelOrNull()
 
-                val translatedName = when (this) {
-                    is ChatSubCommand -> this.getFullTranslatedName(context.getLocale())
-                    is ChatGroupCommand -> this.getFullTranslatedName(context.getLocale())
-
-                    else -> this.getTranslatedName(context.getLocale())
-                }
-
                 val sentryId = context.sentry.captureThrowable(t) {
 					this.user = event.message.author
 					this.channel = channel
-
-					tags["command.name"] = translatedName
-					tags["command.type"] = "chat"
-
-					tags["extension"] = extension.name
                 }
 
                 logger.info { "Error submitted to Sentry: $sentryId" }

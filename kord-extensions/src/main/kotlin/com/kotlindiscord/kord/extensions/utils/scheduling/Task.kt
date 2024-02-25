@@ -95,6 +95,8 @@ public open class Task(
             }
 
             if (executions == 0UL) {
+				sentryContext.context("task", name)
+
                 sentryContext.breadcrumb(BreadcrumbType.Info) {
                     val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 
@@ -116,7 +118,6 @@ public open class Task(
                     if (sentry.enabled) {
                         sentryContext.captureThrowable(t) {
                             hints["executions"] = executions.toString()
-							tags["task"] = name
                         }
                     }
                 }
