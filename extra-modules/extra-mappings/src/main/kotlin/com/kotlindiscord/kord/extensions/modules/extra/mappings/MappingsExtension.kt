@@ -280,7 +280,7 @@ class MappingsExtension : Extension() {
 		slashCommand(
 			"mcp",
 			"MCP",
-			McpNamespaceReplacement,
+			MCPNamespace,
 			::MCPArguments
 		)
 
@@ -540,7 +540,7 @@ class MappingsExtension : Extension() {
 				"feather" -> FeatherNamespace
 				"hashed-mojang" -> MojangHashedNamespace
 				"legacy-yarn" -> LegacyYarnNamespace
-				"mcp" -> McpNamespaceReplacement
+				"mcp" -> MCPNamespace
 				"mojang" -> MojangNamespace
 				"plasma" -> PlasmaNamespace
 				"quilt-mappings" -> QuiltMappingsNamespace
@@ -847,8 +847,18 @@ class MappingsExtension : Extension() {
 					MappingsProvider.empty(arguments.namespace)
 				}
 
+				val defaultVersion = version
+					?: arguments.namespace.defaultVersion
+
+				if (defaultVersion == null) {
+					respond {
+						content = translate("command.mapping.nodefault", arguments.namespace.id)
+					}
+					return@withContext
+				}
+
 				provider.injectDefaultVersion(
-					arguments.namespace.getProvider(version ?: arguments.namespace.defaultVersion)
+					arguments.namespace.getProvider(defaultVersion)
 				)
 
 				sentry.breadcrumb(BreadcrumbType.Info) {

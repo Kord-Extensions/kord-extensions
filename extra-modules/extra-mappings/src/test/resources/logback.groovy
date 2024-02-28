@@ -6,13 +6,13 @@
 
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.joran.spi.ConsoleTarget
+import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.FileAppender
 
-def environment = System.getenv().getOrDefault("ENVIRONMENT", "production")
+def environment = System.getenv("ENVIRONMENT") ?: "dev"
 def defaultLevel = TRACE
 
 if (environment == "spam") {
-	statusListener(OnConsoleStatusListener)
-
 	logger("dev.kord.rest.DefaultGateway", TRACE)
 } else {
 	// Silence warning about missing native PRNG
