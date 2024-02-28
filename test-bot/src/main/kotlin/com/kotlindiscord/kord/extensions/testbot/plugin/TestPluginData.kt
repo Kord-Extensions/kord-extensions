@@ -13,6 +13,6 @@ import net.peanuuutz.tomlkt.TomlComment
 @Serializable
 @Suppress("DataClassShouldBeImmutable")  // No.
 public data class TestPluginData(
-    @TomlComment("A test value. Nothing special here.")
-    var key: String
+	@TomlComment("A test value. Nothing special here.")
+	var key: String,
 ) : Data

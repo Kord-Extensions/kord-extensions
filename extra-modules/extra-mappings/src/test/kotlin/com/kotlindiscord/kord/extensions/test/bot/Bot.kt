@@ -13,20 +13,20 @@ import com.kotlindiscord.kord.extensions.utils.env
 import org.koin.core.logger.Level
 
 suspend fun main() {
-    val bot = ExtensibleBot(env("TOKEN")) {
-        koinLogLevel = Level.DEBUG
+	val bot = ExtensibleBot(env("TOKEN")) {
+		koinLogLevel = Level.DEBUG
 
-        chatCommands {
-            check { isNotBot() }
-            enabled = true
-        }
+		chatCommands {
+			check { isNotBot() }
+			enabled = true
+		}
 
-        applicationCommands {
-            enabled = true
-        }
+		applicationCommands {
+			enabled = true
+		}
 
-        extensions {
-            extMappings {
+		extensions {
+			extMappings {
 //                namespaceCheck { namespace ->
 //                    {
 //                        if (namespace == YarnNamespace) {
@@ -36,9 +36,9 @@ suspend fun main() {
 //                        }
 //                    }
 //                }
-            }
-        }
-    }
+			}
+		}
+	}
 
-    bot.start()
+	bot.start()
 }

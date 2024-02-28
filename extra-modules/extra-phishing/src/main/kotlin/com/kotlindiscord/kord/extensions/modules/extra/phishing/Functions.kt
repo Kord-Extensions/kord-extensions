@@ -12,11 +12,11 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
  * Configure the phishing extension and add it to the bot.
  */
 inline fun ExtensibleBotBuilder.ExtensionsBuilder.extPhishing(builder: ExtPhishingBuilder.() -> Unit) {
-    val settings = ExtPhishingBuilder()
+	val settings = ExtPhishingBuilder()
 
-    builder(settings)
+	builder(settings)
 
-    settings.validate()
+	settings.validate()
 
-    add { PhishingExtension(settings) }
+	add { PhishingExtension(settings) }
 }

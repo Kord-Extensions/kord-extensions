@@ -136,7 +136,7 @@ public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
 		context: UnsafeSlashCommandContext<A, M>,
 		message: String,
 		failureType: FailureReason<*>,
-    ) {
+	) {
 		when (context.interactionResponse) {
 			is PublicMessageInteractionResponseBehavior -> context.respondPublic {
 				settings.failureResponseBuilder(this, message, failureType)

@@ -19,10 +19,10 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
  *  @param command Message command instance.
  */
 public abstract class UserCommandContext<C : UserCommandContext<C, M>, M : ModalForm>(
-    public open val event: UserCommandInteractionCreateEvent,
-    public override val command: UserCommand<C, M>,
-    cache: MutableStringKeyedMap<Any>
+	public open val event: UserCommandInteractionCreateEvent,
+	public override val command: UserCommand<C, M>,
+	cache: MutableStringKeyedMap<Any>,
 ) : ApplicationCommandContext(event, command, cache) {
-    /** Messages that this message command is being executed against. **/
-    public val targetUsers: Collection<User> by lazy { event.interaction.users.values }
+	/** Messages that this message command is being executed against. **/
+	public val targetUsers: Collection<User> by lazy { event.interaction.users.values }
 }

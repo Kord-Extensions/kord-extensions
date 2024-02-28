@@ -13,13 +13,13 @@ public abstract class DefaultingCoalescingConverterBuilder<T : Any> : Coalescing
 	override var ignoreErrors: Boolean = false
 
 	/** Value to use when none is provided, or when there's a parsing error and [ignoreErrors] is `true`. **/
-    public open lateinit var defaultValue: T
+	public open lateinit var defaultValue: T
 
-    override fun validateArgument() {
-        super.validateArgument()
+	override fun validateArgument() {
+		super.validateArgument()
 
-        if (!this::defaultValue.isInitialized) {
-            throw InvalidArgumentException(this, "Required field not provided: defaultValue")
-        }
-    }
+		if (!this::defaultValue.isInitialized) {
+			throw InvalidArgumentException(this, "Required field not provided: defaultValue")
+		}
+	}
 }

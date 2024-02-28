@@ -16,180 +16,180 @@ import com.kotlindiscord.kord.extensions.commands.converters.*
  * be wherever you like - as long as they're public.
  */
 public open class Arguments {
-    /** List of [Argument] objects, which wrap converters. **/
-    public val args: MutableList<Argument<*>> = mutableListOf()
+	/** List of [Argument] objects, which wrap converters. **/
+	public val args: MutableList<Argument<*>> = mutableListOf()
 
-    /**
-     * During an autocomplete interaction, whether to try to fill the defined arguments from that event before calling
-     * the registered callback.
-     *
-     * This is only required when you're using a converter that references a previous argument in its autocomplete
-     * callback, or you've provided a custom autocomplete callback that does the same thing.
-     *
-     * When enabled, this will only fill in previous arguments up to the current one.
-     * Don't enable this if you don't need it, as it may significantly slow down your bot's autocomplete processing.
-     */
-    public open val parseForAutocomplete: Boolean = false
+	/**
+	 * During an autocomplete interaction, whether to try to fill the defined arguments from that event before calling
+	 * the registered callback.
+	 *
+	 * This is only required when you're using a converter that references a previous argument in its autocomplete
+	 * callback, or you've provided a custom autocomplete callback that does the same thing.
+	 *
+	 * When enabled, this will only fill in previous arguments up to the current one.
+	 * Don't enable this if you don't need it, as it may significantly slow down your bot's autocomplete processing.
+	 */
+	public open val parseForAutocomplete: Boolean = false
 
-    /**
-     * Add a [SingleConverter] argument to this set of arguments.
-     *
-     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
-     * is intended to be used as a property delegate.
-     *
-     * @param displayName Display name used in help messages and as the key for keyword arguments.
-     * @param converter Converter instance to add.
-     *
-     * @return Argument converter to use as a delegate.
-     */
-    public fun <R : Any> arg(
-        displayName: String,
-        description: String,
-        converter: SingleConverter<R>
-    ): SingleConverter<R> {
-        args.add(Argument(displayName, description, converter))
+	/**
+	 * Add a [SingleConverter] argument to this set of arguments.
+	 *
+	 * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+	 * is intended to be used as a property delegate.
+	 *
+	 * @param displayName Display name used in help messages and as the key for keyword arguments.
+	 * @param converter Converter instance to add.
+	 *
+	 * @return Argument converter to use as a delegate.
+	 */
+	public fun <R : Any> arg(
+		displayName: String,
+		description: String,
+		converter: SingleConverter<R>,
+	): SingleConverter<R> {
+		args.add(Argument(displayName, description, converter))
 
-        return converter
-    }
+		return converter
+	}
 
-    /**
-     * Add a [DefaultingConverter] argument to this set of arguments.
-     *
-     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
-     * is intended to be used as a property delegate.
-     *
-     * @param displayName Display name used in help messages and as the key for keyword arguments.
-     * @param converter Converter instance to add.
-     *
-     * @return Argument converter to use as a delegate.
-     */
-    public fun <R : Any> arg(
-        displayName: String,
-        description: String,
-        converter: DefaultingConverter<R>
-    ): DefaultingConverter<R> {
-        args.add(Argument(displayName, description, converter))
+	/**
+	 * Add a [DefaultingConverter] argument to this set of arguments.
+	 *
+	 * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+	 * is intended to be used as a property delegate.
+	 *
+	 * @param displayName Display name used in help messages and as the key for keyword arguments.
+	 * @param converter Converter instance to add.
+	 *
+	 * @return Argument converter to use as a delegate.
+	 */
+	public fun <R : Any> arg(
+		displayName: String,
+		description: String,
+		converter: DefaultingConverter<R>,
+	): DefaultingConverter<R> {
+		args.add(Argument(displayName, description, converter))
 
-        return converter
-    }
+		return converter
+	}
 
-    /**
-     * Add an [OptionalConverter] argument to this set of arguments.
-     *
-     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
-     * is intended to be used as a property delegate.
-     *
-     * @param displayName Display name used in help messages and as the key for keyword arguments.
-     * @param converter Converter instance to add.
-     *
-     * @return Argument converter to use as a delegate.
-     */
-    public fun <R : Any> arg(
-        displayName: String,
-        description: String,
-        converter: OptionalConverter<R>
-    ): OptionalConverter<R> {
-        args.add(Argument(displayName, description, converter))
+	/**
+	 * Add an [OptionalConverter] argument to this set of arguments.
+	 *
+	 * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+	 * is intended to be used as a property delegate.
+	 *
+	 * @param displayName Display name used in help messages and as the key for keyword arguments.
+	 * @param converter Converter instance to add.
+	 *
+	 * @return Argument converter to use as a delegate.
+	 */
+	public fun <R : Any> arg(
+		displayName: String,
+		description: String,
+		converter: OptionalConverter<R>,
+	): OptionalConverter<R> {
+		args.add(Argument(displayName, description, converter))
 
-        return converter
-    }
+		return converter
+	}
 
-    /**
-     * Add a [ListConverter] argument to this set of arguments.
-     *
-     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
-     * is intended to be used as a property delegate.
-     *
-     * @param displayName Display name used in help messages and as the key for keyword arguments.
-     * @param converter Converter instance to add.
-     *
-     * @return Argument converter to use as a delegate.
-     */
-    public fun <R : Any> arg(
-        displayName: String,
-        description: String,
-        converter: ListConverter<R>
-    ): ListConverter<R> {
-        args.add(Argument(displayName, description, converter))
+	/**
+	 * Add a [ListConverter] argument to this set of arguments.
+	 *
+	 * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+	 * is intended to be used as a property delegate.
+	 *
+	 * @param displayName Display name used in help messages and as the key for keyword arguments.
+	 * @param converter Converter instance to add.
+	 *
+	 * @return Argument converter to use as a delegate.
+	 */
+	public fun <R : Any> arg(
+		displayName: String,
+		description: String,
+		converter: ListConverter<R>,
+	): ListConverter<R> {
+		args.add(Argument(displayName, description, converter))
 
-        return converter
-    }
+		return converter
+	}
 
-    /**
-     * Add a [CoalescingConverter] argument to this set of arguments.
-     *
-     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
-     * is intended to be used as a property delegate.
-     *
-     * @param displayName Display name used in help messages and as the key for keyword arguments.
-     * @param converter Converter instance to add.
-     *
-     * @return Argument converter to use as a delegate.
-     */
-    public fun <R : Any> arg(
-        displayName: String,
-        description: String,
-        converter: CoalescingConverter<R>
-    ): CoalescingConverter<R> {
-        args.add(Argument(displayName, description, converter))
+	/**
+	 * Add a [CoalescingConverter] argument to this set of arguments.
+	 *
+	 * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+	 * is intended to be used as a property delegate.
+	 *
+	 * @param displayName Display name used in help messages and as the key for keyword arguments.
+	 * @param converter Converter instance to add.
+	 *
+	 * @return Argument converter to use as a delegate.
+	 */
+	public fun <R : Any> arg(
+		displayName: String,
+		description: String,
+		converter: CoalescingConverter<R>,
+	): CoalescingConverter<R> {
+		args.add(Argument(displayName, description, converter))
 
-        return converter
-    }
+		return converter
+	}
 
-    /**
-     * Add a [DefaultingCoalescingConverter] argument to this set of arguments.
-     *
-     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
-     * is intended to be used as a property delegate.
-     *
-     * @param displayName Display name used in help messages and as the key for keyword arguments.
-     * @param converter Converter instance to add.
-     *
-     * @return Argument converter to use as a delegate.
-     */
-    public fun <R : Any> arg(
-        displayName: String,
-        description: String,
-        converter: DefaultingCoalescingConverter<R>
-    ): DefaultingCoalescingConverter<R> {
-        args.add(Argument(displayName, description, converter))
+	/**
+	 * Add a [DefaultingCoalescingConverter] argument to this set of arguments.
+	 *
+	 * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+	 * is intended to be used as a property delegate.
+	 *
+	 * @param displayName Display name used in help messages and as the key for keyword arguments.
+	 * @param converter Converter instance to add.
+	 *
+	 * @return Argument converter to use as a delegate.
+	 */
+	public fun <R : Any> arg(
+		displayName: String,
+		description: String,
+		converter: DefaultingCoalescingConverter<R>,
+	): DefaultingCoalescingConverter<R> {
+		args.add(Argument(displayName, description, converter))
 
-        return converter
-    }
+		return converter
+	}
 
-    /**
-     * Add an [OptionalCoalescingConverter] argument to this set of arguments.
-     *
-     * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
-     * is intended to be used as a property delegate.
-     *
-     * @param displayName Display name used in help messages and as the key for keyword arguments.
-     * @param converter Converter instance to add.
-     *
-     * @return Argument converter to use as a delegate.
-     */
-    public fun <R : Any> arg(
-        displayName: String,
-        description: String,
-        converter: OptionalCoalescingConverter<R>
-    ): OptionalCoalescingConverter<R> {
-        args.add(Argument(displayName, description, converter))
+	/**
+	 * Add an [OptionalCoalescingConverter] argument to this set of arguments.
+	 *
+	 * This is typically used indirectly, via an extension function that wraps it. It returns the converter, which
+	 * is intended to be used as a property delegate.
+	 *
+	 * @param displayName Display name used in help messages and as the key for keyword arguments.
+	 * @param converter Converter instance to add.
+	 *
+	 * @return Argument converter to use as a delegate.
+	 */
+	public fun <R : Any> arg(
+		displayName: String,
+		description: String,
+		converter: OptionalCoalescingConverter<R>,
+	): OptionalCoalescingConverter<R> {
+		args.add(Argument(displayName, description, converter))
 
-        return converter
-    }
+		return converter
+	}
 
-    /** Validation function that will throw an error if there's a problem with this Arguments class/subclass. **/
-    public open fun validate() {
-        val names: MutableSet<String> = mutableSetOf()
+	/** Validation function that will throw an error if there's a problem with this Arguments class/subclass. **/
+	public open fun validate() {
+		val names: MutableSet<String> = mutableSetOf()
 
-        args.forEach {
-            val name = it.displayName.lowercase()
+		args.forEach {
+			val name = it.displayName.lowercase()
 
-            if (name in names) {
-                error("Duplicate argument name: ${it.displayName}")
-            }
+			if (name in names) {
+				error("Duplicate argument name: ${it.displayName}")
+			}
 
-            names.add(name)
-        }
-    }
+			names.add(name)
+		}
+	}
 }

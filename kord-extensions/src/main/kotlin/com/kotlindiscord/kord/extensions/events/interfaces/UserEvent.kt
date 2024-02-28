@@ -11,12 +11,12 @@ import dev.kord.core.entity.User
 
 /** Generic interface for custom events that can contain user behaviors. Mostly used by checks. **/
 public interface UserEvent {
-    /** The user behavior for this event, if any. **/
-    public val user: UserBehavior?
+	/** The user behavior for this event, if any. **/
+	public val user: UserBehavior?
 
-    /** Get a User object, or throw if one can't be retrieved. **/
-    public suspend fun getUser(): User
+	/** Get a User object, or throw if one can't be retrieved. **/
+	public suspend fun getUser(): User
 
-    /** Get a User object, or return null if one can't be retrieved. **/
-    public suspend fun getUserOrNull(): User?
+	/** Get a User object, or return null if one can't be retrieved. **/
+	public suspend fun getUserOrNull(): User?
 }

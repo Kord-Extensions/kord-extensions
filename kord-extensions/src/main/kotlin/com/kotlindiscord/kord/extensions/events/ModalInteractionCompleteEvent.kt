@@ -15,6 +15,6 @@ import dev.kord.core.entity.interaction.ModalSubmitInteraction
  * @param interaction Interaction object provided by the corresponding event.
  */
 public class ModalInteractionCompleteEvent(
-    public val id: String,
-    public val interaction: ModalSubmitInteraction
+	public val id: String,
+	public val interaction: ModalSubmitInteraction,
 ) : KordExEvent

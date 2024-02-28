@@ -14,15 +14,15 @@ package com.kotlindiscord.kord.extensions.modules.extra.phishing
  * @property message Message to return to the user.
  */
 sealed class DetectionAction(val message: String) {
-    /** Ban 'em and delete the message. **/
-    object Ban : DetectionAction("you have been banned from the server")
+	/** Ban 'em and delete the message. **/
+	object Ban : DetectionAction("you have been banned from the server")
 
-    /** Delete the message. **/
-    object Delete : DetectionAction("it has been deleted")
+	/** Delete the message. **/
+	object Delete : DetectionAction("it has been deleted")
 
-    /** Kick 'em and delete the message. **/
-    object Kick : DetectionAction("you have been kicked from the server")
+	/** Kick 'em and delete the message. **/
+	object Kick : DetectionAction("you have been kicked from the server")
 
-    /** Don't do anything, just log it in the logs channel. **/
-    object LogOnly : DetectionAction("it has been logged for the server staff to review")
+	/** Don't do anything, just log it in the logs channel. **/
+	object LogOnly : DetectionAction("it has been logged for the server staff to review")
 }

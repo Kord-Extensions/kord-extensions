@@ -37,76 +37,76 @@ import kotlinx.coroutines.flow.firstOrNull
  * guild the command was invoked in.
  */
 @Converter(
-    "role",
+	"role",
 
-    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    imports = ["dev.kord.common.entity.Snowflake"],
-    builderFields = ["public var requiredGuild: (suspend () -> Snowflake)? = null"]
+	types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	imports = ["dev.kord.common.entity.Snowflake"],
+	builderFields = ["public var requiredGuild: (suspend () -> Snowflake)? = null"]
 )
 public class RoleConverter(
-    private var requiredGuild: (suspend () -> Snowflake)? = null,
-    override var validator: Validator<Role> = null
+	private var requiredGuild: (suspend () -> Snowflake)? = null,
+	override var validator: Validator<Role> = null,
 ) : SingleConverter<Role>() {
-    override val signatureTypeString: String = "converters.role.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.role.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        parsed = findRole(arg, context)
-            ?: throw DiscordRelayedException(
-                context.translate("converters.role.error.missing", replacements = arrayOf(arg))
-            )
+		parsed = findRole(arg, context)
+			?: throw DiscordRelayedException(
+				context.translate("converters.role.error.missing", replacements = arrayOf(arg))
+			)
 
-        return true
-    }
+		return true
+	}
 
-    private suspend fun findRole(arg: String, context: CommandContext): Role? {
-        val guildId: Snowflake = if (requiredGuild != null) {
-            requiredGuild!!.invoke()
-        } else {
-            context.getGuild()?.id
-        } ?: return null
+	private suspend fun findRole(arg: String, context: CommandContext): Role? {
+		val guildId: Snowflake = if (requiredGuild != null) {
+			requiredGuild!!.invoke()
+		} else {
+			context.getGuild()?.id
+		} ?: return null
 
-        val guild: Guild = kord.getGuildOrNull(guildId) ?: return null
+		val guild: Guild = kord.getGuildOrNull(guildId) ?: return null
 
-        @Suppress("MagicNumber")
-        return if (arg.startsWith("<@&") && arg.endsWith(">")) { // It's a mention
-            val id: String = arg.substring(3, arg.length - 1)
+		@Suppress("MagicNumber")
+		return if (arg.startsWith("<@&") && arg.endsWith(">")) { // It's a mention
+			val id: String = arg.substring(3, arg.length - 1)
 
-            try {
-                guild.getRole(Snowflake(id))
-            } catch (e: NumberFormatException) {
-                throw DiscordRelayedException(
-                    context.translate("converters.role.error.invalid", replacements = arrayOf(id))
-                )
-            }
-        } else {
-            try { // Try for a role ID first
-                guild.getRole(Snowflake(arg))
-            } catch (e: NumberFormatException) { // It's not an ID, let's try the name
-                guild.roles.firstOrNull { role ->
-                    role.name.equals(arg, true)
-                }
-            }
-        }
-    }
+			try {
+				guild.getRole(Snowflake(id))
+			} catch (e: NumberFormatException) {
+				throw DiscordRelayedException(
+					context.translate("converters.role.error.invalid", replacements = arrayOf(id))
+				)
+			}
+		} else {
+			try { // Try for a role ID first
+				guild.getRole(Snowflake(arg))
+			} catch (e: NumberFormatException) { // It's not an ID, let's try the name
+				guild.roles.firstOrNull { role ->
+					role.name.equals(arg, true)
+				}
+			}
+		}
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        RoleBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		RoleBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
-            val id = (option as? RoleOptionValue)?.value ?: return false
-            val guild = context.getGuild() ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
+			val id = (option as? RoleOptionValue)?.value ?: return false
+			val guild = context.getGuild() ?: return false
 
-            guild.getRoleOrNull(id) ?: return false
-        } else {
-            (option as? RoleOptionValue)?.resolvedObject ?: return false
-        }
+			guild.getRoleOrNull(id) ?: return false
+		} else {
+			(option as? RoleOptionValue)?.resolvedObject ?: return false
+		}
 
-        this.parsed = optionValue
+		this.parsed = optionValue
 
-        return true
-    }
+		return true
+	}
 }

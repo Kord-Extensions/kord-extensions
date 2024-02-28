@@ -22,7 +22,8 @@ public class ParentPluginClassLoader(
 		for (cl in childClassLoaders.values) {
 			try {
 				return cl.loadClassWithoutRecursion(name)
-			} catch (_: ClassNotFoundException) {}
+			} catch (_: ClassNotFoundException) {
+			}
 		}
 
 		return getSystemClassLoader().loadClass(name)

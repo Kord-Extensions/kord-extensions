@@ -24,18 +24,18 @@ internal const val MAX_RESULTS = 25 // set by Discord's API
  * [versions] is a supplier of the list of strings to autocomplete from.
  */
 inline fun <reified T> ConverterBuilder<T>.autocompleteVersions(
-    crossinline versions: AutoCompleteInteraction.() -> List<String>
+	crossinline versions: AutoCompleteInteraction.() -> List<String>,
 ) {
-    autoComplete {
-        val partiallyTyped = focusedOption.value as? String
+	autoComplete {
+		val partiallyTyped = focusedOption.value as? String
 
-        val map = versions()
-            .filter { it.startsWith(partiallyTyped ?: "") }
-            .take(MAX_RESULTS)
-            .associateBy { it }
+		val map = versions()
+			.filter { it.startsWith(partiallyTyped ?: "") }
+			.take(MAX_RESULTS)
+			.associateBy { it }
 
-        suggestStringMap(map, FilterStrategy.Contains)
-    }
+		suggestStringMap(map, FilterStrategy.Contains)
+	}
 }
 
 /**
@@ -43,11 +43,11 @@ inline fun <reified T> ConverterBuilder<T>.autocompleteVersions(
  */
 @Suppress("TooGenericExceptionCaught") // sorry, but that's what Linkie throws
 fun String.toNamespace(): Namespace = when (this) {
-    "hashed", "hashed_mojang", "hashed-mojang" -> MojangHashedNamespace
-    "quilt-mappings", "quilt" -> QuiltMappingsNamespace
-    else -> try {
-        Namespaces[this]
-    } catch (e: NullPointerException) {
-        throw DiscordRelayedException("Invalid namespace: $this")
-    }
+	"hashed", "hashed_mojang", "hashed-mojang" -> MojangHashedNamespace
+	"quilt-mappings", "quilt" -> QuiltMappingsNamespace
+	else -> try {
+		Namespaces[this]
+	} catch (e: NullPointerException) {
+		throw DiscordRelayedException("Invalid namespace: $this")
+	}
 }

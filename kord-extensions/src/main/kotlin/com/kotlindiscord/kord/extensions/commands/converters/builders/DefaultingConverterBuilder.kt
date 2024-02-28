@@ -10,17 +10,17 @@ import com.kotlindiscord.kord.extensions.InvalidArgumentException
 
 /** Converter builder for defaulting converters. **/
 public abstract class DefaultingConverterBuilder<T : Any> : ConverterBuilder<T>() {
-    /** Whether to ignore parsing errors when a value is provided. **/
-    public var ignoreErrors: Boolean = false
+	/** Whether to ignore parsing errors when a value is provided. **/
+	public var ignoreErrors: Boolean = false
 
-    /** Value to use when none is provided, or when there's a parsing error and [ignoreErrors] is `true`. **/
-    public open lateinit var defaultValue: T
+	/** Value to use when none is provided, or when there's a parsing error and [ignoreErrors] is `true`. **/
+	public open lateinit var defaultValue: T
 
-    override fun validateArgument() {
-        super.validateArgument()
+	override fun validateArgument() {
+		super.validateArgument()
 
-        if (!this::defaultValue.isInitialized) {
-            throw InvalidArgumentException(this, "Required field not provided: defaultValue")
-        }
-    }
+		if (!this::defaultValue.isInitialized) {
+			throw InvalidArgumentException(this, "Required field not provided: defaultValue")
+		}
+	}
 }

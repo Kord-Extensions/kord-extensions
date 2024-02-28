@@ -16,36 +16,36 @@ import java.util.*
 private typealias ColorMap = LinkedHashMap<String, Color>
 
 private val keyMap: ColorMap = linkedMapOf(
-    "utils.colors.black" to DISCORD_BLACK,
-    "utils.colors.blurple" to DISCORD_BLURPLE,
-    "utils.colors.fuchsia" to DISCORD_FUCHSIA,
-    "utils.colors.green" to DISCORD_GREEN,
-    "utils.colors.red" to DISCORD_RED,
-    "utils.colors.white" to DISCORD_WHITE,
-    "utils.colors.yellow" to DISCORD_YELLOW,
+	"utils.colors.black" to DISCORD_BLACK,
+	"utils.colors.blurple" to DISCORD_BLURPLE,
+	"utils.colors.fuchsia" to DISCORD_FUCHSIA,
+	"utils.colors.green" to DISCORD_GREEN,
+	"utils.colors.red" to DISCORD_RED,
+	"utils.colors.white" to DISCORD_WHITE,
+	"utils.colors.yellow" to DISCORD_YELLOW,
 )
 
 /** Simple object that caches translated colors per locale. **/
 public object ColorCache : KordExKoinComponent {
-    private val translations: TranslationsProvider by inject()
-    private val valueCache: MutableMap<Locale, ColorMap> = mutableMapOf()
+	private val translations: TranslationsProvider by inject()
+	private val valueCache: MutableMap<Locale, ColorMap> = mutableMapOf()
 
-    /** Return a mapping of all translated colour names to Color objects, based on the given locale. **/
-    public fun getColors(locale: Locale): ColorMap {
-        if (valueCache[locale] == null) {
-            val colorMap: ColorMap = linkedMapOf()
+	/** Return a mapping of all translated colour names to Color objects, based on the given locale. **/
+	public fun getColors(locale: Locale): ColorMap {
+		if (valueCache[locale] == null) {
+			val colorMap: ColorMap = linkedMapOf()
 
-            keyMap.forEach { (key, value) ->
-                val result = translations.translate(key, locale)
+			keyMap.forEach { (key, value) ->
+				val result = translations.translate(key, locale)
 
-                result.split(",").map { it.trim() }.forEach {
-                    colorMap[it] = value
-                }
-            }
+				result.split(",").map { it.trim() }.forEach {
+					colorMap[it] = value
+				}
+			}
 
-            valueCache[locale] = colorMap
-        }
+			valueCache[locale] = colorMap
+		}
 
-        return valueCache[locale]!!
-    }
+		return valueCache[locale]!!
+	}
 }

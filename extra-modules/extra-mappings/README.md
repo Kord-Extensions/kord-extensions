@@ -13,15 +13,16 @@ If you're looking for older versions (and older tags), you can find them
 
 # Getting Started
 
-* **Maven repo:** Maven Central for releases, `https://s01.oss.sonatype.org/content/repositories/snapshots` for snapshots
+* **Maven repo:** Maven Central for releases, `https://s01.oss.sonatype.org/content/repositories/snapshots` for
+  snapshots
 * **Maven coordinates:** `com.kotlindiscord.kord.extensions:extra-mappings:VERSION`
 
 * Some extra Maven repos are required:
-    * **FabricMC**: `https://maven.fabricmc.net`
-    * **JitPack**: `https://jitpack.io`
-    * **QuiltMC (Releases)**: `https://maven.quiltmc.org/repository/release`
-    * **QuiltMC (Snapshots)**: `https://maven.quiltmc.org/repository/snapshot`
-    * **Shedaniel**: `https://maven.shedaniel.me`
+	* **FabricMC**: `https://maven.fabricmc.net`
+	* **JitPack**: `https://jitpack.io`
+	* **QuiltMC (Releases)**: `https://maven.quiltmc.org/repository/release`
+	* **QuiltMC (Snapshots)**: `https://maven.quiltmc.org/repository/snapshot`
+	* **Shedaniel**: `https://maven.shedaniel.me`
 
 At its simplest, you can add this extension directly to your bot with no further configuration. For example:
 

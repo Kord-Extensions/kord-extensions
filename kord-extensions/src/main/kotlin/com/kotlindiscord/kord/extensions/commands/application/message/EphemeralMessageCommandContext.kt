@@ -14,8 +14,8 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
 /** Ephemeral-only message command context. **/
 public class EphemeralMessageCommandContext<M : ModalForm>(
-    override val event: MessageCommandInteractionCreateEvent,
-    override val command: MessageCommand<EphemeralMessageCommandContext<M>, M>,
-    override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>,
+	override val event: MessageCommandInteractionCreateEvent,
+	override val command: MessageCommand<EphemeralMessageCommandContext<M>, M>,
+	override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
+	cache: MutableStringKeyedMap<Any>,
 ) : MessageCommandContext<EphemeralMessageCommandContext<M>, M>(event, command, cache), EphemeralInteractionContext

@@ -14,7 +14,6 @@ import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
-import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.builder.message.embed
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -23,88 +22,88 @@ import kotlinx.datetime.Clock
 public typealias LogBody = (suspend () -> Any?)?
 
 public suspend fun Extension.logRaw(builder: MessageCreateBuilder.() -> Unit): Message? {
-    val channel = kord.getGuildOrNull(TEST_SERVER_ID)
-        ?.channels
-        ?.filter { it is TextChannel }
-        ?.first {
-            it.name == "test-logs"
-        }
+	val channel = kord.getGuildOrNull(TEST_SERVER_ID)
+		?.channels
+		?.filter { it is TextChannel }
+		?.first {
+			it.name == "test-logs"
+		}
 
-    return (channel as? TextChannel)?.createMessage(builder)
+	return (channel as? TextChannel)?.createMessage(builder)
 }
 
 public suspend fun CommandContext.log(level: LogLevel, body: LogBody = null): Message? {
-    if (!level.isEnabled()) {
-        return null
-    }
+	if (!level.isEnabled()) {
+		return null
+	}
 
-    val desc = body?.invoke()?.toString()
+	val desc = body?.invoke()?.toString()
 
-    return command.extension.logRaw {
-        embed {
-            this.color = level.color
+	return command.extension.logRaw {
+		embed {
+			this.color = level.color
 
-            title = "[${level.name}] Command log: $commandName"
-            description = desc
+			title = "[${level.name}] Command log: $commandName"
+			description = desc
 
-            field {
-                name = "Extension"
-                value = command.extension.name
-            }
+			field {
+				name = "Extension"
+				value = command.extension.name
+			}
 
-            timestamp = Clock.System.now()
-        }
-    }
+			timestamp = Clock.System.now()
+		}
+	}
 }
 
 public suspend fun CommandContext.logError(body: LogBody = null): Message? =
-    log(LogLevel.ERROR, body)
+	log(LogLevel.ERROR, body)
 
 public suspend fun CommandContext.logWarning(body: LogBody = null): Message? =
-    log(LogLevel.WARNING, body)
+	log(LogLevel.WARNING, body)
 
 public suspend fun CommandContext.logInfo(body: LogBody = null): Message? =
-    log(LogLevel.INFO, body)
+	log(LogLevel.INFO, body)
 
 public suspend fun CommandContext.logDebug(body: LogBody = null): Message? =
-    log(LogLevel.DEBUG, body)
+	log(LogLevel.DEBUG, body)
 
 public suspend fun EventContext<*>.log(
-    level: LogLevel,
-    body: LogBody = null
+	level: LogLevel,
+	body: LogBody = null,
 ): Message? {
-    if (!level.isEnabled()) {
-        return null
-    }
+	if (!level.isEnabled()) {
+		return null
+	}
 
-    val desc = body?.invoke()?.toString()
-    val eventClass = event::class.simpleName
+	val desc = body?.invoke()?.toString()
+	val eventClass = event::class.simpleName
 
-    return eventHandler.extension.logRaw {
-        embed {
-            this.color = level.color
+	return eventHandler.extension.logRaw {
+		embed {
+			this.color = level.color
 
-            title = "[${level.name}] Event log: $eventClass"
-            description = desc
+			title = "[${level.name}] Event log: $eventClass"
+			description = desc
 
-            field {
-                name = "Extension"
-                value = eventHandler.extension.name
-            }
+			field {
+				name = "Extension"
+				value = eventHandler.extension.name
+			}
 
-            timestamp = Clock.System.now()
-        }
-    }
+			timestamp = Clock.System.now()
+		}
+	}
 }
 
 public suspend fun EventContext<*>.logError(body: LogBody = null): Message? =
-    log(LogLevel.ERROR, body)
+	log(LogLevel.ERROR, body)
 
 public suspend fun EventContext<*>.logWarning(body: LogBody = null): Message? =
-    log(LogLevel.WARNING, body)
+	log(LogLevel.WARNING, body)
 
 public suspend fun EventContext<*>.logInfo(body: LogBody = null): Message? =
-    log(LogLevel.INFO, body)
+	log(LogLevel.INFO, body)
 
 public suspend fun EventContext<*>.logDebug(body: LogBody = null): Message? =
-    log(LogLevel.DEBUG, body)
+	log(LogLevel.DEBUG, body)

@@ -10,5 +10,5 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 
 /** Set up and add the PluralKit extension to your bot. **/
 fun ExtensibleBotBuilder.ExtensionsBuilder.extPluralKit() {
-    add(::PKExtension)
+	add(::PKExtension)
 }

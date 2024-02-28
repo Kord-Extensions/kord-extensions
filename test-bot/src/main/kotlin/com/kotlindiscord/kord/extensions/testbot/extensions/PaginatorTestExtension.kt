@@ -13,143 +13,143 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 
 public class PaginatorTestExtension : Extension() {
-    override val name: String = "test-paginator"
+	override val name: String = "test-paginator"
 
-    override suspend fun setup() {
-        publicSlashCommand {
-            name = "paginator"
-            description = "Paginator testing commands."
+	override suspend fun setup() {
+		publicSlashCommand {
+			name = "paginator"
+			description = "Paginator testing commands."
 
-            publicSubCommand {
-                name = "default"
-                description = "Test a default-grouped paginator with pages."
+			publicSubCommand {
+				name = "default"
+				description = "Test a default-grouped paginator with pages."
 
-                action {
-                    editingPaginator {
-                        page {
-                            description = "Page one!"
-                        }
+				action {
+					editingPaginator {
+						page {
+							description = "Page one!"
+						}
 
-                        page {
-                            description = "Page two!"
-                        }
+						page {
+							description = "Page two!"
+						}
 
-                        page {
-                            description = "Page three!"
-                        }
-                    }.send()
-                }
-            }
+						page {
+							description = "Page three!"
+						}
+					}.send()
+				}
+			}
 
-            publicSubCommand {
-                name = "chunked"
-                description = "Test a chunked default-group paginator with pages."
+			publicSubCommand {
+				name = "chunked"
+				description = "Test a chunked default-group paginator with pages."
 
-                action {
-                    editingPaginator {
+				action {
+					editingPaginator {
 						chunkedPages = 3
 
-                        page {
-                            description = "Page one!"
-                        }
+						page {
+							description = "Page one!"
+						}
 
-                        page {
-                            description = "Page one!"
-                        }
+						page {
+							description = "Page one!"
+						}
 
-                        page {
-                            description = "Page one!"
-                        }
+						page {
+							description = "Page one!"
+						}
 
-                        page {
-                            description = "Page two!"
-                        }
+						page {
+							description = "Page two!"
+						}
 
-                        page {
-                            description = "Page two!"
-                        }
+						page {
+							description = "Page two!"
+						}
 
-                        page {
-                            description = "Page two!"
-                        }
+						page {
+							description = "Page two!"
+						}
 
-                        page {
-                            description = "Page three (with only 2 chunks)"
-                        }
+						page {
+							description = "Page three (with only 2 chunks)"
+						}
 
-                        page {
-                            description = "Page three (with only 2 chunks)"
-                        }
-                    }.send()
-                }
-            }
+						page {
+							description = "Page three (with only 2 chunks)"
+						}
+					}.send()
+				}
+			}
 
-            publicSubCommand {
-                name = "chunked-small"
-                description = "Test a chunked default-group paginator with one page."
+			publicSubCommand {
+				name = "chunked-small"
+				description = "Test a chunked default-group paginator with one page."
 
-                action {
-                    editingPaginator {
+				action {
+					editingPaginator {
 						chunkedPages = 2
 
-                        page {
+						page {
 							title = "Page one!"
-                            description = "Page one!"
-                        }
-                    }.send()
-                }
-            }
+							description = "Page one!"
+						}
+					}.send()
+				}
+			}
 
-            publicSubCommand {
-                name = "custom-one"
-                description = "Test a custom-grouped paginator with pages, approach 1."
+			publicSubCommand {
+				name = "custom-one"
+				description = "Test a custom-grouped paginator with pages, approach 1."
 
-                action {
-                    editingPaginator("custom") {
-                        page(group = "custom") {
-                            description = "Page one!"
-                        }
+				action {
+					editingPaginator("custom") {
+						page(group = "custom") {
+							description = "Page one!"
+						}
 
-                        page(group = "custom") {
-                            description = "Page two!"
-                        }
+						page(group = "custom") {
+							description = "Page two!"
+						}
 
-                        page(group = "custom") {
-                            description = "Page three!"
-                        }
-                    }.send()
-                }
-            }
+						page(group = "custom") {
+							description = "Page three!"
+						}
+					}.send()
+				}
+			}
 
-            publicSubCommand {
-                name = "custom-two"
-                description = "Test a custom-grouped paginator with pages, approach 2."
+			publicSubCommand {
+				name = "custom-two"
+				description = "Test a custom-grouped paginator with pages, approach 2."
 
-                action {
-                    editingPaginator("custom") {
-                        page("custom") {
-                            description = "Page one!"
-                        }
+				action {
+					editingPaginator("custom") {
+						page("custom") {
+							description = "Page one!"
+						}
 
-                        page("custom") {
-                            description = "Page two!"
-                        }
+						page("custom") {
+							description = "Page two!"
+						}
 
-                        page("custom") {
-                            description = "Page three!"
-                        }
-                    }.send()
-                }
-            }
+						page("custom") {
+							description = "Page three!"
+						}
+					}.send()
+				}
+			}
 
-            publicSubCommand {
-                name = "custom-pageless"
-                description = "Test a custom-grouped paginator without pages."
+			publicSubCommand {
+				name = "custom-pageless"
+				description = "Test a custom-grouped paginator without pages."
 
-                action {
-                    editingPaginator("custom") { }.send()
-                }
-            }
-        }
-    }
+				action {
+					editingPaginator("custom") { }.send()
+				}
+			}
+		}
+	}
 }

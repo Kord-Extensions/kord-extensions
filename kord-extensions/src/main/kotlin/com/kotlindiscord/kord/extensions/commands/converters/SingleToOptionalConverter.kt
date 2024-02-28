@@ -60,7 +60,7 @@ public class SingleToOptionalConverter<T : Any>(
 	override suspend fun handleError(
 		t: Throwable,
 		context: CommandContext,
-    ): String = singleConverter.handleError(t, context)
+	): String = singleConverter.handleError(t, context)
 
 	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
 		val option = singleConverter.toSlashOption(arg)

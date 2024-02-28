@@ -40,178 +40,178 @@ import java.time.LocalDateTime
  * @see parseDurationJ8
  */
 @Converter(
-    names = ["j8Duration"],
-    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL],
-    imports = ["java.time.*"],
+	names = ["j8Duration"],
+	types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL],
+	imports = ["java.time.*"],
 
-    builderFields = [
-        "public var longHelp: Boolean = true",
-        "public var positiveOnly: Boolean = true",
-    ],
+	builderFields = [
+		"public var longHelp: Boolean = true",
+		"public var positiveOnly: Boolean = true",
+	],
 )
 public class J8DurationCoalescingConverter(
-    public val longHelp: Boolean = true,
-    public val positiveOnly: Boolean = true,
-    shouldThrow: Boolean = false,
-    override var validator: Validator<ChronoContainer> = null
+	public val longHelp: Boolean = true,
+	public val positiveOnly: Boolean = true,
+	shouldThrow: Boolean = false,
+	override var validator: Validator<ChronoContainer> = null,
 ) : CoalescingConverter<ChronoContainer>(shouldThrow) {
-    override val signatureTypeString: String = "converters.duration.error.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.duration.error.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    private val logger: KLogger = KotlinLogging.logger {}
+	private val logger: KLogger = KotlinLogging.logger {}
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
-        val durations: MutableList<String> = mutableListOf<String>()
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+		val durations: MutableList<String> = mutableListOf<String>()
 
-        val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
-            .split(",")
-            .toMutableList()
-            .apply { remove(EMPTY_VALUE_STRING) }
+		val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
+			.split(",")
+			.toMutableList()
+			.apply { remove(EMPTY_VALUE_STRING) }
 
-        var skipNext: Boolean = false
+		var skipNext: Boolean = false
 
-        val args: List<String> = named ?: parser?.run {
-            val tokens: MutableList<String> = mutableListOf()
+		val args: List<String> = named ?: parser?.run {
+			val tokens: MutableList<String> = mutableListOf()
 
-            while (hasNext) {
-                val nextToken: PositionalArgumentToken? = peekNext()
+			while (hasNext) {
+				val nextToken: PositionalArgumentToken? = peekNext()
 
-                if (nextToken!!.data.all { J8DurationParser.charValid(it, context.getLocale()) }) {
-                    tokens.add(parseNext()!!.data)
-                } else {
-                    break
-                }
-            }
+				if (nextToken!!.data.all { J8DurationParser.charValid(it, context.getLocale()) }) {
+					tokens.add(parseNext()!!.data)
+				} else {
+					break
+				}
+			}
 
-            tokens
-        } ?: return 0
+			tokens
+		} ?: return 0
 
-        @Suppress("LoopWithTooManyJumpStatements")  // Well you rewrite it then, detekt
-        for (index in 0 until args.size) {
-            if (skipNext) {
-                skipNext = false
+		@Suppress("LoopWithTooManyJumpStatements")  // Well you rewrite it then, detekt
+		for (index in 0 until args.size) {
+			if (skipNext) {
+				skipNext = false
 
-                continue
-            }
+				continue
+			}
 
-            val arg: String = args[index]
+			val arg: String = args[index]
 
-            if (arg in ignoredWords) continue
+			if (arg in ignoredWords) continue
 
-            try {
-                // We do it this way so that we stop parsing as soon as an invalid string is found
-                J8DurationParser.parse(arg, context.getLocale())
-                J8DurationParser.parse(durations.joinToString("") + arg, context.getLocale())
+			try {
+				// We do it this way so that we stop parsing as soon as an invalid string is found
+				J8DurationParser.parse(arg, context.getLocale())
+				J8DurationParser.parse(durations.joinToString("") + arg, context.getLocale())
 
-                durations.add(arg)
-            } catch (e: DurationParserException) {
-                try {
-                    val nextIndex: Int = index + 1
+				durations.add(arg)
+			} catch (e: DurationParserException) {
+				try {
+					val nextIndex: Int = index + 1
 
-                    if (nextIndex >= args.size) {
-                        throw e
-                    }
+					if (nextIndex >= args.size) {
+						throw e
+					}
 
-                    val nextArg: String = args[nextIndex]
-                    val combined: String = arg + nextArg
+					val nextArg: String = args[nextIndex]
+					val combined: String = arg + nextArg
 
-                    J8DurationParser.parse(combined, context.getLocale())
-                    J8DurationParser.parse(durations.joinToString("") + combined, context.getLocale())
+					J8DurationParser.parse(combined, context.getLocale())
+					J8DurationParser.parse(durations.joinToString("") + combined, context.getLocale())
 
-                    durations.add(combined)
-                    skipNext = true
-                } catch (t: InvalidTimeUnitException) {
-                    throwIfNecessary(t, context)
+					durations.add(combined)
+					skipNext = true
+				} catch (t: InvalidTimeUnitException) {
+					throwIfNecessary(t, context)
 
-                    break
-                } catch (t: DurationParserException) {
-                    throwIfNecessary(t, context)
+					break
+				} catch (t: DurationParserException) {
+					throwIfNecessary(t, context)
 
-                    break
-                }
-            }
-        }
+					break
+				}
+			}
+		}
 
-        try {
-            val result: ChronoContainer = J8DurationParser.parse(
-                durations.joinToString(""),
-                context.getLocale()
-            )
+		try {
+			val result: ChronoContainer = J8DurationParser.parse(
+				durations.joinToString(""),
+				context.getLocale()
+			)
 
-            if (positiveOnly) {
-                val normalized: ChronoContainer = result.clone()
+			if (positiveOnly) {
+				val normalized: ChronoContainer = result.clone()
 
-                normalized.normalize(LocalDateTime.now())
+				normalized.normalize(LocalDateTime.now())
 
-                if (!normalized.isPositive()) {
-                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
-                }
-            }
+				if (!normalized.isPositive()) {
+					throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+				}
+			}
 
-            parsed = result
-        } catch (e: InvalidTimeUnitException) {
-            throwIfNecessary(e, context, true)
-        } catch (e: DurationParserException) {
-            throwIfNecessary(e, context, true)
-        }
+			parsed = result
+		} catch (e: InvalidTimeUnitException) {
+			throwIfNecessary(e, context, true)
+		} catch (e: DurationParserException) {
+			throwIfNecessary(e, context, true)
+		}
 
-        return durations.size
-    }
+		return durations.size
+	}
 
-    private suspend fun throwIfNecessary(
-        e: Exception,
-        context: CommandContext,
-        override: Boolean = false
-    ): Unit = if (shouldThrow || override) {
-        when (e) {
-            is InvalidTimeUnitException -> {
-                val message: String = context.translate(
-                    "converters.duration.error.invalidUnit",
-                    replacements = arrayOf(e.unit)
-                ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+	private suspend fun throwIfNecessary(
+		e: Exception,
+		context: CommandContext,
+		override: Boolean = false,
+	): Unit = if (shouldThrow || override) {
+		when (e) {
+			is InvalidTimeUnitException -> {
+				val message: String = context.translate(
+					"converters.duration.error.invalidUnit",
+					replacements = arrayOf(e.unit)
+				) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-                throw DiscordRelayedException(message)
-            }
+				throw DiscordRelayedException(message)
+			}
 
-            is DurationParserException -> throw DiscordRelayedException(e.error)
+			is DurationParserException -> throw DiscordRelayedException(e.error)
 
-            else -> throw e
-        }
-    } else {
-        logger.debug(e) { "Error thrown during duration parsing" }
-    }
+			else -> throw e
+		}
+	} else {
+		logger.debug(e) { "Error thrown during duration parsing" }
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val arg: String = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val arg: String = (option as? StringOptionValue)?.value ?: return false
 
-        try {
-            val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
+		try {
+			val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
 
-            if (positiveOnly) {
-                val normalized: ChronoContainer = result.clone()
+			if (positiveOnly) {
+				val normalized: ChronoContainer = result.clone()
 
-                normalized.normalize(LocalDateTime.now())
+				normalized.normalize(LocalDateTime.now())
 
-                if (!normalized.isPositive()) {
-                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
-                }
-            }
+				if (!normalized.isPositive()) {
+					throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+				}
+			}
 
-            parsed = result
-        } catch (e: InvalidTimeUnitException) {
-            val message: String = context.translate(
-                "converters.duration.error.invalidUnit",
-                replacements = arrayOf(e.unit)
-            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			parsed = result
+		} catch (e: InvalidTimeUnitException) {
+			val message: String = context.translate(
+				"converters.duration.error.invalidUnit",
+				replacements = arrayOf(e.unit)
+			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw DiscordRelayedException(message)
-        } catch (e: DurationParserException) {
-            throw DiscordRelayedException(e.error)
-        }
+			throw DiscordRelayedException(message)
+		} catch (e: DurationParserException) {
+			throw DiscordRelayedException(e.error)
+		}
 
-        return true
-    }
+		return true
+	}
 }

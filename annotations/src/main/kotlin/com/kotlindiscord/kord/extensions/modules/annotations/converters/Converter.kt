@@ -35,22 +35,22 @@ package com.kotlindiscord.kord.extensions.modules.annotations.converters
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 public annotation class Converter(
-    public vararg val names: String,
+	public vararg val names: String,
 
-    public val types: Array<ConverterType>,
-    public val imports: Array<String> = [],
+	public val types: Array<ConverterType>,
+	public val imports: Array<String> = [],
 
-    public val builderConstructorArguments: Array<String> = [],
-    public val builderGeneric: String = "",
-    public val builderFields: Array<String> = [],
-    public val builderSuffixedWhere: String = "",
+	public val builderConstructorArguments: Array<String> = [],
+	public val builderGeneric: String = "",
+	public val builderFields: Array<String> = [],
+	public val builderSuffixedWhere: String = "",
 
-    public val builderBuildFunctionPreStatements: Array<String> = [],
-    public val builderBuildFunctionStatements: Array<String> = [],
-    public val builderInitStatements: Array<String> = [],
-    public val builderExtraStatements: Array<String> = [],
+	public val builderBuildFunctionPreStatements: Array<String> = [],
+	public val builderBuildFunctionStatements: Array<String> = [],
+	public val builderInitStatements: Array<String> = [],
+	public val builderExtraStatements: Array<String> = [],
 
-    public val functionBuilderArguments: Array<String> = [],
-    public val functionGeneric: String = "",
-    public val functionSuffixedWhere: String = "",
+	public val functionBuilderArguments: Array<String> = [],
+	public val functionGeneric: String = "",
+	public val functionSuffixedWhere: String = "",
 )

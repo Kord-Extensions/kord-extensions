@@ -15,13 +15,13 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * Interface representing converters that can be made use of in slash commands.
  */
 public interface SlashCommandConverter {
-    /**
-     * Return a slash command option that corresponds to this converter.
-     *
-     * Only applicable to converter types that make sense for slash commands.
-     */
-    public suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder
+	/**
+	 * Return a slash command option that corresponds to this converter.
+	 *
+	 * Only applicable to converter types that make sense for slash commands.
+	 */
+	public suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder
 
-    /** Use the given [option] taken straight from the slash command invocation to fill the converter. **/
-    public suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean
+	/** Use the given [option] taken straight from the slash command invocation to fill the converter. **/
+	public suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean
 }

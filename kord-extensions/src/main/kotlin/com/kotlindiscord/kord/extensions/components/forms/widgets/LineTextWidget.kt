@@ -10,5 +10,5 @@ import dev.kord.common.entity.TextInputStyle
 
 /** A text widget that supports a single line of text. **/
 public class LineTextWidget : TextInputWidget<LineTextWidget>() {
-    override val style: TextInputStyle = TextInputStyle.Short
+	override val style: TextInputStyle = TextInputStyle.Short
 }

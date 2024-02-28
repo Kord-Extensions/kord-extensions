@@ -17,22 +17,22 @@ import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicSelectMenuResponseBuilder =
-    (suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
+	(suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only channel select (dropdown) menu. **/
 public open class PublicChannelSelectMenu<M : ModalForm>(
-    timeoutTask: Task?,
-    public override val modal: (() -> M)? = null,
+	timeoutTask: Task?,
+	public override val modal: (() -> M)? = null,
 ) : PublicSelectMenu<PublicChannelSelectMenuContext<M>, M>(timeoutTask), ChannelSelectMenu {
-    override var channelTypes: MutableList<ChannelType> = mutableListOf()
+	override var channelTypes: MutableList<ChannelType> = mutableListOf()
 
-    override fun createContext(
-        event: SelectMenuInteractionCreateEvent,
-        interactionResponse: PublicMessageInteractionResponseBehavior,
-        cache: MutableStringKeyedMap<Any>,
-    ): PublicChannelSelectMenuContext<M> = PublicChannelSelectMenuContext(
-        this, event, interactionResponse, cache
-    )
+	override fun createContext(
+		event: SelectMenuInteractionCreateEvent,
+		interactionResponse: PublicMessageInteractionResponseBehavior,
+		cache: MutableStringKeyedMap<Any>,
+	): PublicChannelSelectMenuContext<M> = PublicChannelSelectMenuContext(
+		this, event, interactionResponse, cache
+	)
 
-    override fun apply(builder: ActionRowBuilder): Unit = applyChannelSelectMenu(this, builder)
+	override fun apply(builder: ActionRowBuilder): Unit = applyChannelSelectMenu(this, builder)
 }

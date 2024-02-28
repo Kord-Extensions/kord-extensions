@@ -15,17 +15,17 @@ import kotlinx.serialization.encoding.Encoder
 
 /** Simple serializer for the [StorageType] sealed class. **/
 public class StorageTypeSerializer : KSerializer<StorageType> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("StorageType", PrimitiveKind.STRING)
+	override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("StorageType", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): StorageType =
-        when (val string = decoder.decodeString()) {
-            StorageType.Config.type -> StorageType.Config
-            StorageType.Data.type -> StorageType.Data
+	override fun deserialize(decoder: Decoder): StorageType =
+		when (val string = decoder.decodeString()) {
+			StorageType.Config.type -> StorageType.Config
+			StorageType.Data.type -> StorageType.Data
 
-            else -> error("Unknown storage type: $string")
-        }
+			else -> error("Unknown storage type: $string")
+		}
 
-    override fun serialize(encoder: Encoder, value: StorageType) {
-        encoder.encodeString(value.type)
-    }
+	override fun serialize(encoder: Encoder, value: StorageType) {
+		encoder.encodeString(value.type)
+	}
 }

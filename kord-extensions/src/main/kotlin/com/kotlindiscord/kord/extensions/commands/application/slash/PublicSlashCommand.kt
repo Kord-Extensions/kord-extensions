@@ -27,143 +27,143 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicSlashResponseBehavior =
-    (suspend InteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
+	(suspend InteractionResponseCreateBuilder.(ChatInputCommandInteractionCreateEvent) -> Unit)?
 
 /** Public slash command. **/
 public class PublicSlashCommand<A : Arguments, M : ModalForm>(
-    extension: Extension,
+	extension: Extension,
 
-    public override val arguments: (() -> A)? = null,
-    public override val modal: (() -> M)? = null,
-    public override val parentCommand: SlashCommand<*, *, *>? = null,
-    public override val parentGroup: SlashGroup? = null
+	public override val arguments: (() -> A)? = null,
+	public override val modal: (() -> M)? = null,
+	public override val parentCommand: SlashCommand<*, *, *>? = null,
+	public override val parentGroup: SlashGroup? = null,
 ) : SlashCommand<PublicSlashCommandContext<A, M>, A, M>(extension) {
-    /** @suppress Internal builder **/
-    public var initialResponseBuilder: InitialPublicSlashResponseBehavior = null
+	/** @suppress Internal builder **/
+	public var initialResponseBuilder: InitialPublicSlashResponseBehavior = null
 
-    /** Call this to open with a response, omit it to ack instead. **/
-    public fun initialResponse(body: InitialPublicSlashResponseBehavior) {
-        initialResponseBuilder = body
-    }
+	/** Call this to open with a response, omit it to ack instead. **/
+	public fun initialResponse(body: InitialPublicSlashResponseBehavior) {
+		initialResponseBuilder = body
+	}
 
-    override fun validate() {
-        super.validate()
+	override fun validate() {
+		super.validate()
 
-        if (modal != null && initialResponseBuilder != null) {
-            throw InvalidCommandException(
-                name,
+		if (modal != null && initialResponseBuilder != null) {
+			throw InvalidCommandException(
+				name,
 
-                "You may not provide a modal builder and an initial response - pick one, not both."
-            )
-        }
-    }
+				"You may not provide a modal builder and an initial response - pick one, not both."
+			)
+		}
+	}
 
-    override suspend fun call(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        findCommand(event).run(event, cache)
-    }
+	override suspend fun call(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
+		findCommand(event).run(event, cache)
+	}
 
-    override suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(PublicSlashCommandInvocationEvent(this, event))
+	override suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
+		emitEventAsync(PublicSlashCommandInvocationEvent(this, event))
 
-        try {
-            if (!runChecks(event, cache)) {
-                emitEventAsync(
-                    PublicSlashCommandFailedChecksEvent(
-                        this,
-                        event,
-                        "Checks failed without a message."
-                    )
-                )
+		try {
+			if (!runChecks(event, cache)) {
+				emitEventAsync(
+					PublicSlashCommandFailedChecksEvent(
+						this,
+						event,
+						"Checks failed without a message."
+					)
+				)
 
-                return
-            }
-        } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
-            }
+				return
+			}
+		} catch (e: DiscordRelayedException) {
+			event.interaction.respondEphemeral {
+				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+			}
 
-            emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
+			emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
 
-            return
-        }
+			return
+		}
 
-        val modalObj = modal?.invoke()
+		val modalObj = modal?.invoke()
 
-        val response = if (initialResponseBuilder != null) {
-            event.interaction.respondPublic { initialResponseBuilder!!(event) }
-        } else if (modalObj != null) {
-            componentRegistry.register(modalObj)
+		val response = if (initialResponseBuilder != null) {
+			event.interaction.respondPublic { initialResponseBuilder!!(event) }
+		} else if (modalObj != null) {
+			componentRegistry.register(modalObj)
 
-            val locale = event.getLocale()
+			val locale = event.getLocale()
 
-            event.interaction.modal(
-                modalObj.translateTitle(locale, resolvedBundle),
-                modalObj.id
-            ) {
-                modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
-            }
+			event.interaction.modal(
+				modalObj.translateTitle(locale, resolvedBundle),
+				modalObj.id
+			) {
+				modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+			}
 
-            modalObj.awaitCompletion {
-                componentRegistry.unregisterModal(modalObj)
+			modalObj.awaitCompletion {
+				componentRegistry.unregisterModal(modalObj)
 
-                it?.deferPublicResponseUnsafe()
-            } ?: return
-        } else {
-            event.interaction.deferPublicResponseUnsafe()
-        }
+				it?.deferPublicResponseUnsafe()
+			} ?: return
+		} else {
+			event.interaction.deferPublicResponseUnsafe()
+		}
 
-        val context = PublicSlashCommandContext(event, this, response, cache)
+		val context = PublicSlashCommandContext(event, this, response, cache)
 
-        context.populate()
+		context.populate()
 
-        firstSentryBreadcrumb(context, this)
+		firstSentryBreadcrumb(context, this)
 
-        try {
-            checkBotPerms(context)
-        } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
-            emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
+		try {
+			checkBotPerms(context)
+		} catch (e: DiscordRelayedException) {
+			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
 
-            return
-        }
+			return
+		}
 
-        if (arguments != null) {
-            try {
-                val args = registry.argumentParser.parse(arguments, context)
+		if (arguments != null) {
+			try {
+				val args = registry.argumentParser.parse(arguments, context)
 
-                context.populateArgs(args)
-            } catch (e: ArgumentParsingException) {
-                respondText(context, e.reason, FailureReason.ArgumentParsingFailure(e))
-                emitEventAsync(PublicSlashCommandFailedParsingEvent(this, event, e))
+				context.populateArgs(args)
+			} catch (e: ArgumentParsingException) {
+				respondText(context, e.reason, FailureReason.ArgumentParsingFailure(e))
+				emitEventAsync(PublicSlashCommandFailedParsingEvent(this, event, e))
 
-                return
-            }
-        }
+				return
+			}
+		}
 
-        try {
-            body(context, modalObj)
-        } catch (t: Throwable) {
-            emitEventAsync(PublicSlashCommandFailedWithExceptionEvent(this, event, t))
+		try {
+			body(context, modalObj)
+		} catch (t: Throwable) {
+			emitEventAsync(PublicSlashCommandFailedWithExceptionEvent(this, event, t))
 
-            if (t is DiscordRelayedException) {
-                respondText(context, t.reason, FailureReason.RelayedFailure(t))
+			if (t is DiscordRelayedException) {
+				respondText(context, t.reason, FailureReason.RelayedFailure(t))
 
-                return
-            }
+				return
+			}
 
-            handleError(context, t, this)
+			handleError(context, t, this)
 
-            return
-        }
+			return
+		}
 
-        emitEventAsync(PublicSlashCommandSucceededEvent(this, event))
-    }
+		emitEventAsync(PublicSlashCommandSucceededEvent(this, event))
+	}
 
-    override suspend fun respondText(
-        context: PublicSlashCommandContext<A, M>,
-        message: String,
-        failureType: FailureReason<*>
-    ) {
-        context.respond { settings.failureResponseBuilder(this, message, failureType) }
-    }
+	override suspend fun respondText(
+		context: PublicSlashCommandContext<A, M>,
+		message: String,
+		failureType: FailureReason<*>,
+	) {
+		context.respond { settings.failureResponseBuilder(this, message, failureType) }
+	}
 }

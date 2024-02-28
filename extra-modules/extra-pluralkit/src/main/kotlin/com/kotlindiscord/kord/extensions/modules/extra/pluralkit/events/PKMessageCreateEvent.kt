@@ -38,36 +38,36 @@ import dev.kord.core.supplier.EntitySupplyStrategy
  * @property repliedToMessage The original message that was replied to, even if this one was proxied.
  */
 sealed class PKMessageCreateEvent(
-    open val event: MessageCreateEvent,
-    override val message: Message,
-    open val guildId: Snowflake?,
-    open val author: Member?,
-    open val repliedToMessage: Message?,
-    override val shard: Int,
-    override val supplier: EntitySupplier = event.kord.defaultSupplier,
+	open val event: MessageCreateEvent,
+	override val message: Message,
+	open val guildId: Snowflake?,
+	open val author: Member?,
+	open val repliedToMessage: Message?,
+	override val shard: Int,
+	override val supplier: EntitySupplier = event.kord.defaultSupplier,
 ) : KordExEvent, Strategizable, MessageEvent, GuildEvent, MemberEvent, ChannelEvent {
-    /** @suppress Forwards to [repliedToMessage], **/
-    val referencedMessage get() = repliedToMessage
+	/** @suppress Forwards to [repliedToMessage], **/
+	val referencedMessage get() = repliedToMessage
 
-    override val guild: GuildBehavior? get() = guildId?.let { kord.unsafe.guild(it) }
-    override val member: MemberBehavior? get() = author
-    override val user: UserBehavior? get() = author
-    override val channel: ChannelBehavior get() = message.channel
+	override val guild: GuildBehavior? get() = guildId?.let { kord.unsafe.guild(it) }
+	override val member: MemberBehavior? get() = author
+	override val user: UserBehavior? get() = author
+	override val channel: ChannelBehavior get() = message.channel
 
-    override suspend fun getGuild(): Guild = getGuildOrNull()!!
-    override suspend fun getGuildOrNull(): Guild? = guildId?.let { supplier.getGuildOrNull(it) }
+	override suspend fun getGuild(): Guild = getGuildOrNull()!!
+	override suspend fun getGuildOrNull(): Guild? = guildId?.let { supplier.getGuildOrNull(it) }
 
-    override suspend fun getMember(): Member = author!!
-    override suspend fun getMemberOrNull(): Member? = author
+	override suspend fun getMember(): Member = author!!
+	override suspend fun getMemberOrNull(): Member? = author
 
-    override suspend fun getMessage(): Message = message
-    override suspend fun getMessageOrNull(): Message? = message
+	override suspend fun getMessage(): Message = message
+	override suspend fun getMessageOrNull(): Message? = message
 
-    override suspend fun getUser(): User = author!!
-    override suspend fun getUserOrNull(): User? = author
+	override suspend fun getUser(): User = author!!
+	override suspend fun getUserOrNull(): User? = author
 
-    override suspend fun getChannel(): Channel = channel.asChannel()
-    override suspend fun getChannelOrNull(): Channel? = getChannel()
+	override suspend fun getChannel(): Channel = channel.asChannel()
+	override suspend fun getChannelOrNull(): Channel? = getChannel()
 }
 
 /**
@@ -76,100 +76,100 @@ sealed class PKMessageCreateEvent(
  * @property pkMessage The PluralKit message object with metadata about the proxied message.
  */
 class ProxiedMessageCreateEvent(
-    event: MessageCreateEvent,
-    message: Message,
-    guildId: Snowflake?,
-    override val author: Member,
-    repliedToMessage: Message?,
-    shard: Int,
-    val pkMessage: PKMessage,
-    supplier: EntitySupplier = event.kord.defaultSupplier,
+	event: MessageCreateEvent,
+	message: Message,
+	guildId: Snowflake?,
+	override val author: Member,
+	repliedToMessage: Message?,
+	shard: Int,
+	val pkMessage: PKMessage,
+	supplier: EntitySupplier = event.kord.defaultSupplier,
 ) : PKMessageCreateEvent(event, message, guildId, author, repliedToMessage, shard, supplier) {
-    override fun withStrategy(strategy: EntitySupplyStrategy<*>): PKMessageCreateEvent {
-        val strategizedEvent = event.withStrategy(strategy)
+	override fun withStrategy(strategy: EntitySupplyStrategy<*>): PKMessageCreateEvent {
+		val strategizedEvent = event.withStrategy(strategy)
 
-        return ProxiedMessageCreateEvent(
-            strategizedEvent,
-            strategizedEvent.message,
-            guildId,
-            author,
-            repliedToMessage,
-            shard,
-            pkMessage,
-            strategy.supply(kord)
-        )
-    }
+		return ProxiedMessageCreateEvent(
+			strategizedEvent,
+			strategizedEvent.message,
+			guildId,
+			author,
+			repliedToMessage,
+			shard,
+			pkMessage,
+			strategy.supply(kord)
+		)
+	}
 
-    override fun toString(): String =
-        "ProxiedMessageCreateEvent(" +
-            "event=$event, " +
-            "message=$message, " +
-            "guildId=$guildId, " +
-            "author=$author, " +
-            "repliedToMessage=$repliedToMessage, " +
-            "shard=$shard, " +
-            "supplier=$supplier" +
-            ")"
+	override fun toString(): String =
+		"ProxiedMessageCreateEvent(" +
+			"event=$event, " +
+			"message=$message, " +
+			"guildId=$guildId, " +
+			"author=$author, " +
+			"repliedToMessage=$repliedToMessage, " +
+			"shard=$shard, " +
+			"supplier=$supplier" +
+			")"
 }
 
 /**
  * A [MessageCreateEvent] wrapper that represents a message that was **not** proxied by PluralKit.
  */
 class UnProxiedMessageCreateEvent(
-    event: MessageCreateEvent,
-    message: Message,
-    guildId: Snowflake?,
-    author: Member?,
-    repliedToMessage: Message?,
-    shard: Int,
-    supplier: EntitySupplier = event.kord.defaultSupplier,
+	event: MessageCreateEvent,
+	message: Message,
+	guildId: Snowflake?,
+	author: Member?,
+	repliedToMessage: Message?,
+	shard: Int,
+	supplier: EntitySupplier = event.kord.defaultSupplier,
 ) : PKMessageCreateEvent(event, message, guildId, author, repliedToMessage, shard, supplier) {
-    override fun withStrategy(strategy: EntitySupplyStrategy<*>): PKMessageCreateEvent {
-        val strategizedEvent = event.withStrategy(strategy)
+	override fun withStrategy(strategy: EntitySupplyStrategy<*>): PKMessageCreateEvent {
+		val strategizedEvent = event.withStrategy(strategy)
 
-        return UnProxiedMessageCreateEvent(
-            strategizedEvent,
-            strategizedEvent.message,
-            guildId,
-            author,
-            repliedToMessage,
-            shard,
-            strategy.supply(kord),
-        )
-    }
+		return UnProxiedMessageCreateEvent(
+			strategizedEvent,
+			strategizedEvent.message,
+			guildId,
+			author,
+			repliedToMessage,
+			shard,
+			strategy.supply(kord),
+		)
+	}
 
-    override fun toString(): String =
-        "UnProxiedMessageCreateEvent(" +
-            "event=$event, " +
-            "message=$message, " +
-            "guildId=$guildId, " +
-            "author=$author, " +
-            "repliedToMessage=$repliedToMessage, " +
-            "shard=$shard, " +
-            "supplier=$supplier" +
-            ")"
+	override fun toString(): String =
+		"UnProxiedMessageCreateEvent(" +
+			"event=$event, " +
+			"message=$message, " +
+			"guildId=$guildId, " +
+			"author=$author, " +
+			"repliedToMessage=$repliedToMessage, " +
+			"shard=$shard, " +
+			"supplier=$supplier" +
+			")"
 }
 
 internal suspend fun MessageCreateEvent.proxied(p: PKMessage, referencedMessage: Message?): ProxiedMessageCreateEvent {
-    val member = getGuildOrNull()!!.getMemberOrNull(p.sender)!!
+	val member = getGuildOrNull()!!.getMemberOrNull(p.sender)!!
 
-    return ProxiedMessageCreateEvent(
-        this,
-        message,
-        guildId,
-        member,
-        referencedMessage,
-        shard,
-        p,
-    )
+	return ProxiedMessageCreateEvent(
+		this,
+		message,
+		guildId,
+		member,
+		referencedMessage,
+		shard,
+		p,
+	)
 }
 
-internal suspend fun MessageCreateEvent.unproxied(): UnProxiedMessageCreateEvent =
-    UnProxiedMessageCreateEvent(
-        this,
-        message,
-        guildId,
-        member,
-        message.referencedMessage,
-        shard
-    )
+internal fun MessageCreateEvent.unproxied(): UnProxiedMessageCreateEvent =
+	UnProxiedMessageCreateEvent(
+		this,
+		message,
+		guildId,
+		member,
+		message.referencedMessage,
+		shard
+	)

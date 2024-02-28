@@ -14,25 +14,25 @@ import org.koin.core.logger.Level
 val TEST_SERVER_ID = Snowflake(787452339908116521UL)
 
 suspend fun main() {
-    val bot = ExtensibleBot(env("TOKEN")) {
-        koinLogLevel = Level.DEBUG
+	val bot = ExtensibleBot(env("TOKEN")) {
+		koinLogLevel = Level.DEBUG
 
-        chatCommands {
-            defaultPrefix = "?"
+		chatCommands {
+			defaultPrefix = "?"
 
-            prefix { default ->
-                if (guildId == TEST_SERVER_ID) {
-                    "!"
-                } else {
-                    default  // "?"
-                }
-            }
-        }
+			prefix { default ->
+				if (guildId == TEST_SERVER_ID) {
+					"!"
+				} else {
+					default  // "?"
+				}
+			}
+		}
 
-        extensions {
-            add(::TestExtension)
-        }
-    }
+		extensions {
+			add(::TestExtension)
+		}
+	}
 
-    bot.start()
+	bot.start()
 }

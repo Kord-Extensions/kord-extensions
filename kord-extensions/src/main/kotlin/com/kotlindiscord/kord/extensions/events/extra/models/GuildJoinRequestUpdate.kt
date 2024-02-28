@@ -12,9 +12,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public data class GuildJoinRequestUpdate(
-    public val status: ApplicationStatus,
-    public val request: GuildJoinRequest,
+	public val status: ApplicationStatus,
+	public val request: GuildJoinRequest,
 
-    @SerialName("guild_id")
-    public val guildId: Snowflake,
+	@SerialName("guild_id")
+	public val guildId: Snowflake,
 )

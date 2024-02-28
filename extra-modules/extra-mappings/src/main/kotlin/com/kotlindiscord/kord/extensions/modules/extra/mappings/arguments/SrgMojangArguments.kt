@@ -12,9 +12,9 @@ import me.shedaniel.linkie.namespaces.MojangSrgNamespace
 /** Arguments for SRG Mojang mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
 class SrgMojangArguments : MappingArguments(MojangSrgNamespace), IntermediaryMappable {
-    override val mapDescriptors by defaultingBoolean {
-        name = "map-descriptor"
-        description = "Whether to map field/method descriptors to named instead of SRG"
-        defaultValue = true
-    }
+	override val mapDescriptors by defaultingBoolean {
+		name = "map-descriptor"
+		description = "Whether to map field/method descriptors to named instead of SRG"
+		defaultValue = true
+	}
 }

@@ -18,150 +18,150 @@ import org.koin.core.component.inject
 import org.pf4j.PluginState
 
 public class TestPluginExtension : Extension() {
-    override val name: String = TestPlugin.PLUGIN_ID
+	override val name: String = TestPlugin.PLUGIN_ID
 
-    private val pluginManager: PluginManager by inject()
+	private val pluginManager: PluginManager by inject()
 
-    public inner class ConfigSetArgs : Arguments() {
-        public val value: String by string {
-            name = "value"
-            description = "Value to set. Can be anything."
-        }
-    }
+	public inner class ConfigSetArgs : Arguments() {
+		public val value: String by string {
+			name = "value"
+			description = "Value to set. Can be anything."
+		}
+	}
 
-    override suspend fun setup() {
-        publicSlashCommand {
-            name = "plugin-config"
-            description = "Commands for working with the test plugin's configuration."
+	override suspend fun setup() {
+		publicSlashCommand {
+			name = "plugin-config"
+			description = "Commands for working with the test plugin's configuration."
 
-            publicSubCommand {
-                name = "delete"
-                description = "Delete  current set configuration value."
+			publicSubCommand {
+				name = "delete"
+				description = "Delete  current set configuration value."
 
-                action {
-                    TestPlugin.DATA_UNIT
-                        .withUser(event.interaction.user.id)
-                        .delete()
+				action {
+					TestPlugin.DATA_UNIT
+						.withUser(event.interaction.user.id)
+						.delete()
 
-                    respond {
-                        content = "User value deleted."
-                    }
-                }
-            }
+					respond {
+						content = "User value deleted."
+					}
+				}
+			}
 
-            publicSubCommand {
-                name = "get"
-                description = "Get the current set configuration value."
+			publicSubCommand {
+				name = "get"
+				description = "Get the current set configuration value."
 
-                action {
-                    val value = TestPlugin.DATA_UNIT
-                        .withUser(event.interaction.user.id)
-                        .get()
-                        ?.key
+				action {
+					val value = TestPlugin.DATA_UNIT
+						.withUser(event.interaction.user.id)
+						.get()
+						?.key
 
-                    respond {
-                        content = if (value == null) {
-                            "No user value has been set."
-                        } else {
-                            "**User value:** `$value`"
-                        }
-                    }
-                }
-            }
+					respond {
+						content = if (value == null) {
+							"No user value has been set."
+						} else {
+							"**User value:** `$value`"
+						}
+					}
+				}
+			}
 
-            publicSubCommand(::ConfigSetArgs) {
-                name = "set"
-                description = "Set a new configuration value."
+			publicSubCommand(::ConfigSetArgs) {
+				name = "set"
+				description = "Set a new configuration value."
 
-                action {
-                    val dataUnit = TestPlugin.DATA_UNIT
-                        .withUserFrom(event)
+				action {
+					val dataUnit = TestPlugin.DATA_UNIT
+						.withUserFrom(event)
 
-                    val value = dataUnit.get()
-                        ?: TestPluginData(key = arguments.value)
+					val value = dataUnit.get()
+						?: TestPluginData(key = arguments.value)
 
-                    value.key = arguments.value
+					value.key = arguments.value
 
-                    dataUnit.save(value)
+					dataUnit.save(value)
 
-                    respond {
-                        content = "**User value set:** `${value.key}`"
-                    }
-                }
-            }
-        }
+					respond {
+						content = "**User value set:** `${value.key}`"
+					}
+				}
+			}
+		}
 
-        publicSlashCommand {
-            name = "plugins"
-            description = "Retrieve the list of loaded plugins."
+		publicSlashCommand {
+			name = "plugins"
+			description = "Retrieve the list of loaded plugins."
 
-            action {
-                val loadedPlugins = pluginManager.plugins
-                    .filter { it.pluginState == PluginState.STARTED }
-                    .sortedBy { it.descriptor.pluginId }
+			action {
+				val loadedPlugins = pluginManager.plugins
+					.filter { it.pluginState == PluginState.STARTED }
+					.sortedBy { it.descriptor.pluginId }
 
-                val pluginIds = loadedPlugins.map { it.descriptor.pluginId }
+				val pluginIds = loadedPlugins.map { it.descriptor.pluginId }
 
-                assert(pluginIds.contains(TestPlugin.PLUGIN_ID)) {
-                    "Test plugin (`${TestPlugin.PLUGIN_ID}`) should be loaded."
-                }
+				assert(pluginIds.contains(TestPlugin.PLUGIN_ID)) {
+					"Test plugin (`${TestPlugin.PLUGIN_ID}`) should be loaded."
+				}
 
-                assert(pluginIds.contains(MappingsPlugin.PLUGIN_ID)) {
-                    "Test plugin (`${MappingsPlugin.PLUGIN_ID}`) should be loaded."
-                }
+				assert(pluginIds.contains(MappingsPlugin.PLUGIN_ID)) {
+					"Test plugin (`${MappingsPlugin.PLUGIN_ID}`) should be loaded."
+				}
 
-                respond {
-                    content = buildString {
-                        appendLine("**${loadedPlugins.size}** loaded plugins.")
-                        appendLine()
+				respond {
+					content = buildString {
+						appendLine("**${loadedPlugins.size}** loaded plugins.")
+						appendLine()
 
-                        loadedPlugins.forEach { plugin ->
-                            val desc = plugin.descriptor
+						loadedPlugins.forEach { plugin ->
+							val desc = plugin.descriptor
 
-                            appendLine("**»** `${desc.pluginId}@${desc.version}`")
-                            appendLine()
+							appendLine("**»** `${desc.pluginId}@${desc.version}`")
+							appendLine()
 
-                            appendLine(
-                                "**Class:** " +
-                                    "`${
-                                        desc.pluginClass.replace(
-                                            "com.kotlindiscord.kord.extensions",
-                                            "c.k.k.e"
-                                        )
-                                    }`"
-                            )
+							appendLine(
+								"**Class:** " +
+									"`${
+										desc.pluginClass.replace(
+											"com.kotlindiscord.kord.extensions",
+											"c.k.k.e"
+										)
+									}`"
+							)
 
-                            appendLine(
-                                "**Dependencies:** `${
-                                    desc.dependencies.joinToString { "`${it.pluginId}`" }.ifEmpty { "None" }
-                                }`"
-                            )
+							appendLine(
+								"**Dependencies:** `${
+									desc.dependencies.joinToString { "`${it.pluginId}`" }.ifEmpty { "None" }
+								}`"
+							)
 
-                            appendLine("**License:** `${desc.license}`")
-                            appendLine("**Provider:** `${desc.provider}`")
-                            appendLine("**Requires:** `${desc.requires.ifEmpty { "N/A" }}`")
-                            appendLine()
+							appendLine("**License:** `${desc.license}`")
+							appendLine("**Provider:** `${desc.provider}`")
+							appendLine("**Requires:** `${desc.requires.ifEmpty { "N/A" }}`")
+							appendLine()
 
-                            desc.pluginDescription.lines().forEach { line ->
-                                appendLine("> $line")
-                            }
+							desc.pluginDescription.lines().forEach { line ->
+								appendLine("> $line")
+							}
 
-                            appendLine()
-                        }
-                    }
-                }
-            }
-        }
+							appendLine()
+						}
+					}
+				}
+			}
+		}
 
-        publicSlashCommand {
-            name = "fail-assertion"
-            description = "Intentionally fail an assertion."
+		publicSlashCommand {
+			name = "fail-assertion"
+			description = "Intentionally fail an assertion."
 
-            action {
-                assert(false) {
-                    "**Assertion failed:** Intentional assertion failure."
-                }
-            }
-        }
-    }
+			action {
+				assert(false) {
+					"**Assertion failed:** Intentional assertion failure."
+				}
+			}
+		}
+	}
 }

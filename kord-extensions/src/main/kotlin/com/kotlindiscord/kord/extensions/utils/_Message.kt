@@ -24,7 +24,6 @@ import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.message.*
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
-import dev.kord.rest.builder.message.create.allowedMentions
 import dev.kord.rest.request.RestRequestException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.*
@@ -39,26 +38,26 @@ private const val DISCORD_CHANNEL_URI = "https://discord.com/channels"
  * Deletes a message, catching and ignoring an HTTP 404 (Not Found) exception.
  */
 public suspend fun MessageBehavior.deleteIgnoringNotFound() {
-    try {
-        delete()
-    } catch (e: RestRequestException) {
-        if (e.hasNotStatus(HttpStatusCode.NotFound)) {
-            throw e
-        }
-    }
+	try {
+		delete()
+	} catch (e: RestRequestException) {
+		if (e.hasNotStatus(HttpStatusCode.NotFound)) {
+			throw e
+		}
+	}
 }
 
 /**
  * Deletes a public follow-up, catching and ignoring an HTTP 404 (Not Found) exception.
  */
 public suspend fun PublicFollowupMessageBehavior.deleteIgnoringNotFound() {
-    try {
-        delete()
-    } catch (e: RestRequestException) {
-        if (e.hasNotStatus(HttpStatusCode.NotFound)) {
-            throw e
-        }
-    }
+	try {
+		delete()
+	} catch (e: RestRequestException) {
+		if (e.hasNotStatus(HttpStatusCode.NotFound)) {
+			throw e
+		}
+	}
 }
 
 /**
@@ -70,22 +69,22 @@ public suspend fun PublicFollowupMessageBehavior.deleteIgnoringNotFound() {
  * @return Job spawned by the CoroutineScope.
  */
 public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
-    return kord.launch {
-        delay(millis)
+	return kord.launch {
+		delay(millis)
 
-        try {
-            this@delete.deleteIgnoringNotFound()
-        } catch (e: RestRequestException) {
-            val message = this@delete
+		try {
+			this@delete.deleteIgnoringNotFound()
+		} catch (e: RestRequestException) {
+			val message = this@delete
 
-            if (retry) {
-                logger.debug(e) { "Failed to delete message, retrying: $message" }
-                this@delete.delete(millis, false)
-            } else {
-                logger.error(e) { "Failed to delete message: $message" }
-            }
-        }
-    }
+			if (retry) {
+				logger.debug(e) { "Failed to delete message, retrying: $message" }
+				this@delete.delete(millis, false)
+			} else {
+				logger.error(e) { "Failed to delete message: $message" }
+			}
+		}
+	}
 }
 
 /**
@@ -97,22 +96,22 @@ public fun MessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
  * @return Job spawned by the CoroutineScope.
  */
 public fun PublicFollowupMessageBehavior.delete(millis: Long, retry: Boolean = true): Job {
-    return kord.launch {
-        delay(millis)
+	return kord.launch {
+		delay(millis)
 
-        try {
-            this@delete.deleteIgnoringNotFound()
-        } catch (e: RestRequestException) {
-            val message = this@delete
+		try {
+			this@delete.deleteIgnoringNotFound()
+		} catch (e: RestRequestException) {
+			val message = this@delete
 
-            if (retry) {
-                logger.debug(e) { "Failed to delete message, retrying: $message" }
-                this@delete.delete(millis, false)
-            } else {
-                logger.error(e) { "Failed to delete message: $message" }
-            }
-        }
-    }
+			if (retry) {
+				logger.debug(e) { "Failed to delete message, retrying: $message" }
+				this@delete.delete(millis, false)
+			} else {
+				logger.error(e) { "Failed to delete message: $message" }
+			}
+		}
+	}
 }
 
 /**
@@ -128,7 +127,7 @@ public suspend inline fun MessageBehavior.addReaction(emoji: String): Unit = add
  * @param emoji Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: GuildEmoji): Unit =
-    deleteReaction(userId, emoji.toReaction())
+	deleteReaction(userId, emoji.toReaction())
 
 /**
  * Remove a reaction from this message, using the Unicode emoji represented by the given string.
@@ -136,7 +135,7 @@ public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoj
  * @param emoji Emoji to remove from message.
  */
 public suspend inline fun MessageBehavior.deleteReaction(userId: Snowflake, emoji: String): Unit =
-    deleteReaction(userId, emoji.toReaction())
+	deleteReaction(userId, emoji.toReaction())
 
 /**
  * Remove a reaction from this message, using a guild's custom emoji object.
@@ -158,7 +157,7 @@ public suspend inline fun MessageBehavior.deleteReaction(unicode: String): Unit 
  * @param emoji Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): Unit =
-    deleteOwnReaction(emoji.toReaction())
+	deleteOwnReaction(emoji.toReaction())
 
 /**
  * Remove a reaction from this message belonging to the bot, using the Unicode emoji represented by the given string.
@@ -166,15 +165,15 @@ public suspend inline fun MessageBehavior.deleteOwnReaction(emoji: GuildEmoji): 
  * @param unicode Emoji to remove from the message.
  */
 public suspend inline fun MessageBehavior.deleteOwnReaction(unicode: String): Unit =
-    deleteOwnReaction(unicode.toReaction())
+	deleteOwnReaction(unicode.toReaction())
 
 /** Message author's ID. **/
 public val MessageData.authorId: Snowflake
-    get() = author.id
+	get() = author.id
 
 /** Whether the message author is a bot. **/
 public val MessageData.authorIsBot: Boolean
-    get() = author.bot.discordBoolean
+	get() = author.bot.discordBoolean
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
@@ -187,7 +186,7 @@ public val MessageData.authorIsBot: Boolean
  * @return The newly-created response message.
  */
 public suspend fun Message.respond(content: String, useReply: Boolean = true, pingInReply: Boolean = true): Message =
-    respond(useReply, pingInReply) { this.content = content }
+	respond(useReply, pingInReply) { this.content = content }
 
 /**
  * Respond to a message in the channel it was sent to, mentioning the author.
@@ -200,39 +199,39 @@ public suspend fun Message.respond(content: String, useReply: Boolean = true, pi
  * @return The newly-created response message.
  */
 public suspend fun Message.respond(
-    useReply: Boolean = true,
-    pingInReply: Boolean = true,
-    builder: suspend MessageCreateBuilder.() -> Unit
+	useReply: Boolean = true,
+	pingInReply: Boolean = true,
+	builder: suspend MessageCreateBuilder.() -> Unit,
 ): Message {
-    val author = this.author
-    val innerBuilder: suspend MessageCreateBuilder.() -> Unit = {
-        builder()
+	val author = this.author
+	val innerBuilder: suspend MessageCreateBuilder.() -> Unit = {
+		builder()
 
-        allowedMentions {
-            when {
-                useReply && pingInReply -> repliedUser = true
-                author != null && !pingInReply -> users.add(author.id)
-            }
-        }
+		allowedMentions {
+			when {
+				useReply && pingInReply -> repliedUser = true
+				author != null && !pingInReply -> users.add(author.id)
+			}
+		}
 
-        val mention = if (author != null && !useReply && getChannelOrNull() !is DmChannel) {
-            author.mention
-        } else {
-            ""
-        }
+		val mention = if (author != null && !useReply && getChannelOrNull() !is DmChannel) {
+			author.mention
+		} else {
+			""
+		}
 
-        val contentWithMention = "$mention ${content ?: ""}".trim()
+		val contentWithMention = "$mention ${content ?: ""}".trim()
 
-        if (contentWithMention.isNotEmpty()) {
-            content = contentWithMention
-        }
-    }
+		if (contentWithMention.isNotEmpty()) {
+			content = contentWithMention
+		}
+	}
 
-    return if (useReply) {
-        reply { innerBuilder() }
-    } else {
-        channel.createMessage { innerBuilder() }
-    }
+	return if (useReply) {
+		reply { innerBuilder() }
+	} else {
+		channel.createMessage { innerBuilder() }
+	}
 }
 
 /**
@@ -241,7 +240,7 @@ public suspend fun Message.respond(
  * @return A clickable URL to jump to this message.
  */
 public fun Message.getJumpUrl(): String =
-    "$DISCORD_CHANNEL_URI/${data.guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
+	"$DISCORD_CHANNEL_URI/${data.guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
 
 /**
  * Generate the jump URL for this message.
@@ -249,7 +248,7 @@ public fun Message.getJumpUrl(): String =
  * @return A clickable URL to jump to this message.
  */
 public fun DiscordPartialMessage.getJumpUrl(): String =
-    "$DISCORD_CHANNEL_URI/${guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
+	"$DISCORD_CHANNEL_URI/${guildId.value?.value ?: "@me"}/${channelId.value}/${id.value}"
 
 /**
  * Check that this message happened in either the given channel or a DM, or that the author is at least a given role.
@@ -267,39 +266,39 @@ public fun DiscordPartialMessage.getJumpUrl(): String =
  * @return true if the message was posted in an appropriate context, false otherwise
  */
 public suspend fun Message.requireChannel(
-    context: CommandContext,
-    channel: GuildMessageChannel,
-    role: Role? = null,
-    delay: Long = DELETE_DELAY,
-    allowDm: Boolean = true,
-    deleteOriginal: Boolean = true,
-    deleteResponse: Boolean = true
+	context: CommandContext,
+	channel: GuildMessageChannel,
+	role: Role? = null,
+	delay: Long = DELETE_DELAY,
+	allowDm: Boolean = true,
+	deleteOriginal: Boolean = true,
+	deleteResponse: Boolean = true,
 ): Boolean {
-    val topRole = if (getGuildOrNull() == null) {
-        null
-    } else {
-        getAuthorAsMemberOrNull()?.getTopRole()
-    }
+	val topRole = if (getGuildOrNull() == null) {
+		null
+	} else {
+		getAuthorAsMemberOrNull()?.getTopRole()
+	}
 
-    val messageChannel = getChannelOrNull()
+	val messageChannel = getChannelOrNull()
 
-    @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
-    if (
-        (allowDm && messageChannel is DmChannel) ||
-        (role != null && topRole != null && topRole >= role) ||
-        channelId == channel.id
-    ) {
-        return true
-    }
+	@Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
+	if (
+		(allowDm && messageChannel is DmChannel) ||
+		(role != null && topRole != null && topRole >= role) ||
+		channelId == channel.id
+	) {
+		return true
+	}
 
-    val response = respond(
-        context.translate("utils.message.useThisChannel", replacements = arrayOf(channel.mention))
-    )
+	val response = respond(
+		context.translate("utils.message.useThisChannel", replacements = arrayOf(channel.mention))
+	)
 
-    if (deleteResponse) response.delete(delay)
-    if (deleteOriginal && messageChannel !is DmChannel) this.delete(delay)
+	if (deleteResponse) response.delete(delay)
+	if (deleteOriginal && messageChannel !is DmChannel) this.delete(delay)
 
-    return false
+	return false
 }
 
 /**
@@ -313,28 +312,28 @@ public suspend fun Message.requireChannel(
  * @return true if the message was posted in an appropriate context, false otherwise
  */
 public suspend fun Message.requireGuildChannel(
-    context: CommandContext,
-    role: Role? = null
+	context: CommandContext,
+	role: Role? = null,
 ): Boolean {
-    val author = this.author
-    val guild = getGuildOrNull()
+	val author = this.author
+	val guild = getGuildOrNull()
 
-    val topRole = if (author != null && guild != null) {
-        author.asMemberOrNull(guild.id)
-    } else {
-        null
-    }
+	val topRole = if (author != null && guild != null) {
+		author.asMemberOrNull(guild.id)
+	} else {
+		null
+	}
 
-    @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
-    if (
-        (role != null && topRole != null && topRole >= role) ||
-        getChannelOrNull() !is DmChannel
-    ) {
-        return true
-    }
+	@Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
+	if (
+		(role != null && topRole != null && topRole >= role) ||
+		getChannelOrNull() !is DmChannel
+	) {
+		return true
+	}
 
-    respond(context.translate("utils.message.commandNotAvailableInDm"))
-    return false
+	respond(context.translate("utils.message.commandNotAvailableInDm"))
+	return false
 }
 
 /**
@@ -352,58 +351,58 @@ public suspend fun Message.requireGuildChannel(
  * @return true if the message was posted in an appropriate context, false otherwise
  */
 public suspend fun Message.requireGuildChannel(
-    context: CommandContext,
-    role: Role? = null,
-    guild: Guild? = null
+	context: CommandContext,
+	role: Role? = null,
+	guild: Guild? = null,
 ): Boolean {
-    val author = this.author
-    val topRole = if (author != null) {
-        guild?.getMember(author.id)?.getTopRole()
-    } else {
-        null
-    }
+	val author = this.author
+	val topRole = if (author != null) {
+		guild?.getMember(author.id)?.getTopRole()
+	} else {
+		null
+	}
 
-    @Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
-    if (
-        (role != null && topRole != null && topRole >= role) ||
-        getChannelOrNull() !is DmChannel
-    ) {
-        return true
-    }
+	@Suppress("UnnecessaryParentheses")  // In this case, it feels more readable
+	if (
+		(role != null && topRole != null && topRole >= role) ||
+		getChannelOrNull() !is DmChannel
+	) {
+		return true
+	}
 
-    respond(context.translate("utils.message.commandNotAvailableInDm"))
-    return false
+	respond(context.translate("utils.message.commandNotAvailableInDm"))
+	return false
 }
 
 /** Whether this message was published to the guilds that are following its channel. **/
 public val Message.isPublished: Boolean
-    get() =
-        data.flags.value?.contains(MessageFlag.CrossPosted) == true
+	get() =
+		data.flags.value?.contains(MessageFlag.CrossPosted) == true
 
 /** Whether this message was sent from a different guild's followed announcement channel. **/
 public val Message.isCrossPost: Boolean
-    get() =
-        data.flags.value?.contains(MessageFlag.IsCrossPost) == true
+	get() =
+		data.flags.value?.contains(MessageFlag.IsCrossPost) == true
 
 /** Whether this message's embeds should be serialized. **/
 public val Message.suppressEmbeds: Boolean
-    get() =
-        data.flags.value?.contains(MessageFlag.SuppressEmbeds) == true
+	get() =
+		data.flags.value?.contains(MessageFlag.SuppressEmbeds) == true
 
 /** When [isCrossPost], whether the source message has been deleted from the original guild. **/
 public val Message.originalMessageDeleted: Boolean
-    get() =
-        data.flags.value?.contains(MessageFlag.SourceMessageDeleted) == true
+	get() =
+		data.flags.value?.contains(MessageFlag.SourceMessageDeleted) == true
 
 /** Whether this message came from Discord's urgent message system. **/
 public val Message.isUrgent: Boolean
-    get() =
-        data.flags.value?.contains(MessageFlag.Urgent) == true
+	get() =
+		data.flags.value?.contains(MessageFlag.Urgent) == true
 
 /** Whether this is an ephemeral message from the Interactions system. **/
 public val Message.isEphemeral: Boolean
-    get() =
-        data.flags.value?.contains(MessageFlag.Ephemeral) == true
+	get() =
+		data.flags.value?.contains(MessageFlag.Ephemeral) == true
 
 /**
  * Wait for a message, using the given timeout (in milliseconds ) and filter function.
@@ -411,13 +410,13 @@ public val Message.isEphemeral: Boolean
  * Will return `null` if no message is found before the timeout.
  */
 public suspend fun waitForMessage(
-    timeout: Long,
-    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+	timeout: Long,
+	filter: (suspend (MessageCreateEvent).() -> Boolean) = { true },
 ): Message? {
-    val kord = getKoin().get<Kord>()
-    val event = kord.waitFor(timeout, filter)
+	val kord = getKoin().get<Kord>()
+	val event = kord.waitFor(timeout, filter)
 
-    return event?.message
+	return event?.message
 }
 
 /**
@@ -426,16 +425,16 @@ public suspend fun waitForMessage(
  * Will return `null` if no message is found before the timeout.
  */
 public suspend fun UserBehavior.waitForMessage(
-    timeout: Long,
-    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+	timeout: Long,
+	filter: (suspend (MessageCreateEvent).() -> Boolean) = { true },
 ): Message? {
-    val kord = getKoin().get<Kord>()
-    val event = kord.waitFor<MessageCreateEvent>(timeout) {
-        message.author?.id == id &&
-            filter()
-    }
+	val kord = getKoin().get<Kord>()
+	val event = kord.waitFor<MessageCreateEvent>(timeout) {
+		message.author?.id == id &&
+			filter()
+	}
 
-    return event?.message
+	return event?.message
 }
 
 /**
@@ -444,16 +443,16 @@ public suspend fun UserBehavior.waitForMessage(
  * Will return `null` if no message is found before the timeout.
  */
 public suspend fun MessageChannelBehavior.waitForMessage(
-    timeout: Long,
-    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+	timeout: Long,
+	filter: (suspend (MessageCreateEvent).() -> Boolean) = { true },
 ): Message? {
-    val kord = getKoin().get<Kord>()
-    val event = kord.waitFor<MessageCreateEvent>(timeout) {
-        message.channelId == id &&
-            filter()
-    }
+	val kord = getKoin().get<Kord>()
+	val event = kord.waitFor<MessageCreateEvent>(timeout) {
+		message.channelId == id &&
+			filter()
+	}
 
-    return event?.message
+	return event?.message
 }
 
 /**
@@ -462,16 +461,16 @@ public suspend fun MessageChannelBehavior.waitForMessage(
  * Will return `null` if no message is found before the timeout.
  */
 public suspend fun MessageBehavior.waitForReply(
-    timeout: Long,
-    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+	timeout: Long,
+	filter: (suspend (MessageCreateEvent).() -> Boolean) = { true },
 ): Message? {
-    val kord = getKoin().get<Kord>()
-    val event = kord.waitFor<MessageCreateEvent>(timeout) {
-        message.messageReference?.message?.id == id &&
-            filter()
-    }
+	val kord = getKoin().get<Kord>()
+	val event = kord.waitFor<MessageCreateEvent>(timeout) {
+		message.messageReference?.message?.id == id &&
+			filter()
+	}
 
-    return event?.message
+	return event?.message
 }
 
 /**
@@ -481,15 +480,15 @@ public suspend fun MessageBehavior.waitForReply(
  * Will return `null` if no message is found before the timeout.
  */
 public suspend fun CommandContext.waitForResponse(
-    timeout: Long,
-    filter: (suspend (MessageCreateEvent).() -> Boolean) = { true }
+	timeout: Long,
+	filter: (suspend (MessageCreateEvent).() -> Boolean) = { true },
 ): Message? {
-    val kord = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>()
-    val event = kord.waitFor<MessageCreateEvent>(timeout) {
-        message.author?.id == getUser()?.id &&
-            message.channelId == getChannel().id &&
-            filter()
-    }
+	val kord = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>()
+	val event = kord.waitFor<MessageCreateEvent>(timeout) {
+		message.author?.id == getUser()?.id &&
+			message.channelId == getChannel().id &&
+			filter()
+	}
 
-    return event?.message
+	return event?.message
 }

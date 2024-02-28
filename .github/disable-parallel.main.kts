@@ -1,5 +1,5 @@
 import java.io.File
-import java.util.Properties
+import java.util.*
 
 val properties = Properties()
 val file = File("gradle.properties")

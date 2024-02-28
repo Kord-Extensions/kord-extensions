@@ -14,8 +14,8 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 
 /** Public-only message command context. **/
 public class PublicMessageCommandContext<M : ModalForm>(
-    override val event: MessageCommandInteractionCreateEvent,
-    override val command: MessageCommand<PublicMessageCommandContext<M>, M>,
-    override val interactionResponse: PublicMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
+	override val event: MessageCommandInteractionCreateEvent,
+	override val command: MessageCommand<PublicMessageCommandContext<M>, M>,
+	override val interactionResponse: PublicMessageInteractionResponseBehavior,
+	cache: MutableStringKeyedMap<Any>,
 ) : MessageCommandContext<PublicMessageCommandContext<M>, M>(event, command, cache), PublicInteractionContext

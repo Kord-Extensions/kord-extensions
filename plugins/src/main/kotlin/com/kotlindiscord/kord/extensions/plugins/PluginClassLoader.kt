@@ -5,7 +5,7 @@ import java.net.URLClassLoader
 
 public class PluginClassLoader(
 	public val jarPath: String,
-	private val parent: ParentPluginClassLoader
+	private val parent: ParentPluginClassLoader,
 ) : ClassLoader() {
 	private val urlClassLoader = URLClassLoader(
 		arrayOf(URL("file://${parent.pluginsDirectory}/$jarPath")),

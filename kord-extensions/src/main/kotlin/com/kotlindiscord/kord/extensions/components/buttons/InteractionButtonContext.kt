@@ -14,7 +14,7 @@ import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 /** Abstract class representing the execution context for a button component's action. **/
 @Suppress("UnnecessaryAbstractClass")  // Your face is an unnecessary abstract class
 public abstract class InteractionButtonContext(
-    component: Component,
-    event: ButtonInteractionCreateEvent,
-    cache: MutableStringKeyedMap<Any>
+	component: Component,
+	event: ButtonInteractionCreateEvent,
+	cache: MutableStringKeyedMap<Any>,
 ) : ComponentContext<ButtonInteractionCreateEvent>(component, event, cache)

@@ -19,67 +19,67 @@ import com.kotlindiscord.kord.extensions.modules.annotations.orNull
  */
 @Suppress("UNCHECKED_CAST")
 public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
-    /** @suppress **/
-    private val argMap: Map<String?, Any?> =
-        annotation.arguments
-            .associate { it.name?.getShortName() to it.value }
-            .filterKeys { it != null }
+	/** @suppress **/
+	private val argMap: Map<String?, Any?> =
+		annotation.arguments
+			.associate { it.name?.getShortName() to it.value }
+			.filterKeys { it != null }
 
-    /** @suppress **/
-    public val names: ArrayList<String> =
-        argMap["names"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val names: ArrayList<String> =
+		argMap["names"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val types: List<ConverterType> =
-        (argMap["types"]!! as ArrayList<KSType>).mapNotNull {
-            ConverterType.fromName(it.declaration.simpleName.asString())
-        }
+	/** @suppress **/
+	public val types: List<ConverterType> =
+		(argMap["types"]!! as ArrayList<KSType>).mapNotNull {
+			ConverterType.fromName(it.declaration.simpleName.asString())
+		}
 
-    /** @suppress **/
-    public val imports: ArrayList<String> =
-        argMap["imports"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val imports: ArrayList<String> =
+		argMap["imports"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val builderConstructorArguments: ArrayList<String> =
-        argMap["builderConstructorArguments"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val builderConstructorArguments: ArrayList<String> =
+		argMap["builderConstructorArguments"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val builderGeneric: String? =
-        (argMap["builderGeneric"] as String).orNull()
+	/** @suppress **/
+	public val builderGeneric: String? =
+		(argMap["builderGeneric"] as String).orNull()
 
-    /** @suppress **/
-    public val builderFields: ArrayList<String> =
-        argMap["builderFields"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val builderFields: ArrayList<String> =
+		argMap["builderFields"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val builderBuildFunctionStatements: ArrayList<String> =
-        argMap["builderBuildFunctionStatements"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val builderBuildFunctionStatements: ArrayList<String> =
+		argMap["builderBuildFunctionStatements"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val builderBuildFunctionPreStatements: ArrayList<String> =
-        argMap["builderBuildFunctionPreStatements"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val builderBuildFunctionPreStatements: ArrayList<String> =
+		argMap["builderBuildFunctionPreStatements"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val builderExtraStatements: ArrayList<String> =
-        argMap["builderExtraStatements"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val builderExtraStatements: ArrayList<String> =
+		argMap["builderExtraStatements"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val builderInitStatements: ArrayList<String> =
-        argMap["builderInitStatements"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val builderInitStatements: ArrayList<String> =
+		argMap["builderInitStatements"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val builderSuffixedWhere: String? =
-        (argMap["builderSuffixedWhere"] as String).orNull()
+	/** @suppress **/
+	public val builderSuffixedWhere: String? =
+		(argMap["builderSuffixedWhere"] as String).orNull()
 
-    /** @suppress **/
-    public val functionGeneric: String? =
-        (argMap["functionGeneric"] as String).orNull()
+	/** @suppress **/
+	public val functionGeneric: String? =
+		(argMap["functionGeneric"] as String).orNull()
 
-    /** @suppress **/
-    public val functionBuilderArguments: ArrayList<String> =
-        argMap["functionBuilderArguments"] as ArrayList<String>? ?: arrayListOf()
+	/** @suppress **/
+	public val functionBuilderArguments: ArrayList<String> =
+		argMap["functionBuilderArguments"] as ArrayList<String>? ?: arrayListOf()
 
-    /** @suppress **/
-    public val functionSuffixedWhere: String? =
-        (argMap["functionSuffixedWhere"] as String).orNull()
+	/** @suppress **/
+	public val functionSuffixedWhere: String? =
+		(argMap["functionSuffixedWhere"] as String).orNull()
 }

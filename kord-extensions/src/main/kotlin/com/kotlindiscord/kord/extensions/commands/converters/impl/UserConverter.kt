@@ -39,97 +39,97 @@ import kotlinx.coroutines.flow.firstOrNull
  * argument.
  */
 @Converter(
-    "user",
+	"user",
 
-    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    builderFields = ["public var useReply: Boolean = true"]
+	types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	builderFields = ["public var useReply: Boolean = true"]
 )
 public class UserConverter(
-    private var useReply: Boolean = true,
-    override var validator: Validator<User> = null,
+	private var useReply: Boolean = true,
+	override var validator: Validator<User> = null,
 ) : SingleConverter<User>() {
-    override val signatureTypeString: String = "converters.user.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.user.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        if (useReply && context is ChatCommandContext<*>) {
-            val messageReference = context.message.asMessage().messageReference
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		if (useReply && context is ChatCommandContext<*>) {
+			val messageReference = context.message.asMessage().messageReference
 
-            if (messageReference != null) {
-                val user = messageReference.message?.asMessage()?.author?.asUserOrNull()
+			if (messageReference != null) {
+				val user = messageReference.message?.asMessage()?.author?.asUserOrNull()
 
-                if (user != null) {
-                    parsed = user
-                    return true
-                }
-            }
-        }
+				if (user != null) {
+					parsed = user
+					return true
+				}
+			}
+		}
 
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        if (arg.equals("me", true)) {
-            val user = context.getUser()?.asUserOrNull()
+		if (arg.equals("me", true)) {
+			val user = context.getUser()?.asUserOrNull()
 
-            if (user != null) {
-                this.parsed = user
+			if (user != null) {
+				this.parsed = user
 
-                return true
-            }
-        }
+				return true
+			}
+		}
 
-        if (arg.equals("you", true)) {
+		if (arg.equals("you", true)) {
 			this.parsed = bot.kordRef.getSelf()
 
 			return true
-        }
+		}
 
-        this.parsed = findUser(arg, context)
-            ?: throw DiscordRelayedException(
-                context.translate("converters.user.error.missing", replacements = arrayOf(arg))
-            )
+		this.parsed = findUser(arg, context)
+			?: throw DiscordRelayedException(
+				context.translate("converters.user.error.missing", replacements = arrayOf(arg))
+			)
 
-        return true
-    }
+		return true
+	}
 
-    private suspend fun findUser(arg: String, context: CommandContext): User? =
-        if (arg.startsWith("<@") && arg.endsWith(">")) { // It's a mention
-            val id: String = arg.substring(2, arg.length - 1).replace("!", "")
+	private suspend fun findUser(arg: String, context: CommandContext): User? =
+		if (arg.startsWith("<@") && arg.endsWith(">")) { // It's a mention
+			val id: String = arg.substring(2, arg.length - 1).replace("!", "")
 
-            try {
-                kord.getUser(Snowflake(id))
-            } catch (e: NumberFormatException) {
-                throw DiscordRelayedException(
-                    context.translate("converters.user.error.invalid", replacements = arrayOf(id))
-                )
-            }
-        } else {
-            try { // Try for a user ID first
-                kord.getUser(Snowflake(arg))
-            } catch (e: NumberFormatException) { // It's not an ID, let's try the tag
-                if (!arg.contains("#")) {
-                    null
-                } else {
-                    kord.users.firstOrNull { user ->
-                        user.tag.equals(arg, true)
-                    }
-                }
-            }
-        }
+			try {
+				kord.getUser(Snowflake(id))
+			} catch (e: NumberFormatException) {
+				throw DiscordRelayedException(
+					context.translate("converters.user.error.invalid", replacements = arrayOf(id))
+				)
+			}
+		} else {
+			try { // Try for a user ID first
+				kord.getUser(Snowflake(arg))
+			} catch (e: NumberFormatException) { // It's not an ID, let's try the tag
+				if (!arg.contains("#")) {
+					null
+				} else {
+					kord.users.firstOrNull { user ->
+						user.tag.equals(arg, true)
+					}
+				}
+			}
+		}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        UserBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		UserBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
-            val id = (option as? UserOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
+			val id = (option as? UserOptionValue)?.value ?: return false
 
-            kord.getUser(id) ?: return false
-        } else {
-            (option as? UserOptionValue)?.resolvedObject ?: return false
-        }
+			kord.getUser(id) ?: return false
+		} else {
+			(option as? UserOptionValue)?.resolvedObject ?: return false
+		}
 
-        this.parsed = optionValue
+		this.parsed = optionValue
 
-        return true
-    }
+		return true
+	}
 }

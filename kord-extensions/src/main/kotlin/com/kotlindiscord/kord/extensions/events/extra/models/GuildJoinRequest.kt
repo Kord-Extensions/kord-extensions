@@ -14,40 +14,40 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public data class GuildJoinRequest(
-    @SerialName("user_id")
-    public val userId: Snowflake,
+	@SerialName("user_id")
+	public val userId: Snowflake,
 
-    @SerialName("rejection_reason")
-    public val rejectionReason: String?,
+	@SerialName("rejection_reason")
+	public val rejectionReason: String?,
 
-    @SerialName("guild_id")
-    public val guildId: Snowflake,
+	@SerialName("guild_id")
+	public val guildId: Snowflake,
 
-    @SerialName("created_at")
-    public val createdAt: Instant,
+	@SerialName("created_at")
+	public val createdAt: Instant,
 
-    @SerialName("application_status")
-    public val status: ApplicationStatus,
+	@SerialName("application_status")
+	public val status: ApplicationStatus,
 
-    @SerialName("form_responses")
-    public val formResponses: List<GuildJoinRequestResponse>,
+	@SerialName("form_responses")
+	public val formResponses: List<GuildJoinRequestResponse>,
 
-    @SerialName("actioned_by_user")
-    public val actionedByUser: DiscordUser? = null,
+	@SerialName("actioned_by_user")
+	public val actionedByUser: DiscordUser? = null,
 
-    @SerialName("actioned_at")
-    public val actionedAtSnowflake: Snowflake? = null,
+	@SerialName("actioned_at")
+	public val actionedAtSnowflake: Snowflake? = null,
 
-    public val id: Snowflake,
-    public val user: DiscordUser,
+	public val id: Snowflake,
+	public val user: DiscordUser,
 
-    // last_seen?
+	// last_seen?
 ) {
-    public val requestBypassed: Boolean by lazy {
-        user.id == actionedByUser?.id
-    }
+	public val requestBypassed: Boolean by lazy {
+		user.id == actionedByUser?.id
+	}
 
-    public val actionedAt: Instant? by lazy {
-        actionedAtSnowflake?.timestamp
-    }
+	public val actionedAt: Instant? by lazy {
+		actionedAtSnowflake?.timestamp
+	}
 }

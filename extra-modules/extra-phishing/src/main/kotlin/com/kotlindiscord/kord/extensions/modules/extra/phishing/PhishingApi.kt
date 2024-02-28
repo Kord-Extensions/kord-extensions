@@ -21,37 +21,37 @@ internal const val SIZE_PATH = "https://phish.sinking.yachts/v2/dbsize"
 /** Implementation of the Sinking Yachts phishing domain API. **/
 class PhishingApi(internal val appName: String) {
 
-    internal val client = HttpClient {
-        install(ContentNegotiation) {
-            json()
-        }
+	internal val client = HttpClient {
+		install(ContentNegotiation) {
+			json()
+		}
 
-        install(WebSockets)
+		install(WebSockets)
 
-        expectSuccess = true
-    }
+		expectSuccess = true
+	}
 
-    internal suspend inline fun <reified T> get(url: String): T = client.get(url) {
-        header("X-Identity", "$appName (via Kord Extensions)")
-    }.body()
+	internal suspend inline fun <reified T> get(url: String): T = client.get(url) {
+		header("X-Identity", "$appName (via Kord Extensions)")
+	}.body()
 
-    /** Get all known phishing domains from the API. **/
-    suspend fun getAllDomains(): Set<String> =
-        get(ALL_PATH)
+	/** Get all known phishing domains from the API. **/
+	suspend fun getAllDomains(): Set<String> =
+		get(ALL_PATH)
 
-    /** Query the API directly to check a specific domain. **/
-    suspend fun checkDomain(domain: String): Boolean =
-        get(CHECK_PATH.replace("%", domain))
+	/** Query the API directly to check a specific domain. **/
+	suspend fun checkDomain(domain: String): Boolean =
+		get(CHECK_PATH.replace("%", domain))
 
-    /** Get all new phishing domains added in the previous [seconds] seconds. **/
-    suspend fun getRecentDomains(seconds: Long): List<DomainChange> =
-        get(RECENT_PATH.replace("%", seconds.toString()))
+	/** Get all new phishing domains added in the previous [seconds] seconds. **/
+	suspend fun getRecentDomains(seconds: Long): List<DomainChange> =
+		get(RECENT_PATH.replace("%", seconds.toString()))
 
-    /** Get the total number of phishing domains that the API knows about. **/
-    suspend fun getTotalDomains(): Long =
-        get(SIZE_PATH)
+	/** Get the total number of phishing domains that the API knows about. **/
+	suspend fun getTotalDomains(): Long =
+		get(SIZE_PATH)
 
-    /** Connect to the websocket and register a callback to receive changes. Returns a lifecycle wrapper. **/
-    fun websocket(callback: suspend (DomainChange) -> Unit) =
-        PhishingWebsocketWrapper(appName, callback)
+	/** Connect to the websocket and register a callback to receive changes. Returns a lifecycle wrapper. **/
+	fun websocket(callback: suspend (DomainChange) -> Unit) =
+		PhishingWebsocketWrapper(appName, callback)
 }

@@ -14,8 +14,8 @@ import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 
 /** Class representing the execution context for a public-only button. **/
 public class PublicInteractionButtonContext<M : ModalForm>(
-    component: PublicInteractionButton<M>,
-    event: ButtonInteractionCreateEvent,
-    override val interactionResponse: PublicMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
+	component: PublicInteractionButton<M>,
+	event: ButtonInteractionCreateEvent,
+	override val interactionResponse: PublicMessageInteractionResponseBehavior,
+	cache: MutableStringKeyedMap<Any>,
 ) : InteractionButtonContext(component, event, cache), PublicInteractionContext

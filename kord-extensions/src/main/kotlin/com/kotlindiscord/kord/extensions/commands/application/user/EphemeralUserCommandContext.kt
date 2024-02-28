@@ -14,8 +14,8 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 
 /** Ephemeral-only user command context. **/
 public class EphemeralUserCommandContext<M : ModalForm>(
-    override val event: UserCommandInteractionCreateEvent,
-    override val command: UserCommand<EphemeralUserCommandContext<M>, M>,
-    override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
+	override val event: UserCommandInteractionCreateEvent,
+	override val command: UserCommand<EphemeralUserCommandContext<M>, M>,
+	override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
+	cache: MutableStringKeyedMap<Any>,
 ) : UserCommandContext<EphemeralUserCommandContext<M>, M>(event, command, cache), EphemeralInteractionContext

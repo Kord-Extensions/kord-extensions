@@ -19,8 +19,8 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 /** Command context for an unsafe slash command. **/
 @UnsafeAPI
 public class UnsafeSlashCommandContext<A : Arguments, M : ModalForm>(
-    override val event: ChatInputCommandInteractionCreateEvent,
-    override val command: UnsafeSlashCommand<A, M>,
-    override var interactionResponse: MessageInteractionResponseBehavior?,
-    cache: MutableStringKeyedMap<Any>
+	override val event: ChatInputCommandInteractionCreateEvent,
+	override val command: UnsafeSlashCommand<A, M>,
+	override var interactionResponse: MessageInteractionResponseBehavior?,
+	cache: MutableStringKeyedMap<Any>,
 ) : SlashCommandContext<UnsafeSlashCommandContext<A, M>, A, M>(event, command, cache), UnsafeInteractionContext

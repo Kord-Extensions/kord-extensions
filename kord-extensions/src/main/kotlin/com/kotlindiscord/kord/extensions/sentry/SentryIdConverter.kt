@@ -32,39 +32,39 @@ import io.sentry.protocol.SentryId
 	types = [ConverterType.SINGLE, ConverterType.LIST, ConverterType.OPTIONAL]
 )
 public class SentryIdConverter(
-	override var validator: Validator<SentryId> = null
+	override var validator: Validator<SentryId> = null,
 ) : SingleConverter<SentryId>() {
-    override val signatureTypeString: String = "extensions.sentry.converter.sentryId.signatureType"
+	override val signatureTypeString: String = "extensions.sentry.converter.sentryId.signatureType"
 	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        try {
-            this.parsed = SentryId(arg)
-        } catch (e: IllegalArgumentException) {
-            throw DiscordRelayedException(
-                context.translate("extensions.sentry.converter.error.invalid", replacements = arrayOf(arg))
-            )
-        }
+		try {
+			this.parsed = SentryId(arg)
+		} catch (e: IllegalArgumentException) {
+			throw DiscordRelayedException(
+				context.translate("extensions.sentry.converter.error.invalid", replacements = arrayOf(arg))
+			)
+		}
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
-        try {
-            this.parsed = SentryId(optionValue)
-        } catch (e: IllegalArgumentException) {
-            throw DiscordRelayedException(
-                context.translate("extensions.sentry.converter.error.invalid", replacements = arrayOf(optionValue))
-            )
-        }
+		try {
+			this.parsed = SentryId(optionValue)
+		} catch (e: IllegalArgumentException) {
+			throw DiscordRelayedException(
+				context.translate("extensions.sentry.converter.error.invalid", replacements = arrayOf(optionValue))
+			)
+		}
 
-        return true
-    }
+		return true
+	}
 }

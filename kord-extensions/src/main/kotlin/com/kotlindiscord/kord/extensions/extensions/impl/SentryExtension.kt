@@ -27,112 +27,112 @@ import org.koin.core.component.inject
  * Even if you add this extension manually, it won't do anything unless you've set up the Sentry integration.
  */
 public class SentryExtension : Extension() {
-    override val name: String = "sentry"
+	override val name: String = "sentry"
 
-    /** Sentry adapter, for easy access to Sentry functions. **/
-    public val sentryAdapter: SentryAdapter by inject()
+	/** Sentry adapter, for easy access to Sentry functions. **/
+	public val sentryAdapter: SentryAdapter by inject()
 
-    /** Bot settings. **/
-    public val botSettings: ExtensibleBotBuilder by inject()
+	/** Bot settings. **/
+	public val botSettings: ExtensibleBotBuilder by inject()
 
-    /** Sentry extension settings, from the bot builder. **/
-    public val sentrySettings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
-        botSettings.extensionsBuilder.sentryExtensionBuilder
+	/** Sentry extension settings, from the bot builder. **/
+	public val sentrySettings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
+		botSettings.extensionsBuilder.sentryExtensionBuilder
 
-    @Suppress("StringLiteralDuplication")  // It's the command name
-    override suspend fun setup() {
-        if (sentryAdapter.enabled) {
-            ephemeralSlashCommand(::FeedbackSlashArgs) {
-                name = "extensions.sentry.commandName"
-                description = "extensions.sentry.commandDescription.short"
+	@Suppress("StringLiteralDuplication")  // It's the command name
+	override suspend fun setup() {
+		if (sentryAdapter.enabled) {
+			ephemeralSlashCommand(::FeedbackSlashArgs) {
+				name = "extensions.sentry.commandName"
+				description = "extensions.sentry.commandDescription.short"
 
-                action {
-                    if (!sentry.adapter.hasEventId(arguments.id)) {
-                        respond {
-                            content = translate("extensions.sentry.error.invalidId")
-                        }
+				action {
+					if (!sentry.adapter.hasEventId(arguments.id)) {
+						respond {
+							content = translate("extensions.sentry.error.invalidId")
+						}
 
-                        return@action
-                    }
+						return@action
+					}
 
-                    val feedback = UserFeedback(
-                        arguments.id,
-                        member!!.asMember().tag,
-                        member!!.id.toString(),
-                        arguments.feedback
-                    )
+					val feedback = UserFeedback(
+						arguments.id,
+						member!!.asMember().tag,
+						member!!.id.toString(),
+						arguments.feedback
+					)
 
 					sentry.captureFeedback(feedback)
 					sentry.adapter.removeEventId(arguments.id)
 
-                    respond {
-                        content = translate("extensions.sentry.thanks")
-                    }
-                }
-            }
+					respond {
+						content = translate("extensions.sentry.thanks")
+					}
+				}
+			}
 
-            chatCommand(::FeedbackMessageArgs) {
-                name = "extensions.sentry.commandName"
-                description = "extensions.sentry.commandDescription.long"
+			chatCommand(::FeedbackMessageArgs) {
+				name = "extensions.sentry.commandName"
+				description = "extensions.sentry.commandDescription.long"
 
-                aliasKey = "extensions.sentry.commandAliases"
+				aliasKey = "extensions.sentry.commandAliases"
 
-                action {
-                    if (!sentry.adapter.hasEventId(arguments.id)) {
-                        message.respond(
-                            translate("extensions.sentry.error.invalidId"),
-                            pingInReply = sentrySettings.pingInReply
-                        )
+				action {
+					if (!sentry.adapter.hasEventId(arguments.id)) {
+						message.respond(
+							translate("extensions.sentry.error.invalidId"),
+							pingInReply = sentrySettings.pingInReply
+						)
 
-                        return@action
-                    }
+						return@action
+					}
 
-                    val author = message.author!!
-                    val feedback = UserFeedback(
-                        arguments.id,
-                        author.tag,
-                        author.id.toString(),
-                        arguments.feedback
-                    )
+					val author = message.author!!
+					val feedback = UserFeedback(
+						arguments.id,
+						author.tag,
+						author.id.toString(),
+						arguments.feedback
+					)
 
-                    Sentry.captureUserFeedback(feedback)
+					Sentry.captureUserFeedback(feedback)
 					sentry.adapter.removeEventId(arguments.id)
 
-                    message.respond(
-                        translate("extensions.sentry.thanks")
-                    )
-                }
-            }
-        }
-    }
+					message.respond(
+						translate("extensions.sentry.thanks")
+					)
+				}
+			}
+		}
+	}
 
-    /** Arguments for the feedback command. **/
-    public class FeedbackMessageArgs : Arguments() {
-        /** Sentry event ID. **/
-        public val id: SentryId by sentryId {
+	/** Arguments for the feedback command. **/
+	public class FeedbackMessageArgs : Arguments() {
+		/** Sentry event ID. **/
+		public val id: SentryId by sentryId {
 			name = "id"
 			description = "extensions.sentry.arguments.id"
 		}
 
-        /** Feedback message to submit to Sentry. **/
-        public val feedback: String by coalescingString {
-            name = "feedback"
-            description = "extensions.sentry.arguments.feedback"
-        }
-    }
+		/** Feedback message to submit to Sentry. **/
+		public val feedback: String by coalescingString {
+			name = "feedback"
+			description = "extensions.sentry.arguments.feedback"
+		}
+	}
 
-    /** Arguments for the feedback command. **/
-    public class FeedbackSlashArgs : Arguments() {
-        /** Sentry event ID. **/
-        public val id: SentryId by sentryId {
+	/** Arguments for the feedback command. **/
+	public class FeedbackSlashArgs : Arguments() {
+		/** Sentry event ID. **/
+		public val id: SentryId by sentryId {
 			name = "id"
 			description = "extensions.sentry.arguments.id"
 		}
 
-			/** Feedback message to submit to Sentry. **/
-        public val feedback: String by string {
-            name = "feedback"
-            description = "extensions.sentry.arguments.feedback"
-        }
-    }
+		/** Feedback message to submit to Sentry. **/
+		public val feedback: String by string {
+			name = "feedback"
+			description = "extensions.sentry.arguments.feedback"
+		}
+	}
 }

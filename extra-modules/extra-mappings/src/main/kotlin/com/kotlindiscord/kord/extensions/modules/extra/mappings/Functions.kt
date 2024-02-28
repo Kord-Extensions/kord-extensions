@@ -13,10 +13,10 @@ import com.kotlindiscord.kord.extensions.modules.extra.mappings.builders.ExtMapp
  * Configure the mappings extension and add it to the bot.
  */
 fun ExtensibleBotBuilder.ExtensionsBuilder.extMappings(builder: ExtMappingsBuilder.() -> Unit) {
-    val obj = ExtMappingsBuilder()
+	val obj = ExtMappingsBuilder()
 
-    builder(obj)
-    MappingsExtension.configure(obj)
+	builder(obj)
+	MappingsExtension.configure(obj)
 
-    add(::MappingsExtension)
+	add(::MappingsExtension)
 }

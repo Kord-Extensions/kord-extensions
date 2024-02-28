@@ -1,65 +1,65 @@
 plugins {
-    `kordex-module`
-    `published-module`
-    `disable-explicit-api-mode`
-    `ksp-module`
+	`kordex-module`
+	`published-module`
+	`disable-explicit-api-mode`
+	`ksp-module`
 }
 
 metadata {
-    name = "KordEx Extra: Mappings"
-    description = "KordEx extra module that provides Minecraft mappings functionality for bots"
+	name = "KordEx Extra: Mappings"
+	description = "KordEx extra module that provides Minecraft mappings functionality for bots"
 }
 
 repositories {
-    maven {
-        name = "Sonatype Snapshots"
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-    }
+	maven {
+		name = "Sonatype Snapshots"
+		url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+	}
 
-    maven {
-        name = "FabricMC"
-        url = uri("https://maven.fabricmc.net/")
-    }
+	maven {
+		name = "FabricMC"
+		url = uri("https://maven.fabricmc.net/")
+	}
 
-    maven {
-        name = "QuiltMC (Releases)"
-        url = uri("https://maven.quiltmc.org/repository/release/")
-    }
+	maven {
+		name = "QuiltMC (Releases)"
+		url = uri("https://maven.quiltmc.org/repository/release/")
+	}
 
-    maven {
-        name = "QuiltMC (Snapshots)"
-        url = uri("https://maven.quiltmc.org/repository/snapshot/")
-    }
+	maven {
+		name = "QuiltMC (Snapshots)"
+		url = uri("https://maven.quiltmc.org/repository/snapshot/")
+	}
 
-    maven {
-        name = "Shedaniel"
-        url = uri("https://maven.shedaniel.me")
-    }
+	maven {
+		name = "Shedaniel"
+		url = uri("https://maven.shedaniel.me")
+	}
 
-    maven {
-        name = "JitPack"
-        url = uri("https://jitpack.io")
-    }
+	maven {
+		name = "JitPack"
+		url = uri("https://jitpack.io")
+	}
 }
 
 dependencies {
-    api(libs.linkie)
+	api(libs.linkie)
 
-    detektPlugins(libs.detekt)
-    detektPlugins(libs.detekt.libraries)
+	detektPlugins(libs.detekt)
+	detektPlugins(libs.detekt.libraries)
 
-    implementation(libs.bundles.logging)
-    implementation(libs.kotlin.stdlib)
+	implementation(libs.bundles.logging)
+	implementation(libs.kotlin.stdlib)
 
-    testImplementation(libs.groovy)  // For logback config
-    testImplementation(libs.jansi)
-    testImplementation(libs.logback)
-    testImplementation(libs.logback.groovy)
+	testImplementation(libs.groovy)  // For logback config
+	testImplementation(libs.jansi)
+	testImplementation(libs.logback)
+	testImplementation(libs.logback.groovy)
 
-    implementation(project(":kord-extensions"))
-    implementation(project(":annotations"))
+	implementation(project(":kord-extensions"))
+	implementation(project(":annotations"))
 
-    ksp(project(":annotation-processor"))
+	ksp(project(":annotation-processor"))
 }
 
 group = "com.kotlindiscord.kord.extensions"

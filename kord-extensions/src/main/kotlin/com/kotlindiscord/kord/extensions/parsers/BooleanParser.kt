@@ -24,44 +24,44 @@ import java.util.*
  * Translations may be split using commas, in which case any of the given values will be suitable.
  */
 public object BooleanParser : KordExKoinComponent {
-    private val translations: TranslationsProvider by inject()
-    private val settings: ExtensibleBotBuilder by inject()
+	private val translations: TranslationsProvider by inject()
+	private val settings: ExtensibleBotBuilder by inject()
 
-    private val valueCache: MutableMap<Locale, Pair<List<String>, List<String>>> = mutableMapOf()
+	private val valueCache: MutableMap<Locale, Pair<List<String>, List<String>>> = mutableMapOf()
 
-    /**
-     * Parse the given string into a [Boolean] based on the translations for the given locale. Falls back to the bot's
-     * default locale as required.
-     */
-    public fun parse(input: String, locale: Locale): Boolean? {
-        if (valueCache[locale] == null) {
-            val trueValues = translations.translate("utils.string.true", locale)
-                .split(',')
-                .map { it.trim() }
+	/**
+	 * Parse the given string into a [Boolean] based on the translations for the given locale. Falls back to the bot's
+	 * default locale as required.
+	 */
+	public fun parse(input: String, locale: Locale): Boolean? {
+		if (valueCache[locale] == null) {
+			val trueValues = translations.translate("utils.string.true", locale)
+				.split(',')
+				.map { it.trim() }
 
-            val falseValues = translations.translate("utils.string.false", locale)
-                .split(',')
-                .map { it.trim() }
+			val falseValues = translations.translate("utils.string.false", locale)
+				.split(',')
+				.map { it.trim() }
 
-            valueCache[locale] = trueValues to falseValues
-        }
+			valueCache[locale] = trueValues to falseValues
+		}
 
-        val (trueValues, falseValues) = valueCache[locale]!!
-        val lowerInput = input.lowercase()
+		val (trueValues, falseValues) = valueCache[locale]!!
+		val lowerInput = input.lowercase()
 
-        val result = when {
-            trueValues.contains(lowerInput) -> true
-            falseValues.contains(lowerInput) -> false
+		val result = when {
+			trueValues.contains(lowerInput) -> true
+			falseValues.contains(lowerInput) -> false
 
-            else -> null
-        }
+			else -> null
+		}
 
-        if (result == null && locale != settings.i18nBuilder.defaultLocale) {
-            // Try it again in the default locale as a fallback
+		if (result == null && locale != settings.i18nBuilder.defaultLocale) {
+			// Try it again in the default locale as a fallback
 
-            return parse(input, settings.i18nBuilder.defaultLocale)
-        }
+			return parse(input, settings.i18nBuilder.defaultLocale)
+		}
 
-        return result
-    }
+		return result
+	}
 }

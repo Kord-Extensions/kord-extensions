@@ -17,38 +17,38 @@ import java.util.*
 private typealias UnitMap = LinkedHashMap<String, IsoUnit>
 
 private val keyMap: UnitMap = linkedMapOf(
-    "utils.units.second" to ClockUnit.SECONDS,
-    "utils.units.minute" to ClockUnit.MINUTES,
-    "utils.units.hour" to ClockUnit.HOURS,
-    "utils.units.day" to CalendarUnit.DAYS,
-    "utils.units.week" to CalendarUnit.WEEKS,
-    "utils.units.month" to CalendarUnit.MONTHS,
-    "utils.units.year" to CalendarUnit.YEARS,
+	"utils.units.second" to ClockUnit.SECONDS,
+	"utils.units.minute" to ClockUnit.MINUTES,
+	"utils.units.hour" to ClockUnit.HOURS,
+	"utils.units.day" to CalendarUnit.DAYS,
+	"utils.units.week" to CalendarUnit.WEEKS,
+	"utils.units.month" to CalendarUnit.MONTHS,
+	"utils.units.year" to CalendarUnit.YEARS,
 )
 
 /**
  * Simple object that caches translated time units per locale.
  */
 public object T4JTimeUnitCache : KordExKoinComponent {
-    private val translations: TranslationsProvider by inject()
-    private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
+	private val translations: TranslationsProvider by inject()
+	private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
 
-    /** Return a mapping of all translated unit names to ChronoUnit objects, based on the given locale. **/
-    public fun getUnits(locale: Locale): UnitMap {
-        if (valueCache[locale] == null) {
-            val unitMap: UnitMap = linkedMapOf()
+	/** Return a mapping of all translated unit names to ChronoUnit objects, based on the given locale. **/
+	public fun getUnits(locale: Locale): UnitMap {
+		if (valueCache[locale] == null) {
+			val unitMap: UnitMap = linkedMapOf()
 
-            keyMap.forEach { key, value ->
-                val result = translations.translate(key, locale)
+			keyMap.forEach { key, value ->
+				val result = translations.translate(key, locale)
 
-                result.split(",").map { it.trim() }.forEach {
-                    unitMap[it] = value
-                }
-            }
+				result.split(",").map { it.trim() }.forEach {
+					unitMap[it] = value
+				}
+			}
 
-            valueCache[locale] = unitMap
-        }
+			valueCache[locale] = unitMap
+		}
 
-        return valueCache[locale]!!
-    }
+		return valueCache[locale]!!
+	}
 }

@@ -21,7 +21,7 @@ import kotlin.time.Duration
 
 /** Flow containing all [User] objects in the cache. **/
 public val Kord.users: Flow<User>
-    get() = with(EntitySupplyStrategy.cache).users
+	get() = with(EntitySupplyStrategy.cache).users
 
 /**
  * Return the first received event that matches the condition.
@@ -31,14 +31,14 @@ public val Kord.users: Flow<User>
  * @param condition Function return true if the event object is valid and should be returned.
  */
 public suspend inline fun <reified T : Event> Kord.waitFor(
-    timeout: Long? = null,
-    noinline condition: (suspend T.() -> Boolean) = { true }
+	timeout: Long? = null,
+	noinline condition: (suspend T.() -> Boolean) = { true },
 ): T? = if (timeout == null) {
-    events.filterIsInstance<T>().firstOrNull(condition)
+	events.filterIsInstance<T>().firstOrNull(condition)
 } else {
-    withTimeoutOrNull(timeout) {
-        events.filterIsInstance<T>().firstOrNull(condition)
-    }
+	withTimeoutOrNull(timeout) {
+		events.filterIsInstance<T>().firstOrNull(condition)
+	}
 }
 
 /**
@@ -49,14 +49,14 @@ public suspend inline fun <reified T : Event> Kord.waitFor(
  * @param condition Function return true if the event object is valid and should be returned.
  */
 public suspend inline fun <reified T : Event> Kord.waitFor(
-    timeout: Duration? = null,
-    noinline condition: (suspend T.() -> Boolean) = { true }
+	timeout: Duration? = null,
+	noinline condition: (suspend T.() -> Boolean) = { true },
 ): T? = if (timeout == null) {
-    events.filterIsInstance<T>().firstOrNull(condition)
+	events.filterIsInstance<T>().firstOrNull(condition)
 } else {
-    withTimeoutOrNull(timeout) {
-        events.filterIsInstance<T>().firstOrNull(condition)
-    }
+	withTimeoutOrNull(timeout) {
+		events.filterIsInstance<T>().firstOrNull(condition)
+	}
 }
 
 /**
@@ -69,16 +69,16 @@ public suspend inline fun <reified T : Event> Kord.waitFor(
 @KordPreview
 @Suppress("ExpressionBodySyntax")
 public suspend inline fun <reified T : Event> LiveKordEntity.waitFor(
-    timeout: Long? = null,
-    noinline condition: (suspend T.() -> Boolean) = { true }
+	timeout: Long? = null,
+	noinline condition: (suspend T.() -> Boolean) = { true },
 ): T? {
-    return if (timeout == null) {
-        events.filterIsInstance<T>().firstOrNull(condition)
-    } else {
-        withTimeoutOrNull(timeout) {
-            events.filterIsInstance<T>().firstOrNull(condition)
-        }
-    }
+	return if (timeout == null) {
+		events.filterIsInstance<T>().firstOrNull(condition)
+	} else {
+		withTimeoutOrNull(timeout) {
+			events.filterIsInstance<T>().firstOrNull(condition)
+		}
+	}
 }
 
 /**
@@ -89,12 +89,12 @@ public suspend inline fun <reified T : Event> LiveKordEntity.waitFor(
  * @param condition Function return true if the event object is valid and should be returned.
  */
 public suspend inline fun <reified T : Event> ExtensibleBot.waitFor(
-    timeout: Duration? = null,
-    noinline condition: (suspend T.() -> Boolean) = { true }
+	timeout: Duration? = null,
+	noinline condition: (suspend T.() -> Boolean) = { true },
 ): T? = if (timeout == null) {
-    events.filterIsInstance<T>().firstOrNull(condition)
+	events.filterIsInstance<T>().firstOrNull(condition)
 } else {
-    withTimeoutOrNull(timeout) {
-        events.filterIsInstance<T>().firstOrNull(condition)
-    }
+	withTimeoutOrNull(timeout) {
+		events.filterIsInstance<T>().firstOrNull(condition)
+	}
 }

@@ -14,6 +14,6 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.converters.C
  * @property readableName String name used for the channel by Linkie
  */
 enum class Channels(override val readableName: String) : ChoiceEnum {
-    OFFICIAL("official"),
-    SNAPSHOT("snapshot")
+	OFFICIAL("official"),
+	SNAPSHOT("snapshot")
 }

@@ -28,28 +28,28 @@ private const val SUBCOMMAND_AND_GROUP_LIMIT: Int = 25
  * @param body Lambda used to build the [SlashGroup] object.
  */
 public suspend fun SlashCommand<*, *, *>.group(name: String, body: suspend SlashGroup.() -> Unit): SlashGroup {
-    if (parentCommand != null) {
-        error("Command groups may not be nested inside subcommands.")
-    }
+	if (parentCommand != null) {
+		error("Command groups may not be nested inside subcommands.")
+	}
 
-    if (groups.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
-        error("Commands may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT command groups.")
-    }
+	if (groups.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
+		error("Commands may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT command groups.")
+	}
 
-    val localizedGroupName = localize(name, true).default
+	val localizedGroupName = localize(name, true).default
 
-    if (groups[localizedGroupName] != null) {
-        error("A command group with the name '$name' has already been registered.")
-    }
+	if (groups[localizedGroupName] != null) {
+		error("A command group with the name '$name' has already been registered.")
+	}
 
-    val group = SlashGroup(name, this)
+	val group = SlashGroup(name, this)
 
-    body(group)
-    group.validate()
+	body(group)
+	group.validate()
 
-    groups[localizedGroupName] = group
+	groups[localizedGroupName] = group
 
-    return group
+	return group
 }
 
 // endregion
@@ -65,20 +65,20 @@ public suspend fun SlashCommand<*, *, *>.group(name: String, body: suspend Slash
  * @param body Builder lambda used for setting up the slash command object.
  */
 public suspend fun <T : Arguments> SlashCommand<*, *, *>.ephemeralSubCommand(
-    arguments: () -> T,
-    body: suspend EphemeralSlashCommand<T, ModalForm>.() -> Unit,
+	arguments: () -> T,
+	body: suspend EphemeralSlashCommand<T, ModalForm>.() -> Unit,
 ): EphemeralSlashCommand<T, ModalForm> {
-    val commandObj = EphemeralSlashCommand<T, ModalForm>(
-        extension,
-        arguments,
-        null,
-        this,
-        parentGroup
-    )
+	val commandObj = EphemeralSlashCommand<T, ModalForm>(
+		extension,
+		arguments,
+		null,
+		this,
+		parentGroup
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSubCommand(commandObj)
+	return ephemeralSubCommand(commandObj)
 }
 
 /**
@@ -92,20 +92,20 @@ public suspend fun <T : Arguments> SlashCommand<*, *, *>.ephemeralSubCommand(
 @ExtensionDSL
 @JvmName("ephemeralSubCommand1")
 public suspend fun <M : ModalForm> SlashCommand<*, *, *>.ephemeralSubCommand(
-    modal: () -> M,
-    body: suspend EphemeralSlashCommand<Arguments, M>.() -> Unit
+	modal: () -> M,
+	body: suspend EphemeralSlashCommand<Arguments, M>.() -> Unit,
 ): EphemeralSlashCommand<Arguments, M> {
-    val commandObj = EphemeralSlashCommand<Arguments, M>(
-        extension,
-        null,
-        modal,
-        this,
-        null
-    )
+	val commandObj = EphemeralSlashCommand<Arguments, M>(
+		extension,
+		null,
+		modal,
+		this,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSubCommand(commandObj)
+	return ephemeralSubCommand(commandObj)
 }
 
 /**
@@ -119,21 +119,21 @@ public suspend fun <M : ModalForm> SlashCommand<*, *, *>.ephemeralSubCommand(
  */
 @ExtensionDSL
 public suspend fun <A : Arguments, M : ModalForm> SlashCommand<*, *, *>.ephemeralSubCommand(
-    arguments: () -> A,
-    modal: () -> M,
-    body: suspend EphemeralSlashCommand<A, M>.() -> Unit
+	arguments: () -> A,
+	modal: () -> M,
+	body: suspend EphemeralSlashCommand<A, M>.() -> Unit,
 ): EphemeralSlashCommand<A, M> {
-    val commandObj = EphemeralSlashCommand(
-        extension,
-        arguments,
-        modal,
-        this,
-        null
-    )
+	val commandObj = EphemeralSlashCommand(
+		extension,
+		arguments,
+		modal,
+		this,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSubCommand(commandObj)
+	return ephemeralSubCommand(commandObj)
 }
 
 /**
@@ -144,27 +144,27 @@ public suspend fun <A : Arguments, M : ModalForm> SlashCommand<*, *, *>.ephemera
  * @param commandObj EphemeralSlashCommand object to register as a subcommand.
  */
 public fun <T : Arguments, M : ModalForm> SlashCommand<*, *, *>.ephemeralSubCommand(
-    commandObj: EphemeralSlashCommand<T, M>,
+	commandObj: EphemeralSlashCommand<T, M>,
 ): EphemeralSlashCommand<T, M> {
-    commandObj.guildId = null
+	commandObj.guildId = null
 
-    if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
-        throw InvalidCommandException(
-            commandObj.name,
-            "Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
-        )
-    }
+	if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
+		throw InvalidCommandException(
+			commandObj.name,
+			"Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
+		)
+	}
 
-    try {
-        commandObj.validate()
-        subCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        kxLogger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        kxLogger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		subCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		kxLogger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		kxLogger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -175,19 +175,19 @@ public fun <T : Arguments, M : ModalForm> SlashCommand<*, *, *>.ephemeralSubComm
  * @param body Builder lambda used for setting up the subcommand object.
  */
 public suspend fun SlashCommand<*, *, *>.ephemeralSubCommand(
-    body: suspend EphemeralSlashCommand<Arguments, ModalForm>.() -> Unit,
+	body: suspend EphemeralSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): EphemeralSlashCommand<Arguments, ModalForm> {
-    val commandObj = EphemeralSlashCommand<Arguments, ModalForm>(
-        extension,
-        null,
-        null,
-        this,
-        parentGroup
-    )
+	val commandObj = EphemeralSlashCommand<Arguments, ModalForm>(
+		extension,
+		null,
+		null,
+		this,
+		parentGroup
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSubCommand(commandObj)
+	return ephemeralSubCommand(commandObj)
 }
 
 // endregion
@@ -203,20 +203,20 @@ public suspend fun SlashCommand<*, *, *>.ephemeralSubCommand(
  * @param body Builder lambda used for setting up the slash command object.
  */
 public suspend fun <T : Arguments> SlashCommand<*, *, *>.publicSubCommand(
-    arguments: () -> T,
-    body: suspend PublicSlashCommand<T, ModalForm>.() -> Unit,
+	arguments: () -> T,
+	body: suspend PublicSlashCommand<T, ModalForm>.() -> Unit,
 ): PublicSlashCommand<T, ModalForm> {
-    val commandObj = PublicSlashCommand<T, ModalForm>(
-        extension,
-        arguments,
-        null,
-        this,
-        parentGroup
-    )
+	val commandObj = PublicSlashCommand<T, ModalForm>(
+		extension,
+		arguments,
+		null,
+		this,
+		parentGroup
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSubCommand(commandObj)
+	return publicSubCommand(commandObj)
 }
 
 /**
@@ -230,20 +230,20 @@ public suspend fun <T : Arguments> SlashCommand<*, *, *>.publicSubCommand(
 @ExtensionDSL
 @JvmName("publicSubCommand1")
 public suspend fun <M : ModalForm> SlashCommand<*, *, *>.publicSubCommand(
-    modal: () -> M,
-    body: suspend PublicSlashCommand<Arguments, M>.() -> Unit
+	modal: () -> M,
+	body: suspend PublicSlashCommand<Arguments, M>.() -> Unit,
 ): PublicSlashCommand<Arguments, M> {
-    val commandObj = PublicSlashCommand<Arguments, M>(
-        extension,
-        null,
-        modal,
-        this,
-        null
-    )
+	val commandObj = PublicSlashCommand<Arguments, M>(
+		extension,
+		null,
+		modal,
+		this,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSubCommand(commandObj)
+	return publicSubCommand(commandObj)
 }
 
 /**
@@ -257,20 +257,20 @@ public suspend fun <M : ModalForm> SlashCommand<*, *, *>.publicSubCommand(
  */
 @ExtensionDSL
 public suspend fun <A : Arguments, M : ModalForm> SlashCommand<*, *, *>.publicSubCommand(
-    arguments: () -> A,
-    modal: () -> M,
-    body: suspend PublicSlashCommand<A, M>.() -> Unit
+	arguments: () -> A,
+	modal: () -> M,
+	body: suspend PublicSlashCommand<A, M>.() -> Unit,
 ): PublicSlashCommand<A, M> {
-    val commandObj = PublicSlashCommand(
-        extension,
-        arguments,
-        modal,
-        this
-    )
+	val commandObj = PublicSlashCommand(
+		extension,
+		arguments,
+		modal,
+		this
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSubCommand(commandObj)
+	return publicSubCommand(commandObj)
 }
 
 /**
@@ -281,27 +281,27 @@ public suspend fun <A : Arguments, M : ModalForm> SlashCommand<*, *, *>.publicSu
  * @param commandObj PublicSlashCommand object to register as a subcommand.
  */
 public fun <T : Arguments, M : ModalForm> SlashCommand<*, *, *>.publicSubCommand(
-    commandObj: PublicSlashCommand<T, M>,
+	commandObj: PublicSlashCommand<T, M>,
 ): PublicSlashCommand<T, M> {
-    commandObj.guildId = null
+	commandObj.guildId = null
 
-    if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
-        throw InvalidCommandException(
-            commandObj.name,
-            "Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
-        )
-    }
+	if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
+		throw InvalidCommandException(
+			commandObj.name,
+			"Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
+		)
+	}
 
-    try {
-        commandObj.validate()
-        subCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        kxLogger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        kxLogger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		subCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		kxLogger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		kxLogger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -312,19 +312,19 @@ public fun <T : Arguments, M : ModalForm> SlashCommand<*, *, *>.publicSubCommand
  * @param body Builder lambda used for setting up the subcommand object.
  */
 public suspend fun SlashCommand<*, *, *>.publicSubCommand(
-    body: suspend PublicSlashCommand<Arguments, ModalForm>.() -> Unit,
+	body: suspend PublicSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): PublicSlashCommand<Arguments, ModalForm> {
-    val commandObj = PublicSlashCommand<Arguments, ModalForm>(
-        extension,
-        null,
-        null,
-        this,
-        parentGroup
-    )
+	val commandObj = PublicSlashCommand<Arguments, ModalForm>(
+		extension,
+		null,
+		null,
+		this,
+		parentGroup
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSubCommand(commandObj)
+	return publicSubCommand(commandObj)
 }
 
 // endregion
@@ -340,20 +340,20 @@ public suspend fun SlashCommand<*, *, *>.publicSubCommand(
  * @param body Builder lambda used for setting up the slash command object.
  */
 public suspend fun <T : Arguments> SlashGroup.ephemeralSubCommand(
-    arguments: () -> T,
-    body: suspend EphemeralSlashCommand<T, ModalForm>.() -> Unit,
+	arguments: () -> T,
+	body: suspend EphemeralSlashCommand<T, ModalForm>.() -> Unit,
 ): EphemeralSlashCommand<T, ModalForm> {
-    val commandObj = EphemeralSlashCommand<T, ModalForm>(
-        parent.extension,
-        arguments,
-        null,
-        parent,
-        this
-    )
+	val commandObj = EphemeralSlashCommand<T, ModalForm>(
+		parent.extension,
+		arguments,
+		null,
+		parent,
+		this
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSubCommand(commandObj)
+	return ephemeralSubCommand(commandObj)
 }
 
 /**
@@ -364,27 +364,27 @@ public suspend fun <T : Arguments> SlashGroup.ephemeralSubCommand(
  * @param commandObj EphemeralSlashCommand object to register as a subcommand.
  */
 public fun <T : Arguments, M : ModalForm> SlashGroup.ephemeralSubCommand(
-    commandObj: EphemeralSlashCommand<T, M>,
+	commandObj: EphemeralSlashCommand<T, M>,
 ): EphemeralSlashCommand<T, M> {
-    commandObj.guildId = null
+	commandObj.guildId = null
 
-    if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
-        throw InvalidCommandException(
-            commandObj.name,
-            "Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
-        )
-    }
+	if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
+		throw InvalidCommandException(
+			commandObj.name,
+			"Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
+		)
+	}
 
-    try {
-        commandObj.validate()
-        subCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		subCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -395,19 +395,19 @@ public fun <T : Arguments, M : ModalForm> SlashGroup.ephemeralSubCommand(
  * @param body Builder lambda used for setting up the subcommand object.
  */
 public suspend fun SlashGroup.ephemeralSubCommand(
-    body: suspend EphemeralSlashCommand<Arguments, ModalForm>.() -> Unit,
+	body: suspend EphemeralSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): EphemeralSlashCommand<Arguments, ModalForm> {
-    val commandObj = EphemeralSlashCommand<Arguments, ModalForm>(
-        parent.extension,
-        null,
-        null,
-        parent,
-        this
-    )
+	val commandObj = EphemeralSlashCommand<Arguments, ModalForm>(
+		parent.extension,
+		null,
+		null,
+		parent,
+		this
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSubCommand(commandObj)
+	return ephemeralSubCommand(commandObj)
 }
 
 // endregion
@@ -423,20 +423,20 @@ public suspend fun SlashGroup.ephemeralSubCommand(
  * @param body Builder lambda used for setting up the slash command object.
  */
 public suspend fun <T : Arguments> SlashGroup.publicSubCommand(
-    arguments: () -> T,
-    body: suspend PublicSlashCommand<T, ModalForm>.() -> Unit,
+	arguments: () -> T,
+	body: suspend PublicSlashCommand<T, ModalForm>.() -> Unit,
 ): PublicSlashCommand<T, ModalForm> {
-    val commandObj = PublicSlashCommand<T, ModalForm>(
-        parent.extension,
-        arguments,
-        null,
-        parent,
-        this
-    )
+	val commandObj = PublicSlashCommand<T, ModalForm>(
+		parent.extension,
+		arguments,
+		null,
+		parent,
+		this
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSubCommand(commandObj)
+	return publicSubCommand(commandObj)
 }
 
 /**
@@ -447,27 +447,27 @@ public suspend fun <T : Arguments> SlashGroup.publicSubCommand(
  * @param commandObj PublicSlashCommand object to register as a subcommand.
  */
 public fun <T : Arguments, M : ModalForm> SlashGroup.publicSubCommand(
-    commandObj: PublicSlashCommand<T, M>,
+	commandObj: PublicSlashCommand<T, M>,
 ): PublicSlashCommand<T, M> {
-    commandObj.guildId = null
+	commandObj.guildId = null
 
-    if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
-        throw InvalidCommandException(
-            commandObj.name,
-            "Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
-        )
-    }
+	if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
+		throw InvalidCommandException(
+			commandObj.name,
+			"Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
+		)
+	}
 
-    try {
-        commandObj.validate()
-        subCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		subCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -478,19 +478,19 @@ public fun <T : Arguments, M : ModalForm> SlashGroup.publicSubCommand(
  * @param body Builder lambda used for setting up the subcommand object.
  */
 public suspend fun SlashGroup.publicSubCommand(
-    body: suspend PublicSlashCommand<Arguments, ModalForm>.() -> Unit,
+	body: suspend PublicSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): PublicSlashCommand<Arguments, ModalForm> {
-    val commandObj = PublicSlashCommand<Arguments, ModalForm>(
-        parent.extension,
-        null,
-        null,
-        parent,
-        this
-    )
+	val commandObj = PublicSlashCommand<Arguments, ModalForm>(
+		parent.extension,
+		null,
+		null,
+		parent,
+		this
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSubCommand(commandObj)
+	return publicSubCommand(commandObj)
 }
 
 // endregion

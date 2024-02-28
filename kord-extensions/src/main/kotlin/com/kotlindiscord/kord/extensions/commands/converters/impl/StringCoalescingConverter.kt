@@ -27,31 +27,31 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see coalescedString
  */
 @Converter(
-    "string",
+	"string",
 
-    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL]
+	types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL]
 )
 public class StringCoalescingConverter(
-    shouldThrow: Boolean = false,
-    override var validator: Validator<String> = null
+	shouldThrow: Boolean = false,
+	override var validator: Validator<String> = null,
 ) : CoalescingConverter<String>(shouldThrow) {
-    override val signatureTypeString: String = "converters.string.signatureType"
-    override val showTypeInSignature: Boolean = false
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.string.signatureType"
+	override val showTypeInSignature: Boolean = false
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
-        this.parsed = named?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+		this.parsed = named?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
 
-        return parsed.length
-    }
+		return parsed.length
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
-        this.parsed = optionValue
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
+		this.parsed = optionValue
 
-        return true
-    }
+		return true
+	}
 }

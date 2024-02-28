@@ -10,5 +10,5 @@ import dev.kord.common.entity.TextInputStyle
 
 /** A text widget that supports multiple lines of text. **/
 public class ParagraphTextWidget : TextInputWidget<ParagraphTextWidget>() {
-    override val style: TextInputStyle = TextInputStyle.Paragraph
+	override val style: TextInputStyle = TextInputStyle.Paragraph
 }

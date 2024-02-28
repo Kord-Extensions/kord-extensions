@@ -24,26 +24,26 @@ import com.kotlindiscord.kord.extensions.commands.converters.builders.OptionalCo
  * @property validator Validation lambda, which may throw a DiscordRelayedException if required.
  */
 public abstract class OptionalCoalescingConverter<T : Any>(
-    public val outputError: Boolean = false,
-    override var validator: Validator<T?> = null
+	public val outputError: Boolean = false,
+	override var validator: Validator<T?> = null,
 ) : Converter<List<T>, T?, List<String>, Int>(false), SlashCommandConverter {
-    /**
-     * The parsed value.
-     *
-     * This should be set by the converter during the course of the [parse] function.
-     */
-    public override var parsed: T? = null
+	/**
+	 * The parsed value.
+	 *
+	 * This should be set by the converter during the course of the [parse] function.
+	 */
+	public override var parsed: T? = null
 
-    /** Access to the converter builder, perhaps a bit more hacky than it should be but whatever. **/
-    public open lateinit var builder: OptionalCoalescingConverterBuilder<T>
+	/** Access to the converter builder, perhaps a bit more hacky than it should be but whatever. **/
+	public open lateinit var builder: OptionalCoalescingConverterBuilder<T>
 
-    /** @suppress Internal function used by converter builders. **/
-    public open fun withBuilder(
-        builder: OptionalCoalescingConverterBuilder<T>
-    ): OptionalCoalescingConverter<T> {
-        this.builder = builder
-        this.genericBuilder = builder
+	/** @suppress Internal function used by converter builders. **/
+	public open fun withBuilder(
+		builder: OptionalCoalescingConverterBuilder<T>,
+	): OptionalCoalescingConverter<T> {
+		this.builder = builder
+		this.genericBuilder = builder
 
-        return this
-    }
+		return this
+	}
 }

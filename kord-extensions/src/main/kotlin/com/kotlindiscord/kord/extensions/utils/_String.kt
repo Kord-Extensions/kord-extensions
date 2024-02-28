@@ -19,13 +19,13 @@ import java.util.*
  * @return Pair containing the split string.
  */
 public fun String.splitOn(separator: (Char) -> Boolean): Pair<String, String> {
-    val i = this.indexOfFirst(separator)
+	val i = this.indexOfFirst(separator)
 
-    if (i == -1) {
-        return this to ""
-    }
+	if (i == -1) {
+		return this to ""
+	}
 
-    return slice(IntRange(0, i - 1)) to slice(IntRange(i, this.length - 1))
+	return slice(IntRange(0, i - 1)) to slice(IntRange(i, this.length - 1))
 }
 
 /**
@@ -57,13 +57,13 @@ public fun String.parseBoolean(locale: Locale): Boolean? = BooleanParser.parse(t
  * provided.
  */
 public fun String.capitalizeWords(locale: Locale? = null): String {
-    return split(" ").joinToString(" ") { word ->
-        word.replaceFirstChar {
-            if (it.isLowerCase()) {
-                it.titlecase(locale ?: Locale.getDefault())
-            } else {
-                it.toString()
-            }
-        }
-    }
+	return split(" ").joinToString(" ") { word ->
+		word.replaceFirstChar {
+			if (it.isLowerCase()) {
+				it.titlecase(locale ?: Locale.getDefault())
+			} else {
+				it.toString()
+			}
+		}
+	}
 }

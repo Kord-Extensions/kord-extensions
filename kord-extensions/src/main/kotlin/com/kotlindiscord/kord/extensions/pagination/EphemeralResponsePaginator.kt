@@ -32,58 +32,58 @@ public class EphemeralResponsePaginator(
 
 	public val interaction: EphemeralMessageInteractionResponseBehavior,
 ) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, true, switchEmoji, mutator, bundle, locale) {
-    /** Whether this paginator has been set up for the first time. **/
-    public var isSetup: Boolean = false
+	/** Whether this paginator has been set up for the first time. **/
+	public var isSetup: Boolean = false
 
-    override suspend fun send() {
-        if (!isSetup) {
-            isSetup = true
+	override suspend fun send() {
+		if (!isSetup) {
+			isSetup = true
 
-            setup()
-        } else {
-            updateButtons()
-        }
+			setup()
+		} else {
+			updateButtons()
+		}
 
-        interaction.edit {
+		interaction.edit {
 			applyPage()
 
-            with(this@EphemeralResponsePaginator.components) {
-                this@edit.applyToMessage()
-            }
-        }
-    }
+			with(this@EphemeralResponsePaginator.components) {
+				this@edit.applyToMessage()
+			}
+		}
+	}
 
-    override suspend fun destroy() {
-        if (!active) {
-            return
-        }
+	override suspend fun destroy() {
+		if (!active) {
+			return
+		}
 
-        active = false
+		active = false
 
-        interaction.edit {
+		interaction.edit {
 			applyPage()
 
-            this.components = mutableListOf()
-        }
+			this.components = mutableListOf()
+		}
 
-        super.destroy()
-    }
+		super.destroy()
+	}
 }
 
 /** Convenience function for creating an interaction button paginator from a paginator builder. **/
 @Suppress("FunctionNaming")  // Factory function
 public fun EphemeralResponsePaginator(
-    builder: PaginatorBuilder,
-    interaction: EphemeralMessageInteractionResponseBehavior
+	builder: PaginatorBuilder,
+	interaction: EphemeralMessageInteractionResponseBehavior,
 ): EphemeralResponsePaginator = EphemeralResponsePaginator(
-    pages = builder.pages,
+	pages = builder.pages,
 	chunkedPages = builder.chunkedPages,
-    owner = builder.owner,
-    timeoutSeconds = builder.timeoutSeconds,
+	owner = builder.owner,
+	timeoutSeconds = builder.timeoutSeconds,
 	mutator = builder.mutator,
-    bundle = builder.bundle,
-    locale = builder.locale,
-    interaction = interaction,
+	bundle = builder.bundle,
+	locale = builder.locale,
+	interaction = interaction,
 
-    switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+	switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 )

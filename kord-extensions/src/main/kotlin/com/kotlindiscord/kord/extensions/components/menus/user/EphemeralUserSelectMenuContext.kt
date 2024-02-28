@@ -14,8 +14,8 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
 /** Class representing the execution context for an ephemeral-only user select (dropdown) menu. **/
 public class EphemeralUserSelectMenuContext<M : ModalForm>(
-    override val component: EphemeralUserSelectMenu<M>,
-    override val event: SelectMenuInteractionCreateEvent,
-    override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>,
+	override val component: EphemeralUserSelectMenu<M>,
+	override val event: SelectMenuInteractionCreateEvent,
+	override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
+	cache: MutableStringKeyedMap<Any>,
 ) : UserSelectMenuContext(component, event, cache), EphemeralInteractionContext

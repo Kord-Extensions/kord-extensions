@@ -29,62 +29,62 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @property minLength The minimum length allowed for this argument.
  */
 @Converter(
-    "string",
+	"string",
 
-    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
 
-    builderFields = [
-        "public var maxLength: Int? = null",
-        "public var minLength: Int? = null",
-    ]
+	builderFields = [
+		"public var maxLength: Int? = null",
+		"public var minLength: Int? = null",
+	]
 )
 public class StringConverter(
-    public val maxLength: Int? = null,
-    public val minLength: Int? = null,
-    override var validator: Validator<String> = null
+	public val maxLength: Int? = null,
+	public val minLength: Int? = null,
+	override var validator: Validator<String> = null,
 ) : SingleConverter<String>() {
-    override val signatureTypeString: String = "converters.string.signatureType"
-    override val showTypeInSignature: Boolean = false
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.string.signatureType"
+	override val showTypeInSignature: Boolean = false
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        this.parsed = arg
+		this.parsed = arg
 
-        if (minLength != null && this.parsed.length < minLength) {
-            throw DiscordRelayedException(
-                context.translate(
-                    "converters.string.error.invalid.tooLong",
-                    replacements = arrayOf(arg, minLength)
-                )
-            )
-        }
+		if (minLength != null && this.parsed.length < minLength) {
+			throw DiscordRelayedException(
+				context.translate(
+					"converters.string.error.invalid.tooLong",
+					replacements = arrayOf(arg, minLength)
+				)
+			)
+		}
 
-        if (maxLength != null && this.parsed.length > maxLength) {
-            throw DiscordRelayedException(
-                context.translate(
-                    "converters.string.error.invalid.tooShort",
-                    replacements = arrayOf(arg, maxLength)
-                )
-            )
-        }
+		if (maxLength != null && this.parsed.length > maxLength) {
+			throw DiscordRelayedException(
+				context.translate(
+					"converters.string.error.invalid.tooShort",
+					replacements = arrayOf(arg, maxLength)
+				)
+			)
+		}
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply {
-            this@apply.maxLength = this@StringConverter.maxLength
-            this@apply.minLength = this@StringConverter.minLength
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply {
+			this@apply.maxLength = this@StringConverter.maxLength
+			this@apply.minLength = this@StringConverter.minLength
 
-            required = true
-        }
+			required = true
+		}
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
-        this.parsed = optionValue
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
+		this.parsed = optionValue
 
-        return true
-    }
+		return true
+	}
 }

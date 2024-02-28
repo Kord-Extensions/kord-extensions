@@ -14,55 +14,55 @@ import com.kotlindiscord.kord.extensions.commands.CommandContext
 public typealias AssertBody = (suspend () -> Any)?
 
 public suspend fun CommandContext.assert(
-    value: Boolean,
-    failureMessage: AssertBody = null
+	value: Boolean,
+	failureMessage: AssertBody = null,
 ) {
-    if (!value) {
-        val message = failureMessage?.invoke()?.toString() ?: "Argument is not `true`."
+	if (!value) {
+		val message = failureMessage?.invoke()?.toString() ?: "Argument is not `true`."
 
-        logError { "**Assertion failed:** $message" }
+		logError { "**Assertion failed:** $message" }
 
-        throw DiscordRelayedException("**Assertion failed:** $message")
-    }
+		throw DiscordRelayedException("**Assertion failed:** $message")
+	}
 }
 
 public suspend fun CommandContext.assertFalse(
-    value: Boolean,
-    failureMessage: AssertBody = null
+	value: Boolean,
+	failureMessage: AssertBody = null,
 ) {
-    if (value) {
-        val message = failureMessage?.invoke()?.toString() ?: "Argument is not `false`."
+	if (value) {
+		val message = failureMessage?.invoke()?.toString() ?: "Argument is not `false`."
 
-        logError { "**Assertion failed:** $message" }
+		logError { "**Assertion failed:** $message" }
 
-        throw DiscordRelayedException("**Assertion failed:** $message")
-    }
+		throw DiscordRelayedException("**Assertion failed:** $message")
+	}
 }
 
 public suspend fun CommandContext.assertEqual(
-    left: Any?,
-    right: Any?,
-    failureMessage: AssertBody = null
+	left: Any?,
+	right: Any?,
+	failureMessage: AssertBody = null,
 ) {
-    if (left != right) {
-        val message = failureMessage?.invoke()?.toString() ?: "`$left` is not equal to `$right`"
+	if (left != right) {
+		val message = failureMessage?.invoke()?.toString() ?: "`$left` is not equal to `$right`"
 
-        logError { "**Assertion failed:** $message" }
+		logError { "**Assertion failed:** $message" }
 
-        throw DiscordRelayedException("**Assertion failed:** $message")
-    }
+		throw DiscordRelayedException("**Assertion failed:** $message")
+	}
 }
 
 public suspend fun CommandContext.assertNotEqual(
-    left: Any?,
-    right: Any?,
-    failureMessage: AssertBody = null
+	left: Any?,
+	right: Any?,
+	failureMessage: AssertBody = null,
 ) {
-    if (left == right) {
-        val message = failureMessage?.invoke()?.toString() ?: "`$left` is equal to `$right`"
+	if (left == right) {
+		val message = failureMessage?.invoke()?.toString() ?: "`$left` is equal to `$right`"
 
-        logError { "**Assertion failed:** $message" }
+		logError { "**Assertion failed:** $message" }
 
-        throw DiscordRelayedException("**Assertion failed:** $message")
-    }
+		throw DiscordRelayedException("**Assertion failed:** $message")
+	}
 }

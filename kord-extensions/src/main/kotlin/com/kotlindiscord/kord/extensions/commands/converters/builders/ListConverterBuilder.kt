@@ -8,6 +8,6 @@ package com.kotlindiscord.kord.extensions.commands.converters.builders
 
 /** Converter builder for list converters. **/
 public abstract class ListConverterBuilder<T : Any> : ConverterBuilder<List<T>>() {
-    /** Whether to ignore parsing errors when no values have been parsed out. **/
-    public var ignoreErrors: Boolean = true
+	/** Whether to ignore parsing errors when no values have been parsed out. **/
+	public var ignoreErrors: Boolean = true
 }

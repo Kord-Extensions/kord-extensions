@@ -28,34 +28,34 @@ private val logger = KotlinLogging.logger {}
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeMessageCommand(
-    body: suspend UnsafeMessageCommand<ModalForm>.() -> Unit
+	body: suspend UnsafeMessageCommand<ModalForm>.() -> Unit,
 ): UnsafeMessageCommand<ModalForm> {
-    val commandObj = UnsafeMessageCommand<ModalForm>(this)
-    body(commandObj)
+	val commandObj = UnsafeMessageCommand<ModalForm>(this)
+	body(commandObj)
 
-    return unsafeMessageCommand(commandObj)
+	return unsafeMessageCommand(commandObj)
 }
 
 /** Register a custom instance of an unsafe message command. **/
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun <M : ModalForm> Extension.unsafeMessageCommand(
-    commandObj: UnsafeMessageCommand<M>
+	commandObj: UnsafeMessageCommand<M>,
 ): UnsafeMessageCommand<M> {
-    try {
-        commandObj.validate()
-        messageCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    }
+	try {
+		commandObj.validate()
+		messageCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 
 // endregion
@@ -73,13 +73,13 @@ public suspend fun <M : ModalForm> Extension.unsafeMessageCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
-    arguments: () -> T,
-    body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit
+	arguments: () -> T,
+	body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<T, ModalForm> {
-    val commandObj = UnsafeSlashCommand<T, ModalForm>(this, arguments, null, null, null)
-    body(commandObj)
+	val commandObj = UnsafeSlashCommand<T, ModalForm>(this, arguments, null, null, null)
+	body(commandObj)
 
-    return unsafeSlashCommand(commandObj)
+	return unsafeSlashCommand(commandObj)
 }
 
 /**
@@ -92,22 +92,22 @@ public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun <T : Arguments, M : ModalForm> Extension.unsafeSlashCommand(
-    commandObj: UnsafeSlashCommand<T, M>
+	commandObj: UnsafeSlashCommand<T, M>,
 ): UnsafeSlashCommand<T, M> {
-    try {
-        commandObj.validate()
-        slashCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		slashCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -120,12 +120,12 @@ public suspend fun <T : Arguments, M : ModalForm> Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeSlashCommand(
-    body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit
+	body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<Arguments, ModalForm> {
-    val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(this, null, null, null)
-    body(commandObj)
+	val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(this, null, null, null)
+	body(commandObj)
 
-    return unsafeSlashCommand(commandObj)
+	return unsafeSlashCommand(commandObj)
 }
 
 // endregion
@@ -136,33 +136,33 @@ public suspend fun Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeUserCommand(
-    body: suspend UnsafeUserCommand<ModalForm>.() -> Unit
+	body: suspend UnsafeUserCommand<ModalForm>.() -> Unit,
 ): UnsafeUserCommand<ModalForm> {
-    val commandObj = UnsafeUserCommand<ModalForm>(this)
-    body(commandObj)
+	val commandObj = UnsafeUserCommand<ModalForm>(this)
+	body(commandObj)
 
-    return unsafeUserCommand(commandObj)
+	return unsafeUserCommand(commandObj)
 }
 
 /** Register a custom instance of an unsafe user command. **/
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun <M : ModalForm> Extension.unsafeUserCommand(
-    commandObj: UnsafeUserCommand<M>
+	commandObj: UnsafeUserCommand<M>,
 ): UnsafeUserCommand<M> {
-    try {
-        commandObj.validate()
-        userCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    }
+	try {
+		commandObj.validate()
+		userCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 // endregion

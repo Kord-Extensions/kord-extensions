@@ -13,63 +13,63 @@ import com.kotlindiscord.kord.extensions.utils.respond
 import dev.kord.core.behavior.channel.createMessage
 
 public class PKTestExtension : Extension() {
-    override val name: String = "test-pluralkit"
+	override val name: String = "test-pluralkit"
 
-    override suspend fun setup() {
-        event<ProxiedMessageCreateEvent> {
-            action {
-                event.message.respond(pingInReply = false) {
-                    content = "Proxied PK message created: `${event.message.id}`"
-                }
-            }
-        }
+	override suspend fun setup() {
+		event<ProxiedMessageCreateEvent> {
+			action {
+				event.message.respond(pingInReply = false) {
+					content = "Proxied PK message created: `${event.message.id}`"
+				}
+			}
+		}
 
-        event<ProxiedMessageUpdateEvent> {
-            action {
-                event.getMessage().respond(pingInReply = false) {
-                    content = "Proxied PK message updated: `${event.message.id}`"
-                }
-            }
-        }
+		event<ProxiedMessageUpdateEvent> {
+			action {
+				event.getMessage().respond(pingInReply = false) {
+					content = "Proxied PK message updated: `${event.message.id}`"
+				}
+			}
+		}
 
-        event<ProxiedMessageDeleteEvent> {
-            action {
-                event.channel.createMessage {
-                    content = "Proxied PK message deleted: `${event.message?.id}`"
-                }
-            }
-        }
+		event<ProxiedMessageDeleteEvent> {
+			action {
+				event.channel.createMessage {
+					content = "Proxied PK message deleted: `${event.message?.id}`"
+				}
+			}
+		}
 
-        event<UnProxiedMessageCreateEvent> {
-            check { failIf(event.message.getAuthorAsMemberOrNull()?.isBot != false) }
+		event<UnProxiedMessageCreateEvent> {
+			check { failIf(event.message.getAuthorAsMemberOrNull()?.isBot != false) }
 
-            action {
-                action {
-                    event.message.respond(pingInReply = false) {
-                        content = "Non-proxied message created: `${event.message.id}`"
-                    }
-                }
-            }
-        }
+			action {
+				action {
+					event.message.respond(pingInReply = false) {
+						content = "Non-proxied message created: `${event.message.id}`"
+					}
+				}
+			}
+		}
 
-        event<UnProxiedMessageUpdateEvent> {
-            check { failIf(event.message.asMessageOrNull()?.getAuthorAsMemberOrNull()?.isBot != false) }
+		event<UnProxiedMessageUpdateEvent> {
+			check { failIf(event.message.asMessageOrNull()?.getAuthorAsMemberOrNull()?.isBot != false) }
 
-            action {
-                event.getMessage().respond(pingInReply = false) {
-                    content = "Non-proxied message updated: `${event.message.id}`"
-                }
-            }
-        }
+			action {
+				event.getMessage().respond(pingInReply = false) {
+					content = "Non-proxied message updated: `${event.message.id}`"
+				}
+			}
+		}
 
-        event<UnProxiedMessageDeleteEvent> {
-            check { failIf(event.message?.getAuthorAsMemberOrNull()?.isBot != false) }
+		event<UnProxiedMessageDeleteEvent> {
+			check { failIf(event.message?.getAuthorAsMemberOrNull()?.isBot != false) }
 
-            action {
-                event.channel.createMessage {
-                    content = "Non-proxied message deleted: `${event.message?.id}`"
-                }
-            }
-        }
-    }
+			action {
+				event.channel.createMessage {
+					content = "Non-proxied message deleted: `${event.message?.id}`"
+				}
+			}
+		}
+	}
 }

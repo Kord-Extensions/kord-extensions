@@ -12,9 +12,9 @@ import me.shedaniel.linkie.namespaces.FeatherNamespace
 /** Arguments for Feather mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
 class FeatherArguments : MappingArguments(FeatherNamespace), IntermediaryMappable {
-    override val mapDescriptors by defaultingBoolean {
-        name = "map-descriptor"
-        description = "Whether to map field/method descriptors to named instead of Calamus"
-        defaultValue = true
-    }
+	override val mapDescriptors by defaultingBoolean {
+		name = "map-descriptor"
+		description = "Whether to map field/method descriptors to named instead of Calamus"
+		defaultValue = true
+	}
 }

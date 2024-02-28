@@ -27,26 +27,26 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * This converter can only be used in slash commands.
  */
 @Converter(
-    "attachment",
+	"attachment",
 
-    types = [ConverterType.OPTIONAL, ConverterType.SINGLE],
+	types = [ConverterType.OPTIONAL, ConverterType.SINGLE],
 )
 public class AttachmentConverter(
-    override var validator: Validator<Attachment> = null
+	override var validator: Validator<Attachment> = null,
 ) : SingleConverter<Attachment>() {
-    override val signatureTypeString: String = "converters.attachment.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.attachment.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean =
-        throw DiscordRelayedException(context.translate("converters.attachment.error.slashCommandsOnly"))
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean =
+		throw DiscordRelayedException(context.translate("converters.attachment.error.slashCommandsOnly"))
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        AttachmentBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		AttachmentBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? AttachmentOptionValue)?.resolvedObject ?: return false
-        this.parsed = optionValue
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? AttachmentOptionValue)?.resolvedObject ?: return false
+		this.parsed = optionValue
 
-        return true
-    }
+		return true
+	}
 }

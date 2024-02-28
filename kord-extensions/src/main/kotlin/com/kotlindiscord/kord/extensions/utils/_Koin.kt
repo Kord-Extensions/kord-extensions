@@ -14,14 +14,14 @@ import org.koin.dsl.module
 
 /** Wrapper for [org.koin.dsl.module] that immediately loads the module for the current [Koin] instance. **/
 public fun loadModule(
-    createdAtStart: Boolean = false,
-    moduleDeclaration: ModuleDeclaration
+	createdAtStart: Boolean = false,
+	moduleDeclaration: ModuleDeclaration,
 ): Module {
-    val moduleObj = module(createdAtStart, moduleDeclaration)
+	val moduleObj = module(createdAtStart, moduleDeclaration)
 
-    KordExContext.loadKoinModules(moduleObj)
+	KordExContext.loadKoinModules(moduleObj)
 
-    return moduleObj
+	return moduleObj
 }
 
 /** Retrieve the current [Koin] instance. **/

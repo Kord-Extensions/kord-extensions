@@ -33,85 +33,85 @@ import java.time.LocalDateTime
  * @param positiveOnly Whether a positive duration is required - `true` by default.
  */
 @Converter(
-    names = ["j8Duration"],
-    types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    imports = ["java.time.*"],
+	names = ["j8Duration"],
+	types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	imports = ["java.time.*"],
 
-    builderFields = [
-        "public var longHelp: Boolean = true",
-        "public var positiveOnly: Boolean = true",
-    ],
+	builderFields = [
+		"public var longHelp: Boolean = true",
+		"public var positiveOnly: Boolean = true",
+	],
 )
 public class J8DurationConverter(
-    public val longHelp: Boolean = true,
-    public val positiveOnly: Boolean = true,
-    override var validator: Validator<ChronoContainer> = null
+	public val longHelp: Boolean = true,
+	public val positiveOnly: Boolean = true,
+	override var validator: Validator<ChronoContainer> = null,
 ) : SingleConverter<ChronoContainer>() {
-    override val signatureTypeString: String = "converters.duration.error.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.duration.error.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        try {
-            val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
+		try {
+			val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
 
-            if (positiveOnly) {
-                val normalized: ChronoContainer = result.clone()
+			if (positiveOnly) {
+				val normalized: ChronoContainer = result.clone()
 
-                normalized.normalize(LocalDateTime.now())
+				normalized.normalize(LocalDateTime.now())
 
-                if (!normalized.isPositive()) {
-                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
-                }
-            }
+				if (!normalized.isPositive()) {
+					throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+				}
+			}
 
-            parsed = result
-        } catch (e: InvalidTimeUnitException) {
-            val message: String = context.translate(
-                "converters.duration.error.invalidUnit",
-                replacements = arrayOf(e.unit)
-            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			parsed = result
+		} catch (e: InvalidTimeUnitException) {
+			val message: String = context.translate(
+				"converters.duration.error.invalidUnit",
+				replacements = arrayOf(e.unit)
+			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw DiscordRelayedException(message)
-        } catch (e: DurationParserException) {
-            throw DiscordRelayedException(e.error)
-        }
+			throw DiscordRelayedException(message)
+		} catch (e: DurationParserException) {
+			throw DiscordRelayedException(e.error)
+		}
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val arg: String = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val arg: String = (option as? StringOptionValue)?.value ?: return false
 
-        try {
-            val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
+		try {
+			val result: ChronoContainer = J8DurationParser.parse(arg, context.getLocale())
 
-            if (positiveOnly) {
-                val normalized: ChronoContainer = result.clone()
+			if (positiveOnly) {
+				val normalized: ChronoContainer = result.clone()
 
-                normalized.normalize(LocalDateTime.now())
+				normalized.normalize(LocalDateTime.now())
 
-                if (!normalized.isPositive()) {
-                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
-                }
-            }
+				if (!normalized.isPositive()) {
+					throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+				}
+			}
 
-            parsed = result
-        } catch (e: InvalidTimeUnitException) {
-            val message: String = context.translate(
-                "converters.duration.error.invalidUnit",
-                replacements = arrayOf(e.unit)
-            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			parsed = result
+		} catch (e: InvalidTimeUnitException) {
+			val message: String = context.translate(
+				"converters.duration.error.invalidUnit",
+				replacements = arrayOf(e.unit)
+			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw DiscordRelayedException(message)
-        } catch (e: DurationParserException) {
-            throw DiscordRelayedException(e.error)
-        }
+			throw DiscordRelayedException(message)
+		} catch (e: DurationParserException) {
+			throw DiscordRelayedException(e.error)
+		}
 
-        return true
-    }
+		return true
+	}
 }

@@ -22,35 +22,35 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * Choice converter for string arguments. Supports mapping up to 25 choices to string.
  */
 @Converter(
-    "string",
+	"string",
 
-    types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE]
+	types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
 public class StringChoiceConverter(
-    choices: Map<String, String>,
-    override var validator: Validator<String> = null
+	choices: Map<String, String>,
+	override var validator: Validator<String> = null,
 ) : ChoiceConverter<String>(choices) {
-    override val signatureTypeString: String = "converters.string.signatureType"
+	override val signatureTypeString: String = "converters.string.signatureType"
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        this.parsed = arg
+		this.parsed = arg
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply {
-            required = true
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply {
+			required = true
 
-            this@StringChoiceConverter.choices.forEach { choice(it.key, it.value) }
-        }
+			this@StringChoiceConverter.choices.forEach { choice(it.key, it.value) }
+		}
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
-        this.parsed = optionValue
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
+		this.parsed = optionValue
 
-        return true
-    }
+		return true
+	}
 }

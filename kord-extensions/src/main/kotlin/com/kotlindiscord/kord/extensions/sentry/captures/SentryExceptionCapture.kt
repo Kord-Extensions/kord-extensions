@@ -11,7 +11,7 @@ import org.jetbrains.annotations.ApiStatus
  * @param throwable The [Throwable] to submit to Sentry.
  */
 public class SentryExceptionCapture(
-	public val throwable: Throwable
+	public val throwable: Throwable,
 ) : SentryScopeCapture() {
 	/** @suppress Function meant for internal use. **/
 	@ApiStatus.Internal

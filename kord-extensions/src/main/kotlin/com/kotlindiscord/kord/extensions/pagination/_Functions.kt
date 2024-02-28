@@ -14,28 +14,28 @@ import java.util.*
 
 /** Create a paginator that edits the original interaction. **/
 public inline fun PublicMessageInteractionResponseBehavior.editingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
+	defaultGroup: String = "",
+	locale: Locale? = null,
+	builder: (PaginatorBuilder).() -> Unit,
 ): PublicResponsePaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+	val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
-    builder(pages)
+	builder(pages)
 
-    return PublicResponsePaginator(pages, this)
+	return PublicResponsePaginator(pages, this)
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
 public inline fun FollowupPermittingInteractionResponseBehavior.respondingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
+	defaultGroup: String = "",
+	locale: Locale? = null,
+	builder: (PaginatorBuilder).() -> Unit,
 ): PublicFollowUpPaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+	val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
-    builder(pages)
+	builder(pages)
 
-    return PublicFollowUpPaginator(pages, this)
+	return PublicFollowUpPaginator(pages, this)
 }
 
 /**
@@ -43,13 +43,13 @@ public inline fun FollowupPermittingInteractionResponseBehavior.respondingPagina
  * it's impossible to edit an ephemeral follow-up.
  */
 public inline fun EphemeralMessageInteractionResponseBehavior.editingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
+	defaultGroup: String = "",
+	locale: Locale? = null,
+	builder: (PaginatorBuilder).() -> Unit,
 ): EphemeralResponsePaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+	val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
-    builder(pages)
+	builder(pages)
 
-    return EphemeralResponsePaginator(pages, this)
+	return EphemeralResponsePaginator(pages, this)
 }

@@ -28,173 +28,173 @@ import kotlinx.coroutines.flow.toList
  * Discord lifecycles may not be implemented in this class and require manual updating.
  */
 public open class StorageAwareApplicationCommandRegistry(
-    builder: () -> RegistryStorage<Snowflake, ApplicationCommand<*>>,
+	builder: () -> RegistryStorage<Snowflake, ApplicationCommand<*>>,
 ) : ApplicationCommandRegistry() {
 
-    protected open val commandRegistry: RegistryStorage<Snowflake, ApplicationCommand<*>> = builder.invoke()
+	protected open val commandRegistry: RegistryStorage<Snowflake, ApplicationCommand<*>> = builder.invoke()
 
-    override suspend fun initialize(commands: List<ApplicationCommand<*>>) {
-        commands.forEach { commandRegistry.register(it) }
+	override suspend fun initialize(commands: List<ApplicationCommand<*>>) {
+		commands.forEach { commandRegistry.register(it) }
 
-        val registeredCommands = commandRegistry.entryFlow().toList()
+		val registeredCommands = commandRegistry.entryFlow().toList()
 
-        commands.forEach { command ->
-            if (registeredCommands.none { it.hasCommand(command) }) {
-                val commandId = createDiscordCommand(command)
+		commands.forEach { command ->
+			if (registeredCommands.none { it.hasCommand(command) }) {
+				val commandId = createDiscordCommand(command)
 
-                commandId?.let {
-                    commandRegistry.set(it, command)
-                }
-            }
-        }
-    }
+				commandId?.let {
+					commandRegistry.set(it, command)
+				}
+			}
+		}
+	}
 
-    override suspend fun register(command: SlashCommand<*, *, *>): SlashCommand<*, *, *>? {
-        val commandId = createDiscordCommand(command) ?: return null
+	override suspend fun register(command: SlashCommand<*, *, *>): SlashCommand<*, *, *>? {
+		val commandId = createDiscordCommand(command) ?: return null
 
-        commandRegistry.set(commandId, command)
+		commandRegistry.set(commandId, command)
 
-        return command
-    }
+		return command
+	}
 
-    override suspend fun register(command: MessageCommand<*, *>): MessageCommand<*, *>? {
-        val commandId = createDiscordCommand(command) ?: return null
+	override suspend fun register(command: MessageCommand<*, *>): MessageCommand<*, *>? {
+		val commandId = createDiscordCommand(command) ?: return null
 
-        commandRegistry.set(commandId, command)
+		commandRegistry.set(commandId, command)
 
-        return command
-    }
+		return command
+	}
 
-    override suspend fun register(command: UserCommand<*, *>): UserCommand<*, *>? {
-        val commandId = createDiscordCommand(command) ?: return null
+	override suspend fun register(command: UserCommand<*, *>): UserCommand<*, *>? {
+		val commandId = createDiscordCommand(command) ?: return null
 
-        commandRegistry.set(commandId, command)
+		commandRegistry.set(commandId, command)
 
-        return command
-    }
+		return command
+	}
 
-    override suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
-        val commandId = event.interaction.invokedCommandId
-        val command = commandRegistry.get(commandId) as? SlashCommand<*, *, *>
+	override suspend fun handle(event: ChatInputCommandInteractionCreateEvent) {
+		val commandId = event.interaction.invokedCommandId
+		val command = commandRegistry.get(commandId) as? SlashCommand<*, *, *>
 
-        command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
+		command ?: return logger.warn { "Received interaction for unknown slash command: $commandId" }
 
-        command.doCall(event)
-    }
+		command.doCall(event)
+	}
 
-    override suspend fun handle(event: MessageCommandInteractionCreateEvent) {
-        val commandId = event.interaction.invokedCommandId
-        val command = commandRegistry.get(commandId) as? MessageCommand<*, *>
+	override suspend fun handle(event: MessageCommandInteractionCreateEvent) {
+		val commandId = event.interaction.invokedCommandId
+		val command = commandRegistry.get(commandId) as? MessageCommand<*, *>
 
-        command ?: return logger.warn { "Received interaction for unknown message command: $commandId" }
+		command ?: return logger.warn { "Received interaction for unknown message command: $commandId" }
 
-        command.doCall(event)
-    }
+		command.doCall(event)
+	}
 
-    override suspend fun handle(event: UserCommandInteractionCreateEvent) {
-        val commandId = event.interaction.invokedCommandId
-        val command = commandRegistry.get(commandId) as? UserCommand<*, *>
+	override suspend fun handle(event: UserCommandInteractionCreateEvent) {
+		val commandId = event.interaction.invokedCommandId
+		val command = commandRegistry.get(commandId) as? UserCommand<*, *>
 
-        command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
+		command ?: return logger.warn { "Received interaction for unknown user command: $commandId" }
 
-        command.doCall(event)
-    }
+		command.doCall(event)
+	}
 
-    override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {
-        val commandId = event.interaction.command.rootId
-        val command = commandRegistry.get(commandId) as? SlashCommand<*, *, *>
+	override suspend fun handle(event: AutoCompleteInteractionCreateEvent) {
+		val commandId = event.interaction.command.rootId
+		val command = commandRegistry.get(commandId) as? SlashCommand<*, *, *>
 
-        command ?: return logger.warn { "Received autocomplete interaction for unknown command: $commandId" }
+		command ?: return logger.warn { "Received autocomplete interaction for unknown command: $commandId" }
 
-        if (command.arguments == null) {
-            return logger.trace { "Command $command doesn't have any arguments." }
-        }
+		if (command.arguments == null) {
+			return logger.trace { "Command $command doesn't have any arguments." }
+		}
 
-        val option = event.interaction.command.options.filterValues { it.focused }.toList().firstOrNull()
+		val option = event.interaction.command.options.filterValues { it.focused }.toList().firstOrNull()
 
-        option ?: return logger.trace { "Autocomplete event for command $command doesn't have a focused option." }
+		option ?: return logger.trace { "Autocomplete event for command $command doesn't have a focused option." }
 
-        val arguments = command.arguments!!()
+		val arguments = command.arguments!!()
 
-        val arg = arguments.args.firstOrNull {
-            it.getDefaultTranslatedDisplayName(
-                translationsProvider,
-                command
-            ) == option.first
-        }
+		val arg = arguments.args.firstOrNull {
+			it.getDefaultTranslatedDisplayName(
+				translationsProvider,
+				command
+			) == option.first
+		}
 
-        arg ?: return logger.warn {
-            "Autocomplete event for command $command has an unknown focused option: ${option.first}."
-        }
+		arg ?: return logger.warn {
+			"Autocomplete event for command $command has an unknown focused option: ${option.first}."
+		}
 
-        val callback = arg.converter.genericBuilder.autoCompleteCallback
+		val callback = arg.converter.genericBuilder.autoCompleteCallback
 
-        callback ?: return logger.trace {
-            "Autocomplete event for command $command has an focused option without a callback: ${option.first}."
-        }
+		callback ?: return logger.trace {
+			"Autocomplete event for command $command has an focused option without a callback: ${option.first}."
+		}
 
-        if (arguments.parseForAutocomplete) {
-            val context = DummyAutocompleteCommandContext(command, event, command.name)
+		if (arguments.parseForAutocomplete) {
+			val context = DummyAutocompleteCommandContext(command, event, command.name)
 
-            for (priorArg in arguments.args) {
-                if (priorArg == arg) {
-                    break
-                }
+			for (priorArg in arguments.args) {
+				if (priorArg == arg) {
+					break
+				}
 
-                val argName = priorArg.getDefaultTranslatedDisplayName(translationsProvider, command)
-                val currentOption = event.interaction.command.options[argName]
+				val argName = priorArg.getDefaultTranslatedDisplayName(translationsProvider, command)
+				val currentOption = event.interaction.command.options[argName]
 
-                if (currentOption == null) {
-                    continue
-                }
+				if (currentOption == null) {
+					continue
+				}
 
-                try {
-                    (priorArg.converter as SlashCommandConverter).parseOption(context, currentOption)
-                } catch (e: Exception) {
-                    logger.error(e) { "Failed to parse option $argName" }
-                }
-            }
-        }
+				try {
+					(priorArg.converter as SlashCommandConverter).parseOption(context, currentOption)
+				} catch (e: Exception) {
+					logger.error(e) { "Failed to parse option $argName" }
+				}
+			}
+		}
 
-        callback(event.interaction, event)
-    }
+		callback(event.interaction, event)
+	}
 
-    override suspend fun unregister(command: SlashCommand<*, *, *>, delete: Boolean): SlashCommand<*, *, *>? =
-        unregisterApplicationCommand(command, delete) as? SlashCommand<*, *, *>
+	override suspend fun unregister(command: SlashCommand<*, *, *>, delete: Boolean): SlashCommand<*, *, *>? =
+		unregisterApplicationCommand(command, delete) as? SlashCommand<*, *, *>
 
-    override suspend fun unregister(command: MessageCommand<*, *>, delete: Boolean): MessageCommand<*, *>? =
-        unregisterApplicationCommand(command, delete) as? MessageCommand<*, *>
+	override suspend fun unregister(command: MessageCommand<*, *>, delete: Boolean): MessageCommand<*, *>? =
+		unregisterApplicationCommand(command, delete) as? MessageCommand<*, *>
 
-    override suspend fun unregister(command: UserCommand<*, *>, delete: Boolean): UserCommand<*, *>? =
-        unregisterApplicationCommand(command, delete) as? UserCommand<*, *>
+	override suspend fun unregister(command: UserCommand<*, *>, delete: Boolean): UserCommand<*, *>? =
+		unregisterApplicationCommand(command, delete) as? UserCommand<*, *>
 
-    protected open suspend fun unregisterApplicationCommand(
-        command: ApplicationCommand<*>,
-        delete: Boolean,
-    ): ApplicationCommand<*>? {
-        val id = commandRegistry.constructUniqueIdentifier(command)
+	protected open suspend fun unregisterApplicationCommand(
+		command: ApplicationCommand<*>,
+		delete: Boolean,
+	): ApplicationCommand<*>? {
+		val id = commandRegistry.constructUniqueIdentifier(command)
 
-        val snowflake = commandRegistry.entryFlow()
-            .firstOrNull { commandRegistry.constructUniqueIdentifier(it.value) == id }
-            ?.key
+		val snowflake = commandRegistry.entryFlow()
+			.firstOrNull { commandRegistry.constructUniqueIdentifier(it.value) == id }
+			?.key
 
-        snowflake?.let {
-            if (delete) {
-                deleteGeneric(command, it)
-            }
+		snowflake?.let {
+			if (delete) {
+				deleteGeneric(command, it)
+			}
 
-            return commandRegistry.remove(it)
-        }
+			return commandRegistry.remove(it)
+		}
 
-        return null
-    }
+		return null
+	}
 
-    protected open fun RegistryStorage.StorageEntry<Snowflake, ApplicationCommand<*>>.hasCommand(
-        command: ApplicationCommand<*>,
-    ): Boolean {
-        val key = commandRegistry.constructUniqueIdentifier(value)
-        val other = commandRegistry.constructUniqueIdentifier(command)
+	protected open fun RegistryStorage.StorageEntry<Snowflake, ApplicationCommand<*>>.hasCommand(
+		command: ApplicationCommand<*>,
+	): Boolean {
+		val key = commandRegistry.constructUniqueIdentifier(value)
+		val other = commandRegistry.constructUniqueIdentifier(command)
 
-        return key == other
-    }
+		return key == other
+	}
 }

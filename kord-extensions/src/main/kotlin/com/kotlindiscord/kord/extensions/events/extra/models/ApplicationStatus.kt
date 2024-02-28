@@ -11,12 +11,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public enum class ApplicationStatus {
-    @SerialName("APPROVED")
-    Approved,
+	@SerialName("APPROVED")
+	Approved,
 
-    @SerialName("REJECTED")
-    Rejected,
+	@SerialName("REJECTED")
+	Rejected,
 
-    @SerialName("SUBMITTED")
-    Submitted
+	@SerialName("SUBMITTED")
+	Submitted
 }

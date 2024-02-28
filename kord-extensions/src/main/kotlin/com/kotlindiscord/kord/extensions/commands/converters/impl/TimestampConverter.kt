@@ -30,59 +30,59 @@ private const val TIMESTAMP_SUFFIX = ">"
  * Argument converter for discord-formatted timestamp arguments.
  */
 @Converter(
-    "timestamp",
+	"timestamp",
 
-    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+	types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
 public class TimestampConverter(
-    override var validator: Validator<FormattedTimestamp> = null
+	override var validator: Validator<FormattedTimestamp> = null,
 ) : SingleConverter<FormattedTimestamp>() {
-    override val signatureTypeString: String = "converters.timestamp.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.timestamp.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
-        this.parsed = parseFromString(arg) ?: throw DiscordRelayedException(
-            context.translate(
-                "converters.timestamp.error.invalid",
-                replacements = arrayOf(arg)
-            )
-        )
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
+		this.parsed = parseFromString(arg) ?: throw DiscordRelayedException(
+			context.translate(
+				"converters.timestamp.error.invalid",
+				replacements = arrayOf(arg)
+			)
+		)
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
-        this.parsed = parseFromString(optionValue) ?: throw DiscordRelayedException(
-            context.translate(
-                "converters.timestamp.error.invalid",
-                replacements = arrayOf(optionValue)
-            )
-        )
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
+		this.parsed = parseFromString(optionValue) ?: throw DiscordRelayedException(
+			context.translate(
+				"converters.timestamp.error.invalid",
+				replacements = arrayOf(optionValue)
+			)
+		)
 
-        return true
-    }
+		return true
+	}
 
-    internal companion object {
-        internal fun parseFromString(string: String): FormattedTimestamp? {
-            if (string.startsWith(TIMESTAMP_PREFIX) && string.endsWith(TIMESTAMP_SUFFIX)) {
-                val inner = string.removeSurrounding(TIMESTAMP_PREFIX, TIMESTAMP_SUFFIX).split(":")
-                val epochSeconds = inner.getOrNull(0)
-                val format = inner.getOrNull(1)
+	internal companion object {
+		internal fun parseFromString(string: String): FormattedTimestamp? {
+			if (string.startsWith(TIMESTAMP_PREFIX) && string.endsWith(TIMESTAMP_SUFFIX)) {
+				val inner = string.removeSurrounding(TIMESTAMP_PREFIX, TIMESTAMP_SUFFIX).split(":")
+				val epochSeconds = inner.getOrNull(0)
+				val format = inner.getOrNull(1)
 
-                return FormattedTimestamp(
-                    Instant.fromEpochSeconds(epochSeconds?.toLongOrNull() ?: return null),
-                    TimestampType.fromFormatSpecifier(format) ?: return null
-                )
-            } else {
-                return null
-            }
-        }
-    }
+				return FormattedTimestamp(
+					Instant.fromEpochSeconds(epochSeconds?.toLongOrNull() ?: return null),
+					TimestampType.fromFormatSpecifier(format) ?: return null
+				)
+			} else {
+				return null
+			}
+		}
+	}
 }
 
 /**
@@ -92,8 +92,8 @@ public class TimestampConverter(
  * @param format Which format to display the timestamp in
  */
 public data class FormattedTimestamp(val instant: Instant, val format: TimestampType) {
-    /**
-     * Format the timestamp using the format into Discord's special format.
-     */
-    public fun toDiscord(): String = instant.toDiscord(format)
+	/**
+	 * Format the timestamp using the format into Discord's special format.
+	 */
+	public fun toDiscord(): String = instant.toDiscord(format)
 }

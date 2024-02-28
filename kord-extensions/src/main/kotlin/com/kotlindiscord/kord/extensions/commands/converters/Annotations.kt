@@ -7,13 +7,13 @@
 package com.kotlindiscord.kord.extensions.commands.converters
 
 @RequiresOptIn(
-    message = "When creating an Arguments class, you must use one of the converter functions starting with " +
-        "`defaulting` instead. Otherwise, if you know what you're doing (or you're writing your own converter " +
-        "functions), please feel free to opt-in.\n\n" +
+	message = "When creating an Arguments class, you must use one of the converter functions starting with " +
+		"`defaulting` instead. Otherwise, if you know what you're doing (or you're writing your own converter " +
+		"functions), please feel free to opt-in.\n\n" +
 
-        "For example, instead of `boolean(...).toDefaulting()`, consider `defaultingBoolean(...)`.\n\n" +
+		"For example, instead of `boolean(...).toDefaulting()`, consider `defaultingBoolean(...)`.\n\n" +
 
-        "Failure to register your converters this way may result in strange or broken behaviour."
+		"Failure to register your converters this way may result in strange or broken behaviour."
 )
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
@@ -21,13 +21,13 @@ package com.kotlindiscord.kord.extensions.commands.converters
 public annotation class ConverterToDefaulting
 
 @RequiresOptIn(
-    message = "When creating an Arguments class, you must use one of the converter functions ending with " +
-        "\"List\" instead. Otherwise, if you know what you're doing (or you're writing your own converter " +
-        "functions), please feel free to opt-in.\n\n" +
+	message = "When creating an Arguments class, you must use one of the converter functions ending with " +
+		"\"List\" instead. Otherwise, if you know what you're doing (or you're writing your own converter " +
+		"functions), please feel free to opt-in.\n\n" +
 
-        "For example, instead of `boolean(...).toMulti()`, consider `booleanList(...)`.\n\n" +
+		"For example, instead of `boolean(...).toMulti()`, consider `booleanList(...)`.\n\n" +
 
-        "Failure to register your converters this way may result in strange or broken behaviour."
+		"Failure to register your converters this way may result in strange or broken behaviour."
 )
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
@@ -35,13 +35,13 @@ public annotation class ConverterToDefaulting
 public annotation class ConverterToMulti
 
 @RequiresOptIn(
-    message = "When creating an Arguments class, you must use one of the converter functions starting with " +
-        "\"optional\" instead. Otherwise, if you know what you're doing (or you're writing your own converter " +
-        "functions), please feel free to opt-in.\n\n" +
+	message = "When creating an Arguments class, you must use one of the converter functions starting with " +
+		"\"optional\" instead. Otherwise, if you know what you're doing (or you're writing your own converter " +
+		"functions), please feel free to opt-in.\n\n" +
 
-        "For example, instead of `boolean(...).toOptional()`, consider `optionalBoolean(...)`.\n\n" +
+		"For example, instead of `boolean(...).toOptional()`, consider `optionalBoolean(...)`.\n\n" +
 
-        "Failure to register your converters this way may result in strange or broken behaviour."
+		"Failure to register your converters this way may result in strange or broken behaviour."
 )
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)

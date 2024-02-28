@@ -23,32 +23,32 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  */
 public suspend inline fun <reified T : Event> Extension.event(
 	noinline constructor: (Extension) -> EventHandler<T> = ::EventHandler,
-    noinline body: suspend EventHandler<T>.() -> Unit
+	noinline body: suspend EventHandler<T>.() -> Unit,
 ): EventHandler<T> {
-    val eventHandler = constructor(this)
-    val logger = KotlinLogging.logger {}
+	val eventHandler = constructor(this)
+	val logger = KotlinLogging.logger {}
 
-    body.invoke(eventHandler)
+	body.invoke(eventHandler)
 
-    try {
-        eventHandler.validate()
+	try {
+		eventHandler.validate()
 
-        eventHandler.listenerRegistrationCallable = {
-            eventHandler.job = bot.registerListenerForHandler(eventHandler)
-        }
+		eventHandler.listenerRegistrationCallable = {
+			eventHandler.job = bot.registerListenerForHandler(eventHandler)
+		}
 
-        bot.addEventHandler(eventHandler)
-        eventHandlers.add(eventHandler)
-    } catch (e: EventHandlerRegistrationException) {
-        logger.error(e) { "Failed to register event handler - $e" }
-    } catch (e: InvalidEventHandlerException) {
-        logger.error(e) { "Failed to register event handler - $e" }
-    }
+		bot.addEventHandler(eventHandler)
+		eventHandlers.add(eventHandler)
+	} catch (e: EventHandlerRegistrationException) {
+		logger.error(e) { "Failed to register event handler - $e" }
+	} catch (e: InvalidEventHandlerException) {
+		logger.error(e) { "Failed to register event handler - $e" }
+	}
 
-    val fakeBuilder = Intents.Builder()
+	val fakeBuilder = Intents.Builder()
 
-    fakeBuilder.enableEvent<T>()
-    intents += fakeBuilder.build().values
+	fakeBuilder.enableEvent<T>()
+	intents += fakeBuilder.build().values
 
-    return eventHandler
+	return eventHandler
 }

@@ -24,36 +24,36 @@ private const val DAYS_PER_WEEK = 7L
  */
 @Throws(IllegalArgumentException::class)
 public fun formatChronoContainer(
-    container: ChronoContainer,
-    locale: Locale,
-    relativeTo: LocalDateTime = LocalDateTime.now()
+	container: ChronoContainer,
+	locale: Locale,
+	relativeTo: LocalDateTime = LocalDateTime.now(),
 ): String? {
-    container.normalize(relativeTo)
+	container.normalize(relativeTo)
 
-    val years = container.get(ChronoUnit.YEARS)
-    val months = container.get(ChronoUnit.MONTHS)
-    val days = container.get(ChronoUnit.DAYS) % DAYS_PER_WEEK
-    val weeks = container.get(ChronoUnit.DAYS) / DAYS_PER_WEEK
+	val years = container.get(ChronoUnit.YEARS)
+	val months = container.get(ChronoUnit.MONTHS)
+	val days = container.get(ChronoUnit.DAYS) % DAYS_PER_WEEK
+	val weeks = container.get(ChronoUnit.DAYS) / DAYS_PER_WEEK
 
-    val hours = container.get(ChronoUnit.HOURS)
-    val minutes = container.get(ChronoUnit.MINUTES)
-    val seconds = container.get(ChronoUnit.SECONDS)
+	val hours = container.get(ChronoUnit.HOURS)
+	val minutes = container.get(ChronoUnit.MINUTES)
+	val seconds = container.get(ChronoUnit.SECONDS)
 
-    val fmt = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.WIDE)
-    val measures: MutableList<Measure> = mutableListOf()
+	val fmt = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.WIDE)
+	val measures: MutableList<Measure> = mutableListOf()
 
-    if (years != 0L) measures.add(Measure(years, MeasureUnit.YEAR))
-    if (months != 0L) measures.add(Measure(months, MeasureUnit.MONTH))
-    if (weeks != 0L) measures.add(Measure(weeks, MeasureUnit.WEEK))
-    if (days != 0L) measures.add(Measure(days, MeasureUnit.DAY))
-    if (hours != 0L) measures.add(Measure(hours, MeasureUnit.HOUR))
-    if (minutes != 0L) measures.add(Measure(minutes, MeasureUnit.MINUTE))
-    if (seconds != 0L) measures.add(Measure(seconds, MeasureUnit.SECOND))
+	if (years != 0L) measures.add(Measure(years, MeasureUnit.YEAR))
+	if (months != 0L) measures.add(Measure(months, MeasureUnit.MONTH))
+	if (weeks != 0L) measures.add(Measure(weeks, MeasureUnit.WEEK))
+	if (days != 0L) measures.add(Measure(days, MeasureUnit.DAY))
+	if (hours != 0L) measures.add(Measure(hours, MeasureUnit.HOUR))
+	if (minutes != 0L) measures.add(Measure(minutes, MeasureUnit.MINUTE))
+	if (seconds != 0L) measures.add(Measure(seconds, MeasureUnit.SECOND))
 
-    if (measures.isEmpty()) return null
+	if (measures.isEmpty()) return null
 
-    @Suppress("SpreadOperator")  // There's no other way, really
-    return fmt.formatMeasures(*measures.toTypedArray())
+	@Suppress("SpreadOperator")  // There's no other way, really
+	return fmt.formatMeasures(*measures.toTypedArray())
 }
 
 /**
@@ -62,8 +62,8 @@ public fun formatChronoContainer(
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
 public fun ChronoContainer.toHuman(
-    locale: Locale,
-    relativeTo: LocalDateTime = LocalDateTime.now()
+	locale: Locale,
+	relativeTo: LocalDateTime = LocalDateTime.now(),
 ): String? = formatChronoContainer(this, locale, relativeTo)
 
 /**
@@ -72,8 +72,8 @@ public fun ChronoContainer.toHuman(
  * The string is intended to be readable for humans - "a days, b hours, c minutes, d seconds".
  */
 public suspend fun ChronoContainer.toHuman(
-    context: CommandContext,
-    relativeTo: LocalDateTime = LocalDateTime.now()
+	context: CommandContext,
+	relativeTo: LocalDateTime = LocalDateTime.now(),
 ): String? = toHuman(context.getLocale(), relativeTo)
 
 /**
@@ -81,4 +81,4 @@ public suspend fun ChronoContainer.toHuman(
  * you can include in your messages, which Discord should automatically format for users based on their locale.
  */
 public fun Instant.toDiscord(format: TimestampType = TimestampType.Default): String =
-    format.format(epochSecond)
+	format.format(epochSecond)

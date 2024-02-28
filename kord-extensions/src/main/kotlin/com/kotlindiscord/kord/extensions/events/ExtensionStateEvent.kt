@@ -16,6 +16,6 @@ import com.kotlindiscord.kord.extensions.extensions.ExtensionState
  * @property state Extension's new state
  */
 public data class ExtensionStateEvent(
-    public val extension: Extension,
-    public val state: ExtensionState
+	public val extension: Extension,
+	public val state: ExtensionState,
 ) : KordExEvent

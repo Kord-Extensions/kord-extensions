@@ -15,40 +15,40 @@ import org.koin.core.logger.Level
 val TEST_SERVER_ID = Snowflake(787452339908116521UL)
 
 suspend fun main() {
-    val bot = ExtensibleBot(env("TOKEN")) {
-        koinLogLevel = Level.DEBUG
+	val bot = ExtensibleBot(env("TOKEN")) {
+		koinLogLevel = Level.DEBUG
 
-        i18n {
-            localeResolver { _, _, user, _ ->
-                @Suppress("UnderscoresInNumericLiterals")
-                when (user?.id?.value) {
-                    560515299388948500UL -> SupportedLocales.FINNISH
-                    242043299022635020UL -> SupportedLocales.FRENCH
-                    407110650217627658UL -> SupportedLocales.FRENCH
-                    667552017434017794UL -> SupportedLocales.CHINESE_SIMPLIFIED
-                    185461862878543872UL -> SupportedLocales.GERMAN
+		i18n {
+			localeResolver { _, _, user, _ ->
+				@Suppress("UnderscoresInNumericLiterals")
+				when (user?.id?.value) {
+					560515299388948500UL -> SupportedLocales.FINNISH
+					242043299022635020UL -> SupportedLocales.FRENCH
+					407110650217627658UL -> SupportedLocales.FRENCH
+					667552017434017794UL -> SupportedLocales.CHINESE_SIMPLIFIED
+					185461862878543872UL -> SupportedLocales.GERMAN
 
-                    else -> defaultLocale
-                }
-            }
-        }
+					else -> defaultLocale
+				}
+			}
+		}
 
-        chatCommands {
-            defaultPrefix = "?"
+		chatCommands {
+			defaultPrefix = "?"
 
-            prefix { default ->
-                if (guildId == TEST_SERVER_ID) {
-                    "!"
-                } else {
-                    default  // "?"
-                }
-            }
-        }
+			prefix { default ->
+				if (guildId == TEST_SERVER_ID) {
+					"!"
+				} else {
+					default  // "?"
+				}
+			}
+		}
 
-        extensions {
-            add(::TestExtension)
-        }
-    }
+		extensions {
+			add(::TestExtension)
+		}
+	}
 
-    bot.start()
+	bot.start()
 }

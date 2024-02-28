@@ -15,8 +15,8 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
 /** Ephemeral-only slash command context. **/
 public class EphemeralSlashCommandContext<A : Arguments, M : ModalForm>(
-    override val event: ChatInputCommandInteractionCreateEvent,
-    override val command: SlashCommand<EphemeralSlashCommandContext<A, M>, A, M>,
-    override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
+	override val event: ChatInputCommandInteractionCreateEvent,
+	override val command: SlashCommand<EphemeralSlashCommandContext<A, M>, A, M>,
+	override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
+	cache: MutableStringKeyedMap<Any>,
 ) : SlashCommandContext<EphemeralSlashCommandContext<A, M>, A, M>(event, command, cache), EphemeralInteractionContext

@@ -27,7 +27,7 @@ public open class ConstraintChecker(
 		pluginId: String,
 		manifests: Map<String, PluginManifest>,
 		depth: Int = 0,
-		alreadyExamined: MutableSet<String> = mutableSetOf()
+		alreadyExamined: MutableSet<String> = mutableSetOf(),
 	): List<ConstraintResult> {
 		val results: MutableList<ConstraintResult> = mutableListOf()
 

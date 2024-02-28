@@ -26,13 +26,13 @@ package com.kotlindiscord.kord.extensions.plugins.annotations.plugins
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 public annotation class WiredPlugin(
-    public val id: String,
-    public val version: String,
+	public val id: String,
+	public val version: String,
 
-    public val author: String = "",
-    public val description: String = "",
-    public val license: String = "",
-    public val kordExVersion: String = "",
+	public val author: String = "",
+	public val description: String = "",
+	public val license: String = "",
+	public val kordExVersion: String = "",
 
-    public val dependencies: Array<String> = [],
+	public val dependencies: Array<String> = [],
 )

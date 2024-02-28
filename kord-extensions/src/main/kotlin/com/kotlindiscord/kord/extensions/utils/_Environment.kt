@@ -26,57 +26,57 @@ private val envMap: MutableStringMap = mutableMapOf()
  * @return The value of the environmental variable, or `null` if it doesn't exist.
  */
 public fun envOrNull(name: String): String? {
-    if (firstLoad) {
-        firstLoad = false
+	if (firstLoad) {
+		firstLoad = false
 
-        val dotenvFile = Path(".env")
+		val dotenvFile = Path(".env")
 
-        if (dotenvFile.isRegularFile()) {
-            logger.info { "Loading environment variables from .env file" }
+		if (dotenvFile.isRegularFile()) {
+			logger.info { "Loading environment variables from .env file" }
 
-            val lines = dotenvFile.readLines()
+			val lines = dotenvFile.readLines()
 
-            for (line in lines) {
-                var effectiveLine = line.trimStart()
+			for (line in lines) {
+				var effectiveLine = line.trimStart()
 
-                if (effectiveLine.isBlank() || effectiveLine.startsWith("#")) {
-                    continue
-                }
+				if (effectiveLine.isBlank() || effectiveLine.startsWith("#")) {
+					continue
+				}
 
-                if (effectiveLine.contains("#")) {
-                    effectiveLine = effectiveLine.substring(0, effectiveLine.indexOf("#"))
-                }
+				if (effectiveLine.contains("#")) {
+					effectiveLine = effectiveLine.substring(0, effectiveLine.indexOf("#"))
+				}
 
-                if (!effectiveLine.contains('=')) {
-                    logger.warn {
-                        "Invalid line in dotenv file: \"=\" not found\n" +
-                            "    $effectiveLine"
-                    }
+				if (!effectiveLine.contains('=')) {
+					logger.warn {
+						"Invalid line in dotenv file: \"=\" not found\n" +
+							"    $effectiveLine"
+					}
 
-                    continue
-                }
+					continue
+				}
 
-                val split = effectiveLine
-                    .split("=", limit = 2)
-                    .map { it.trim() }
+				val split = effectiveLine
+					.split("=", limit = 2)
+					.map { it.trim() }
 
-                if (split.size != 2) {
-                    logger.warn {
-                        "Invalid line in dotenv file: variables must be of the form \"name=value\"\n" +
-                            " -> $effectiveLine"
-                    }
+				if (split.size != 2) {
+					logger.warn {
+						"Invalid line in dotenv file: variables must be of the form \"name=value\"\n" +
+							" -> $effectiveLine"
+					}
 
-                    continue
-                }
+					continue
+				}
 
-                logger.trace { "${split[0]} -> ${split[1]}" }
+				logger.trace { "${split[0]} -> ${split[1]}" }
 
-                envMap[split[0]] = split[1]
-            }
-        }
-    }
+				envMap[split[0]] = split[1]
+			}
+		}
+	}
 
-    return envMap[name] ?: System.getenv()[name]
+	return envMap[name] ?: System.getenv()[name]
 }
 
 /**
@@ -94,7 +94,7 @@ public fun envOrNull(name: String): String? {
  * @return The value of the environmental variable.
  */
 public fun env(name: String): String =
-    envOrNull(name) ?: error(
-        "Missing environmental variable '$name' - please set this by adding it to a `.env` file, or using your " +
-            "system or process manager's environment management commands and tools."
-    )
+	envOrNull(name) ?: error(
+		"Missing environmental variable '$name' - please set this by adding it to a `.env` file, or using your " +
+			"system or process manager's environment management commands and tools."
+	)

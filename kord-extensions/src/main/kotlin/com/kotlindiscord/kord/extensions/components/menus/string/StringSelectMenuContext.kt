@@ -13,10 +13,10 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
 /** Abstract class representing the execution context of a string select (dropdown) menu component. **/
 public abstract class StringSelectMenuContext(
-    component: SelectMenu<*, *>,
-    event: SelectMenuInteractionCreateEvent,
-    cache: MutableStringKeyedMap<Any>,
+	component: SelectMenu<*, *>,
+	event: SelectMenuInteractionCreateEvent,
+	cache: MutableStringKeyedMap<Any>,
 ) : SelectMenuContext(component, event, cache) {
-    /** Menu options that were selected by the user before de-focusing the menu. **/
-    public val selected: List<String> by lazy { event.interaction.values }
+	/** Menu options that were selected by the user before de-focusing the menu. **/
+	public val selected: List<String> by lazy { event.interaction.values }
 }

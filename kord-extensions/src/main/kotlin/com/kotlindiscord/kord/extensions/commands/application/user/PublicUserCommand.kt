@@ -28,120 +28,120 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialPublicUserResponseBuilder =
-    (suspend InteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
+	(suspend InteractionResponseCreateBuilder.(UserCommandInteractionCreateEvent) -> Unit)?
 
 /** Public user command. **/
 public class PublicUserCommand<M : ModalForm>(
-    extension: Extension,
-    public override val modal: (() -> M)? = null,
+	extension: Extension,
+	public override val modal: (() -> M)? = null,
 ) : UserCommand<PublicUserCommandContext<M>, M>(extension) {
-    /** @suppress Internal guilder **/
-    public var initialResponseBuilder: InitialPublicUserResponseBuilder = null
+	/** @suppress Internal guilder **/
+	public var initialResponseBuilder: InitialPublicUserResponseBuilder = null
 
-    /** Call this to open with a response, omit it to ack instead. **/
-    public fun initialResponse(body: InitialPublicUserResponseBuilder) {
-        initialResponseBuilder = body
-    }
+	/** Call this to open with a response, omit it to ack instead. **/
+	public fun initialResponse(body: InitialPublicUserResponseBuilder) {
+		initialResponseBuilder = body
+	}
 
-    override fun validate() {
-        super.validate()
+	override fun validate() {
+		super.validate()
 
-        if (modal != null && initialResponseBuilder != null) {
-            throw InvalidCommandException(
-                name,
+		if (modal != null && initialResponseBuilder != null) {
+			throw InvalidCommandException(
+				name,
 
-                "You may not provide a modal builder and an initial response - pick one, not both."
-            )
-        }
-    }
+				"You may not provide a modal builder and an initial response - pick one, not both."
+			)
+		}
+	}
 
-    override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-        emitEventAsync(PublicUserCommandInvocationEvent(this, event))
+	override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
+		emitEventAsync(PublicUserCommandInvocationEvent(this, event))
 
-        try {
-            if (!runChecks(event, cache)) {
-                emitEventAsync(
-                    PublicUserCommandFailedChecksEvent(
-                        this,
-                        event,
-                        "Checks failed without a message."
-                    )
-                )
+		try {
+			if (!runChecks(event, cache)) {
+				emitEventAsync(
+					PublicUserCommandFailedChecksEvent(
+						this,
+						event,
+						"Checks failed without a message."
+					)
+				)
 
-                return
-            }
-        } catch (e: DiscordRelayedException) {
-            event.interaction.respondEphemeral {
-                settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
-            }
+				return
+			}
+		} catch (e: DiscordRelayedException) {
+			event.interaction.respondEphemeral {
+				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+			}
 
-            emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
+			emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
-            return
-        }
+			return
+		}
 
-        val modalObj = modal?.invoke()
+		val modalObj = modal?.invoke()
 
-        val response = if (initialResponseBuilder != null) {
-            event.interaction.respondPublic { initialResponseBuilder!!(event) }
-        } else if (modalObj != null) {
-            componentRegistry.register(modalObj)
+		val response = if (initialResponseBuilder != null) {
+			event.interaction.respondPublic { initialResponseBuilder!!(event) }
+		} else if (modalObj != null) {
+			componentRegistry.register(modalObj)
 
-            val locale = event.getLocale()
+			val locale = event.getLocale()
 
-            event.interaction.modal(
-                modalObj.translateTitle(locale, resolvedBundle),
-                modalObj.id
-            ) {
-                modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
-            }
+			event.interaction.modal(
+				modalObj.translateTitle(locale, resolvedBundle),
+				modalObj.id
+			) {
+				modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+			}
 
-            modalObj.awaitCompletion {
-                componentRegistry.unregisterModal(modalObj)
+			modalObj.awaitCompletion {
+				componentRegistry.unregisterModal(modalObj)
 
-                it?.deferPublicResponseUnsafe()
-            } ?: return
-        } else {
-            event.interaction.deferPublicResponseUnsafe()
-        }
+				it?.deferPublicResponseUnsafe()
+			} ?: return
+		} else {
+			event.interaction.deferPublicResponseUnsafe()
+		}
 
-        val context = PublicUserCommandContext(event, this, response, cache)
+		val context = PublicUserCommandContext(event, this, response, cache)
 
-        context.populate()
+		context.populate()
 
-        firstSentryBreadcrumb(context)
+		firstSentryBreadcrumb(context)
 
-        try {
-            checkBotPerms(context)
-        } catch (e: DiscordRelayedException) {
-            respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
-            emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
+		try {
+			checkBotPerms(context)
+		} catch (e: DiscordRelayedException) {
+			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
-            return
-        }
+			return
+		}
 
-        try {
-            body(context, modalObj)
-        } catch (t: Throwable) {
-            emitEventAsync(PublicUserCommandFailedWithExceptionEvent(this, event, t))
+		try {
+			body(context, modalObj)
+		} catch (t: Throwable) {
+			emitEventAsync(PublicUserCommandFailedWithExceptionEvent(this, event, t))
 
-            if (t is DiscordRelayedException) {
-                respondText(context, t.reason, FailureReason.RelayedFailure(t))
+			if (t is DiscordRelayedException) {
+				respondText(context, t.reason, FailureReason.RelayedFailure(t))
 
-                return
-            }
+				return
+			}
 
-            handleError(context, t)
-        }
+			handleError(context, t)
+		}
 
-        emitEventAsync(PublicUserCommandSucceededEvent(this, event))
-    }
+		emitEventAsync(PublicUserCommandSucceededEvent(this, event))
+	}
 
-    override suspend fun respondText(
-        context: PublicUserCommandContext<M>,
-        message: String,
-        failureType: FailureReason<*>
-    ) {
-        context.respond { settings.failureResponseBuilder(this, message, failureType) }
-    }
+	override suspend fun respondText(
+		context: PublicUserCommandContext<M>,
+		message: String,
+		failureType: FailureReason<*>,
+	) {
+		context.respond { settings.failureResponseBuilder(this, message, failureType) }
+	}
 }

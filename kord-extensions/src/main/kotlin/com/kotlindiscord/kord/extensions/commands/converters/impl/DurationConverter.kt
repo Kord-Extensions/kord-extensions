@@ -33,89 +33,89 @@ import kotlinx.datetime.*
  * @param positiveOnly Whether a positive duration is required - `true` by default.
  */
 @Converter(
-    names = ["duration"],
-    types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    imports = ["kotlinx.datetime.*"],
+	names = ["duration"],
+	types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	imports = ["kotlinx.datetime.*"],
 
-    builderFields = [
-        "public var longHelp: Boolean = true",
-        "public var positiveOnly: Boolean = true"
-    ],
+	builderFields = [
+		"public var longHelp: Boolean = true",
+		"public var positiveOnly: Boolean = true"
+	],
 )
 public class DurationConverter(
-    public val longHelp: Boolean = true,
-    public val positiveOnly: Boolean = true,
-    override var validator: Validator<DateTimePeriod> = null
+	public val longHelp: Boolean = true,
+	public val positiveOnly: Boolean = true,
+	override var validator: Validator<DateTimePeriod> = null,
 ) : SingleConverter<DateTimePeriod>() {
-    override val signatureTypeString: String = "converters.duration.error.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.duration.error.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        try {
-            // Check if it's a discord-formatted timestamp first
-            val timestamp = TimestampConverter.parseFromString(arg)
-            val result: DateTimePeriod = if (timestamp == null) {
-                DurationParser.parse(arg, context.getLocale())
-            } else {
-                (timestamp.instant - Clock.System.now()).toDateTimePeriod()
-            }
+		try {
+			// Check if it's a discord-formatted timestamp first
+			val timestamp = TimestampConverter.parseFromString(arg)
+			val result: DateTimePeriod = if (timestamp == null) {
+				DurationParser.parse(arg, context.getLocale())
+			} else {
+				(timestamp.instant - Clock.System.now()).toDateTimePeriod()
+			}
 
-            if (positiveOnly) {
-                val now: Instant = Clock.System.now()
-                val applied: Instant = now.plus(result, TimeZone.UTC)
+			if (positiveOnly) {
+				val now: Instant = Clock.System.now()
+				val applied: Instant = now.plus(result, TimeZone.UTC)
 
-                if (now > applied) {
-                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
-                }
-            }
+				if (now > applied) {
+					throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+				}
+			}
 
-            parsed = result
-        } catch (e: InvalidTimeUnitException) {
-            val message: String = context.translate(
-                "converters.duration.error.invalidUnit",
-                replacements = arrayOf(e.unit)
-            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			parsed = result
+		} catch (e: InvalidTimeUnitException) {
+			val message: String = context.translate(
+				"converters.duration.error.invalidUnit",
+				replacements = arrayOf(e.unit)
+			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw DiscordRelayedException(message)
-        } catch (e: DurationParserException) {
-            throw DiscordRelayedException(e.error)
-        }
+			throw DiscordRelayedException(message)
+		} catch (e: DurationParserException) {
+			throw DiscordRelayedException(e.error)
+		}
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
-        try {
-            val result: DateTimePeriod = DurationParser.parse(optionValue, context.getLocale())
+		try {
+			val result: DateTimePeriod = DurationParser.parse(optionValue, context.getLocale())
 
-            if (positiveOnly) {
-                val now: Instant = Clock.System.now()
-                val applied: Instant = now.plus(result, TimeZone.UTC)
+			if (positiveOnly) {
+				val now: Instant = Clock.System.now()
+				val applied: Instant = now.plus(result, TimeZone.UTC)
 
-                if (now > applied) {
-                    throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
-                }
-            }
+				if (now > applied) {
+					throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+				}
+			}
 
-            parsed = result
-        } catch (e: InvalidTimeUnitException) {
-            val message: String = context.translate(
-                "converters.duration.error.invalidUnit",
-                replacements = arrayOf(e.unit)
-            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			parsed = result
+		} catch (e: InvalidTimeUnitException) {
+			val message: String = context.translate(
+				"converters.duration.error.invalidUnit",
+				replacements = arrayOf(e.unit)
+			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw DiscordRelayedException(message)
-        } catch (e: DurationParserException) {
-            throw DiscordRelayedException(e.error)
-        }
+			throw DiscordRelayedException(message)
+		} catch (e: DurationParserException) {
+			throw DiscordRelayedException(e.error)
+		}
 
-        return true
-    }
+		return true
+	}
 }

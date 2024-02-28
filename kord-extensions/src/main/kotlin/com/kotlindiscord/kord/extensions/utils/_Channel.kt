@@ -39,26 +39,26 @@ private val logger = KotlinLogging.logger {}
  * @return Webhook object for the newly created webhook, or the existing one if it's already there.
  */
 public suspend fun ensureWebhook(
-    channelObj: TopGuildMessageChannel,
-    name: String,
-    logoFormat: Image.Format = Image.Format.PNG,
-    logo: (suspend () -> ByteArray)? = null
+	channelObj: TopGuildMessageChannel,
+	name: String,
+	logoFormat: Image.Format = Image.Format.PNG,
+	logo: (suspend () -> ByteArray)? = null,
 ): Webhook {
-    val webhook = channelObj.webhooks.firstOrNull { it.name == name }
+	val webhook = channelObj.webhooks.firstOrNull { it.name == name }
 
-    if (webhook != null) {
-        return webhook
-    }
+	if (webhook != null) {
+		return webhook
+	}
 
-    val guild = channelObj.guild.asGuild()
+	val guild = channelObj.guild.asGuild()
 
-    logger.info { "Creating webhook for channel: #${channelObj.name} (Guild: ${guild.name}" }
+	logger.info { "Creating webhook for channel: #${channelObj.name} (Guild: ${guild.name}" }
 
-    return channelObj.createWebhook(name) {
-        if (logo != null) {
-            this.avatar = Image.raw(logo.invoke(), logoFormat)
-        }
-    }
+	return channelObj.createWebhook(name) {
+		if (logo != null) {
+			this.avatar = Image.raw(logo.invoke(), logoFormat)
+		}
+	}
 }
 
 /**
@@ -68,10 +68,10 @@ public suspend fun ensureWebhook(
  * @param memberId Member ID to calculate for
  */
 public suspend fun GuildChannel.permissionsForMember(memberId: Snowflake): Permissions = when (this) {
-    is TopGuildChannel -> getEffectivePermissions(memberId)
-    is ThreadChannel -> getParent().getEffectivePermissions(memberId)
+	is TopGuildChannel -> getEffectivePermissions(memberId)
+	is ThreadChannel -> getParent().getEffectivePermissions(memberId)
 
-    else -> error("Unsupported channel type for channel: $this")
+	else -> error("Unsupported channel type for channel: $this")
 }
 
 /**
@@ -81,7 +81,7 @@ public suspend fun GuildChannel.permissionsForMember(memberId: Snowflake): Permi
  * @param user User to calculate for
  */
 public suspend fun GuildChannel.permissionsForMember(user: UserBehavior): Permissions =
-    permissionsForMember(user.id)
+	permissionsForMember(user.id)
 
 /**
  * Convenience function that returns the thread's parent message, if it was created from one.
@@ -89,9 +89,9 @@ public suspend fun GuildChannel.permissionsForMember(user: UserBehavior): Permis
  * If it wasn't, the parent channel is a forum, or the parent channel can't be found, this function returns `null`.
  */
 public suspend fun ThreadChannel.getParentMessage(): Message? {
-    val parentChannel = getParentOrNull() as? MessageChannelBehavior ?: return null
+	val parentChannel = getParentOrNull() as? MessageChannelBehavior ?: return null
 
-    return parentChannel.getMessageOrNull(this.id)
+	return parentChannel.getMessageOrNull(this.id)
 }
 
 // region: Channel position utils

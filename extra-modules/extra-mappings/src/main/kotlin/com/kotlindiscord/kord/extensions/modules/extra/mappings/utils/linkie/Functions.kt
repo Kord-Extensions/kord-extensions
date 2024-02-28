@@ -10,18 +10,18 @@ import me.shedaniel.linkie.Obf
 
 /** Format this obfuscated member as a pair of strings, client to server. **/
 fun Obf.stringPairs(): Pair<String?, String?> = when {
-    isEmpty() -> "" to null
-    isMerged() -> merged!! to null
+	isEmpty() -> "" to null
+	isMerged() -> merged!! to null
 
-    else -> client to server
+	else -> client to server
 }
 
 /**
  *  If not null or equal to the given string, return the string with the given mapping lambda applied, otherwise null.
  */
 inline fun String?.mapIfNotNullOrNotEquals(other: String, mapper: (String) -> String): String? =
-    when {
-        isNullOrEmpty() -> null
-        this == other -> null
-        else -> mapper(this)
-    }
+	when {
+		isNullOrEmpty() -> null
+		this == other -> null
+		else -> mapper(this)
+	}

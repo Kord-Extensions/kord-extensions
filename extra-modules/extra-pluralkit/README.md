@@ -3,7 +3,7 @@
 [![Discord: Click here](https://img.shields.io/static/v1?label=Discord&message=Click%20here&color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/ZKRetPNtvY) <br />
 ![Latest](https://img.shields.io/maven-metadata/v?label=Latest&metadataUrl=https%3A%2F%2Fs01.oss.sonatype.org%2Fservice%2Flocal%2Frepositories%2Fsnapshots%2Fcontent%2Fcom%2Fkotlindiscord%2Fkord%2Fextensions%2Fkord-extensions%2Fmaven-metadata.xml&style=for-the-badge)
 
-This module contains an extension intended to ease the development of bots that wish to support 
+This module contains an extension intended to ease the development of bots that wish to support
 [PluralKit](https://pluralkit.me/) users. PluralKit is a Discord bot that attempts to make Discord more comfortable
 to use for [plural systems](https://morethanone.info), and other people that may benefit from using it as a mental
 health aid.
@@ -16,7 +16,8 @@ handling for chat commands.
 
 # Getting Started
 
-* **Maven repo:** Maven Central for releases, `https://s01.oss.sonatype.org/content/repositories/snapshots` for snapshots
+* **Maven repo:** Maven Central for releases, `https://s01.oss.sonatype.org/content/repositories/snapshots` for
+  snapshots
 * **Maven coordinates:** `com.kotlindiscord.kord.extensions:extra-pluralkit:VERSION`
 
 At its simplest, you can add this extension directly to your bot with a minimum configuration. For example:
@@ -34,7 +35,7 @@ suspend fun main() {
 }
 ```
 
-This will install the extension using its default configuration. However, the extension may be configured in several 
+This will install the extension using its default configuration. However, the extension may be configured in several
 ways - as is detailed below.
 
 Your bot will now require the **Manage Webhooks** permission to use the extension.
@@ -53,7 +54,7 @@ changed or retrieved if you have the **Manage Server** permission on the current
 * `api-url`: If you're using a fork of PluralKit or running your own instance, you can provide its API base URL here.
   This should not include the version in the URL - `https://api.pluralkit.me` is the default base URL, and does not
   include the `/v2` at the end.
-* `bot`: If you're using a fork of PluralKit or running your own instance, you can provide the bot's account here. The 
+* `bot`: If you're using a fork of PluralKit or running your own instance, you can provide the bot's account here. The
   extension will not handle proxying for messages proxied by other bots.
 * `toggle-support`: You can use this option to forcibly disable PK support on the current server, if needed.
 

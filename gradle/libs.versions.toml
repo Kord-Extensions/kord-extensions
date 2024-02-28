@@ -53,7 +53,7 @@ kord = { module = "dev.kord:kord-core-voice", version.ref = "kord" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-kx-coro = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kx-coro"}
+kx-coro = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kx-coro" }
 kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
 kx-ser-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kx-ser" }
 linkie = { module = "me.shedaniel:linkie-core", version.ref = "linkie" }
@@ -71,5 +71,5 @@ time4j-tzdata = { module = "net.time4j:time4j-tzdata", version.ref = "time4j-tzd
 toml = { module = "net.peanuuutz:tomlkt", version.ref = "toml" }
 
 [bundles]
-commons = [ "commons-validator" ]
-logging = [ "kotlin-logging", "slf4j" ]
+commons = ["commons-validator"]
+logging = ["kotlin-logging", "slf4j"]

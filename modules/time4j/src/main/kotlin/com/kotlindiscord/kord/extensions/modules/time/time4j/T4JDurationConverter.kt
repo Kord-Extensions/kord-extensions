@@ -35,59 +35,59 @@ import net.time4j.IsoUnit
  * @see parseT4JDuration
  */
 @Converter(
-    names = ["t4JDuration"],
-    types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    imports = ["net.time4j.*"],
+	names = ["t4JDuration"],
+	types = [ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	imports = ["net.time4j.*"],
 
-    builderFields = [
-        "public var longHelp: Boolean = true",
-    ],
+	builderFields = [
+		"public var longHelp: Boolean = true",
+	],
 )
 public class T4JDurationConverter(
-    public val longHelp: Boolean = true,
-    override var validator: Validator<Duration<IsoUnit>> = null
+	public val longHelp: Boolean = true,
+	override var validator: Validator<Duration<IsoUnit>> = null,
 ) : SingleConverter<Duration<IsoUnit>>() {
-    override val signatureTypeString: String = "converters.duration.error.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.duration.error.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        try {
-            this.parsed = T4JDurationParser.parse(arg, context.getLocale())
-        } catch (e: InvalidTimeUnitException) {
-            val message: String = context.translate(
-                "converters.duration.error.invalidUnit",
-                replacements = arrayOf(e.unit)
-            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+		try {
+			this.parsed = T4JDurationParser.parse(arg, context.getLocale())
+		} catch (e: InvalidTimeUnitException) {
+			val message: String = context.translate(
+				"converters.duration.error.invalidUnit",
+				replacements = arrayOf(e.unit)
+			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw DiscordRelayedException(message)
-        } catch (e: DurationParserException) {
-            throw DiscordRelayedException(e.error)
-        }
+			throw DiscordRelayedException(message)
+		} catch (e: DurationParserException) {
+			throw DiscordRelayedException(e.error)
+		}
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val arg: String = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val arg: String = (option as? StringOptionValue)?.value ?: return false
 
-        try {
-            this.parsed = T4JDurationParser.parse(arg, context.getLocale())
-        } catch (e: InvalidTimeUnitException) {
-            val message: String = context.translate(
-                "converters.duration.error.invalidUnit",
-                replacements = arrayOf(e.unit)
-            ) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+		try {
+			this.parsed = T4JDurationParser.parse(arg, context.getLocale())
+		} catch (e: InvalidTimeUnitException) {
+			val message: String = context.translate(
+				"converters.duration.error.invalidUnit",
+				replacements = arrayOf(e.unit)
+			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
 
-            throw DiscordRelayedException(message)
-        } catch (e: DurationParserException) {
-            throw DiscordRelayedException(e.error)
-        }
+			throw DiscordRelayedException(message)
+		} catch (e: DurationParserException) {
+			throw DiscordRelayedException(e.error)
+		}
 
-        return true
-    }
+		return true
+	}
 }

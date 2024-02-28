@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "UndocumentedPublicProperty",)
+@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "UndocumentedPublicProperty")
 
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api
 
@@ -12,6 +12,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PKProxyTag(
-    val prefix: String?,
-    val suffix: String?,
+	val prefix: String?,
+	val suffix: String?,
 )

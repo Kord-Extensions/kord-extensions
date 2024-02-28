@@ -27,82 +27,82 @@ private val logger = KotlinLogging.logger {}
  * Schedulers are [CoroutineScope]s and thus can be cancelled to cancel all nested jobs, if required..
  */
 public class Scheduler : CoroutineScope {
-    internal val tasks: MutableList<Task> = mutableListOf()
+	internal val tasks: MutableList<Task> = mutableListOf()
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Default + SupervisorJob()
+	override val coroutineContext: CoroutineContext = Dispatchers.Default + SupervisorJob()
 
-    /** Convenience function to schedule a [Task] using [seconds] instead of a [Duration]. **/
-    public suspend fun schedule(
-        seconds: Long,
-        startNow: Boolean = true,
-        name: String? = null,
-        pollingSeconds: Long = 1,
-        repeat: Boolean = false,
-        callback: suspend () -> Unit
-    ): Task = schedule(
-        delay = seconds.seconds,
-        startNow = startNow,
-        name = name,
-        pollingSeconds = pollingSeconds,
-        repeat = repeat,
-        callback = callback,
-    )
+	/** Convenience function to schedule a [Task] using [seconds] instead of a [Duration]. **/
+	public suspend fun schedule(
+		seconds: Long,
+		startNow: Boolean = true,
+		name: String? = null,
+		pollingSeconds: Long = 1,
+		repeat: Boolean = false,
+		callback: suspend () -> Unit,
+	): Task = schedule(
+		delay = seconds.seconds,
+		startNow = startNow,
+		name = name,
+		pollingSeconds = pollingSeconds,
+		repeat = repeat,
+		callback = callback,
+	)
 
-    /**
-     * Schedule a [Task] using the given [delay] and [callback]. A name will be generated if not provided.
-     *
-     * @param delay [Duration] object representing the time to wait for.
-     * @param startNow Whether to start the task now - `false` if you want to start it yourself.
-     * @param name Optional task name, used in logging.
-     * @param pollingSeconds How often to check whether enough time has passed - `1` by default.
-     * @param repeat Whether to repeat the task indefinitely - `false` by default.
-     * @param callback Callback to run when the task has waited for long enough.
-     */
-    public suspend fun schedule(
-        delay: Duration,
-        startNow: Boolean = true,
-        name: String? = null,
-        pollingSeconds: Long = 1,
-        repeat: Boolean = false,
-        callback: suspend () -> Unit
-    ): Task {
-        val taskName = name ?: UUID.randomUUID().toString()
+	/**
+	 * Schedule a [Task] using the given [delay] and [callback]. A name will be generated if not provided.
+	 *
+	 * @param delay [Duration] object representing the time to wait for.
+	 * @param startNow Whether to start the task now - `false` if you want to start it yourself.
+	 * @param name Optional task name, used in logging.
+	 * @param pollingSeconds How often to check whether enough time has passed - `1` by default.
+	 * @param repeat Whether to repeat the task indefinitely - `false` by default.
+	 * @param callback Callback to run when the task has waited for long enough.
+	 */
+	public suspend fun schedule(
+		delay: Duration,
+		startNow: Boolean = true,
+		name: String? = null,
+		pollingSeconds: Long = 1,
+		repeat: Boolean = false,
+		callback: suspend () -> Unit,
+	): Task {
+		val taskName = name ?: UUID.randomUUID().toString()
 
-        val task = Task(
-            callback = callback,
-            coroutineScope = this,
-            pollingSeconds = pollingSeconds,
-            duration = delay,
-            name = taskName,
-            repeat = repeat,
-            parent = this
-        )
+		val task = Task(
+			callback = callback,
+			coroutineScope = this,
+			pollingSeconds = pollingSeconds,
+			duration = delay,
+			name = taskName,
+			repeat = repeat,
+			parent = this
+		)
 
-        tasks.add(task)
+		tasks.add(task)
 
-        if (startNow) {
-            task.start()
-        }
+		if (startNow) {
+			task.start()
+		}
 
-        return task
-    }
+		return task
+	}
 
-    /** Make all child tasks complete immediately. **/
-    public suspend fun callAllNow(): Unit = tasks.forEach { it.callNow() }
+	/** Make all child tasks complete immediately. **/
+	public suspend fun callAllNow(): Unit = tasks.forEach { it.callNow() }
 
-    /** Shut down this scheduler, cancelling all tasks. **/
-    public fun shutdown() {
-        tasks.toList().forEach { it.cancel() }  // So we don't modify while we iterate
+	/** Shut down this scheduler, cancelling all tasks. **/
+	public fun shutdown() {
+		tasks.toList().forEach { it.cancel() }  // So we don't modify while we iterate
 
-        try {
-            this.cancel()
-        } catch (e: IllegalStateException) {
-            logger.debug(e) { "Scheduler cancelled with no jobs." }
-        }
+		try {
+			this.cancel()
+		} catch (e: IllegalStateException) {
+			logger.debug(e) { "Scheduler cancelled with no jobs." }
+		}
 
-        tasks.clear()
-    }
+		tasks.clear()
+	}
 
-    internal fun removeTask(task: Task) =
+	internal fun removeTask(task: Task) =
 		tasks.remove(task)
 }

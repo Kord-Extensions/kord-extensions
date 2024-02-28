@@ -10,16 +10,16 @@ import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
 
 /** Converter builder for choice converters. **/
 public interface ChoiceConverterBuilder<T> {
-    /** List of possible choices, if any. **/
-    public var choices: MutableStringKeyedMap<T>
+	/** List of possible choices, if any. **/
+	public var choices: MutableStringKeyedMap<T>
 
-    /** Add a choice to the list of possible choices. **/
-    public fun choice(key: String, value: T) {
-        choices[key] = value
-    }
+	/** Add a choice to the list of possible choices. **/
+	public fun choice(key: String, value: T) {
+		choices[key] = value
+	}
 
-    /** Add a choice to the list of possible choices. **/
-    public fun choices(all: Map<String, T>) {
-        choices = all.toMutableMap()
-    }
+	/** Add a choice to the list of possible choices. **/
+	public fun choices(all: Map<String, T>) {
+		choices = all.toMutableMap()
+	}
 }

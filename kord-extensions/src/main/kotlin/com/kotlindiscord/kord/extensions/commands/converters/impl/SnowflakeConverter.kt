@@ -30,29 +30,29 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see snowflakeList
  */
 @Converter(
-    "snowflake",
+	"snowflake",
 
-    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+	types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
 public class SnowflakeConverter(
-    override var validator: Validator<Snowflake> = null
+	override var validator: Validator<Snowflake> = null,
 ) : SingleConverter<Snowflake>() {
-    override val signatureTypeString: String = "converters.snowflake.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.snowflake.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        try {
-            this.parsed = Snowflake(arg)
-        } catch (e: NumberFormatException) {
-            throw DiscordRelayedException(
-                context.translate("converters.snowflake.error.invalid", replacements = arrayOf(arg))
-            )
-        }
+		try {
+			this.parsed = Snowflake(arg)
+		} catch (e: NumberFormatException) {
+			throw DiscordRelayedException(
+				context.translate("converters.snowflake.error.invalid", replacements = arrayOf(arg))
+			)
+		}
 
-        return true
-    }
+		return true
+	}
 
 	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
 		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }

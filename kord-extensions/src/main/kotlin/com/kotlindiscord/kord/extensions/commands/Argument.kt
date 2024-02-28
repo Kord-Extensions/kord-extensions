@@ -17,14 +17,14 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
  * @param converter Argument converter to use for this argument.
  */
 public data class Argument<T : Any?>(
-    val displayName: String,
-    val description: String,
-    val converter: Converter<T, *, *, *>,
+	val displayName: String,
+	val description: String,
+	val converter: Converter<T, *, *, *>,
 ) {
-    init {
-        converter.argumentObj = this
-    }
+	init {
+		converter.argumentObj = this
+	}
 }
 
 internal fun Argument<*>.getDefaultTranslatedDisplayName(provider: TranslationsProvider, command: Command): String =
-    provider.translate(displayName, provider.defaultLocale, command.resolvedBundle ?: converter.bundle)
+	provider.translate(displayName, provider.defaultLocale, command.resolvedBundle ?: converter.bundle)

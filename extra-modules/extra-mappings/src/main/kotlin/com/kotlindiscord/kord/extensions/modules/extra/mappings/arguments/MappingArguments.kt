@@ -17,19 +17,19 @@ import me.shedaniel.linkie.Namespace
  */
 @Suppress("UndocumentedPublicProperty")
 open class MappingArguments(val namespace: Namespace) : Arguments() {
-    private val versions by lazy { namespace.getAllSortedVersions() }
+	private val versions by lazy { namespace.getAllSortedVersions() }
 
-    val query by string {
-        name = "query"
-        description = "Name to query mappings for"
-    }
+	val query by string {
+		name = "query"
+		description = "Name to query mappings for"
+	}
 
-    val version by optionalMappingsVersion {
-        name = "version"
-        description = "Minecraft version to use for this query"
+	val version by optionalMappingsVersion {
+		name = "version"
+		description = "Minecraft version to use for this query"
 
-        namespace(namespace)
+		namespace(namespace)
 
-        autocompleteVersions { versions }
-    }
+		autocompleteVersions { versions }
+	}
 }

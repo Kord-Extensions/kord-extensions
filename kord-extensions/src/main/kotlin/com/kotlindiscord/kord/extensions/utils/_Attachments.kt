@@ -17,7 +17,7 @@ import java.nio.file.Path
 import kotlin.io.path.*
 
 private val client = HttpClient {
-    expectSuccess = true
+	expectSuccess = true
 }
 
 /**
@@ -27,10 +27,10 @@ private val client = HttpClient {
  * of the other functions.
  */
 public suspend fun Attachment.download(): ByteArray {
-    val channel = client.get(this.url)
-    val packet = channel.bodyAsChannel()
+	val channel = client.get(this.url)
+	val packet = channel.bodyAsChannel()
 
-    return packet.readRemaining().readBytes()
+	return packet.readRemaining().readBytes()
 }
 
 /** Given a [String] representing a file path, download the attachment to the file it points to. **/
@@ -38,50 +38,50 @@ public suspend fun Attachment.downloadToFile(path: String): Path = downloadToFil
 
 /** Given a [Path] object, download the attachment to the file it points to. **/
 public suspend fun Attachment.downloadToFile(path: Path): Path {
-    if (!path.exists()) {
-        path.createDirectories()
-        path.deleteExisting()
-        path.createFile()
-    }
+	if (!path.exists()) {
+		path.createDirectories()
+		path.deleteExisting()
+		path.createFile()
+	}
 
-    return downloadToFile(path.toFile())
+	return downloadToFile(path.toFile())
 }
 
 /** Given a [File] object, download the attachment and write it to the given file. **/
 public suspend fun Attachment.downloadToFile(file: File): Path {
-    if (!file.exists()) {
-        file.toPath().createFile()
-    }
+	if (!file.exists()) {
+		file.toPath().createFile()
+	}
 
-    val channel = client.get(this.url).bodyAsChannel()
+	val channel = client.get(this.url).bodyAsChannel()
 
-    file.outputStream().use { fileStream ->
-        channel.copyTo(fileStream)
-    }
+	file.outputStream().use { fileStream ->
+		channel.copyTo(fileStream)
+	}
 
-    return file.toPath()
+	return file.toPath()
 }
 
 /** Given a [String] representing a folder path, download the attachment to a file within it. **/
 public suspend fun Attachment.downloadToFolder(path: String): Path =
-    downloadToFolder(Path.of(path))
+	downloadToFolder(Path.of(path))
 
 /** Given a [Path] representing a folder, download the attachment to a file within it. **/
 public suspend fun Attachment.downloadToFolder(path: Path): Path =
-    downloadToFolder(path.toFile())
+	downloadToFolder(path.toFile())
 
 /** Given a [File] representing a folder, download the attachment to a file within it. **/
 public suspend fun Attachment.downloadToFolder(file: File): Path {
-    if (!file.exists()) {
-        file.toPath().createDirectories()
-    }
+	if (!file.exists()) {
+		file.toPath().createDirectories()
+	}
 
-    val targetFile = File(file, "${this.id.value} - ${this.filename}")
-    val channel = client.get(this.url).bodyAsChannel()
+	val targetFile = File(file, "${this.id.value} - ${this.filename}")
+	val channel = client.get(this.url).bodyAsChannel()
 
-    targetFile.outputStream().use { fileStream ->
-        channel.copyTo(fileStream)
-    }
+	targetFile.outputStream().use { fileStream ->
+		channel.copyTo(fileStream)
+	}
 
-    return targetFile.toPath()
+	return targetFile.toPath()
 }

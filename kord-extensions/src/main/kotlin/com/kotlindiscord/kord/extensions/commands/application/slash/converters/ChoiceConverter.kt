@@ -17,11 +17,11 @@ private const val CHOICE_LIMIT = 25  // Discord doesn't allow more choices than 
  */
 
 public abstract class ChoiceConverter<T : Any>(
-    public open val choices: Map<String, T>
+	public open val choices: Map<String, T>,
 ) : SingleConverter<T>() {
-    init {
-        if (choices.size > CHOICE_LIMIT) {
-            error("You may not provide more than $CHOICE_LIMIT choices.")
-        }
-    }
+	init {
+		if (choices.size > CHOICE_LIMIT) {
+			error("You may not provide more than $CHOICE_LIMIT choices.")
+		}
+	}
 }

@@ -15,8 +15,8 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 
 /** Public-only slash command context. **/
 public class PublicSlashCommandContext<A : Arguments, M : ModalForm>(
-    override val event: ChatInputCommandInteractionCreateEvent,
-    override val command: SlashCommand<PublicSlashCommandContext<A, M>, A, M>,
-    override val interactionResponse: PublicMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
+	override val event: ChatInputCommandInteractionCreateEvent,
+	override val command: SlashCommand<PublicSlashCommandContext<A, M>, A, M>,
+	override val interactionResponse: PublicMessageInteractionResponseBehavior,
+	cache: MutableStringKeyedMap<Any>,
 ) : SlashCommandContext<PublicSlashCommandContext<A, M>, A, M>(event, command, cache), PublicInteractionContext

@@ -14,33 +14,33 @@ package com.kotlindiscord.kord.extensions.modules.annotations.converters
  * @property appendFragment Whether to append the string fragment, or ignore it
  */
 public enum class ConverterType(
-    public val fragment: String,
-    public val order: Int,
-    public val appendFragment: Boolean = true
+	public val fragment: String,
+	public val order: Int,
+	public val appendFragment: Boolean = true,
 ) {
-    DEFAULTING("Defaulting", 0),
-    LIST("List", 0),
-    OPTIONAL("Optional", 0),
+	DEFAULTING("Defaulting", 0),
+	LIST("List", 0),
+	OPTIONAL("Optional", 0),
 
-    COALESCING("Coalescing", 1),
-    SINGLE("", 1),
+	COALESCING("Coalescing", 1),
+	SINGLE("", 1),
 
-    CHOICE("Choice", 2, false);
+	CHOICE("Choice", 2, false);
 
-    public companion object {
-        /** Given the `.name` or `.simpleName` of a converter type, get the relevant enum entry. **/
-        public fun fromName(name: String): ConverterType? =
-            when (name) {
-                DEFAULTING.name -> DEFAULTING
-                LIST.name -> LIST
-                OPTIONAL.name -> OPTIONAL
+	public companion object {
+		/** Given the `.name` or `.simpleName` of a converter type, get the relevant enum entry. **/
+		public fun fromName(name: String): ConverterType? =
+			when (name) {
+				DEFAULTING.name -> DEFAULTING
+				LIST.name -> LIST
+				OPTIONAL.name -> OPTIONAL
 
-                COALESCING.name -> COALESCING
-                SINGLE.name -> SINGLE
+				COALESCING.name -> COALESCING
+				SINGLE.name -> SINGLE
 
-                CHOICE.name -> CHOICE
+				CHOICE.name -> CHOICE
 
-                else -> null
-            }
-    }
+				else -> null
+			}
+	}
 }

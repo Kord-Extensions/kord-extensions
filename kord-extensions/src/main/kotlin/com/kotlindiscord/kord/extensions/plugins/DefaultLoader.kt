@@ -12,16 +12,16 @@ import java.nio.file.Path
 
 /** Default plugin loader, with a changed classloader. **/
 public class DefaultLoader(pluginManager: PluginManager?) : DefaultPluginLoader(pluginManager) {
-    override fun loadPlugin(pluginPath: Path?, pluginDescriptor: PluginDescriptor?): ClassLoader {
-        val pluginClassLoader = PluginClassLoader(
-            pluginManager,
-            pluginDescriptor,
-            ClassLoader.getSystemClassLoader(),
-            ClassLoadingStrategy.APD
-        )
+	override fun loadPlugin(pluginPath: Path?, pluginDescriptor: PluginDescriptor?): ClassLoader {
+		val pluginClassLoader = PluginClassLoader(
+			pluginManager,
+			pluginDescriptor,
+			ClassLoader.getSystemClassLoader(),
+			ClassLoadingStrategy.APD
+		)
 
-        pluginClassLoader.addFile(pluginPath!!.toFile())
+		pluginClassLoader.addFile(pluginPath!!.toFile())
 
-        return pluginClassLoader
-    }
+		return pluginClassLoader
+	}
 }

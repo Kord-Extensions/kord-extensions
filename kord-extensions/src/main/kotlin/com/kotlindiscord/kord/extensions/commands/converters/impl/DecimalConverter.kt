@@ -30,68 +30,68 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * @see decimalList
  */
 @Converter(
-    "decimal",
+	"decimal",
 
-    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
 
-    builderFields = [
-        "public var maxValue: Double? = null",
-        "public var minValue: Double? = null",
-    ],
+	builderFields = [
+		"public var maxValue: Double? = null",
+		"public var minValue: Double? = null",
+	],
 )
 public class DecimalConverter(
-    public val maxValue: Double? = null,
-    public val minValue: Double? = null,
+	public val maxValue: Double? = null,
+	public val minValue: Double? = null,
 
-    override var validator: Validator<Double> = null
+	override var validator: Validator<Double> = null,
 ) : SingleConverter<Double>() {
-    override val signatureTypeString: String = "converters.decimal.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.decimal.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        try {
-            this.parsed = arg.toDouble()
-        } catch (e: NumberFormatException) {
-            throw DiscordRelayedException(
-                context.translate("converters.decimal.error.invalid", replacements = arrayOf(arg))
-            )
-        }
+		try {
+			this.parsed = arg.toDouble()
+		} catch (e: NumberFormatException) {
+			throw DiscordRelayedException(
+				context.translate("converters.decimal.error.invalid", replacements = arrayOf(arg))
+			)
+		}
 
-        if (minValue != null && this.parsed < minValue) {
-            throw DiscordRelayedException(
-                context.translate(
-                    "converters.number.error.invalid.tooSmall",
-                    replacements = arrayOf(arg, minValue)
-                )
-            )
-        }
+		if (minValue != null && this.parsed < minValue) {
+			throw DiscordRelayedException(
+				context.translate(
+					"converters.number.error.invalid.tooSmall",
+					replacements = arrayOf(arg, minValue)
+				)
+			)
+		}
 
-        if (maxValue != null && this.parsed > maxValue) {
-            throw DiscordRelayedException(
-                context.translate(
-                    "converters.number.error.invalid.tooLarge",
-                    replacements = arrayOf(arg, maxValue)
-                )
-            )
-        }
+		if (maxValue != null && this.parsed > maxValue) {
+			throw DiscordRelayedException(
+				context.translate(
+					"converters.number.error.invalid.tooLarge",
+					replacements = arrayOf(arg, maxValue)
+				)
+			)
+		}
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        NumberOptionBuilder(arg.displayName, arg.description).apply {
-            this@apply.maxValue = this@DecimalConverter.maxValue
-            this@apply.minValue = this@DecimalConverter.minValue
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		NumberOptionBuilder(arg.displayName, arg.description).apply {
+			this@apply.maxValue = this@DecimalConverter.maxValue
+			this@apply.minValue = this@DecimalConverter.minValue
 
-            required = true
-        }
+			required = true
+		}
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? NumberOptionValue)?.value ?: return false
-        this.parsed = optionValue
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? NumberOptionValue)?.value ?: return false
+		this.parsed = optionValue
 
-        return true
-    }
+		return true
+	}
 }

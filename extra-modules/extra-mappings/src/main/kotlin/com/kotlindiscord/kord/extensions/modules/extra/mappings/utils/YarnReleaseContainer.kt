@@ -17,16 +17,16 @@ import me.shedaniel.linkie.utils.tryToVersion
  * for different "channels".
  */
 object YarnReleaseContainer {
-    /**
-     * The latest Minecraft release to have yarn mappings built for it.
-     */
-    val latestRelease = YarnNamespace.latestYarnVersion
+	/**
+	 * The latest Minecraft release to have yarn mappings built for it.
+	 */
+	val latestRelease = YarnNamespace.latestYarnVersion
 
-    /**
-     * The latest Minecraft snapshot release to have yarn mappings built for it.
-     * This is generated in a similar fashion to [YarnNamespace.latestYarnVersion]
-     * since Linkie removed channel support.
-     */
-    val latestSnapshot = YarnNamespace.yarnBuilds.keys
-        .mapNotNull { it.tryToVersion() }.maxOrNull()?.toString()
+	/**
+	 * The latest Minecraft snapshot release to have yarn mappings built for it.
+	 * This is generated in a similar fashion to [YarnNamespace.latestYarnVersion]
+	 * since Linkie removed channel support.
+	 */
+	val latestSnapshot = YarnNamespace.yarnBuilds.keys
+		.mapNotNull { it.tryToVersion() }.maxOrNull()?.toString()
 }

@@ -24,8 +24,9 @@ public typealias MutableStringMap = MutableStringKeyedMap<String>
 /** Provides direct access to the map KordEx registers for [Event.customContext]. **/
 @OptIn(KordPreview::class)
 @Suppress("UNCHECKED_CAST")
-public val Event.extraData: MutableStringKeyedMap<Any> get() =
-    customContext as MutableStringKeyedMap<Any>
+public val Event.extraData: MutableStringKeyedMap<Any>
+	get() =
+		customContext as MutableStringKeyedMap<Any>
 
 /**
  * Utility function for getting a key from the given String-keyed map, attempting to cast it to the given generic
@@ -36,8 +37,8 @@ public val Event.extraData: MutableStringKeyedMap<Any> get() =
  * @throws IllegalArgumentException when the map doesn't contain the given key
  */
 public inline fun <reified T : Any> StringKeyedMap<*>.getOf(key: String): T =
-    (this[key] ?: throw IllegalArgumentException("Map does not contain key: $key"))
-        as T
+	(this[key] ?: throw IllegalArgumentException("Map does not contain key: $key"))
+		as T
 
 /**
  * Utility function for getting a key from the given String-keyed map, attempting to cast it to the given generic
@@ -46,7 +47,7 @@ public inline fun <reified T : Any> StringKeyedMap<*>.getOf(key: String): T =
  * **Note:** This function does not support maps with nullable values.
  */
 public inline fun <reified T : Any> StringKeyedMap<*>.getOfOrDefault(key: String, default: T): T =
-    this[key] as? T ?: default
+	this[key] as? T ?: default
 
 /**
  * Utility function for getting a key from the given String-keyed map, attempting to cast it to the given generic
@@ -55,7 +56,7 @@ public inline fun <reified T : Any> StringKeyedMap<*>.getOfOrDefault(key: String
  * **Note:** This function does not support maps with nullable values.
  */
 public inline fun <reified T : Any?> StringKeyedMap<*>.getOfOrNull(key: String): T? =
-    this[key] as? T
+	this[key] as? T
 
 /**
  * Utility function for getting a key from the given String-keyed map, attempting to cast it to the given generic
@@ -66,19 +67,19 @@ public inline fun <reified T : Any?> StringKeyedMap<*>.getOfOrNull(key: String):
  * **Note:** This function does not support maps with nullable values.
  */
 public inline fun <reified V : Any, reified T : V> MutableStringKeyedMap<V>.getOfOrDefault(
-    key: String,
-    default: T,
-    store: Boolean,
+	key: String,
+	default: T,
+	store: Boolean,
 ): T {
-    val value = this[key] as? T
+	val value = this[key] as? T
 
-    if (value == null) {
-        if (store) {
-            this[key] = default
-        }
+	if (value == null) {
+		if (store) {
+			this[key] = default
+		}
 
-        return default
-    }
+		return default
+	}
 
-    return value
+	return value
 }

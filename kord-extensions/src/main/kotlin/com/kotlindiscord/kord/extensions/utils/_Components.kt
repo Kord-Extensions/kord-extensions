@@ -20,56 +20,56 @@ import dev.kord.rest.builder.component.SelectOptionBuilder
 
 /** Convenience wrapper for sending an ephemeral ack, optionally deferred, with less characters. **/
 public suspend fun ComponentInteractionBehavior.ackEphemeral(
-    deferred: Boolean = false
+	deferred: Boolean = false,
 ): EphemeralMessageInteractionResponseBehavior = if (deferred) {
-    deferEphemeralMessageUpdate()
+	deferEphemeralMessageUpdate()
 } else {
-    deferEphemeralResponseUnsafe()
+	deferEphemeralResponseUnsafe()
 }
 
 /** Convenience wrapper for sending a public ack, optionally deferred, with less characters. **/
 public suspend fun ComponentInteractionBehavior.ackPublic(
-    deferred: Boolean = false
+	deferred: Boolean = false,
 ): PublicMessageInteractionResponseBehavior = if (deferred) {
-    deferPublicMessageUpdate()
+	deferPublicMessageUpdate()
 } else {
-    deferPublicResponseUnsafe()
+	deferPublicResponseUnsafe()
 }
 
 /** Convenience function for setting [this.emoji] based on a given Unicode emoji. **/
 public fun SelectOptionBuilder.emoji(unicodeEmoji: String) {
-    this.emoji = DiscordPartialEmoji(
-        name = unicodeEmoji
-    )
+	this.emoji = DiscordPartialEmoji(
+		name = unicodeEmoji
+	)
 }
 
 /** Convenience function for setting [this.emoji] based on a given guild custom emoji. **/
 public fun SelectOptionBuilder.emoji(guildEmoji: GuildEmoji) {
-    this.emoji = DiscordPartialEmoji(
-        id = guildEmoji.id,
-        name = guildEmoji.name,
-        animated = guildEmoji.isAnimated.optional()
-    )
+	this.emoji = DiscordPartialEmoji(
+		id = guildEmoji.id,
+		name = guildEmoji.name,
+		animated = guildEmoji.isAnimated.optional()
+	)
 }
 
 /** Convenience function for setting [this.emoji] based on a given reaction emoji. **/
 public fun SelectOptionBuilder.emoji(unicodeEmoji: ReactionEmoji.Unicode) {
-    this.emoji = DiscordPartialEmoji(
-        name = unicodeEmoji.name
-    )
+	this.emoji = DiscordPartialEmoji(
+		name = unicodeEmoji.name
+	)
 }
 
 /** Convenience function for setting [this.emoji] based on a given reaction emoji. **/
 public fun SelectOptionBuilder.emoji(guildEmoji: ReactionEmoji.Custom) {
-    this.emoji = DiscordPartialEmoji(
-        id = guildEmoji.id,
-        name = guildEmoji.name,
-        animated = guildEmoji.isAnimated.optional()
-    )
+	this.emoji = DiscordPartialEmoji(
+		id = guildEmoji.id,
+		name = guildEmoji.name,
+		animated = guildEmoji.isAnimated.optional()
+	)
 }
 
 /** Convenience function for setting [this.emoji] based on a given reaction emoji. **/
 public fun SelectOptionBuilder.emoji(emoji: ReactionEmoji): Unit = when (emoji) {
-    is ReactionEmoji.Unicode -> emoji(emoji)
-    is ReactionEmoji.Custom -> emoji(emoji)
+	is ReactionEmoji.Unicode -> emoji(emoji)
+	is ReactionEmoji.Custom -> emoji(emoji)
 }

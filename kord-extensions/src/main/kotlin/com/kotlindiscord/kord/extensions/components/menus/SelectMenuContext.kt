@@ -13,7 +13,7 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 /** Abstract class representing the execution context of a select (dropdown) menu component. **/
 @Suppress("UnnecessaryAbstractClass")
 public abstract class SelectMenuContext(
-    component: SelectMenu<*, *>,
-    event: SelectMenuInteractionCreateEvent,
-    cache: MutableStringKeyedMap<Any>,
+	component: SelectMenu<*, *>,
+	event: SelectMenuInteractionCreateEvent,
+	cache: MutableStringKeyedMap<Any>,
 ) : ComponentContext<SelectMenuInteractionCreateEvent>(component, event, cache)

@@ -31,13 +31,13 @@ private const val SUBCOMMAND_AND_GROUP_LIMIT: Int = 25
  */
 @UnsafeAPI
 public suspend fun <T : Arguments> SlashCommand<*, *, *>.unsafeSubCommand(
-    arguments: () -> T,
-    body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit
+	arguments: () -> T,
+	body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<T, ModalForm> {
-    val commandObj = UnsafeSlashCommand<T, ModalForm>(extension, arguments, null, this, parentGroup)
-    body(commandObj)
+	val commandObj = UnsafeSlashCommand<T, ModalForm>(extension, arguments, null, this, parentGroup)
+	body(commandObj)
 
-    return unsafeSubCommand(commandObj)
+	return unsafeSubCommand(commandObj)
 }
 
 /**
@@ -49,26 +49,26 @@ public suspend fun <T : Arguments> SlashCommand<*, *, *>.unsafeSubCommand(
  */
 @UnsafeAPI
 public fun <T : Arguments, M : ModalForm> SlashCommand<*, *, *>.unsafeSubCommand(
-    commandObj: UnsafeSlashCommand<T, M>
+	commandObj: UnsafeSlashCommand<T, M>,
 ): UnsafeSlashCommand<T, M> {
-    commandObj.guildId = null
-    if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
-        throw InvalidCommandException(
-            commandObj.name,
-            "Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
-        )
-    }
+	commandObj.guildId = null
+	if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
+		throw InvalidCommandException(
+			commandObj.name,
+			"Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
+		)
+	}
 
-    try {
-        commandObj.validate()
-        subCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        kxLogger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        kxLogger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		subCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		kxLogger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		kxLogger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -80,12 +80,12 @@ public fun <T : Arguments, M : ModalForm> SlashCommand<*, *, *>.unsafeSubCommand
  */
 @UnsafeAPI
 public suspend fun SlashCommand<*, *, *>.unsafeSubCommand(
-    body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit
+	body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<Arguments, ModalForm> {
-    val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(extension, null, null, this, parentGroup)
-    body(commandObj)
+	val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(extension, null, null, this, parentGroup)
+	body(commandObj)
 
-    return unsafeSubCommand(commandObj)
+	return unsafeSubCommand(commandObj)
 }
 
 // endregion
@@ -102,13 +102,13 @@ public suspend fun SlashCommand<*, *, *>.unsafeSubCommand(
  */
 @UnsafeAPI
 public suspend fun <T : Arguments> SlashGroup.unsafeSubCommand(
-    arguments: () -> T,
-    body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit
+	arguments: () -> T,
+	body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<T, ModalForm> {
-    val commandObj = UnsafeSlashCommand<T, ModalForm>(parent.extension, arguments, null, parent, this)
-    body(commandObj)
+	val commandObj = UnsafeSlashCommand<T, ModalForm>(parent.extension, arguments, null, parent, this)
+	body(commandObj)
 
-    return unsafeSubCommand(commandObj)
+	return unsafeSubCommand(commandObj)
 }
 
 /**
@@ -120,27 +120,27 @@ public suspend fun <T : Arguments> SlashGroup.unsafeSubCommand(
  */
 @UnsafeAPI
 public fun <T : Arguments, M : ModalForm> SlashGroup.unsafeSubCommand(
-    commandObj: UnsafeSlashCommand<T, M>
+	commandObj: UnsafeSlashCommand<T, M>,
 ): UnsafeSlashCommand<T, M> {
 	commandObj.guildId = null
 
-    if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
-        throw InvalidCommandException(
-            commandObj.name,
-            "Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
-        )
-    }
+	if (subCommands.size >= SUBCOMMAND_AND_GROUP_LIMIT) {
+		throw InvalidCommandException(
+			commandObj.name,
+			"Groups may only contain up to $SUBCOMMAND_AND_GROUP_LIMIT commands."
+		)
+	}
 
-    try {
-        commandObj.validate()
-        subCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		subCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -152,12 +152,12 @@ public fun <T : Arguments, M : ModalForm> SlashGroup.unsafeSubCommand(
  */
 @UnsafeAPI
 public suspend fun SlashGroup.unsafeSubCommand(
-    body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit
+	body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<Arguments, ModalForm> {
-    val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(parent.extension, null, null, parent, this)
-    body(commandObj)
+	val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(parent.extension, null, null, parent, this)
+	body(commandObj)
 
-    return unsafeSubCommand(commandObj)
+	return unsafeSubCommand(commandObj)
 }
 
 // endregion

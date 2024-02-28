@@ -15,5 +15,5 @@ import kotlin.io.path.Path
  * directory, but you can change this by providing the `STORAGE_FILE_ROOT` environment variable.
  */
 public val storageFileRoot: Path = Path(
-    envOrNull("STORAGE_FILE_ROOT") ?: "."
+	envOrNull("STORAGE_FILE_ROOT") ?: "."
 )

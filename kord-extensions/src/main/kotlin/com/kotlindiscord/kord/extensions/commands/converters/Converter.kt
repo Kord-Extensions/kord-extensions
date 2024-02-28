@@ -37,114 +37,114 @@ import kotlin.reflect.KProperty
  * @param ResultType TypeVar representing how this converter signals whether it succeeded - either `Boolean` or `Int`
  */
 public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputType : Any, ResultType : Any>(
-    public open val required: Boolean = true,
+	public open val required: Boolean = true,
 ) : KordExKoinComponent {
-    /** This is pretty hacky, but there aren't many better options. **/
-    internal lateinit var genericBuilder: ConverterBuilder<OutputType>
+	/** This is pretty hacky, but there aren't many better options. **/
+	internal lateinit var genericBuilder: ConverterBuilder<OutputType>
 
-    /** Current instance of the bot. **/
-    public open val bot: ExtensibleBot by inject()
+	/** Current instance of the bot. **/
+	public open val bot: ExtensibleBot by inject()
 
-    /** Kord instance, backing the ExtensibleBot. **/
-    public val kord: Kord by inject()
+	/** Kord instance, backing the ExtensibleBot. **/
+	public val kord: Kord by inject()
 
-    /**
-     * The parsed value.
-     *
-     * This should be set by the converter during the course of the [parse] function.
-     */
-    public abstract var parsed: OutputType
+	/**
+	 * The parsed value.
+	 *
+	 * This should be set by the converter during the course of the [parse] function.
+	 */
+	public abstract var parsed: OutputType
 
-    /** Validation lambda, which may throw a [DiscordRelayedException] if required. **/
-    public open var validator: Validator<OutputType> = null
+	/** Validation lambda, which may throw a [DiscordRelayedException] if required. **/
+	public open var validator: Validator<OutputType> = null
 
-    /** This will be set to true by the argument parser if the conversion succeeded. **/
-    public var parseSuccess: Boolean = false
+	/** This will be set to true by the argument parser if the conversion succeeded. **/
+	public var parseSuccess: Boolean = false
 
-    /** For commands with generated signatures, set whether the type string should be shown in the signature. **/
-    public open val showTypeInSignature: Boolean = true
+	/** For commands with generated signatures, set whether the type string should be shown in the signature. **/
+	public open val showTypeInSignature: Boolean = true
 
-    /**
-     * Translation key pointing to a short string describing the type of data this converter handles. Should be very
-     * short.
-     */
-    public abstract val signatureTypeString: String
+	/**
+	 * Translation key pointing to a short string describing the type of data this converter handles. Should be very
+	 * short.
+	 */
+	public abstract val signatureTypeString: String
 
-    /**
-     * String referring to the translation bundle name required to resolve translations for this converter.
-     *
-     * For more information, see the i18n page of the documentation.
-     */
-    public open val bundle: String? = null
+	/**
+	 * String referring to the translation bundle name required to resolve translations for this converter.
+	 *
+	 * For more information, see the i18n page of the documentation.
+	 */
+	public open val bundle: String? = null
 
-    /**
-     * If the [signatureTypeString] isn't sufficient, you can optionally provide a translation key pointing to a
-     * longer type string to use for error messages.
-     */
-    public open val errorTypeString: String? = null
+	/**
+	 * If the [signatureTypeString] isn't sufficient, you can optionally provide a translation key pointing to a
+	 * longer type string to use for error messages.
+	 */
+	public open val errorTypeString: String? = null
 
-    /** Argument object containing this converter and its metadata. **/
-    public open lateinit var argumentObj: Argument<*>
+	/** Argument object containing this converter and its metadata. **/
+	public open lateinit var argumentObj: Argument<*>
 
-    /** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
-    public operator fun getValue(thisRef: Arguments, property: KProperty<*>): OutputType =
-        if (::genericBuilder.isInitialized && genericBuilder.mutator != null) {
-            genericBuilder.mutator!!(parsed)
-        } else {
-            parsed
-        }
+	/** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
+	public operator fun getValue(thisRef: Arguments, property: KProperty<*>): OutputType =
+		if (::genericBuilder.isInitialized && genericBuilder.mutator != null) {
+			genericBuilder.mutator!!(parsed)
+		} else {
+			parsed
+		}
 
-    /**
-     * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
-     *
-     * For multi converters, this is only called when the converter is required. The default behaviour simply
-     * re-throws the Throwable (or returns the reason if it's a DiscordRelayedException), so you only need to override
-     * this if you want to do something else.
-     */
-    public open suspend fun handleError(
-        t: Throwable,
-        context: CommandContext
-    ): String = if (t is DiscordRelayedException) t.reason else throw t
+	/**
+	 * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
+	 *
+	 * For multi converters, this is only called when the converter is required. The default behaviour simply
+	 * re-throws the Throwable (or returns the reason if it's a DiscordRelayedException), so you only need to override
+	 * this if you want to do something else.
+	 */
+	public open suspend fun handleError(
+		t: Throwable,
+		context: CommandContext,
+	): String = if (t is DiscordRelayedException) t.reason else throw t
 
-    /** Call the validator lambda, if one was provided. **/
-    public open suspend fun validate(context: CommandContext) {
-        validator?.let { actualValidator ->
-            val validationContext = ValidationContext(parsed, context)
+	/** Call the validator lambda, if one was provided. **/
+	public open suspend fun validate(context: CommandContext) {
+		validator?.let { actualValidator ->
+			val validationContext = ValidationContext(parsed, context)
 
-            actualValidator.invoke(validationContext)
+			actualValidator.invoke(validationContext)
 
-            validationContext.throwIfFailed()
-        }
-    }
+			validationContext.throwIfFailed()
+		}
+	}
 
-    /**
-     * Process the string in the given [parser], converting it into a new value.
-     *
-     * The resulting value should be stored in [parsed] - this will not be done for you.
-     *
-     * If you'd like to return more detailed feedback to the user on invalid input, you can throw a
-     * [DiscordRelayedException] here.
-     *
-     * @param parser [StringParser] used to parse the command, if any
-     * @param context MessageCommand context object, containing the event, message, and other command-related things
-     *
-     * @return Whether you managed to convert the argument. If you don't want to provide extra context to the user,
-     * simply return `false` or `0` depending on your converter type - the command system will generate an error
-     * message for you.
-     *
-     * @see Converter
-     */
-    public abstract suspend fun parse(
-        parser: StringParser?,
-        context: CommandContext,
-        named: NamedInputType? = null
-    ): ResultType
+	/**
+	 * Process the string in the given [parser], converting it into a new value.
+	 *
+	 * The resulting value should be stored in [parsed] - this will not be done for you.
+	 *
+	 * If you'd like to return more detailed feedback to the user on invalid input, you can throw a
+	 * [DiscordRelayedException] here.
+	 *
+	 * @param parser [StringParser] used to parse the command, if any
+	 * @param context MessageCommand context object, containing the event, message, and other command-related things
+	 *
+	 * @return Whether you managed to convert the argument. If you don't want to provide extra context to the user,
+	 * simply return `false` or `0` depending on your converter type - the command system will generate an error
+	 * message for you.
+	 *
+	 * @see Converter
+	 */
+	public abstract suspend fun parse(
+		parser: StringParser?,
+		context: CommandContext,
+		named: NamedInputType? = null,
+	): ResultType
 
-    /**
-     * Return a translated, formatted error string.
-     *
-     * This will attempt to use the [errorTypeString], falling back to [signatureTypeString].
-     */
-    public open suspend fun getErrorString(context: CommandContext): String =
+	/**
+	 * Return a translated, formatted error string.
+	 *
+	 * This will attempt to use the [errorTypeString], falling back to [signatureTypeString].
+	 */
+	public open suspend fun getErrorString(context: CommandContext): String =
 		context.translate(errorTypeString ?: signatureTypeString)
 }

@@ -26,7 +26,7 @@ public suspend fun GuildBehavior.selfMember(): Member = getMember(kord.selfId)
  * @see GuildBehavior.botHasPermissions
  */
 public suspend fun GuildChannel.botHasPermissions(vararg requiredPermissions: Permission): Boolean =
-    guild.botHasPermissions(this, Permissions(requiredPermissions.asIterable()))
+	guild.botHasPermissions(this, Permissions(requiredPermissions.asIterable()))
 
 /**
  * Checks whether the bot globally has at least [requiredPermissions] on this guild.
@@ -34,13 +34,13 @@ public suspend fun GuildChannel.botHasPermissions(vararg requiredPermissions: Pe
  * @see GuildChannel.botHasPermissions
  */
 public suspend fun GuildBehavior.botHasPermissions(vararg requiredPermissions: Permission): Boolean =
-    botHasPermissions(null, Permissions(requiredPermissions.asIterable()))
+	botHasPermissions(null, Permissions(requiredPermissions.asIterable()))
 
 private suspend fun GuildBehavior.botHasPermissions(channel: GuildChannel?, requiredPermissions: Permissions): Boolean {
-    val selfMember = selfMember()
-    val effectivePermissions =
-        channel?.run { permissionsForMember(selfMember) }
-            ?: selfMember.getPermissions()
+	val selfMember = selfMember()
+	val effectivePermissions =
+		channel?.run { permissionsForMember(selfMember) }
+			?: selfMember.getPermissions()
 
-    return requiredPermissions in effectivePermissions
+	return requiredPermissions in effectivePermissions
 }

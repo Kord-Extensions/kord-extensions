@@ -17,19 +17,19 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
 /** Abstract class representing the execution context of a role select (dropdown) menu component. **/
 public abstract class RoleSelectMenuContext(
-    component: SelectMenu<*, *>,
-    event: SelectMenuInteractionCreateEvent,
-    cache: MutableStringKeyedMap<Any>,
+	component: SelectMenu<*, *>,
+	event: SelectMenuInteractionCreateEvent,
+	cache: MutableStringKeyedMap<Any>,
 ) : SelectMenuContext(component, event, cache) {
-    /** Menu options that were selected by the user before de-focusing the menu. **/
-    @OptIn(KordUnsafe::class, KordExperimental::class)
-    public val selected: List<RoleBehavior> by lazy {
-        if (event.interaction.data.guildId.value == null) {
-            error("A role select menu cannot be used outside guilds.")
-        } else {
-            event.interaction.values.map {
-                event.kord.unsafe.role(event.interaction.data.guildId.value!!, Snowflake(it))
-            }
-        }
-    }
+	/** Menu options that were selected by the user before de-focusing the menu. **/
+	@OptIn(KordUnsafe::class, KordExperimental::class)
+	public val selected: List<RoleBehavior> by lazy {
+		if (event.interaction.data.guildId.value == null) {
+			error("A role select menu cannot be used outside guilds.")
+		} else {
+			event.interaction.values.map {
+				event.kord.unsafe.role(event.interaction.data.guildId.value!!, Snowflake(it))
+			}
+		}
+	}
 }

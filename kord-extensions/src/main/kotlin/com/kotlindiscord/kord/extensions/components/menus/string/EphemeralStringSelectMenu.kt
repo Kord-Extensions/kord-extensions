@@ -17,22 +17,22 @@ import dev.kord.rest.builder.component.SelectOptionBuilder
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 
 public typealias InitialEphemeralSelectMenuResponseBuilder =
-    (suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
+	(suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing an ephemeral-only string select (dropdown) menu. **/
 public open class EphemeralStringSelectMenu<M : ModalForm>(
-    timeoutTask: Task?,
-    public override val modal: (() -> M)? = null,
+	timeoutTask: Task?,
+	public override val modal: (() -> M)? = null,
 ) : EphemeralSelectMenu<EphemeralStringSelectMenuContext<M>, M>(timeoutTask), StringSelectMenu {
-    override val options: MutableList<SelectOptionBuilder> = mutableListOf()
+	override val options: MutableList<SelectOptionBuilder> = mutableListOf()
 
-    override fun createContext(
-        event: SelectMenuInteractionCreateEvent,
-        interactionResponse: EphemeralMessageInteractionResponseBehavior,
-        cache: MutableStringKeyedMap<Any>,
-    ): EphemeralStringSelectMenuContext<M> = EphemeralStringSelectMenuContext(
-        this, event, interactionResponse, cache
-    )
+	override fun createContext(
+		event: SelectMenuInteractionCreateEvent,
+		interactionResponse: EphemeralMessageInteractionResponseBehavior,
+		cache: MutableStringKeyedMap<Any>,
+	): EphemeralStringSelectMenuContext<M> = EphemeralStringSelectMenuContext(
+		this, event, interactionResponse, cache
+	)
 
-    override fun apply(builder: ActionRowBuilder): Unit = applyStringSelectMenu(this, builder)
+	override fun apply(builder: ActionRowBuilder): Unit = applyStringSelectMenu(this, builder)
 }

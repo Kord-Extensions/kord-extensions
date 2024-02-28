@@ -12,5 +12,5 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings.exceptions
  * @property namespace The invalid namespace.
  **/
 class UnsupportedNamespaceException(val namespace: String) : Exception(
-    "Unknown/unsupported namespace: $namespace"
+	"Unknown/unsupported namespace: $namespace"
 )

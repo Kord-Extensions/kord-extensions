@@ -27,50 +27,50 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * @param newErrorTypeString An optional error type string to override the one set in [coalescingConverter].
  */
 public class CoalescingToOptionalConverter<T : Any>(
-    public val coalescingConverter: CoalescingConverter<T>,
+	public val coalescingConverter: CoalescingConverter<T>,
 
-    newSignatureTypeString: String? = null,
-    newShowTypeInSignature: Boolean? = null,
-    newErrorTypeString: String? = null,
-    outputError: Boolean = false,
+	newSignatureTypeString: String? = null,
+	newShowTypeInSignature: Boolean? = null,
+	newErrorTypeString: String? = null,
+	outputError: Boolean = false,
 
-    override var validator: Validator<T?> = null
+	override var validator: Validator<T?> = null,
 ) : OptionalCoalescingConverter<T>(outputError) {
-    override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
-    override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
-    override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
+	override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
+	override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
+	override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
 
 	private val dummyArgs = Arguments()
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
-        val result = coalescingConverter.parse(parser, context, named)
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+		val result = coalescingConverter.parse(parser, context, named)
 
-        if (result > 0) {
-            this.parsed = coalescingConverter.getValue(dummyArgs, coalescingConverter::parsed)
-        }
+		if (result > 0) {
+			this.parsed = coalescingConverter.getValue(dummyArgs, coalescingConverter::parsed)
+		}
 
-        return result
-    }
+		return result
+	}
 
-    override suspend fun handleError(
-        t: Throwable,
-        context: CommandContext
-    ): String = coalescingConverter.handleError(t, context)
+	override suspend fun handleError(
+		t: Throwable,
+		context: CommandContext,
+	): String = coalescingConverter.handleError(t, context)
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
-        val option = coalescingConverter.toSlashOption(arg)
-        option.required = false
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
+		val option = coalescingConverter.toSlashOption(arg)
+		option.required = false
 
-        return option
-    }
+		return option
+	}
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val result = coalescingConverter.parseOption(context, option)
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val result = coalescingConverter.parseOption(context, option)
 
-        if (result) {
-            this.parsed = coalescingConverter.getValue(dummyArgs, coalescingConverter::parsed)
-        }
+		if (result) {
+			this.parsed = coalescingConverter.getValue(dummyArgs, coalescingConverter::parsed)
+		}
 
-        return result
-    }
+		return result
+	}
 }

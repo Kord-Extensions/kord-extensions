@@ -10,6 +10,6 @@ import com.kotlindiscord.kord.extensions.commands.application.slash.converters.i
 
 /** Interface representing an enum used in the [EnumChoiceConverter]. **/
 public interface ChoiceEnum {
-    /** Human-readable name to show on Discord. **/
-    public val readableName: String
+	/** Human-readable name to show on Discord. **/
+	public val readableName: String
 }

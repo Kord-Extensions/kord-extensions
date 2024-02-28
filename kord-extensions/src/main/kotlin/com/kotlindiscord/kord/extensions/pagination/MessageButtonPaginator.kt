@@ -40,89 +40,89 @@ public class MessageButtonPaginator(
 	public val targetChannel: MessageChannelBehavior? = null,
 	public val targetMessage: Message? = null,
 ) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
-    init {
-        if (targetChannel == null && targetMessage == null) {
-            throw IllegalArgumentException("Must provide either a target channel or target message")
-        }
-    }
+	init {
+		if (targetChannel == null && targetMessage == null) {
+			throw IllegalArgumentException("Must provide either a target channel or target message")
+		}
+	}
 
-    /** Specific channel to send the paginator to. **/
-    public val channel: MessageChannelBehavior = targetMessage?.channel ?: targetChannel!!
+	/** Specific channel to send the paginator to. **/
+	public val channel: MessageChannelBehavior = targetMessage?.channel ?: targetChannel!!
 
-    /** Message containing the paginator. **/
-    public var message: Message? = null
+	/** Message containing the paginator. **/
+	public var message: Message? = null
 
-    override suspend fun send() {
-        if (message == null) {
-            setup()
+	override suspend fun send() {
+		if (message == null) {
+			setup()
 
-            message = channel.createMessage {
-                this.messageReference = targetMessage?.id
+			message = channel.createMessage {
+				this.messageReference = targetMessage?.id
 
-                allowedMentions { repliedUser = pingInReply }
+				allowedMentions { repliedUser = pingInReply }
 				applyPage()
 
-                with(this@MessageButtonPaginator.components) {
-                    this@createMessage.applyToMessage()
-                }
-            }
-        } else {
-            updateButtons()
+				with(this@MessageButtonPaginator.components) {
+					this@createMessage.applyToMessage()
+				}
+			}
+		} else {
+			updateButtons()
 
-            message!!.edit {
+			message!!.edit {
 				applyPage()
 
-                with(this@MessageButtonPaginator.components) {
-                    this@edit.applyToMessage()
-                }
-            }
-        }
-    }
+				with(this@MessageButtonPaginator.components) {
+					this@edit.applyToMessage()
+				}
+			}
+		}
+	}
 
-    override suspend fun destroy() {
-        if (!active) {
-            return
-        }
+	override suspend fun destroy() {
+		if (!active) {
+			return
+		}
 
-        active = false
+		active = false
 
-        if (!keepEmbed) {
-            message!!.delete()
-        } else {
-            message!!.edit {
-                allowedMentions { repliedUser = pingInReply }
+		if (!keepEmbed) {
+			message!!.delete()
+		} else {
+			message!!.edit {
+				allowedMentions { repliedUser = pingInReply }
 				applyPage()
 
-                this.components = mutableListOf()
-            }
-        }
+				this.components = mutableListOf()
+			}
+		}
 
-        super.destroy()
-    }
+		super.destroy()
+	}
 }
 
 /** Convenience function for creating a message button paginator from a paginator builder. **/
 @Suppress("FunctionNaming")  // Factory function
 public fun MessageButtonPaginator(
-    pingInReply: Boolean = true,
-    targetChannel: MessageChannelBehavior? = null,
-    targetMessage: Message? = null,
+	pingInReply: Boolean = true,
+	targetChannel: MessageChannelBehavior? = null,
+	targetMessage: Message? = null,
 
-    builder: PaginatorBuilder
+	builder: PaginatorBuilder,
 ): MessageButtonPaginator =
-    MessageButtonPaginator(
-        pages = builder.pages,
+	MessageButtonPaginator(
+		pages = builder.pages,
 		chunkedPages = builder.chunkedPages,
-        owner = builder.owner,
-        timeoutSeconds = builder.timeoutSeconds,
-        keepEmbed = builder.keepEmbed,
+		owner = builder.owner,
+		timeoutSeconds = builder.timeoutSeconds,
+		keepEmbed = builder.keepEmbed,
 		mutator = builder.mutator,
-        bundle = builder.bundle,
-        locale = builder.locale,
+		bundle = builder.bundle,
+		locale = builder.locale,
 
-        pingInReply = pingInReply,
-        targetChannel = targetChannel,
-        targetMessage = targetMessage,
+		pingInReply = pingInReply,
+		targetChannel = targetChannel,
+		targetMessage = targetMessage,
 
-        switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
-    )
+		switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+	)

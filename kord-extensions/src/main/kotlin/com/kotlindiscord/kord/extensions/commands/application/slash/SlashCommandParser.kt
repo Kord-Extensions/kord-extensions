@@ -5,7 +5,7 @@
  */
 
 @file:Suppress(
-    "StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
+	"StringLiteralDuplication" // Needs cleaning up with polymorphism later anyway
 )
 
 package com.kotlindiscord.kord.extensions.commands.application.slash
@@ -29,331 +29,331 @@ private val logger = KotlinLogging.logger {}
  * Discord's API. Coalescing converters will act like single converters.
  */
 public open class SlashCommandParser {
-    /**
-     * Parse the arguments for this slash command, which have been provided by Discord.
-     *
-     * Instead of taking the objects as Discord provides them, this function will stringify all the command's
-     * arguments. This allows them to be passed through the usual converter system.
-     */
-    public suspend fun <T : Arguments> parse(
-        builder: () -> T,
-        context: SlashCommandContext<*, *, *>,
-    ): T {
-        val argumentsObj = builder.invoke()
-        argumentsObj.validate()
+	/**
+	 * Parse the arguments for this slash command, which have been provided by Discord.
+	 *
+	 * Instead of taking the objects as Discord provides them, this function will stringify all the command's
+	 * arguments. This allows them to be passed through the usual converter system.
+	 */
+	public suspend fun <T : Arguments> parse(
+		builder: () -> T,
+		context: SlashCommandContext<*, *, *>,
+	): T {
+		val argumentsObj = builder.invoke()
+		argumentsObj.validate()
 
-        logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
+		logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
-        val args = argumentsObj.args.toMutableList()
-        val command = context.event.interaction.command
+		val args = argumentsObj.args.toMutableList()
+		val command = context.event.interaction.command
 
-        val values = command.options.mapValues {
-            if (it.value is StringOptionValue) {
-                StringOptionValue((it.value.value as String).trim(), it.value.focused)
-            } else {
-                it.value
-            }
-        } as Map<String, OptionValue<*>>
+		val values = command.options.mapValues {
+			if (it.value is StringOptionValue) {
+				StringOptionValue((it.value.value as String).trim(), it.value.focused)
+			} else {
+				it.value
+			}
+		} as Map<String, OptionValue<*>>
 
-        var currentArg: Argument<*>?
-        var currentValue: OptionValue<*>?
+		var currentArg: Argument<*>?
+		var currentValue: OptionValue<*>?
 
-        @Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
-        while (true) {
-            currentArg = args.removeFirstOrNull()
-            currentArg ?: break  // If it's null, we're out of arguments
+		@Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
+		while (true) {
+			currentArg = args.removeFirstOrNull()
+			currentArg ?: break  // If it's null, we're out of arguments
 
-            logger.trace { "Current argument: ${currentArg.displayName}" }
+			logger.trace { "Current argument: ${currentArg.displayName}" }
 
-            currentValue =
-                values[currentArg.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)]
+			currentValue =
+				values[currentArg.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)]
 
-            logger.trace { "Current value: $currentValue" }
+			logger.trace { "Current value: $currentValue" }
 
-            @Suppress("TooGenericExceptionCaught")
-            when (val converter = currentArg.converter) {
-                // It's worth noting that Discord handles validation for required converters, so we don't need to
-                // do that checking ourselves, really
+			@Suppress("TooGenericExceptionCaught")
+			when (val converter = currentArg.converter) {
+				// It's worth noting that Discord handles validation for required converters, so we don't need to
+				// do that checking ourselves, really
 
-                is SingleConverter<*> -> try {
-                    val parsed = if (currentValue != null) {
-                        converter.parseOption(context, currentValue)
-                    } else {
-                        false
-                    }
+				is SingleConverter<*> -> try {
+					val parsed = if (currentValue != null) {
+						converter.parseOption(context, currentValue)
+					} else {
+						false
+					}
 
-                    if (converter.required && !parsed) {
-                        throw ArgumentParsingException(
-                            context.translate(
-                                "argumentParser.error.invalidValue",
+					if (converter.required && !parsed) {
+						throw ArgumentParsingException(
+							context.translate(
+								"argumentParser.error.invalidValue",
 
-                                replacements = arrayOf(
-                                    context.translate(
-                                        currentArg.displayName,
-                                        bundleName = context.command.resolvedBundle ?: converter.bundle
-                                    ),
+								replacements = arrayOf(
+									context.translate(
+										currentArg.displayName,
+										bundleName = context.command.resolvedBundle ?: converter.bundle
+									),
 
-                                    converter.getErrorString(context),
-                                    currentValue
-                                )
-                            ),
+									converter.getErrorString(context),
+									currentValue
+								)
+							),
 
-                            "argumentParser.error.invalidValue",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-                            currentArg,
-                            argumentsObj,
-                            null
-                        )
-                    }
-
-                    if (parsed) {
-                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
-
-                        converter.parseSuccess = true
-                        currentValue = null
-
-                        converter.validate(context)
-                    }
-                } catch (e: DiscordRelayedException) {
-                    if (converter.required) {
-                        throw ArgumentParsingException(
-                            converter.handleError(e, context),
-                            null,
+							"argumentParser.error.invalidValue",
 
 							context.getLocale(),
 							context.command.resolvedBundle ?: converter.bundle,
 
-                            currentArg,
-                            argumentsObj,
-                            null
-                        )
-                    }
-                } catch (t: Throwable) {
-                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+							currentArg,
+							argumentsObj,
+							null
+						)
+					}
 
-                    if (converter.required) {
-                        throw t
-                    }
-                }
+					if (parsed) {
+						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
-                is CoalescingConverter<*> -> try {
-                    val parsed = if (currentValue != null) {
-                        converter.parseOption(context, currentValue)
-                    } else {
-                        false
-                    }
+						converter.parseSuccess = true
+						currentValue = null
 
-                    if (converter.required && !parsed) {
-                        throw ArgumentParsingException(
-                            context.translate(
-                                "argumentParser.error.invalidValue",
-                                replacements = arrayOf(
-                                    context.translate(
-                                        currentArg.displayName,
-                                        bundleName = context.command.resolvedBundle ?: converter.bundle
-                                    ),
-
-                                    converter.getErrorString(context),
-                                    currentValue
-                                )
-                            ),
-
-                            "argumentParser.error.invalidValue",
+						converter.validate(context)
+					}
+				} catch (e: DiscordRelayedException) {
+					if (converter.required) {
+						throw ArgumentParsingException(
+							converter.handleError(e, context),
+							null,
 
 							context.getLocale(),
 							context.command.resolvedBundle ?: converter.bundle,
 
-                            currentArg,
-                            argumentsObj,
-                            null
-                        )
-                    }
+							currentArg,
+							argumentsObj,
+							null
+						)
+					}
+				} catch (t: Throwable) {
+					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (parsed) {
-                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+					if (converter.required) {
+						throw t
+					}
+				}
 
-                        converter.parseSuccess = true
-                        currentValue = null
+				is CoalescingConverter<*> -> try {
+					val parsed = if (currentValue != null) {
+						converter.parseOption(context, currentValue)
+					} else {
+						false
+					}
 
-                        converter.validate(context)
-                    }
-                } catch (e: DiscordRelayedException) {
-                    if (converter.required) {
-                        throw ArgumentParsingException(
-                            converter.handleError(e, context),
-                            null,
+					if (converter.required && !parsed) {
+						throw ArgumentParsingException(
+							context.translate(
+								"argumentParser.error.invalidValue",
+								replacements = arrayOf(
+									context.translate(
+										currentArg.displayName,
+										bundleName = context.command.resolvedBundle ?: converter.bundle
+									),
 
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
+									converter.getErrorString(context),
+									currentValue
+								)
+							),
 
-                            currentArg,
-                            argumentsObj,
-                            null
-                        )
-                    }
-                } catch (t: Throwable) {
-                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
-
-                    if (converter.required) {
-                        throw t
-                    }
-                }
-
-                is OptionalConverter<*> -> try {
-                    val parsed = if (currentValue != null) {
-                        converter.parseOption(context, currentValue)
-                    } else {
-                        false
-                    }
-
-                    if (parsed) {
-                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
-
-                        converter.parseSuccess = true
-                        currentValue = null
-                    }
-
-                    converter.validate(context)
-                } catch (e: DiscordRelayedException) {
-                    if (converter.required || converter.outputError) {
-                        throw ArgumentParsingException(
-                            converter.handleError(e, context),
-                            null,
+							"argumentParser.error.invalidValue",
 
 							context.getLocale(),
 							context.command.resolvedBundle ?: converter.bundle,
 
-                            currentArg,
-                            argumentsObj,
-                            null
-                        )
-                    }
-                } catch (t: Throwable) {
-                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+							currentArg,
+							argumentsObj,
+							null
+						)
+					}
 
-                    if (converter.required) {
-                        throw t
-                    }
-                }
+					if (parsed) {
+						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
-                is OptionalCoalescingConverter<*> -> try {
-                    val parsed = if (currentValue != null) {
-                        converter.parseOption(context, currentValue)
-                    } else {
-                        false
-                    }
+						converter.parseSuccess = true
+						currentValue = null
 
-                    if (parsed) {
-                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
-
-                        converter.parseSuccess = true
-                        currentValue = null
-                    }
-
-                    converter.validate(context)
-                } catch (e: DiscordRelayedException) {
-                    if (converter.required || converter.outputError) {
-                        throw ArgumentParsingException(
-                            converter.handleError(e, context),
-                            null,
+						converter.validate(context)
+					}
+				} catch (e: DiscordRelayedException) {
+					if (converter.required) {
+						throw ArgumentParsingException(
+							converter.handleError(e, context),
+							null,
 
 							context.getLocale(),
 							context.command.resolvedBundle ?: converter.bundle,
 
-                            currentArg,
-                            argumentsObj,
-                            null
-                        )
-                    }
-                } catch (t: Throwable) {
-                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+							currentArg,
+							argumentsObj,
+							null
+						)
+					}
+				} catch (t: Throwable) {
+					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (converter.required) {
-                        throw t
-                    }
-                }
+					if (converter.required) {
+						throw t
+					}
+				}
 
-                is DefaultingConverter<*> -> try {
-                    val parsed = if (currentValue != null) {
-                        converter.parseOption(context, currentValue)
-                    } else {
-                        false
-                    }
+				is OptionalConverter<*> -> try {
+					val parsed = if (currentValue != null) {
+						converter.parseOption(context, currentValue)
+					} else {
+						false
+					}
 
-                    if (parsed) {
-                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+					if (parsed) {
+						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
 
-                        converter.parseSuccess = true
-                        currentValue = null
-                    }
+						converter.parseSuccess = true
+						currentValue = null
+					}
 
-                    converter.validate(context)
-                } catch (e: DiscordRelayedException) {
-                    if (converter.required || converter.outputError) {
-                        throw ArgumentParsingException(
-                            converter.handleError(e, context),
-                            null,
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-                            currentArg,
-                            argumentsObj,
-                            null
-                        )
-                    }
-                } catch (t: Throwable) {
-                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
-
-                    if (converter.required) {
-                        throw t
-                    }
-                }
-
-                is DefaultingCoalescingConverter<*> -> try {
-                    val parsed = if (currentValue != null) {
-                        converter.parseOption(context, currentValue)
-                    } else {
-                        false
-                    }
-
-                    if (parsed) {
-                        logger.trace { "Argument ${currentArg.displayName} successfully filled." }
-
-                        converter.parseSuccess = true
-                        currentValue = null
-                    }
-
-                    converter.validate(context)
-                } catch (e: DiscordRelayedException) {
-                    if (converter.required || converter.outputError) {
-                        throw ArgumentParsingException(
-                            converter.handleError(e, context),
-                            null,
+					converter.validate(context)
+				} catch (e: DiscordRelayedException) {
+					if (converter.required || converter.outputError) {
+						throw ArgumentParsingException(
+							converter.handleError(e, context),
+							null,
 
 							context.getLocale(),
 							context.command.resolvedBundle ?: converter.bundle,
 
-                            currentArg,
-                            argumentsObj,
-                            null
-                        )
-                    }
-                } catch (t: Throwable) {
-                    logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+							currentArg,
+							argumentsObj,
+							null
+						)
+					}
+				} catch (t: Throwable) {
+					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
 
-                    if (converter.required) {
-                        throw t
-                    }
-                }
+					if (converter.required) {
+						throw t
+					}
+				}
 
-                else -> error("Unsupported type for converter: $converter")
-            }
-        }
+				is OptionalCoalescingConverter<*> -> try {
+					val parsed = if (currentValue != null) {
+						converter.parseOption(context, currentValue)
+					} else {
+						false
+					}
 
-        return argumentsObj
-    }
+					if (parsed) {
+						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+
+						converter.parseSuccess = true
+						currentValue = null
+					}
+
+					converter.validate(context)
+				} catch (e: DiscordRelayedException) {
+					if (converter.required || converter.outputError) {
+						throw ArgumentParsingException(
+							converter.handleError(e, context),
+							null,
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
+							currentArg,
+							argumentsObj,
+							null
+						)
+					}
+				} catch (t: Throwable) {
+					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+					if (converter.required) {
+						throw t
+					}
+				}
+
+				is DefaultingConverter<*> -> try {
+					val parsed = if (currentValue != null) {
+						converter.parseOption(context, currentValue)
+					} else {
+						false
+					}
+
+					if (parsed) {
+						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+
+						converter.parseSuccess = true
+						currentValue = null
+					}
+
+					converter.validate(context)
+				} catch (e: DiscordRelayedException) {
+					if (converter.required || converter.outputError) {
+						throw ArgumentParsingException(
+							converter.handleError(e, context),
+							null,
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
+							currentArg,
+							argumentsObj,
+							null
+						)
+					}
+				} catch (t: Throwable) {
+					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+					if (converter.required) {
+						throw t
+					}
+				}
+
+				is DefaultingCoalescingConverter<*> -> try {
+					val parsed = if (currentValue != null) {
+						converter.parseOption(context, currentValue)
+					} else {
+						false
+					}
+
+					if (parsed) {
+						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+
+						converter.parseSuccess = true
+						currentValue = null
+					}
+
+					converter.validate(context)
+				} catch (e: DiscordRelayedException) {
+					if (converter.required || converter.outputError) {
+						throw ArgumentParsingException(
+							converter.handleError(e, context),
+							null,
+
+							context.getLocale(),
+							context.command.resolvedBundle ?: converter.bundle,
+
+							currentArg,
+							argumentsObj,
+							null
+						)
+					}
+				} catch (t: Throwable) {
+					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+
+					if (converter.required) {
+						throw t
+					}
+				}
+
+				else -> error("Unsupported type for converter: $converter")
+			}
+		}
+
+		return argumentsObj
+	}
 }

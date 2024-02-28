@@ -30,16 +30,16 @@ import java.util.*
  * Translations may be split using commas, in which case any of the given values will be suitable.
  */
 public object ColorParser : KordExKoinComponent {
-    private val settings: ExtensibleBotBuilder by inject()
+	private val settings: ExtensibleBotBuilder by inject()
 
-    /**
-     * Parse the given string into a [Color] based on the translations for the given locale. Falls back to the bot's
-     * default locale as required.
-     */
-    public fun parse(input: String, locale: Locale): Color? {
-        val defaultColorMap = ColorCache.getColors(settings.i18nBuilder.defaultLocale)
-        val colorMap = ColorCache.getColors(locale)
+	/**
+	 * Parse the given string into a [Color] based on the translations for the given locale. Falls back to the bot's
+	 * default locale as required.
+	 */
+	public fun parse(input: String, locale: Locale): Color? {
+		val defaultColorMap = ColorCache.getColors(settings.i18nBuilder.defaultLocale)
+		val colorMap = ColorCache.getColors(locale)
 
-        return colorMap[input] ?: defaultColorMap[input]
-    }
+		return colorMap[input] ?: defaultColorMap[input]
+	}
 }

@@ -14,8 +14,8 @@ import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 
 /** Class representing the execution context for an ephemeral-only button. **/
 public class EphemeralInteractionButtonContext<M : ModalForm>(
-    override val component: EphemeralInteractionButton<M>,
-    override val event: ButtonInteractionCreateEvent,
-    override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
-    cache: MutableStringKeyedMap<Any>
+	override val component: EphemeralInteractionButton<M>,
+	override val event: ButtonInteractionCreateEvent,
+	override val interactionResponse: EphemeralMessageInteractionResponseBehavior,
+	cache: MutableStringKeyedMap<Any>,
 ) : InteractionButtonContext(component, event, cache), EphemeralInteractionContext

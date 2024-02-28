@@ -13,7 +13,6 @@ import com.kotlindiscord.kord.extensions.pagination.builders.PageMutator
 import com.kotlindiscord.kord.extensions.utils.capitalizeWords
 import com.kotlindiscord.kord.extensions.utils.textOrNull
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.ktor.http.cio.*
 import org.koin.core.component.inject
 import java.util.*
 import kotlin.math.ceil
@@ -26,17 +25,17 @@ import kotlin.math.roundToInt
  * @param builder Embed builder callable for building the page's embed
  */
 public open class Page(
-    public open val bundle: String? = null,
-    public open val builder: suspend EmbedBuilder.() -> Unit,
+	public open val bundle: String? = null,
+	public open val builder: suspend EmbedBuilder.() -> Unit,
 ) : KordExKoinComponent {
-    /** Current instance of the bot. **/
-    public open val bot: ExtensibleBot by inject()
+	/** Current instance of the bot. **/
+	public open val bot: ExtensibleBot by inject()
 
-    /** Translations provider, for retrieving translations. **/
-    public val translationsProvider: TranslationsProvider by inject()
+	/** Translations provider, for retrieving translations. **/
+	public val translationsProvider: TranslationsProvider by inject()
 
-    /** Create an embed builder for this page. **/
-    public open suspend fun build(
+	/** Create an embed builder for this page. **/
+	public open suspend fun build(
 		locale: Locale,
 		pageNum: Int,
 		chunkSize: Int,
@@ -47,8 +46,8 @@ public open class Page(
 		shouldMutateFooter: Boolean = true,
 		shouldPutFooterInDescription: Boolean = false,
 		mutator: PageMutator? = null,
-    ): suspend EmbedBuilder.() -> Unit = {
-        builder()
+	): suspend EmbedBuilder.() -> Unit = {
+		builder()
 
 		if (mutator != null) {
 			mutator(this, this@Page)
@@ -125,5 +124,5 @@ public open class Page(
 				}
 			}
 		}
-    }
+	}
 }

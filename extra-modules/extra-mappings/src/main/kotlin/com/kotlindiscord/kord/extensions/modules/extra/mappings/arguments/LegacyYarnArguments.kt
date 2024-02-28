@@ -12,9 +12,9 @@ import me.shedaniel.linkie.namespaces.LegacyYarnNamespace
 /** Arguments for Legacy Yarn mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
 class LegacyYarnArguments : MappingArguments(LegacyYarnNamespace), IntermediaryMappable {
-    override val mapDescriptors by defaultingBoolean {
-        name = "map-descriptor"
-        description = "Whether to map field/method descriptors to named instead of intermediary/hashed"
-        defaultValue = true
-    }
+	override val mapDescriptors by defaultingBoolean {
+		name = "map-descriptor"
+		description = "Whether to map field/method descriptors to named instead of intermediary/hashed"
+		defaultValue = true
+	}
 }

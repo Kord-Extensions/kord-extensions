@@ -12,5 +12,5 @@ package com.kotlindiscord.kord.extensions.parser.tokens
  * @param data Argument data
  */
 public data class PositionalArgumentToken(
-    override val data: String
+	override val data: String,
 ) : Token<String>

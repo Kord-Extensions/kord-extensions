@@ -13,6 +13,6 @@ package com.kotlindiscord.kord.extensions.parser.tokens
  * @param data Argument data
  */
 public data class NamedArgumentToken(
-    public val name: String,
-    override val data: String
+	public val name: String,
+	override val data: String,
 ) : Token<String>

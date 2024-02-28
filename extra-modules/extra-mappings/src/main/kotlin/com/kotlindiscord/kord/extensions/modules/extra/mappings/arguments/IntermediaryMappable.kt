@@ -11,8 +11,8 @@ package com.kotlindiscord.kord.extensions.modules.extra.mappings.arguments
  * and method descriptors to intermediary names.
  */
 interface IntermediaryMappable {
-    /**
-     * Whether the results should map to named instead of intermediary/hashed.
-     */
-    val mapDescriptors: Boolean
+	/**
+	 * Whether the results should map to named instead of intermediary/hashed.
+	 */
+	val mapDescriptors: Boolean
 }

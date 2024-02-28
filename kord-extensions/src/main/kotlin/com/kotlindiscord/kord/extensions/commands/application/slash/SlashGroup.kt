@@ -22,61 +22,61 @@ import java.util.*
  * @param parent Parent slash command that this group belongs to
  */
 public class SlashGroup(
-    public val name: String,
-    public val parent: SlashCommand<*, *, *>
+	public val name: String,
+	public val parent: SlashCommand<*, *, *>,
 ) : KordExKoinComponent {
-    /** Translations provider, for retrieving translations. **/
-    public val translationsProvider: TranslationsProvider by inject()
+	/** Translations provider, for retrieving translations. **/
+	public val translationsProvider: TranslationsProvider by inject()
 
-    /** @suppress **/
-    public val logger: KLogger = KotlinLogging.logger {}
+	/** @suppress **/
+	public val logger: KLogger = KotlinLogging.logger {}
 
-    /** List of subcommands belonging to this group. **/
-    public val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
+	/** List of subcommands belonging to this group. **/
+	public val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
 
-    /** Command group description, which is required and shown on Discord. **/
-    public lateinit var description: String
+	/** Command group description, which is required and shown on Discord. **/
+	public lateinit var description: String
 
-    /**
-     * A [Localized] version of [name].
-     */
-    public val localizedName: Localized<String> by lazy { parent.localize(name, true) }
+	/**
+	 * A [Localized] version of [name].
+	 */
+	public val localizedName: Localized<String> by lazy { parent.localize(name, true) }
 
-    /**
-     * A [Localized] version of [description].
-     */
-    public val localizedDescription: Localized<String> by lazy { parent.localize(description) }
+	/**
+	 * A [Localized] version of [description].
+	 */
+	public val localizedDescription: Localized<String> by lazy { parent.localize(description) }
 
-    /** Translation cache, so we don't have to look up translations every time. **/
-    public val descriptionTranslationCache: MutableMap<Locale, String> = mutableMapOf()
+	/** Translation cache, so we don't have to look up translations every time. **/
+	public val descriptionTranslationCache: MutableMap<Locale, String> = mutableMapOf()
 
-    /** Return this group's description translated for the given locale, cached as required. **/
-    public fun getTranslatedDescription(locale: Locale): String {
-        // Only slash commands need this to be lower-cased.
+	/** Return this group's description translated for the given locale, cached as required. **/
+	public fun getTranslatedDescription(locale: Locale): String {
+		// Only slash commands need this to be lower-cased.
 
-        if (!descriptionTranslationCache.containsKey(locale)) {
-            descriptionTranslationCache[locale] = translationsProvider.translate(
-                this.description,
-                this.parent.resolvedBundle,
-                locale
-            ).lowercase()
-        }
+		if (!descriptionTranslationCache.containsKey(locale)) {
+			descriptionTranslationCache[locale] = translationsProvider.translate(
+				this.description,
+				this.parent.resolvedBundle,
+				locale
+			).lowercase()
+		}
 
-        return descriptionTranslationCache[locale]!!
-    }
+		return descriptionTranslationCache[locale]!!
+	}
 
-    /**
-     * Validate this command group, ensuring it has everything it needs.
-     *
-     * Throws if not.
-     */
-    public fun validate() {
-        if (!::description.isInitialized) {
-            throw InvalidCommandException(name, "No group description given.")
-        }
+	/**
+	 * Validate this command group, ensuring it has everything it needs.
+	 *
+	 * Throws if not.
+	 */
+	public fun validate() {
+		if (!::description.isInitialized) {
+			throw InvalidCommandException(name, "No group description given.")
+		}
 
-        if (subCommands.isEmpty()) {
-            error("Command groups must contain at least one subcommand.")
-        }
-    }
+		if (subCommands.isEmpty()) {
+			error("Command groups must contain at least one subcommand.")
+		}
+	}
 }

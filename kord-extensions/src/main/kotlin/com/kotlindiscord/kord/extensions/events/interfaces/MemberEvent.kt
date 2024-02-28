@@ -16,12 +16,12 @@ import dev.kord.core.entity.Member
  * member object.
  */
 public interface MemberEvent : GuildEvent, UserEvent {
-    /** The member behavior for this event, if any. **/
-    public val member: MemberBehavior?
+	/** The member behavior for this event, if any. **/
+	public val member: MemberBehavior?
 
-    /** Get a Member object, or throw if one can't be retrieved. **/
-    public suspend fun getMember(): Member
+	/** Get a Member object, or throw if one can't be retrieved. **/
+	public suspend fun getMember(): Member
 
-    /** Get a Member object, or return null if one can't be retrieved. **/
-    public suspend fun getMemberOrNull(): Member?
+	/** Get a Member object, or return null if one can't be retrieved. **/
+	public suspend fun getMemberOrNull(): Member?
 }

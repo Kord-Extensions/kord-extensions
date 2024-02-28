@@ -111,7 +111,7 @@ public class UnsafeMessageCommand<M : ModalForm>(
 		context: UnsafeMessageCommandContext<M>,
 		message: String,
 		failureType: FailureReason<*>,
-    ) {
+	) {
 		when (context.interactionResponse) {
 			is PublicMessageInteractionResponseBehavior -> context.respondPublic {
 				settings.failureResponseBuilder(this, message, failureType)

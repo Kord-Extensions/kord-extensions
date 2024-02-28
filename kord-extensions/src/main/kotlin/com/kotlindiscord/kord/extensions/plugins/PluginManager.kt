@@ -12,13 +12,13 @@ import java.nio.file.Path
 @Suppress("SpreadOperator")
 /** Module manager, in charge of loading and managing module "plugins". **/
 public open class PluginManager(roots: List<Path>) : JarPluginManager(*roots.toTypedArray()) {
-    override fun createPluginDescriptorFinder(): PluginDescriptorFinder =
-        PropertiesPluginDescriptorFinder()
+	override fun createPluginDescriptorFinder(): PluginDescriptorFinder =
+		PropertiesPluginDescriptorFinder()
 
-    override fun createPluginLoader(): PluginLoader? {
-        return CompoundPluginLoader()
-            .add(DevelopmentLoader(this)) { this.isDevelopment }
-            .add(JarLoader(this)) { this.isNotDevelopment }
-            .add(DefaultLoader(this)) { this.isNotDevelopment }
-    }
+	override fun createPluginLoader(): PluginLoader? {
+		return CompoundPluginLoader()
+			.add(DevelopmentLoader(this)) { this.isDevelopment }
+			.add(JarLoader(this)) { this.isNotDevelopment }
+			.add(DefaultLoader(this)) { this.isNotDevelopment }
+	}
 }

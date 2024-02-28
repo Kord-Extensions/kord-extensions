@@ -14,9 +14,9 @@ import me.shedaniel.linkie.namespaces.QuiltMappingsNamespace
  */
 @Suppress("UndocumentedPublicProperty")
 class QuiltArguments : MappingArguments(QuiltMappingsNamespace), IntermediaryMappable {
-    override val mapDescriptors by defaultingBoolean {
-        name = "map-descriptor"
-        description = "Whether to map field/method descriptors to named instead of hashed"
-        defaultValue = true
-    }
+	override val mapDescriptors by defaultingBoolean {
+		name = "map-descriptor"
+		description = "Whether to map field/method descriptors to named instead of hashed"
+		defaultValue = true
+	}
 }

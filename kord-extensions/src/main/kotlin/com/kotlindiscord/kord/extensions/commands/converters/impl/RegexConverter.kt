@@ -30,34 +30,34 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @param options Optional set of [RegexOption]s to pass to the regex parser.
  */
 @Converter(
-    "regex",
+	"regex",
 
-    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    imports = ["kotlin.text.RegexOption"],
-    builderFields = ["public var options: MutableSet<RegexOption> = mutableSetOf()"]
+	types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	imports = ["kotlin.text.RegexOption"],
+	builderFields = ["public var options: MutableSet<RegexOption> = mutableSetOf()"]
 )
 public class RegexConverter(
-    private val options: Set<RegexOption> = setOf(),
-    override var validator: Validator<Regex> = null
+	private val options: Set<RegexOption> = setOf(),
+	override var validator: Validator<Regex> = null,
 ) : SingleConverter<Regex>() {
-    override val signatureTypeString: String = "converters.regex.signatureType.singular"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.regex.signatureType.singular"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        this.parsed = arg.toRegex(options)
+		this.parsed = arg.toRegex(options)
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
-        this.parsed = optionValue.toRegex(options)
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
+		this.parsed = optionValue.toRegex(options)
 
-        return true
-    }
+		return true
+	}
 }

@@ -22,16 +22,16 @@ import me.shedaniel.linkie.utils.tryToVersion
  */
 @Suppress("UndocumentedPublicProperty")
 class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<String, String>) : Arguments() {
-    val query by string {
-        name = "query"
-        description = "Name to query mappings for"
-    }
+	val query by string {
+		name = "query"
+		description = "Name to query mappings for"
+	}
 
-    val inputNamespace by string {
-        name = "input"
-        description = "The namespace to convert from"
+	val inputNamespace by string {
+		name = "input"
+		description = "The namespace to convert from"
 
-        autoComplete {
+		autoComplete {
 			val guildId = command.data.guildId.value
 			val values = enabledNamespaces(guildId)
 			suggestStringMap(values)
@@ -43,9 +43,9 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 				context.getGuild() != null && value !in enabledNamespaces(context.getGuild()!!.id)
 			}
 		}
-    }
+	}
 
-    val outputNamespace by string {
+	val outputNamespace by string {
 		name = "output"
 		description = "The namespace to convert to"
 
@@ -63,34 +63,34 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 		}
 	}
 
-    val version by optionalString {
-        name = "version"
-        description = "Minecraft version to use for this query"
+	val version by optionalString {
+		name = "version"
+		description = "Minecraft version to use for this query"
 
-        autocompleteVersions {
-            val inputNamespace = command.options["input"]?.value?.toString()?.toNamespace()
-            val outputNamespace = command.options["output"]?.value?.toString()?.toNamespace()
+		autocompleteVersions {
+			val inputNamespace = command.options["input"]?.value?.toString()?.toNamespace()
+			val outputNamespace = command.options["output"]?.value?.toString()?.toNamespace()
 
-            if (inputNamespace == null || outputNamespace == null) {
-                emptyList()
-            } else {
-                inputNamespace.getAllVersions().toSet().intersect(outputNamespace.getAllVersions().toSet())
+			if (inputNamespace == null || outputNamespace == null) {
+				emptyList()
+			} else {
+				inputNamespace.getAllVersions().toSet().intersect(outputNamespace.getAllVersions().toSet())
 					.sortedByDescending { it.tryToVersion() }
-            }
-        }
-    }
+			}
+		}
+	}
 
-    val inputChannel by optionalEnumChoice<Channels> {
-        name = "input-channel"
-        description = "The mappings channel to use for input"
+	val inputChannel by optionalEnumChoice<Channels> {
+		name = "input-channel"
+		description = "The mappings channel to use for input"
 
-        typeName = "official/snapshot"
-    }
+		typeName = "official/snapshot"
+	}
 
-    val outputChannel by optionalEnumChoice<Channels> {
-        name = "output-channel"
-        description = "The mappings channel to use for output"
+	val outputChannel by optionalEnumChoice<Channels> {
+		name = "output-channel"
+		description = "The mappings channel to use for output"
 
-        typeName = "official/snapshot"
-    }
+		typeName = "official/snapshot"
+	}
 }

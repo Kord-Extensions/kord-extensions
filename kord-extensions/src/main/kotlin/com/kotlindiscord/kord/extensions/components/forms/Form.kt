@@ -16,14 +16,14 @@ import kotlin.time.Duration
  */
 @Suppress("UnnecessaryAbstractClass")
 public abstract class Form {
-    /** How long to wait before we stop waiting for this modal to be submitted. **/
-    public open val timeout: Duration = Duration.ZERO
+	/** How long to wait before we stop waiting for this modal to be submitted. **/
+	public open val timeout: Duration = Duration.ZERO
 
 //    /** Widgets that haven't been sorted into the grid by [pack] yet. **/
 //    public open val unsortedComponents: MutableList<Component> = mutableListOf()
 
-    /** A grid containing rows of widgets. **/
-    public open val grid: WidgetGrid = WidgetGrid()
+	/** A grid containing rows of widgets. **/
+	public open val grid: WidgetGrid = WidgetGrid()
 
 //    public abstract fun pack()
 //    public abstract fun update()

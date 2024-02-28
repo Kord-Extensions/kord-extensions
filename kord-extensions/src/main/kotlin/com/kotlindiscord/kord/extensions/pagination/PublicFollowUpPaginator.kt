@@ -36,69 +36,69 @@ public class PublicFollowUpPaginator(
 
 	public val interaction: FollowupPermittingInteractionResponseBehavior,
 ) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
-    /** Follow-up interaction to use for this paginator's embeds. Will be created by [send]. **/
-    public var embedInteraction: PublicFollowupMessage? = null
+	/** Follow-up interaction to use for this paginator's embeds. Will be created by [send]. **/
+	public var embedInteraction: PublicFollowupMessage? = null
 
-    override suspend fun send() {
-        if (embedInteraction == null) {
-            setup()
+	override suspend fun send() {
+		if (embedInteraction == null) {
+			setup()
 
-            embedInteraction = interaction.createPublicFollowup {
+			embedInteraction = interaction.createPublicFollowup {
 				applyPage()
 
-                with(this@PublicFollowUpPaginator.components) {
-                    this@createPublicFollowup.applyToMessage()
-                }
-            }
-        } else {
-            updateButtons()
+				with(this@PublicFollowUpPaginator.components) {
+					this@createPublicFollowup.applyToMessage()
+				}
+			}
+		} else {
+			updateButtons()
 
-            embedInteraction!!.edit {
+			embedInteraction!!.edit {
 				applyPage()
 
-                with(this@PublicFollowUpPaginator.components) {
-                    this@edit.applyToMessage()
-                }
-            }
-        }
-    }
+				with(this@PublicFollowUpPaginator.components) {
+					this@edit.applyToMessage()
+				}
+			}
+		}
+	}
 
-    override suspend fun destroy() {
-        if (!active) {
-            return
-        }
+	override suspend fun destroy() {
+		if (!active) {
+			return
+		}
 
-        active = false
+		active = false
 
-        if (!keepEmbed) {
-            embedInteraction?.delete()
-        } else {
-            embedInteraction?.edit {
+		if (!keepEmbed) {
+			embedInteraction?.delete()
+		} else {
+			embedInteraction?.edit {
 				applyPage()
 
-                this.components = mutableListOf()
-            }
-        }
+				this.components = mutableListOf()
+			}
+		}
 
-        super.destroy()
-    }
+		super.destroy()
+	}
 }
 
 /** Convenience function for creating an interaction button paginator from a paginator builder. **/
 @Suppress("FunctionNaming")  // Factory function
 public fun PublicFollowUpPaginator(
-    builder: PaginatorBuilder,
-    interaction: FollowupPermittingInteractionResponseBehavior
+	builder: PaginatorBuilder,
+	interaction: FollowupPermittingInteractionResponseBehavior,
 ): PublicFollowUpPaginator = PublicFollowUpPaginator(
-    pages = builder.pages,
+	pages = builder.pages,
 	chunkedPages = builder.chunkedPages,
-    owner = builder.owner,
-    timeoutSeconds = builder.timeoutSeconds,
-    keepEmbed = builder.keepEmbed,
+	owner = builder.owner,
+	timeoutSeconds = builder.timeoutSeconds,
+	keepEmbed = builder.keepEmbed,
 	mutator = builder.mutator,
-    bundle = builder.bundle,
-    locale = builder.locale,
-    interaction = interaction,
+	bundle = builder.bundle,
+	locale = builder.locale,
+	interaction = interaction,
 
-    switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
+	switchEmoji = builder.switchEmoji ?: if (builder.pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 )

@@ -35,35 +35,35 @@ import java.util.*
  * [our Weblate project](https://hosted.weblate.org/projects/kord-extensions/main/).
  */
 @Converter(
-    "supportedLocale",
-    types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	"supportedLocale",
+	types = [ConverterType.DEFAULTING, ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
 )
 public class SupportedLocaleConverter(
-    override var validator: Validator<Locale> = null
+	override var validator: Validator<Locale> = null,
 ) : SingleConverter<Locale>() {
-    override val signatureTypeString: String = "converters.supportedLocale.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.supportedLocale.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        this.parsed = SupportedLocales.ALL_LOCALES[arg.lowercase().trim()] ?: throw DiscordRelayedException(
-            context.translate("converters.supportedLocale.error.unknown", replacements = arrayOf(arg))
-        )
+		this.parsed = SupportedLocales.ALL_LOCALES[arg.lowercase().trim()] ?: throw DiscordRelayedException(
+			context.translate("converters.supportedLocale.error.unknown", replacements = arrayOf(arg))
+		)
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
-        this.parsed = SupportedLocales.ALL_LOCALES[optionValue.lowercase().trim()] ?: throw DiscordRelayedException(
-            context.translate("converters.supportedLocale.error.unknown", replacements = arrayOf(optionValue))
-        )
+		this.parsed = SupportedLocales.ALL_LOCALES[optionValue.lowercase().trim()] ?: throw DiscordRelayedException(
+			context.translate("converters.supportedLocale.error.unknown", replacements = arrayOf(optionValue))
+		)
 
-        return true
-    }
+		return true
+	}
 }

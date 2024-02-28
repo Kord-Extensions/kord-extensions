@@ -14,15 +14,15 @@ import me.shedaniel.linkie.namespaces.MojangHashedNamespace
 /** Arguments for hashed Mojang mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
 class HashedMojangArguments : MappingWithChannelArguments(MojangHashedNamespace), IntermediaryMappable {
-    override val channel by optionalEnumChoice<Channels> {
-        name = "channel"
-        description = "Mappings channel to use for this query"
-        typeName = "official/snapshot"
-    }
+	override val channel by optionalEnumChoice<Channels> {
+		name = "channel"
+		description = "Mappings channel to use for this query"
+		typeName = "official/snapshot"
+	}
 
-    override val mapDescriptors by defaultingBoolean {
-        name = "map-descriptor"
-        description = "Whether to map field/method descriptors to named instead of intermediary/hashed"
-        defaultValue = true
-    }
+	override val mapDescriptors by defaultingBoolean {
+		name = "map-descriptor"
+		description = "Whether to map field/method descriptors to named instead of intermediary/hashed"
+		defaultValue = true
+	}
 }

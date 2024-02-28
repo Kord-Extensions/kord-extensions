@@ -35,57 +35,57 @@ import kotlinx.coroutines.flow.firstOrNull
  * @see guildList
  */
 @Converter(
-    "guild",
+	"guild",
 
-    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
+	types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
 public class GuildConverter(
-    override var validator: Validator<Guild> = null
+	override var validator: Validator<Guild> = null,
 ) : SingleConverter<Guild>() {
-    override val signatureTypeString: String = "converters.guild.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.guild.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        if (arg.equals("this", true)) {
-            val guild = context.getGuild()?.asGuildOrNull()
+		if (arg.equals("this", true)) {
+			val guild = context.getGuild()?.asGuildOrNull()
 
-            if (guild != null) {
-                this.parsed = guild
+			if (guild != null) {
+				this.parsed = guild
 
-                return true
-            }
-        }
+				return true
+			}
+		}
 
-        this.parsed = findGuild(arg)
-            ?: throw DiscordRelayedException(
-                context.translate("converters.guild.error.missing", replacements = arrayOf(arg))
-            )
+		this.parsed = findGuild(arg)
+			?: throw DiscordRelayedException(
+				context.translate("converters.guild.error.missing", replacements = arrayOf(arg))
+			)
 
-        return true
-    }
+		return true
+	}
 
-    private suspend fun findGuild(arg: String): Guild? =
-        try { // Try for a guild ID first
-            val id = Snowflake(arg)
+	private suspend fun findGuild(arg: String): Guild? =
+		try { // Try for a guild ID first
+			val id = Snowflake(arg)
 
-            kord.getGuildOrNull(id)
-        } catch (e: NumberFormatException) { // It's not an ID, let's try the name
-            kord.guilds.firstOrNull { it.name.equals(arg, true) }
-        }
+			kord.getGuildOrNull(id)
+		} catch (e: NumberFormatException) { // It's not an ID, let's try the name
+			kord.guilds.firstOrNull { it.name.equals(arg, true) }
+		}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
-        this.parsed = findGuild(optionValue)
-            ?: throw DiscordRelayedException(
-                context.translate("converters.guild.error.missing", replacements = arrayOf(optionValue))
-            )
+		this.parsed = findGuild(optionValue)
+			?: throw DiscordRelayedException(
+				context.translate("converters.guild.error.missing", replacements = arrayOf(optionValue))
+			)
 
-        return true
-    }
+		return true
+	}
 }

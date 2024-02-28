@@ -36,140 +36,140 @@ import org.koin.core.component.inject
  * Accepts a callable [channelGetter] property which may be used to extract a forum channel from another argument.
  */
 @Converter(
-    "tag",
-    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    imports = [
-        "com.kotlindiscord.kord.extensions.utils.suggestStringCollection",
-        "dev.kord.core.entity.channel.ForumChannel",
-    ],
-    builderFields = [
-        "public var channelGetter: (suspend () -> ForumChannel?)? = null"
-    ],
-    builderInitStatements = [
-        "" +
-            "        autoComplete { event ->\n" +
-            "            try {\n" +
-            "                val tags = TagConverter.getTags(event, channelGetter)\n" +
-            "                \n" +
-            "                suggestStringCollection(tags.map { it.name })\n" +
-            "            } catch (e: Exception) {\n" +
-            "               // kordLogger.warn{ \"Failed to process autocomplete event for tag converter: " +
-            "\${e.reason}\" }\n" +
-            "            }\n" +
-            "        }"
-    ]
+	"tag",
+	types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	imports = [
+		"com.kotlindiscord.kord.extensions.utils.suggestStringCollection",
+		"dev.kord.core.entity.channel.ForumChannel",
+	],
+	builderFields = [
+		"public var channelGetter: (suspend () -> ForumChannel?)? = null"
+	],
+	builderInitStatements = [
+		"" +
+			"        autoComplete { event ->\n" +
+			"            try {\n" +
+			"                val tags = TagConverter.getTags(event, channelGetter)\n" +
+			"                \n" +
+			"                suggestStringCollection(tags.map { it.name })\n" +
+			"            } catch (e: Exception) {\n" +
+			"               // kordLogger.warn{ \"Failed to process autocomplete event for tag converter: " +
+			"\${e.reason}\" }\n" +
+			"            }\n" +
+			"        }"
+	]
 )
 @Suppress("UnusedPrivateMember")
 public class TagConverter(
-    private val channelGetter: (suspend () -> ForumChannel?)? = null,
+	private val channelGetter: (suspend () -> ForumChannel?)? = null,
 
-    override var validator: Validator<ForumTag> = null,
+	override var validator: Validator<ForumTag> = null,
 ) : SingleConverter<ForumTag>() {
-    public override val signatureTypeString: String = "converters.tag.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	public override val signatureTypeString: String = "converters.tag.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val input: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val input: String = named ?: parser?.parseNext()?.data ?: return false
 
-        this.parsed = getTag(input, context)
+		this.parsed = getTag(input, context)
 
-        return true
-    }
+		return true
+	}
 
-    private suspend fun getTag(input: String, context: CommandContext): ForumTag {
-        val tags: List<ForumTag> = getTags(context, channelGetter)
-        val locale: ULocale = ULocale(context.getLocale().toString())
+	private suspend fun getTag(input: String, context: CommandContext): ForumTag {
+		val tags: List<ForumTag> = getTags(context, channelGetter)
+		val locale: ULocale = ULocale(context.getLocale().toString())
 
-        val tag: ForumTag = tags.firstOrNull {
-            it.name.equals(input, true)
-        } ?: tags.firstOrNull {
-            if (locale.isRightToLeft) {
-                it.name.endsWith(input, true)
-            } else {
-                it.name.startsWith(input, true)
-            }
-        } ?: tags.firstOrNull {
-            it.name.contains(input, true)
-        } ?: throw DiscordRelayedException(
-            context.translate(
-                "converters.tag.error.unknownTag",
-                replacements = arrayOf(input)
-            )
-        )
+		val tag: ForumTag = tags.firstOrNull {
+			it.name.equals(input, true)
+		} ?: tags.firstOrNull {
+			if (locale.isRightToLeft) {
+				it.name.endsWith(input, true)
+			} else {
+				it.name.startsWith(input, true)
+			}
+		} ?: tags.firstOrNull {
+			it.name.contains(input, true)
+		} ?: throw DiscordRelayedException(
+			context.translate(
+				"converters.tag.error.unknownTag",
+				replacements = arrayOf(input)
+			)
+		)
 
-        return tag
-    }
+		return tag
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue: String = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue: String = (option as? StringOptionValue)?.value ?: return false
 
-        this.parsed = getTag(optionValue, context)
+		this.parsed = getTag(optionValue, context)
 
-        return true
-    }
+		return true
+	}
 
-    public companion object : KordExKoinComponent {
-        /** Translations provider, for retrieving translations. **/
-        private val translationsProvider: TranslationsProvider by inject()
+	public companion object : KordExKoinComponent {
+		/** Translations provider, for retrieving translations. **/
+		private val translationsProvider: TranslationsProvider by inject()
 
-        public suspend fun getTags(
-            context: CommandContext,
-            getter: (suspend () -> ForumChannel?)? = null,
-        ): List<ForumTag> {
-            val channel: ForumChannel? = if (getter != null) {
-                getter()
-            } else {
-                val thread = context.getChannel().asChannelOfOrNull<ThreadChannel>()
+		public suspend fun getTags(
+			context: CommandContext,
+			getter: (suspend () -> ForumChannel?)? = null,
+		): List<ForumTag> {
+			val channel: ForumChannel? = if (getter != null) {
+				getter()
+			} else {
+				val thread = context.getChannel().asChannelOfOrNull<ThreadChannel>()
 
-                thread?.parent?.asChannelOfOrNull<ForumChannel>()
-            }
+				thread?.parent?.asChannelOfOrNull<ForumChannel>()
+			}
 
-            if (channel == null) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        if (getter == null) {
-                            "converters.tag.error.wrongChannelType"
-                        } else {
-                            "converters.tag.error.wrongChannelTypeWithGetter"
-                        }
-                    )
-                )
-            }
+			if (channel == null) {
+				throw DiscordRelayedException(
+					context.translate(
+						if (getter == null) {
+							"converters.tag.error.wrongChannelType"
+						} else {
+							"converters.tag.error.wrongChannelTypeWithGetter"
+						}
+					)
+				)
+			}
 
-            return channel.availableTags
-        }
+			return channel.availableTags
+		}
 
-        public suspend fun getTags(
-            event: AutoCompleteInteractionCreateEvent,
-            getter: (suspend () -> ForumChannel?)? = null,
-        ): List<ForumTag> {
-            val channel: ForumChannel? = if (getter != null) {
-                getter()
-            } else {
-                val thread = event.interaction.getChannel().asChannelOfOrNull<ThreadChannel>()
+		public suspend fun getTags(
+			event: AutoCompleteInteractionCreateEvent,
+			getter: (suspend () -> ForumChannel?)? = null,
+		): List<ForumTag> {
+			val channel: ForumChannel? = if (getter != null) {
+				getter()
+			} else {
+				val thread = event.interaction.getChannel().asChannelOfOrNull<ThreadChannel>()
 
-                thread?.parent?.asChannelOfOrNull<ForumChannel>()
-            }
+				thread?.parent?.asChannelOfOrNull<ForumChannel>()
+			}
 
-            if (channel == null) {
-                throw DiscordRelayedException(
-                    translationsProvider.translate(
-                        if (getter == null) {
-                            "converters.tag.error.wrongChannelType"
-                        } else {
-                            "converters.tag.error.wrongChannelTypeWithGetter"
-                        },
+			if (channel == null) {
+				throw DiscordRelayedException(
+					translationsProvider.translate(
+						if (getter == null) {
+							"converters.tag.error.wrongChannelType"
+						} else {
+							"converters.tag.error.wrongChannelTypeWithGetter"
+						},
 
-                        event.getLocale(),
-                        DEFAULT_KORDEX_BUNDLE
-                    )
-                )
-            }
+						event.getLocale(),
+						DEFAULT_KORDEX_BUNDLE
+					)
+				)
+			}
 
-            return channel.availableTags
-        }
-    }
+			return channel.availableTags
+		}
+	}
 }

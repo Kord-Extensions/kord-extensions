@@ -17,13 +17,13 @@ import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 
 /** Abstract class representing the execution context of a channel select (dropdown) menu component. **/
 public abstract class ChannelSelectMenuContext(
-    component: SelectMenu<*, *>,
-    event: SelectMenuInteractionCreateEvent,
-    cache: MutableStringKeyedMap<Any>,
+	component: SelectMenu<*, *>,
+	event: SelectMenuInteractionCreateEvent,
+	cache: MutableStringKeyedMap<Any>,
 ) : SelectMenuContext(component, event, cache) {
-    /** Menu options that were selected by the user before de-focusing the menu. **/
-    @OptIn(KordUnsafe::class, KordExperimental::class)
-    public val selected: List<ChannelBehavior> by lazy {
-        event.interaction.values.map { event.kord.unsafe.channel(Snowflake(it)) }
-    }
+	/** Menu options that were selected by the user before de-focusing the menu. **/
+	@OptIn(KordUnsafe::class, KordExperimental::class)
+	public val selected: List<ChannelBehavior> by lazy {
+		event.interaction.values.map { event.kord.unsafe.channel(Snowflake(it)) }
+	}
 }

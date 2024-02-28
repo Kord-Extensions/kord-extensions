@@ -5,7 +5,7 @@
  */
 
 @file:OptIn(
-    ConverterToOptional::class
+	ConverterToOptional::class
 )
 @file:Suppress("StringLiteralDuplication")
 
@@ -35,253 +35,253 @@ private typealias GenericConverter = Converter<*, *, *, *>
  */
 @UnsafeAPI
 public class UnionConverter(
-    private val converters: Collection<GenericConverter>,
+	private val converters: Collection<GenericConverter>,
 
-    typeName: String? = null,
-    shouldThrow: Boolean = false,
+	typeName: String? = null,
+	shouldThrow: Boolean = false,
 
-    override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
-    override var validator: Validator<Any> = null
+	override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
+	override var validator: Validator<Any> = null,
 ) : CoalescingConverter<Any>(shouldThrow) {
-    private val translations: TranslationsProvider by inject()
+	private val translations: TranslationsProvider by inject()
 
-    override val signatureTypeString: String = typeName ?: converters.joinToString(" | ") {
-        translations.translate(it.signatureTypeString, it.bundle)
-    }
+	override val signatureTypeString: String = typeName ?: converters.joinToString(" | ") {
+		translations.translate(it.signatureTypeString, it.bundle)
+	}
 
-    /** @suppress Internal validation function. **/
-    public fun validateUnion() {
-        val allConverters: MutableList<GenericConverter> = converters.toMutableList()
+	/** @suppress Internal validation function. **/
+	public fun validateUnion() {
+		val allConverters: MutableList<GenericConverter> = converters.toMutableList()
 
-        allConverters.removeLast()  // The last converter can be any type.
+		allConverters.removeLast()  // The last converter can be any type.
 
-        for (converter in allConverters) {
-            when (converter) {
-                is DefaultingConverter<*>, is DefaultingCoalescingConverter<*> -> error(
-                    "Invalid converter: $converter - " +
-                        "Defaulting converters are only supported by union converters if they're the last " +
-                        "provided converter."
-                )
+		for (converter in allConverters) {
+			when (converter) {
+				is DefaultingConverter<*>, is DefaultingCoalescingConverter<*> -> error(
+					"Invalid converter: $converter - " +
+						"Defaulting converters are only supported by union converters if they're the last " +
+						"provided converter."
+				)
 
-                is OptionalConverter<*>, is OptionalCoalescingConverter<*> -> error(
-                    "Invalid converter: $converter - " +
-                        "Optional converters are only supported by union converters if they're the last " +
-                        "provided converter."
-                )
-            }
-        }
-    }
+				is OptionalConverter<*>, is OptionalCoalescingConverter<*> -> error(
+					"Invalid converter: $converter - " +
+						"Optional converters are only supported by union converters if they're the last " +
+						"provided converter."
+				)
+			}
+		}
+	}
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
-        for (converter in converters) {
-            @Suppress("TooGenericExceptionCaught")
-            when (converter) {
-                is SingleConverter<*> -> try {
-                    val result: Boolean = converter.parse(parser, context, named?.first())
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+		for (converter in converters) {
+			@Suppress("TooGenericExceptionCaught")
+			when (converter) {
+				is SingleConverter<*> -> try {
+					val result: Boolean = converter.parse(parser, context, named?.first())
 
-                    if (result) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return 1
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return 1
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is DefaultingConverter<*> -> try {
-                    val result: Boolean = converter.parse(parser, context, named?.first())
+				is DefaultingConverter<*> -> try {
+					val result: Boolean = converter.parse(parser, context, named?.first())
 
-                    if (result) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return 1
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return 1
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is OptionalConverter<*> -> try {
-                    val result: Boolean = converter.parse(parser, context, named?.first())
+				is OptionalConverter<*> -> try {
+					val result: Boolean = converter.parse(parser, context, named?.first())
 
-                    if (result && converter.parsed != null) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed!!
+					if (result && converter.parsed != null) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed!!
 
-                        return 1
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return 1
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is ListConverter<*> -> try {
-                    val result: Int = converter.parse(parser, context, named)
+				is ListConverter<*> -> try {
+					val result: Int = converter.parse(parser, context, named)
 
-                    if (result > 0) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result > 0) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return result
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return result
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is CoalescingConverter<*> -> try {
-                    val result: Int = converter.parse(parser, context, named)
+				is CoalescingConverter<*> -> try {
+					val result: Int = converter.parse(parser, context, named)
 
-                    if (result > 0) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result > 0) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return result
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return result
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is DefaultingCoalescingConverter<*> -> try {
-                    val result: Int = converter.parse(parser, context, named)
+				is DefaultingCoalescingConverter<*> -> try {
+					val result: Int = converter.parse(parser, context, named)
 
-                    if (result > 0) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result > 0) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return result
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return result
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is OptionalCoalescingConverter<*> -> try {
-                    val result: Int = converter.parse(parser, context, named)
+				is OptionalCoalescingConverter<*> -> try {
+					val result: Int = converter.parse(parser, context, named)
 
-                    if (result > 0 && converter.parsed != null) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed!!
+					if (result > 0 && converter.parsed != null) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed!!
 
-                        return result
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return result
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                else -> throw DiscordRelayedException(
-                    context.translate(
-                        "converters.union.error.unknownConverterType",
-                        replacements = arrayOf(converter)
-                    )
-                )
-            }
-        }
+				else -> throw DiscordRelayedException(
+					context.translate(
+						"converters.union.error.unknownConverterType",
+						replacements = arrayOf(converter)
+					)
+				)
+			}
+		}
 
-        return 0
-    }
+		return 0
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        for (converter in converters) {
-            @Suppress("TooGenericExceptionCaught")
-            when (converter) {
-                is SingleConverter<*> -> try {
-                    val result: Boolean = converter.parseOption(context, option)
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		for (converter in converters) {
+			@Suppress("TooGenericExceptionCaught")
+			when (converter) {
+				is SingleConverter<*> -> try {
+					val result: Boolean = converter.parseOption(context, option)
 
-                    if (result) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return true
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return true
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is DefaultingConverter<*> -> try {
-                    val result: Boolean = converter.parseOption(context, option)
+				is DefaultingConverter<*> -> try {
+					val result: Boolean = converter.parseOption(context, option)
 
-                    if (result) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return true
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return true
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is OptionalConverter<*> -> try {
-                    val result: Boolean = converter.parseOption(context, option)
+				is OptionalConverter<*> -> try {
+					val result: Boolean = converter.parseOption(context, option)
 
-                    if (result && converter.parsed != null) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed!!
+					if (result && converter.parsed != null) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed!!
 
-                        return true
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return true
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is ListConverter<*> -> throw DiscordRelayedException(
-                    context.translate(
-                        "converters.union.error.unknownConverterType",
-                        replacements = arrayOf(converter)
-                    )
-                )
+				is ListConverter<*> -> throw DiscordRelayedException(
+					context.translate(
+						"converters.union.error.unknownConverterType",
+						replacements = arrayOf(converter)
+					)
+				)
 
-                is CoalescingConverter<*> -> try {
-                    val result: Boolean = converter.parseOption(context, option)
+				is CoalescingConverter<*> -> try {
+					val result: Boolean = converter.parseOption(context, option)
 
-                    if (result) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return true
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return true
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is DefaultingCoalescingConverter<*> -> try {
-                    val result: Boolean = converter.parseOption(context, option)
+				is DefaultingCoalescingConverter<*> -> try {
+					val result: Boolean = converter.parseOption(context, option)
 
-                    if (result) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed
+					if (result) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed
 
-                        return true
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return true
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                is OptionalCoalescingConverter<*> -> try {
-                    val result: Boolean = converter.parseOption(context, option)
+				is OptionalCoalescingConverter<*> -> try {
+					val result: Boolean = converter.parseOption(context, option)
 
-                    if (result && converter.parsed != null) {
-                        converter.parseSuccess = true
-                        this.parsed = converter.parsed!!
+					if (result && converter.parsed != null) {
+						converter.parseSuccess = true
+						this.parsed = converter.parsed!!
 
-                        return result
-                    }
-                } catch (t: Throwable) {
-                    if (shouldThrow) throw t
-                }
+						return result
+					}
+				} catch (t: Throwable) {
+					if (shouldThrow) throw t
+				}
 
-                else -> throw DiscordRelayedException(
-                    context.translate(
-                        "converters.union.error.unknownConverterType",
-                        replacements = arrayOf(converter)
-                    )
-                )
-            }
-        }
+				else -> throw DiscordRelayedException(
+					context.translate(
+						"converters.union.error.unknownConverterType",
+						replacements = arrayOf(converter)
+					)
+				)
+			}
+		}
 
-        return false
-    }
+		return false
+	}
 }
 
 /**
@@ -294,27 +294,27 @@ public class UnionConverter(
  */
 @UnsafeAPI
 public fun Arguments.union(
-    displayName: String,
-    description: String,
-    typeName: String? = null,
-    shouldThrow: Boolean = false,
-    vararg converters: GenericConverter,
-    bundle: String? = null,
-    validator: Validator<Any> = null,
+	displayName: String,
+	description: String,
+	typeName: String? = null,
+	shouldThrow: Boolean = false,
+	vararg converters: GenericConverter,
+	bundle: String? = null,
+	validator: Validator<Any> = null,
 ): UnionConverter {
-    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle, validator)
+	val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle, validator)
 
-    converter.validateUnion()
+	converter.validateUnion()
 
-    this.args.toList().forEach {
-        if (it.converter in converters) {
-            this.args.remove(it)
-        }
-    }
+	this.args.toList().forEach {
+		if (it.converter in converters) {
+			this.args.remove(it)
+		}
+	}
 
-    arg(displayName, description, converter)
+	arg(displayName, description, converter)
 
-    return converter
+	return converter
 }
 
 /**
@@ -328,27 +328,27 @@ public fun Arguments.union(
  */
 @UnsafeAPI
 public fun Arguments.optionalUnion(
-    displayName: String,
-    description: String,
-    typeName: String? = null,
-    shouldThrow: Boolean = false,
-    vararg converters: GenericConverter,
-    bundle: String? = null,
-    validator: Validator<Any?> = null
+	displayName: String,
+	description: String,
+	typeName: String? = null,
+	shouldThrow: Boolean = false,
+	vararg converters: GenericConverter,
+	bundle: String? = null,
+	validator: Validator<Any?> = null,
 ): OptionalCoalescingConverter<Any> {
-    val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle)
+	val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle)
 
-    converter.validateUnion()
+	converter.validateUnion()
 
-    this.args.toList().forEach {
-        if (it.converter in converters) {
-            this.args.remove(it)
-        }
-    }
+	this.args.toList().forEach {
+		if (it.converter in converters) {
+			this.args.remove(it)
+		}
+	}
 
-    val optionalConverter: OptionalCoalescingConverter<Any> = converter.toOptional(nestedValidator = validator)
+	val optionalConverter: OptionalCoalescingConverter<Any> = converter.toOptional(nestedValidator = validator)
 
-    arg(displayName, description, optionalConverter)
+	arg(displayName, description, optionalConverter)
 
-    return optionalConverter
+	return optionalConverter
 }

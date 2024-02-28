@@ -20,4 +20,4 @@ public typealias Mutator<T> = ((value: T) -> T)?
 
 /** Type alias representing an autocomplete callable. **/
 public typealias AutoCompleteCallback =
-    (suspend AutoCompleteInteraction.(event: AutoCompleteInteractionCreateEvent) -> Unit)?
+	(suspend AutoCompleteInteraction.(event: AutoCompleteInteractionCreateEvent) -> Unit)?

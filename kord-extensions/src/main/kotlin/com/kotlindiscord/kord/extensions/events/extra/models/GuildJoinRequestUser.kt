@@ -13,16 +13,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public data class GuildJoinRequestUser(
-    @SerialName("public_flags")
-    public val flags: UserFlags,
+	@SerialName("public_flags")
+	public val flags: UserFlags,
 
-    @SerialName("display_name")
-    public val displayName: String?,
+	@SerialName("display_name")
+	public val displayName: String?,
 
-    public val username: String,
-    public val id: Snowflake,
-    public val discriminator: Int,
-    public val avatar: String,
+	public val username: String,
+	public val id: Snowflake,
+	public val discriminator: Int,
+	public val avatar: String,
 
-    // avatar_decoration?
+	// avatar_decoration?
 )

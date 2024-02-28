@@ -28,66 +28,66 @@ import dev.kord.rest.builder.interaction.OptionsBuilder
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
  */
 public class SingleToListConverter<T : Any>(
-    required: Boolean = true,
-    public val singleConverter: SingleConverter<T>,
+	required: Boolean = true,
+	public val singleConverter: SingleConverter<T>,
 
-    newSignatureTypeString: String? = null,
-    newShowTypeInSignature: Boolean? = null,
-    newErrorTypeString: String? = null,
+	newSignatureTypeString: String? = null,
+	newShowTypeInSignature: Boolean? = null,
+	newErrorTypeString: String? = null,
 
-    override var validator: Validator<List<T>> = null
+	override var validator: Validator<List<T>> = null,
 ) : ListConverter<T>(required) {
-    override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
-    override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
-    override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
+	override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
+	override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
+	override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
 
 	private val dummyArgs = Arguments()
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
-        val values = mutableListOf<T>()
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+		val values = mutableListOf<T>()
 
-        if (named == null) {
-            while (true) {
-                val arg = parser?.peekNext()?.data
+		if (named == null) {
+			while (true) {
+				val arg = parser?.peekNext()?.data
 
-                try {
-                    val result = singleConverter.parse(null, context, arg)
+				try {
+					val result = singleConverter.parse(null, context, arg)
 
-                    if (!result) {
-                        break
-                    }
+					if (!result) {
+						break
+					}
 
-                    val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+					val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
 
-                    values.add(value)
+					values.add(value)
 
-                    parser?.parseNext()  // Move the cursor ahead
-                } catch (e: DiscordRelayedException) {
-                    break
-                }
-            }
-        } else {
-            for (arg in named) {
-                try {
-                    val result = singleConverter.parse(null, context, arg)
+					parser?.parseNext()  // Move the cursor ahead
+				} catch (e: DiscordRelayedException) {
+					break
+				}
+			}
+		} else {
+			for (arg in named) {
+				try {
+					val result = singleConverter.parse(null, context, arg)
 
-                    if (!result) {
-                        break
-                    }
+					if (!result) {
+						break
+					}
 
-                    val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
+					val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
 
-                    values.add(value)
-                } catch (e: DiscordRelayedException) {
-                    break
-                }
-            }
-        }
+					values.add(value)
+				} catch (e: DiscordRelayedException) {
+					break
+				}
+			}
+		}
 
-        parsed = values
+		parsed = values
 
-        return parsed.size
-    }
+		return parsed.size
+	}
 
 	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
 		singleConverter.toSlashOption(arg)
@@ -103,7 +103,7 @@ public class SingleToListConverter<T : Any>(
 	}
 
 	override suspend fun handleError(
-        t: Throwable,
-        context: CommandContext
-    ): String = singleConverter.handleError(t, context)
+		t: Throwable,
+		context: CommandContext,
+	): String = singleConverter.handleError(t, context)
 }

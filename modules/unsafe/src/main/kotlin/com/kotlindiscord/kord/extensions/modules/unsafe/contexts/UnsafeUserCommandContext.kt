@@ -18,8 +18,8 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 /** Command context for an unsafe user command. **/
 @UnsafeAPI
 public class UnsafeUserCommandContext<M : ModalForm>(
-    override val event: UserCommandInteractionCreateEvent,
-    override val command: UserCommand<UnsafeUserCommandContext<M>, M>,
-    override var interactionResponse: MessageInteractionResponseBehavior?,
-    cache: MutableStringKeyedMap<Any>
+	override val event: UserCommandInteractionCreateEvent,
+	override val command: UserCommand<UnsafeUserCommandContext<M>, M>,
+	override var interactionResponse: MessageInteractionResponseBehavior?,
+	cache: MutableStringKeyedMap<Any>,
 ) : UserCommandContext<UnsafeUserCommandContext<M>, M>(event, command, cache), UnsafeInteractionContext

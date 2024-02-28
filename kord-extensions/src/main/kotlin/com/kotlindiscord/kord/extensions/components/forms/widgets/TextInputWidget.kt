@@ -27,93 +27,93 @@ public const val PLACEHOLDER_LENGTH: Int = 100
 
 /** An abstract type representing a widget that accepts text from the user. */
 public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(), KordExKoinComponent {
-    @Suppress("MagicNumber")
-    override var width: Int = 5
-    override var height: Int = 1
-    override var value: String? = null
+	@Suppress("MagicNumber")
+	override var width: Int = 5
+	override var height: Int = 1
+	override var value: String? = null
 
-    /** The [TextInputStyle], to be provided by a subtype. **/
-    public abstract val style: TextInputStyle
+	/** The [TextInputStyle], to be provided by a subtype. **/
+	public abstract val style: TextInputStyle
 
-    /** The widget's label, to be shown on Discord. **/
-    public lateinit var label: String
+	/** The widget's label, to be shown on Discord. **/
+	public lateinit var label: String
 
-    /** The widget's unique ID on Discord, defaulting to a UUID. **/
-    public var id: String = UUID.randomUUID().toString()
+	/** The widget's unique ID on Discord, defaulting to a UUID. **/
+	public var id: String = UUID.randomUUID().toString()
 
-    /** The initial value to provide for this widget, if any. **/
-    public var initialValue: String? = null
+	/** The initial value to provide for this widget, if any. **/
+	public var initialValue: String? = null
 
-    /** The maximum number of characters that may be provided. **/
-    public var maxLength: Int = MAX_LENGTH
+	/** The maximum number of characters that may be provided. **/
+	public var maxLength: Int = MAX_LENGTH
 
-    /** The minimum number of characters that may be provided. **/
-    public var minLength: Int = MIN_LENGTH
+	/** The minimum number of characters that may be provided. **/
+	public var minLength: Int = MIN_LENGTH
 
-    /** Placeholder text, to be shown to the user on Discord. **/
-    public var placeholder: String? = null
+	/** Placeholder text, to be shown to the user on Discord. **/
+	public var placeholder: String? = null
 
-    /** Whether this widget must be filled out for the form to be valid. **/
-    public var required: Boolean = true
+	/** Whether this widget must be filled out for the form to be valid. **/
+	public var required: Boolean = true
 
-    /** @suppress Translations provider reference, used internally **/
-    public val translations: TranslationsProvider by inject()
+	/** @suppress Translations provider reference, used internally **/
+	public val translations: TranslationsProvider by inject()
 
-    public override fun validate() {
-        if (this::label.isInitialized.not() || label.isEmpty()) {
-            error("Text input widgets must be given a label, but no label was provided.")
-        }
+	public override fun validate() {
+		if (this::label.isInitialized.not() || label.isEmpty()) {
+			error("Text input widgets must be given a label, but no label was provided.")
+		}
 
-        if (label.length > LABEL_LENGTH) {
-            error("Labels must be shorter than $LABEL_LENGTH characters, but ${label.length} characters were provided.")
-        }
+		if (label.length > LABEL_LENGTH) {
+			error("Labels must be shorter than $LABEL_LENGTH characters, but ${label.length} characters were provided.")
+		}
 
-        @Suppress("UnnecessaryParentheses")
-        if (maxLength !in (MIN_LENGTH + 1)..MAX_LENGTH) {
-            error(
-                "Invalid value for maxLength provided: $maxLength - expected ${MIN_LENGTH + 1} - $MAX_LENGTH"
-            )
-        }
+		@Suppress("UnnecessaryParentheses")
+		if (maxLength !in (MIN_LENGTH + 1)..MAX_LENGTH) {
+			error(
+				"Invalid value for maxLength provided: $maxLength - expected ${MIN_LENGTH + 1} - $MAX_LENGTH"
+			)
+		}
 
-        if (minLength !in MIN_LENGTH until MAX_LENGTH) {
-            error(
-                "Invalid value for minLength provided: $minLength - expected $MIN_LENGTH - ${MAX_LENGTH - 1}"
-            )
-        }
+		if (minLength !in MIN_LENGTH until MAX_LENGTH) {
+			error(
+				"Invalid value for minLength provided: $minLength - expected $MIN_LENGTH - ${MAX_LENGTH - 1}"
+			)
+		}
 
-        if (initialValue != null && (initialValue!!.length > MAX_LENGTH || initialValue!!.isEmpty())) {
-            error(
-                "Invalid value for $initialValue provided: (${initialValue!!.length} chars) - expected " +
-                    "${MIN_LENGTH + 1} - $MAX_LENGTH"
-            )
-        }
+		if (initialValue != null && (initialValue!!.length > MAX_LENGTH || initialValue!!.isEmpty())) {
+			error(
+				"Invalid value for $initialValue provided: (${initialValue!!.length} chars) - expected " +
+					"${MIN_LENGTH + 1} - $MAX_LENGTH"
+			)
+		}
 
-        if (placeholder != null && (placeholder!!.length > PLACEHOLDER_LENGTH || placeholder!!.isEmpty())) {
-            error(
-                "Invalid value for $placeholder provided: (${placeholder!!.length} chars) - expected " +
-                    "${MIN_LENGTH + 1} - $PLACEHOLDER_LENGTH"
-            )
-        }
-    }
+		if (placeholder != null && (placeholder!!.length > PLACEHOLDER_LENGTH || placeholder!!.isEmpty())) {
+			error(
+				"Invalid value for $placeholder provided: (${placeholder!!.length} chars) - expected " +
+					"${MIN_LENGTH + 1} - $PLACEHOLDER_LENGTH"
+			)
+		}
+	}
 
-    override suspend fun apply(builder: ActionRowBuilder, locale: Locale, bundle: String?) {
-        builder.textInput(style, id, translations.translate(label, locale, bundle)) {
-            this.allowedLength = this@TextInputWidget.minLength..this@TextInputWidget.maxLength
-            this.required = this@TextInputWidget.required
+	override suspend fun apply(builder: ActionRowBuilder, locale: Locale, bundle: String?) {
+		builder.textInput(style, id, translations.translate(label, locale, bundle)) {
+			this.allowedLength = this@TextInputWidget.minLength..this@TextInputWidget.maxLength
+			this.required = this@TextInputWidget.required
 
-            this.placeholder = this@TextInputWidget.placeholder?.let {
-                translations.translate(it, locale, bundle)
-            }
+			this.placeholder = this@TextInputWidget.placeholder?.let {
+				translations.translate(it, locale, bundle)
+			}
 
-            this.value = this@TextInputWidget.initialValue?.let {
-                translations.translate(it, locale, bundle)
-            }
-        }
-    }
+			this.value = this@TextInputWidget.initialValue?.let {
+				translations.translate(it, locale, bundle)
+			}
+		}
+	}
 
-    /** @suppress Internal API method. **/
-    @JvmName("setValue1")
-    public fun setValue(value: String) {
-        this.value = value
-    }
+	/** @suppress Internal API method. **/
+	@JvmName("setValue1")
+	public fun setValue(value: String) {
+		this.value = value
+	}
 }

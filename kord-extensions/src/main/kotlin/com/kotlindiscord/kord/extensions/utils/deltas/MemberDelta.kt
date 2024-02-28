@@ -24,59 +24,59 @@ import kotlin.contracts.contract
  */
 @Suppress("UndocumentedPublicProperty")
 public class MemberDelta(
-    avatar: Optional<Asset?>,
-    username: Optional<String>,
-    discriminator: Optional<String>,
-    flags: Optional<UserFlags?>,
+	avatar: Optional<Asset?>,
+	username: Optional<String>,
+	discriminator: Optional<String>,
+	flags: Optional<UserFlags?>,
 
-    public val nickname: Optional<String?>,
-    public val boosting: Optional<Instant?>,
-    public val roles: Optional<RoleDelta>,
-    public val owner: Optional<Boolean>,
-    public val pending: Optional<Boolean>
+	public val nickname: Optional<String?>,
+	public val boosting: Optional<Instant?>,
+	public val roles: Optional<RoleDelta>,
+	public val owner: Optional<Boolean>,
+	public val pending: Optional<Boolean>,
 ) : UserDelta(avatar, username, discriminator, flags) {
-    /**
-     * A Set representing the values that have changes. Each value is represented by a human-readable string.
-     */
-    override val changes: Set<String> by lazy {
-        super.changes.toMutableSet().apply {
-            if (nickname !is Optional.Missing) add("nickname")
-            if (boosting !is Optional.Missing) add("boosting")
-            if (roles !is Optional.Missing) add("roles")
-            if (owner !is Optional.Missing) add("owner")
-            if (pending !is Optional.Missing) add("pending")
-        }
-    }
+	/**
+	 * A Set representing the values that have changes. Each value is represented by a human-readable string.
+	 */
+	override val changes: Set<String> by lazy {
+		super.changes.toMutableSet().apply {
+			if (nickname !is Optional.Missing) add("nickname")
+			if (boosting !is Optional.Missing) add("boosting")
+			if (roles !is Optional.Missing) add("roles")
+			if (owner !is Optional.Missing) add("owner")
+			if (pending !is Optional.Missing) add("pending")
+		}
+	}
 
-    public companion object {
-        /**
-         * Given an old and new [Member] object, return a [MemberDelta] representing the changes between them.
-         *
-         * @param old The older [Member] object.
-         * @param new The newer [Member] object.
-         */
-        public suspend fun from(old: Member?, new: Member): MemberDelta? {
-            contract {
-                returns(null) implies (old == null)
-            }
+	public companion object {
+		/**
+		 * Given an old and new [Member] object, return a [MemberDelta] representing the changes between them.
+		 *
+		 * @param old The older [Member] object.
+		 * @param new The newer [Member] object.
+		 */
+		public suspend fun from(old: Member?, new: Member): MemberDelta? {
+			contract {
+				returns(null) implies (old == null)
+			}
 
-            old ?: return null
+			old ?: return null
 
-            val user = UserDelta.from(old, new) ?: return null
-            val roleDelta = RoleDelta.from(old, new)
+			val user = UserDelta.from(old, new) ?: return null
+			val roleDelta = RoleDelta.from(old, new)
 
-            return MemberDelta(
-                user.avatar,
-                user.username,
-                user.discriminator,
-                user.flags,
+			return MemberDelta(
+				user.avatar,
+				user.username,
+				user.discriminator,
+				user.flags,
 
-                if (old.nickname != new.nickname) Optional(new.nickname) else Optional.Missing(),
-                if (old.premiumSince != new.premiumSince) Optional(new.premiumSince) else Optional.Missing(),
-                if (roleDelta != null) Optional(roleDelta) else Optional.Missing(),
-                if (old.isOwner() != new.isOwner()) Optional(new.isOwner()) else Optional.Missing(),
-                if (old.isPending != new.isPending) Optional(new.isPending) else Optional.Missing()
-            )
-        }
-    }
+				if (old.nickname != new.nickname) Optional(new.nickname) else Optional.Missing(),
+				if (old.premiumSince != new.premiumSince) Optional(new.premiumSince) else Optional.Missing(),
+				if (roleDelta != null) Optional(roleDelta) else Optional.Missing(),
+				if (old.isOwner() != new.isOwner()) Optional(new.isOwner()) else Optional.Missing(),
+				if (old.isPending != new.isPending) Optional(new.isPending) else Optional.Missing()
+			)
+		}
+	}
 }

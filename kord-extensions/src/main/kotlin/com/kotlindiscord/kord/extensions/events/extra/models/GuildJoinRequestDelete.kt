@@ -12,11 +12,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public data class GuildJoinRequestDelete(
-    @SerialName("guild_id")
-    public val guildId: Snowflake,
+	@SerialName("guild_id")
+	public val guildId: Snowflake,
 
-    @SerialName("user_id")
-    public val userId: Snowflake,
+	@SerialName("user_id")
+	public val userId: Snowflake,
 
-    public val id: Snowflake,
+	public val id: Snowflake,
 )

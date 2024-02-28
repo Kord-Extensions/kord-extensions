@@ -27,73 +27,73 @@ public val TEST_SERVER_ID: Snowflake = Snowflake(env("TEST_SERVER"))
 
 @OptIn(PrivilegedIntent::class)
 public suspend fun main() {
-    LogLevel.enabledLevel = LogLevel.fromString(envOrNull("LOG_LEVEL") ?: "INFO") ?: LogLevel.INFO
+	LogLevel.enabledLevel = LogLevel.fromString(envOrNull("LOG_LEVEL") ?: "INFO") ?: LogLevel.INFO
 
-    val bot = ExtensibleBot(env("TOKEN")) {
-        koinLogLevel = Level.DEBUG
+	val bot = ExtensibleBot(env("TOKEN")) {
+		koinLogLevel = Level.DEBUG
 
-        chatCommands {
-            enabled = true
+		chatCommands {
+			enabled = true
 
-            check { isNotBot() }
-        }
+			check { isNotBot() }
+		}
 
-        applicationCommands {
-            defaultGuild(TEST_SERVER_ID)
-        }
+		applicationCommands {
+			defaultGuild(TEST_SERVER_ID)
+		}
 
-        intents {
-            +Intents.ALL
-        }
+		intents {
+			+Intents.ALL
+		}
 
-        i18n {
-            interactionUserLocaleResolver()
+		i18n {
+			interactionUserLocaleResolver()
 
-            applicationCommandLocale(Locale.CHINESE_CHINA)
-            applicationCommandLocale(Locale.ENGLISH_GREAT_BRITAIN)
-            applicationCommandLocale(Locale.ENGLISH_UNITED_STATES)
-            applicationCommandLocale(Locale.GERMAN)
-            applicationCommandLocale(Locale.JAPANESE)
-        }
+			applicationCommandLocale(Locale.CHINESE_CHINA)
+			applicationCommandLocale(Locale.ENGLISH_GREAT_BRITAIN)
+			applicationCommandLocale(Locale.ENGLISH_UNITED_STATES)
+			applicationCommandLocale(Locale.GERMAN)
+			applicationCommandLocale(Locale.JAPANESE)
+		}
 
-        members {
-            all()
-        }
+		members {
+			all()
+		}
 
-        extensions {
-            help {
-                paginatorTimeout = 30
-            }
+		extensions {
+			help {
+				paginatorTimeout = 30
+			}
 
-            extPhishing {
-                appName = "Integration test bot"
-                logChannelName = "alerts"
-            }
+			extPhishing {
+				appName = "Integration test bot"
+				logChannelName = "alerts"
+			}
 
-            if (envOrNull("PLURALKIT_TESTING") != null) {
-                extPluralKit()
-            }
+			if (envOrNull("PLURALKIT_TESTING") != null) {
+				extPluralKit()
+			}
 
-            if (envOrNull("MAPPINGS_TESTING") != null) {
-                extMappings { }
-            }
+			if (envOrNull("MAPPINGS_TESTING") != null) {
+				extMappings { }
+			}
 
-            add(::ArgumentTestExtension)
-            add(::I18nTestExtension)
-            add(::ModalTestExtension)
-            add(::PaginatorTestExtension)
-            add(::PKTestExtension)
-            add(::SelectorTestExtension)
-            add(::NestingTestExtension)
-        }
+			add(::ArgumentTestExtension)
+			add(::I18nTestExtension)
+			add(::ModalTestExtension)
+			add(::PaginatorTestExtension)
+			add(::PKTestExtension)
+			add(::SelectorTestExtension)
+			add(::NestingTestExtension)
+		}
 
-        plugins {
-            pluginPaths.clear()
+		plugins {
+			pluginPaths.clear()
 
-            pluginPath("test-bot/build/generated/ksp/main/resources")
-            pluginPath("extra-modules/extra-mappings/build/generated/ksp/main/resources")
-        }
-    }
+			pluginPath("test-bot/build/generated/ksp/main/resources")
+			pluginPath("extra-modules/extra-mappings/build/generated/ksp/main/resources")
+		}
+	}
 
-    bot.start()
+	bot.start()
 }

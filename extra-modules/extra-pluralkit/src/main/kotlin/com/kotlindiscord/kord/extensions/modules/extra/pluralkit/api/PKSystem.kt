@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "UndocumentedPublicProperty",)
+@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "UndocumentedPublicProperty")
 
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api
 
@@ -14,18 +14,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PKSystem(
-    val id: String,
-    val uuid: String,
-    val name: String?, // PK docs are wrong
-    val description: String?,
-    val tag: String?,
+	val id: String,
+	val uuid: String,
+	val name: String?, // PK docs are wrong
+	val description: String?,
+	val tag: String?,
 
-    @SerialName("avatar_url")
-    val avatarUrl: String?,
+	@SerialName("avatar_url")
+	val avatarUrl: String?,
 
-    val banner: String?,
-    val color: String?, // PK docs are wrong
-    val created: Instant,
-    val timezone: String? = null,
-    val privacy: PKSystemPrivacy?,
+	val banner: String?,
+	val color: String?, // PK docs are wrong
+	val created: Instant,
+	val timezone: String? = null,
+	val privacy: PKSystemPrivacy?,
 )

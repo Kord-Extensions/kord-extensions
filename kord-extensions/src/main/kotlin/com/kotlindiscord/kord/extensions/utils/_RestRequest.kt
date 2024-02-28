@@ -18,11 +18,11 @@ import io.ktor.http.*
  * @return `true` if at least one status code matches, `false` otherwise.
  */
 public fun RestRequestException.hasStatus(vararg codes: HttpStatusCode): Boolean {
-    if (codes.isEmpty()) return false
+	if (codes.isEmpty()) return false
 
-    val code = this.status.code
+	val code = this.status.code
 
-    return codes.any { it.value == code }
+	return codes.any { it.value == code }
 }
 
 /**
@@ -34,11 +34,11 @@ public fun RestRequestException.hasStatus(vararg codes: HttpStatusCode): Boolean
  * @return `true` if at least one status code matches, `false` otherwise.
  */
 public fun RestRequestException.hasStatusCode(vararg codes: Int): Boolean {
-    if (codes.isEmpty()) return false
+	if (codes.isEmpty()) return false
 
-    val code = this.status.code
+	val code = this.status.code
 
-    return codes.any { it == code }
+	return codes.any { it == code }
 }
 
 /**

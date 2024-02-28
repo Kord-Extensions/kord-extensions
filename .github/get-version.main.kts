@@ -1,10 +1,10 @@
 import java.io.File
-import java.util.Properties
+import java.util.*
 
 val properties = Properties()
 
 properties.load(
-    File("gradle.properties").inputStream()
+	File("gradle.properties").inputStream()
 )
 
 print(properties["projectVersion"])

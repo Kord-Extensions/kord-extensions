@@ -17,8 +17,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class DomainChange(
-    val type: DomainChangeType,
-    val domains: Set<String>
+	val type: DomainChangeType,
+	val domains: Set<String>,
 )
 
 /**
@@ -28,9 +28,9 @@ data class DomainChange(
  */
 @Serializable
 enum class DomainChangeType(val readableName: String) {
-    @SerialName("add")
-    Add("added"),
+	@SerialName("add")
+	Add("added"),
 
-    @SerialName("delete")
-    Delete("deleted")
+	@SerialName("delete")
+	Delete("deleted")
 }

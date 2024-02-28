@@ -22,50 +22,50 @@ public const val MAX_SUGGESTIONS: Int = 25
  * @property test Lambda that should return `true` for acceptable values.
  */
 public open class FilterStrategy(public val test: (provided: String, candidate: String) -> Boolean) {
-    /** Filter options based on whether they contain the provided value. **/
-    public object Contains : FilterStrategy({ provided, candidate ->
-        candidate.contains(provided, true)
-    })
+	/** Filter options based on whether they contain the provided value. **/
+	public object Contains : FilterStrategy({ provided, candidate ->
+		candidate.contains(provided, true)
+	})
 
-    /** Filter options based on whether they start with the provided value. **/
-    public object Prefix : FilterStrategy({ provided, candidate ->
-        candidate.startsWith(provided, true)
-    })
+	/** Filter options based on whether they start with the provided value. **/
+	public object Prefix : FilterStrategy({ provided, candidate ->
+		candidate.startsWith(provided, true)
+	})
 
-    /** Filter options based on whether they end with the provided value. **/
-    public object Suffix : FilterStrategy({ provided, candidate ->
-        candidate.endsWith(provided, true)
-    })
+	/** Filter options based on whether they end with the provided value. **/
+	public object Suffix : FilterStrategy({ provided, candidate ->
+		candidate.endsWith(provided, true)
+	})
 }
 
 /** Retrieve the option that's currently focused in the client. **/
 public val AutoCompleteInteractionCreateEvent.focusedOption: OptionValue<*>
-    get() = this.interaction.command.options.values.first { it.focused }
+	get() = this.interaction.command.options.values.first { it.focused }
 
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestStringMap(
-    map: Map<String, String>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	map: Map<String, String>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    val option = focusedOption.value as? String
-    var options = map
+	val option = focusedOption.value as? String
+	var options = map
 
-    if (option != null) {
-        options = options.filterKeys { strategy.test(option, it) }
-    }
+	if (option != null) {
+		options = options.filterKeys { strategy.test(option, it) }
+	}
 
-    if (options.size > MAX_SUGGESTIONS) {
-        options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
-    }
+	if (options.size > MAX_SUGGESTIONS) {
+		options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
+	}
 
-    suggestString {
-        if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
-            choice(option, option)
-        } else {
-            options.forEach(::choice)
-        }
-    }
+	suggestString {
+		if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
+			choice(option, option)
+		} else {
+			options.forEach(::choice)
+		}
+	}
 }
 
 /**
@@ -73,28 +73,28 @@ public suspend inline fun AutoCompleteInteraction.suggestStringMap(
  * [strategy].
  */
 public suspend inline fun AutoCompleteInteraction.suggestStringCollection(
-    collection: Collection<String>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	collection: Collection<String>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    suggestStringMap(
-        collection.associateBy { it },
-        strategy,
-        suggestInputWithoutMatches
-    )
+	suggestStringMap(
+		collection.associateBy { it },
+		strategy,
+		suggestInputWithoutMatches
+	)
 }
 
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestIntMap(
-    map: Map<String, Int>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	map: Map<String, Int>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    suggestLongMap(
-        map.mapValues { it.value.toLong() },
-        strategy,
-        suggestInputWithoutMatches
-    )
+	suggestLongMap(
+		map.mapValues { it.value.toLong() },
+		strategy,
+		suggestInputWithoutMatches
+	)
 }
 
 /**
@@ -102,45 +102,45 @@ public suspend inline fun AutoCompleteInteraction.suggestIntMap(
  * [strategy].
  */
 public suspend inline fun AutoCompleteInteraction.suggestIntCollection(
-    collection: Collection<Int>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	collection: Collection<Int>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    suggestIntMap(
-        collection.associateBy { it.toString() },
-        strategy,
-        suggestInputWithoutMatches
-    )
+	suggestIntMap(
+		collection.associateBy { it.toString() },
+		strategy,
+		suggestInputWithoutMatches
+	)
 }
 
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestLongMap(
-    map: Map<String, Long>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	map: Map<String, Long>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    val option = focusedOption.value as? String
-    var options = map
+	val option = focusedOption.value as? String
+	var options = map
 
-    if (option != null) {
-        options = options.filterKeys { strategy.test(option, it) }
-    }
+	if (option != null) {
+		options = options.filterKeys { strategy.test(option, it) }
+	}
 
-    if (options.size > MAX_SUGGESTIONS) {
-        options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
-    }
+	if (options.size > MAX_SUGGESTIONS) {
+		options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
+	}
 
-    suggestInteger {
-        if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
-            val longValue = option.toLongOrNull()
+	suggestInteger {
+		if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
+			val longValue = option.toLongOrNull()
 
-            if (longValue != null) {
-                choice(option, longValue)
-            }
-        } else {
-            options.forEach(::choice)
-        }
-    }
+			if (longValue != null) {
+				choice(option, longValue)
+			}
+		} else {
+			options.forEach(::choice)
+		}
+	}
 }
 
 /**
@@ -148,24 +148,24 @@ public suspend inline fun AutoCompleteInteraction.suggestLongMap(
  * [strategy].
  */
 public suspend inline fun AutoCompleteInteraction.suggestLongCollection(
-    collection: Collection<Long>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	collection: Collection<Long>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    suggestLongMap(
-        collection.associateBy { it.toString() },
-        strategy,
-        suggestInputWithoutMatches
-    )
+	suggestLongMap(
+		collection.associateBy { it.toString() },
+		strategy,
+		suggestInputWithoutMatches
+	)
 }
 
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestDoubleMap(
-    map: Map<String, Double>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	map: Map<String, Double>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    suggestNumberMap(map, strategy, suggestInputWithoutMatches)
+	suggestNumberMap(map, strategy, suggestInputWithoutMatches)
 }
 
 /**
@@ -173,45 +173,45 @@ public suspend inline fun AutoCompleteInteraction.suggestDoubleMap(
  * [strategy].
  */
 public suspend inline fun AutoCompleteInteraction.suggestDoubleCollection(
-    collection: Collection<Double>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	collection: Collection<Double>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    suggestDoubleMap(
-        collection.associateBy { it.toString() },
-        strategy,
-        suggestInputWithoutMatches
-    )
+	suggestDoubleMap(
+		collection.associateBy { it.toString() },
+		strategy,
+		suggestInputWithoutMatches
+	)
 }
 
 /** Use a map to populate an autocomplete interaction, filtering as described by the provided [strategy]. **/
 public suspend inline fun AutoCompleteInteraction.suggestNumberMap(
-    map: Map<String, Double>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	map: Map<String, Double>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    val option = focusedOption.value as? String
-    var options = map
+	val option = focusedOption.value as? String
+	var options = map
 
-    if (option != null) {
-        options = options.filterKeys { strategy.test(option, it) }
-    }
+	if (option != null) {
+		options = options.filterKeys { strategy.test(option, it) }
+	}
 
-    if (options.size > MAX_SUGGESTIONS) {
-        options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
-    }
+	if (options.size > MAX_SUGGESTIONS) {
+		options = options.entries.sortedBy { it.key }.take(MAX_SUGGESTIONS).associate { it.toPair() }
+	}
 
-    suggestNumber {
-        if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
-            val doubleValue = option.toDoubleOrNull()
+	suggestNumber {
+		if (suggestInputWithoutMatches && options.isEmpty() && !option.isNullOrEmpty()) {
+			val doubleValue = option.toDoubleOrNull()
 
-            if (doubleValue != null) {
-                choice(option, doubleValue)
-            }
-        } else {
-            options.forEach(::choice)
-        }
-    }
+			if (doubleValue != null) {
+				choice(option, doubleValue)
+			}
+		} else {
+			options.forEach(::choice)
+		}
+	}
 }
 
 /**
@@ -219,13 +219,13 @@ public suspend inline fun AutoCompleteInteraction.suggestNumberMap(
  * [strategy].
  */
 public suspend inline fun AutoCompleteInteraction.suggestNumberCollection(
-    collection: Collection<Double>,
-    strategy: FilterStrategy = FilterStrategy.Prefix,
-    suggestInputWithoutMatches: Boolean = false,
+	collection: Collection<Double>,
+	strategy: FilterStrategy = FilterStrategy.Prefix,
+	suggestInputWithoutMatches: Boolean = false,
 ) {
-    suggestNumberMap(
-        collection.associateBy { it.toString() },
-        strategy,
-        suggestInputWithoutMatches
-    )
+	suggestNumberMap(
+		collection.associateBy { it.toString() },
+		strategy,
+		suggestInputWithoutMatches
+	)
 }

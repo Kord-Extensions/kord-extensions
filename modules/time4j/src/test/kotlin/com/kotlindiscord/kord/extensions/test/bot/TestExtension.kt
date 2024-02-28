@@ -16,25 +16,25 @@ import com.kotlindiscord.kord.extensions.utils.respond
 // They're IDs
 @Suppress("UnderscoresInNumericLiterals")
 class TestExtension : Extension() {
-    override val name = "test"
+	override val name = "test"
 
-    class TestArgs : Arguments() {
-        val duration by coalescingT4JDuration {
-            name = "duration"
-            description = "Duration argument"
-        }
-    }
+	class TestArgs : Arguments() {
+		val duration by coalescingT4JDuration {
+			name = "duration"
+			description = "Duration argument"
+		}
+	}
 
-    override suspend fun setup() {
-        chatCommand(::TestArgs) {
-            name = "format"
-            description = "Let's test formatting."
+	override suspend fun setup() {
+		chatCommand(::TestArgs) {
+			name = "format"
+			description = "Let's test formatting."
 
-            action {
-                message.respond(
-                    arguments.duration.toHuman(this) ?: "Empty duration!"
-                )
-            }
-        }
-    }
+			action {
+				message.respond(
+					arguments.duration.toHuman(this) ?: "Empty duration!"
+				)
+			}
+		}
+	}
 }

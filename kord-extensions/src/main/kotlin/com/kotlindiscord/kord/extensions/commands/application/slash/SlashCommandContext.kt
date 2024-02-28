@@ -18,15 +18,15 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
  * @param event Event that triggered this slash command invocation.
  */
 public open class SlashCommandContext<C : SlashCommandContext<C, A, M>, A : Arguments, M : ModalForm>(
-    public open val event: ChatInputCommandInteractionCreateEvent,
-    public override val command: SlashCommand<C, A, M>,
-    cache: MutableStringKeyedMap<Any>
+	public open val event: ChatInputCommandInteractionCreateEvent,
+	public override val command: SlashCommand<C, A, M>,
+	cache: MutableStringKeyedMap<Any>,
 ) : ApplicationCommandContext(event, command, cache) {
-    /** Object representing this slash command's arguments, if any. **/
-    public open lateinit var arguments: A
+	/** Object representing this slash command's arguments, if any. **/
+	public open lateinit var arguments: A
 
-    /** @suppress Internal function for copying args object in later. **/
-    public fun populateArgs(args: A) {
-        arguments = args
-    }
+	/** @suppress Internal function for copying args object in later. **/
+	public fun populateArgs(args: A) {
+		arguments = args
+	}
 }

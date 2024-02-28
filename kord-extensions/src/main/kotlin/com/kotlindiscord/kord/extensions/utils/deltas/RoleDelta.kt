@@ -18,34 +18,34 @@ import kotlin.contracts.contract
  */
 @Suppress("UndocumentedPublicProperty")
 public data class RoleDelta(
-    private val old: Set<Role>,
-    private val new: Set<Role>
+	private val old: Set<Role>,
+	private val new: Set<Role>,
 ) {
-    /** A set representing any roles that were added in [new], if any. **/
-    public val added: Set<Role> = new - old
+	/** A set representing any roles that were added in [new], if any. **/
+	public val added: Set<Role> = new - old
 
-    /** A set representing any roles that removed in [new], if any. **/
-    public val removed: Set<Role> = old - new
+	/** A set representing any roles that removed in [new], if any. **/
+	public val removed: Set<Role> = old - new
 
-    public companion object {
-        /**
-         * Given an old and new Kord [Member] object, return a [RoleDelta] representing the changes between them.
-         *
-         * This function will return `null` if there were no changes, or if [old] is `null`.
-         *
-         * @param old The older [Member] object.
-         * @param new The newer [Member] object.
-         */
-        public suspend fun from(old: Member?, new: Member): RoleDelta? {
-            contract {
-                returns(null) implies (old == null)
-            }
+	public companion object {
+		/**
+		 * Given an old and new Kord [Member] object, return a [RoleDelta] representing the changes between them.
+		 *
+		 * This function will return `null` if there were no changes, or if [old] is `null`.
+		 *
+		 * @param old The older [Member] object.
+		 * @param new The newer [Member] object.
+		 */
+		public suspend fun from(old: Member?, new: Member): RoleDelta? {
+			contract {
+				returns(null) implies (old == null)
+			}
 
-            old ?: return null
+			old ?: return null
 
-            if (old.roleIds == new.roleIds) return null
+			if (old.roleIds == new.roleIds) return null
 
-            return RoleDelta(old.roles.toSet(), new.roles.toSet())
-        }
-    }
+			return RoleDelta(old.roles.toSet(), new.roles.toSet())
+		}
+	}
 }

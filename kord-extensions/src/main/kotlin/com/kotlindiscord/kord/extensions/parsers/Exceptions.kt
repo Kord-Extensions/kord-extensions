@@ -19,8 +19,8 @@ public open class BaseParserException : KordExException()
  * @param error Human-readable error text.
  */
 public open class DurationParserException(public open var error: String) : BaseParserException() {
-    override val message: String? = error
-    override fun toString(): String = error
+	override val message: String? = error
+	override fun toString(): String = error
 }
 
 /**

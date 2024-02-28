@@ -20,63 +20,63 @@ import java.util.*
  * Object in charge of parsing strings into [Duration]s, using translated locale-aware units.
  */
 public object T4JDurationParser : KordExKoinComponent {
-    private val translations: TranslationsProvider by inject()
+	private val translations: TranslationsProvider by inject()
 
-    /** Check whether the given character is a valid duration unit character. **/
-    public fun charValid(char: Char, locale: Locale): Boolean =
-        char.isDigit() ||
-            char == ' ' ||
-            T4JTimeUnitCache.getUnits(locale).filterKeys { it.startsWith(char) }.isNotEmpty()
+	/** Check whether the given character is a valid duration unit character. **/
+	public fun charValid(char: Char, locale: Locale): Boolean =
+		char.isDigit() ||
+			char == ' ' ||
+			T4JTimeUnitCache.getUnits(locale).filterKeys { it.startsWith(char) }.isNotEmpty()
 
-    /**
-     * Parse the provided string to a [Duration] object, using the strings provided by the given [Locale].
-     */
-    public fun parse(input: String, locale: Locale): Duration<IsoUnit> {
-        if ("-" in input) {
-            throw DurationParserException(
-                translations.translate("converters.duration.error.negativeUnsupported", locale)
-            )
-        }
+	/**
+	 * Parse the provided string to a [Duration] object, using the strings provided by the given [Locale].
+	 */
+	public fun parse(input: String, locale: Locale): Duration<IsoUnit> {
+		if ("-" in input) {
+			throw DurationParserException(
+				translations.translate("converters.duration.error.negativeUnsupported", locale)
+			)
+		}
 
-        val unitMap = T4JTimeUnitCache.getUnits(locale)
+		val unitMap = T4JTimeUnitCache.getUnits(locale)
 
-        val units: MutableList<String> = mutableListOf()
-        val values: MutableList<String> = mutableListOf()
+		val units: MutableList<String> = mutableListOf()
+		val values: MutableList<String> = mutableListOf()
 
-        var buffer = input.replace(",", "")
-            .replace("+", "")
-            .replace(" ", "")
+		var buffer = input.replace(",", "")
+			.replace("+", "")
+			.replace(" ", "")
 
-        var duration = Duration.ofZero<IsoUnit>()
+		var duration = Duration.ofZero<IsoUnit>()
 
-        while (buffer.isNotEmpty()) {
-            if (isValueChar(buffer.first())) {
-                val (value, remaining) = buffer.splitOn(::isNotValueChar)
+		while (buffer.isNotEmpty()) {
+			if (isValueChar(buffer.first())) {
+				val (value, remaining) = buffer.splitOn(::isNotValueChar)
 
-                values.add(value)
-                buffer = remaining
-            } else {
-                val (unit, remaining) = buffer.splitOn(::isValueChar)
+				values.add(value)
+				buffer = remaining
+			} else {
+				val (unit, remaining) = buffer.splitOn(::isValueChar)
 
-                units.add(unit)
-                buffer = remaining
-            }
-        }
+				units.add(unit)
+				buffer = remaining
+			}
+		}
 
-        if (values.size != units.size) {
-            throw DurationParserException(translations.translate("converters.duration.error.badUnitPairs", locale))
-        }
+		if (values.size != units.size) {
+			throw DurationParserException(translations.translate("converters.duration.error.badUnitPairs", locale))
+		}
 
-        while (units.isNotEmpty()) {
-            val (unitString, valueString) = units.removeFirst() to values.removeFirst()
-            val timeUnit = unitMap[unitString.lowercase()] ?: throw InvalidTimeUnitException(unitString)
+		while (units.isNotEmpty()) {
+			val (unitString, valueString) = units.removeFirst() to values.removeFirst()
+			val timeUnit = unitMap[unitString.lowercase()] ?: throw InvalidTimeUnitException(unitString)
 
-            duration = duration.plus(valueString.toLong(), timeUnit)
-        }
+			duration = duration.plus(valueString.toLong(), timeUnit)
+		}
 
-        return duration
-    }
+		return duration
+	}
 
-    private fun isValueChar(char: Char) = char.isDigit() || char == '-'
-    private fun isNotValueChar(char: Char) = !isValueChar(char)
+	private fun isValueChar(char: Char) = char.isDigit() || char == '-'
+	private fun isNotValueChar(char: Char) = !isValueChar(char)
 }

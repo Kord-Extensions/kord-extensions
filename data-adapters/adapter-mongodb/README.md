@@ -13,8 +13,8 @@ To switch to the MongoDB data adapter follow these steps:
 
 1. Add the MongoDB dependencies to your project. You can get the latest version number
    [from Maven Central](https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-kotlin-sync):
-   - `org.mongodb:mongodb-driver-kotlin-coroutine`
-   - `org.mongodb:bson-kotlinx`
+	- `org.mongodb:mongodb-driver-kotlin-coroutine`
+	- `org.mongodb:bson-kotlinx`
 2. Set the `ADAPTER_MONGODB_URI` environmental variable to a MongoDB connection string.
 3. Use the `mongoDB` function to set up the data adapter.
 
@@ -29,7 +29,7 @@ To switch to the MongoDB data adapter follow these steps:
    ```
 
 4. If you use MongoDB elsewhere in your project, you can use the provided codecs to handle these types:
-    - `DateTimePeriod` (kotlinx Datetime)
+	- `DateTimePeriod` (kotlinx Datetime)
 	- `Instant` (Kotlinx Datetime)
 	- `Snowflake` (Kord)
 	- `StorageType` (KordEx)

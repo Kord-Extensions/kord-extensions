@@ -20,14 +20,14 @@ import kotlin.time.Duration
 
 /** A more sensible name than `communicationDisabledUntil`. **/
 public val Member.timeoutUntil: Instant?
-    inline get() = this.communicationDisabledUntil
+	inline get() = this.communicationDisabledUntil
 
 /** A more sensible name than `communicationDisabledUntil`. **/
 public var MemberModifyBuilder.timeoutUntil: Instant?
-    inline get() = this.communicationDisabledUntil
-    inline set(value) {
-        this.communicationDisabledUntil = value
-    }
+	inline get() = this.communicationDisabledUntil
+	inline set(value) {
+		this.communicationDisabledUntil = value
+	}
 
 /**
  * Check if the user has the given [Role].
@@ -52,11 +52,11 @@ public fun Member.hasRoles(vararg roles: RoleBehavior): Boolean = hasRoles(roles
  * @return `true` if the user has all of the given roles, `false` otherwise.
  */
 public fun Member.hasRoles(roles: Collection<RoleBehavior>): Boolean =
-    if (roles.isEmpty()) {
-        true
-    } else {
-        this.roleIds.containsAll(roles.map { it.id })
-    }
+	if (roles.isEmpty()) {
+		true
+	} else {
+		this.roleIds.containsAll(roles.map { it.id })
+	}
 
 /**
  * Convenience function to retrieve a user's top [Role].
@@ -102,13 +102,13 @@ public suspend inline fun Member.hasPermissions(vararg perms: Permission): Boole
  * @return `true` if the collection is empty, or the [Member] has all of the given permissions, `false` otherwise
  */
 public suspend fun Member.hasPermissions(perms: Collection<Permission>): Boolean =
-    if (perms.isEmpty()) {
-        true
-    } else {
-        val permissions = getPermissions()
+	if (perms.isEmpty()) {
+		true
+	} else {
+		val permissions = getPermissions()
 
-        perms.all { it in permissions }
-    }
+		perms.all { it in permissions }
+	}
 
 /**
  * Checks if this [Member] can interact (delete/edit/assign/..) with the specified [Role].
@@ -119,12 +119,12 @@ public suspend fun Member.hasPermissions(perms: Collection<Permission>): Boolean
  * Throws an [IllegalArgumentException] if the role is from a different guild.
  */
 public suspend fun Member.canInteract(role: Role): Boolean {
-    val guild = getGuild()
+	val guild = getGuild()
 
-    if (guild.ownerId == this.id) return true
+	if (guild.ownerId == this.id) return true
 
-    val highestRole = getTopRole() ?: guild.getEveryoneRole()
-    return highestRole.canInteract(role)
+	val highestRole = getTopRole() ?: guild.getEveryoneRole()
+	return highestRole.canInteract(role)
 }
 
 /**
@@ -137,15 +137,15 @@ public suspend fun Member.canInteract(role: Role): Boolean {
  * Throws an [IllegalArgumentException] if the member is from a different guild.
  */
 public suspend fun Member.canInteract(member: Member): Boolean {
-    val guild = getGuild()
+	val guild = getGuild()
 
-    if (isOwner()) return true
-    if (member.isOwner()) return false
+	if (isOwner()) return true
+	if (member.isOwner()) return false
 
-    val highestRole = getTopRole() ?: guild.getEveryoneRole()
-    val otherHighestRole = member.getTopRole() ?: guild.getEveryoneRole()
+	val highestRole = getTopRole() ?: guild.getEveryoneRole()
+	val otherHighestRole = member.getTopRole() ?: guild.getEveryoneRole()
 
-    return highestRole.canInteract(otherHighestRole)
+	return highestRole.canInteract(otherHighestRole)
 }
 
 /**
@@ -153,22 +153,22 @@ public suspend fun Member.canInteract(member: Member): Boolean {
  */
 @DoNotChain
 public suspend fun Member.removeTimeout(reason: String? = null): Member =
-    edit {
-        timeoutUntil = null
+	edit {
+		timeoutUntil = null
 
-        this.reason = reason
-    }
+		this.reason = reason
+	}
 
 /**
  * Convenience function to time out a member using a [Duration], skipping the [edit] DSL.
  */
 @DoNotChain
 public suspend fun Member.timeout(until: Duration, reason: String? = null): Member =
-    edit {
-        timeoutUntil = Clock.System.now() + until
+	edit {
+		timeoutUntil = Clock.System.now() + until
 
-        this.reason = reason
-    }
+		this.reason = reason
+	}
 
 /**
  * Convenience function to time out a member using a [DateTimePeriod] and timezone, skipping the [edit] DSL.
@@ -177,24 +177,24 @@ public suspend fun Member.timeout(until: Duration, reason: String? = null): Memb
  */
 @DoNotChain
 public suspend fun Member.timeout(
-    until: DateTimePeriod,
-    timezone: TimeZone = TimeZone.UTC,
-    reason: String? = null
+	until: DateTimePeriod,
+	timezone: TimeZone = TimeZone.UTC,
+	reason: String? = null,
 ): Member =
-    edit {
-        timeoutUntil = Clock.System.now().plus(until, timezone)
+	edit {
+		timeoutUntil = Clock.System.now().plus(until, timezone)
 
-        this.reason = reason
-    }
+		this.reason = reason
+	}
 
 /**
  * Convenience function to server mute a member, skipping the [edit] DSL.
  */
 @DoNotChain
 public suspend fun Member.mute(reason: String? = null): Member = edit {
-    muted = true
+	muted = true
 
-    this.reason = reason
+	this.reason = reason
 }
 
 /**
@@ -202,9 +202,9 @@ public suspend fun Member.mute(reason: String? = null): Member = edit {
  */
 @DoNotChain
 public suspend fun Member.unMute(reason: String? = null): Member = edit {
-    muted = false
+	muted = false
 
-    this.reason = reason
+	this.reason = reason
 }
 
 /**
@@ -212,9 +212,9 @@ public suspend fun Member.unMute(reason: String? = null): Member = edit {
  */
 @DoNotChain
 public suspend fun Member.deafen(reason: String? = null): Member = edit {
-    deafened = true
+	deafened = true
 
-    this.reason = reason
+	this.reason = reason
 }
 
 /**
@@ -222,9 +222,9 @@ public suspend fun Member.deafen(reason: String? = null): Member = edit {
  */
 @DoNotChain
 public suspend fun Member.unDeafen(reason: String? = null): Member = edit {
-    deafened = false
+	deafened = false
 
-    this.reason = reason
+	this.reason = reason
 }
 
 /**
@@ -235,9 +235,9 @@ public suspend fun Member.unDeafen(reason: String? = null): Member = edit {
  */
 @DoNotChain
 public suspend fun Member.setNickname(nickname: String?, reason: String? = null): Member = edit {
-    this.nickname = nickname
+	this.nickname = nickname
 
-    this.reason = reason
+	this.reason = reason
 }
 
 /**
@@ -247,4 +247,4 @@ public suspend fun Member.setNickname(nickname: String?, reason: String? = null)
  */
 @DoNotChain
 public suspend fun Member.removeNickname(reason: String? = null): Member =
-    setNickname(null, reason)
+	setNickname(null, reason)

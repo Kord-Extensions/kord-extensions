@@ -12,15 +12,15 @@ import dev.kord.common.entity.DiscordPartialEmoji
 
 /** Abstract class representing a button component with an ID, but without a click action. **/
 public abstract class InteractionButtonWithID : ComponentWithID(), HasPartialEmoji {
-    /** Button label, for display on Discord. **/
-    public var label: String? = null
-    public override var partialEmoji: DiscordPartialEmoji? = null
+	/** Button label, for display on Discord. **/
+	public var label: String? = null
+	public override var partialEmoji: DiscordPartialEmoji? = null
 
-    override fun validate() {
-        super.validate()
+	override fun validate() {
+		super.validate()
 
-        if (label == null && partialEmoji == null) {
-            error("Buttons must have either a label or emoji.")
-        }
-    }
+		if (label == null && partialEmoji == null) {
+			error("Buttons must have either a label or emoji.")
+		}
+	}
 }

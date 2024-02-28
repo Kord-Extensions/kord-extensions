@@ -45,167 +45,167 @@ private val logger = KotlinLogging.logger {}
  * @param useReply Whether to use the replied-to message (if there is one) instead of trying to parse an argument.
  */
 @Converter(
-    "message",
+	"message",
 
-    types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
-    imports = ["dev.kord.common.entity.Snowflake"],
+	types = [ConverterType.LIST, ConverterType.OPTIONAL, ConverterType.SINGLE],
+	imports = ["dev.kord.common.entity.Snowflake"],
 
-    builderFields = [
-        "public var requireGuild: Boolean = false",
-        "public var requiredGuild: (suspend () -> Snowflake)? = null",
-        "public var useReply: Boolean = true",
-    ]
+	builderFields = [
+		"public var requireGuild: Boolean = false",
+		"public var requiredGuild: (suspend () -> Snowflake)? = null",
+		"public var useReply: Boolean = true",
+	]
 )
 public class MessageConverter(
-    private var requireGuild: Boolean = false,
-    private var requiredGuild: (suspend () -> Snowflake)? = null,
-    private var useReply: Boolean = true,
-    override var validator: Validator<Message> = null
+	private var requireGuild: Boolean = false,
+	private var requiredGuild: (suspend () -> Snowflake)? = null,
+	private var useReply: Boolean = true,
+	override var validator: Validator<Message> = null,
 ) : SingleConverter<Message>() {
-    override val signatureTypeString: String = "converters.message.signatureType"
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.message.signatureType"
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        if (useReply && context is ChatCommandContext<*>) {
-            val messageReference = context.message.asMessage().messageReference
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		if (useReply && context is ChatCommandContext<*>) {
+			val messageReference = context.message.asMessage().messageReference
 
-            if (messageReference != null) {
-                val message = messageReference.message?.asMessageOrNull()
+			if (messageReference != null) {
+				val message = messageReference.message?.asMessageOrNull()
 
-                if (message != null) {
-                    parsed = message
-                    return true
-                }
-            }
-        }
+				if (message != null) {
+					parsed = message
+					return true
+				}
+			}
+		}
 
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        parsed = findMessage(arg, context)
+		parsed = findMessage(arg, context)
 
-        return true
-    }
+		return true
+	}
 
-    private suspend fun findMessage(arg: String, context: CommandContext): Message {
-        val requiredGid: Snowflake? = if (requiredGuild != null) {
-            requiredGuild!!.invoke()
-        } else {
-            context.getGuild()?.id
-        }
+	private suspend fun findMessage(arg: String, context: CommandContext): Message {
+		val requiredGid: Snowflake? = if (requiredGuild != null) {
+			requiredGuild!!.invoke()
+		} else {
+			context.getGuild()?.id
+		}
 
-        return if (arg.startsWith("https://")) { // It's a message URL
-            @Suppress("MagicNumber")
-            val split: List<String> = arg.substring(8).split("/").takeLast(3)
+		return if (arg.startsWith("https://")) { // It's a message URL
+			@Suppress("MagicNumber")
+			val split: List<String> = arg.substring(8).split("/").takeLast(3)
 
-            @Suppress("MagicNumber")
-            if (split.size < 3) {
-                throw DiscordRelayedException(
-                    context.translate("converters.message.error.invalidUrl", replacements = arrayOf(arg))
-                )
-            }
+			@Suppress("MagicNumber")
+			if (split.size < 3) {
+				throw DiscordRelayedException(
+					context.translate("converters.message.error.invalidUrl", replacements = arrayOf(arg))
+				)
+			}
 
-            @Suppress("MagicNumber")
-            val gid: Snowflake = try {
-                Snowflake(split[0])
-            } catch (e: NumberFormatException) {
-                throw DiscordRelayedException(
-                    context.translate("converters.message.error.invalidGuildId", replacements = arrayOf(split[0]))
-                )
-            }
+			@Suppress("MagicNumber")
+			val gid: Snowflake = try {
+				Snowflake(split[0])
+			} catch (e: NumberFormatException) {
+				throw DiscordRelayedException(
+					context.translate("converters.message.error.invalidGuildId", replacements = arrayOf(split[0]))
+				)
+			}
 
-            if (requireGuild && requiredGid != gid) {
-                logger.trace { "Matching guild ($requiredGid) required, but guild ($gid) doesn't match." }
+			if (requireGuild && requiredGid != gid) {
+				logger.trace { "Matching guild ($requiredGid) required, but guild ($gid) doesn't match." }
 
-                errorNoMessage(arg, context)
-            }
+				errorNoMessage(arg, context)
+			}
 
-            @Suppress("MagicNumber")
-            val cid: Snowflake = try {
-                Snowflake(split[1])
-            } catch (e: NumberFormatException) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        "converters.message.error.invalidChannelId",
-                        replacements = arrayOf(split[1])
-                    )
-                )
-            }
+			@Suppress("MagicNumber")
+			val cid: Snowflake = try {
+				Snowflake(split[1])
+			} catch (e: NumberFormatException) {
+				throw DiscordRelayedException(
+					context.translate(
+						"converters.message.error.invalidChannelId",
+						replacements = arrayOf(split[1])
+					)
+				)
+			}
 
-            val channel: GuildChannel? = kord.getGuildOrNull(gid)?.getChannel(cid)
+			val channel: GuildChannel? = kord.getGuildOrNull(gid)?.getChannel(cid)
 
-            if (channel == null) {
-                logger.trace { "Unable to find channel ($cid) for guild ($gid)." }
+			if (channel == null) {
+				logger.trace { "Unable to find channel ($cid) for guild ($gid)." }
 
-                errorNoMessage(arg, context)
-            }
+				errorNoMessage(arg, context)
+			}
 
-            if (channel !is GuildMessageChannel) {
-                logger.trace { "Specified channel ($cid) is not a guild message channel." }
+			if (channel !is GuildMessageChannel) {
+				logger.trace { "Specified channel ($cid) is not a guild message channel." }
 
-                errorNoMessage(arg, context)
-            }
+				errorNoMessage(arg, context)
+			}
 
-            @Suppress("MagicNumber")
-            val mid: Snowflake = try {
-                Snowflake(split[2])
-            } catch (e: NumberFormatException) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        "converters.message.error.invalidMessageId",
-                        replacements = arrayOf(split[2])
-                    )
-                )
-            }
+			@Suppress("MagicNumber")
+			val mid: Snowflake = try {
+				Snowflake(split[2])
+			} catch (e: NumberFormatException) {
+				throw DiscordRelayedException(
+					context.translate(
+						"converters.message.error.invalidMessageId",
+						replacements = arrayOf(split[2])
+					)
+				)
+			}
 
-            try {
-                channel.getMessage(mid)
-            } catch (e: EntityNotFoundException) {
-                errorNoMessage(mid.toString(), context)
-            }
-        } else { // Try a message ID
-            val channel: ChannelBehavior = context.getChannel()
+			try {
+				channel.getMessage(mid)
+			} catch (e: EntityNotFoundException) {
+				errorNoMessage(mid.toString(), context)
+			}
+		} else { // Try a message ID
+			val channel: ChannelBehavior = context.getChannel()
 
-            if (channel !is GuildMessageChannel && channel !is DmChannel) {
-                logger.trace { "Current channel is not a guild message channel or DM channel." }
+			if (channel !is GuildMessageChannel && channel !is DmChannel) {
+				logger.trace { "Current channel is not a guild message channel or DM channel." }
 
-                errorNoMessage(arg, context)
-            }
+				errorNoMessage(arg, context)
+			}
 
-            if (channel !is MessageChannel) {
-                logger.trace { "Current channel is not a message channel, so it can't contain messages." }
+			if (channel !is MessageChannel) {
+				logger.trace { "Current channel is not a message channel, so it can't contain messages." }
 
-                errorNoMessage(arg, context)
-            }
+				errorNoMessage(arg, context)
+			}
 
-            try {
-                channel.getMessage(Snowflake(arg))
-            } catch (e: NumberFormatException) {
-                throw DiscordRelayedException(
-                    context.translate(
-                        "converters.message.error.invalidMessageId",
-                        replacements = arrayOf(arg)
-                    )
-                )
-            } catch (e: EntityNotFoundException) {
-                errorNoMessage(arg, context)
-            }
-        }
-    }
+			try {
+				channel.getMessage(Snowflake(arg))
+			} catch (e: NumberFormatException) {
+				throw DiscordRelayedException(
+					context.translate(
+						"converters.message.error.invalidMessageId",
+						replacements = arrayOf(arg)
+					)
+				)
+			} catch (e: EntityNotFoundException) {
+				errorNoMessage(arg, context)
+			}
+		}
+	}
 
-    private suspend fun errorNoMessage(arg: String, context: CommandContext): Nothing {
-        throw DiscordRelayedException(
-            context.translate("converters.message.error.missing", replacements = arrayOf(arg))
-        )
-    }
+	private suspend fun errorNoMessage(arg: String, context: CommandContext): Nothing {
+		throw DiscordRelayedException(
+			context.translate("converters.message.error.missing", replacements = arrayOf(arg))
+		)
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
-        parsed = findMessage(optionValue, context)
+		parsed = findMessage(optionValue, context)
 
-        return true
-    }
+		return true
+	}
 }

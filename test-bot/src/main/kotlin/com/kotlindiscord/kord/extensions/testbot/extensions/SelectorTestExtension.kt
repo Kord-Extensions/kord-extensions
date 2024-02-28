@@ -16,136 +16,136 @@ import dev.kord.core.behavior.channel.asChannelOf
 import dev.kord.core.entity.channel.TextChannel
 
 public class SelectorTestExtension : Extension() {
-    override val name: String = "Select Menus Test"
+	override val name: String = "Select Menus Test"
 
-    override suspend fun setup() {
-        publicSlashCommand {
-            name = "selector"
-            description = "Test selectors."
+	override suspend fun setup() {
+		publicSlashCommand {
+			name = "selector"
+			description = "Test selectors."
 
-            publicSubCommand {
-                name = "public"
-                description = "Test public selectors."
+			publicSubCommand {
+				name = "public"
+				description = "Test public selectors."
 
-                action {
-                    respond {
-                        components {
-                            publicStringSelectMenu {
-                                option("hi", "1")
-                                option("hi hi", "2")
-                                maximumChoices = null
+				action {
+					respond {
+						components {
+							publicStringSelectMenu {
+								option("hi", "1")
+								option("hi hi", "2")
+								maximumChoices = null
 
-                                action {
-                                    respond { content = selected.joinToString("\n") }
-                                }
-                            }
+								action {
+									respond { content = selected.joinToString("\n") }
+								}
+							}
 
-                            publicUserSelectMenu {
-                                maximumChoices = null
+							publicUserSelectMenu {
+								maximumChoices = null
 
-                                action {
-                                    respond {
-                                        content = selected.map { it.asUser().username }.joinToString("\n")
-                                    }
-                                }
-                            }
+								action {
+									respond {
+										content = selected.map { it.asUser().username }.joinToString("\n")
+									}
+								}
+							}
 
-                            publicRoleSelectMenu {
-                                maximumChoices = null
+							publicRoleSelectMenu {
+								maximumChoices = null
 
-                                action {
-                                    respond {
-                                        content = selected.map { it.asRole().name }.joinToString("\n")
-                                    }
-                                }
-                            }
+								action {
+									respond {
+										content = selected.map { it.asRole().name }.joinToString("\n")
+									}
+								}
+							}
 
-                            publicChannelSelectMenu {
-                                maximumChoices = null
+							publicChannelSelectMenu {
+								maximumChoices = null
 
-                                action {
-                                    respond {
-                                        content = selected.map { it.id.value }.joinToString("\n")
-                                    }
-                                }
-                            }
+								action {
+									respond {
+										content = selected.map { it.id.value }.joinToString("\n")
+									}
+								}
+							}
 
-                            publicChannelSelectMenu {
-                                maximumChoices = null
-                                channelType(ChannelType.GuildText)
+							publicChannelSelectMenu {
+								maximumChoices = null
+								channelType(ChannelType.GuildText)
 
-                                action {
-                                    respond {
-                                        content = selected.map { it.asChannelOf<TextChannel>().name }.joinToString("\n")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+								action {
+									respond {
+										content = selected.map { it.asChannelOf<TextChannel>().name }.joinToString("\n")
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 
-            ephemeralSubCommand {
-                name = "ephemeral"
-                description = "Test ephemeral selectors."
+			ephemeralSubCommand {
+				name = "ephemeral"
+				description = "Test ephemeral selectors."
 
-                action {
-                    respond {
-                        components {
-                            ephemeralStringSelectMenu {
-                                option("hi", "1")
-                                option("hi hi", "2")
-                                maximumChoices = null
+				action {
+					respond {
+						components {
+							ephemeralStringSelectMenu {
+								option("hi", "1")
+								option("hi hi", "2")
+								maximumChoices = null
 
-                                action {
-                                    respond { content = selected.joinToString("\n") }
-                                }
-                            }
+								action {
+									respond { content = selected.joinToString("\n") }
+								}
+							}
 
-                            ephemeralUserSelectMenu {
-                                maximumChoices = null
+							ephemeralUserSelectMenu {
+								maximumChoices = null
 
-                                action {
-                                    respond {
-                                        content = selected.map { it.asUser().username }.joinToString("\n")
-                                    }
-                                }
-                            }
+								action {
+									respond {
+										content = selected.map { it.asUser().username }.joinToString("\n")
+									}
+								}
+							}
 
-                            ephemeralRoleSelectMenu {
-                                maximumChoices = null
+							ephemeralRoleSelectMenu {
+								maximumChoices = null
 
-                                action {
-                                    respond {
-                                        content = selected.map { it.asRole().name }.joinToString("\n")
-                                    }
-                                }
-                            }
+								action {
+									respond {
+										content = selected.map { it.asRole().name }.joinToString("\n")
+									}
+								}
+							}
 
-                            ephemeralChannelSelectMenu {
-                                maximumChoices = null
+							ephemeralChannelSelectMenu {
+								maximumChoices = null
 
-                                action {
-                                    respond {
-                                        content = selected.map { it.id.value }.joinToString("\n")
-                                    }
-                                }
-                            }
+								action {
+									respond {
+										content = selected.map { it.id.value }.joinToString("\n")
+									}
+								}
+							}
 
-                            ephemeralChannelSelectMenu {
-                                maximumChoices = null
-                                channelType(ChannelType.GuildText)
+							ephemeralChannelSelectMenu {
+								maximumChoices = null
+								channelType(ChannelType.GuildText)
 
-                                action {
-                                    respond {
-                                        content = selected.map { it.asChannelOf<TextChannel>().name }.joinToString("\n")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+								action {
+									respond {
+										content = selected.map { it.asChannelOf<TextChannel>().name }.joinToString("\n")
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

@@ -30,66 +30,66 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see enumList
  */
 @Converter(
-    "enum",
+	"enum",
 
-    types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.LIST],
-    imports = ["com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum"],
+	types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.LIST],
+	imports = ["com.kotlindiscord.kord.extensions.commands.converters.impl.getEnum"],
 
-    builderGeneric = "E: Enum<E>",
-    builderConstructorArguments = [
-        "public var getter: suspend (String) -> E?"
-    ],
+	builderGeneric = "E: Enum<E>",
+	builderConstructorArguments = [
+		"public var getter: suspend (String) -> E?"
+	],
 
-    builderFields = [
-        "public lateinit var typeName: String",
-        "public var bundle: String? = null"
-    ],
+	builderFields = [
+		"public lateinit var typeName: String",
+		"public var bundle: String? = null"
+	],
 
-    functionGeneric = "E: Enum<E>",
-    functionBuilderArguments = [
-        "getter = { getEnum(it) }",
-    ]
+	functionGeneric = "E: Enum<E>",
+	functionBuilderArguments = [
+		"getter = { getEnum(it) }",
+	]
 )
 public class EnumConverter<E : Enum<E>>(
-    typeName: String,
-    private val getter: suspend (String) -> E?,
-    override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
-    override var validator: Validator<E> = null
+	typeName: String,
+	private val getter: suspend (String) -> E?,
+	override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
+	override var validator: Validator<E> = null,
 ) : SingleConverter<E>() {
-    override val signatureTypeString: String = typeName
+	override val signatureTypeString: String = typeName
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
-        val arg: String = named ?: parser?.parseNext()?.data ?: return false
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
+		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
-        try {
-            parsed = getter.invoke(arg) ?: return false
-        } catch (e: IllegalArgumentException) {
-            return false
-        }
+		try {
+			parsed = getter.invoke(arg) ?: return false
+		} catch (e: IllegalArgumentException) {
+			return false
+		}
 
-        return true
-    }
+		return true
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
-        try {
-            parsed = getter.invoke(optionValue) ?: return false
-        } catch (e: IllegalArgumentException) {
-            return false
-        }
+		try {
+			parsed = getter.invoke(optionValue) ?: return false
+		} catch (e: IllegalArgumentException) {
+			return false
+		}
 
-        return true
-    }
+		return true
+	}
 }
 
 /**
  * The default enum value getter - matches enums based on a case-insensitive string comparison with the name.
  */
 public inline fun <reified E : Enum<E>> getEnum(arg: String): E? =
-    enumValues<E>().firstOrNull {
-        it.name.equals(arg, true)
-    }
+	enumValues<E>().firstOrNull {
+		it.name.equals(arg, true)
+	}

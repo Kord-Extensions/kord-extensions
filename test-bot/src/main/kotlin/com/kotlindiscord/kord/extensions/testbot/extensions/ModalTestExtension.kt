@@ -20,157 +20,157 @@ import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.publicUserCommand
 
 public class ModalTestExtension : Extension() {
-    override val name: String = "modals"
-    override val bundle: String = "test.strings"
+	override val name: String = "modals"
+	override val bundle: String = "test.strings"
 
-    @Suppress("StringLiteralDuplication")
-    override suspend fun setup() {
-        publicUserCommand(::Modal) {
-            name = "Modal"
+	@Suppress("StringLiteralDuplication")
+	override suspend fun setup() {
+		publicUserCommand(::Modal) {
+			name = "Modal"
 
-            action { modal ->
-                respond {
-                    content = buildString {
-                        if (modal == null) {
-                            append("**No modal found!**")
+			action { modal ->
+				respond {
+					content = buildString {
+						if (modal == null) {
+							append("**No modal found!**")
 
-                            return@buildString
-                        }
+							return@buildString
+						}
 
-                        append("**Line:** `")
-                        appendLine(modal.line.value)
-                        append("`")
-                        appendLine()
+						append("**Line:** `")
+						appendLine(modal.line.value)
+						append("`")
+						appendLine()
 
-                        appendLine("**Paragraph:** ```")
-                        appendLine(modal.paragraph.value)
-                        append("```")
-                        appendLine()
-                    }
-                }
-            }
-        }
+						appendLine("**Paragraph:** ```")
+						appendLine(modal.paragraph.value)
+						append("```")
+						appendLine()
+					}
+				}
+			}
+		}
 
-        publicMessageCommand(::Modal) {
-            name = "Modal"
+		publicMessageCommand(::Modal) {
+			name = "Modal"
 
-            action { modal ->
-                respond {
-                    content = buildString {
-                        if (modal == null) {
-                            append("**No modal found!**")
+			action { modal ->
+				respond {
+					content = buildString {
+						if (modal == null) {
+							append("**No modal found!**")
 
-                            return@buildString
-                        }
+							return@buildString
+						}
 
-                        append("**Line:** `")
-                        appendLine(modal.line.value)
-                        append("`")
-                        appendLine()
+						append("**Line:** `")
+						appendLine(modal.line.value)
+						append("`")
+						appendLine()
 
-                        appendLine("**Paragraph:** ```")
-                        appendLine(modal.paragraph.value)
-                        append("```")
-                        appendLine()
-                    }
-                }
-            }
-        }
+						appendLine("**Paragraph:** ```")
+						appendLine(modal.paragraph.value)
+						append("```")
+						appendLine()
+					}
+				}
+			}
+		}
 
-        publicSlashCommand {
-            name = "modals"
-            description = "Modal testing commands"
+		publicSlashCommand {
+			name = "modals"
+			description = "Modal testing commands"
 
-            publicSubCommand {
-                name = "button"
-                description = "Test a modal response to a button"
+			publicSubCommand {
+				name = "button"
+				description = "Test a modal response to a button"
 
-                action {
-                    respond {
-                        components {
-                            publicButton(::Modal) {
-                                bundle = "test.strings"
-                                label = "Modal!"
+				action {
+					respond {
+						components {
+							publicButton(::Modal) {
+								bundle = "test.strings"
+								label = "Modal!"
 
-                                action { modal ->
-                                    respond {
-                                        content = buildString {
-                                            if (modal == null) {
-                                                append("**No modal found!**")
+								action { modal ->
+									respond {
+										content = buildString {
+											if (modal == null) {
+												append("**No modal found!**")
 
-                                                return@buildString
-                                            }
+												return@buildString
+											}
 
-                                            append("**Line:** `")
-                                            appendLine(modal.line.value)
-                                            append("`")
-                                            appendLine()
+											append("**Line:** `")
+											appendLine(modal.line.value)
+											append("`")
+											appendLine()
 
-                                            appendLine("**Paragraph:** ```")
-                                            appendLine(modal.paragraph.value)
-                                            append("```")
-                                            appendLine()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+											appendLine("**Paragraph:** ```")
+											appendLine(modal.paragraph.value)
+											append("```")
+											appendLine()
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 
-            publicSubCommand(::Args, ::Modal) {
-                name = "command"
-                description = "Test a modal response to a command"
+			publicSubCommand(::Args, ::Modal) {
+				name = "command"
+				description = "Test a modal response to a command"
 
-                action { modal ->
-                    respond {
-                        content = buildString {
-                            append("**Argument:** `")
-                            appendLine(arguments.str)
-                            append("`")
-                            appendLine()
+				action { modal ->
+					respond {
+						content = buildString {
+							append("**Argument:** `")
+							appendLine(arguments.str)
+							append("`")
+							appendLine()
 
-                            if (modal == null) {
-                                append("**No modal found!**")
+							if (modal == null) {
+								append("**No modal found!**")
 
-                                return@buildString
-                            }
+								return@buildString
+							}
 
-                            append("**Line:** `")
-                            appendLine(modal.line.value)
-                            append("`")
-                            appendLine()
+							append("**Line:** `")
+							appendLine(modal.line.value)
+							append("`")
+							appendLine()
 
-                            appendLine("**Paragraph:** ```")
-                            appendLine(modal.paragraph.value)
-                            append("```")
-                            appendLine()
-                        }
-                    }
-                }
-            }
-        }
-    }
+							appendLine("**Paragraph:** ```")
+							appendLine(modal.paragraph.value)
+							append("```")
+							appendLine()
+						}
+					}
+				}
+			}
+		}
+	}
 
-    public inner class Args : Arguments() {
-        public val str: String by string {
-            name = "string"
-            description = "A string argument"
-        }
-    }
+	public inner class Args : Arguments() {
+		public val str: String by string {
+			name = "string"
+			description = "A string argument"
+		}
+	}
 
-    public inner class Modal : ModalForm() {
-        override var title: String = "modal.title"
+	public inner class Modal : ModalForm() {
+		override var title: String = "modal.title"
 
-        public val line: LineTextWidget = lineText {
-            label = "modal.line"
-            placeholder = "modal.line.placeholder"
-        }
+		public val line: LineTextWidget = lineText {
+			label = "modal.line"
+			placeholder = "modal.line.placeholder"
+		}
 
-        public val paragraph: ParagraphTextWidget = paragraphText {
-            label = "modal.paragraph"
-            placeholder = "modal.paragraph.placeholder"
-        }
-    }
+		public val paragraph: ParagraphTextWidget = paragraphText {
+			label = "modal.paragraph"
+			placeholder = "modal.paragraph.placeholder"
+		}
+	}
 }

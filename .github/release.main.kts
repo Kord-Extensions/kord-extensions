@@ -15,7 +15,7 @@ var githubTag: String = System.getenv("GITHUB_REF")
 val repo: String = System.getenv("GITHUB_REPOSITORY")
 
 if (githubTag.contains("/")) {
-    githubTag = githubTag.split("/").last()
+	githubTag = githubTag.split("/").last()
 }
 
 println("Current tag: $githubTag")
@@ -23,17 +23,17 @@ println("Current tag: $githubTag")
 val apiUrl = "https://api.github.com/repos/$repo/releases/tags/$githubTag"
 
 if (githubTag.contains("v")) {
-    githubTag = githubTag.split("v", limit = 2).last()
+	githubTag = githubTag.split("v", limit = 2).last()
 }
 
 val response = httpGet { url(apiUrl) }
 val responseCode = response.code()
 
 if (responseCode >= 400) {
-    println("API error: HTTP $responseCode")
-    println(response.body()?.string())
+	println("API error: HTTP $responseCode")
+	println(response.body()?.string())
 
-    exitProcess(1)
+	exitProcess(1)
 }
 
 val data = gson.create().fromJson<Map<String, *>>(response.body()!!.string(), Map::class.java)
@@ -50,56 +50,56 @@ val releaseTime = data["published_at"] as String
 val releaseUrl = data["html_url"] as String
 
 if (releaseBody.startsWith("#")) {
-    val lines = releaseBody.split("\n").toMutableList()
+	val lines = releaseBody.split("\n").toMutableList()
 
-    lines[0] = lines[0].replaceFirst("#", "**") + "**"
-    releaseBody = lines.joinToString("\n")
+	lines[0] = lines[0].replaceFirst("#", "**") + "**"
+	releaseBody = lines.joinToString("\n")
 }
 
 if (releaseBody.contains("---")) {
-    releaseBody = releaseBody.split("---", limit = 2).first()
+	releaseBody = releaseBody.split("---", limit = 2).first()
 }
 
 val webhook = mapOf(
-    "embeds" to listOf(
-        mapOf(
-            "color" to 7506394,
-            "description" to releaseBody,
-            "timestamp" to releaseTime.replace("Z", ".000Z"),
-            "title" to releaseName,
-            "url" to releaseUrl,
+	"embeds" to listOf(
+		mapOf(
+			"color" to 7506394,
+			"description" to releaseBody,
+			"timestamp" to releaseTime.replace("Z", ".000Z"),
+			"title" to releaseName,
+			"url" to releaseUrl,
 
-            "author" to mapOf(
-                "icon_url" to authorAvatar,
-                "name" to authorName,
-                "url" to authorUrl,
-            )
-        )
-    )
+			"author" to mapOf(
+				"icon_url" to authorAvatar,
+				"name" to authorName,
+				"url" to authorUrl,
+			)
+		)
+	)
 )
 
 val jsonBody = gson.create().toJson(webhook)
 
 val webhookResponse = httpPost {
-    url(webhookUrl)
+	url(webhookUrl)
 
-    header {
-        "User-Agent" to "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) " +
-                "Chrome/35.0.1916.47 Safari/537.36"
-    }
+	header {
+		"User-Agent" to "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) " +
+			"Chrome/35.0.1916.47 Safari/537.36"
+	}
 
-    body {
-        json(jsonBody)
-    }
+	body {
+		json(jsonBody)
+	}
 }
 
 val webhookCode = webhookResponse.code()
 
 if (webhookCode >= 400) {
-    println("Webhook error: HTTP $webhookCode")
-    println(webhookResponse.body()?.string())
+	println("Webhook error: HTTP $webhookCode")
+	println(webhookResponse.body()?.string())
 
-    exitProcess(1)
+	exitProcess(1)
 }
 
 exitProcess(0)

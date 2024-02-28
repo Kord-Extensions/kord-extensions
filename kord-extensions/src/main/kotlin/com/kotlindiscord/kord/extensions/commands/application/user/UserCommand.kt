@@ -27,44 +27,44 @@ import org.koin.core.component.inject
  * @param modal Callable returning a `ModalForm` object, if any
  */
 public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
-    extension: Extension,
-    public open val modal: (() -> M)? = null,
+	extension: Extension,
+	public open val modal: (() -> M)? = null,
 ) : ApplicationCommand<UserCommandInteractionCreateEvent>(extension) {
-    private val logger: KLogger = KotlinLogging.logger {}
+	private val logger: KLogger = KotlinLogging.logger {}
 
-    /** @suppress This is only meant for use by code that extends the command system. **/
-    public val componentRegistry: ComponentRegistry by inject()
+	/** @suppress This is only meant for use by code that extends the command system. **/
+	public val componentRegistry: ComponentRegistry by inject()
 
-    /** Command body, to be called when the command is executed. **/
-    public lateinit var body: suspend C.(M?) -> Unit
+	/** Command body, to be called when the command is executed. **/
+	public lateinit var body: suspend C.(M?) -> Unit
 
-    override val type: ApplicationCommandType = ApplicationCommandType.User
+	override val type: ApplicationCommandType = ApplicationCommandType.User
 
-    /** Call this to supply a command [body], to be called when the command is executed. **/
-    public fun action(action: suspend C.(M?) -> Unit) {
-        body = action
-    }
+	/** Call this to supply a command [body], to be called when the command is executed. **/
+	public fun action(action: suspend C.(M?) -> Unit) {
+		body = action
+	}
 
-    override fun validate() {
-        super.validate()
+	override fun validate() {
+		super.validate()
 
-        if (!::body.isInitialized) {
-            throw InvalidCommandException(name, "No command body given.")
-        }
-    }
+		if (!::body.isInitialized) {
+			throw InvalidCommandException(name, "No command body given.")
+		}
+	}
 
-    /** Override this to implement your command's calling logic. Check subtypes for examples! **/
-    public abstract override suspend fun call(
-        event: UserCommandInteractionCreateEvent,
-        cache: MutableStringKeyedMap<Any>
-    )
+	/** Override this to implement your command's calling logic. Check subtypes for examples! **/
+	public abstract override suspend fun call(
+		event: UserCommandInteractionCreateEvent,
+		cache: MutableStringKeyedMap<Any>,
+	)
 
-    /** Override this to implement a way to respond to the user, regardless of whatever happens. **/
-    public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
+	/** Override this to implement a way to respond to the user, regardless of whatever happens. **/
+	public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
 
-    /** If enabled, adds the initial Sentry breadcrumb to the given context. **/
-    public open suspend fun firstSentryBreadcrumb(context: C) {
-        if (sentry.enabled) {
+	/** If enabled, adds the initial Sentry breadcrumb to the given context. **/
+	public open suspend fun firstSentryBreadcrumb(context: C) {
+		if (sentry.enabled) {
 			context.sentry.context(
 				"command",
 
@@ -78,66 +78,66 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
 				"extension", extension.name
 			)
 
-            context.sentry.breadcrumb(BreadcrumbType.User) {
-                category = "command.application.user"
-                message = "User command \"$name\" called."
+			context.sentry.breadcrumb(BreadcrumbType.User) {
+				category = "command.application.user"
+				message = "User command \"$name\" called."
 
-                channel = context.channel.asChannelOrNull()
-                guild = context.guild?.asGuildOrNull()
+				channel = context.channel.asChannelOrNull()
+				guild = context.guild?.asGuildOrNull()
 
-                data["command"] = name
-            }
-        }
-    }
+				data["command"] = name
+			}
+		}
+	}
 
-    override suspend fun runChecks(
-        event: UserCommandInteractionCreateEvent,
-        cache: MutableStringKeyedMap<Any>
-    ): Boolean {
-        val locale = event.getLocale()
-        val result = super.runChecks(event, cache)
+	override suspend fun runChecks(
+		event: UserCommandInteractionCreateEvent,
+		cache: MutableStringKeyedMap<Any>,
+	): Boolean {
+		val locale = event.getLocale()
+		val result = super.runChecks(event, cache)
 
-        if (result) {
-            settings.applicationCommandsBuilder.userCommandChecks.forEach { check ->
-                val context = CheckContextWithCache(event, locale, cache)
+		if (result) {
+			settings.applicationCommandsBuilder.userCommandChecks.forEach { check ->
+				val context = CheckContextWithCache(event, locale, cache)
 
-                check(context)
+				check(context)
 
-                if (!context.passed) {
-                    context.throwIfFailedWithMessage()
+				if (!context.passed) {
+					context.throwIfFailedWithMessage()
 
-                    return false
-                }
-            }
+					return false
+				}
+			}
 
-            extension.userCommandChecks.forEach { check ->
-                val context = CheckContextWithCache(event, locale, cache)
+			extension.userCommandChecks.forEach { check ->
+				val context = CheckContextWithCache(event, locale, cache)
 
-                check(context)
+				check(context)
 
-                if (!context.passed) {
-                    context.throwIfFailedWithMessage()
+				if (!context.passed) {
+					context.throwIfFailedWithMessage()
 
-                    return false
-                }
-            }
-        }
+					return false
+				}
+			}
+		}
 
-        return result
-    }
+		return result
+	}
 
-    /** A general way to handle errors thrown during the course of a command's execution. **/
+	/** A general way to handle errors thrown during the course of a command's execution. **/
 	@Suppress("StringLiteralDuplication")
 	public open suspend fun handleError(context: C, t: Throwable) {
-        logger.error(t) { "Error during execution of $name user command (${context.event})" }
+		logger.error(t) { "Error during execution of $name user command (${context.event})" }
 
-        if (sentry.enabled) {
-            logger.trace { "Submitting error to sentry." }
+		if (sentry.enabled) {
+			logger.trace { "Submitting error to sentry." }
 
-            val sentryId = context.sentry.captureThrowable(t) {
+			val sentryId = context.sentry.captureThrowable(t) {
 				user = context.user.asUserOrNull()
 				channel = context.channel.asChannelOrNull()
-            }
+			}
 
 			val errorMessage = if (sentryId != null) {
 				logger.info { "Error submitted to Sentry: $sentryId" }
@@ -152,12 +152,12 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
 			}
 
 			respondText(context, errorMessage, FailureReason.ExecutionError(t))
-        } else {
-            respondText(
-                context,
-                context.translate("commands.error.user", null),
-                FailureReason.ExecutionError(t)
-            )
-        }
-    }
+		} else {
+			respondText(
+				context,
+				context.translate("commands.error.user", null),
+				FailureReason.ExecutionError(t)
+			)
+		}
+	}
 }

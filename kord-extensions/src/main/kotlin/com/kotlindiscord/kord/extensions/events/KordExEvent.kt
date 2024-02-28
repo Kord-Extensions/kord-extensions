@@ -16,10 +16,10 @@ import dev.kord.core.event.Event
  * Base interface for events fired by Kord Extensions.
  */
 public interface KordExEvent : Event, KordExKoinComponent {
-    override val kord: Kord get() = getKoin().get()
-    override val shard: Int get() = -1
+	override val kord: Kord get() = getKoin().get()
+	override val shard: Int get() = -1
 
-    @KordPreview
-    override val customContext: MutableStringKeyedMap<Any>
-        get() = mutableMapOf()
+	@KordPreview
+	override val customContext: MutableStringKeyedMap<Any>
+		get() = mutableMapOf()
 }

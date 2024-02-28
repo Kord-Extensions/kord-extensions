@@ -22,95 +22,95 @@ import kotlin.time.Duration.Companion.seconds
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(KoinExtension::class)
 class SchedulerTest {
-    @Test
-    @Execution(ExecutionMode.CONCURRENT)
-    fun `Schedulers can be cancelled`() = runBlocking {
-        val scheduler = Scheduler()
-        var count = 0
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	fun `Schedulers can be cancelled`() = runBlocking {
+		val scheduler = Scheduler()
+		var count = 0
 
-        scheduler.schedule(3) { count += 1 }
-        scheduler.shutdown()
+		scheduler.schedule(3) { count += 1 }
+		scheduler.shutdown()
 
-        delay(3000)
+		delay(3000)
 
-        assertEquals(count, 0) { "Task executed when it should have been cancelled" }
-    }
+		assertEquals(count, 0) { "Task executed when it should have been cancelled" }
+	}
 
-    @Test
-    @Execution(ExecutionMode.CONCURRENT)
-    fun `Tasks can be cancelled`() = runBlocking {
-        val scheduler = Scheduler()
-        var count = 0
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	fun `Tasks can be cancelled`() = runBlocking {
+		val scheduler = Scheduler()
+		var count = 0
 
-        val task = scheduler.schedule(3) {
-            count += 1
-        }
+		val task = scheduler.schedule(3) {
+			count += 1
+		}
 
-        task.cancel()
+		task.cancel()
 
-        delay(3000)
+		delay(3000)
 
-        assertEquals(count, 0) { "Task executed when it should have been cancelled" }
-    }
+		assertEquals(count, 0) { "Task executed when it should have been cancelled" }
+	}
 
-    @Test
-    @Execution(ExecutionMode.CONCURRENT)
-    fun `Tasks remove themselves from the task list`() = runBlocking {
-        val scheduler = Scheduler()
-        var count = 0
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	fun `Tasks remove themselves from the task list`() = runBlocking {
+		val scheduler = Scheduler()
+		var count = 0
 
-        val tasks = mutableListOf<Task>()
+		val tasks = mutableListOf<Task>()
 
-        tasks += scheduler.schedule(10) { count += 1 }
-        tasks += scheduler.schedule(10) { count += 1 }
-        tasks += scheduler.schedule(10) { count += 1 }
+		tasks += scheduler.schedule(10) { count += 1 }
+		tasks += scheduler.schedule(10) { count += 1 }
+		tasks += scheduler.schedule(10) { count += 1 }
 
-        assertEquals(
-            scheduler.tasks.size,
-            tasks.size
-        ) { "Scheduler should have ${tasks.size} tasks, but it has ${scheduler.tasks.size}" }
+		assertEquals(
+			scheduler.tasks.size,
+			tasks.size
+		) { "Scheduler should have ${tasks.size} tasks, but it has ${scheduler.tasks.size}" }
 
-        tasks.forEach { it.callNow() }
+		tasks.forEach { it.callNow() }
 
-        delay(1000)  // Some systems are a bit weird about job timing
+		delay(1000)  // Some systems are a bit weird about job timing
 
-        assertEquals(
-            scheduler.tasks.size,
-            0
-        ) { "Scheduler should have 0 tasks, but it has ${scheduler.tasks.size}" }
-    }
+		assertEquals(
+			scheduler.tasks.size,
+			0
+		) { "Scheduler should have 0 tasks, but it has ${scheduler.tasks.size}" }
+	}
 
-    @Test
-    @Execution(ExecutionMode.CONCURRENT)
-    fun `Tasks run exactly once`() = runBlocking {
-        val scheduler = Scheduler()
-        var count = 0
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	fun `Tasks run exactly once`() = runBlocking {
+		val scheduler = Scheduler()
+		var count = 0
 
-        val task = scheduler.schedule(0) {
-            count += 1
-        }
+		val task = scheduler.schedule(0) {
+			count += 1
+		}
 
-        if (task.running) {
-            task.join()
-        }
+		if (task.running) {
+			task.join()
+		}
 
-        assertEquals(count, 1) { "Task executed $count times instead of once" }
-    }
+		assertEquals(count, 1) { "Task executed $count times instead of once" }
+	}
 
-    @Test
-    @Execution(ExecutionMode.CONCURRENT)
-    fun `Tasks marked as repeatable run multiple times`() = runBlocking {
-        val scheduler = Scheduler()
-        var count = 0
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	fun `Tasks marked as repeatable run multiple times`() = runBlocking {
+		val scheduler = Scheduler()
+		var count = 0
 
-        val task = scheduler.schedule(1.seconds, repeat = true) {
-            count += 1
-        }
+		val task = scheduler.schedule(1.seconds, repeat = true) {
+			count += 1
+		}
 
-        delay(10.seconds)
+		delay(10.seconds)
 
-        task.cancel()
+		task.cancel()
 
-        assert(count > 1) { "Task did not run multiple times" }
-    }
+		assert(count > 1) { "Task did not run multiple times" }
+	}
 }

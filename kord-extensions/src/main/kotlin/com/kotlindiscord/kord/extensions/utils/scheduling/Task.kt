@@ -37,47 +37,47 @@ import kotlin.time.TimeSource
  */
 @OptIn(ExperimentalTime::class)
 public open class Task(
-    public open var duration: Duration,
-    public open val callback: suspend () -> Unit,
-    public open var pollingSeconds: Long = 1,
-    public open val coroutineScope: CoroutineScope = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>(),
-    public open val parent: Scheduler? = null,
+	public open var duration: Duration,
+	public open val callback: suspend () -> Unit,
+	public open var pollingSeconds: Long = 1,
+	public open val coroutineScope: CoroutineScope = com.kotlindiscord.kord.extensions.utils.getKoin().get<Kord>(),
+	public open val parent: Scheduler? = null,
 
-    public val name: String = "Unnamed",
-    public val repeat: Boolean = false
+	public val name: String = "Unnamed",
+	public val repeat: Boolean = false,
 ) : KordExKoinComponent {
-    /** Cache map for storing data for this task, if needed. **/
-    public val cache: MutableStringKeyedMap<Any> = mutableMapOf()
+	/** Cache map for storing data for this task, if needed. **/
+	public val cache: MutableStringKeyedMap<Any> = mutableMapOf()
 
-    protected val logger: KLogger = KotlinLogging.logger("Task: $name")
-    protected var job: Job? = null
-    protected lateinit var started: TimeMark
-    protected val sentry: SentryAdapter by inject()
+	protected val logger: KLogger = KotlinLogging.logger("Task: $name")
+	protected var job: Job? = null
+	protected lateinit var started: TimeMark
+	protected val sentry: SentryAdapter by inject()
 
-    /**
-     * Number of times this task has been executed.
-     *
-     * If a ULong is too small for this... wyd?
-     */
-    public var executions: ULong = 0UL
+	/**
+	 * Number of times this task has been executed.
+	 *
+	 * If a ULong is too small for this... wyd?
+	 */
+	public var executions: ULong = 0UL
 
-    /** Whether this task is currently running - that is, waiting until it's time to execute the [callback]. **/
-    public val running: Boolean get() = job != null
+	/** Whether this task is currently running - that is, waiting until it's time to execute the [callback]. **/
+	public val running: Boolean get() = job != null
 
-    /** Calculate whether it's time to start this task, returning `true` if so. **/
+	/** Calculate whether it's time to start this task, returning `true` if so. **/
 	public fun shouldStart(): Boolean = started.elapsedNow() >= duration
 
-    /** Mark the start time and begin waiting until the execution time has been reached. **/
-    public suspend fun start() {
-        val sentryContext = SentryContext()
+	/** Mark the start time and begin waiting until the execution time has been reached. **/
+	public suspend fun start() {
+		val sentryContext = SentryContext()
 
-        started = TimeSource.Monotonic.markNow()
+		started = TimeSource.Monotonic.markNow()
 
-        if (executions == 0UL) {
-            sentryContext.breadcrumb(BreadcrumbType.Info) {
-                val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+		if (executions == 0UL) {
+			sentryContext.breadcrumb(BreadcrumbType.Info) {
+				val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 
-                message = "Starting task: waiting for configured delay to pass"
+				message = "Starting task: waiting for configured delay to pass"
 
 				data["task.delay"] = duration.toIsoString()
 				data["task.name"] = name
@@ -85,105 +85,105 @@ public open class Task(
 				data["task.repeating"] = repeat
 
 				data["time.now"] = now.toString()
-            }
-        }
+			}
+		}
 
-        job = coroutineScope.launch {
-            while (!shouldStart()) {
-                @Suppress("MagicNumber")  // We're just turning it into seconds from millis
-                delay(pollingSeconds * 1000)
-            }
+		job = coroutineScope.launch {
+			while (!shouldStart()) {
+				@Suppress("MagicNumber")  // We're just turning it into seconds from millis
+				delay(pollingSeconds * 1000)
+			}
 
-            if (executions == 0UL) {
+			if (executions == 0UL) {
 				sentryContext.context("task", name)
 
-                sentryContext.breadcrumb(BreadcrumbType.Info) {
-                    val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+				sentryContext.breadcrumb(BreadcrumbType.Info) {
+					val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
 
-                    message = "Delay has passed, executing task (for the first time)"
+					message = "Delay has passed, executing task (for the first time)"
 
 					data["time.now"] = now.toString()
-                }
-            }
+				}
+			}
 
-            @Suppress("TooGenericExceptionCaught")
-            try {
-                callback()
-            } catch (t: Throwable) {
-                if (t is CancellationException && t.cause == null) {
-                    logger.trace { "Task cancelled." }
-                } else {
-                    logger.error(t) { "Error running scheduled callback." }
+			@Suppress("TooGenericExceptionCaught")
+			try {
+				callback()
+			} catch (t: Throwable) {
+				if (t is CancellationException && t.cause == null) {
+					logger.trace { "Task cancelled." }
+				} else {
+					logger.error(t) { "Error running scheduled callback." }
 
-                    if (sentry.enabled) {
-                        sentryContext.captureThrowable(t) {
-                            hints["executions"] = executions.toString()
-                        }
-                    }
-                }
-            } finally {
-                executions += 1UL
-            }
+					if (sentry.enabled) {
+						sentryContext.captureThrowable(t) {
+							hints["executions"] = executions.toString()
+						}
+					}
+				}
+			} finally {
+				executions += 1UL
+			}
 
-            if (!repeat) {
-                removeFromParent()
+			if (!repeat) {
+				removeFromParent()
 
-                job = null
-            } else {
-                start()
-            }
-        }
-    }
+				job = null
+			} else {
+				start()
+			}
+		}
+	}
 
-    /** Stop waiting and immediately execute the [callback]. **/
-    public suspend fun callNow() {
-        cancel()
+	/** Stop waiting and immediately execute the [callback]. **/
+	public suspend fun callNow() {
+		cancel()
 
-        @Suppress("TooGenericExceptionCaught")
-        try {
-            callback()
-        } catch (t: Throwable) {
-            logger.error(t) { "Error running scheduled callback." }
-        }
-    }
+		@Suppress("TooGenericExceptionCaught")
+		try {
+			callback()
+		} catch (t: Throwable) {
+			logger.error(t) { "Error running scheduled callback." }
+		}
+	}
 
-    /** Stop waiting and don't execute. **/
-    public fun cancel() {
-        job?.cancel()
-        job = null
+	/** Stop waiting and don't execute. **/
+	public fun cancel() {
+		job?.cancel()
+		job = null
 
-        removeFromParent()
-    }
+		removeFromParent()
+	}
 
-    /** Like [cancel], but blocks .. **/
-    public suspend fun cancelAndJoin() {
-        job?.cancelAndJoin()
-        job = null
+	/** Like [cancel], but blocks .. **/
+	public suspend fun cancelAndJoin() {
+		job?.cancelAndJoin()
+		job = null
 
-        removeFromParent()
-    }
+		removeFromParent()
+	}
 
-    /** If the task is running, cancel it and restart it. **/
-    public suspend fun restart() {
-        job?.cancel()
-        job = null
+	/** If the task is running, cancel it and restart it. **/
+	public suspend fun restart() {
+		job?.cancel()
+		job = null
 
-        start()
-    }
+		start()
+	}
 
-    /** Like [restart], but blocks until the cancellation has been applied. **/
-    public suspend fun restartJoining() {
-        job?.cancelAndJoin()
-        job = null
+	/** Like [restart], but blocks until the cancellation has been applied. **/
+	public suspend fun restartJoining() {
+		job?.cancelAndJoin()
+		job = null
 
-        start()
-    }
+		start()
+	}
 
-    /** Join the running [job], if any. **/
-    public suspend fun join() {
-        job?.join()
-    }
+	/** Join the running [job], if any. **/
+	public suspend fun join() {
+		job?.join()
+	}
 
-    protected fun removeFromParent(): Boolean? =
+	protected fun removeFromParent(): Boolean? =
 		parent?.removeTask(this@Task)
 }

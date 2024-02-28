@@ -23,32 +23,32 @@ import java.util.*
  */
 @ExtensionDSL
 public open class ChatSubCommand<T : Arguments>(
-    extension: Extension,
-    arguments: (() -> T)? = null,
-    public open val parent: ChatGroupCommand<out Arguments>,
+	extension: Extension,
+	arguments: (() -> T)? = null,
+	public open val parent: ChatGroupCommand<out Arguments>,
 ) : ChatCommand<T>(extension, arguments) {
 
-    override suspend fun runChecks(
-        event: MessageCreateEvent,
-        sendMessage: Boolean,
-        cache: MutableStringKeyedMap<Any>,
-    ): Boolean =
-        parent.runChecks(event, sendMessage, cache) &&
-            super.runChecks(event, sendMessage, cache)
+	override suspend fun runChecks(
+		event: MessageCreateEvent,
+		sendMessage: Boolean,
+		cache: MutableStringKeyedMap<Any>,
+	): Boolean =
+		parent.runChecks(event, sendMessage, cache) &&
+			super.runChecks(event, sendMessage, cache)
 
-    /** Get the full command name, translated, with parent commands taken into account. **/
-    public open suspend fun getFullTranslatedName(locale: Locale): String =
-        parent.getFullTranslatedName(locale) + " " + this.getTranslatedName(locale)
+	/** Get the full command name, translated, with parent commands taken into account. **/
+	public open suspend fun getFullTranslatedName(locale: Locale): String =
+		parent.getFullTranslatedName(locale) + " " + this.getTranslatedName(locale)
 
-    override fun getTranslatedName(locale: Locale): String {
-        if (!nameTranslationCache.containsKey(locale)) {
-            nameTranslationCache[locale] = translationsProvider.translate(
-                this.name,
-                this.resolvedBundle,
-                locale
-            ).lowercase()
-        }
+	override fun getTranslatedName(locale: Locale): String {
+		if (!nameTranslationCache.containsKey(locale)) {
+			nameTranslationCache[locale] = translationsProvider.translate(
+				this.name,
+				this.resolvedBundle,
+				locale
+			).lowercase()
+		}
 
-        return nameTranslationCache[locale]!!
-    }
+		return nameTranslationCache[locale]!!
+	}
 }

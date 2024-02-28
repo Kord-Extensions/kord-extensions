@@ -12,9 +12,9 @@ import me.shedaniel.linkie.namespaces.BarnNamespace
 /** Arguments for Barn mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
 class BarnArguments : MappingArguments(BarnNamespace), IntermediaryMappable {
-    override val mapDescriptors by defaultingBoolean {
-        name = "map-descriptor"
-        description = "Whether to map field/method descriptors to named instead of intermediary"
-        defaultValue = true
-    }
+	override val mapDescriptors by defaultingBoolean {
+		name = "map-descriptor"
+		description = "Whether to map field/method descriptors to named instead of intermediary"
+		defaultValue = true
+	}
 }

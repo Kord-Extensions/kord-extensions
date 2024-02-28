@@ -32,36 +32,36 @@ import dev.kord.rest.builder.interaction.StringChoiceBuilder
  * @see coalescedRegex
  */
 @Converter(
-    "regex",
+	"regex",
 
-    types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL],
-    imports = ["kotlin.text.RegexOption"],
-    builderFields = ["public var options: Set<RegexOption> = setOf()"]
+	types = [ConverterType.COALESCING, ConverterType.DEFAULTING, ConverterType.OPTIONAL],
+	imports = ["kotlin.text.RegexOption"],
+	builderFields = ["public var options: Set<RegexOption> = setOf()"]
 )
 public class RegexCoalescingConverter(
-    private val options: Set<RegexOption> = setOf(),
-    shouldThrow: Boolean = false,
-    override var validator: Validator<Regex> = null
+	private val options: Set<RegexOption> = setOf(),
+	shouldThrow: Boolean = false,
+	override var validator: Validator<Regex> = null,
 ) : CoalescingConverter<Regex>(shouldThrow) {
-    override val signatureTypeString: String = "converters.regex.signatureType.plural"
-    override val showTypeInSignature: Boolean = false
-    override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureTypeString: String = "converters.regex.signatureType.plural"
+	override val showTypeInSignature: Boolean = false
+	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
-    override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
-        val args: String = named?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
+	override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
+		val args: String = named?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
 
-        this.parsed = args.toRegex(options)
+		this.parsed = args.toRegex(options)
 
-        return args.length
-    }
+		return args.length
+	}
 
-    override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-        StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
 
-    override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
-        val optionValue = (option as? StringOptionValue)?.value ?: return false
-        this.parsed = optionValue.toRegex(options)
+	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
+		val optionValue = (option as? StringOptionValue)?.value ?: return false
+		this.parsed = optionValue.toRegex(options)
 
-        return true
-    }
+		return true
+	}
 }

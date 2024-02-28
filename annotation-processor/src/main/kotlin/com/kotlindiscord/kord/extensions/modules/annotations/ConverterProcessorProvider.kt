@@ -20,15 +20,15 @@ import org.koin.dsl.module
  * Processor provider for the converter annotation processor.
  */
 public class ConverterProcessorProvider : SymbolProcessorProvider {
-    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        startKoin {
-            modules()
-        }
+	override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
+		startKoin {
+			modules()
+		}
 
-        loadKoinModules(module { single { environment.logger } bind KSPLogger::class })
+		loadKoinModules(module { single { environment.logger } bind KSPLogger::class })
 
-        return ConverterProcessor(
-            environment.codeGenerator, environment.logger
-        )
-    }
+		return ConverterProcessor(
+			environment.codeGenerator, environment.logger
+		)
+	}
 }

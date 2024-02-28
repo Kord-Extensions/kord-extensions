@@ -159,7 +159,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 		bundle: String?,
 		interaction: ModalParentInteractionBehavior,
 		callback: suspend (ModalSubmitInteraction?) -> T,
-    ): T {
+	): T {
 		componentRegistry.register(this)
 
 		interaction.modal(translateTitle(locale, bundle), id) {
@@ -178,7 +178,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 	public suspend fun <T : Any?, E : InteractionCreateEvent> sendAndAwait(
 		context: EventContext<E>,
 		callback: suspend (ModalSubmitInteraction?) -> T,
-    ): T {
+	): T {
 		val interaction = context.event.interaction as? ModalParentInteractionBehavior
 			?: error("Interaction ${context.event.interaction} does not support responding with a modal.")
 
@@ -194,7 +194,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 	public suspend fun <T : Any?> sendAndAwait(
 		context: ApplicationCommandContext,
 		callback: suspend (ModalSubmitInteraction?) -> T,
-    ): T {
+	): T {
 		val interaction = context.genericEvent.interaction as? ModalParentInteractionBehavior
 			?: error("Interaction ${context.genericEvent.interaction} does not support responding with a modal.")
 
@@ -210,7 +210,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 	public suspend fun <T : Any?> sendAndAwait(
 		context: ComponentContext<*>,
 		callback: suspend (ModalSubmitInteraction?) -> T,
-    ): T {
+	): T {
 		val interaction = context.event.interaction as? ModalParentInteractionBehavior
 			?: error("Interaction ${context.event.interaction} does not support responding with a modal.")
 

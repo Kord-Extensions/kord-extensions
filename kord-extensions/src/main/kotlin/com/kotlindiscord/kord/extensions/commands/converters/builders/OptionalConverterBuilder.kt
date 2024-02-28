@@ -8,6 +8,6 @@ package com.kotlindiscord.kord.extensions.commands.converters.builders
 
 /** Converter builder for optional converters. **/
 public abstract class OptionalConverterBuilder<T : Any> : ConverterBuilder<T?>() {
-    /** Whether to ignore parsing errors when a value is provided. **/
-    public var ignoreErrors: Boolean = false
+	/** Whether to ignore parsing errors when a value is provided. **/
+	public var ignoreErrors: Boolean = false
 }

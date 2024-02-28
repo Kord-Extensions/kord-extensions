@@ -15,9 +15,9 @@ import com.kotlindiscord.kord.extensions.modules.annotations.plugins.PluginProce
  * Processor provider for the converter annotation processor.
  */
 public class PluginProcessorProvider : SymbolProcessorProvider {
-    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-        return PluginProcessor(
-            environment.codeGenerator, environment.logger
-        )
-    }
+	override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
+		return PluginProcessor(
+			environment.codeGenerator, environment.logger
+		)
+	}
 }

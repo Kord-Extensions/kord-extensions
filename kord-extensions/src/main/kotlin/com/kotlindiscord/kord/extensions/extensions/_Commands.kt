@@ -45,7 +45,7 @@ private val logger = KotlinLogging.logger {}
  * @param checks Checks to apply to all slash commands.
  */
 public fun Extension.messageCommandCheck(vararg checks: MessageCommandCheck) {
-    checks.forEach { messageCommandChecks.add(it) }
+	checks.forEach { messageCommandChecks.add(it) }
 }
 
 /**
@@ -54,95 +54,95 @@ public fun Extension.messageCommandCheck(vararg checks: MessageCommandCheck) {
  * @param check Check to apply to all slash commands.
  */
 public fun Extension.messageCommandCheck(check: MessageCommandCheck) {
-    messageCommandChecks.add(check)
+	messageCommandChecks.add(check)
 }
 
 /** Register an ephemeral message command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.ephemeralMessageCommand(
-    body: suspend EphemeralMessageCommand<ModalForm>.() -> Unit
+	body: suspend EphemeralMessageCommand<ModalForm>.() -> Unit,
 ): EphemeralMessageCommand<ModalForm> {
-    val commandObj = EphemeralMessageCommand<ModalForm>(this)
-    body(commandObj)
+	val commandObj = EphemeralMessageCommand<ModalForm>(this)
+	body(commandObj)
 
-    return ephemeralMessageCommand(commandObj)
+	return ephemeralMessageCommand(commandObj)
 }
 
 /** Register an ephemeral message command, DSL-style. **/
 @ExtensionDSL
-public suspend fun <M : ModalForm>  Extension.ephemeralMessageCommand(
-    modal: (() -> M),
-    body: suspend EphemeralMessageCommand<M>.() -> Unit
+public suspend fun <M : ModalForm> Extension.ephemeralMessageCommand(
+	modal: (() -> M),
+	body: suspend EphemeralMessageCommand<M>.() -> Unit,
 ): EphemeralMessageCommand<M> {
-    val commandObj = EphemeralMessageCommand(this, modal)
-    body(commandObj)
+	val commandObj = EphemeralMessageCommand(this, modal)
+	body(commandObj)
 
-    return ephemeralMessageCommand(commandObj)
+	return ephemeralMessageCommand(commandObj)
 }
 
 /** Register a custom instance of an ephemeral message command. **/
 @ExtensionDSL
 public suspend fun <M : ModalForm> Extension.ephemeralMessageCommand(
-    commandObj: EphemeralMessageCommand<M>
+	commandObj: EphemeralMessageCommand<M>,
 ): EphemeralMessageCommand<M> {
-    try {
-        commandObj.validate()
-        messageCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    }
+	try {
+		commandObj.validate()
+		messageCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /** Register a public message command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.publicMessageCommand(
-    body: suspend PublicMessageCommand<ModalForm>.() -> Unit
+	body: suspend PublicMessageCommand<ModalForm>.() -> Unit,
 ): PublicMessageCommand<ModalForm> {
-    val commandObj = PublicMessageCommand<ModalForm>(this)
-    body(commandObj)
+	val commandObj = PublicMessageCommand<ModalForm>(this)
+	body(commandObj)
 
-    return publicMessageCommand(commandObj)
+	return publicMessageCommand(commandObj)
 }
 
 /** Register a public message command, DSL-style. **/
 @ExtensionDSL
 public suspend fun <M : ModalForm> Extension.publicMessageCommand(
-    modal: (() -> M),
-    body: suspend PublicMessageCommand<M>.() -> Unit
+	modal: (() -> M),
+	body: suspend PublicMessageCommand<M>.() -> Unit,
 ): PublicMessageCommand<M> {
-    val commandObj = PublicMessageCommand(this, modal)
-    body(commandObj)
+	val commandObj = PublicMessageCommand(this, modal)
+	body(commandObj)
 
-    return publicMessageCommand(commandObj)
+	return publicMessageCommand(commandObj)
 }
 
 /** Register a custom instance of a public message command. **/
 @ExtensionDSL
 public suspend fun <M : ModalForm> Extension.publicMessageCommand(
-    commandObj: PublicMessageCommand<M>
+	commandObj: PublicMessageCommand<M>,
 ): PublicMessageCommand<M> {
-    try {
-        commandObj.validate()
-        messageCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    }
+	try {
+		commandObj.validate()
+		messageCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 
 // endregion
@@ -162,7 +162,7 @@ public suspend fun <M : ModalForm> Extension.publicMessageCommand(
  * @param checks Checks to apply to all slash commands.
  */
 public fun Extension.slashCommandCheck(vararg checks: SlashCommandCheck) {
-    checks.forEach { slashCommandChecks.add(it) }
+	checks.forEach { slashCommandChecks.add(it) }
 }
 
 /**
@@ -171,7 +171,7 @@ public fun Extension.slashCommandCheck(vararg checks: SlashCommandCheck) {
  * @param check Check to apply to all slash commands.
  */
 public fun Extension.slashCommandCheck(check: SlashCommandCheck) {
-    slashCommandChecks.add(check)
+	slashCommandChecks.add(check)
 }
 
 // endregion
@@ -188,13 +188,13 @@ public fun Extension.slashCommandCheck(check: SlashCommandCheck) {
  */
 @ExtensionDSL
 public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
-    arguments: () -> T,
-    body: suspend EphemeralSlashCommand<T, ModalForm>.() -> Unit
+	arguments: () -> T,
+	body: suspend EphemeralSlashCommand<T, ModalForm>.() -> Unit,
 ): EphemeralSlashCommand<T, ModalForm> {
-    val commandObj = EphemeralSlashCommand<T, ModalForm>(this, arguments, null, null)
-    body(commandObj)
+	val commandObj = EphemeralSlashCommand<T, ModalForm>(this, arguments, null, null)
+	body(commandObj)
 
-    return ephemeralSlashCommand(commandObj)
+	return ephemeralSlashCommand(commandObj)
 }
 
 /**
@@ -208,20 +208,20 @@ public suspend fun <T : Arguments> Extension.ephemeralSlashCommand(
 @ExtensionDSL
 @JvmName("ephemeralSlashCommand1")
 public suspend fun <M : ModalForm> Extension.ephemeralSlashCommand(
-    modal: () -> M,
-    body: suspend EphemeralSlashCommand<Arguments, M>.() -> Unit
+	modal: () -> M,
+	body: suspend EphemeralSlashCommand<Arguments, M>.() -> Unit,
 ): EphemeralSlashCommand<Arguments, M> {
-    val commandObj = EphemeralSlashCommand<Arguments, M>(
-        this,
-        null,
-        modal,
-        null,
-        null
-    )
+	val commandObj = EphemeralSlashCommand<Arguments, M>(
+		this,
+		null,
+		modal,
+		null,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSlashCommand(commandObj)
+	return ephemeralSlashCommand(commandObj)
 }
 
 /**
@@ -235,21 +235,21 @@ public suspend fun <M : ModalForm> Extension.ephemeralSlashCommand(
  */
 @ExtensionDSL
 public suspend fun <A : Arguments, M : ModalForm> Extension.ephemeralSlashCommand(
-    arguments: () -> A,
-    modal: () -> M,
-    body: suspend EphemeralSlashCommand<A, M>.() -> Unit
+	arguments: () -> A,
+	modal: () -> M,
+	body: suspend EphemeralSlashCommand<A, M>.() -> Unit,
 ): EphemeralSlashCommand<A, M> {
-    val commandObj = EphemeralSlashCommand(
-        this,
-        arguments,
-        modal,
-        null,
-        null
-    )
+	val commandObj = EphemeralSlashCommand(
+		this,
+		arguments,
+		modal,
+		null,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSlashCommand(commandObj)
+	return ephemeralSlashCommand(commandObj)
 }
 
 /**
@@ -261,22 +261,22 @@ public suspend fun <A : Arguments, M : ModalForm> Extension.ephemeralSlashComman
  */
 @ExtensionDSL
 public suspend fun <T : Arguments, M : ModalForm> Extension.ephemeralSlashCommand(
-    commandObj: EphemeralSlashCommand<T, M>
+	commandObj: EphemeralSlashCommand<T, M>,
 ): EphemeralSlashCommand<T, M> {
-    try {
-        commandObj.validate()
-        slashCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		slashCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -288,19 +288,19 @@ public suspend fun <T : Arguments, M : ModalForm> Extension.ephemeralSlashComman
  */
 @ExtensionDSL
 public suspend fun Extension.ephemeralSlashCommand(
-    body: suspend EphemeralSlashCommand<Arguments, ModalForm>.() -> Unit
+	body: suspend EphemeralSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): EphemeralSlashCommand<Arguments, ModalForm> {
-    val commandObj = EphemeralSlashCommand<Arguments, ModalForm>(
-        this,
-        null,
-        null,
-        null,
-        null
-    )
+	val commandObj = EphemeralSlashCommand<Arguments, ModalForm>(
+		this,
+		null,
+		null,
+		null,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return ephemeralSlashCommand(commandObj)
+	return ephemeralSlashCommand(commandObj)
 }
 
 // endregion
@@ -317,20 +317,20 @@ public suspend fun Extension.ephemeralSlashCommand(
  */
 @ExtensionDSL
 public suspend fun <T : Arguments> Extension.publicSlashCommand(
-    arguments: () -> T,
-    body: suspend PublicSlashCommand<T, ModalForm>.() -> Unit
+	arguments: () -> T,
+	body: suspend PublicSlashCommand<T, ModalForm>.() -> Unit,
 ): PublicSlashCommand<T, ModalForm> {
-    val commandObj = PublicSlashCommand<T, ModalForm>(
-        this,
-        arguments,
-        null,
-        null,
-        null
-    )
+	val commandObj = PublicSlashCommand<T, ModalForm>(
+		this,
+		arguments,
+		null,
+		null,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSlashCommand(commandObj)
+	return publicSlashCommand(commandObj)
 }
 
 /**
@@ -344,20 +344,20 @@ public suspend fun <T : Arguments> Extension.publicSlashCommand(
 @ExtensionDSL
 @JvmName("publicSlashCommand1")
 public suspend fun <M : ModalForm> Extension.publicSlashCommand(
-    modal: () -> M,
-    body: suspend PublicSlashCommand<Arguments, M>.() -> Unit
+	modal: () -> M,
+	body: suspend PublicSlashCommand<Arguments, M>.() -> Unit,
 ): PublicSlashCommand<Arguments, M> {
-    val commandObj = PublicSlashCommand<Arguments, M>(
-        this,
-        null,
-        modal,
-        null,
-        null
-    )
+	val commandObj = PublicSlashCommand<Arguments, M>(
+		this,
+		null,
+		modal,
+		null,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSlashCommand(commandObj)
+	return publicSlashCommand(commandObj)
 }
 
 /**
@@ -371,20 +371,20 @@ public suspend fun <M : ModalForm> Extension.publicSlashCommand(
  */
 @ExtensionDSL
 public suspend fun <A : Arguments, M : ModalForm> Extension.publicSlashCommand(
-    arguments: () -> A,
-    modal: () -> M,
-    body: suspend PublicSlashCommand<A, M>.() -> Unit
+	arguments: () -> A,
+	modal: () -> M,
+	body: suspend PublicSlashCommand<A, M>.() -> Unit,
 ): PublicSlashCommand<A, M> {
-    val commandObj = PublicSlashCommand(
-        this,
-        arguments,
-        modal,
-        null
-    )
+	val commandObj = PublicSlashCommand(
+		this,
+		arguments,
+		modal,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSlashCommand(commandObj)
+	return publicSlashCommand(commandObj)
 }
 
 /**
@@ -396,22 +396,22 @@ public suspend fun <A : Arguments, M : ModalForm> Extension.publicSlashCommand(
  */
 @ExtensionDSL
 public suspend fun <T : Arguments, M : ModalForm> Extension.publicSlashCommand(
-    commandObj: PublicSlashCommand<T, M>
+	commandObj: PublicSlashCommand<T, M>,
 ): PublicSlashCommand<T, M> {
-    try {
-        commandObj.validate()
-        slashCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register subcommand - $e" }
-    }
+	try {
+		commandObj.validate()
+		slashCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register subcommand - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -423,19 +423,19 @@ public suspend fun <T : Arguments, M : ModalForm> Extension.publicSlashCommand(
  */
 @ExtensionDSL
 public suspend fun Extension.publicSlashCommand(
-    body: suspend PublicSlashCommand<Arguments, ModalForm>.() -> Unit
+	body: suspend PublicSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): PublicSlashCommand<Arguments, ModalForm> {
-    val commandObj = PublicSlashCommand<Arguments, ModalForm>(
-        this,
-        null,
-        null,
-        null,
-        null
-    )
+	val commandObj = PublicSlashCommand<Arguments, ModalForm>(
+		this,
+		null,
+		null,
+		null,
+		null
+	)
 
-    body(commandObj)
+	body(commandObj)
 
-    return publicSlashCommand(commandObj)
+	return publicSlashCommand(commandObj)
 }
 
 // endregion
@@ -455,7 +455,7 @@ public suspend fun Extension.publicSlashCommand(
  * @param checks Checks to apply to all slash commands.
  */
 public fun Extension.userCommandCheck(vararg checks: UserCommandCheck) {
-    checks.forEach { userCommandChecks.add(it) }
+	checks.forEach { userCommandChecks.add(it) }
 }
 
 /**
@@ -464,95 +464,95 @@ public fun Extension.userCommandCheck(vararg checks: UserCommandCheck) {
  * @param check Check to apply to all slash commands.
  */
 public fun Extension.userCommandCheck(check: UserCommandCheck) {
-    userCommandChecks.add(check)
+	userCommandChecks.add(check)
 }
 
 /** Register an ephemeral user command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.ephemeralUserCommand(
-    body: suspend EphemeralUserCommand<ModalForm>.() -> Unit
+	body: suspend EphemeralUserCommand<ModalForm>.() -> Unit,
 ): EphemeralUserCommand<ModalForm> {
-    val commandObj = EphemeralUserCommand<ModalForm>(this)
-    body(commandObj)
+	val commandObj = EphemeralUserCommand<ModalForm>(this)
+	body(commandObj)
 
-    return ephemeralUserCommand(commandObj)
+	return ephemeralUserCommand(commandObj)
 }
 
 /** Register an ephemeral user command, DSL-style. **/
 @ExtensionDSL
 public suspend fun <M : ModalForm> Extension.ephemeralUserCommand(
-    modal: (() -> M),
-    body: suspend EphemeralUserCommand<M>.() -> Unit
+	modal: (() -> M),
+	body: suspend EphemeralUserCommand<M>.() -> Unit,
 ): EphemeralUserCommand<M> {
-    val commandObj = EphemeralUserCommand(this, modal)
-    body(commandObj)
+	val commandObj = EphemeralUserCommand(this, modal)
+	body(commandObj)
 
-    return ephemeralUserCommand(commandObj)
+	return ephemeralUserCommand(commandObj)
 }
 
 /** Register a custom instance of an ephemeral user command. **/
 @ExtensionDSL
 public suspend fun <M : ModalForm> Extension.ephemeralUserCommand(
-    commandObj: EphemeralUserCommand<M>
+	commandObj: EphemeralUserCommand<M>,
 ): EphemeralUserCommand<M> {
-    try {
-        commandObj.validate()
-        userCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    }
+	try {
+		commandObj.validate()
+		userCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /** Register a public user command, DSL-style. **/
 @ExtensionDSL
 public suspend fun Extension.publicUserCommand(
-    body: suspend PublicUserCommand<ModalForm>.() -> Unit
+	body: suspend PublicUserCommand<ModalForm>.() -> Unit,
 ): PublicUserCommand<ModalForm> {
-    val commandObj = PublicUserCommand<ModalForm>(this)
-    body(commandObj)
+	val commandObj = PublicUserCommand<ModalForm>(this)
+	body(commandObj)
 
-    return publicUserCommand(commandObj)
+	return publicUserCommand(commandObj)
 }
 
 /** Register a public user command, DSL-style. **/
 @ExtensionDSL
 public suspend fun <M : ModalForm> Extension.publicUserCommand(
-    modal: (() -> M),
-    body: suspend PublicUserCommand<M>.() -> Unit
+	modal: (() -> M),
+	body: suspend PublicUserCommand<M>.() -> Unit,
 ): PublicUserCommand<M> {
-    val commandObj = PublicUserCommand(this, modal)
-    body(commandObj)
+	val commandObj = PublicUserCommand(this, modal)
+	body(commandObj)
 
-    return publicUserCommand(commandObj)
+	return publicUserCommand(commandObj)
 }
 
 /** Register a custom instance of a public user command. **/
 @ExtensionDSL
 public suspend fun <M : ModalForm> Extension.publicUserCommand(
-    commandObj: PublicUserCommand<M>
+	commandObj: PublicUserCommand<M>,
 ): PublicUserCommand<M> {
-    try {
-        commandObj.validate()
-        userCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
-    }
+	try {
+		commandObj.validate()
+		userCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register message command ${commandObj.name} - $e" }
+	}
 
-    if (applicationCommandRegistry.initialised) {
-        applicationCommandRegistry.register(commandObj)
-    }
+	if (applicationCommandRegistry.initialised) {
+		applicationCommandRegistry.register(commandObj)
+	}
 
-    return commandObj
+	return commandObj
 }
 
 // endregion
@@ -573,7 +573,7 @@ public suspend fun <M : ModalForm> Extension.publicUserCommand(
  */
 @ExtensionDSL
 public fun Extension.chatCommandCheck(vararg checks: ChatCommandCheck) {
-    checks.forEach { chatCommandChecks.add(it) }
+	checks.forEach { chatCommandChecks.add(it) }
 }
 
 /**
@@ -583,7 +583,7 @@ public fun Extension.chatCommandCheck(vararg checks: ChatCommandCheck) {
  */
 @ExtensionDSL
 public fun Extension.chatCommandCheck(check: ChatCommandCheck) {
-    chatCommandChecks.add(check)
+	chatCommandChecks.add(check)
 }
 
 /**
@@ -595,13 +595,13 @@ public fun Extension.chatCommandCheck(check: ChatCommandCheck) {
  */
 @ExtensionDSL
 public suspend fun <T : Arguments> Extension.chatCommand(
-    arguments: () -> T,
-    body: suspend ChatCommand<T>.() -> Unit
+	arguments: () -> T,
+	body: suspend ChatCommand<T>.() -> Unit,
 ): ChatCommand<T> {
-    val commandObj = ChatCommand(this, arguments)
-    body.invoke(commandObj)
+	val commandObj = ChatCommand(this, arguments)
+	body.invoke(commandObj)
 
-    return chatCommand(commandObj)
+	return chatCommand(commandObj)
 }
 
 /**
@@ -613,12 +613,12 @@ public suspend fun <T : Arguments> Extension.chatCommand(
  */
 @ExtensionDSL
 public suspend fun Extension.chatCommand(
-    body: suspend ChatCommand<Arguments>.() -> Unit
+	body: suspend ChatCommand<Arguments>.() -> Unit,
 ): ChatCommand<Arguments> {
-    val commandObj = ChatCommand<Arguments>(this)
-    body.invoke(commandObj)
+	val commandObj = ChatCommand<Arguments>(this)
+	body.invoke(commandObj)
 
-    return chatCommand(commandObj)
+	return chatCommand(commandObj)
 }
 
 /**
@@ -630,24 +630,24 @@ public suspend fun Extension.chatCommand(
  */
 @ExtensionDSL
 public fun <T : Arguments> Extension.chatCommand(
-    commandObj: ChatCommand<T>
+	commandObj: ChatCommand<T>,
 ): ChatCommand<T> {
-    try {
-        commandObj.validate()
-        chatCommandRegistry.add(commandObj)
-        chatCommands.add(commandObj)
-    } catch (e: CommandRegistrationException) {
-        logger.error(e) { "Failed to register command - $e" }
-    } catch (e: InvalidCommandException) {
-        logger.error(e) { "Failed to register command - $e" }
-    }
+	try {
+		commandObj.validate()
+		chatCommandRegistry.add(commandObj)
+		chatCommands.add(commandObj)
+	} catch (e: CommandRegistrationException) {
+		logger.error(e) { "Failed to register command - $e" }
+	} catch (e: InvalidCommandException) {
+		logger.error(e) { "Failed to register command - $e" }
+	}
 
-    if (chatCommandRegistry.enabled) {  // Don't add the intents if they won't be used
-        intents += Intent.DirectMessages
-        intents += Intent.GuildMessages
-    }
+	if (chatCommandRegistry.enabled) {  // Don't add the intents if they won't be used
+		intents += Intent.DirectMessages
+		intents += Intent.GuildMessages
+	}
 
-    return commandObj
+	return commandObj
 }
 
 /**
@@ -662,13 +662,13 @@ public fun <T : Arguments> Extension.chatCommand(
  */
 @ExtensionDSL
 public suspend fun <T : Arguments> Extension.chatGroupCommand(
-    arguments: () -> T,
-    body: suspend ChatGroupCommand<T>.() -> Unit
+	arguments: () -> T,
+	body: suspend ChatGroupCommand<T>.() -> Unit,
 ): ChatGroupCommand<T> {
-    val commandObj = ChatGroupCommand(this, arguments)
-    body.invoke(commandObj)
+	val commandObj = ChatGroupCommand(this, arguments)
+	body.invoke(commandObj)
 
-    return chatCommand(commandObj) as ChatGroupCommand
+	return chatCommand(commandObj) as ChatGroupCommand
 }
 
 /**
@@ -683,12 +683,12 @@ public suspend fun <T : Arguments> Extension.chatGroupCommand(
  */
 @ExtensionDSL
 public suspend fun Extension.chatGroupCommand(
-    body: suspend ChatGroupCommand<Arguments>.() -> Unit
+	body: suspend ChatGroupCommand<Arguments>.() -> Unit,
 ): ChatGroupCommand<Arguments> {
-    val commandObj = ChatGroupCommand<Arguments>(this)
-    body.invoke(commandObj)
+	val commandObj = ChatGroupCommand<Arguments>(this)
+	body.invoke(commandObj)
 
-    return chatCommand(commandObj) as ChatGroupCommand
+	return chatCommand(commandObj) as ChatGroupCommand
 }
 
 // endregion

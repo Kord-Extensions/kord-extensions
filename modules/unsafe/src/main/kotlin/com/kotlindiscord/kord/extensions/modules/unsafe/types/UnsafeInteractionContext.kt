@@ -31,75 +31,75 @@ import java.util.*
 /** Interface representing a generic, unsafe interaction action context. **/
 @UnsafeAPI
 public interface UnsafeInteractionContext {
-    /** Response created by acknowledging the interaction. Generic. **/
-    public var interactionResponse: MessageInteractionResponseBehavior?
+	/** Response created by acknowledging the interaction. Generic. **/
+	public var interactionResponse: MessageInteractionResponseBehavior?
 
-    /** Original interaction event object, for manual acks. **/
-    public val event: ApplicationCommandInteractionCreateEvent
+	/** Original interaction event object, for manual acks. **/
+	public val event: ApplicationCommandInteractionCreateEvent
 }
 
 /** Send an ephemeral ack, if the interaction hasn't been acknowledged yet. **/
 @UnsafeAPI
 public suspend fun UnsafeInteractionContext.ackEphemeral(
-    builder: (suspend InteractionResponseCreateBuilder.() -> Unit)? = null
+	builder: (suspend InteractionResponseCreateBuilder.() -> Unit)? = null,
 ): EphemeralMessageInteractionResponseBehavior {
-    if (interactionResponse != null) {
-        error("The interaction has already been acknowledged.")
-    }
+	if (interactionResponse != null) {
+		error("The interaction has already been acknowledged.")
+	}
 
-    interactionResponse = if (builder == null) {
-        event.interaction.deferEphemeralResponseUnsafe()
-    } else {
-        event.interaction.respondEphemeral { builder() }
-    }
+	interactionResponse = if (builder == null) {
+		event.interaction.deferEphemeralResponseUnsafe()
+	} else {
+		event.interaction.respondEphemeral { builder() }
+	}
 
-    return interactionResponse as EphemeralMessageInteractionResponseBehavior
+	return interactionResponse as EphemeralMessageInteractionResponseBehavior
 }
 
 /** Send a public ack, if the interaction hasn't been acknowledged yet. **/
 @UnsafeAPI
 public suspend fun UnsafeInteractionContext.ackPublic(
-    builder: (suspend InteractionResponseCreateBuilder.() -> Unit)? = null
+	builder: (suspend InteractionResponseCreateBuilder.() -> Unit)? = null,
 ): PublicMessageInteractionResponseBehavior {
-    if (interactionResponse != null) {
-        error("The interaction has already been acknowledged.")
-    }
+	if (interactionResponse != null) {
+		error("The interaction has already been acknowledged.")
+	}
 
-    interactionResponse = if (builder == null) {
-        event.interaction.deferPublicResponseUnsafe()
-    } else {
-        event.interaction.respondPublic { builder() }
-    }
+	interactionResponse = if (builder == null) {
+		event.interaction.deferPublicResponseUnsafe()
+	} else {
+		event.interaction.respondPublic { builder() }
+	}
 
-    return interactionResponse as PublicMessageInteractionResponseBehavior
+	return interactionResponse as PublicMessageInteractionResponseBehavior
 }
 
 /** Respond to the current interaction with an ephemeral followup, or throw if it isn't ephemeral. **/
 @UnsafeAPI
 public suspend inline fun UnsafeInteractionContext.respondEphemeral(
-    builder: FollowupMessageCreateBuilder.() -> Unit
+	builder: FollowupMessageCreateBuilder.() -> Unit,
 ): EphemeralFollowupMessage {
-    return when (val interaction = interactionResponse) {
-        is InteractionResponseBehavior -> interaction.createEphemeralFollowup { builder() }
+	return when (val interaction = interactionResponse) {
+		is InteractionResponseBehavior -> interaction.createEphemeralFollowup { builder() }
 
-        null -> error("Acknowledge the interaction before trying to follow-up.")
-        else -> error("Unsupported initial interaction response type $interaction - please report this.")
-    }
+		null -> error("Acknowledge the interaction before trying to follow-up.")
+		else -> error("Unsupported initial interaction response type $interaction - please report this.")
+	}
 }
 
 /** Respond to the current interaction with a public followup. **/
 @UnsafeAPI
 public suspend inline fun UnsafeInteractionContext.respondPublic(
-    builder: FollowupMessageCreateBuilder.() -> Unit
+	builder: FollowupMessageCreateBuilder.() -> Unit,
 ): PublicFollowupMessage {
-    return when (val interaction = interactionResponse) {
-        is InteractionResponseBehavior -> interaction.createPublicFollowup {
-            builder()
-        }
+	return when (val interaction = interactionResponse) {
+		is InteractionResponseBehavior -> interaction.createPublicFollowup {
+			builder()
+		}
 
-        null -> error("Acknowledge the interaction before trying to follow-up.")
-        else -> error("Unsupported initial interaction response type $interaction - please report this.")
-    }
+		null -> error("Acknowledge the interaction before trying to follow-up.")
+		else -> error("Unsupported initial interaction response type $interaction - please report this.")
+	}
 }
 
 /**
@@ -108,52 +108,52 @@ public suspend inline fun UnsafeInteractionContext.respondPublic(
 @Suppress("UseIfInsteadOfWhen")
 @UnsafeAPI
 public suspend inline fun UnsafeInteractionContext.edit(
-    builder: InteractionResponseModifyBuilder.() -> Unit
+	builder: InteractionResponseModifyBuilder.() -> Unit,
 ): MessageInteractionResponse {
-    return when (val interaction = interactionResponse) {
-        is InteractionResponseBehavior -> interaction.edit(builder)
+	return when (val interaction = interactionResponse) {
+		is InteractionResponseBehavior -> interaction.edit(builder)
 
-        null -> error("Acknowledge the interaction before trying to edit it.")
-        else -> error("Unsupported initial interaction response type $interaction - please report this.")
-    }
+		null -> error("Acknowledge the interaction before trying to edit it.")
+		else -> error("Unsupported initial interaction response type $interaction - please report this.")
+	}
 }
 
 /** Create a paginator that edits the original interaction. **/
 @UnsafeAPI
-public suspend inline fun UnsafeInteractionContext.editingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
+public inline fun UnsafeInteractionContext.editingPaginator(
+	defaultGroup: String = "",
+	locale: Locale? = null,
+	builder: (PaginatorBuilder).() -> Unit,
 ): BaseButtonPaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+	val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
-    builder(pages)
+	builder(pages)
 
-    return when (val interaction = interactionResponse) {
-        is PublicMessageInteractionResponseBehavior -> PublicResponsePaginator(pages, interaction)
-        is EphemeralMessageInteractionResponseBehavior -> EphemeralResponsePaginator(pages, interaction)
+	return when (val interaction = interactionResponse) {
+		is PublicMessageInteractionResponseBehavior -> PublicResponsePaginator(pages, interaction)
+		is EphemeralMessageInteractionResponseBehavior -> EphemeralResponsePaginator(pages, interaction)
 
-        null -> error("Acknowledge the interaction before trying to edit it.")
-        else -> error("Unsupported initial interaction response type - please report this.")
-    }
+		null -> error("Acknowledge the interaction before trying to edit it.")
+		else -> error("Unsupported initial interaction response type - please report this.")
+	}
 }
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
 @Suppress("UseIfInsteadOfWhen")
 @UnsafeAPI
-public suspend inline fun UnsafeInteractionContext.respondingPaginator(
-    defaultGroup: String = "",
-    locale: Locale? = null,
-    builder: (PaginatorBuilder).() -> Unit
+public inline fun UnsafeInteractionContext.respondingPaginator(
+	defaultGroup: String = "",
+	locale: Locale? = null,
+	builder: (PaginatorBuilder).() -> Unit,
 ): BaseButtonPaginator {
-    val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
+	val pages = PaginatorBuilder(locale = locale, defaultGroup = defaultGroup)
 
-    builder(pages)
+	builder(pages)
 
-    return when (val interaction = interactionResponse) {
-        is PublicInteractionResponseBehavior -> PublicFollowUpPaginator(pages, interaction)
+	return when (val interaction = interactionResponse) {
+		is PublicInteractionResponseBehavior -> PublicFollowUpPaginator(pages, interaction)
 
-        null -> error("Acknowledge the interaction before trying to follow-up.")
-        else -> error("Initial interaction response was not public.")
-    }
+		null -> error("Acknowledge the interaction before trying to follow-up.")
+		else -> error("Initial interaction response was not public.")
+	}
 }

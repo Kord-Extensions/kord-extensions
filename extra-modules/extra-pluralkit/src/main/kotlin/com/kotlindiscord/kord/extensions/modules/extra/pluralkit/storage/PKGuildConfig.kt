@@ -5,10 +5,10 @@
  */
 
 @file:Suppress(
-    "UnderscoresInNumericLiterals",
-    "UndocumentedPublicClass",
-    "UndocumentedPublicFunction",
-    "UndocumentedPublicProperty",
+	"UnderscoresInNumericLiterals",
+	"UndocumentedPublicClass",
+	"UndocumentedPublicFunction",
+	"UndocumentedPublicProperty",
 )
 
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.storage
@@ -21,18 +21,18 @@ import net.peanuuutz.tomlkt.TomlComment
 @Serializable
 @Suppress("DataClassShouldBeImmutable", "MagicNumber")
 data class PKGuildConfig(
-    @TomlComment(
-        "Base URL to use when attempting to hit the PluralKit API, without the /vX used to specify the version."
-    )
-    var apiUrl: String = "https://api.pluralkit.me",
+	@TomlComment(
+		"Base URL to use when attempting to hit the PluralKit API, without the /vX used to specify the version."
+	)
+	var apiUrl: String = "https://api.pluralkit.me",
 
-    @TomlComment(
-        "The ID of the PluralKit instance to use, if not the default instance."
-    )
-    var botId: Snowflake = Snowflake(466378653216014359),
+	@TomlComment(
+		"The ID of the PluralKit instance to use, if not the default instance."
+	)
+	var botId: Snowflake = Snowflake(466378653216014359),
 
-    @TomlComment(
-        "Whether PluralKit integration should be enabled on this server."
-    )
-    var enabled: Boolean = true,
+	@TomlComment(
+		"Whether PluralKit integration should be enabled on this server."
+	)
+	var enabled: Boolean = true,
 ) : Data

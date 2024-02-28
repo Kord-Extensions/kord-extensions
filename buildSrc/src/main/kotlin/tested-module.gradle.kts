@@ -1,17 +1,17 @@
 plugins {
-    java
+	java
 }
 
 tasks {
-    test {
-        useJUnitPlatform()
+	test {
+		useJUnitPlatform()
 
-        testLogging.showStandardStreams = true
+		testLogging.showStandardStreams = true
 
-        testLogging {
-            events("PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR")
-        }
+		testLogging {
+			events("PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR")
+		}
 
-        systemProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug")
-    }
+		systemProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug")
+	}
 }

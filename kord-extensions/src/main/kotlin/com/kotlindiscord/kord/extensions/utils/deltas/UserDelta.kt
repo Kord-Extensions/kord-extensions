@@ -23,43 +23,43 @@ import kotlin.contracts.contract
  */
 @Suppress("UndocumentedPublicProperty")
 public open class UserDelta(
-    public val avatar: Optional<Asset?>,
-    public val username: Optional<String>,
-    public val discriminator: Optional<String>,
-    public val flags: Optional<UserFlags?>
+	public val avatar: Optional<Asset?>,
+	public val username: Optional<String>,
+	public val discriminator: Optional<String>,
+	public val flags: Optional<UserFlags?>,
 ) {
-    /**
-     * A Set representing the values that have changes. Each value is represented by a human-readable string.
-     */
-    public open val changes: Set<String> by lazy {
-        mutableSetOf<String>().apply {
-            if (avatar !is Optional.Missing) add("avatar")
-            if (username !is Optional.Missing) add("username")
-            if (discriminator !is Optional.Missing) add("discriminator")
-            if (flags !is Optional.Missing) add("flags")
-        }
-    }
+	/**
+	 * A Set representing the values that have changes. Each value is represented by a human-readable string.
+	 */
+	public open val changes: Set<String> by lazy {
+		mutableSetOf<String>().apply {
+			if (avatar !is Optional.Missing) add("avatar")
+			if (username !is Optional.Missing) add("username")
+			if (discriminator !is Optional.Missing) add("discriminator")
+			if (flags !is Optional.Missing) add("flags")
+		}
+	}
 
-    public companion object {
-        /**
-         * Given an old and new [User] object, return a [UserDelta] representing the changes between them.
-         *
-         * @param old The older [User] object.
-         * @param new The newer [User] object.
-         */
-        public fun from(old: User?, new: User): UserDelta? {
-            contract {
-                returns(null) implies (old == null)
-            }
+	public companion object {
+		/**
+		 * Given an old and new [User] object, return a [UserDelta] representing the changes between them.
+		 *
+		 * @param old The older [User] object.
+		 * @param new The newer [User] object.
+		 */
+		public fun from(old: User?, new: User): UserDelta? {
+			contract {
+				returns(null) implies (old == null)
+			}
 
-            old ?: return null
+			old ?: return null
 
-            return UserDelta(
-                if (old.avatarHash != new.avatarHash) Optional(new.avatar) else Optional.Missing(),
-                if (old.username != new.username) Optional(new.username) else Optional.Missing(),
-                if (old.discriminator != new.discriminator) Optional(new.discriminator) else Optional.Missing(),
-                if (old.publicFlags != new.publicFlags) Optional(new.publicFlags) else Optional.Missing()
-            )
-        }
-    }
+			return UserDelta(
+				if (old.avatarHash != new.avatarHash) Optional(new.avatar) else Optional.Missing(),
+				if (old.username != new.username) Optional(new.username) else Optional.Missing(),
+				if (old.discriminator != new.discriminator) Optional(new.discriminator) else Optional.Missing(),
+				if (old.publicFlags != new.publicFlags) Optional(new.publicFlags) else Optional.Missing()
+			)
+		}
+	}
 }

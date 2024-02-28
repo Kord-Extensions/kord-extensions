@@ -42,42 +42,42 @@ import dev.kord.core.supplier.EntitySupplyStrategy
  * @property repliedToMessage The original message that was replied to, even if this one was proxied.
  */
 abstract class PKMessageUpdateEvent(
-    open val event: MessageUpdateEvent,
-    open val channelId: Snowflake,
-    open val messageId: Snowflake,
-    open val old: Message?,
-    open val new: DiscordPartialMessage,
-    open val author: Member?,
-    open val repliedToMessage: Message?,
-    override val shard: Int,
-    override val supplier: EntitySupplier = event.kord.defaultSupplier,
+	open val event: MessageUpdateEvent,
+	open val channelId: Snowflake,
+	open val messageId: Snowflake,
+	open val old: Message?,
+	open val new: DiscordPartialMessage,
+	open val author: Member?,
+	open val repliedToMessage: Message?,
+	override val shard: Int,
+	override val supplier: EntitySupplier = event.kord.defaultSupplier,
 ) : KordExEvent, Strategizable, ChannelEvent, MessageEvent, MemberEvent {
-    /** @suppress Forwards to [repliedToMessage], **/
-    val referencedMessage get() = repliedToMessage
+	/** @suppress Forwards to [repliedToMessage], **/
+	val referencedMessage get() = repliedToMessage
 
-    override val channel: MessageChannelBehavior get() = kord.unsafe.messageChannel(channelId)
-    override val guild: GuildBehavior? get() = member?.guild
-    override val member: MemberBehavior? get() = author
-    override val message: MessageBehavior get() = kord.unsafe.message(messageId = messageId, channelId = channelId)
-    override val user: UserBehavior? get() = author
+	override val channel: MessageChannelBehavior get() = kord.unsafe.messageChannel(channelId)
+	override val guild: GuildBehavior? get() = member?.guild
+	override val member: MemberBehavior? get() = author
+	override val message: MessageBehavior get() = kord.unsafe.message(messageId = messageId, channelId = channelId)
+	override val user: UserBehavior? get() = author
 
-    override suspend fun getChannel(): Channel = channel.asChannel()
-    override suspend fun getChannelOrNull(): Channel = channel.asChannel()
+	override suspend fun getChannel(): Channel = channel.asChannel()
+	override suspend fun getChannelOrNull(): Channel = channel.asChannel()
 
-    override suspend fun getGuild(): Guild = getGuildOrNull()!!
-    override suspend fun getGuildOrNull(): Guild? = member?.guild?.asGuildOrNull()
+	override suspend fun getGuild(): Guild = getGuildOrNull()!!
+	override suspend fun getGuildOrNull(): Guild? = member?.guild?.asGuildOrNull()
 
-    override suspend fun getMember(): Member = author!!
-    override suspend fun getMemberOrNull(): Member? = author
+	override suspend fun getMember(): Member = author!!
+	override suspend fun getMemberOrNull(): Member? = author
 
-    override suspend fun getMessage(): Message =
-        supplier.getMessage(channelId = channelId, messageId = messageId)
+	override suspend fun getMessage(): Message =
+		supplier.getMessage(channelId = channelId, messageId = messageId)
 
-    override suspend fun getMessageOrNull(): Message? =
-        supplier.getMessageOrNull(channelId = channelId, messageId = messageId)
+	override suspend fun getMessageOrNull(): Message? =
+		supplier.getMessageOrNull(channelId = channelId, messageId = messageId)
 
-    override suspend fun getUser(): User = author!!
-    override suspend fun getUserOrNull(): User? = author
+	override suspend fun getUser(): User = author!!
+	override suspend fun getUserOrNull(): User? = author
 }
 
 /**
@@ -86,114 +86,114 @@ abstract class PKMessageUpdateEvent(
  * @property pkMessage The PluralKit message object with metadata about the proxied message.
  */
 class ProxiedMessageUpdateEvent(
-    event: MessageUpdateEvent,
-    channelId: Snowflake,
-    messageId: Snowflake,
-    old: Message?,
-    new: DiscordPartialMessage,
-    override val author: Member,
-    repliedToMessage: Message?,
-    shard: Int,
-    val pkMessage: PKMessage,
-    supplier: EntitySupplier = event.kord.defaultSupplier,
+	event: MessageUpdateEvent,
+	channelId: Snowflake,
+	messageId: Snowflake,
+	old: Message?,
+	new: DiscordPartialMessage,
+	override val author: Member,
+	repliedToMessage: Message?,
+	shard: Int,
+	val pkMessage: PKMessage,
+	supplier: EntitySupplier = event.kord.defaultSupplier,
 ) : PKMessageUpdateEvent(event, channelId, messageId, old, new, author, repliedToMessage, shard, supplier) {
-    override fun withStrategy(strategy: EntitySupplyStrategy<*>): ProxiedMessageUpdateEvent {
-        val strategizedEvent = event.withStrategy(strategy)
+	override fun withStrategy(strategy: EntitySupplyStrategy<*>): ProxiedMessageUpdateEvent {
+		val strategizedEvent = event.withStrategy(strategy)
 
-        return ProxiedMessageUpdateEvent(
-            strategizedEvent,
-            channelId,
-            messageId,
-            strategizedEvent.old,
-            strategizedEvent.new,
-            author,
-            repliedToMessage,
-            shard,
-            pkMessage,
-            strategy.supply(kord)
-        )
-    }
+		return ProxiedMessageUpdateEvent(
+			strategizedEvent,
+			channelId,
+			messageId,
+			strategizedEvent.old,
+			strategizedEvent.new,
+			author,
+			repliedToMessage,
+			shard,
+			pkMessage,
+			strategy.supply(kord)
+		)
+	}
 
-    override fun toString(): String =
-        "ProxiedMessageUpdateEvent(" +
-            "event=$event, " +
-            "channelId=$channelId, " +
-            "messageId=$messageId, " +
-            "old=$old, " +
-            "new=$new, " +
-            "member=$author, " +
-            "shard=$shard, " +
-            "supplier=$supplier" +
-            ")"
+	override fun toString(): String =
+		"ProxiedMessageUpdateEvent(" +
+			"event=$event, " +
+			"channelId=$channelId, " +
+			"messageId=$messageId, " +
+			"old=$old, " +
+			"new=$new, " +
+			"member=$author, " +
+			"shard=$shard, " +
+			"supplier=$supplier" +
+			")"
 }
 
 /**
  * A [MessageUpdateEvent] wrapper that represents a message that was **not** proxied by PluralKit.
  */
 class UnProxiedMessageUpdateEvent(
-    event: MessageUpdateEvent,
-    channelId: Snowflake,
-    messageId: Snowflake,
-    old: Message?,
-    new: DiscordPartialMessage,
-    author: Member?,
-    repliedToMessage: Message?,
-    shard: Int,
-    supplier: EntitySupplier = event.kord.defaultSupplier,
+	event: MessageUpdateEvent,
+	channelId: Snowflake,
+	messageId: Snowflake,
+	old: Message?,
+	new: DiscordPartialMessage,
+	author: Member?,
+	repliedToMessage: Message?,
+	shard: Int,
+	supplier: EntitySupplier = event.kord.defaultSupplier,
 ) : PKMessageUpdateEvent(event, channelId, messageId, old, new, author, repliedToMessage, shard, supplier) {
-    override fun withStrategy(strategy: EntitySupplyStrategy<*>): UnProxiedMessageUpdateEvent {
-        val strategizedEvent = event.withStrategy(strategy)
+	override fun withStrategy(strategy: EntitySupplyStrategy<*>): UnProxiedMessageUpdateEvent {
+		val strategizedEvent = event.withStrategy(strategy)
 
-        return UnProxiedMessageUpdateEvent(
-            strategizedEvent,
-            channelId,
-            messageId,
-            strategizedEvent.old,
-            strategizedEvent.new,
-            author,
-            repliedToMessage,
-            shard,
-            strategy.supply(kord)
-        )
-    }
+		return UnProxiedMessageUpdateEvent(
+			strategizedEvent,
+			channelId,
+			messageId,
+			strategizedEvent.old,
+			strategizedEvent.new,
+			author,
+			repliedToMessage,
+			shard,
+			strategy.supply(kord)
+		)
+	}
 
-    override fun toString(): String =
-        "UnProxiedMessageUpdateEvent(" +
-            "event=$event, " +
-            "channelId=$channelId, " +
-            "messageId=$messageId, " +
-            "old=$old, " +
-            "new=$new, " +
-            "member=$author, " +
-            "shard=$shard, " +
-            "supplier=$supplier" +
-            ")"
+	override fun toString(): String =
+		"UnProxiedMessageUpdateEvent(" +
+			"event=$event, " +
+			"channelId=$channelId, " +
+			"messageId=$messageId, " +
+			"old=$old, " +
+			"new=$new, " +
+			"member=$author, " +
+			"shard=$shard, " +
+			"supplier=$supplier" +
+			")"
 }
 
 internal suspend fun MessageUpdateEvent.proxied(p: PKMessage, referencedMessage: Message?): ProxiedMessageUpdateEvent {
-    val member = kord.getChannelOf<GuildChannel>(channelId)!!.getGuild().getMemberOrNull(p.sender)!!
+	val member = kord.getChannelOf<GuildChannel>(channelId)!!.getGuild().getMemberOrNull(p.sender)!!
 
-    return ProxiedMessageUpdateEvent(
-        this,
-        channelId,
-        messageId,
-        old,
-        new,
-        member,
-        referencedMessage,
-        shard,
-        p,
-    )
+	return ProxiedMessageUpdateEvent(
+		this,
+		channelId,
+		messageId,
+		old,
+		new,
+		member,
+		referencedMessage,
+		shard,
+		p,
+	)
 }
 
 internal suspend fun MessageUpdateEvent.unproxied(): UnProxiedMessageUpdateEvent =
-    UnProxiedMessageUpdateEvent(
-        this,
-        channelId,
-        messageId,
-        old,
-        new,
-        message.asMessageOrNull()?.getAuthorAsMemberOrNull(),
-        message.asMessageOrNull()?.referencedMessage,
-        shard,
-    )
+	UnProxiedMessageUpdateEvent(
+		this,
+		channelId,
+		messageId,
+		old,
+		new,
+		message.asMessageOrNull()?.getAuthorAsMemberOrNull(),
+		message.asMessageOrNull()?.referencedMessage,
+		shard,
+	)
