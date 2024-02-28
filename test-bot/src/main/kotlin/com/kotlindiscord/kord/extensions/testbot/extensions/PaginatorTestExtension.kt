@@ -85,6 +85,22 @@ public class PaginatorTestExtension : Extension() {
             }
 
             publicSubCommand {
+                name = "chunked-small"
+                description = "Test a chunked default-group paginator with one page."
+
+                action {
+                    editingPaginator {
+						chunkedPages = 2
+
+                        page {
+							title = "Page one!"
+                            description = "Page one!"
+                        }
+                    }.send()
+                }
+            }
+
+            publicSubCommand {
                 name = "custom-one"
                 description = "Test a custom-grouped paginator with pages, approach 1."
 

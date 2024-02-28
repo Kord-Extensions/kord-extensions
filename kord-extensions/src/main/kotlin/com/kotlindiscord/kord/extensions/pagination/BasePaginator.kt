@@ -16,6 +16,7 @@ import com.kotlindiscord.kord.extensions.pagination.pages.Pages
 import dev.kord.core.Kord
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
+import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.MessageBuilder
 import dev.kord.rest.builder.message.embed
 import io.github.oshai.kotlinlogging.KLogger
@@ -157,22 +158,30 @@ public abstract class BasePaginator(
 		}
 
 		if (chunkedPages > 1) {
-			embed {
-				logger.debug { "Building footer page" }
+			val builder = EmbedBuilder()
 
-				Page(bundle) {
-					color = DISCORD_BLURPLE
-				}.build(
-					localeObj,
-					currentPageNum,
-					chunkedPages,
-					pages.groups[currentGroup]!!.size,
-					groupEmoji,
-					allGroups.indexOf(currentGroup),
-					allGroups.size,
-					shouldPutFooterInDescription = true,
-					mutator = mutator?.pageMutator
-				)()
+			logger.debug { "Building footer page" }
+
+			Page(bundle) {
+				color = DISCORD_BLURPLE
+			}.build(
+				localeObj,
+				currentPageNum,
+				chunkedPages,
+				pages.groups[currentGroup]!!.size,
+				groupEmoji,
+				allGroups.indexOf(currentGroup),
+				allGroups.size,
+				shouldPutFooterInDescription = true,
+				mutator = mutator?.pageMutator
+			)(builder)
+
+			if (!builder.description.isNullOrEmpty()) {
+				if (this.embeds == null) {
+					this.embeds = mutableListOf(builder)
+				} else {
+					this.embeds!!.add(builder)
+				}
 			}
 		}
 
