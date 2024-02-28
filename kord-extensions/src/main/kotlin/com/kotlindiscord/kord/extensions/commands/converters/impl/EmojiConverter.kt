@@ -37,6 +37,8 @@ import net.fellbaum.jemoji.EmojiManager
  *   using the first matching emoji available to the bot.
  * * The Unicode emoji name, as used by Discord.
  *
+ * **Note:** For custom/guild emojis, your bot must have the `GuildEmojis` intent enabled!
+ *
  * @see emoji
  * @see emojiList
  */
