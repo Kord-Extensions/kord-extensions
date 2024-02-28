@@ -29,7 +29,7 @@ semver = "1.4.2"
 sentry = "7.4.0"
 slf4j = "2.0.12"
 time4j-base = "5.9.4"
-time4j-tzdata = "5.0-2023b"
+time4j-tzdata = "5.0-2024a"
 toml = "0.2.0"
 
 [libraries]
