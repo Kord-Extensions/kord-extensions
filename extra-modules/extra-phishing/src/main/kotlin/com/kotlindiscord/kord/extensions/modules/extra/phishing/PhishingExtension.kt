@@ -340,7 +340,15 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		}
 
 		if (response.headers.contains("Location")) {
-			val newUrl = response.headers["Location"]!!
+			var newUrl = response.headers["Location"]!!
+
+			if (newUrl.startsWith("/")) {
+				val (protocol, path) = url.split("://", limit = 2)
+
+				newUrl = "$protocol://${path.split("/", limit = 2).first()}$newUrl"
+			} else if (newUrl.startsWith("./")) {
+				newUrl = url.trimEnd('/') + newUrl.trimStart('.')
+			}
 
 			if (url.trim('/') == newUrl.trim('/')) {
 				return null  // Results in the same URL
