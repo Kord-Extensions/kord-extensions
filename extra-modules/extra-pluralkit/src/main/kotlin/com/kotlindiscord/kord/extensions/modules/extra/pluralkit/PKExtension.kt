@@ -15,7 +15,6 @@ package com.kotlindiscord.kord.extensions.modules.extra.pluralkit
 
 import com.kotlindiscord.kord.extensions.checks.anyGuild
 import com.kotlindiscord.kord.extensions.checks.hasPermission
-import com.kotlindiscord.kord.extensions.checks.topChannelFor
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.application.slash.ephemeralSubCommand
 import com.kotlindiscord.kord.extensions.commands.converters.impl.optionalBoolean
@@ -40,15 +39,12 @@ import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.channel.asChannelOfOrNull
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.GuildChannel
-import dev.kord.core.entity.channel.TopGuildMessageChannel
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.event.message.MessageDeleteEvent
 import dev.kord.core.event.message.MessageUpdateEvent
 import dev.kord.rest.builder.message.embed
-import dev.kord.rest.request.KtorRequestException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -101,6 +97,7 @@ class PKExtension : Extension() {
 					.filterKeys { it.timestamp < target }
 					.forEach { (key, value) ->
 						awaitingEvents.remove(key)
+						replyCache.remove(key)
 
 						kord.launch {
 							bot.send(value.unproxied())
@@ -132,9 +129,9 @@ class PKExtension : Extension() {
 				}
 
 				val message = event.message
-				val webhookId = message.data.webhookId.value
+				val applicationId = message.data.applicationId.value
 
-				if (webhookId == null) {
+				if (applicationId != config.botId) {
 					eventLock.withLock {
 						awaitingEvents[message.id] = event
 					}
@@ -145,30 +142,6 @@ class PKExtension : Extension() {
 						replyCache[message.id] = referencedMessage
 					}
 
-					return@action
-				}
-
-				// This is to work around Kord's lack of support for forum channels. This can go once they're supported.
-				val channel = try {
-					topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
-				} catch (e: ClassCastException) {
-					logger.warn(e) { "Failed to cast channel to TopGuildMessageChannel" }
-
-					null
-				}
-
-				val webhook = try {
-					channel
-						?.asChannelOfOrNull<TopGuildMessageChannel>()
-						?.webhooks
-						?.firstOrNull { it.id == webhookId }
-				} catch (e: KtorRequestException) {
-					logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel?.id}" }
-
-					null
-				}
-
-				if (webhook == null || webhook.creatorId != config.botId) {
 					return@action
 				}
 
@@ -216,47 +189,19 @@ class PKExtension : Extension() {
 				}
 
 				val message = event.message
-				val webhookId = message?.data?.webhookId?.value
+				val applicationId = message?.data?.applicationId?.value
 
 				eventLock.withLock {
 					awaitingEvents.remove(message?.id)
 				}
 
-				if (webhookId == null) {
+				if (applicationId != config.botId) {
 					val pkMessage = guild.config().api().getMessageOrNull(event.messageId)
 
 					if (pkMessage != null) {
 						return@action
 					}
 
-					kord.launch {
-						bot.send(event.unproxied())
-					}
-
-					return@action
-				}
-
-				// This is to work around Kord's lack of support for forum channels. This can go once they're supported.
-				val channel = try {
-					topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
-				} catch (e: ClassCastException) {
-					logger.warn(e) { "Failed to cast channel to TopGuildMessageChannel" }
-
-					null
-				}
-
-				val webhook = try {
-					channel
-						?.asChannelOfOrNull<TopGuildMessageChannel>()
-						?.webhooks
-						?.firstOrNull { it.id == webhookId }
-				} catch (e: KtorRequestException) {
-					logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel?.id}" }
-
-					null
-				}
-
-				if (webhook == null || webhook.creatorId != config.botId) {
 					kord.launch {
 						bot.send(event.unproxied())
 					}
@@ -300,37 +245,9 @@ class PKExtension : Extension() {
 				}
 
 				val message = event.message
-				val webhookId = message.asMessageOrNull()?.data?.webhookId?.value
+				val applicationId = message.asMessageOrNull()?.data?.applicationId?.value
 
-				if (webhookId == null) {
-					kord.launch {
-						bot.send(event.unproxied())
-					}
-
-					return@action
-				}
-
-				// This is to work around Kord's lack of support for forum channels. This can go once they're supported.
-				val channel = try {
-					topChannelFor(event)?.asChannelOfOrNull<TopGuildMessageChannel>()
-				} catch (e: ClassCastException) {
-					logger.warn(e) { "Failed to cast channel to TopGuildMessageChannel" }
-
-					null
-				}
-
-				val webhook = try {
-					channel
-						?.asChannelOfOrNull<TopGuildMessageChannel>()
-						?.webhooks
-						?.firstOrNull { it.id == webhookId }
-				} catch (e: KtorRequestException) {
-					logger.warn(e) { "Failed to retrieve webhooks for channel: ${channel?.id}" }
-
-					null
-				}
-
-				if (webhook == null || webhook.creatorId != config.botId) {
+				if (applicationId != config.botId) {
 					kord.launch {
 						bot.send(event.unproxied())
 					}
