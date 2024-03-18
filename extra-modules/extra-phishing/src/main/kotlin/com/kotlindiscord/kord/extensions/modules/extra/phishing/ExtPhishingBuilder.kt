@@ -40,19 +40,29 @@ class ExtPhishingBuilder {
 	val checks: MutableList<CheckWithCache<Event>> = mutableListOf()
 
 	/**
-	 * If you want to require a permission for the phishing check commands, supply it here. Alternatively, supply
-	 * `null` and everyone will be given access to them.
+	 * Set of bad domains, used as well as the usual unsafe domains.
+	 *
+	 * Contains a small list of known unsafe domains.
+	 */
+	val badDomains: MutableSet<String> = mutableSetOf(
+		// Data broker for scraped Discord user and message data.
+		"spy.pet",
+	)
+
+	/**
+	 * If you want to require a permission for the check commands, supply it here.
+	 * Alternatively, supply `null` and everyone will be given access to them.
 	 */
 	var requiredCommandPermission: Permission? = Permission.ManageMessages
 
 	/**
-	 * What to do when a message creation/edit contains a phishing domain.
+	 * What to do when a message creation/edit contains an unsafe domain.
 	 *
 	 * @see DetectionAction
 	 */
 	var detectionAction: DetectionAction = DetectionAction.Delete
 
-	/** Whether to DM users when their messages contain phishing domains, with the action taken. **/
+	/** Whether to DM users when their messages contain unsafe domains, with the action taken. **/
 	var notifyUser = true
 
 	/**
@@ -63,12 +73,21 @@ class ExtPhishingBuilder {
 	 */
 	var logChannelName = "logs"
 
-	/** Register a check that must pass in order for an event handler to run, and for messages to be processed. **/
+	/**
+	 * Register a bad domain.
+	 *
+	 * The extension will treat them like other unsafe domains, removing messages linking to them.
+	 */
+	fun badDomain(domain: String) {
+		badDomains.add(domain)
+	}
+
+	/** Register a check, which must pass in order for an event handler to run, and for messages to be processed. **/
 	fun check(check: CheckWithCache<Event>) {
 		checks.add(check)
 	}
 
-	/** Register checks that must pass in order for an event handler to run, and for messages to be processed. **/
+	/** Register checks, which must pass in order for an event handler to run, and for messages to be processed. **/
 	fun check(vararg checkList: CheckWithCache<Event>) {
 		checks.addAll(checkList)
 	}
