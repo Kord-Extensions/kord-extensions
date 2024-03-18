@@ -47,7 +47,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 	override val name = "phishing"
 
 	private val api = PhishingApi(settings.appName)
-	private val domainCache: MutableSet<String> = mutableSetOf()
+	private val domainCache: MutableSet<String> = settings.badDomains.toMutableSet()
 	private val logger = KotlinLogging.logger { }
 
 	private var websocket: PhishingWebsocketWrapper = api.websocket(::handleChange)
@@ -94,7 +94,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		}
 
 		ephemeralMessageCommand {
-			name = "Phishing Check"
+			name = "URL Safety Check"
 
 			if (this@PhishingExtension.settings.requiredCommandPermission != null) {
 				check { hasPermission(this@PhishingExtension.settings.requiredCommandPermission!!) }
@@ -107,10 +107,10 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 					respond {
 						content = if (matches.isNotEmpty()) {
 							"⚠️ [Message ${message.id.value}](${message.getJumpUrl()}) " +
-								"**contains ${matches.size} phishing link/s**."
+								"**contains ${matches.size} known unsafe link/s**."
 						} else {
 							"✅ [Message ${message.id.value}](${message.getJumpUrl()}) " +
-								"**does not contain any phishing links**."
+								"**does not contain any known unsafe links**."
 						}
 					}
 				}
@@ -118,8 +118,8 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		}
 
 		ephemeralSlashCommand(::DomainArgs) {
-			name = "phishing-check"
-			description = "Check whether a given domain is a known phishing domain."
+			name = "url-safety-check"
+			description = "Check whether a given domain is a known unsafe domain."
 
 			if (this@PhishingExtension.settings.requiredCommandPermission != null) {
 				check { hasPermission(this@PhishingExtension.settings.requiredCommandPermission!!) }
@@ -128,9 +128,9 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			action {
 				respond {
 					content = if (domainCache.contains(arguments.domain.lowercase())) {
-						"⚠️ `${arguments.domain}` is a known phishing domain."
+						"⚠️ `${arguments.domain}` is a known unsafe domain."
 					} else {
-						"✅ `${arguments.domain}` is not a known phishing domain."
+						"✅ `${arguments.domain}` is not a known unsafe domain."
 					}
 				}
 			}
@@ -145,16 +145,16 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		val matches = parseDomains(message.content)
 
 		if (matches.isNotEmpty()) {
-			logger.debug { "Found a message with ${matches.size} phishing domains." }
+			logger.debug { "Found a message with ${matches.size} unsafe domains." }
 
 			if (settings.notifyUser) {
 				message.kord.launch {
 					message.author!!.dm {
-						content = "We've detected that the following message contains a phishing domain. For this " +
+						content = "We've detected that the following message contains an unsafe domain. For this " +
 							"reason, **${settings.detectionAction.message}**."
 
 						embed {
-							title = "Phishing domain detected"
+							title = "Unsafe domain detected"
 							description = message.content
 							color = DISCORD_RED
 
@@ -186,17 +186,17 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			when (settings.detectionAction) {
 				DetectionAction.Ban -> {
 					message.getAuthorAsMemberOrNull()!!.ban {
-						reason = "Message contained a phishing domain"
+						reason = "Message linked to an unsafe domain"
 					}
 
-					message.delete("Message contained a phishing domain")
+					message.delete("Message linked to an unsafe domain")
 				}
 
-				DetectionAction.Delete -> message.delete("Message contained a phishing domain")
+				DetectionAction.Delete -> message.delete("Message linked to an unsafe domain")
 
 				DetectionAction.Kick -> {
-					message.getAuthorAsMemberOrNull()!!.kick("Message contained a phishing domain")
-					message.delete("Message contained a phishing domain")
+					message.getAuthorAsMemberOrNull()!!.kick("Message linked to an unsafe domain")
+					message.delete("Message linked to an unsafe domain")
 				}
 
 				DetectionAction.LogOnly -> {
@@ -226,7 +226,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			return
 		}
 
-		val matchList = "# Phishing Domain Matches\n\n" +
+		val matchList = "# Unsafe Domain Matches\n\n" +
 			"**Total:** ${matches.size}\n\n" +
 			matches.joinToString("\n") { "* `$it`" }
 
@@ -237,7 +237,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			)
 
 			embed {
-				title = "Phishing domain detected"
+				title = "Unsafe domain detected"
 				description = message.content
 				color = DISCORD_RED
 
