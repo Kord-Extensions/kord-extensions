@@ -71,6 +71,7 @@ You may configure rate limits using the following functions:
 - `unlimitByDefault()` - Remove the default rate limiter, disabling rate limiting for all domains without configured
   rate limits.
 
+
 - `domainLimit(domain, limit, interval)` - Configure a separate rate limit for a specific domain.
 - `defaultDomainLimit(domain)` - Remove a configured domain-specific rate limit, making it use the default rate limit.
 - `unlimitDomain(domain)` - Disable rate limiting for the given domain, even when you provide a global rate limit.
