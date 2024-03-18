@@ -10,6 +10,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api
 
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.utils.LRUHashMap
 import dev.kord.common.entity.Snowflake
+import dev.kord.common.ratelimit.IntervalRateLimiter
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -19,10 +20,15 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.seconds
 
 internal const val PK_API_VERSION = 2
 
-class PluralKit(private val baseUrl: String = "https://api.pluralkit.me", cacheSize: Int = 10_000) {
+class PluralKit(
+	private val baseUrl: String = "https://api.pluralkit.me",
+	private val rateLimiter: IntervalRateLimiter? = IntervalRateLimiter(2, 1.seconds),
+	cacheSize: Int = 10_000
+) {
 	private val logger = KotlinLogging.logger { }
 
 	private val messageUrl: String = "${this.baseUrl}/v$PK_API_VERSION/messages/{id}"
@@ -53,6 +59,8 @@ class PluralKit(private val baseUrl: String = "https://api.pluralkit.me", cacheS
 		val url = messageUrl.replace("id" to id)
 
 		try {
+			rateLimiter?.consume()
+
 			val result: PKMessage = client.get(url).body()
 			messageCache[id] = result
 
