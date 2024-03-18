@@ -121,7 +121,7 @@ detekt {
 }
 
 license {
-	setHeader(rootProject.file("LICENSE"))
+	setHeader(rootProject.file("codeformat/HEADER"))
 	ignoreFailures(System.getenv()["CI"] == null)
 
 	include("**/src/**.*")
