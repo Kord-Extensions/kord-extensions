@@ -42,6 +42,10 @@ class PluralKit(
 			)
 		}
 
+		install(DefaultRequest) {
+			header("User-Agent", "Kord Extensions, extra-pluralkit")
+		}
+
 		expectSuccess = true
 	}
 
