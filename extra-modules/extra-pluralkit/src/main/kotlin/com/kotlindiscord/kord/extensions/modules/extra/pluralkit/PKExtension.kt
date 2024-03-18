@@ -24,6 +24,7 @@ import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.api.PluralKit
+import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.config.PKConfigBuilder
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.events.proxied
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.events.unproxied
 import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.storage.PKGuildConfig
@@ -55,7 +56,7 @@ const val NEGATIVE_EMOTE = "❌"
 const val POSITIVE_EMOTE = "✅"
 
 @Suppress("StringLiteralDuplication")
-class PKExtension : Extension() {
+class PKExtension(val config: PKConfigBuilder) : Extension() {
 	override val name: String = "ext-pluralkit"
 	override val bundle: String = "kordex.pluralkit"
 
@@ -433,16 +434,13 @@ class PKExtension : Extension() {
 		checkTask = null
 	}
 
-	private fun PKGuildConfig.api(): PluralKit {
-		var api = apiMap[apiUrl]
-
-		if (api == null) {
-			api = PluralKit(apiUrl)
-			apiMap[apiUrl] = api
+	private fun PKGuildConfig.api(): PluralKit =
+		apiMap.getOrPut(apiUrl) {
+			PluralKit(
+				apiUrl,
+				config.getLimiter(apiUrl)
+			)
 		}
-
-		return api
-	}
 
 	private fun Boolean.emote() =
 		if (this) {

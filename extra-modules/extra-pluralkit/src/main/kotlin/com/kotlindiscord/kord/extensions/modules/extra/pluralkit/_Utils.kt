@@ -7,8 +7,18 @@
 package com.kotlindiscord.kord.extensions.modules.extra.pluralkit
 
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
+import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.config.PKConfigBuilder
+
+/** Set up and add the PluralKit extension to your bot, using the default configuration. **/
+fun ExtensibleBotBuilder.ExtensionsBuilder.extPluralKit() {
+	add { PKExtension(PKConfigBuilder()) }
+}
 
 /** Set up and add the PluralKit extension to your bot. **/
-fun ExtensibleBotBuilder.ExtensionsBuilder.extPluralKit() {
-	add(::PKExtension)
+fun ExtensibleBotBuilder.ExtensionsBuilder.extPluralKit(body: PKConfigBuilder.() -> Unit) {
+	val builder = PKConfigBuilder()
+
+	body(builder)
+
+	add { PKExtension(builder) }
 }
