@@ -107,7 +107,7 @@ public suspend fun Kord.kordExUserAgent(): String {
 	return buildString {
 		append("Kord Extensions $KORDEX_VERSION ")
 		append("/ Application: ${application.name} (${application.id}) ")
-		append("/ Bot: ${self.username} (${self.id}) ")
+		append("/ Bot: ${self.tag} (${self.id}) ")
 		append("/ Contacts: ")
 
 		if (application.ownerId != null) {
