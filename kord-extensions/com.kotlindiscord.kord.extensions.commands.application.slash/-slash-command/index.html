@@ -1,0 +1,903 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SlashCommand</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">1.8.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":kord-extensions:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="kord-extensions::com.kotlindiscord.kord.extensions.commands.application.slash/SlashCommand///PointingToDeclaration//1057207631">
+  <div class="breadcrumbs"><a href="../../index.html">kord-extensions</a><span class="delimiter">/</span><a href="../index.html">com.kotlindiscord.kord.extensions.commands.application.slash</a><span class="delimiter">/</span><span class="current">SlashCommand</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Slash</span><wbr><span><span>Command</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">C</a><span class="token operator"> : </span><a href="../-slash-command-context/index.html">SlashCommandContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">A</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">A</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">extension<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.extensions/-extension/index.html">Extension</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>arguments<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="index.html">A</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>modal<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>parentCommand<span class="token operator">: </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>parentGroup<span class="token operator">: </span><a href="../-slash-group/index.html">SlashGroup</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/index.html">ApplicationCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><p class="paragraph">Slash command, executed directly in the chat input.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>arguments</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Callable returning an <code class="lang-kotlin">Arguments</code> object, if any</p></div></div></div></div><div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>modal</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Callable returning a <code class="lang-kotlin">ModalForm</code> object, if any</p></div></div></div></div><div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>parent</span><wbr><span><span>Command</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Parent slash command, if any</p></div></div></div></div><div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>parent</span><wbr><span><span>Group</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Parent slash command group, if any</p></div></div></div></div></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-public-slash-command/index.html">PublicSlashCommand</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1501102297%2FConstructors%2F1057207631" anchor-label="SlashCommand" id="1501102297%2FConstructors%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash-command.html"><span>Slash</span><wbr><span><span>Command</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1501102297%2FConstructors%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">extension<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.extensions/-extension/index.html">Extension</a><span class="token punctuation">, </span></span><span class="parameter ">arguments<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="index.html">A</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">modal<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">parentCommand<span class="token operator">: </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">parentGroup<span class="token operator">: </span><a href="../-slash-group/index.html">SlashGroup</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="359583835%2FProperties%2F1057207631" anchor-label="allowByDefault" id="359583835%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/allow-by-default.html"><span>allow</span><wbr><span>By</span><wbr><span><span>Default</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="359583835%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/allow-by-default.html">allowByDefault</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether to allow everyone to use this command by default.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1810055936%2FProperties%2F1057207631" anchor-label="allowInDms" id="-1810055936%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/allow-in-dms.html"><span>allow</span><wbr><span>In</span><wbr><span><span>Dms</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1810055936%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/allow-in-dms.html">allowInDms</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Enables or disables the command in DMs.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1717371492%2FProperties%2F1057207631" anchor-label="arguments" id="1717371492%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="arguments.html"><span><span>arguments</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1717371492%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="arguments.html">arguments</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="index.html">A</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-817920258%2FProperties%2F1057207631" anchor-label="body" id="-817920258%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="body.html"><span><span>body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-817920258%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">lateinit </span><span class="token keyword">var </span><a href="body.html">body</a><span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="index.html">C</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div><div class="brief "><p class="paragraph">Command body, to be called when the command is executed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2103042530%2FProperties%2F1057207631" anchor-label="bundle" id="2103042530%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/bundle.html"><span><span>bundle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2103042530%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/bundle.html">bundle</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Translation bundle to use, if not the one provided by the extension.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-32841229%2FProperties%2F1057207631" anchor-label="defaultMemberPermissions" id="-32841229%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/default-member-permissions.html"><span>default</span><wbr><span>Member</span><wbr><span><span>Permissions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-32841229%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">var </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/default-member-permissions.html">defaultMemberPermissions</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permissions///PointingToDeclaration/">Permissions</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Default set of <span data-unresolved-link="dev.kord.common.entity/Permissions///PointingToDeclaration/">Permissions</span> required to use the command on a guild.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1109834946%2FProperties%2F1057207631" anchor-label="description" id="-1109834946%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="description.html"><span><span>description</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1109834946%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">lateinit </span><span class="token keyword">var </span><a href="description.html">description</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Command description, as displayed on Discord.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1052633449%2FProperties%2F1057207631" anchor-label="extension" id="-1052633449%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/extension.html"><span><span>extension</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1052633449%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/extension.html">extension</a><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.extensions/-extension/index.html">Extension</a></div><div class="brief "><p class="paragraph">The extension object this command belongs to.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1789396556%2FProperties%2F1057207631" anchor-label="groups" id="1789396556%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="groups.html"><span><span>groups</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1789396556%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="groups.html">groups</a><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-slash-group/index.html">SlashGroup</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Map of group names to slash command groups, if any.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-222431650%2FProperties%2F1057207631" anchor-label="hasBody" id="-222431650%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-body.html"><span>has</span><wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-222431650%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="has-body.html">hasBody</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether this command has a body/action set.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1608281102%2FProperties%2F1057207631" anchor-label="kord" id="1608281102%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/kord.html"><span><span>kord</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1608281102%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/kord.html">kord</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core/Kord///PointingToDeclaration/">Kord</span></div><div class="brief "><p class="paragraph">Kord instance, backing the ExtensibleBot.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-667621889%2FProperties%2F1057207631" anchor-label="localizedDescription" id="-667621889%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="localized-description.html"><span>localized</span><wbr><span><span>Description</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-667621889%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="localized-description.html">localizedDescription</a><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-localized/index.html">Localized</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A <a href="../../com.kotlindiscord.kord.extensions.commands.application/-localized/index.html">Localized</a> version of <a href="description.html">description</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1642747944%2FProperties%2F1057207631" anchor-label="localizedName" id="-1642747944%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/localized-name.html"><span>localized</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1642747944%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/localized-name.html">localizedName</a><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-localized/index.html">Localized</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A <a href="../../com.kotlindiscord.kord.extensions.commands.application/-localized/index.html">Localized</a> version of <a href="../../../kord-extensions/com.kotlindiscord.kord.extensions.commands.application/-application-command/name.html">name</a>. Lower-cased if this is a slash command.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1801074369%2FProperties%2F1057207631" anchor-label="locking" id="-1801074369%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/locking.html"><span><span>locking</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1801074369%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/locking.html">locking</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Set this to <code class="lang-kotlin">true</code> to lock command execution with a Mutex.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1160996976%2FProperties%2F1057207631" anchor-label="mention" id="-1160996976%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="mention.html"><span><span>mention</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1160996976%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="mention.html">mention</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Clickable mention for this slash command, if applicable.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="283969389%2FProperties%2F1057207631" anchor-label="modal" id="283969389%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="modal.html"><span><span>modal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="283969389%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="modal.html">modal</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="376876503%2FProperties%2F1057207631" anchor-label="mutex" id="376876503%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/mutex.html"><span><span>mutex</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="376876503%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/mutex.html">mutex</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.sync/Mutex///PointingToDeclaration/">Mutex</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Mutex object to use for locking.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1818119751%2FProperties%2F1057207631" anchor-label="name" id="-1818119751%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/name.html"><span><span>name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1818119751%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">lateinit </span><span class="token keyword">var </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/name.html">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">The name of this command, for invocation and help commands.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-623201432%2FProperties%2F1057207631" anchor-label="nameTranslationCache" id="-623201432%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/name-translation-cache.html"><span>name</span><wbr><span>Translation</span><wbr><span><span>Cache</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-623201432%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/name-translation-cache.html">nameTranslationCache</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html">MutableMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Translation cache, so we don't have to look up translations every time.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1217382489%2FProperties%2F1057207631" anchor-label="parentCommand" id="1217382489%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="parent-command.html"><span>parent</span><wbr><span><span>Command</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1217382489%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="parent-command.html">parentCommand</a><span class="token operator">: </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1418450587%2FProperties%2F1057207631" anchor-label="parentGroup" id="-1418450587%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="parent-group.html"><span>parent</span><wbr><span><span>Group</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1418450587%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="parent-group.html">parentGroup</a><span class="token operator">: </span><a href="../-slash-group/index.html">SlashGroup</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1421005953%2FProperties%2F1057207631" anchor-label="registry" id="-1421005953%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/registry.html"><span><span>registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1421005953%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/registry.html">registry</a><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command-registry/index.html">ApplicationCommandRegistry</a></div><div class="brief "><p class="paragraph">Quick access to the command registry.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1163422950%2FProperties%2F1057207631" anchor-label="requiredPerms" id="-1163422950%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/required-perms.html"><span>required</span><wbr><span><span>Perms</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1163422950%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/required-perms.html">requiredPerms</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html">MutableSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="dev.kord.common.entity/Permission///PointingToDeclaration/">Permission</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Permissions required to be able to run this command.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1609944357%2FProperties%2F1057207631" anchor-label="sentry" id="1609944357%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/sentry.html"><span><span>sentry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1609944357%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/sentry.html">sentry</a><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.sentry/-sentry-adapter/index.html">SentryAdapter</a></div><div class="brief "><p class="paragraph">Sentry adapter, for easy access to Sentry functions.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-436633695%2FProperties%2F1057207631" anchor-label="settings" id="-436633695%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/settings.html"><span><span>settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-436633695%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/settings.html">settings</a><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.builders/-extensible-bot-builder/index.html">ExtensibleBotBuilder</a></div><div class="brief "><p class="paragraph">Bot settings object.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="536640466%2FProperties%2F1057207631" anchor-label="subCommands" id="536640466%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="sub-commands.html"><span>sub</span><wbr><span><span>Commands</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="536640466%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="sub-commands.html">subCommands</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">List of subcommands, if any.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-172550319%2FProperties%2F1057207631" anchor-label="translationsProvider" id="-172550319%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/translations-provider.html"><span>translations</span><wbr><span><span>Provider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-172550319%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/translations-provider.html">translationsProvider</a><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.i18n/-translations-provider/index.html">TranslationsProvider</a></div><div class="brief "><p class="paragraph">Translations provider, for retrieving translations.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1445319578%2FProperties%2F1057207631" anchor-label="type" id="-1445319578%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="type.html"><span><span>type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1445319578%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="type.html">type</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/ApplicationCommandType///PointingToDeclaration/">ApplicationCommandType</span></div><div class="brief "><p class="paragraph">Discord-side command type, for matching up.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-952885594%2FFunctions%2F1057207631" anchor-label="action" id="-952885594%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="action.html"><span><span>action</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-952885594%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="action.html"><span class="token function">action</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="index.html">C</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token keyword"></span><a href="index.html">M</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Call this to supply a command <a href="body.html">body</a>, to be called when the command is executed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1890962383%2FFunctions%2F1057207631" anchor-label="call" id="1890962383%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="call.html"><span><span>call</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1890962383%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="call.html"><span class="token function">call</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter ">cache<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Override this to implement your command's calling logic. Check subtypes for examples!</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1874243058%2FFunctions%2F1057207631" anchor-label="check" id="1874243058%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1477312252%2FFunctions%2F1057207631"><span><span>check</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1874243058%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#1477312252%2FFunctions%2F1057207631"><span class="token function">check</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>checks<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.checks.types/-check-with-cache/index.html">CheckWithCache</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Define a check which must pass for the command to be executed.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#-763072382%2FFunctions%2F1057207631"><span class="token function">check</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">check<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.checks.types/-check-with-cache/index.html">CheckWithCache</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Overloaded check function to allow for DSL syntax.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="352043352%2FFunctions%2F1057207631" anchor-label="checkBotPerms" id="352043352%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/check-bot-perms.html"><span>check</span><wbr><span>Bot</span><wbr><span><span>Perms</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="352043352%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/check-bot-perms.html"><span class="token function">checkBotPerms</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command-context/index.html">CommandContext</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Checks whether the bot has the specified required permissions, throwing if it doesn't.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1348839954%2FFunctions%2F1057207631" anchor-label="doCall" id="-1348839954%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1348839954%2FFunctions%2F1057207631"><span>do</span><wbr><span><span>Call</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1348839954%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#-1348839954%2FFunctions%2F1057207631"><span class="token function">doCall</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called in order to execute the command.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="451202835%2FFunctions%2F1057207631" anchor-label="emitEventAsync" id="451202835%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/emit-event-async.html"><span>emit</span><wbr><span>Event</span><wbr><span><span>Async</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="451202835%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/emit-event-async.html"><span class="token function">emitEventAsync</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.commands.events/-command-event/index.html">CommandEvent</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/Job///PointingToDeclaration/">Job</span></div><div class="brief "><p class="paragraph">Quick shortcut for emitting a command event without blocking.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="465688221%2FFunctions%2F1057207631" anchor-label="ephemeralSubCommand" id="465688221%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../ephemeral-sub-command.html"><span>ephemeral</span><wbr><span>Sub</span><wbr><span><span>Command</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="465688221%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">T</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt; </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../ephemeral-sub-command.html"><span class="token function">ephemeralSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">commandObj<span class="token operator">: </span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Function for registering a custom ephemeral slash command object, for subcommands.</p></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../ephemeral-sub-command.html"><span class="token function">ephemeralSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">DSL function for easily registering an ephemeral subcommand, without arguments.</p></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">T</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token operator">&gt; </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../ephemeral-sub-command.html"><span class="token function">ephemeralSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">arguments<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">T</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">DSL function for easily registering an ephemeral subcommand, with arguments.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"ephemeralSubCommand1"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt; </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../ephemeral-sub-command.html"><span class="token function">ephemeralSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">modal<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">A</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt; </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../ephemeral-sub-command.html"><span class="token function">ephemeralSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">arguments<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">A</a><span class="token punctuation">, </span></span><span class="parameter ">modal<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">A</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">A</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../ephemeral-sub-command.html">M</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">DSL function for easily registering an ephemeral subcommand, with a modal form.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="465919497%2FFunctions%2F1057207631" anchor-label="findCommand" id="465919497%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="find-command.html"><span>find</span><wbr><span><span>Command</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="465919497%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="find-command.html"><span class="token function">findCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">eventCommand<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity.interaction/InteractionCommand///PointingToDeclaration/">InteractionCommand</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Given an <span data-unresolved-link="dev.kord.core.entity.interaction/InteractionCommand///PointingToDeclaration/">InteractionCommand</span>, resolve the correct command or subcommand object.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="find-command.html"><span class="token function">findCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/AutoCompleteInteractionCreateEvent///PointingToDeclaration/">AutoCompleteInteractionCreateEvent</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Given an autocomplete event, resolve the correct command or subcommand object.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="find-command.html"><span class="token function">findCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Given a command event, resolve the correct command or subcommand object.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-833960946%2FFunctions%2F1057207631" anchor-label="firstSentryBreadcrumb" id="-833960946%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="first-sentry-breadcrumb.html"><span>first</span><wbr><span>Sentry</span><wbr><span><span>Breadcrumb</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-833960946%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="first-sentry-breadcrumb.html"><span class="token function">firstSentryBreadcrumb</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="index.html">C</a><span class="token punctuation">, </span></span><span class="parameter ">commandObj<span class="token operator">: </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">If enabled, adds the initial Sentry breadcrumb to the given context.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1466671242%2FFunctions%2F1057207631" anchor-label="getKoin" id="-1466671242%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.koin/-kord-ex-koin-component/get-koin.html"><span>get</span><wbr><span><span>Koin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1466671242%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.koin/-kord-ex-koin-component/get-koin.html"><span class="token function">getKoin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.koin.core/Koin///PointingToDeclaration/">Koin</span></div><div class="brief "><p class="paragraph">Get the associated Koin instance.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="250009138%2FFunctions%2F1057207631" anchor-label="group" id="250009138%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../group.html"><span><span>group</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="250009138%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../group.html"><span class="token function">group</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-slash-group/index.html">SlashGroup</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-slash-group/index.html">SlashGroup</a></div><div class="brief "><p class="paragraph">Create a command group, using the given name.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="361320835%2FFunctions%2F1057207631" anchor-label="guild" id="361320835%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/guild.html"><span><span>guild</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="361320835%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/guild.html"><span class="token function">guild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">guild<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Specify a specific guild for this application command to be locked to.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1656367888%2FFunctions%2F1057207631" anchor-label="handleError" id="-1656367888%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="handle-error.html"><span>handle</span><wbr><span><span>Error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1656367888%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="handle-error.html"><span class="token function">handleError</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="index.html">C</a><span class="token punctuation">, </span></span><span class="parameter ">t<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token punctuation">, </span></span><span class="parameter ">commandObj<span class="token operator">: </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A general way to handle errors thrown during the course of a command's execution.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="332667571%2FFunctions%2F1057207631" anchor-label="localize" id="332667571%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/localize.html"><span><span>localize</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="332667571%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/localize.html"><span class="token function">localize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">lowerCase<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-localized/index.html">Localized</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Localizes a property by its <a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/localize.html">key</a> for this command.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1867427664%2FFunctions%2F1057207631" anchor-label="lock" id="-1867427664%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.types/-lockable/lock.html"><span><span>lock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1867427664%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.types/-lockable/lock.html"><span class="token function">lock</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Lock the mutex, if locking is enabled - suspending until it's unlocked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1991288891%2FFunctions%2F1057207631" anchor-label="publicSubCommand" id="-1991288891%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../public-sub-command.html"><span>public</span><wbr><span>Sub</span><wbr><span><span>Command</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1991288891%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">T</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt; </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../public-sub-command.html"><span class="token function">publicSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">commandObj<span class="token operator">: </span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Function for registering a custom public slash command object, for subcommands.</p></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../public-sub-command.html"><span class="token function">publicSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">DSL function for easily registering a public subcommand, without arguments.</p></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">T</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token operator">&gt; </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../public-sub-command.html"><span class="token function">publicSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">arguments<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../public-sub-command.html">T</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">DSL function for easily registering a public subcommand, with arguments.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation builtin">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"publicSubCommand1"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt; </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../public-sub-command.html"><span class="token function">publicSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">modal<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">DSL function for easily registering a public subcommand, with a modal form.</p></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">A</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator"> : </span><a href="../../com.kotlindiscord.kord.extensions.components.forms/-modal-form/index.html">ModalForm</a><span class="token operator">&gt; </span><a href="index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../public-sub-command.html"><span class="token function">publicSubCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">arguments<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../public-sub-command.html">A</a><span class="token punctuation">, </span></span><span class="parameter ">modal<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token keyword"></span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">A</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../public-sub-command.html">A</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../public-sub-command.html">M</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">DSL function for easily registering a public subcommand, with arguments and a modal form.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-27070216%2FFunctions%2F1057207631" anchor-label="requireBotPermissions" id="-27070216%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands/-command/require-bot-permissions.html"><span>require</span><wbr><span>Bot</span><wbr><span><span>Permissions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-27070216%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.commands/-command/require-bot-permissions.html"><span class="token function">requireBotPermissions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>perms<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permission///PointingToDeclaration/">Permission</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">If your bot requires permissions to be able to execute the command, add them using this function.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="301819202%2FFunctions%2F1057207631" anchor-label="requirePermission" id="301819202%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/require-permission.html"><span>require</span><wbr><span><span>Permission</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="301819202%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/require-permission.html"><span class="token function">requirePermission</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>permissions<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permission///PointingToDeclaration/">Permission</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">This will register a requirement for <a href="../../com.kotlindiscord.kord.extensions.commands.application/-application-command/require-permission.html">permissions</a> with Discord.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="994064851%2FFunctions%2F1057207631" anchor-label="respondText" id="994064851%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="respond-text.html"><span>respond</span><wbr><span><span>Text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="994064851%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="respond-text.html"><span class="token function">respondText</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="index.html">C</a><span class="token punctuation">, </span></span><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">failureType<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.types/-failure-reason/index.html">FailureReason</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Override this to implement a way to respond to the user, regardless of whatever happens.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="96895452%2FFunctions%2F1057207631" anchor-label="run" id="96895452%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="run.html"><span><span>run</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="96895452%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="run.html"><span class="token function">run</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter ">cache<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Override this to implement the final calling logic, including creating the command context and running with it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-488876175%2FFunctions%2F1057207631" anchor-label="runChecks" id="-488876175%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="run-checks.html"><span>run</span><wbr><span><span>Checks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-488876175%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="run-checks.html"><span class="token function">runChecks</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter ">cache<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Override this in order to implement any subclass-specific checks.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-896806920%2FFunctions%2F1057207631" anchor-label="runStandardChecks" id="-896806920%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-896806920%2FFunctions%2F1057207631"><span>run</span><wbr><span>Standard</span><wbr><span><span>Checks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-896806920%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#-896806920%2FFunctions%2F1057207631"><span class="token function">runStandardChecks</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter ">cache<span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Runs standard checks that can be handled in a generic way, without worrying about subclass-specific checks.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="599694647%2FFunctions%2F1057207631" anchor-label="unlock" id="599694647%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.types/-lockable/unlock.html"><span><span>unlock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="599694647%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.types/-lockable/unlock.html"><span class="token function">unlock</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Unlock the mutex, if it's locked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1522477194%2FFunctions%2F1057207631" anchor-label="validate" id="1522477194%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="validate.html"><span><span>validate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1522477194%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="validate.html"><span class="token function">validate</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">An internal function used to ensure that all of a command's required arguments are present and correct.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1966647590%2FFunctions%2F1057207631" anchor-label="withLock" id="1966647590%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.types/-lockable/with-lock.html"><span>with</span><wbr><span><span>Lock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1966647590%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.types/-lockable/with-lock.html">T</a><span class="token operator">&gt; </span><a href="../../com.kotlindiscord.kord.extensions.types/-lockable/with-lock.html"><span class="token function">withLock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../../com.kotlindiscord.kord.extensions.types/-lockable/with-lock.html">T</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Lock the mutex (if locking is enabled), call the supplied callable, and unlock.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

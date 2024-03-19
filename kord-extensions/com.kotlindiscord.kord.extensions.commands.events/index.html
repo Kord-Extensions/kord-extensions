@@ -1,0 +1,894 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.kotlindiscord.kord.extensions.commands.events</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">1.8.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":kord-extensions:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="kord-extensions::com.kotlindiscord.kord.extensions.commands.events////PointingToDeclaration//1057207631">
+  <div class="breadcrumbs"><a href="../index.html">kord-extensions</a><span class="delimiter">/</span><span class="current">com.kotlindiscord.kord.extensions.commands.events</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="36544432%2FClasslikes%2F1057207631" anchor-label="ChatCommandFailedChecksEvent" id="36544432%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-chat-command-failed-checks-event/index.html"><span>Chat</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="36544432%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-chat-command-failed-checks-event/index.html">ChatCommandFailedChecksEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-command-failed-checks-event/index.html">CommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a chat command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="228500953%2FClasslikes%2F1057207631" anchor-label="ChatCommandFailedParsingEvent" id="228500953%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-chat-command-failed-parsing-event/index.html"><span>Chat</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Parsing</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="228500953%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-chat-command-failed-parsing-event/index.html">ChatCommandFailedParsingEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>exception<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions/-argument-parsing-exception/index.html">ArgumentParsingException</a></span></span><span class="token punctuation">)</span> : <a href="-command-failed-parsing-event/index.html">CommandFailedParsingEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a chat command's argument parsing fails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1810725358%2FClasslikes%2F1057207631" anchor-label="ChatCommandFailedWithExceptionEvent" id="-1810725358%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-chat-command-failed-with-exception-event/index.html"><span>Chat</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1810725358%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-chat-command-failed-with-exception-event/index.html">ChatCommandFailedWithExceptionEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>throwable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span> : <a href="-command-failed-with-exception-event/index.html">CommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a chat command's invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2074285944%2FClasslikes%2F1057207631" anchor-label="ChatCommandInvocationEvent" id="2074285944%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-chat-command-invocation-event/index.html"><span>Chat</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2074285944%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-chat-command-invocation-event/index.html">ChatCommandInvocationEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-command-invocation-event/index.html">CommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a chat command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2074412935%2FClasslikes%2F1057207631" anchor-label="ChatCommandSucceededEvent" id="2074412935%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-chat-command-succeeded-event/index.html"><span>Chat</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2074412935%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-chat-command-succeeded-event/index.html">ChatCommandSucceededEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-command-succeeded-event/index.html">CommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.chat/-chat-command/index.html">ChatCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a chat command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1374466944%2FClasslikes%2F1057207631" anchor-label="CommandEvent" id="1374466944%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-command-event/index.html"><span>Command</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1374466944%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-event/index.html">CommandEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands/-command/index.html">Command</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-event/index.html">E</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span> : <a href="../com.kotlindiscord.kord.extensions.events/-kord-ex-event/index.html">KordExEvent</a></div><div class="brief "><p class="paragraph">Sealed interface representing a basic command event.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-711465176%2FClasslikes%2F1057207631" anchor-label="CommandFailedChecksEvent" id="-711465176%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-command-failed-checks-event/index.html"><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-711465176%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-failed-checks-event/index.html">CommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-failed-checks-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands/-command/index.html">Command</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-failed-checks-event/index.html">E</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span> : <a href="-command-failed-event/index.html">CommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-failed-checks-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-failed-checks-event/index.html">E</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a command's checks fail, including for required bot permissions.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1618663331%2FClasslikes%2F1057207631" anchor-label="CommandFailedEvent" id="-1618663331%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-command-failed-event/index.html"><span>Command</span><wbr><span>Failed</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1618663331%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-failed-event/index.html">CommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-failed-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands/-command/index.html">Command</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-failed-event/index.html">E</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span> : <a href="-command-event/index.html">CommandEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-failed-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-failed-event/index.html">E</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a command's invocation fails, for one reason or another.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1484960415%2FClasslikes%2F1057207631" anchor-label="CommandFailedParsingEvent" id="-1484960415%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-command-failed-parsing-event/index.html"><span>Command</span><wbr><span>Failed</span><wbr><span>Parsing</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1484960415%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-failed-parsing-event/index.html">CommandFailedParsingEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-failed-parsing-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands/-command/index.html">Command</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-failed-parsing-event/index.html">E</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span> : <a href="-command-failed-event/index.html">CommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-failed-parsing-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-failed-parsing-event/index.html">E</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a command's argument parsing fails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="442984346%2FClasslikes%2F1057207631" anchor-label="CommandFailedWithExceptionEvent" id="442984346%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-command-failed-with-exception-event/index.html"><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="442984346%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-failed-with-exception-event/index.html">CommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-failed-with-exception-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands/-command/index.html">Command</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-failed-with-exception-event/index.html">E</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span> : <a href="-command-failed-event/index.html">CommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-failed-with-exception-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-failed-with-exception-event/index.html">E</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a command's body invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1452745488%2FClasslikes%2F1057207631" anchor-label="CommandInvocationEvent" id="-1452745488%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-command-invocation-event/index.html"><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1452745488%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-invocation-event/index.html">CommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-invocation-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands/-command/index.html">Command</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-invocation-event/index.html">E</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span> : <a href="-command-event/index.html">CommandEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-invocation-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-invocation-event/index.html">E</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1406448399%2FClasslikes%2F1057207631" anchor-label="CommandSucceededEvent" id="1406448399%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-command-succeeded-event/index.html"><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1406448399%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-succeeded-event/index.html">CommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-succeeded-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands/-command/index.html">Command</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-succeeded-event/index.html">E</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span> : <a href="-command-event/index.html">CommandEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-succeeded-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-succeeded-event/index.html">E</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a command's invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1624717470%2FClasslikes%2F1057207631" anchor-label="EphemeralMessageCommandFailedChecksEvent" id="1624717470%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-message-command-failed-checks-event/index.html"><span>Ephemeral</span><wbr><span>Message</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1624717470%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-message-command-failed-checks-event/index.html">EphemeralMessageCommandFailedChecksEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-ephemeral-message-command/index.html">EphemeralMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-message-command-failed-checks-event/index.html">MessageCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-ephemeral-message-command/index.html">EphemeralMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral message command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1531290980%2FClasslikes%2F1057207631" anchor-label="EphemeralMessageCommandFailedWithExceptionEvent" id="1531290980%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-message-command-failed-with-exception-event/index.html"><span>Ephemeral</span><wbr><span>Message</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1531290980%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-message-command-failed-with-exception-event/index.html">EphemeralMessageCommandFailedWithExceptionEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-ephemeral-message-command/index.html">EphemeralMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>throwable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span> : <a href="-message-command-failed-with-exception-event/index.html">MessageCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-ephemeral-message-command/index.html">EphemeralMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral message command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="471471078%2FClasslikes%2F1057207631" anchor-label="EphemeralMessageCommandInvocationEvent" id="471471078%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-message-command-invocation-event/index.html"><span>Ephemeral</span><wbr><span>Message</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="471471078%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-message-command-invocation-event/index.html">EphemeralMessageCommandInvocationEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-ephemeral-message-command/index.html">EphemeralMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-message-command-invocation-event/index.html">MessageCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-ephemeral-message-command/index.html">EphemeralMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral message command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1329972569%2FClasslikes%2F1057207631" anchor-label="EphemeralMessageCommandSucceededEvent" id="1329972569%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-message-command-succeeded-event/index.html"><span>Ephemeral</span><wbr><span>Message</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1329972569%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-message-command-succeeded-event/index.html">EphemeralMessageCommandSucceededEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-ephemeral-message-command/index.html">EphemeralMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-message-command-succeeded-event/index.html">MessageCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-ephemeral-message-command/index.html">EphemeralMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral message command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1915413336%2FClasslikes%2F1057207631" anchor-label="EphemeralSlashCommandFailedChecksEvent" id="-1915413336%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-slash-command-failed-checks-event/index.html"><span>Ephemeral</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1915413336%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-slash-command-failed-checks-event/index.html">EphemeralSlashCommandFailedChecksEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-slash-command-failed-checks-event/index.html">SlashCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral slash command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-152647711%2FClasslikes%2F1057207631" anchor-label="EphemeralSlashCommandFailedParsingEvent" id="-152647711%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-slash-command-failed-parsing-event/index.html"><span>Ephemeral</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Parsing</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-152647711%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-slash-command-failed-parsing-event/index.html">EphemeralSlashCommandFailedParsingEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>exception<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions/-argument-parsing-exception/index.html">ArgumentParsingException</a></span></span><span class="token punctuation">)</span> : <a href="-slash-command-failed-parsing-event/index.html">SlashCommandFailedParsingEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral slash command's argument parsing fails'.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1570045414%2FClasslikes%2F1057207631" anchor-label="EphemeralSlashCommandFailedWithExceptionEvent" id="-1570045414%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-slash-command-failed-with-exception-event/index.html"><span>Ephemeral</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1570045414%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-slash-command-failed-with-exception-event/index.html">EphemeralSlashCommandFailedWithExceptionEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>throwable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span> : <a href="-slash-command-failed-with-exception-event/index.html">SlashCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral slash command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1920299632%2FClasslikes%2F1057207631" anchor-label="EphemeralSlashCommandInvocationEvent" id="1920299632%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-slash-command-invocation-event/index.html"><span>Ephemeral</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1920299632%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-slash-command-invocation-event/index.html">EphemeralSlashCommandInvocationEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-slash-command-invocation-event/index.html">SlashCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral slash command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1809879665%2FClasslikes%2F1057207631" anchor-label="EphemeralSlashCommandSucceededEvent" id="-1809879665%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-slash-command-succeeded-event/index.html"><span>Ephemeral</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1809879665%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-slash-command-succeeded-event/index.html">EphemeralSlashCommandSucceededEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-slash-command-succeeded-event/index.html">SlashCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-ephemeral-slash-command/index.html">EphemeralSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral slash command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-854287676%2FClasslikes%2F1057207631" anchor-label="EphemeralUserCommandFailedChecksEvent" id="-854287676%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-user-command-failed-checks-event/index.html"><span>Ephemeral</span><wbr><span>User</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-854287676%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-user-command-failed-checks-event/index.html">EphemeralUserCommandFailedChecksEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-ephemeral-user-command/index.html">EphemeralUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-user-command-failed-checks-event/index.html">UserCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-ephemeral-user-command/index.html">EphemeralUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral user command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1090343810%2FClasslikes%2F1057207631" anchor-label="EphemeralUserCommandFailedWithExceptionEvent" id="-1090343810%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-user-command-failed-with-exception-event/index.html"><span>Ephemeral</span><wbr><span>User</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1090343810%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-user-command-failed-with-exception-event/index.html">EphemeralUserCommandFailedWithExceptionEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-ephemeral-user-command/index.html">EphemeralUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>throwable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span> : <a href="-user-command-failed-with-exception-event/index.html">UserCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-ephemeral-user-command/index.html">EphemeralUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral user command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="813025164%2FClasslikes%2F1057207631" anchor-label="EphemeralUserCommandInvocationEvent" id="813025164%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-user-command-invocation-event/index.html"><span>Ephemeral</span><wbr><span>User</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="813025164%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-user-command-invocation-event/index.html">EphemeralUserCommandInvocationEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-ephemeral-user-command/index.html">EphemeralUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-user-command-invocation-event/index.html">UserCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-ephemeral-user-command/index.html">EphemeralUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral user command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1618085107%2FClasslikes%2F1057207631" anchor-label="EphemeralUserCommandSucceededEvent" id="1618085107%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ephemeral-user-command-succeeded-event/index.html"><span>Ephemeral</span><wbr><span>User</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1618085107%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ephemeral-user-command-succeeded-event/index.html">EphemeralUserCommandSucceededEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-ephemeral-user-command/index.html">EphemeralUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-user-command-succeeded-event/index.html">UserCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-ephemeral-user-command/index.html">EphemeralUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when an ephemeral user command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1782247131%2FClasslikes%2F1057207631" anchor-label="MessageCommandFailedChecksEvent" id="-1782247131%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message-command-failed-checks-event/index.html"><span>Message</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1782247131%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-message-command-failed-checks-event/index.html">MessageCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-failed-checks-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-message-command/index.html">MessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-message-command-failed-event/index.html">MessageCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-failed-checks-event/index.html">C</a><span class="token operator">&gt; </span>, <a href="-command-failed-checks-event/index.html">CommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-failed-checks-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a message command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="728028186%2FClasslikes%2F1057207631" anchor-label="MessageCommandFailedEvent" id="728028186%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message-command-failed-event/index.html"><span>Message</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="728028186%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-message-command-failed-event/index.html">MessageCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-failed-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-message-command/index.html">MessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-failed-event/index.html">CommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-failed-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a message command invocation fails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-145524995%2FClasslikes%2F1057207631" anchor-label="MessageCommandFailedWithExceptionEvent" id="-145524995%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message-command-failed-with-exception-event/index.html"><span>Message</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-145524995%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-message-command-failed-with-exception-event/index.html">MessageCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-failed-with-exception-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-message-command/index.html">MessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-message-command-failed-event/index.html">MessageCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-failed-with-exception-event/index.html">C</a><span class="token operator">&gt; </span>, <a href="-command-failed-with-exception-event/index.html">CommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-failed-with-exception-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a message command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1578999251%2FClasslikes%2F1057207631" anchor-label="MessageCommandInvocationEvent" id="-1578999251%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message-command-invocation-event/index.html"><span>Message</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1578999251%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-message-command-invocation-event/index.html">MessageCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-invocation-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-message-command/index.html">MessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-invocation-event/index.html">CommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-invocation-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a message command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1784212942%2FClasslikes%2F1057207631" anchor-label="MessageCommandSucceededEvent" id="-1784212942%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message-command-succeeded-event/index.html"><span>Message</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1784212942%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-message-command-succeeded-event/index.html">MessageCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-succeeded-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-message-command/index.html">MessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-succeeded-event/index.html">CommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-message-command-succeeded-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a message command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1718320942%2FClasslikes%2F1057207631" anchor-label="PublicMessageCommandFailedChecksEvent" id="1718320942%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-message-command-failed-checks-event/index.html"><span>Public</span><wbr><span>Message</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1718320942%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-message-command-failed-checks-event/index.html">PublicMessageCommandFailedChecksEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-public-message-command/index.html">PublicMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-message-command-failed-checks-event/index.html">MessageCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-public-message-command/index.html">PublicMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public message command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1474306860%2FClasslikes%2F1057207631" anchor-label="PublicMessageCommandFailedWithExceptionEvent" id="-1474306860%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-message-command-failed-with-exception-event/index.html"><span>Public</span><wbr><span>Message</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1474306860%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-message-command-failed-with-exception-event/index.html">PublicMessageCommandFailedWithExceptionEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-public-message-command/index.html">PublicMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>throwable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span> : <a href="-message-command-failed-with-exception-event/index.html">MessageCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-public-message-command/index.html">PublicMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public message command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-735134090%2FClasslikes%2F1057207631" anchor-label="PublicMessageCommandInvocationEvent" id="-735134090%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-message-command-invocation-event/index.html"><span>Public</span><wbr><span>Message</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-735134090%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-message-command-invocation-event/index.html">PublicMessageCommandInvocationEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-public-message-command/index.html">PublicMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-message-command-invocation-event/index.html">MessageCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-public-message-command/index.html">PublicMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public message command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="598313161%2FClasslikes%2F1057207631" anchor-label="PublicMessageCommandSucceededEvent" id="598313161%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-message-command-succeeded-event/index.html"><span>Public</span><wbr><span>Message</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="598313161%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-message-command-succeeded-event/index.html">PublicMessageCommandSucceededEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-public-message-command/index.html">PublicMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/MessageCommandInteractionCreateEvent///PointingToDeclaration/">MessageCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-message-command-succeeded-event/index.html">MessageCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.message/-public-message-command/index.html">PublicMessageCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public message command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1172948792%2FClasslikes%2F1057207631" anchor-label="PublicSlashCommandFailedChecksEvent" id="1172948792%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-slash-command-failed-checks-event/index.html"><span>Public</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1172948792%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-slash-command-failed-checks-event/index.html">PublicSlashCommandFailedChecksEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-slash-command-failed-checks-event/index.html">SlashCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public slash command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1097297745%2FClasslikes%2F1057207631" anchor-label="PublicSlashCommandFailedParsingEvent" id="1097297745%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-slash-command-failed-parsing-event/index.html"><span>Public</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Parsing</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1097297745%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-slash-command-failed-parsing-event/index.html">PublicSlashCommandFailedParsingEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>exception<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions/-argument-parsing-exception/index.html">ArgumentParsingException</a></span></span><span class="token punctuation">)</span> : <a href="-slash-command-failed-parsing-event/index.html">SlashCommandFailedParsingEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public slash command's argument parsing fails'.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1649169802%2FClasslikes%2F1057207631" anchor-label="PublicSlashCommandFailedWithExceptionEvent" id="1649169802%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-slash-command-failed-with-exception-event/index.html"><span>Public</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1649169802%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-slash-command-failed-with-exception-event/index.html">PublicSlashCommandFailedWithExceptionEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>throwable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span> : <a href="-slash-command-failed-with-exception-event/index.html">SlashCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public slash command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1982627584%2FClasslikes%2F1057207631" anchor-label="PublicSlashCommandInvocationEvent" id="-1982627584%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-slash-command-invocation-event/index.html"><span>Public</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1982627584%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-slash-command-invocation-event/index.html">PublicSlashCommandInvocationEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-slash-command-invocation-event/index.html">SlashCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public slash command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="142429439%2FClasslikes%2F1057207631" anchor-label="PublicSlashCommandSucceededEvent" id="142429439%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-slash-command-succeeded-event/index.html"><span>Public</span><wbr><span>Slash</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="142429439%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-slash-command-succeeded-event/index.html">PublicSlashCommandSucceededEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-slash-command-succeeded-event/index.html">SlashCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-public-slash-command/index.html">PublicSlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public slash command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1585947084%2FClasslikes%2F1057207631" anchor-label="PublicUserCommandFailedChecksEvent" id="-1585947084%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-user-command-failed-checks-event/index.html"><span>Public</span><wbr><span>User</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1585947084%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-user-command-failed-checks-event/index.html">PublicUserCommandFailedChecksEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-public-user-command/index.html">PublicUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-user-command-failed-checks-event/index.html">UserCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-public-user-command/index.html">PublicUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public user command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1125045490%2FClasslikes%2F1057207631" anchor-label="PublicUserCommandFailedWithExceptionEvent" id="-1125045490%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-user-command-failed-with-exception-event/index.html"><span>Public</span><wbr><span>User</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1125045490%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-user-command-failed-with-exception-event/index.html">PublicUserCommandFailedWithExceptionEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-public-user-command/index.html">PublicUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>throwable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span> : <a href="-user-command-failed-with-exception-event/index.html">UserCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-public-user-command/index.html">PublicUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public user command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1529633028%2FClasslikes%2F1057207631" anchor-label="PublicUserCommandInvocationEvent" id="-1529633028%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-user-command-invocation-event/index.html"><span>Public</span><wbr><span>User</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1529633028%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-user-command-invocation-event/index.html">PublicUserCommandInvocationEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-public-user-command/index.html">PublicUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-user-command-invocation-event/index.html">UserCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-public-user-command/index.html">PublicUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public user command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="572684163%2FClasslikes%2F1057207631" anchor-label="PublicUserCommandSucceededEvent" id="572684163%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public-user-command-succeeded-event/index.html"><span>Public</span><wbr><span>User</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="572684163%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public-user-command-succeeded-event/index.html">PublicUserCommandSucceededEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>command<span class="token operator">: </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-public-user-command/index.html">PublicUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span></span></span><span class="token punctuation">)</span> : <a href="-user-command-succeeded-event/index.html">UserCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-public-user-command/index.html">PublicUserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Event emitted when a public user command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="329083631%2FClasslikes%2F1057207631" anchor-label="SlashCommandFailedChecksEvent" id="329083631%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash-command-failed-checks-event/index.html"><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="329083631%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-slash-command-failed-checks-event/index.html">SlashCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-checks-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-slash-command/index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-slash-command-failed-event/index.html">SlashCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-checks-event/index.html">C</a><span class="token operator">&gt; </span>, <a href="-command-failed-checks-event/index.html">CommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-checks-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a slash command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1580282524%2FClasslikes%2F1057207631" anchor-label="SlashCommandFailedEvent" id="-1580282524%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash-command-failed-event/index.html"><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1580282524%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-slash-command-failed-event/index.html">SlashCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-slash-command/index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-failed-event/index.html">CommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a slash command invocation fails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="707281530%2FClasslikes%2F1057207631" anchor-label="SlashCommandFailedParsingEvent" id="707281530%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash-command-failed-parsing-event/index.html"><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Parsing</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="707281530%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-slash-command-failed-parsing-event/index.html">SlashCommandFailedParsingEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-parsing-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-slash-command/index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-slash-command-failed-event/index.html">SlashCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-parsing-event/index.html">C</a><span class="token operator">&gt; </span>, <a href="-command-failed-parsing-event/index.html">CommandFailedParsingEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-parsing-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a slash command's argument parsing fails'.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-155032077%2FClasslikes%2F1057207631" anchor-label="SlashCommandFailedWithExceptionEvent" id="-155032077%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash-command-failed-with-exception-event/index.html"><span>Slash</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-155032077%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-slash-command-failed-with-exception-event/index.html">SlashCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-with-exception-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-slash-command/index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-slash-command-failed-event/index.html">SlashCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-with-exception-event/index.html">C</a><span class="token operator">&gt; </span>, <a href="-command-failed-with-exception-event/index.html">CommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-failed-with-exception-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a slash command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1958389367%2FClasslikes%2F1057207631" anchor-label="SlashCommandInvocationEvent" id="1958389367%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash-command-invocation-event/index.html"><span>Slash</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1958389367%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-slash-command-invocation-event/index.html">SlashCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-invocation-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-slash-command/index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-invocation-event/index.html">CommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-invocation-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a slash command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1947198296%2FClasslikes%2F1057207631" anchor-label="SlashCommandSucceededEvent" id="-1947198296%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash-command-succeeded-event/index.html"><span>Slash</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1947198296%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-slash-command-succeeded-event/index.html">SlashCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-succeeded-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.slash/-slash-command/index.html">SlashCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-succeeded-event/index.html">CommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-slash-command-succeeded-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/ChatInputCommandInteractionCreateEvent///PointingToDeclaration/">ChatInputCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a slash command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="326494109%2FClasslikes%2F1057207631" anchor-label="UserCommandFailedChecksEvent" id="326494109%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-user-command-failed-checks-event/index.html"><span>User</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>Checks</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="326494109%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-user-command-failed-checks-event/index.html">UserCommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-failed-checks-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-user-command/index.html">UserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-user-command-failed-event/index.html">UserCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-failed-checks-event/index.html">C</a><span class="token operator">&gt; </span>, <a href="-command-failed-checks-event/index.html">CommandFailedChecksEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-failed-checks-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a user command's checks fail.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1707744110%2FClasslikes%2F1057207631" anchor-label="UserCommandFailedEvent" id="-1707744110%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-user-command-failed-event/index.html"><span>User</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1707744110%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-user-command-failed-event/index.html">UserCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-failed-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-user-command/index.html">UserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-failed-event/index.html">CommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-failed-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a user command invocation fails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1598887547%2FClasslikes%2F1057207631" anchor-label="UserCommandFailedWithExceptionEvent" id="-1598887547%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-user-command-failed-with-exception-event/index.html"><span>User</span><wbr><span>Command</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span>Exception</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1598887547%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-user-command-failed-with-exception-event/index.html">UserCommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-failed-with-exception-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-user-command/index.html">UserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-user-command-failed-event/index.html">UserCommandFailedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-failed-with-exception-event/index.html">C</a><span class="token operator">&gt; </span>, <a href="-command-failed-with-exception-event/index.html">CommandFailedWithExceptionEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-failed-with-exception-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a user command invocation fails with an exception.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="675706533%2FClasslikes%2F1057207631" anchor-label="UserCommandInvocationEvent" id="675706533%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-user-command-invocation-event/index.html"><span>User</span><wbr><span>Command</span><wbr><span>Invocation</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="675706533%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-user-command-invocation-event/index.html">UserCommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-invocation-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-user-command/index.html">UserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-invocation-event/index.html">CommandInvocationEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-invocation-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a user command is invoked.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1890750138%2FClasslikes%2F1057207631" anchor-label="UserCommandSucceededEvent" id="1890750138%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-user-command-succeeded-event/index.html"><span>User</span><wbr><span>Command</span><wbr><span>Succeeded</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1890750138%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-user-command-succeeded-event/index.html">UserCommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-succeeded-event/index.html">C</a><span class="token operator"> : </span><a href="../com.kotlindiscord.kord.extensions.commands.application.user/-user-command/index.html">UserCommand</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span> : <a href="-command-succeeded-event/index.html">CommandSucceededEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-user-command-succeeded-event/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="dev.kord.core.event.interaction/UserCommandInteractionCreateEvent///PointingToDeclaration/">UserCommandInteractionCreateEvent</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Basic event emitted when a user command invocation succeeds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

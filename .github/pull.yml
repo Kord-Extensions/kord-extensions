@@ -1,0 +1,10 @@
+version: "1"
+
+rules:
+  - base: root
+    upstream: Kord-Extensions:root
+    mergeMethod: hardreset
+
+  - base: develop
+    upstream: Kord-Extensions:develop
+    mergeMethod: hardreset

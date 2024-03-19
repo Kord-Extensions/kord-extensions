@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="11">
+      <module name="kord-extensions.docs.main" target="14" />
+      <module name="kord-extensions.docs.orchid" target="14" />
+      <module name="kord-extensions.docs.test" target="14" />
+      <module name="kord-extensions.extra-modules.common" target="14" />
+      <module name="kord-extensions.extra-modules.common.main" target="14" />
+      <module name="kord-extensions.extra-modules.common.test" target="14" />
+      <module name="kord-extensions.extra-modules.mappings" target="14" />
+      <module name="kord-extensions.extra-modules.mappings.main" target="14" />
+      <module name="kord-extensions.extra-modules.mappings.test" target="14" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

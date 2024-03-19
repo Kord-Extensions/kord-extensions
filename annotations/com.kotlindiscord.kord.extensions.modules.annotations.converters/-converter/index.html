@@ -1,0 +1,295 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Converter</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">1.8.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":annotations:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="annotations::com.kotlindiscord.kord.extensions.modules.annotations.converters/Converter///PointingToDeclaration//1443151734">
+  <div class="breadcrumbs"><a href="../../index.html">annotations</a><span class="delimiter">/</span><a href="../index.html">com.kotlindiscord.kord.extensions.modules.annotations.converters</a><span class="delimiter">/</span><span class="current">Converter</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Converter</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-target/index.html"><span class="token annotation builtin">Target</span></a><span class="token punctuation">(</span><span>allowedTargets<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.annotation/-annotation-target/-c-l-a-s-s/index.html">AnnotationTarget.CLASS</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">annotation class </span><a href="index.html">Converter</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>names<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>types<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-converter-type/index.html">ConverterType</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>imports<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>builderConstructorArguments<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>builderGeneric<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>builderFields<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>builderSuffixedWhere<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>builderBuildFunctionPreStatements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>builderBuildFunctionStatements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>builderInitStatements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>builderExtraStatements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>functionBuilderArguments<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>[]<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>functionGeneric<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>functionSuffixedWhere<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span></span></span><span class="token punctuation">)</span></div><p class="paragraph">Mark the class as a converter class, allowing converter builders and their functions to be generated.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-210673655%2FProperties%2F1443151734" anchor-label="builderBuildFunctionPreStatements" id="-210673655%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="builder-build-function-pre-statements.html"><span>builder</span><wbr><span>Build</span><wbr><span>Function</span><wbr><span>Pre</span><wbr><span><span>Statements</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-210673655%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="builder-build-function-pre-statements.html">builderBuildFunctionPreStatements</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Extra lines of code to add to the builder's <code class="lang-kotlin">build()</code> function, before the converter is instantiated.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1722629658%2FProperties%2F1443151734" anchor-label="builderBuildFunctionStatements" id="-1722629658%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="builder-build-function-statements.html"><span>builder</span><wbr><span>Build</span><wbr><span>Function</span><wbr><span><span>Statements</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1722629658%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="builder-build-function-statements.html">builderBuildFunctionStatements</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Extra lines of code to add to the builder's <code class="lang-kotlin">build()</code> function, after the converter is instantiated.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1306265806%2FProperties%2F1443151734" anchor-label="builderConstructorArguments" id="1306265806%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="builder-constructor-arguments.html"><span>builder</span><wbr><span>Constructor</span><wbr><span><span>Arguments</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1306265806%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="builder-constructor-arguments.html">builderConstructorArguments</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Arguments to add to the builder's constructor, if any. Prefix with "!!" to stop the argument from being passed into the converter.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="726044924%2FProperties%2F1443151734" anchor-label="builderExtraStatements" id="726044924%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="builder-extra-statements.html"><span>builder</span><wbr><span>Extra</span><wbr><span><span>Statements</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="726044924%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="builder-extra-statements.html">builderExtraStatements</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Extra lines of code to add to the builder, after the fields.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1760845297%2FProperties%2F1443151734" anchor-label="builderFields" id="1760845297%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="builder-fields.html"><span>builder</span><wbr><span><span>Fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1760845297%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="builder-fields.html">builderFields</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Extra fields to add to the builder, if any. Use <code class="lang-kotlin">lateinit var</code> for required values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-49218407%2FProperties%2F1443151734" anchor-label="builderGeneric" id="-49218407%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="builder-generic.html"><span>builder</span><wbr><span><span>Generic</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-49218407%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="builder-generic.html">builderGeneric</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Generic typevar that the builder should take, if any.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2145486346%2FProperties%2F1443151734" anchor-label="builderInitStatements" id="-2145486346%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="builder-init-statements.html"><span>builder</span><wbr><span>Init</span><wbr><span><span>Statements</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2145486346%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="builder-init-statements.html">builderInitStatements</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Extra lines of code to add to the builder's <code class="lang-kotlin">init { }</code> block.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-754148071%2FProperties%2F1443151734" anchor-label="builderSuffixedWhere" id="-754148071%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="builder-suffixed-where.html"><span>builder</span><wbr><span>Suffixed</span><wbr><span><span>Where</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-754148071%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="builder-suffixed-where.html">builderSuffixedWhere</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Extra generic bounds to place after <code class="lang-kotlin">where</code> in the builder's signature.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1553332158%2FProperties%2F1443151734" anchor-label="functionBuilderArguments" id="-1553332158%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="function-builder-arguments.html"><span>function</span><wbr><span>Builder</span><wbr><span><span>Arguments</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1553332158%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="function-builder-arguments.html">functionBuilderArguments</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Arguments to pass into the builder's constructor, if any.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-716940890%2FProperties%2F1443151734" anchor-label="functionGeneric" id="-716940890%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="function-generic.html"><span>function</span><wbr><span><span>Generic</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-716940890%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="function-generic.html">functionGeneric</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Generic typevar that the function should take, if any. Will be <code class="lang-kotlin">reified</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-868795290%2FProperties%2F1443151734" anchor-label="functionSuffixedWhere" id="-868795290%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="function-suffixed-where.html"><span>function</span><wbr><span>Suffixed</span><wbr><span><span>Where</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-868795290%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="function-suffixed-where.html">functionSuffixedWhere</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Extra generic bounds to place after <code class="lang-kotlin">where</code> in the function's signature.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-583230985%2FProperties%2F1443151734" anchor-label="imports" id="-583230985%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="imports.html"><span><span>imports</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-583230985%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="imports.html">imports</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Extra imports required for generated code to be valid.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1943996253%2FProperties%2F1443151734" anchor-label="names" id="1943996253%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="names.html"><span><span>names</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1943996253%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="names.html">names</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Converter names, used to generate the functions. Multiple names will generate multiple sets of functions - surprise surprise.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="702254924%2FProperties%2F1443151734" anchor-label="types" id="702254924%2FProperties%2F1443151734" data-filterable-set=":annotations:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotations:dokkaHtmlPartial/main" data-filterable-set=":annotations:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="types.html"><span><span>types</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="702254924%2FProperties%2F1443151734"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotations:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="types.html">types</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-converter-type/index.html">ConverterType</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Converter types to generate builders and functions for.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

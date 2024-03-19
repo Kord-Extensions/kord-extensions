@@ -1,0 +1,198 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SimpleTagsConfig</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">1.8.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":extra-modules:extra-tags:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="extra-tags::com.kotlindiscord.kord.extensions.modules.extra.tags.config/SimpleTagsConfig///PointingToDeclaration//1840526306">
+  <div class="breadcrumbs"><a href="../../index.html">extra-tags</a><span class="delimiter">/</span><a href="../index.html">com.kotlindiscord.kord.extensions.modules.extra.tags.config</a><span class="delimiter">/</span><span class="current">SimpleTagsConfig</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Simple</span><wbr><span>Tags</span><wbr><span><span>Config</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-tags:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">SimpleTagsConfig</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><a href="-builder/index.html">SimpleTagsConfig.Builder</a></span></span><span class="token punctuation">)</span> : <a href="../-tags-config/index.html">TagsConfig</a></div><p class="paragraph">A simple in-memory configuration class, useful if you don't need anything special for your config storage.</p><p class="paragraph">Comes with a convenient builder, for easy configuration.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="124268629%2FConstructors%2F1840526306" anchor-label="SimpleTagsConfig" id="124268629%2FConstructors%2F1840526306" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":extra-modules:extra-tags:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-simple-tags-config.html"><span>Simple</span><wbr><span>Tags</span><wbr><span><span>Config</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="124268629%2FConstructors%2F1840526306"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-tags:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><a href="-builder/index.html">SimpleTagsConfig.Builder</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1117185016%2FClasslikes%2F1840526306" anchor-label="Builder" id="-1117185016%2FClasslikes%2F1840526306" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-tags:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-builder/index.html"><span><span>Builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1117185016%2FClasslikes%2F1840526306"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-tags:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-builder/index.html">Builder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-429245040%2FFunctions%2F1840526306" anchor-label="getLoggingChannel" id="-429245040%2FFunctions%2F1840526306" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-tags:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-tags-config/get-logging-channel.html"><span>get</span><wbr><span>Logging</span><wbr><span><span>Channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-429245040%2FFunctions%2F1840526306"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-tags:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-tags-config/get-logging-channel.html"><span class="token function">getLoggingChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">guild<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Guild///PointingToDeclaration/">Guild</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity.channel/GuildMessageChannel///PointingToDeclaration/">GuildMessageChannel</span></div><div class="brief "><p class="paragraph">Function wrapping <a href="../-tags-config/get-logging-channel-or-null.html">getLoggingChannelOrNull</a>, with a non-null assertion.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1977947028%2FFunctions%2F1840526306" anchor-label="getLoggingChannelOrNull" id="1977947028%2FFunctions%2F1840526306" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-tags:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-logging-channel-or-null.html"><span>get</span><wbr><span>Logging</span><wbr><span>Channel</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1977947028%2FFunctions%2F1840526306"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-tags:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-logging-channel-or-null.html"><span class="token function">getLoggingChannelOrNull</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">guild<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Guild///PointingToDeclaration/">Guild</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity.channel/GuildMessageChannel///PointingToDeclaration/">GuildMessageChannel</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the logging channel for logging tag updates, returning <code class="lang-kotlin">null</code> if this isn't needed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-800797084%2FFunctions%2F1840526306" anchor-label="getStaffCommandChecks" id="-800797084%2FFunctions%2F1840526306" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-tags:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-staff-command-checks.html"><span>get</span><wbr><span>Staff</span><wbr><span>Command</span><wbr><span><span>Checks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-800797084%2FFunctions%2F1840526306"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-tags:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-staff-command-checks.html"><span class="token function">getStaffCommandChecks</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.checks.types/-check/index.html">Check</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Get the configured staff command checks, used to ensure a staff-facing command can be run.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1034744746%2FFunctions%2F1840526306" anchor-label="getTagFormatter" id="1034744746%2FFunctions%2F1840526306" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-tags:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-tag-formatter.html"><span>get</span><wbr><span>Tag</span><wbr><span><span>Formatter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1034744746%2FFunctions%2F1840526306"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-tags:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-tag-formatter.html"><span class="token function">getTagFormatter</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.kotlindiscord.kord.extensions.modules.extra.tags/-tag-formatter/index.html">TagFormatter</a></div><div class="brief "><p class="paragraph">Get the configured tag formatter callback, used to turn a tag into a message. <strong>Users configuring this to avoid creating embeds should make sure to append to the message content instead of replacing it.</strong></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1302972021%2FFunctions%2F1840526306" anchor-label="getUserCommandChecks" id="1302972021%2FFunctions%2F1840526306" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-tags:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-tags:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-user-command-checks.html"><span>get</span><wbr><span>User</span><wbr><span>Command</span><wbr><span><span>Checks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1302972021%2FFunctions%2F1840526306"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-tags:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-user-command-checks.html"><span class="token function">getUserCommandChecks</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.checks.types/-check/index.html">Check</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Get the configured user command checks, used to ensure a user-facing command can be run.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

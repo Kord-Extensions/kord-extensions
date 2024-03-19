@@ -1,0 +1,351 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ComplianceBlock</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">1.8.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":extra-modules:extra-welcome:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="extra-welcome::com.kotlindiscord.kord.extensions.modules.extra.welcome.blocks/ComplianceBlock///PointingToDeclaration//731853509">
+  <div class="breadcrumbs"><a href="../../index.html">extra-welcome</a><span class="delimiter">/</span><a href="../index.html">com.kotlindiscord.kord.extensions.modules.extra.welcome.blocks</a><span class="delimiter">/</span><span class="current">ComplianceBlock</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Compliance</span><wbr><span><span>Block</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"compliance"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">ComplianceBlock</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>role<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>title<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>buttonText<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>logChannel<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>complianceTypeUser<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>template<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span>"__**{TITLE}**__\n\n" +
+
+		"By clicking the button below, you certify that:\n\n" +
+
+		"**»** {COMPLIANCE_TYPE_USER}\n\n" +
+
+		"**Please note:** Once you certify the above, you can't revoke your certification. If you decide to " +
+		"certify the above when it's not true, you may be punished or removed from the server."<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>complianceTypeLogs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span>complianceTypeUser
+		.replace("You", "They")
+		.replace("you", "they")</span></span><span class="token punctuation">)</span> : <a href="../-block/index.html">Block</a>, <a href="../-interaction-block/index.html">InteractionBlock</a>, <a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.koin/-kord-ex-koin-component/index.html">KordExKoinComponent</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1557828389%2FConstructors%2F731853509" anchor-label="ComplianceBlock" id="-1557828389%2FConstructors%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-compliance-block.html"><span>Compliance</span><wbr><span><span>Block</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1557828389%2FConstructors%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">role<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span><span class="token punctuation">, </span></span><span class="parameter ">title<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">buttonText<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">logChannel<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span><span class="token punctuation">, </span></span><span class="parameter ">complianceTypeUser<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">template<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span>"__**{TITLE}**__\n\n" +
+
+		"By clicking the button below, you certify that:\n\n" +
+
+		"**»** {COMPLIANCE_TYPE_USER}\n\n" +
+
+		"**Please note:** Once you certify the above, you can't revoke your certification. If you decide to " +
+		"certify the above when it's not true, you may be punished or removed from the server."<span class="token punctuation">, </span></span><span class="parameter ">complianceTypeLogs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span>complianceTypeUser
+		.replace("You", "They")
+		.replace("you", "they")</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-689371237%2FProperties%2F731853509" anchor-label="buttonText" id="-689371237%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="button-text.html"><span>button</span><wbr><span><span>Text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-689371237%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="button-text.html">buttonText</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-555445694%2FProperties%2F731853509" anchor-label="channel" id="-555445694%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-block/channel.html"><span><span>channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-555445694%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Transient///PointingToDeclaration/"><span class="token annotation builtin">Transient</span></span></div></div><span class="token keyword">lateinit </span><span class="token keyword">var </span><a href="../-block/channel.html">channel</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity.channel/GuildMessageChannel///PointingToDeclaration/">GuildMessageChannel</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="970548342%2FProperties%2F731853509" anchor-label="complianceTypeLogs" id="970548342%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="compliance-type-logs.html"><span>compliance</span><wbr><span>Type</span><wbr><span><span>Logs</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="970548342%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="compliance-type-logs.html">complianceTypeLogs</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-59697702%2FProperties%2F731853509" anchor-label="complianceTypeUser" id="-59697702%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="compliance-type-user.html"><span>compliance</span><wbr><span>Type</span><wbr><span><span>User</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-59697702%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="compliance-type-user.html">complianceTypeUser</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-983831726%2FProperties%2F731853509" anchor-label="guild" id="-983831726%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-block/guild.html"><span><span>guild</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-983831726%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Transient///PointingToDeclaration/"><span class="token annotation builtin">Transient</span></span></div></div><span class="token keyword">lateinit </span><span class="token keyword">var </span><a href="../-block/guild.html">guild</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Guild///PointingToDeclaration/">Guild</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-562493825%2FProperties%2F731853509" anchor-label="id" id="-562493825%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="id.html"><span><span>id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-562493825%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="id.html">id</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="642016804%2FProperties%2F731853509" anchor-label="kord" id="642016804%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="kord.html"><span><span>kord</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="642016804%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="kord.html">kord</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core/Kord///PointingToDeclaration/">Kord</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1242130949%2FProperties%2F731853509" anchor-label="logChannel" id="-1242130949%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="log-channel.html"><span>log</span><wbr><span><span>Channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1242130949%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="log-channel.html">logChannel</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-244935612%2FProperties%2F731853509" anchor-label="role" id="-244935612%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="role.html"><span><span>role</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-244935612%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="role.html">role</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-564154816%2FProperties%2F731853509" anchor-label="template" id="-564154816%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="template.html"><span><span>template</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-564154816%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="template.html">template</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1608631352%2FProperties%2F731853509" anchor-label="title" id="-1608631352%2FProperties%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="title.html"><span><span>title</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1608631352%2FProperties%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="title.html">title</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1270363119%2FFunctions%2F731853509" anchor-label="create" id="1270363119%2FFunctions%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create.html"><span><span>create</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1270363119%2FFunctions%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="create.html"><span class="token function">create</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span data-unresolved-link="dev.kord.rest.builder.message.create/MessageCreateBuilder///PointingToDeclaration/">MessageCreateBuilder</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1969381319%2FFunctions%2F731853509" anchor-label="edit" id="-1969381319%2FFunctions%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="edit.html"><span><span>edit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1969381319%2FFunctions%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="edit.html"><span class="token function">edit</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span data-unresolved-link="dev.kord.rest.builder.message.modify/MessageModifyBuilder///PointingToDeclaration/">MessageModifyBuilder</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1466671242%2FFunctions%2F731853509" anchor-label="getKoin" id="-1466671242%2FFunctions%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-roles-block/index.html#-1466671242%2FFunctions%2F731853509"><span>get</span><wbr><span><span>Koin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1466671242%2FFunctions%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../-roles-block/index.html#-1466671242%2FFunctions%2F731853509"><span class="token function">getKoin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.koin.core/Koin///PointingToDeclaration/">Koin</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="443730026%2FFunctions%2F731853509" anchor-label="handleInteraction" id="443730026%2FFunctions%2F731853509" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-welcome:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-welcome:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="handle-interaction.html"><span>handle</span><wbr><span><span>Interaction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="443730026%2FFunctions%2F731853509"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-welcome:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="handle-interaction.html"><span class="token function">handleInteraction</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/InteractionCreateEvent///PointingToDeclaration/">InteractionCreateEvent</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

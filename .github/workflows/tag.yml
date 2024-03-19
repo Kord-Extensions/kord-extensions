@@ -1,0 +1,111 @@
+name: Release Tag
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Set up Kotlin
+        uses: fwilhe2/setup-kotlin@main
+
+      - name: Set up Gradle properties
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
+          echo -e "\nsigning.gnupg.keyName=BFAAD5D6093EF5E62BC9A16A10DB8C6B4AE61C2F" >> ~/.gradle/gradle.properties
+          echo -e "\nsigning.gnupg.passphrase=${{ secrets.GPG_PASSWORD }}" >> ~/.gradle/gradle.properties
+
+      - name: Set up git credentials
+        uses: oleksiyrudenko/gha-git-credentials@v2
+
+        with:
+          global: true
+          token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Gradle (Build)
+        uses: gradle/gradle-build-action@v3
+
+        with:
+          arguments: checkLicenses build
+
+        env:
+          TOKEN: "${{ secrets.TOKEN }}"
+
+      - name: Disable parallel publish
+
+        run: kotlin .github/disable-parallel.main.kts
+
+      - name: Gradle (Publish)
+        uses: gradle/gradle-build-action@v3
+
+        env:
+          ORG_GRADLE_PROJECT_signingKey: "${{ secrets.GPG_KEY }}"
+          ORG_GRADLE_PROJECT_signingPassword: "${{ secrets.GPG_PASSWORD }}"
+
+          OSSRH_USERNAME: "${{ secrets.OSSRH_USERNAME }}"
+          OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
+
+          TOKEN: "${{ secrets.TOKEN }}"
+
+        with:
+          arguments: publish --no-parallel
+
+      - name: Create release description
+        run: kotlin .github/tag.main.kts
+
+      - name: Get tag name
+        id: get_tag
+        run: echo ::set-output name=NAME::${GITHUB_REF#refs/tags/}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        with:
+          body_path: release.md
+          files: build/libs/*.jar
+          name: Release ${{ steps.get_tag.outputs.NAME }}
+
+      - name: Release webhook
+        run: kotlin .github/release.main.kts
+
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
+      - name: Upload artifact (Extra Module JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Extra Modules)
+          path: extra-modules/*/build/libs/*.jar
+
+      - name: Upload artifact (Main JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Main)
+          path: kord-extensions/build/libs/*.jar
+
+      - name: Upload artifact (Module JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Modules)
+          path: modules/*/build/libs/*.jar
+

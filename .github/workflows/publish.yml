@@ -1,0 +1,154 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - "root"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Set up Kotlin
+        uses: fwilhe2/setup-kotlin@main
+
+      - name: Get version
+        id: project-version
+
+        run: |
+          VERSION=$(kotlin .github/get-version.main.kts)
+
+          echo "Project version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Gradle properties
+
+        run: |
+          mkdir -p ~/.gradle
+          echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
+          echo -e "\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
+
+      - name: Gradle (Build)
+        uses: gradle/gradle-build-action@v3
+
+        with:
+          arguments: checkLicenses build dokkaHtmlMultiModule
+          dependency-graph: generate-and-submit
+
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Zip Dokka docs
+        working-directory: build/dokka/
+
+        run: zip -qq -r dokka.zip htmlMultiModule
+
+      - name: Disable parallel publish
+        if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
+
+        run: kotlin .github/disable-parallel.main.kts
+
+      - name: Gradle (Publish)
+        uses: gradle/gradle-build-action@v3
+
+        if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
+
+        env:
+          ORG_GRADLE_PROJECT_signingKey: "${{ secrets.GPG_KEY }}"
+          ORG_GRADLE_PROJECT_signingPassword: "${{ secrets.GPG_PASSWORD }}"
+
+          OSSRH_USERNAME: "${{ secrets.OSSRH_USERNAME }}"
+          OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
+
+          TOKEN: "${{ secrets.TOKEN }}"
+
+        with:
+          arguments: publish --no-parallel
+
+      - name: Upload artifact (Extra Module JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Extra Modules)
+          path: extra-modules/*/build/libs/*.jar
+
+      - name: Upload artifact (Main JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Main)
+          path: kord-extensions/build/libs/*.jar
+
+      - name: Upload artifact (Module JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Modules)
+          path: modules/*/build/libs/*.jar
+
+      - name: Upload artifact (Dokka)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: Dokka HTML
+          path: build/dokka/dokka.zip
+
+  dokka:
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+        with:
+          fetch-depth: 0
+
+      - name: Switch branch
+
+        run: |
+          git checkout --orphan dokka
+
+          shopt -s extglob
+          sudo rm -rf !(".git")
+
+      - uses: actions/download-artifact@v4
+
+        with:
+          name: Dokka HTML
+          path: docs/
+
+      - name: Unzip Dokka docs
+        uses: montudor/action-zip@v1
+
+        with:
+          args: unzip -qq docs/dokka.zip -d docs
+
+      - name: Copy files, commit and push
+
+        run: |
+          ls -al docs/
+          ls -al .
+
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions-user@users.noreply.github.com"
+
+          cp -r docs/htmlMultiModule/* .
+          sudo rm -rf docs/
+
+          git add .
+          git commit -qam "Automatic deployment"
+          git push --force origin dokka

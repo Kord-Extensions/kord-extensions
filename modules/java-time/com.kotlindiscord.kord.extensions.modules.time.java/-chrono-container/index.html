@@ -1,0 +1,303 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ChronoContainer</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">1.8.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":modules:java-time:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="java-time::com.kotlindiscord.kord.extensions.modules.time.java/ChronoContainer///PointingToDeclaration//-1054165355">
+  <div class="breadcrumbs"><a href="../../index.html">java-time</a><span class="delimiter">/</span><a href="../index.html">com.kotlindiscord.kord.extensions.modules.time.java</a><span class="delimiter">/</span><span class="current">ChronoContainer</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Chrono</span><wbr><span><span>Container</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span><span class="token punctuation">(</span><span>with<span class="token operator"> = </span><a href="../-chrono-container-serializer/index.html">ChronoContainerSerializer::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="index.html">ChronoContainer</a></div><p class="paragraph">Class storing time units against values, to be applied to a time later on.</p><p class="paragraph">This is intended as a way to apply a mixed-unit duration to a time when you don't actually know what time you'll be applying it to. This is more accurate than straight up returning Java <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">java.time.Duration</a> objects, which can only store a count of seconds.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1796685963%2FConstructors%2F-1054165355" anchor-label="ChronoContainer" id="-1796685963%2FConstructors%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-chrono-container.html"><span>Chrono</span><wbr><span><span>Container</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1796685963%2FConstructors%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="642621562%2FClasslikes%2F-1054165355" anchor-label="Companion" id="642621562%2FClasslikes%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="642621562%2FClasslikes%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1862621376%2FFunctions%2F-1054165355" anchor-label="apply" id="1862621376%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="apply.html"><span><span>apply</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1862621376%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="apply.html">T</a><span class="token operator"> : </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/Temporal.html">Temporal</a><span class="token operator">&gt; </span><a href="apply.html"><span class="token function">apply</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">target<span class="token operator">: </span><a href="apply.html">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="apply.html">T</a></div><div class="brief "><p class="paragraph">Given a <a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/Temporal.html">Temporal</a> subclass, apply the values in this container to it and return the result.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1688006518%2FFunctions%2F-1054165355" anchor-label="clone" id="1688006518%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="clone.html"><span><span>clone</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1688006518%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="clone.html"><span class="token function">clone</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ChronoContainer</a></div><div class="brief "><p class="paragraph">Create a new ChronoContainer using the values from this one.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2074411709%2FFunctions%2F-1054165355" anchor-label="copyFrom" id="2074411709%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="copy-from.html"><span>copy</span><wbr><span><span>From</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2074411709%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="copy-from.html"><span class="token function">copyFrom</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">duration<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Given a <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>, replace all time-relevant values with values contained within the passed object.</p></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="copy-from.html"><span class="token function">copyFrom</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">period<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Period.html">Period</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Given a <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Period.html">Period</a>, replace all date-relevant values with values contained within the passed object.</p></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="copy-from.html"><span class="token function">copyFrom</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">duration<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a><span class="token punctuation">, </span></span><span class="parameter ">period<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Period.html">Period</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Given a <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a> and <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Period.html">Period</a>, replace all values in this container with values contained within the passed objects.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-940917273%2FFunctions%2F-1054165355" anchor-label="get" id="-940917273%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get.html"><span><span>get</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-940917273%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unit<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><p class="paragraph">Get the stored value for a given supported <a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a>, additionally returning 0 if no value is found.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1513998695%2FFunctions%2F-1054165355" anchor-label="isConverted" id="-1513998695%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-converted.html"><span>is</span><wbr><span><span>Converted</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1513998695%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="is-converted.html"><span class="token function">isConverted</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unit<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Check whether a given <a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a> will be converted in <a href="plus.html">plus</a>, <a href="minus.html">minus</a> and <a href="set.html">set</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-118126812%2FFunctions%2F-1054165355" anchor-label="isPositive" id="-118126812%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-positive.html"><span>is</span><wbr><span><span>Positive</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-118126812%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="is-positive.html"><span class="token function">isPositive</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Check whether this container contains a positive set of values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1344246965%2FFunctions%2F-1054165355" anchor-label="isSupported" id="1344246965%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-supported.html"><span>is</span><wbr><span><span>Supported</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1344246965%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="is-supported.html"><span class="token function">isSupported</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unit<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Check whether a given <a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a> is fully supported.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-593555237%2FFunctions%2F-1054165355" anchor-label="minus" id="-593555237%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="minus.html"><span><span>minus</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-593555237%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="minus.html"><span class="token function">minus</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span></span><span class="parameter ">unit<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Given a value and <a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a>, subtract it from this container's collection of values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-303988053%2FFunctions%2F-1054165355" anchor-label="normalize" id="-303988053%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="normalize.html"><span><span>normalize</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-303988053%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="normalize.html"><span class="token function">normalize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dateTime<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html">LocalDateTime</a><span class="token operator"> = </span>LocalDateTime.now()</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Given a <a href="https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html">LocalDateTime</a> (defaulting to <code class="lang-kotlin">now()</code>), normalize the stored values by applying them to the datetime and calculating their real-world difference. This will replace all stored values with newly-normalized values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-908819023%2FFunctions%2F-1054165355" anchor-label="plus" id="-908819023%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="plus.html"><span><span>plus</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-908819023%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="plus.html"><span class="token function">plus</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span></span><span class="parameter ">unit<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Given a value and <a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a>, add it to this container's collection of values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-814830899%2FFunctions%2F-1054165355" anchor-label="set" id="-814830899%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set.html"><span><span>set</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-814830899%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="set.html"><span class="token function">set</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span></span><span class="parameter ">unit<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Given a value and <a href="https://docs.oracle.com/javase/8/docs/api/java/time/temporal/ChronoUnit.html">ChronoUnit</a>, replace any stored value for that unit with the given value.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1588125176%2FFunctions%2F-1054165355" anchor-label="toHuman" id="-1588125176%2FFunctions%2F-1054165355" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":modules:java-time:dokkaHtmlPartial/main" data-filterable-set=":modules:java-time:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../to-human.html"><span>to</span><wbr><span><span>Human</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1588125176%2FFunctions%2F-1054165355"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:java-time:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html">ChronoContainer</a><span class="token punctuation">.</span><a href="../to-human.html"><span class="token function">toHuman</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.commands/-command-context/index.html">CommandContext</a><span class="token punctuation">, </span></span><span class="parameter ">relativeTo<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html">LocalDateTime</a><span class="token operator"> = </span>LocalDateTime.now()</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">ChronoContainer</a><span class="token punctuation">.</span><a href="../to-human.html"><span class="token function">toHuman</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">locale<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a><span class="token punctuation">, </span></span><span class="parameter ">relativeTo<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html">LocalDateTime</a><span class="token operator"> = </span>LocalDateTime.now()</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Given a Duration, this function will return a String (or null if it represents less than 1 second).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

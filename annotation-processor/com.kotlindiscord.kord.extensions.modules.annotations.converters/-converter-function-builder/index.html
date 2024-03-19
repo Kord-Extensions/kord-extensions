@@ -1,0 +1,393 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ConverterFunctionBuilder</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">1.8.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":annotation-processor:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="annotation-processor::com.kotlindiscord.kord.extensions.modules.annotations.converters/ConverterFunctionBuilder///PointingToDeclaration//1267061780">
+  <div class="breadcrumbs"><a href="../../index.html">annotation-processor</a><span class="delimiter">/</span><a href="../index.html">com.kotlindiscord.kord.extensions.modules.annotations.converters</a><span class="delimiter">/</span><span class="current">ConverterFunctionBuilder</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Converter</span><wbr><span>Function</span><wbr><span><span>Builder</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ConverterFunctionBuilder</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <span data-unresolved-link="org.koin.core.component/KoinComponent///PointingToDeclaration/">KoinComponent</span></div><p class="paragraph">Convenience class for building converter functions.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="58840349%2FConstructors%2F1267061780" anchor-label="ConverterFunctionBuilder" id="58840349%2FConstructors%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-converter-function-builder.html"><span>Converter</span><wbr><span>Function</span><wbr><span><span>Builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="58840349%2FConstructors%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-533947073%2FProperties%2F1267061780" anchor-label="name" id="-533947073%2FProperties%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="name.html"><span><span>name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-533947073%2FProperties%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="name.html">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1730115842%2FFunctions%2F1267061780" anchor-label="build" id="1730115842%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="build.html"><span><span>build</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1730115842%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="build.html"><span class="token function">build</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-436834509%2FFunctions%2F1267061780" anchor-label="comment" id="-436834509%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="comment.html"><span><span>comment</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-436834509%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="comment.html"><span class="token function">comment</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">lines<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1510169204%2FFunctions%2F1267061780" anchor-label="converter" id="1510169204%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="converter.html"><span><span>converter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1510169204%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="converter.html"><span class="token function">converter</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1889148281%2FFunctions%2F1267061780" anchor-label="converterArg" id="1889148281%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="converter-arg.html"><span>converter</span><wbr><span><span>Arg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1889148281%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="converter-arg.html"><span class="token function">converterArg</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="converter-arg.html"><span class="token function">converterArg</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1469573374%2FFunctions%2F1267061780" anchor-label="defaultFirstArgs" id="1469573374%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="default-first-args.html"><span>default</span><wbr><span>First</span><wbr><span><span>Args</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1469573374%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="default-first-args.html"><span class="token function">defaultFirstArgs</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-341691896%2FFunctions%2F1267061780" anchor-label="defaultLastArgs" id="-341691896%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="default-last-args.html"><span>default</span><wbr><span>Last</span><wbr><span><span>Args</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-341691896%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="default-last-args.html"><span class="token function">defaultLastArgs</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">typeParam<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1622213926%2FFunctions%2F1267061780" anchor-label="explicitReturn" id="1622213926%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="explicit-return.html"><span>explicit</span><wbr><span><span>Return</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1622213926%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="explicit-return.html"><span class="token function">explicitReturn</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-312309168%2FFunctions%2F1267061780" anchor-label="generic" id="-312309168%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="generic.html"><span><span>generic</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-312309168%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="generic.html"><span class="token function">generic</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="894441567%2FFunctions%2F1267061780" anchor-label="getKoin" id="894441567%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.kotlindiscord.kord.extensions.modules.annotations.converters.builders/-converter-builder-function-builder/index.html#894441567%2FFunctions%2F1267061780"><span>get</span><wbr><span><span>Koin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="894441567%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../com.kotlindiscord.kord.extensions.modules.annotations.converters.builders/-converter-builder-function-builder/index.html#894441567%2FFunctions%2F1267061780"><span class="token function">getKoin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.koin.core/Koin///PointingToDeclaration/">Koin</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1509945138%2FFunctions%2F1267061780" anchor-label="line" id="-1509945138%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="line.html"><span><span>line</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1509945138%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="line.html"><span class="token function">line</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">line<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1925746171%2FFunctions%2F1267061780" anchor-label="maybe" id="-1925746171%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="maybe.html"><span><span>maybe</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1925746171%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="maybe.html"><span class="token function">maybe</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bool<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token keyword"></span><a href="index.html">ConverterFunctionBuilder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="maybe.html"><span class="token function">maybe</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">predicate<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token keyword"></span><a href="index.html">ConverterFunctionBuilder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-266275781%2FFunctions%2F1267061780" anchor-label="optionalFunArg" id="-266275781%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="optional-fun-arg.html"><span>optional</span><wbr><span>Fun</span><wbr><span><span>Arg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-266275781%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="optional-fun-arg.html"><span class="token function">optionalFunArg</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">default<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-150400973%2FFunctions%2F1267061780" anchor-label="rawFunArg" id="-150400973%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="raw-fun-arg.html"><span>raw</span><wbr><span>Fun</span><wbr><span><span>Arg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-150400973%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="raw-fun-arg.html"><span class="token function">rawFunArg</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">line<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1226088727%2FFunctions%2F1267061780" anchor-label="rawGeneric" id="-1226088727%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="raw-generic.html"><span>raw</span><wbr><span><span>Generic</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1226088727%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="raw-generic.html"><span class="token function">rawGeneric</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">generic<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-108870315%2FFunctions%2F1267061780" anchor-label="requiredFunArg" id="-108870315%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="required-fun-arg.html"><span>required</span><wbr><span>Fun</span><wbr><span><span>Arg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-108870315%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="required-fun-arg.html"><span class="token function">requiredFunArg</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1573766820%2FFunctions%2F1267061780" anchor-label="returnType" id="1573766820%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="return-type.html"><span>return</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1573766820%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="return-type.html"><span class="token function">returnType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="54247015%2FFunctions%2F1267061780" anchor-label="wrapper" id="54247015%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="wrapper.html"><span><span>wrapper</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="54247015%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="wrapper.html"><span class="token function">wrapper</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1309641773%2FFunctions%2F1267061780" anchor-label="wrapperArg" id="-1309641773%2FFunctions%2F1267061780" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":annotation-processor:dokkaHtmlPartial/main" data-filterable-set=":annotation-processor:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="wrapper-arg.html"><span>wrapper</span><wbr><span><span>Arg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1309641773%2FFunctions%2F1267061780"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":annotation-processor:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="wrapper-arg.html"><span class="token function">wrapperArg</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="wrapper-arg.html"><span class="token function">wrapperArg</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ConverterFunctionBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

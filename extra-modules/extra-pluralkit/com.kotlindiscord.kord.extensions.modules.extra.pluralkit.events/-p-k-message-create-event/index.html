@@ -1,0 +1,479 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>PKMessageCreateEvent</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">1.8.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="extra-pluralkit::com.kotlindiscord.kord.extensions.modules.extra.pluralkit.events/PKMessageCreateEvent///PointingToDeclaration//-994053675">
+  <div class="breadcrumbs"><a href="../../index.html">extra-pluralkit</a><span class="delimiter">/</span><a href="../index.html">com.kotlindiscord.kord.extensions.modules.extra.pluralkit.events</a><span class="delimiter">/</span><span class="current">PKMessageCreateEvent</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>PKMessage</span><wbr><span>Create</span><wbr><span><span>Event</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">PKMessageCreateEvent</a> : <a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.events/-kord-ex-event/index.html">KordExEvent</a>, <span data-unresolved-link="dev.kord.core.entity/Strategizable///PointingToDeclaration/">Strategizable</span>, <a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.events.interfaces/-message-event/index.html">MessageEvent</a>, <a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.events.interfaces/-guild-event/index.html">GuildEvent</a>, <a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.events.interfaces/-member-event/index.html">MemberEvent</a>, <a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.events.interfaces/-channel-event/index.html">ChannelEvent</a></div><p class="paragraph">A <span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span> wrapper that fires with extra context that may be supplied by PluralKit. Subtypes are available if you need to be more specific about whether the message was proxied or not.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-proxied-message-create-event/index.html">ProxiedMessageCreateEvent</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-un-proxied-message-create-event/index.html">UnProxiedMessageCreateEvent</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="331685912%2FProperties%2F-994053675" anchor-label="author" id="331685912%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="author.html"><span><span>author</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="331685912%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="author.html">author</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Member///PointingToDeclaration/">Member</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The original account that sent the message, even if it was proxied.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-956902060%2FProperties%2F-994053675" anchor-label="channel" id="-956902060%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="channel.html"><span><span>channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-956902060%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="channel.html">channel</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.behavior.channel/ChannelBehavior///PointingToDeclaration/">ChannelBehavior</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1879701663%2FProperties%2F-994053675" anchor-label="customContext" id="-1879701663%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-un-proxied-message-update-event/index.html#-1879701663%2FProperties%2F-994053675"><span>custom</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1879701663%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="../-un-proxied-message-update-event/index.html#-1879701663%2FProperties%2F-994053675">customContext</a><span class="token operator">: </span><a href="../../../../kord-extensions/com.kotlindiscord.kord.extensions.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1439796765%2FProperties%2F-994053675" anchor-label="event" id="1439796765%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="event.html"><span><span>event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1439796765%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="event.html">event</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.message/MessageCreateEvent///PointingToDeclaration/">MessageCreateEvent</span></div><div class="brief "><p class="paragraph">The original event that triggered this one.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="275272339%2FProperties%2F-994053675" anchor-label="gateway" id="275272339%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-un-proxied-message-update-event/index.html#275272339%2FProperties%2F-994053675"><span><span>gateway</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="275272339%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-un-proxied-message-update-event/index.html#275272339%2FProperties%2F-994053675">gateway</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.gateway/Gateway///PointingToDeclaration/">Gateway</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1625803492%2FProperties%2F-994053675" anchor-label="guild" id="1625803492%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="guild.html"><span><span>guild</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1625803492%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="guild.html">guild</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.behavior/GuildBehavior///PointingToDeclaration/">GuildBehavior</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-293807031%2FProperties%2F-994053675" anchor-label="guildId" id="-293807031%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="guild-id.html"><span>guild</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-293807031%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="guild-id.html">guildId</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The ID for the guild that this message was sent on, if any.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-86080315%2FProperties%2F-994053675" anchor-label="kord" id="-86080315%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-un-proxied-message-update-event/index.html#-86080315%2FProperties%2F-994053675"><span><span>kord</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-86080315%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="../-un-proxied-message-update-event/index.html#-86080315%2FProperties%2F-994053675">kord</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core/Kord///PointingToDeclaration/">Kord</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="10728937%2FProperties%2F-994053675" anchor-label="member" id="10728937%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="member.html"><span><span>member</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="10728937%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="member.html">member</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.behavior/MemberBehavior///PointingToDeclaration/">MemberBehavior</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-538575152%2FProperties%2F-994053675" anchor-label="message" id="-538575152%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="message.html"><span><span>message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-538575152%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="message.html">message</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Message///PointingToDeclaration/">Message</span></div><div class="brief "><p class="paragraph">The message object in question, which may be a webhook message if proxied.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-733263088%2FProperties%2F-994053675" anchor-label="repliedToMessage" id="-733263088%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="replied-to-message.html"><span>replied</span><wbr><span>To</span><wbr><span><span>Message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-733263088%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="replied-to-message.html">repliedToMessage</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Message///PointingToDeclaration/">Message</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The original message that was replied to, even if this one was proxied.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="558851417%2FProperties%2F-994053675" anchor-label="shard" id="558851417%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="shard.html"><span><span>shard</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="558851417%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="shard.html">shard</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1438554487%2FProperties%2F-994053675" anchor-label="supplier" id="1438554487%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="supplier.html"><span><span>supplier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1438554487%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="supplier.html">supplier</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.supplier/EntitySupplier///PointingToDeclaration/">EntitySupplier</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1881897128%2FProperties%2F-994053675" anchor-label="user" id="-1881897128%2FProperties%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="user.html"><span><span>user</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1881897128%2FProperties%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="user.html">user</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.behavior/UserBehavior///PointingToDeclaration/">UserBehavior</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="381920278%2FFunctions%2F-994053675" anchor-label="getChannel" id="381920278%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-channel.html"><span>get</span><wbr><span><span>Channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="381920278%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-channel.html"><span class="token function">getChannel</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity.channel/Channel///PointingToDeclaration/">Channel</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1984599660%2FFunctions%2F-994053675" anchor-label="getChannelOrNull" id="1984599660%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-channel-or-null.html"><span>get</span><wbr><span>Channel</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1984599660%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-channel-or-null.html"><span class="token function">getChannelOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity.channel/Channel///PointingToDeclaration/">Channel</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="264069670%2FFunctions%2F-994053675" anchor-label="getGuild" id="264069670%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-guild.html"><span>get</span><wbr><span><span>Guild</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="264069670%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-guild.html"><span class="token function">getGuild</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Guild///PointingToDeclaration/">Guild</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1054967932%2FFunctions%2F-994053675" anchor-label="getGuildOrNull" id="1054967932%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-guild-or-null.html"><span>get</span><wbr><span>Guild</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1054967932%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-guild-or-null.html"><span class="token function">getGuildOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Guild///PointingToDeclaration/">Guild</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1466671242%2FFunctions%2F-994053675" anchor-label="getKoin" id="-1466671242%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-un-proxied-message-update-event/index.html#-1466671242%2FFunctions%2F-994053675"><span>get</span><wbr><span><span>Koin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1466671242%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../-un-proxied-message-update-event/index.html#-1466671242%2FFunctions%2F-994053675"><span class="token function">getKoin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.koin.core/Koin///PointingToDeclaration/">Koin</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="746653415%2FFunctions%2F-994053675" anchor-label="getMember" id="746653415%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-member.html"><span>get</span><wbr><span><span>Member</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="746653415%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-member.html"><span class="token function">getMember</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Member///PointingToDeclaration/">Member</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-588457859%2FFunctions%2F-994053675" anchor-label="getMemberOrNull" id="-588457859%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-member-or-null.html"><span>get</span><wbr><span>Member</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-588457859%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-member-or-null.html"><span class="token function">getMemberOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Member///PointingToDeclaration/">Member</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="800247186%2FFunctions%2F-994053675" anchor-label="getMessage" id="800247186%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-message.html"><span>get</span><wbr><span><span>Message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="800247186%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-message.html"><span class="token function">getMessage</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Message///PointingToDeclaration/">Message</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1593553640%2FFunctions%2F-994053675" anchor-label="getMessageOrNull" id="1593553640%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-message-or-null.html"><span>get</span><wbr><span>Message</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1593553640%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-message-or-null.html"><span class="token function">getMessageOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Message///PointingToDeclaration/">Message</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1814953942%2FFunctions%2F-994053675" anchor-label="getUser" id="1814953942%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-user.html"><span>get</span><wbr><span><span>User</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1814953942%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-user.html"><span class="token function">getUser</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/User///PointingToDeclaration/">User</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="401678892%2FFunctions%2F-994053675" anchor-label="getUserOrNull" id="401678892%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-user-or-null.html"><span>get</span><wbr><span>User</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="401678892%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="get-user-or-null.html"><span class="token function">getUserOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/User///PointingToDeclaration/">User</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1382786803%2FFunctions%2F-994053675" anchor-label="withStrategy" id="1382786803%2FFunctions%2F-994053675" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main" data-filterable-set=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-p-k-message-update-event/index.html#1382786803%2FFunctions%2F-994053675"><span>with</span><wbr><span><span>Strategy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1382786803%2FFunctions%2F-994053675"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":extra-modules:extra-pluralkit:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-p-k-message-update-event/index.html#1382786803%2FFunctions%2F-994053675"><span class="token function">withStrategy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">strategy<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.supplier/EntitySupplyStrategy///PointingToDeclaration/">EntitySupplyStrategy</span><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity/Strategizable///PointingToDeclaration/">Strategizable</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
