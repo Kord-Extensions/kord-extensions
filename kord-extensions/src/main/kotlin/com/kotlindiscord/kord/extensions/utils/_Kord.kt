@@ -7,6 +7,7 @@
 package com.kotlindiscord.kord.extensions.utils
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.KORDEX_VERSION
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.Kord
 import dev.kord.core.entity.User
@@ -96,5 +97,29 @@ public suspend inline fun <reified T : Event> ExtensibleBot.waitFor(
 } else {
 	withTimeoutOrNull(timeout) {
 		events.filterIsInstance<T>().firstOrNull(condition)
+	}
+}
+
+public suspend fun Kord.kordExUserAgent(): String {
+	val application = getApplicationInfo()
+	val self = getSelf()
+
+	return buildString {
+		append("Kord Extensions $KORDEX_VERSION ")
+		append("/ Application: ${application.name} (${application.id}) ")
+		append("/ Bot: ${self.username} (${self.id}) ")
+		append("/ Contacts: ")
+
+		if (application.ownerId != null) {
+			append(application.ownerId)
+		}
+
+		if (application.team != null) {
+			append(
+				application.team!!.members.joinToString {
+					it.userId.toString()
+				}
+			)
+		}
 	}
 }

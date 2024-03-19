@@ -30,7 +30,7 @@ val printVersion = task("printVersion") {
 }
 
 gitHooks {
-	setHooks(mapOf("pre-commit" to "updateLicenses detekt"))
+	setHooks(mapOf("pre-commit" to "applyLicenses detekt"))
 }
 
 repositories {

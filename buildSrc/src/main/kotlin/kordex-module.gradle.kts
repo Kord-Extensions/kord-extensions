@@ -5,8 +5,8 @@ plugins {
 	kotlin("plugin.serialization")
 
 	id("com.github.ben-manes.versions")
+	id("dev.yumi.gradle.licenser")
 	id("io.gitlab.arturbosch.detekt")
-	id("org.cadixdev.licenser")
 
 	id("org.jetbrains.dokka")
 }
@@ -43,6 +43,16 @@ tasks {
 
 	build {
 		finalizedBy(sourceJar, javadocJar /*dokkaJar*/)
+	}
+
+	processResources {
+		val props = mapOf("version" to project.version)
+
+		inputs.properties(props)
+
+		filesMatching("kordex.properties") {
+			expand(props)
+		}
 	}
 
 	kotlin {
@@ -115,15 +125,11 @@ tasks {
 
 detekt {
 	buildUponDefaultConfig = true
-	config.from(files("$rootDir/detekt.yml"))
+	config.from(rootProject.file("detekt.yml"))
 
 	autoCorrect = true
 }
 
 license {
-	setHeader(rootProject.file("codeformat/HEADER"))
-	ignoreFailures(System.getenv()["CI"] == null)
-
-	include("**/src/**.*")
-	include("src/**.*")
+	rule(rootProject.file("codeformat/HEADER"))
 }

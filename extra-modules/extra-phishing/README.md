@@ -19,9 +19,7 @@ suspend fun main() {
     val bot = ExtensibleBot(System.getenv("TOKEN")) {
 
         extensions {
-            extPhishing {
-                appName = "My Bot"
-            }
+            extPhishing {}
         }
     }
 
@@ -45,8 +43,6 @@ Manage Messages".
 # Configuration
 
 To configure this module, values can be provided within the `extPhishing` builder.
-
-* **Required:** `appName` - Give your application a name so that Sinking Yachts can identify it for statistics purposes
 
 * `detectionAction` (default: Delete) - What to do when a message containing a phishing domain is detected
 * `logChannelName` (default: "logs") - The name of the channel to use for logging; the extension will search the
