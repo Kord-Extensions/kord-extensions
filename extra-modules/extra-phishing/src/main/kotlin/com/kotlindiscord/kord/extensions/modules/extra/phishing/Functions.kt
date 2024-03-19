@@ -9,7 +9,18 @@ package com.kotlindiscord.kord.extensions.modules.extra.phishing
 import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 
 /**
- * Configure the phishing extension and add it to the bot.
+ * Add the phishing extension to the bot with the default configuration.
+ */
+fun ExtensibleBotBuilder.ExtensionsBuilder.extPhishing() {
+	val settings = ExtPhishingBuilder()
+
+	settings.validate()
+
+	add { PhishingExtension(settings) }
+}
+
+/**
+ * Add the phishing extension to the bot with a customised configuration.
  */
 inline fun ExtensibleBotBuilder.ExtensionsBuilder.extPhishing(builder: ExtPhishingBuilder.() -> Unit) {
 	val settings = ExtPhishingBuilder()

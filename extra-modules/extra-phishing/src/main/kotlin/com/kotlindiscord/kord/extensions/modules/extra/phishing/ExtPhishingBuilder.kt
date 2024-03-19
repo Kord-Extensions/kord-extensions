@@ -17,9 +17,6 @@ import kotlin.time.ExperimentalTime
 
 /** Builder used to configure the phishing extension. **/
 class ExtPhishingBuilder {
-	/** The name of your application, which allows the Sinking Yachts maintainers to identify what it is. **/
-	lateinit var appName: String
-
 	/** Delay between domain update checks, 5 minutes at minimum. **/
 	var updateDelay = 15.minutes
 
@@ -99,10 +96,6 @@ class ExtPhishingBuilder {
 
 	/** @suppress **/
 	fun validate() {
-		if (!this::appName.isInitialized) {
-			error("Application name must be provided")
-		}
-
 		if (updateDelay < 5.minutes) {
 			error("The update delay must be at least five minutes - don't spam the API!")
 		}

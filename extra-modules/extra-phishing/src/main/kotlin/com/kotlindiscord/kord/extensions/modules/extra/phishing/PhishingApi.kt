@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.modules.extra.phishing
 
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -19,11 +20,14 @@ internal const val RECENT_PATH = "https://phish.sinking.yachts/v2/recent/%"
 internal const val SIZE_PATH = "https://phish.sinking.yachts/v2/dbsize"
 
 /** Implementation of the Sinking Yachts phishing domain API. **/
-class PhishingApi(internal val appName: String) {
-
-	internal val client = HttpClient {
+class PhishingApi(private val userAgent: String) {
+	private val client = HttpClient {
 		install(ContentNegotiation) {
 			json()
+		}
+
+		install(DefaultRequest) {
+			header("User-Agent", userAgent)
 		}
 
 		install(WebSockets)
@@ -31,27 +35,23 @@ class PhishingApi(internal val appName: String) {
 		expectSuccess = true
 	}
 
-	internal suspend inline fun <reified T> get(url: String): T = client.get(url) {
-		header("X-Identity", "$appName (via Kord Extensions)")
-	}.body()
-
 	/** Get all known phishing domains from the API. **/
 	suspend fun getAllDomains(): Set<String> =
-		get(ALL_PATH)
+		client.get(ALL_PATH).body()
 
 	/** Query the API directly to check a specific domain. **/
 	suspend fun checkDomain(domain: String): Boolean =
-		get(CHECK_PATH.replace("%", domain))
+		client.get(CHECK_PATH.replace("%", domain)).body()
 
 	/** Get all new phishing domains added in the previous [seconds] seconds. **/
 	suspend fun getRecentDomains(seconds: Long): List<DomainChange> =
-		get(RECENT_PATH.replace("%", seconds.toString()))
+		client.get(RECENT_PATH.replace("%", seconds.toString())).body()
 
 	/** Get the total number of phishing domains that the API knows about. **/
 	suspend fun getTotalDomains(): Long =
-		get(SIZE_PATH)
+		client.get(SIZE_PATH).body()
 
 	/** Connect to the websocket and register a callback to receive changes. Returns a lifecycle wrapper. **/
 	fun websocket(callback: suspend (DomainChange) -> Unit) =
-		PhishingWebsocketWrapper(appName, callback)
+		PhishingWebsocketWrapper(userAgent, callback)
 }

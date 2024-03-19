@@ -20,6 +20,7 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.extensions.event
 import com.kotlindiscord.kord.extensions.utils.dm
 import com.kotlindiscord.kord.extensions.utils.getJumpUrl
+import com.kotlindiscord.kord.extensions.utils.kordExUserAgent
 import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.Message
@@ -46,11 +47,11 @@ const val MAX_REDIRECTS = 5
 class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() {
 	override val name = "phishing"
 
-	private val api = PhishingApi(settings.appName)
 	private val domainCache: MutableSet<String> = settings.badDomains.toMutableSet()
 	private val logger = KotlinLogging.logger { }
 
-	private var websocket: PhishingWebsocketWrapper = api.websocket(::handleChange)
+	private lateinit var api: PhishingApi
+	private lateinit var websocket: PhishingWebsocketWrapper
 
 	private val httpClient = HttpClient {
 		followRedirects = false
@@ -58,7 +59,9 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 	}
 
 	override suspend fun setup() {
-		websocket.stop()
+		api = PhishingApi(kord.kordExUserAgent())
+		websocket = api.websocket(::handleChange)
+
 		websocket.start()
 
 		domainCache.addAll(api.getAllDomains())
@@ -137,7 +140,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		}
 	}
 
-	internal suspend fun handleMessage(message: Message?) {
+	private suspend fun handleMessage(message: Message?) {
 		if (message == null) {
 			return
 		}
@@ -208,7 +211,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		}
 	}
 
-	internal suspend fun logDeletion(message: Message, matches: Set<String>) {
+	private suspend fun logDeletion(message: Message, matches: Set<String>) {
 		val guild = message.getGuild()
 
 		val channel = message
@@ -275,7 +278,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		}
 	}
 
-	internal suspend fun parseDomains(content: String): MutableSet<String> {
+	private suspend fun parseDomains(content: String): MutableSet<String> {
 		val domains: MutableSet<String> = mutableSetOf()
 
 		for (match in settings.urlRegex.findAll(content)) {
@@ -314,7 +317,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 	}
 
 	@Suppress("MagicNumber", "TooGenericExceptionCaught")  // HTTP status codes
-	internal suspend fun followRedirects(url: String, count: Int = 0): String? {
+	private suspend fun followRedirects(url: String, count: Int = 0): String? {
 		if (count >= MAX_REDIRECTS) {
 			logger.warn { "Maximum redirect count reached for URL: $url" }
 
@@ -394,7 +397,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		websocket.stop()
 	}
 
-	internal fun handleChange(change: DomainChange) {
+	private fun handleChange(change: DomainChange) {
 		when (change.type) {
 			DomainChangeType.Add -> domainCache.addAll(change.domains)
 			DomainChangeType.Delete -> domainCache.removeAll(change.domains)

@@ -32,6 +32,7 @@ import com.kotlindiscord.kord.extensions.modules.extra.pluralkit.utils.LRUHashMa
 import com.kotlindiscord.kord.extensions.storage.StorageType
 import com.kotlindiscord.kord.extensions.storage.StorageUnit
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.kordExUserAgent
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.common.entity.Permission
@@ -434,11 +435,12 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 		checkTask = null
 	}
 
-	private fun PKGuildConfig.api(): PluralKit =
+	private suspend fun PKGuildConfig.api(): PluralKit =
 		apiMap.getOrPut(apiUrl) {
 			PluralKit(
 				apiUrl,
-				config.getLimiter(apiUrl)
+				config.getLimiter(apiUrl),
+				kord.kordExUserAgent(),
 			)
 		}
 

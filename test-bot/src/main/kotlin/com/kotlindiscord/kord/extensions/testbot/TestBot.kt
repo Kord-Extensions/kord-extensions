@@ -66,7 +66,6 @@ public suspend fun main() {
 			}
 
 			extPhishing {
-				appName = "Integration test bot"
 				logChannelName = "alerts"
 			}
 

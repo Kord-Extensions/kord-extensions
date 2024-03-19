@@ -27,7 +27,10 @@ internal const val PK_API_VERSION = 2
 class PluralKit(
 	private val baseUrl: String = "https://api.pluralkit.me",
 	private val rateLimiter: IntervalRateLimiter? = IntervalRateLimiter(2, 1.seconds),
-	cacheSize: Int = 10_000
+
+	userAgent: String,
+
+	cacheSize: Int = 10_000,
 ) {
 	private val logger = KotlinLogging.logger { }
 
@@ -43,7 +46,7 @@ class PluralKit(
 		}
 
 		install(DefaultRequest) {
-			header("User-Agent", "Kord Extensions, extra-pluralkit")
+			header("User-Agent", userAgent)
 		}
 
 		expectSuccess = true

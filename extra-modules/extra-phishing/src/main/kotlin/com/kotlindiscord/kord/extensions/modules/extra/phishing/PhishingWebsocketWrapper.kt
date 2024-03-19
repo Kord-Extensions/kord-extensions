@@ -12,6 +12,7 @@ import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.core.Kord
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -33,7 +34,7 @@ import org.koin.core.component.inject
  * @property callback Callback to invoke with domain changes
  */
 class PhishingWebsocketWrapper(
-	private val appName: String,
+	private val userAgent: String,
 	private val callback: suspend (DomainChange) -> Unit,
 ) : KordExKoinComponent {
 	private val logger = KotlinLogging.logger { }
@@ -41,9 +42,14 @@ class PhishingWebsocketWrapper(
 
 	private val kord: Kord by inject()
 
-	internal val client = HttpClient {
+	private val client = HttpClient {
 		install(ContentNegotiation) {
 			json()
+		}
+
+		install(DefaultRequest) {
+			header("User-Agent", userAgent)
+			header("X-Identity", userAgent)
 		}
 
 		install(WebSockets)
@@ -83,7 +89,6 @@ class PhishingWebsocketWrapper(
 	private suspend fun websocket() {
 		client.webSocket(
 			"wss://phish.sinking.yachts/feed",
-			{ header("X-Identity", "$appName (via Kord Extensions)") }
 		) {
 			logger.info { "Websocket connected." }
 
