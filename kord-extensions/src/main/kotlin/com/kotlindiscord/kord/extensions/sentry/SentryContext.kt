@@ -13,6 +13,7 @@ import com.kotlindiscord.kord.extensions.sentry.captures.SentryBreadcrumbCapture
 import com.kotlindiscord.kord.extensions.sentry.captures.SentryExceptionCapture
 import com.kotlindiscord.kord.extensions.sentry.captures.SentryScopeCapture
 import com.kotlindiscord.kord.extensions.utils.MutableStringKeyedMap
+import com.kotlindiscord.kord.extensions.utils.runSuspended
 import io.sentry.*
 import io.sentry.protocol.SentryId
 import org.koin.core.component.inject
@@ -91,13 +92,15 @@ public class SentryContext : KordExKoinComponent {
 		if (adapter.checkCapturePredicates(capture)) {
 			lateinit var id: SentryId
 
-			Sentry.withScope {
-				capture.apply(it)
+			runSuspended {
+				Sentry.withScope {
+					capture.apply(it)
 
-				extraContext.forEach(it::setContexts)
-				breadcrumbs.forEach(it::addBreadcrumb)
+					extraContext.forEach(it::setContexts)
+					breadcrumbs.forEach(it::addBreadcrumb)
 
-				id = Sentry.captureEvent(event)
+					id = Sentry.captureEvent(event)
+				}
 			}
 
 			adapter.addEventId(id)
@@ -120,15 +123,11 @@ public class SentryContext : KordExKoinComponent {
 		body(capture)
 
 		if (adapter.checkCapturePredicates(capture)) {
-			lateinit var id: SentryId
-
-			Sentry.withScope {
+			val id = capture.captureThrowable {
 				capture.apply(it)
 
 				extraContext.forEach(it::setContexts)
 				breadcrumbs.forEach(it::addBreadcrumb)
-
-				id = capture.captureThrowable()
 			}
 
 			adapter.addEventId(id)
@@ -151,13 +150,15 @@ public class SentryContext : KordExKoinComponent {
 		body(capture)
 
 		if (adapter.checkCapturePredicates(capture)) {
-			Sentry.withScope {
-				capture.apply(it)
+			runSuspended {
+				Sentry.withScope {
+					capture.apply(it)
 
-				extraContext.forEach(it::setContexts)
-				breadcrumbs.forEach(it::addBreadcrumb)
+					extraContext.forEach(it::setContexts)
+					breadcrumbs.forEach(it::addBreadcrumb)
 
-				Sentry.captureUserFeedback(feedback)
+					Sentry.captureUserFeedback(feedback)
+				}
 			}
 		}
 	}
@@ -176,13 +177,15 @@ public class SentryContext : KordExKoinComponent {
 		if (adapter.checkCapturePredicates(capture)) {
 			lateinit var id: SentryId
 
-			Sentry.withScope {
-				capture.apply(it)
+			runSuspended {
+				Sentry.withScope {
+					capture.apply(it)
 
-				extraContext.forEach(it::setContexts)
-				breadcrumbs.forEach(it::addBreadcrumb)
+					extraContext.forEach(it::setContexts)
+					breadcrumbs.forEach(it::addBreadcrumb)
 
-				id = Sentry.captureMessage(message)
+					id = Sentry.captureMessage(message)
+				}
 			}
 
 			adapter.addEventId(id)

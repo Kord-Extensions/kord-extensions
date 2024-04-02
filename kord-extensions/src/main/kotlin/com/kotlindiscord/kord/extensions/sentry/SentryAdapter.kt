@@ -10,8 +10,11 @@ import com.kotlindiscord.kord.extensions.builders.ExtensibleBotBuilder
 import com.kotlindiscord.kord.extensions.builders.SentryDataTypeBuilder
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.sentry.captures.SentryCapture
+import com.kotlindiscord.kord.extensions.utils.runSuspended
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.sentry.*
+import io.sentry.Sentry
+import io.sentry.SentryOptions
+import io.sentry.UserFeedback
 import io.sentry.protocol.SentryId
 import org.koin.core.component.inject
 
@@ -87,7 +90,7 @@ public open class SentryAdapter : KordExKoinComponent {
 	 * **Note:** Doesn't use the [SentryCapture] system, and thus ignores the [SentryDataTypeBuilder].
 	 * Disable the Sentry feedback extension if you don't want these to be submitted.
 	 */
-	public fun sendFeedback(
+	public suspend fun sendFeedback(
 		id: SentryId,
 
 		comments: String? = null,
@@ -102,7 +105,9 @@ public open class SentryAdapter : KordExKoinComponent {
 		if (comments != null) feedback.comments = comments
 		if (name != null) feedback.name = name
 
-		Sentry.captureUserFeedback(feedback)
+		runSuspended {
+			Sentry.captureUserFeedback(feedback)
+		}
 
 		if (removeId) {
 			removeEventId(id)

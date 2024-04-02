@@ -16,7 +16,6 @@ import com.kotlindiscord.kord.extensions.extensions.ephemeralSlashCommand
 import com.kotlindiscord.kord.extensions.sentry.SentryAdapter
 import com.kotlindiscord.kord.extensions.sentry.sentryId
 import com.kotlindiscord.kord.extensions.utils.respond
-import io.sentry.Sentry
 import io.sentry.UserFeedback
 import io.sentry.protocol.SentryId
 import org.koin.core.component.inject
@@ -88,15 +87,12 @@ public class SentryExtension : Extension() {
 					}
 
 					val author = message.author!!
-					val feedback = UserFeedback(
-						arguments.id,
-						author.tag,
-						author.id.toString(),
-						arguments.feedback
-					)
 
-					Sentry.captureUserFeedback(feedback)
-					sentry.adapter.removeEventId(arguments.id)
+					sentry.adapter.sendFeedback(
+						arguments.id,
+						arguments.feedback,
+						author.id.toString(),
+					)
 
 					message.respond(
 						translate("extensions.sentry.thanks")

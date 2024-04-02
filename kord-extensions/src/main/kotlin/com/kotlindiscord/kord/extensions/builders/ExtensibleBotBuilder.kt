@@ -63,6 +63,7 @@ import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.sentry.SentryLevel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.logger.Level
 import org.koin.dsl.bind
@@ -304,7 +305,7 @@ public open class ExtensibleBotBuilder {
 	 * the given lambda.
 	 * @param addDefaultIntents Whether to automatically add the required intents defined within each loaded extension
 	 *
-	 * @see Intents.IntentsBuilder
+	 * @see Intents.Builder
 	 */
 	@BotBuilderDSL
 	public fun intents(
@@ -689,6 +690,9 @@ public open class ExtensibleBotBuilder {
 			/** Whether to ping users when responding to them. **/
 			public var pingInReply: Boolean = true
 
+			/** How many events to send to Sentry, as a percentage. Defaults to 1.0, meaning all events. **/
+			public var sampleRate: Double = 1.0
+
 			/** Builder used to construct a [SentryAdapter] instance, usually the constructor. **/
 			public open var builder: () -> SentryAdapter = ::SentryAdapter
 
@@ -706,6 +710,11 @@ public open class ExtensibleBotBuilder {
 					options.environment = environment
 					options.release = release
 					options.serverName = serverName
+
+					options.isAttachThreads = false
+					options.sampleRate = sampleRate
+
+					options.setDiagnosticLevel(SentryLevel.WARNING)
 				}
 			}
 
