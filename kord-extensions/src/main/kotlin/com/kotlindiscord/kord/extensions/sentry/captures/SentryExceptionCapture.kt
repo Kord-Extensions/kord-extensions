@@ -6,7 +6,9 @@
 
 package com.kotlindiscord.kord.extensions.sentry.captures
 
+import com.kotlindiscord.kord.extensions.utils.runSuspended
 import io.sentry.Hint
+import io.sentry.IScope
 import io.sentry.Sentry
 import io.sentry.protocol.SentryId
 import org.jetbrains.annotations.ApiStatus
@@ -21,16 +23,24 @@ public class SentryExceptionCapture(
 ) : SentryScopeCapture() {
 	/** @suppress Function meant for internal use. **/
 	@ApiStatus.Internal
-	public fun captureThrowable(): SentryId {
+	public suspend fun captureThrowable(
+		callback: (IScope) -> Unit = {},
+    ): SentryId {
 		if (hints.isNotEmpty()) {
 			val sentryHint = Hint()
 
 			processMap(hints)
 				.forEach(sentryHint::set)
 
-			return Sentry.captureException(throwable, sentryHint)
+			return runSuspended {
+				Sentry.captureException(throwable, sentryHint, callback)
+			}
 		}
 
-		return Sentry.captureException(throwable)
+		return runSuspended {
+			Sentry.captureException(throwable) {
+				callback(it)
+			}
+		}
 	}
 }
