@@ -55,7 +55,7 @@ public class StringConverter(
 		if (minLength != null && this.parsed.length < minLength) {
 			throw DiscordRelayedException(
 				context.translate(
-					"converters.string.error.invalid.tooLong",
+					"converters.string.error.invalid.tooShort",
 					replacements = arrayOf(arg, minLength)
 				)
 			)
@@ -64,7 +64,7 @@ public class StringConverter(
 		if (maxLength != null && this.parsed.length > maxLength) {
 			throw DiscordRelayedException(
 				context.translate(
-					"converters.string.error.invalid.tooShort",
+					"converters.string.error.invalid.tooLong",
 					replacements = arrayOf(arg, maxLength)
 				)
 			)
