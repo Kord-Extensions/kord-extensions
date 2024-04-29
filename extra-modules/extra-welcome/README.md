@@ -13,4 +13,4 @@ based on a YAML file that you change whenever you need to update it. It also sup
 can change over time, and will attempt to only update messages that haven’t changed.
 
 For more information on how to use this as a
-user, [please see this guide on Notion](https://gdude2002.notion.site/Welcome-Channel-Spec-01f5237b34454247882054e8e7f1dd80).
+user, [please see this guide on Notion](https://flicker-report-d77.notion.site/Welcome-Channel-Spec-e091676daa4b48b9996c66aaab540fff?pvs=4).
