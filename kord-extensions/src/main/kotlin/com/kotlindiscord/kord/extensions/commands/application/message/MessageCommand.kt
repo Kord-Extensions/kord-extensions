@@ -75,7 +75,11 @@ public abstract class MessageCommand<C : MessageCommandContext<C, M>, M : ModalF
 			)
 
 			context.sentry.context(
-				"extension", extension.name
+				"extension",
+
+				mapOf(
+					"name" to extension.name
+				)
 			)
 
 			context.sentry.breadcrumb(BreadcrumbType.User) {

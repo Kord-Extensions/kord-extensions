@@ -198,7 +198,11 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 			)
 
 			context.sentry.context(
-				"extension", extension.name
+				"extension",
+
+				mapOf(
+					"name" to extension.name
+				)
 			)
 
 			context.sentry.breadcrumb(BreadcrumbType.User) {
