@@ -63,7 +63,7 @@ public open class SlashCommandParser {
 			currentArg = args.removeFirstOrNull()
 			currentArg ?: break  // If it's null, we're out of arguments
 
-			logger.trace { "Current argument: ${currentArg.displayName}" }
+			logger.trace { "Current argument: ${currentArg!!.displayName}" }
 
 			currentValue =
 				values[currentArg.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)]
@@ -110,7 +110,7 @@ public open class SlashCommandParser {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 						currentValue = null
@@ -132,7 +132,7 @@ public open class SlashCommandParser {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required) {
 						throw t
@@ -173,7 +173,7 @@ public open class SlashCommandParser {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 						currentValue = null
@@ -195,7 +195,7 @@ public open class SlashCommandParser {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required) {
 						throw t
@@ -210,7 +210,7 @@ public open class SlashCommandParser {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 						currentValue = null
@@ -232,7 +232,7 @@ public open class SlashCommandParser {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required) {
 						throw t
@@ -247,7 +247,7 @@ public open class SlashCommandParser {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 						currentValue = null
@@ -269,7 +269,7 @@ public open class SlashCommandParser {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required) {
 						throw t
@@ -284,7 +284,7 @@ public open class SlashCommandParser {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 						currentValue = null
@@ -306,7 +306,7 @@ public open class SlashCommandParser {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required) {
 						throw t
@@ -321,7 +321,7 @@ public open class SlashCommandParser {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 						currentValue = null
@@ -343,7 +343,7 @@ public open class SlashCommandParser {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required) {
 						throw t
