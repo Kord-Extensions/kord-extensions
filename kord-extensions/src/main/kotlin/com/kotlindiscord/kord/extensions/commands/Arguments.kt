@@ -44,7 +44,7 @@ public open class Arguments {
 	 * @return Argument converter to use as a delegate.
 	 */
 	@UnexpectedFunctionBehaviour
-	public fun <R : Any> arg(
+	public open fun <R : Any> arg(
 		displayName: String,
 		description: String,
 		converter: SingleConverter<R>,
@@ -66,7 +66,7 @@ public open class Arguments {
 	 * @return Argument converter to use as a delegate.
 	 */
 	@UnexpectedFunctionBehaviour
-	public fun <R : Any> arg(
+	public open fun <R : Any> arg(
 		displayName: String,
 		description: String,
 		converter: DefaultingConverter<R>,
@@ -88,7 +88,7 @@ public open class Arguments {
 	 * @return Argument converter to use as a delegate.
 	 */
 	@UnexpectedFunctionBehaviour
-	public fun <R : Any> arg(
+	public open fun <R : Any> arg(
 		displayName: String,
 		description: String,
 		converter: OptionalConverter<R>,
@@ -110,7 +110,7 @@ public open class Arguments {
 	 * @return Argument converter to use as a delegate.
 	 */
 	@UnexpectedFunctionBehaviour
-	public fun <R : Any> arg(
+	public open fun <R : Any> arg(
 		displayName: String,
 		description: String,
 		converter: ListConverter<R>,
@@ -132,7 +132,7 @@ public open class Arguments {
 	 * @return Argument converter to use as a delegate.
 	 */
 	@UnexpectedFunctionBehaviour
-	public fun <R : Any> arg(
+	public open fun <R : Any> arg(
 		displayName: String,
 		description: String,
 		converter: CoalescingConverter<R>,
@@ -154,7 +154,7 @@ public open class Arguments {
 	 * @return Argument converter to use as a delegate.
 	 */
 	@UnexpectedFunctionBehaviour
-	public fun <R : Any> arg(
+	public open fun <R : Any> arg(
 		displayName: String,
 		description: String,
 		converter: DefaultingCoalescingConverter<R>,
@@ -176,7 +176,7 @@ public open class Arguments {
 	 * @return Argument converter to use as a delegate.
 	 */
 	@UnexpectedFunctionBehaviour
-	public fun <R : Any> arg(
+	public open fun <R : Any> arg(
 		displayName: String,
 		description: String,
 		converter: OptionalCoalescingConverter<R>,
