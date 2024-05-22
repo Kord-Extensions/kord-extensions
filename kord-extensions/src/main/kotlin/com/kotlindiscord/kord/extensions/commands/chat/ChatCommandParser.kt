@@ -115,7 +115,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 			val hasKwargs = kwValue != null
 
-			logger.trace { "Current argument: ${currentArg.displayName}" }
+			logger.trace { "Current argument: ${currentArg!!.displayName}" }
 			logger.trace { "Keyword arg ($hasKwargs): $kwValue" }
 
 			if (!parser.cursor.hasNext && !hasKwargs) {
@@ -177,7 +177,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 
@@ -210,7 +210,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required || hasKwargs) {
 						throw t
@@ -243,7 +243,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 					}
@@ -276,7 +276,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 				}
 
 				is OptionalConverter<*> -> try {
@@ -305,7 +305,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 					}
 
 					if (parsed) {
-						logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 						converter.parseSuccess = true
 					}
@@ -338,7 +338,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required || hasKwargs) {
 						throw t
@@ -410,7 +410,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						converter.parseSuccess = true
 					} else {
 						if (parsedCount > 0) {
-							logger.trace { "Argument ${currentArg.displayName} successfully filled." }
+							logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
 
 							converter.parseSuccess = true
 						}
@@ -444,7 +444,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required) {
 						throw t
@@ -518,7 +518,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						converter.validate(context)
 					} else {
 						if (parsedCount > 0) {
-							logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
+							logger.trace { "Argument '${currentArg!!.displayName}' successfully filled." }
 
 							converter.parseSuccess = true
 
@@ -552,7 +552,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required) {
 						throw t
@@ -624,7 +624,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						converter.parseSuccess = true
 					} else {
 						if (parsedCount > 0) {
-							logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
+							logger.trace { "Argument '${currentArg!!.displayName}' successfully filled." }
 
 							converter.parseSuccess = true
 						}
@@ -658,7 +658,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required || converter.outputError || hasKwargs) {
 						throw t
@@ -730,7 +730,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						converter.parseSuccess = true
 					} else {
 						if (parsedCount > 0) {
-							logger.trace { "Argument '${currentArg.displayName}' successfully filled." }
+							logger.trace { "Argument '${currentArg!!.displayName}' successfully filled." }
 
 							converter.parseSuccess = true
 						}
@@ -764,7 +764,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 						)
 					}
 				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg.displayName} threw: $t" }
+					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
 
 					if (converter.required || converter.outputError) {
 						throw t
