@@ -6,6 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.commands
 
+import com.kotlindiscord.kord.extensions.annotations.UnexpectedFunctionBehaviour
 import com.kotlindiscord.kord.extensions.commands.converters.*
 
 /**
@@ -42,6 +43,7 @@ public open class Arguments {
 	 *
 	 * @return Argument converter to use as a delegate.
 	 */
+	@UnexpectedFunctionBehaviour
 	public fun <R : Any> arg(
 		displayName: String,
 		description: String,
@@ -63,6 +65,7 @@ public open class Arguments {
 	 *
 	 * @return Argument converter to use as a delegate.
 	 */
+	@UnexpectedFunctionBehaviour
 	public fun <R : Any> arg(
 		displayName: String,
 		description: String,
@@ -84,6 +87,7 @@ public open class Arguments {
 	 *
 	 * @return Argument converter to use as a delegate.
 	 */
+	@UnexpectedFunctionBehaviour
 	public fun <R : Any> arg(
 		displayName: String,
 		description: String,
@@ -105,6 +109,7 @@ public open class Arguments {
 	 *
 	 * @return Argument converter to use as a delegate.
 	 */
+	@UnexpectedFunctionBehaviour
 	public fun <R : Any> arg(
 		displayName: String,
 		description: String,
@@ -126,6 +131,7 @@ public open class Arguments {
 	 *
 	 * @return Argument converter to use as a delegate.
 	 */
+	@UnexpectedFunctionBehaviour
 	public fun <R : Any> arg(
 		displayName: String,
 		description: String,
@@ -147,6 +153,7 @@ public open class Arguments {
 	 *
 	 * @return Argument converter to use as a delegate.
 	 */
+	@UnexpectedFunctionBehaviour
 	public fun <R : Any> arg(
 		displayName: String,
 		description: String,
@@ -168,6 +175,7 @@ public open class Arguments {
 	 *
 	 * @return Argument converter to use as a delegate.
 	 */
+	@UnexpectedFunctionBehaviour
 	public fun <R : Any> arg(
 		displayName: String,
 		description: String,

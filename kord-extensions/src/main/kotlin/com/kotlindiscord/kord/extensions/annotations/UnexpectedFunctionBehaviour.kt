@@ -8,9 +8,9 @@ package com.kotlindiscord.kord.extensions.annotations
 
 /** Marks a function that may result in unexpected behaviour, and ask the developer to check the docs. **/
 @RequiresOptIn(
-	message = "Calling this function may result in unexpected behaviour. Please ensure you read its documentation " +
-		"comment before continuing.",
+	message = "Calling or overriding this function may result in unexpected behaviour. Please ensure you read its " +
+		"documentation comment before continuing.",
 	level = RequiresOptIn.Level.WARNING
 )
 @Target(AnnotationTarget.FUNCTION)
-public annotation class UnexpectedBehaviour
+public annotation class UnexpectedFunctionBehaviour

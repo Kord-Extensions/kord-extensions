@@ -154,24 +154,26 @@ public class ConverterProcessor(
 			val outputText = buildString {
 				append(
 					"""
-                    @file:OptIn(
-                        KordPreview::class,
-                        ConverterToDefaulting::class,
-                        ConverterToMulti::class,
-                        ConverterToOptional::class
-                    )
+						@file:OptIn(
+							KordPreview::class,
+							ConverterToDefaulting::class,
+							ConverterToMulti::class,
+							ConverterToOptional::class,
+							UnexpectedFunctionBehaviour::class,
+						)
 
-                    package ${classDeclaration.packageName.asString()}
+						package ${classDeclaration.packageName.asString()}
 
-                    // Original converter class, for safety
-                    import ${classDeclaration.qualifiedName!!.asString()}
+						// Original converter class, for safety
+						import ${classDeclaration.qualifiedName!!.asString()}
 
-                    // Imports that all converters need
-                    import com.kotlindiscord.kord.extensions.InvalidArgumentException
-                    import com.kotlindiscord.kord.extensions.commands.Arguments
-                    import com.kotlindiscord.kord.extensions.commands.converters.*
-                    import com.kotlindiscord.kord.extensions.commands.converters.builders.*
-                    import dev.kord.common.annotation.KordPreview
+						// Imports that all converters need
+						import com.kotlindiscord.kord.extensions.InvalidArgumentException
+						import com.kotlindiscord.kord.extensions.annotations.UnexpectedFunctionBehaviour
+						import com.kotlindiscord.kord.extensions.commands.Arguments
+						import com.kotlindiscord.kord.extensions.commands.converters.*
+						import com.kotlindiscord.kord.extensions.commands.converters.builders.*
+						import dev.kord.common.annotation.KordPreview
                     """.trimIndent()
 				)
 

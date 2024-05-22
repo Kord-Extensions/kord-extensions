@@ -9,7 +9,7 @@
 package com.kotlindiscord.kord.extensions.types
 
 import com.kotlindiscord.kord.extensions.annotations.AlwaysPublicResponse
-import com.kotlindiscord.kord.extensions.annotations.UnexpectedBehaviour
+import com.kotlindiscord.kord.extensions.annotations.UnexpectedFunctionBehaviour
 import com.kotlindiscord.kord.extensions.pagination.BaseButtonPaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
 import dev.kord.core.behavior.interaction.response.InteractionResponseBehavior
@@ -79,7 +79,7 @@ public interface InteractionContext<
 	 * While Discord's API allows you to do this, it will rarely do what you'd expect.
 	 * Only use this if you're sure it'll do what you want, and test thoroughly.
 	 */
-	@UnexpectedBehaviour
+	@UnexpectedFunctionBehaviour
 	public suspend fun respondOpposite(
 		builder: suspend FollowupMessageCreateBuilder.() -> Unit,
 	): OppositeFollowupType

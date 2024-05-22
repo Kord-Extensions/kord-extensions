@@ -7,7 +7,7 @@
 package com.kotlindiscord.kord.extensions.types
 
 import com.kotlindiscord.kord.extensions.annotations.AlwaysPublicResponse
-import com.kotlindiscord.kord.extensions.annotations.UnexpectedBehaviour
+import com.kotlindiscord.kord.extensions.annotations.UnexpectedFunctionBehaviour
 import com.kotlindiscord.kord.extensions.pagination.PublicFollowUpPaginator
 import com.kotlindiscord.kord.extensions.pagination.PublicResponsePaginator
 import com.kotlindiscord.kord.extensions.pagination.builders.PaginatorBuilder
@@ -37,7 +37,7 @@ public interface PublicInteractionContext : InteractionContext<
 		builder: suspend FollowupMessageCreateBuilder.() -> Unit,
 	): PublicFollowupMessage = interactionResponse.createPublicFollowup { builder() }
 
-	@UnexpectedBehaviour
+	@UnexpectedFunctionBehaviour
 	public override suspend fun respondOpposite(
 		builder: suspend FollowupMessageCreateBuilder.() -> Unit,
 	): EphemeralFollowupMessage = interactionResponse.createEphemeralFollowup { builder() }
