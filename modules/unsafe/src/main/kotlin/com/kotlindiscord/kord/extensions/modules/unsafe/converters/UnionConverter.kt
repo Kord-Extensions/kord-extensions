@@ -5,13 +5,15 @@
  */
 
 @file:OptIn(
-	ConverterToOptional::class
+	ConverterToOptional::class,
+	UnexpectedFunctionBehaviour::class
 )
 @file:Suppress("StringLiteralDuplication")
 
 package com.kotlindiscord.kord.extensions.modules.unsafe.converters
 
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
+import com.kotlindiscord.kord.extensions.annotations.UnexpectedFunctionBehaviour
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
