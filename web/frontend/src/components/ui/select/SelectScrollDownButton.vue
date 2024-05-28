@@ -1,24 +1,25 @@
-<script setup lang="ts">
-import { type HTMLAttributes, computed } from 'vue'
-import { SelectScrollDownButton, type SelectScrollDownButtonProps, useForwardProps } from 'radix-vue'
-import { ChevronDown } from 'lucide-vue-next'
-import { cn } from '@/lib/utils'
+<script lang="ts" setup>
+	import { type HTMLAttributes, computed } from "vue"
+	import { SelectScrollDownButton, type SelectScrollDownButtonProps, useForwardProps } from "radix-vue"
+	import { ChevronDown } from "lucide-vue-next"
+	import { cn } from "@/lib/utils"
 
-const props = defineProps<SelectScrollDownButtonProps & { class?: HTMLAttributes['class'] }>()
+	const props = defineProps<SelectScrollDownButtonProps & { class?: HTMLAttributes["class"] }>()
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
+	const delegatedProps = computed(() => {
+		const { class: _, ...delegated } = props
 
-  return delegated
-})
+		return delegated
+	})
 
-const forwardedProps = useForwardProps(delegatedProps)
+	const forwardedProps = useForwardProps(delegatedProps)
 </script>
 
 <template>
-  <SelectScrollDownButton v-bind="forwardedProps" :class="cn('flex cursor-default items-center justify-center py-1', props.class)">
-    <slot>
-      <ChevronDown class="h-4 w-4" />
-    </slot>
-  </SelectScrollDownButton>
+	<SelectScrollDownButton :class="cn('flex cursor-default items-center justify-center py-1', props.class)"
+													v-bind="forwardedProps">
+		<slot>
+			<ChevronDown class="h-4 w-4" />
+		</slot>
+	</SelectScrollDownButton>
 </template>

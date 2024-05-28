@@ -1,29 +1,29 @@
-<script setup lang="ts">
-import { type HTMLAttributes, computed } from 'vue'
-import { NavigationMenuList, type NavigationMenuListProps, useForwardProps } from 'radix-vue'
-import { cn } from '@/lib/utils'
+<script lang="ts" setup>
+	import { type HTMLAttributes, computed } from "vue"
+	import { NavigationMenuList, type NavigationMenuListProps, useForwardProps } from "radix-vue"
+	import { cn } from "@/lib/utils"
 
-const props = defineProps<NavigationMenuListProps & { class?: HTMLAttributes['class'] }>()
+	const props = defineProps<NavigationMenuListProps & { class?: HTMLAttributes["class"] }>()
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
+	const delegatedProps = computed(() => {
+		const { class: _, ...delegated } = props
 
-  return delegated
-})
+		return delegated
+	})
 
-const forwardedProps = useForwardProps(delegatedProps)
+	const forwardedProps = useForwardProps(delegatedProps)
 </script>
 
 <template>
-  <NavigationMenuList
-    v-bind="forwardedProps"
-    :class="
+	<NavigationMenuList
+		:class="
       cn(
         'group flex flex-1 list-none items-center justify-center gap-x-1',
         props.class,
       )
     "
-  >
-    <slot />
-  </NavigationMenuList>
+		v-bind="forwardedProps"
+	>
+		<slot />
+	</NavigationMenuList>
 </template>

@@ -1,7 +1,6 @@
 plugins {
 	`kordex-module`
 	`published-module`
-	`disable-explicit-api-mode`
 
 	kotlin("plugin.serialization")
 }
@@ -24,7 +23,10 @@ dependencies {
 
 	implementation(libs.bundles.logging)
 	implementation(libs.kotlin.stdlib)
+
 	implementation(libs.ktor.logging)
+
+	implementation(libs.bundles.ktor.server)
 
 	implementation(project(":kord-extensions"))
 }

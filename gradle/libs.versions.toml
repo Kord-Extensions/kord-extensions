@@ -51,7 +51,19 @@ kord = { module = "dev.kord:kord-core-voice", version.ref = "kord" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+
+ktor-server-plugin-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-plugin-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
+ktor-server-plugin-forwarded-header = { module = "io.ktor:ktor-server-forwarded-header", version.ref = "ktor" }
+ktor-server-plugin-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+
+ktor-server-plugin-kx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-server-plugin-kx-xml = { module = "io.ktor:ktor-serialization-kotlinx-xml", version.ref = "ktor" }
+
 kx-coro = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kx-coro" }
 kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
 kx-ser-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kx-ser" }
@@ -72,3 +84,16 @@ toml = { module = "net.peanuuutz:tomlkt", version.ref = "toml" }
 [bundles]
 commons = ["commons-validator"]
 logging = ["kotlin-logging", "slf4j"]
+
+ktor-server = [
+	"ktor-server-core",
+	"ktor-server-netty",
+
+	"ktor-server-plugin-content-negotiation",
+	"ktor-server-plugin-cors",
+	"ktor-server-plugin-forwarded-header",
+	"ktor-server-plugin-websockets",
+
+	"ktor-server-plugin-kx-json",
+	"ktor-server-plugin-kx-xml",
+]

@@ -1,11 +1,11 @@
-<script setup lang="ts">
-import { TooltipTrigger, type TooltipTriggerProps } from 'radix-vue'
+<script lang="ts" setup>
+	import { TooltipTrigger, type TooltipTriggerProps } from "radix-vue"
 
-const props = defineProps<TooltipTriggerProps>()
+	const props = defineProps<TooltipTriggerProps>()
 </script>
 
 <template>
-  <TooltipTrigger v-bind="props">
-    <slot />
-  </TooltipTrigger>
+	<TooltipTrigger v-bind="props">
+		<slot />
+	</TooltipTrigger>
 </template>

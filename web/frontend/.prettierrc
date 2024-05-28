@@ -1,0 +1,8 @@
+{
+	"singleAttributePerLine": true,
+	"singleQuote": false,
+	"semi": false,
+	"useTabs": true,
+	"trailingComma": "es5",
+	"vueIndentScriptAndStyle": true
+}
