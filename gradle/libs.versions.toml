@@ -59,6 +59,7 @@ ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor"
 ktor-server-plugin-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-plugin-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
 ktor-server-plugin-forwarded-header = { module = "io.ktor:ktor-server-forwarded-header", version.ref = "ktor" }
+ktor-server-plugin-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 ktor-server-plugin-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
 
 ktor-server-plugin-kx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -92,6 +93,7 @@ ktor-server = [
 	"ktor-server-plugin-content-negotiation",
 	"ktor-server-plugin-cors",
 	"ktor-server-plugin-forwarded-header",
+	"ktor-server-plugin-status-pages",
 	"ktor-server-plugin-websockets",
 
 	"ktor-server-plugin-kx-json",

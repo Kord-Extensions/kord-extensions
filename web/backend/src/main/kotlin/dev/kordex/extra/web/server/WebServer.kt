@@ -18,6 +18,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.forwardedheaders.*
+import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import kotlin.time.Duration.Companion.seconds
@@ -80,6 +81,10 @@ public class WebServer(private val config: WebServerConfig) {
 					is ForwardedHeaderStrategy.Custom -> error("Use the `XCustom` strategy in `XForwarded` mode.")
 				}
 			}
+		}
+
+		install(StatusPages) {
+			// TODO: Error handling, etc
 		}
 
 		install(WebSockets) {
