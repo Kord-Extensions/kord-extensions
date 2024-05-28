@@ -26,3 +26,5 @@ include("plugins:test-plugin-core")
 
 include("test-bot")
 include("token-parser")
+
+include("web:backend")
