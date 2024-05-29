@@ -385,12 +385,9 @@ public open class ChatCommand<T : Arguments>(
 
 				mapOf(
 					"name" to translatedName,
-					"type" to "chat"
+					"type" to "chat",
+					"extension" to extension.name,
 				)
-			)
-
-			context.sentry.context(
-				"extension", extension.name
 			)
 
 			context.sentry.breadcrumb(BreadcrumbType.User) {

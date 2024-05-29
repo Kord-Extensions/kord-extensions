@@ -70,15 +70,8 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
 
 				mapOf(
 					"name" to name,
-					"type" to "user"
-				)
-			)
-
-			context.sentry.context(
-				"extension",
-
-				mapOf(
-					"name" to extension.name
+					"type" to "user",
+					"extension" to extension.name,
 				)
 			)
 
