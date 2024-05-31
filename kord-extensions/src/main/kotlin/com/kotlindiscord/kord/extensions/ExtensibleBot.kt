@@ -50,6 +50,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import org.koin.core.component.inject
 import org.koin.dsl.bind
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
+import kotlin.concurrent.thread
 
 /**
  * An extensible bot, wrapping a Kord instance.
@@ -96,6 +99,13 @@ public open class ExtensibleBot(
 	/** @suppress **/
 	public open val logger: KLogger = KotlinLogging.logger {}
 
+	/** @suppress **/
+	public open val shutdownHook: Thread = thread(false) {
+		runBlocking {
+			close()
+		}
+	}
+
 	/** @suppress Function that sets up the bot early on, called by the builder. **/
 	public open suspend fun setup() {
 		val kord = settings.kordBuilder(token) {
@@ -139,6 +149,15 @@ public open class ExtensibleBot(
 
 		if (!initialized) registerListeners()
 
+		@Suppress("TooGenericExceptionCaught")
+		try {
+			Runtime.getRuntime().addShutdownHook(shutdownHook)
+		} catch (e: IllegalArgumentException) {
+			logger.debug(e) { "Shutdown hook already added or thread is running." }
+		} catch (e: Exception) {
+			logger.warn(e) { "Unable to add shutdown hook." }
+		}
+
 		getKoin().get<Kord>().login {
 			this.presence(settings.presenceBuilder)
 			this.intents = Intents(settings.intentsBuilder!!)
@@ -148,7 +167,7 @@ public open class ExtensibleBot(
 	/**
 	 * Stop the bot by logging out [Kord].
 	 *
-	 * This will leave the Koin context intact, so subsequent restarting of the bot is possible.
+	 * This will leave extensions loaded and the Koin context intact, so later restarting of the bot is possible.
 	 *
 	 * @see close
 	 **/
@@ -157,19 +176,32 @@ public open class ExtensibleBot(
 	}
 
 	/**
-	 * Stop the bot by shutting down [Kord] and removing its Koin context.
+	 * Stop the bot by unloading extensions, shutting down [Kord], and removing its Koin context.
 	 *
-	 * Restarting the bot after closing will result in undefined behavior
+	 * Restarting the bot after closing will result in undefined behaviour
 	 * because the Koin context needed to start will no longer exist.
 	 *
-	 * If a bot has been closed, then it must be fully rebuilt to start again.
-	 *
-	 * If a new bot is going to be built, then the previous bot must be closed first.
+	 * You must fully rebuild closed bots to start again.
+	 * Likewise, you must close previous bots before building a new one.
 	 *
 	 * @see stop
 	 **/
 	public open suspend fun close() {
+		@Suppress("TooGenericExceptionCaught")
+		try {
+			Runtime.getRuntime().removeShutdownHook(shutdownHook)
+		} catch (e: IllegalStateException) {
+			logger.debug { "Shutdown in progress, unable to remove shutdown hook." }
+		} catch (e: Exception) {
+			logger.warn(e) { "Failed to remove shutdown hook." }
+		}
+
+		extensions.keys.forEach {
+			unloadExtension(it)
+		}
+
 		getKoin().get<Kord>().shutdown()
+
 		KordExContext.stopKoin()
 	}
 
