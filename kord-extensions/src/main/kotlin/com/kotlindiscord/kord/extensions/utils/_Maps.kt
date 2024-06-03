@@ -8,6 +8,7 @@ package com.kotlindiscord.kord.extensions.utils
 
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.event.Event
+import java.util.Locale
 
 /** Type alias representing a string keyed map. **/
 public typealias StringKeyedMap<T> = Map<String, T & Any>
@@ -82,4 +83,15 @@ public inline fun <reified V : Any, reified T : V> MutableStringKeyedMap<V>.getO
 	}
 
 	return value
+}
+
+/** For string-keyed maps, attempt to retrieve a value using a case-insensitive key. **/
+public fun <V : Any> Map<String, V>.getIgnoringCase(key: String, locale: Locale? = null): V? {
+	val lowerCase = entries.associate { it.key.lowercase() to it.value }
+
+	return if (locale != null) {
+		lowerCase[key.lowercase(locale)]
+	} else {
+		lowerCase[key.lowercase()]
+	}
 }

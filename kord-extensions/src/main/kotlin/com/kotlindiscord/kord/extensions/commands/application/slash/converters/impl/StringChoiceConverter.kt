@@ -6,6 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl
 
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
@@ -13,6 +14,7 @@ import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.getIgnoringCase
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
@@ -34,6 +36,26 @@ public class StringChoiceConverter(
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
+		val choiceValue = choices.getIgnoringCase(arg, context.getLocale())
+
+		if (choiceValue != null) {
+			this.parsed = choiceValue
+
+			return true
+		}
+
+		if (arg.lowercase(context.getLocale()) !in choices.values.map { it.lowercase(context.getLocale()) }) {
+			throw DiscordRelayedException(
+				context.translate(
+					"converters.choice.invalidChoice",
+
+					replacements = arrayOf(
+						arg,
+						choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
+					)
+				)
+			)
+		}
 
 		this.parsed = arg
 

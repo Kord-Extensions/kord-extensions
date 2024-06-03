@@ -18,7 +18,6 @@ import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.CommandContext
-import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
 import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
@@ -123,8 +122,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 			}
 
 			when (val converter = currentArg.converter) {
-				is ChoiceConverter<*> -> error("Choice converters may only be used with slash commands")
-
 				is SingleConverter<*> -> try {
 					val parsed = if (hasKwargs) {
 						if (kwValue!!.size != 1) {
@@ -771,32 +768,32 @@ public open class ChatCommandParser : KordExKoinComponent {
 					}
 				}
 
-				else -> throw ArgumentParsingException(
-					context.translate(
-						"argumentParser.error.errorInArgument",
+ 				else -> throw ArgumentParsingException(
+ 					context.translate(
+ 						"argumentParser.error.errorInArgument",
 
-						replacements = arrayOf(
-							context.translate(
-								currentArg.displayName,
-								bundleName = context.command.resolvedBundle ?: converter.bundle
-							),
+ 						replacements = arrayOf(
+ 							context.translate(
+ 								currentArg.displayName,
+ 								bundleName = context.command.resolvedBundle ?: converter.bundle
+ 							),
 
-							context.translate(
-								"argumentParser.error.unknownConverterType",
-								replacements = arrayOf(currentArg.converter)
-							)
-						)
-					),
+ 							context.translate(
+ 								"argumentParser.error.unknownConverterType",
+ 								replacements = arrayOf(currentArg.converter)
+ 							)
+ 						)
+ 					),
 
-					"argumentParser.error.errorInArgument",
+ 					"argumentParser.error.errorInArgument",
 
-					context.getLocale(),
-					context.command.resolvedBundle ?: converter.bundle,
+ 					context.getLocale(),
+ 					context.command.resolvedBundle ?: converter.bundle,
 
-					currentArg,
-					argumentsObj,
-					parser
-				)
+ 					currentArg,
+ 					argumentsObj,
+ 					parser
+ 				)
 			}
 		}
 
