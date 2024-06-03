@@ -87,12 +87,28 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 	public open lateinit var argumentObj: Argument<*>
 
 	/** For delegation, retrieve the parsed value if it's been set, or null if it hasn't. **/
-	public operator fun getValue(thisRef: Arguments, property: KProperty<*>): OutputType =
-		if (::genericBuilder.isInitialized && genericBuilder.mutator != null) {
-			genericBuilder.mutator!!(parsed)
-		} else {
-			parsed
+	public operator fun getValue(thisRef: Arguments, property: KProperty<*>): OutputType {
+		try {
+			return if (::genericBuilder.isInitialized && genericBuilder.mutator != null) {
+				genericBuilder.mutator!!(parsed)
+			} else {
+				parsed
+			}
+		} catch (e: UninitializedPropertyAccessException) {
+			throw UninitializedPropertyAccessException(
+				"Parsed value accessed before it has been filled." +
+					"\n\n" +
+					"This may happen when arguments are accessed from other argument builders out of order, users " +
+					"provide arguments in the wrong order, or previous arguments are accessed in autoComplete " +
+					"builders and `parseForAutocomplete` is not overridden to be `true` in your `Arguments` subclass." +
+					"\n\n" +
+					"If you believe this exception was thrown due to a bug, please raise an issue on the Kord " +
+					"Extensions GitHub, or ask about it on the Kord Extensions Discord server.",
+
+				e
+			)
 		}
+	}
 
 	/**
 	 * Given a Throwable encountered during the [parse] function, return a human-readable string to display on Discord.
