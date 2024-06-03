@@ -9,7 +9,7 @@
 package com.kotlindiscord.kord.extensions.modules.annotations.converters
 
 import com.google.devtools.ksp.symbol.KSAnnotation
-import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.kotlindiscord.kord.extensions.modules.annotations.orNull
 
 /**
@@ -31,8 +31,8 @@ public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
 
 	/** @suppress **/
 	public val types: List<ConverterType> =
-		(argMap["types"]!! as ArrayList<KSType>).mapNotNull {
-			ConverterType.fromName(it.declaration.simpleName.asString())
+		(argMap["types"]!! as ArrayList<KSClassDeclaration>).mapNotNull {
+			ConverterType.fromName(it.simpleName.asString())
 		}
 
 	/** @suppress **/
