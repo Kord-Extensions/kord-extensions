@@ -6,6 +6,7 @@
 
 package com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl
 
+import com.kotlindiscord.kord.extensions.DiscordRelayedException
 import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.CommandContext
 import com.kotlindiscord.kord.extensions.commands.application.slash.converters.ChoiceConverter
@@ -14,10 +15,12 @@ import com.kotlindiscord.kord.extensions.commands.converters.Validator
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.Converter
 import com.kotlindiscord.kord.extensions.modules.annotations.converters.ConverterType
 import com.kotlindiscord.kord.extensions.parser.StringParser
+import com.kotlindiscord.kord.extensions.utils.getIgnoringCase
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
+import mu.KotlinLogging
 
 /**
  * Choice converter for enum arguments. Supports mapping up to 25 choices to an enum type.
@@ -67,13 +70,46 @@ public class EnumChoiceConverter<E>(
 ) : ChoiceConverter<E>(choices) where E : Enum<E>, E : ChoiceEnum {
 	override val signatureTypeString: String = typeName
 
+	private val logger = KotlinLogging.logger { }
+
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
+		val choiceValue = choices.getIgnoringCase(arg, context.getLocale())
+
+		if (null != choiceValue) {
+			// The conditional looks weird, but it won't compile otherwise
+			this.parsed = choiceValue
+
+			return true
+		}
 
 		try {
-			parsed = getter.invoke(arg) ?: return false
+			val result = getter.invoke(arg)
+				?: throw DiscordRelayedException(
+					context.translate(
+						"converters.choice.invalidChoice",
+
+						replacements = arrayOf(
+							arg,
+							choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
+						)
+					)
+				)
+
+			this.parsed = result
 		} catch (e: IllegalArgumentException) {
-			return false
+			logger.warn(e) { "Failed to get enum value for argument: $arg" }
+
+			throw DiscordRelayedException(
+				context.translate(
+					"converters.choice.invalidChoice",
+
+					replacements = arrayOf(
+						arg,
+						choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
+					)
+				)
+			)
 		}
 
 		return true
