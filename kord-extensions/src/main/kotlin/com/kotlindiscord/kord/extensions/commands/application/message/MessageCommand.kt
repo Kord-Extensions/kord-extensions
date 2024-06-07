@@ -70,12 +70,9 @@ public abstract class MessageCommand<C : MessageCommandContext<C, M>, M : ModalF
 
 				mapOf(
 					"name" to name,
-					"type" to "message"
+					"type" to "message",
+					"extension" to extension.name,
 				)
-			)
-
-			context.sentry.context(
-				"extension", extension.name
 			)
 
 			context.sentry.breadcrumb(BreadcrumbType.User) {

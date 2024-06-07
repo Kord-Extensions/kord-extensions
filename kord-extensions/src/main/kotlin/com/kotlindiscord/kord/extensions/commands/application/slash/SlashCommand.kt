@@ -188,17 +188,28 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 	/** If enabled, adds the initial Sentry breadcrumb to the given context. **/
 	public open suspend fun firstSentryBreadcrumb(context: C, commandObj: SlashCommand<*, *, *>) {
 		if (sentry.enabled) {
+			val fullName = buildString {
+				parentCommand?.let {
+					append(it.name)
+					append(" ")
+				}
+
+				parentGroup?.let {
+					append(it.name)
+					append(" ")
+				}
+
+				append(name)
+			}
+
 			context.sentry.context(
 				"command",
 
 				mapOf(
-					"name" to name,
-					"type" to "slash"
+					"name" to fullName,
+					"type" to "slash",
+					"extension" to extension.name
 				)
-			)
-
-			context.sentry.context(
-				"extension", extension.name
 			)
 
 			context.sentry.breadcrumb(BreadcrumbType.User) {

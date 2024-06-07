@@ -70,12 +70,9 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
 
 				mapOf(
 					"name" to name,
-					"type" to "user"
+					"type" to "user",
+					"extension" to extension.name,
 				)
-			)
-
-			context.sentry.context(
-				"extension", extension.name
 			)
 
 			context.sentry.breadcrumb(BreadcrumbType.User) {
