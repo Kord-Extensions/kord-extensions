@@ -11,9 +11,6 @@
       <module name="kord-extensions.extra-modules.mappings" target="14" />
       <module name="kord-extensions.extra-modules.mappings.main" target="14" />
       <module name="kord-extensions.extra-modules.mappings.test" target="14" />
-      <module name="kord-extensions.web.backend" target="17" />
-      <module name="kord-extensions.web.backend.main" target="13" />
-      <module name="kord-extensions.web.backend.test" target="13" />
     </bytecodeTargetLevel>
   </component>
 </project>

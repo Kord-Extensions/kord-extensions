@@ -25,4 +25,15 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
+
+	build: {
+		emptyOutDir: true,
+		outDir: "dist/dev/kordex/extra/web/frontend",
+	},
+
+	server: {
+		strictPort: true,
+		port: 5173,
+		open: false,
+	},
 })

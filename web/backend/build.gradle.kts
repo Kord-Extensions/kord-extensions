@@ -3,11 +3,19 @@ plugins {
 	`published-module`
 
 	kotlin("plugin.serialization")
+
+	id("com.github.johnrengelman.shadow") version "8.1.1"
 }
+
+group = "dev.kordex"
 
 metadata {
 	name = "KordEx Extra: Web"
 	description = "KordEx extra module that provides a web interface and APIs for working with it"
+}
+
+dokkaModule {
+	moduleName = "Kord Extensions: Web Interface"
 }
 
 repositories {
@@ -29,10 +37,16 @@ dependencies {
 	implementation(libs.bundles.ktor.server)
 
 	implementation(project(":kord-extensions"))
+
+	implementation(project(":web:frontend"))
+	shadow(project(":web:frontend"))
 }
 
-group = "com.kotlindiscord.kord.extensions"
+tasks.shadowJar {
+	this.configurations.clear()
+	this.configurations.add(project.configurations.shadow.get())
+}
 
-dokkaModule {
-	moduleName = "Kord Extensions: Web Interface"
+tasks.build {
+	finalizedBy(tasks.shadowJar)
 }

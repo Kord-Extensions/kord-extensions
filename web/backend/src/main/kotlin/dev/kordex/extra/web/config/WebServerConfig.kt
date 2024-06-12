@@ -6,8 +6,10 @@
 
 package dev.kordex.extra.web.config
 
+import com.kotlindiscord.kord.extensions.utils.envOrNull
+
 public class WebServerConfig {
-	public var devMode: Boolean = false
+	public var devMode: Boolean = envOrNull("WEB_DEV_MODE") != null
 
 	@Suppress("MagicNumber")
 	public var port: Int = 8080

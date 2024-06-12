@@ -28,3 +28,4 @@ include("test-bot")
 include("token-parser")
 
 include("web:backend")
+include("web:frontend")

@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extra-modules/extra-tags/kord-extensions.extra-modules.extra-tags.main.iml" filepath="$PROJECT_DIR$/.idea/modules/extra-modules/extra-tags/kord-extensions.extra-modules.extra-tags.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/plugins/kord-extensions.plugins.main.iml" filepath="$PROJECT_DIR$/.idea/modules/plugins/kord-extensions.plugins.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/plugins/kord-extensions.plugins.test.iml" filepath="$PROJECT_DIR$/.idea/modules/plugins/kord-extensions.plugins.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/web/backend/kord-extensions.web.backend.main.iml" filepath="$PROJECT_DIR$/.idea/modules/web/backend/kord-extensions.web.backend.main.iml" />
     </modules>
   </component>
 </project>

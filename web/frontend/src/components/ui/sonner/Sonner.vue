@@ -6,6 +6,9 @@
 
 <template>
 	<Sonner
+		v-bind="props"
+		class="toaster group"
+
 		:toast-options="{
       classes: {
         toast: 'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg',
@@ -16,7 +19,5 @@
           'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
       },
     }"
-		class="toaster group"
-		v-bind="props"
 	/>
 </template>

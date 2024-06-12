@@ -14,11 +14,13 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.serialization.kotlinx.xml.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.forwardedheaders.*
 import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import kotlin.time.Duration.Companion.seconds
@@ -113,6 +115,17 @@ public class WebServer(private val config: WebServerConfig) {
 	}
 
 	private fun Routing.setup() {
-		TODO()
+		if (config.devMode) {
+			get("/") {
+				call.respondRedirect("http://localhost:5173")
+			}
+		} else {
+			singlePageApplication {
+				useResources = true
+				filesPath = "dev/kordex/extra/web/frontend"
+			}
+		}
+
+		// TODO: Other routes
 	}
 }
