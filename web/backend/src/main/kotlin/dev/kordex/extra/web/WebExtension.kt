@@ -7,11 +7,23 @@
 package dev.kordex.extra.web
 
 import com.kotlindiscord.kord.extensions.extensions.Extension
+import dev.kordex.extra.web.config.WebServerConfig
+import dev.kordex.extra.web.server.WebServer
 
-public class WebExtension : Extension() {
+public class WebExtension(private val config: WebServerConfig) : Extension() {
 	override val name: String = "kordex-web"
 
+	public lateinit var server: WebServer
+
 	override suspend fun setup() {
-		TODO("Not yet implemented")
+		server = WebServer(config)
+
+		server.start()
+	}
+
+	override suspend fun unload() {
+		if (this::server.isInitialized) {
+			server.stop()
+		}
 	}
 }
