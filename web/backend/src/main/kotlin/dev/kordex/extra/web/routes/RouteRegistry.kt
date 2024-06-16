@@ -9,7 +9,6 @@ package dev.kordex.extra.web.routes
 import com.kotlindiscord.kord.extensions.events.ExtensionStateEvent
 import com.kotlindiscord.kord.extensions.extensions.ExtensionState
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
-import dev.kordex.extra.web.Route
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*

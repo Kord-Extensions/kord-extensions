@@ -48,7 +48,10 @@ public class WebServer(private val config: WebServerConfig) : KordExKoinComponen
 
 	private val server = embeddedServer(Netty, port = config.port) {
 		install(ContentNegotiation) {
-			json()
+			json(
+				Json { encodeDefaults = true }
+			)
+
 			xml()
 		}
 

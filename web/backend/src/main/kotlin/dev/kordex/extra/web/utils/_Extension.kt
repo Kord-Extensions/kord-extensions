@@ -7,8 +7,8 @@
 package dev.kordex.extra.web.utils
 
 import com.kotlindiscord.kord.extensions.events.EventContext
-import dev.kordex.extra.web.Route
 import dev.kordex.extra.web.events.WebServerStartEvent
+import dev.kordex.extra.web.routes.Route
 import dev.kordex.extra.web.websockets.WebsocketBuilder
 import dev.kordex.extra.web.websockets.WebsocketBuilderFun
 
