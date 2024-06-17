@@ -9,7 +9,6 @@ package com.kotlindiscord.kord.extensions.utils.deltas
 import dev.kord.common.entity.optional.Optional
 import dev.kord.common.entity.optional.optional
 import dev.kord.core.entity.VoiceState
-import kotlin.internal.OnlyInputTypes
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -17,11 +16,21 @@ public class ChangeSet(public val clazz: KClass<*>) {
 	private val changes: MutableMap<KProperty<*>, Change<*>> = mutableMapOf()
 
 	@Suppress("UNCHECKED_CAST")
-	public operator fun <@OnlyInputTypes T : Any?> get(key: KProperty<T>): Change<T> =
+	public operator fun <
+		@Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+		@kotlin.internal.OnlyInputTypes
+		T : Any?,
+		> get(key: KProperty<T>): Change<T> =
+
 		changes[key] as? Change<T>?
 			?: throw NoSuchElementException("No such element: $key")
 
-	public operator fun <@OnlyInputTypes T : Any?> set(
+	public operator fun <
+        @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+        @kotlin.internal.OnlyInputTypes
+        T : Any?,
+        > set(
+
 		key: KProperty<T>,
 		value: Change<T>,
 	) {
