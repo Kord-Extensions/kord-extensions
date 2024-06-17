@@ -1,9 +1,12 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
+import dev.yumi.gradle.licenser.api.comment.CStyleHeaderComment
+import types.XmlStyleHeaderComment
 
 plugins {
 	java
 
 	id("com.github.node-gradle.node") version "7.0.1"
+	id("dev.yumi.gradle.licenser")
 }
 
 java {
@@ -61,9 +64,32 @@ val buildTask = tasks.register<PnpmTask>("buildFrontend") {
 sourceSets {
 	java {
 		main {
+			java {
+				srcDir("${projectDir.absolutePath}/src")
+				srcDir("${projectDir.absolutePath}/public")
+			}
+
 			resources {
 				srcDir(buildTask)
 			}
 		}
 	}
+}
+
+license {
+	headerCommentManager.register(
+		PatternSet().include("**/*.css","**/*.js", "**/*.ts" ),
+		CStyleHeaderComment.INSTANCE
+	)
+
+	headerCommentManager.register(
+		PatternSet().include("**/*.html", "**/*.svg", "**/*.vue"),
+		XmlStyleHeaderComment.INSTANCE
+	)
+
+	rule(rootProject.file("codeformat/HEADER"))
+
+	exclude("${projectDir.absolutePath}/dist")
+	exclude("${projectDir.absolutePath}/public")
+	exclude("${projectDir.absolutePath}/node_modules")
 }

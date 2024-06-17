@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 export { default as Menubar } from "./Menubar.vue"
 export { default as MenubarItem } from "./MenubarItem.vue"
 export { default as MenubarContent } from "./MenubarContent.vue"
