@@ -25,15 +25,15 @@ public class ValueRegistry {
 			name = "ValueRegistry repeating task",
 			repeat = true
 		) {
-			val now = Clock.System.now()
-				.toLocalDateTime(TimeZone.UTC)
+			val nowInstant = Clock.System.now()
+			val now = nowInstant.toLocalDateTime(TimeZone.UTC)
 
 			ValueInterval.ALL.forEach { interval ->
 				if (interval.check(now)) {
 					scheduler.launch {
 						trackers.values
 							.filter { it.precision == interval }
-							.forEach { it.update() }
+							.forEach { it.update(nowInstant) }
 					}
 				}
 			}
@@ -61,4 +61,10 @@ public class ValueRegistry {
 
 	public fun remove(identifier: String): ValueTracker<*>? =
 		trackers.remove(identifier)
+
+	public fun getAll(): List<ValueTracker<*>> =
+		trackers.values.toList()
+
+	public fun getAllValues(): Map<String, List<Value<*>>> =
+		trackers.mapValues { (_, value) -> value.getAll() }
 }

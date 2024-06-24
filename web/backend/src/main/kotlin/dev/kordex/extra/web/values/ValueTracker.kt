@@ -6,23 +6,46 @@
 
 package dev.kordex.extra.web.values
 
+import com.kotlindiscord.kord.extensions.ExtensibleBot
+import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import com.kotlindiscord.kord.extensions.utils.collections.FixedLengthQueue
+import dev.kord.common.entity.Permissions
+import dev.kord.core.Kord
+import kotlinx.datetime.Instant
+import kotlinx.serialization.Serializable
+import org.koin.core.component.inject
 
-public abstract class ValueTracker<T : Any?> {
-	@Suppress("MagicNumber")
-	public open val maxValues: Int = 48
-	public open val precision: ValueInterval = ValueInterval.HalfHour
+@Serializable
+public abstract class ValueTracker<V : Any?> : KordExKoinComponent {
+	public val bot: ExtensibleBot by inject()
+	public val kord: Kord by inject()
+
+	public val settings: ValueTrackerSettings by lazy {
+		ValueTrackerSettings(
+			identifier = identifier,
+			maxValues = maxValues,
+			precision = precision,
+			permissions = permissions
+		)
+	}
 
 	public abstract val identifier: String
 
-	private val values: FixedLengthQueue<T> by lazy { FixedLengthQueue(maxValues) }
+	@Suppress("MagicNumber")
+	public open val maxValues: Int = 48
+	public open val precision: ValueInterval = ValueInterval.HalfHour
+	public open val permissions: Permissions? = null
 
-	public abstract suspend fun callback(): T
+	private val values: FixedLengthQueue<Value<V>> by lazy { FixedLengthQueue(maxValues) }
 
-	public suspend fun update() {
-		values.push(callback())
+	public abstract suspend fun callback(): V
+
+	public suspend fun update(now: Instant) {
+		values.push(
+			Value(now, callback())
+		)
 	}
 
-	public fun getAll(): List<T> =
+	public fun getAll(): List<Value<V>> =
 		values.getAll()
 }
