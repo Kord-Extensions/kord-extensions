@@ -89,7 +89,8 @@ license {
 
 	rule(rootProject.file("codeformat/HEADER"))
 
-	exclude("${projectDir.absolutePath}/dist")
-	exclude("${projectDir.absolutePath}/public")
-	exclude("${projectDir.absolutePath}/node_modules")
+	exclude("**/index-*.js", "**/index-*.css")
+	exclude("dist/**")
+	exclude("public/**")
+	exclude("node_modules/**")
 }

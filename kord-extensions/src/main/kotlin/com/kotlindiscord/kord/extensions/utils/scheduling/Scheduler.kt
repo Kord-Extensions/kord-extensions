@@ -26,7 +26,7 @@ private val logger = KotlinLogging.logger {}
  *
  * Schedulers are [CoroutineScope]s and thus can be cancelled to cancel all nested jobs, if required..
  */
-public class Scheduler : CoroutineScope {
+public open class Scheduler : CoroutineScope {
 	internal val tasks: MutableList<Task> = mutableListOf()
 
 	override val coroutineContext: CoroutineContext = Dispatchers.Default + SupervisorJob()

@@ -122,6 +122,12 @@ public open class Task(
 					}
 				}
 			} finally {
+				if (executions == ULong.MAX_VALUE) {
+					logger.debug { "Resetting execution counter as it has reached the maximum value." }
+
+					executions = 0UL
+				}
+
 				executions += 1UL
 			}
 
