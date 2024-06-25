@@ -56,6 +56,7 @@ ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
 
+ktor-server-plugin-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
 ktor-server-plugin-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-plugin-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
 ktor-server-plugin-forwarded-header = { module = "io.ktor:ktor-server-forwarded-header", version.ref = "ktor" }
@@ -90,6 +91,7 @@ ktor-server = [
 	"ktor-server-core",
 	"ktor-server-netty",
 
+	"ktor-server-plugin-auth",
 	"ktor-server-plugin-content-negotiation",
 	"ktor-server-plugin-cors",
 	"ktor-server-plugin-forwarded-header",

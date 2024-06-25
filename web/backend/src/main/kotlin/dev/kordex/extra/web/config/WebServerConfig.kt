@@ -18,4 +18,15 @@ public class WebServerConfig {
 	public var forwardedHeaderStrategy: ForwardedHeaderStrategy = ForwardedHeaderStrategy.First
 
 	public lateinit var hostname: String
+
+	internal val oauth = OAuth()
+
+	public fun oauth(body: OAuth.() -> Unit) {
+		body(oauth)
+	}
+
+	public inner class OAuth {
+		public lateinit var clientId: String
+		public lateinit var clientSecret: String
+	}
 }
