@@ -15,6 +15,7 @@ import dev.kordex.extra.web.routes.RouteRegistry
 import dev.kordex.extra.web.websockets.WebsocketRegistry
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 
 public class WebServer(internal val config: WebServerConfig) : KordExKoinComponent {
@@ -31,13 +32,18 @@ public class WebServer(internal val config: WebServerConfig) : KordExKoinCompone
 		configureContentNegotiation(this)
 		configureCORS(this)
 		configureForwardedHeaders(this)
+
+		// Required before routing
+		configureWebSockets(this)
+
 		configureRouting(this)
 		configureStatusPages(this)
-		configureWebSockets(this)
 	}
 
 	public suspend fun start() {
-		server.start(wait = false)
+		bot.kordRef.launch {
+			server.start()
+		}
 
 		running = true
 

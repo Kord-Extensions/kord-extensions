@@ -12,11 +12,11 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.forwardedheaders.*
 
 public fun WebServer.configureForwardedHeaders(app: Application) {
-	when (config.forwardedHeaderMode) {
+	when (config.reverseProxy.headerMode) {
 		ForwardedHeaderMode.None -> {}
 
 		ForwardedHeaderMode.Forwarded -> app.install(ForwardedHeaders) {
-			when (val s = config.forwardedHeaderStrategy) {
+			when (val s = config.reverseProxy.headerStrategy) {
 				ForwardedHeaderStrategy.First -> useFirstValue()
 				ForwardedHeaderStrategy.Last -> useLastValue()
 
@@ -30,7 +30,7 @@ public fun WebServer.configureForwardedHeaders(app: Application) {
 		}
 
 		ForwardedHeaderMode.XForwarded -> app.install(XForwardedHeaders) {
-			when (val s = config.forwardedHeaderStrategy) {
+			when (val s = config.reverseProxy.headerStrategy) {
 				ForwardedHeaderStrategy.First -> useFirstProxy()
 				ForwardedHeaderStrategy.Last -> useLastProxy()
 

@@ -14,19 +14,26 @@ public class WebServerConfig {
 	@Suppress("MagicNumber")
 	public var port: Int = 8080
 
-	public var forwardedHeaderMode: ForwardedHeaderMode = ForwardedHeaderMode.None
-	public var forwardedHeaderStrategy: ForwardedHeaderStrategy = ForwardedHeaderStrategy.First
-
 	public lateinit var hostname: String
 
 	internal val oauth = OAuth()
+	internal val reverseProxy = ReverseProxy()
 
 	public fun oauth(body: OAuth.() -> Unit) {
 		body(oauth)
 	}
 
+	public fun reverseProxy(body: ReverseProxy.() -> Unit) {
+		body(reverseProxy)
+	}
+
 	public inner class OAuth {
 		public lateinit var clientId: String
 		public lateinit var clientSecret: String
+	}
+
+	public inner class ReverseProxy {
+		public var headerMode: ForwardedHeaderMode = ForwardedHeaderMode.None
+		public var headerStrategy: ForwardedHeaderStrategy = ForwardedHeaderStrategy.First
 	}
 }

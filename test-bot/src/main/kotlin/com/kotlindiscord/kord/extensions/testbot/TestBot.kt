@@ -21,6 +21,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.gateway.ALL
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
+import dev.kordex.extra.web.utils.web
 import org.koin.core.logger.Level
 
 public val TEST_SERVER_ID: Snowflake = Snowflake(env("TEST_SERVER"))
@@ -61,6 +62,15 @@ public suspend fun main() {
 		}
 
 		extensions {
+			web {
+				hostname = "localhost:8080"
+
+				oauth {
+					clientId = env("OAUTH_CLIENT_ID")
+					clientSecret = env("OAUTH_CLIENT_SECRET")
+				}
+			}
+
 			help {
 				paginatorTimeout = 30
 			}

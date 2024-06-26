@@ -59,6 +59,8 @@ dependencies {
 	implementation(project(":modules:time4j"))
 	implementation(project(":modules:unsafe"))
 
+	implementation(project(":web:backend"))
+
 	detektPlugins(libs.detekt)
 	detektPlugins(libs.detekt.libraries)
 

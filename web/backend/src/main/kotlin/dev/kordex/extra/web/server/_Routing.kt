@@ -30,7 +30,7 @@ public fun WebServer.configureRouting(app: Application) {
 			}
 		}
 
-		authenticate("discord") {
+		authenticate("oauth-discord") {
 			get("/auth") {
 				// Redirect is apparently automatic
 			}
