@@ -17,7 +17,5 @@ public fun WebServer.configureContentNegotiation(app: Application) {
 		json(
 			Json { encodeDefaults = true }
 		)
-
-		xml()
 	}
 }

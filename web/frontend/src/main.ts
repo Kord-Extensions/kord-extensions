@@ -8,6 +8,8 @@
 import * as Vue from "vue/dist/vue.esm-bundler.js"
 
 import { createApp } from "vue"
+import { createHead } from '@unhead/vue'
+
 import "./assets/index.css"
 import App from "./App.vue"
 
@@ -15,4 +17,8 @@ import App from "./App.vue"
 // @ts-ignore
 window.Vue = Vue
 
-createApp(App).mount("#app")
+const app = createApp(App)
+const head = createHead()
+
+app.use(head)
+app.mount("#app")

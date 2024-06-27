@@ -10,10 +10,14 @@
 	<meta charset="UTF-8" />
 	<link href="/vite.svg" rel="icon" type="image/svg+xml" />
 	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<title>Vite + Vue + TS</title>
+	<title>Vite + Vue + TS</title> <!-- TODO: Title storage and icon -->
 </head>
+
 <body>
-<div id="app"></div>
+<div class="flex flex-col page-content" style="min-height: 100vh">
+	<div id="app" class="h-full grow overflow-auto" style="display: contents"></div>
+</div>
+
 <script src="/src/main.ts" type="module"></script>
 </body>
 </html>

@@ -15,6 +15,7 @@ public class WebServerConfig {
 	public var port: Int = 8080
 
 	public lateinit var hostname: String
+	public lateinit var siteTitle: String
 
 	internal val oauth = OAuth()
 	internal val reverseProxy = ReverseProxy()

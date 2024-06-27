@@ -64,6 +64,7 @@ public suspend fun main() {
 		extensions {
 			web {
 				hostname = "localhost:8080"
+				siteTitle = "KordEx Testing"
 
 				oauth {
 					clientId = env("OAUTH_CLIENT_ID")

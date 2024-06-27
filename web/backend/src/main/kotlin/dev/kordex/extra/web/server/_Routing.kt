@@ -6,7 +6,9 @@
 
 package dev.kordex.extra.web.server
 
+import dev.kordex.extra.web.config.WebServerConfig
 import dev.kordex.extra.web.routes.Verb
+import dev.kordex.extra.web.server.routes.api
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.http.content.*
@@ -14,7 +16,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 
-public fun WebServer.configureRouting(app: Application) {
+public fun WebServer.configureRouting(app: Application, config: WebServerConfig) {
 	app.routing {
 		// TODO: API Routing
 		// TODO: Static files
@@ -89,5 +91,9 @@ public fun WebServer.configureRouting(app: Application) {
 				wsRegistry.handle(this)
 			}
 		}
+
+		// Bundled routes defined elsewhere
+
+		api(config)
 	}
 }

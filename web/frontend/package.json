@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@internationalized/date": "^3.5.4",
+		"@unhead/vue": "^1.9.14",
 		"@unovis/ts": "^1.4.1",
 		"@unovis/vue": "^1.4.1",
 		"@vee-validate/zod": "^4.12.8",

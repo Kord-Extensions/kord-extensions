@@ -36,7 +36,7 @@ public class WebServer(internal val config: WebServerConfig) : KordExKoinCompone
 		// Required before routing
 		configureWebSockets(this)
 
-		configureRouting(this)
+		configureRouting(this, config)
 		configureStatusPages(this)
 	}
 
