@@ -1,6 +1,4 @@
 import com.github.gradle.node.pnpm.task.PnpmTask
-import dev.yumi.gradle.licenser.api.comment.CStyleHeaderComment
-import types.XmlStyleHeaderComment
 
 plugins {
 	java
@@ -77,16 +75,6 @@ sourceSets {
 }
 
 license {
-	headerCommentManager.register(
-		PatternSet().include("**/*.css","**/*.js", "**/*.ts" ),
-		CStyleHeaderComment.INSTANCE
-	)
-
-	headerCommentManager.register(
-		PatternSet().include("**/*.html", "**/*.svg", "**/*.vue"),
-		XmlStyleHeaderComment.INSTANCE
-	)
-
 	rule(rootProject.file("codeformat/HEADER"))
 
 	exclude("**/index-*.js", "**/index-*.css")
