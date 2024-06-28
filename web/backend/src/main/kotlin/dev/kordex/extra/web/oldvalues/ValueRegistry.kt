@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package dev.kordex.extra.web.values
+package dev.kordex.extra.web.oldvalues
 
 import com.kotlindiscord.kord.extensions.utils.scheduling.Scheduler
 import kotlinx.coroutines.launch

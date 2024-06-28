@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package dev.kordex.extra.web.values
+package dev.kordex.extra.web.oldvalues
 
 import dev.kord.common.entity.Permissions
 import kotlinx.serialization.Serializable

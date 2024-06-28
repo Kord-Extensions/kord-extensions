@@ -10,7 +10,7 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class Value<T : Any?> (
+public data class TimedContainer<V : Any?> (
+	val value: V,
 	val time: Instant,
-	val value: T?,
 )

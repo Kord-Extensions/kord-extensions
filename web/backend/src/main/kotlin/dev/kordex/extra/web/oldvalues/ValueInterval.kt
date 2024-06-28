@@ -6,7 +6,7 @@
 
 @file:Suppress("UnnecessaryParentheses", "MagicNumber")
 
-package dev.kordex.extra.web.values
+package dev.kordex.extra.web.oldvalues
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
