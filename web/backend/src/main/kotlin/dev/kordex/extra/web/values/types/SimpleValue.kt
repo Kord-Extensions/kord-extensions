@@ -9,15 +9,18 @@ package dev.kordex.extra.web.values.types
 import dev.kord.common.entity.optional.Optional
 import dev.kord.common.entity.optional.optional
 import dev.kordex.extra.web.types.Identifier
+import dev.kordex.extra.web.values.serializers.SimpleValueSerializer
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 
+@Serializable(with = SimpleValueSerializer::class)
 public class SimpleValue<T : Any> public constructor(
 	override val identifier: Identifier,
 	override val writable: Boolean,
 	override val serializer: KSerializer<T>,
 ) : Value<T?, T?, T>() {
-	private var optional: Optional<T?> = Optional.Missing()
+	internal var optional: Optional<T?> = Optional.Missing()
 
 	public override fun read(): T? =
 		if (optional is Optional.Missing) {
@@ -28,6 +31,10 @@ public class SimpleValue<T : Any> public constructor(
 
 	public override fun write(value: T?) {
 		this.optional = value.optional()
+	}
+
+	public fun writeOptional(value: Optional<T?>) {
+		this.optional = value
 	}
 
 	public fun clear() {

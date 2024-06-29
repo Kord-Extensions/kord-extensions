@@ -10,10 +10,13 @@ import com.kotlindiscord.kord.extensions.utils.collections.FixedLengthQueue
 import dev.kordex.extra.web.oldvalues.ValueInterval
 import dev.kordex.extra.web.types.Identifier
 import dev.kordex.extra.web.values.TimedContainer
+import dev.kordex.extra.web.values.serializers.TrackedValueSerializer
 import kotlinx.datetime.Clock
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 
+@Serializable(with = TrackedValueSerializer::class)
 public class TrackedValue<T : Any>(
 	override val identifier: Identifier,
 
@@ -22,7 +25,7 @@ public class TrackedValue<T : Any>(
 
 	public override val serializer: KSerializer<T>,
 ) : Value<T?, List<TimedContainer<T?>>, T>() {
-	private val values: FixedLengthQueue<TimedContainer<T?>> = FixedLengthQueue(maxValues)
+	internal val values: FixedLengthQueue<TimedContainer<T?>> = FixedLengthQueue(maxValues)
 
 	public override fun read(): List<TimedContainer<T?>> =
 		values.getAll()
@@ -31,6 +34,10 @@ public class TrackedValue<T : Any>(
 		values.push(
 			TimedContainer(value, Clock.System.now())
 		)
+	}
+
+	public fun writeTimed(value: TimedContainer<T?>) {
+		values.push(value)
 	}
 }
 

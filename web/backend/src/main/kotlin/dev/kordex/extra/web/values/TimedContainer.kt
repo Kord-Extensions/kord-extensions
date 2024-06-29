@@ -6,10 +6,11 @@
 
 package dev.kordex.extra.web.values
 
+import dev.kordex.extra.web.values.serializers.TimedContainerSerializer
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
-@Serializable
+@Serializable(with = TimedContainerSerializer::class)
 public data class TimedContainer<V : Any?> (
 	val value: V,
 	val time: Instant,

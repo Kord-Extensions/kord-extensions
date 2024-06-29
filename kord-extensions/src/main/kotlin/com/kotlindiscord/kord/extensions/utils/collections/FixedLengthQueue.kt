@@ -6,6 +6,8 @@
 
 package com.kotlindiscord.kord.extensions.utils.collections
 
+import com.kotlindiscord.kord.extensions.utils.collections.serializers.FixedLengthQueueSerializer
+import kotlinx.serialization.Serializable
 import java.util.*
 
 /**
@@ -19,6 +21,7 @@ import java.util.*
  *
  * @param maxSize Maximum number of elements in this queue.
  */
+@Serializable(with = FixedLengthQueueSerializer::class)
 public class FixedLengthQueue<E : Any?>(public val maxSize: Int) : Queue<E> {
 	init {
 		if (maxSize <= 0) {
@@ -75,7 +78,7 @@ public class FixedLengthQueue<E : Any?>(public val maxSize: Int) : Queue<E> {
 		data.lastOrNull()
 
 	/**
-	 * Returns a list of all elements in this queue, in pushed order.
+	 * Returns a list of all elements in this queue, in pushed order (newest to oldest).
 	 */
 	public fun getAll(): List<E> =
 		data.reversed()
