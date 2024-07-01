@@ -1,6 +1,6 @@
 plugins {
 	`kordex-module`
-	`published-module`
+//	`published-module`
 
 	kotlin("plugin.serialization")
 
@@ -9,10 +9,10 @@ plugins {
 
 group = "dev.kordex"
 
-metadata {
-	name = "KordEx Extra: Web"
-	description = "KordEx extra module that provides a web interface and APIs for working with it"
-}
+//metadata {
+//	name = "KordEx Extra: Web"
+//	description = "KordEx extra module that provides a web interface and APIs for working with it"
+//}
 
 dokkaModule {
 	moduleName = "Kord Extensions: Web Interface"
