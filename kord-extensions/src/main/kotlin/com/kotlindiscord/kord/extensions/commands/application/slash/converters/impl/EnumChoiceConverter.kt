@@ -20,7 +20,7 @@ import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
  * Choice converter for enum arguments. Supports mapping up to 25 choices to an enum type.

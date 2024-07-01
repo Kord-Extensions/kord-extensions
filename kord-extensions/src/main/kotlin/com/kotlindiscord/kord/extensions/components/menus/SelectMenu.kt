@@ -12,8 +12,8 @@ import com.kotlindiscord.kord.extensions.sentry.BreadcrumbType
 import com.kotlindiscord.kord.extensions.types.FailureReason
 import com.kotlindiscord.kord.extensions.utils.scheduling.Task
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 /** Maximum length for an option's description. **/
 public const val DESCRIPTION_MAX: Int = 100

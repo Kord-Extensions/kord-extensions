@@ -76,12 +76,6 @@ dependencies {
 	kspTest(project(":annotation-processor"))
 }
 
-val compileKotlin: KotlinCompile by tasks
-
-compileKotlin.kotlinOptions {
-	languageVersion = "1.7"
-}
-
 application {
 	this.mainClass.set("com.kotlindiscord.kord.extensions.testbot.TestBotKt")
 }

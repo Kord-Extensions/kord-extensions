@@ -7,12 +7,12 @@
 package dev.kordex.extra.web.websockets
 
 import com.kotlindiscord.kord.extensions.utils.runSuspended
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.application.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
 
 public typealias Callback = suspend (Frame) -> Unit
 

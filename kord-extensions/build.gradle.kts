@@ -55,12 +55,6 @@ dependencies {
 	kspTest(project(":annotation-processor"))
 }
 
-val compileKotlin: KotlinCompile by tasks
-
-compileKotlin.kotlinOptions {
-	languageVersion = "1.7"
-}
-
 dokkaModule {
 	moduleName = "Kord Extensions"
 	includes.add("packages.md")

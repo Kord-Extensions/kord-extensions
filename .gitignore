@@ -123,3 +123,4 @@ fabric.properties
 .env
 docs/site
 .linkie-cache/
+.kotlin/

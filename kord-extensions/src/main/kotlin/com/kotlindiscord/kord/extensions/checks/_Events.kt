@@ -19,6 +19,8 @@ import dev.kord.core.cache.data.toData
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.interaction.Interaction
 import dev.kord.core.event.Event
+import dev.kord.core.event.automoderation.AutoModerationActionExecutionEvent
+import dev.kord.core.event.automoderation.AutoModerationEvent
 import dev.kord.core.event.channel.*
 import dev.kord.core.event.channel.thread.*
 import dev.kord.core.event.guild.*
@@ -45,12 +47,27 @@ import kotlinx.coroutines.flow.first
  */
 public suspend fun channelFor(event: Event): ChannelBehavior? {
 	return when (event) {
+		// KordEx generic event interface
 		is ChannelEvent -> event.channel
 
+		is AutoModerationActionExecutionEvent -> event.channel
 		is ChannelCreateEvent -> event.channel
 		is ChannelDeleteEvent -> event.channel
 		is ChannelPinsUpdateEvent -> event.channel
 		is ChannelUpdateEvent -> event.channel
+
+		is GuildAuditLogEntryCreateEvent -> if (event.auditLogEntry.options?.channelId?.value != null) {
+			event.kord.unsafe.channel(event.auditLogEntry.options!!.channelId.value!!)
+		} else {
+			null
+		}
+
+		is GuildScheduledEventEvent -> if (event.channelId != null) {
+			event.kord.unsafe.channel(event.channelId!!)
+		} else {
+			null
+		}
+
 		is InteractionCreateEvent -> event.interaction.channel
 		is InviteCreateEvent -> event.channel
 		is InviteDeleteEvent -> event.channel
@@ -65,11 +82,10 @@ public suspend fun channelFor(event: Event): ChannelBehavior? {
 		is TypingStartEvent -> event.channel
 		is VoiceStateUpdateEvent -> event.kord.unsafe.channel(event.state.channelId ?: return null)
 		is WebhookUpdateEvent -> event.channel
-
 		is ThreadChannelDeleteEvent -> event.old
-//        is ThreadListSyncEvent -> event.
 		is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()
-//        is ThreadMembersUpdateEvent -> event.
+		is ThreadMembersUpdateEvent -> event.kord.unsafe.channel(event.id)
+		is ThreadUpdateEvent -> event.channel
 
 		else -> null
 	}
@@ -110,18 +126,23 @@ public suspend fun topChannelFor(event: Event): ChannelBehavior? {
  */
 public suspend fun guildFor(event: Event): GuildBehavior? {
 	return when (event) {
+		// KordEx generic event interface
 		is GuildEvent -> event.guild
 
+		is AutoModerationEvent -> event.guild
 		is BanAddEvent -> event.guild
 		is BanRemoveEvent -> event.guild
-
 		is CategoryCreateEvent -> event.channel.guild
 		is CategoryDeleteEvent -> event.channel.guild
 		is CategoryUpdateEvent -> event.channel.guild
 		is EmojisUpdateEvent -> event.guild
 		is GuildCreateEvent -> event.guild
 		is GuildDeleteEvent -> event.guild
+		is GuildScheduledEventEvent -> event.kord.unsafe.guild(event.guildId)
 		is GuildUpdateEvent -> event.guild
+		is IntegrationCreateEvent -> event.guild
+		is IntegrationDeleteEvent -> event.guild
+		is IntegrationUpdateEvent -> event.guild
 		is IntegrationsUpdateEvent -> event.guild
 
 		is InteractionCreateEvent -> {
@@ -158,11 +179,18 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
 		is NewsChannelCreateEvent -> event.channel.guild
 		is NewsChannelDeleteEvent -> event.channel.guild
 		is NewsChannelUpdateEvent -> event.channel.guild
+		is PresenceUpdateEvent -> event.guild
 		is ReactionAddEvent -> event.guild
 		is ReactionRemoveEvent -> event.guild
 		is TextChannelCreateEvent -> event.channel.guild
 		is TextChannelDeleteEvent -> event.channel.guild
 		is TextChannelUpdateEvent -> event.channel.guild
+		is ThreadChannelCreateEvent -> event.channel.guild
+		is ThreadUpdateEvent -> event.channel.guild
+		is ThreadChannelDeleteEvent -> event.channel.guild
+		is ThreadListSyncEvent -> event.guild
+		is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()?.guild
+		is ThreadMembersUpdateEvent -> event.kord.unsafe.guild(event.guildId)
 		is TypingStartEvent -> event.guild
 		is VoiceChannelCreateEvent -> event.channel.guild
 		is VoiceChannelDeleteEvent -> event.channel.guild
@@ -171,12 +199,8 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
 		is VoiceStateUpdateEvent -> event.state.getGuildOrNull()
 		is WebhookUpdateEvent -> event.guild
 
-		is ThreadChannelCreateEvent -> event.channel.guild
-		is ThreadUpdateEvent -> event.channel.guild
-//        is ThreadChannelDeleteEvent -> event.
-		is ThreadListSyncEvent -> event.guild
-		is ThreadMemberUpdateEvent -> event.member.getThreadOrNull()?.guild
-//        is ThreadMembersUpdateEvent -> event.
+		// TODO: Kord doesn't have the guild yet?
+// 		is GuildAuditLogEntryCreateEvent -> event.auditLogEntry.userId
 
 		else -> null
 	}
@@ -195,7 +219,16 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
  */
 public suspend fun memberFor(event: Event): MemberBehavior? {
 	return when (event) {
+		// KordEx generic event interface
 		is MemberEvent -> event.member
+
+		is AutoModerationActionExecutionEvent -> event.member
+
+		is GuildScheduledEventEvent -> if (event.scheduledEvent.creatorId != null) {
+			event.kord.unsafe.member(event.guildId, event.scheduledEvent.creatorId!!)
+		} else {
+			null
+		}
 
 		is InteractionCreateEvent -> {
 			val guildId = event.interaction.data.guildId.value
@@ -205,6 +238,8 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
 				.guild(guildId)
 				.getMemberOrNull(event.interaction.user.id)
 		}
+
+		is InviteCreateEvent -> event.inviterMember
 
 		is MemberJoinEvent -> event.member
 		is MemberUpdateEvent -> event.member
@@ -231,9 +266,13 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
 		is ReactionRemoveEvent -> event.userAsMember
 		is TypingStartEvent -> event.getGuildOrNull()?.getMemberOrNull(event.userId)
 		is ThreadChannelCreateEvent -> event.channel.owner.asMember(event.channel.guildId)
-//        event is ThreadUpdateEvent -> event.
-//        event is ThreadChannelDeleteEvent -> event.
-//        event is ThreadListSyncEvent -> event.
+
+		is ThreadChannelDeleteEvent -> if (event.channel.data.ownerId.value != null) {
+			event.kord.unsafe.member(event.channel.guildId, event.channel.data.ownerId.value!!)
+		} else {
+			null
+		}
+
 		is ThreadMemberUpdateEvent -> {
 			val thread = event.member.getThreadOrNull()
 				?: return null
@@ -246,7 +285,6 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
 			event.state.userId
 		)
 
-//        event is ThreadMembersUpdateEvent -> event.
 		else -> null
 	}
 }
@@ -264,7 +302,22 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
  */
 public suspend fun messageFor(event: Event): MessageBehavior? {
 	return when (event) {
+		// KordEx generic event interface
 		is MessageEvent -> event.message
+
+		is AutoModerationActionExecutionEvent -> event.message
+
+		is GuildAuditLogEntryCreateEvent -> if (
+			event.auditLogEntry.options?.channelId?.value != null &&
+			event.auditLogEntry.options?.messageId?.value != null
+		) {
+			event.kord.unsafe.message(
+				event.auditLogEntry.options!!.channelId.value!!,
+				event.auditLogEntry.options!!.messageId.value!!
+			)
+		} else {
+			null
+		}
 
 		is MessageCreateEvent -> event.message
 		is MessageDeleteEvent -> event.message
@@ -275,11 +328,6 @@ public suspend fun messageFor(event: Event): MessageBehavior? {
 		is ReactionRemoveEvent -> event.message
 
 		is ThreadChannelCreateEvent -> event.channel.getLastMessage()
-//        is ThreadUpdateEvent -> event.
-//        is ThreadChannelDeleteEvent -> event.
-//        is ThreadListSyncEvent -> event.
-//        is ThreadMemberUpdateEvent -> event.
-//        is ThreadMembersUpdateEvent -> event.
 
 		else -> null
 	}
@@ -294,22 +342,16 @@ public suspend fun messageFor(event: Event): MessageBehavior? {
  * value.
  *
  * @param event The event concerning to the channel to retrieve.
- * @return A [RoleBehavior] representing the role, or null if there isn't one.
+ * @return A [RoleBehavior] representing the role, or null if missing.
  */
 public fun roleFor(event: Event): RoleBehavior? {
 	return when (event) {
+		// KordEx generic event interface
 		is RoleEvent -> event.role
 
 		is RoleCreateEvent -> event.role
 		is RoleDeleteEvent -> event.role
 		is RoleUpdateEvent -> event.role
-
-//        is ThreadChannelCreateEvent -> event.
-//        is ThreadUpdateEvent -> event.
-//        is ThreadChannelDeleteEvent -> event.
-//        is ThreadListSyncEvent -> event.
-//        is ThreadMemberUpdateEvent -> event.
-//        is ThreadMembersUpdateEvent -> event.
 
 		else -> null
 	}
@@ -342,7 +384,10 @@ public suspend fun threadFor(event: Event): ThreadChannelBehavior? =
  */
 public suspend fun userFor(event: Event): UserBehavior? {
 	return when (event) {
+		// KordEx generic event interface
 		is UserEvent -> event.user
+
+		is AutoModerationActionExecutionEvent -> event.member
 
 		is BanAddEvent -> event.user
 		is BanRemoveEvent -> event.user
@@ -352,7 +397,22 @@ public suspend fun userFor(event: Event): UserBehavior? {
 		is DMChannelDeleteEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
 		is DMChannelUpdateEvent -> event.channel.recipients.first { it.id != event.kord.selfId }
 
+		is GuildAuditLogEntryCreateEvent -> if (
+			event.auditLogEntry.userId != null
+		) {
+			event.kord.unsafe.user(event.auditLogEntry.userId!!)
+		} else {
+			null
+		}
+
+		is GuildScheduledEventEvent -> if (event.scheduledEvent.creatorId != null) {
+			event.kord.unsafe.user(event.scheduledEvent.creatorId!!)
+		} else {
+			null
+		}
+
 		is InteractionCreateEvent -> event.interaction.user
+		is InviteCreateEvent -> event.inviter
 		is MemberJoinEvent -> event.member
 		is MemberLeaveEvent -> event.user
 		is MemberUpdateEvent -> event.member
@@ -362,17 +422,18 @@ public suspend fun userFor(event: Event): UserBehavior? {
 		is PresenceUpdateEvent -> event.member
 		is ReactionAddEvent -> event.user
 		is ReactionRemoveEvent -> event.user
+		is ThreadChannelCreateEvent -> event.channel.owner
+
+		is ThreadChannelDeleteEvent -> if (event.channel.data.ownerId.value != null) {
+			event.kord.unsafe.user(event.channel.data.ownerId.value!!)
+		} else {
+			null
+		}
+
+		is ThreadMemberUpdateEvent -> event.member
 		is TypingStartEvent -> event.user
 		is UserUpdateEvent -> event.user
-
 		is VoiceStateUpdateEvent -> event.kord.unsafe.user(event.state.userId)
-
-		is ThreadChannelCreateEvent -> event.channel.owner
-//        is ThreadUpdateEvent -> event.
-//        is ThreadChannelDeleteEvent -> event.
-//        is ThreadListSyncEvent -> event.
-		is ThreadMemberUpdateEvent -> event.member
-//        is ThreadMembersUpdateEvent -> event.
 
 		else -> null
 	}

@@ -383,7 +383,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
 					option.translate(command, arg)
 
-					if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+					if (option is BaseChoiceBuilder<*, *> && arg.converter.genericBuilder.autoCompleteCallback != null) {
 						option.choices?.clear()
 					}
 
@@ -405,7 +405,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
 					option.translate(command, arg)
 
-					if (option is BaseChoiceBuilder<*> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+					if (option is BaseChoiceBuilder<*, *> && arg.converter.genericBuilder.autoCompleteCallback != null) {
 						option.choices?.clear()
 					}
 
@@ -453,7 +453,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 							option.translate(command, arg)
 
 							if (
-								option is BaseChoiceBuilder<*> &&
+								option is BaseChoiceBuilder<*, *> &&
 								arg.converter.genericBuilder.autoCompleteCallback != null
 							) {
 								option.choices?.clear()
@@ -571,21 +571,21 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 		this.description = description
 		this.descriptionLocalizations = descriptionLocalizations
 
-		if (this is BaseChoiceBuilder<*> && !choices.isNullOrEmpty()) {
+		if (this is BaseChoiceBuilder<*, *> && !choices.isNullOrEmpty()) {
 			translate(command)
 		}
 	}
 
 	@Suppress("DEPRECATION_ERROR")
-	private fun BaseChoiceBuilder<*>.translate(command: ApplicationCommand<*>) {
+	private fun <C : Choice> BaseChoiceBuilder<*, C>.translate(command: ApplicationCommand<*>) {
 		choices = choices!!.map {
 			val (name, nameLocalizations) = command.localize(it.name)
 
-			when (it) {
-				is Choice.NumberChoice -> Choice.NumberChoice(name, Optional(nameLocalizations), it.value)
-				is Choice.StringChoice -> Choice.StringChoice(name, Optional(nameLocalizations), it.value)
-				is Choice.IntegerChoice -> Choice.IntegerChoice(name, Optional(nameLocalizations), it.value)
-			}
+			when (val c = it as Choice) {
+				is Choice.NumberChoice -> Choice.NumberChoice(name, Optional(nameLocalizations), c.value)
+				is Choice.StringChoice -> Choice.StringChoice(name, Optional(nameLocalizations), c.value)
+				is Choice.IntegerChoice -> Choice.IntegerChoice(name, Optional(nameLocalizations), c.value)
+			} as C
 		}.toMutableList()
 	}
 }

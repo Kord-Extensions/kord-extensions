@@ -16,7 +16,7 @@ import com.kotlindiscord.kord.extensions.parser.StringParser
 import com.kotlindiscord.kord.extensions.utils.getLocale
 import dev.kord.core.Kord
 import dev.kord.core.event.message.MessageCreateEvent
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 
 /**

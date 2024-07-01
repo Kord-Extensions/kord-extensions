@@ -12,7 +12,6 @@ package com.kotlindiscord.kord.extensions.commands.application.slash
 
 import com.kotlindiscord.kord.extensions.ArgumentParsingException
 import com.kotlindiscord.kord.extensions.DiscordRelayedException
-import com.kotlindiscord.kord.extensions.commands.Argument
 import com.kotlindiscord.kord.extensions.commands.Arguments
 import com.kotlindiscord.kord.extensions.commands.converters.*
 import com.kotlindiscord.kord.extensions.commands.getDefaultTranslatedDisplayName
@@ -55,13 +54,12 @@ public open class SlashCommandParser {
 			}
 		} as Map<String, OptionValue<*>>
 
-		var currentArg: Argument<*>?
 		var currentValue: OptionValue<*>?
 
 		@Suppress("LoopWithTooManyJumpStatements")  // Listen here u lil shit
 		while (true) {
-			currentArg = args.removeFirstOrNull()
-			currentArg ?: break  // If it's null, we're out of arguments
+			val currentArg = args.removeFirstOrNull()
+				?: break  // If null, we're out of arguments
 
 			logger.trace { "Current argument: ${currentArg!!.displayName}" }
 
