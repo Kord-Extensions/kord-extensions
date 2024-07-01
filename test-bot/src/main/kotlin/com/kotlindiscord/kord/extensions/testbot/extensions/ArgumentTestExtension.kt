@@ -9,9 +9,11 @@
 package com.kotlindiscord.kord.extensions.testbot.extensions
 
 import com.kotlindiscord.kord.extensions.commands.Arguments
+import com.kotlindiscord.kord.extensions.commands.application.slash.converters.impl.stringChoice
 import com.kotlindiscord.kord.extensions.commands.converters.impl.*
 import com.kotlindiscord.kord.extensions.extensions.Extension
 import com.kotlindiscord.kord.extensions.extensions.publicSlashCommand
+import com.kotlindiscord.kord.extensions.utils.suggestStringCollection
 import com.kotlindiscord.kord.extensions.utils.suggestStringMap
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.ForumTag
@@ -110,6 +112,20 @@ public class ArgumentTestExtension : Extension() {
 				}
 			}
 		}
+
+		publicSlashCommand(::AutocompleteArguments) {
+			name = "autocomplete"
+			description = "Test auto-completion events"
+
+			action {
+				respond {
+					content = buildString {
+						appendLine("**One:** ${arguments.one}")
+						appendLine("**Two:** ${arguments.two}")
+					}
+				}
+			}
+		}
 	}
 
 	public inner class TagArgs : Arguments() {
@@ -190,6 +206,31 @@ public class ArgumentTestExtension : Extension() {
 		public val emoji: Emoji by emoji {
 			name = "emoji"
 			description = "A custom or Unicode emoji"
+		}
+	}
+
+	public inner class AutocompleteArguments : Arguments() {
+		override val parseForAutocomplete: Boolean = true
+
+		public val one: String by stringChoice {
+			name = "one"
+			description = "Choice argument"
+
+			choice("O", "o")
+			choice("T", "t")
+			choice("F", "f")
+		}
+
+		public val two: String by string {
+			name = "two"
+			description = "Autocomplete argument"
+
+			autoComplete {
+				suggestStringCollection(
+					listOf("one", "two", "three", "four")
+						.filter { it.contains(one.lowercase()) }
+				)
+			}
 		}
 	}
 }
