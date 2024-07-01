@@ -1,7 +1,7 @@
 [versions]
-detekt = "1.23.6"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
-dokka = "1.9.20"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
-kotlin = "2.0.20-Beta1"  # Note: Plugin versions must be updated in buildSrc/build.gradle.kts
+detekt = "1.23.6"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
+dokka = "1.9.20"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
+kotlin = "2.0.20-Beta1"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
 
 commons-validator = "1.9.0"
 groovy = "3.0.22"
