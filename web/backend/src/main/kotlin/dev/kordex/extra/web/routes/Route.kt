@@ -8,11 +8,15 @@ package dev.kordex.extra.web.routes
 
 import dev.kordex.extra.web.errors.MethodNotAllowedError
 import dev.kordex.extra.web.errors.error
+import dev.kordex.extra.web.routes.utils.allow
 import io.ktor.server.application.*
 
 @Suppress("StringLiteralDuplication")
 public abstract class Route(public val extension: String) {
 	public abstract val path: String
+
+	public open suspend fun beforeRequest(verb: Verb, call: ApplicationCall): Boolean =
+		call.allow()
 
 	public open suspend fun delete(call: ApplicationCall) {
 		call.error(MethodNotAllowedError)

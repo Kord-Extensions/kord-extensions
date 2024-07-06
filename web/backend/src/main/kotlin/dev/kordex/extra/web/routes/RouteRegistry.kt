@@ -26,14 +26,16 @@ public class RouteRegistry : KordExKoinComponent {
 		val route = routes[path]
 			?: return call.respond(HttpStatusCode.NotFound)
 
-		when (verb) {
-			Verb.DELETE -> route.delete(call)
-			Verb.GET -> route.get(call)
-			Verb.HEAD -> route.head(call)
-			Verb.OPTIONS -> route.options(call)
-			Verb.PATCH -> route.patch(call)
-			Verb.POST -> route.post(call)
-			Verb.PUT -> route.put(call)
+		if (route.beforeRequest(verb, call)) {
+			when (verb) {
+				Verb.DELETE -> route.delete(call)
+				Verb.GET -> route.get(call)
+				Verb.HEAD -> route.head(call)
+				Verb.OPTIONS -> route.options(call)
+				Verb.PATCH -> route.patch(call)
+				Verb.POST -> route.post(call)
+				Verb.PUT -> route.put(call)
+			}
 		}
 	}
 

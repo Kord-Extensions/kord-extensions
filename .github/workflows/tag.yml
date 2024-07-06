@@ -72,15 +72,18 @@ jobs:
         run: echo ::set-output name=NAME::${GITHUB_REF#refs/tags/}
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@2
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         with:
           body_path: release.md
-          files: build/libs/*.jar
           name: Release ${{ steps.get_tag.outputs.NAME }}
+
+          files: |
+            build/libs/*.jar
+            **/build/libs/*.jar
 
       - name: Release webhook
         run: kotlin .github/release.main.kts
