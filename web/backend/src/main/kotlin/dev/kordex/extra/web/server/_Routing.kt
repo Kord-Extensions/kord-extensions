@@ -56,7 +56,11 @@ public fun WebServer.configureRouting(app: Application, config: WebServerConfig)
 			}
 		}
 
-		route("/api/extensions/{path...}") {
+		route("/api/p/{extension}/{path...}") {
+			// TODO: Pages
+		}
+
+		route("/api/e/{path...}") {
 			delete {
 				routeRegistry.handle(Verb.DELETE, this)
 			}
@@ -86,7 +90,7 @@ public fun WebServer.configureRouting(app: Application, config: WebServerConfig)
 			}
 		}
 
-		route("/ws/extensions/{path...}") {
+		route("/ws/e/{path...}") {
 			webSocket {
 				wsRegistry.handle(this)
 			}

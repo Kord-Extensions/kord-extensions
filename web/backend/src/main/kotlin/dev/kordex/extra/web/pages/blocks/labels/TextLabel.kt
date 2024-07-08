@@ -14,7 +14,4 @@ import kotlinx.serialization.Serializable
 @SerialName("text-label")
 public class TextLabel(
 	public val text: String,
-
-	override val classes: List<String> = emptyList(),
-	override val id: String? = null
 ) : Block()

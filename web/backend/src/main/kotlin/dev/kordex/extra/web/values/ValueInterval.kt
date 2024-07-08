@@ -4,9 +4,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-@file:Suppress("UnnecessaryParentheses", "MagicNumber")
+@file:Suppress("MagicNumber", "UnnecessaryParentheses")
 
-package dev.kordex.extra.web.oldvalues
+package dev.kordex.extra.web.values
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable

@@ -6,30 +6,45 @@
 
 package dev.kordex.extra.web.pages.navigation
 
+import dev.kordex.extra.web.types.Identifier
 import kotlinx.serialization.Serializable
 
 @Serializable
-public sealed class NavigationItem {
-	public abstract val name: String
-	public abstract val icon: String
-	public abstract val iconOnly: Boolean
-	public abstract val path: String?
+public data class NavigationItem(
+	public val name: String,
+	public val icon: Identifier,
+	public val page: String?,
+	public val children: MutableList<NavigationItem> = mutableListOf(),
+) {
+	public class Builder {
+		public lateinit var name: String
+		public lateinit var icon: Identifier
+		public lateinit var page: String
 
-	@Serializable
-	public class WithChildren(
-		override val name: String,
-		override val path: String?,
-		override val icon: String,
-		override val iconOnly: Boolean = false,
+		public var children: MutableList<NavigationItem> = mutableListOf()
 
-		public val children: List<NavigationItem> = listOf(),
-	) : NavigationItem()
+		public fun build(): NavigationItem =
+			NavigationItem(
+				name = name,
+				icon = icon,
 
-	@Serializable
-	public class Single(
-		override val name: String,
-		override val path: String?,
-		override val icon: String,
-		override val iconOnly: Boolean = false,
-	) : NavigationItem()
+				page = if (this::page.isInitialized) {
+					page
+				} else {
+					null
+				},
+
+				children = children
+			)
+
+		public fun child(body: Builder.() -> Unit): NavigationItem {
+			val builder = Builder()
+			body(builder)
+
+			val item = builder.build()
+			children.add(item)
+
+			return item
+		}
+	}
 }

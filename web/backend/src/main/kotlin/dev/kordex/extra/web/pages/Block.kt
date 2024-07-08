@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public abstract class Block {
-	public abstract val classes: List<String>
-	public abstract val id: String?
+	public open val classes: MutableList<String> = mutableListOf()
+	public open val id: String? = null
+	public open val content: String? = null
 }

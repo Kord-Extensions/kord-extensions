@@ -4,13 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package dev.kordex.extra.web.oldvalues
+package dev.kordex.extra.web.pages
 
-import kotlinx.datetime.Instant
-import kotlinx.serialization.Serializable
+public abstract class Page {
+	public abstract val path: String
 
-@Serializable
-public data class Value<T : Any?> (
-	val time: Instant,
-	val value: T?,
-)
+	// TODO: Global settings
+	// TODO: Page pickers/settings
+	// TODO: Layout/blocks
+}

@@ -10,9 +10,9 @@ package dev.kordex.extra.web.values.serializers
 
 import com.kotlindiscord.kord.extensions.utils.collections.FixedLengthQueue
 import com.kotlindiscord.kord.extensions.utils.collections.serializers.FixedLengthQueueSerializer
-import dev.kordex.extra.web.oldvalues.ValueInterval
 import dev.kordex.extra.web.types.Identifier
 import dev.kordex.extra.web.values.TimedContainer
+import dev.kordex.extra.web.values.ValueInterval
 import dev.kordex.extra.web.values.types.TrackedValue
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.nullable

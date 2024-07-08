@@ -7,9 +7,9 @@
 package dev.kordex.extra.web.values.types
 
 import com.kotlindiscord.kord.extensions.utils.collections.FixedLengthQueue
-import dev.kordex.extra.web.oldvalues.ValueInterval
 import dev.kordex.extra.web.types.Identifier
 import dev.kordex.extra.web.values.TimedContainer
+import dev.kordex.extra.web.values.ValueInterval
 import dev.kordex.extra.web.values.serializers.TrackedValueSerializer
 import kotlinx.datetime.Clock
 import kotlinx.serialization.KSerializer

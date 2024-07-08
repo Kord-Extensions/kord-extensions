@@ -15,7 +15,4 @@ import kotlinx.serialization.Serializable
 public class ValueLabel(
 	public val value: String,
 	public val template: String = "",  // TODO: Figure out template format
-
-	override val classes: List<String> = emptyList(),
-	override val id: String? = null
 ) : Block()
