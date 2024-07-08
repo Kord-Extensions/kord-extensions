@@ -3,7 +3,7 @@ import com.github.gradle.node.pnpm.task.PnpmTask
 plugins {
 	java
 
-	id("com.github.node-gradle.node") version "7.0.1"
+	id("com.github.node-gradle.node") version "7.0.2"
 	id("dev.yumi.gradle.licenser")
 }
 
