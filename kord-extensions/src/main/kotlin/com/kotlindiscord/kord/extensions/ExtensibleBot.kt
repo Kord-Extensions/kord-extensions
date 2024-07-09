@@ -346,17 +346,17 @@ public open class ExtensibleBot(
 	 */
 	public inline fun <reified T : Event> on(
 		launch: Boolean = true,
-		scope: CoroutineScope = this.getKoin().get<Kord>(),
+		scope: CoroutineScope = kordRef,
 		noinline consumer: suspend T.() -> Unit,
 	): Job =
 		events.buffer(Channel.UNLIMITED)
 			.filterIsInstance<T>()
 			.onEach {
 				runCatching {
-					if (launch) kordRef.launch { consumer(it) } else consumer(it)
+					if (launch) scope.launch { consumer(it) } else consumer(it)
 				}.onFailure { logger.catching(it) }
 			}.catch { logger.catching(it) }
-			.launchIn(scope)
+			.launchIn(kordRef)
 
 	/**
 	 * @suppress
@@ -515,7 +515,7 @@ public open class ExtensibleBot(
 	 */
 	@Throws(EventHandlerRegistrationException::class)
 	public inline fun <reified T : Event> registerListenerForHandler(handler: EventHandler<T>): Job {
-		return on<T> {
+		return on<T>(scope = handler.coroutineScope) {
 			handler.call(this)
 		}
 	}

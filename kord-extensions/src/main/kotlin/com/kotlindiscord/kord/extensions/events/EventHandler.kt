@@ -21,6 +21,7 @@ import com.kotlindiscord.kord.extensions.utils.getKoin
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import org.koin.core.component.inject
 import java.util.*
@@ -72,6 +73,13 @@ public open class EventHandler<T : Event>(
 
 	/** Cached locale variable, stored and retrieved by [getLocale]. **/
 	public var resolvedLocale: Locale? = null
+
+	/**
+	 * Coroutine scope used to launch this event handler when handling a new event.
+	 *
+	 * Defaults to the current [Kord] instance.
+	 */
+	public var coroutineScope: CoroutineScope = kord
 
 	/**
 	 * An internal function used to ensure that all of an event handler's required arguments are present.
