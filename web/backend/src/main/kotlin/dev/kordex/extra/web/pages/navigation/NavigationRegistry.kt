@@ -7,5 +7,23 @@
 package dev.kordex.extra.web.pages.navigation
 
 public class NavigationRegistry {
-	public val leftItems: MutableList<NavigationItem> = mutableListOf()
+	public val extensions: MutableMap<String, ExtensionNavigation> = mutableMapOf()
+
+	public fun add(navigation: ExtensionNavigation) {
+		if (navigation.extension in extensions) {
+			error("Navigation for ${navigation.extension} is already registered.")
+		}
+
+		extensions[navigation.extension] = navigation
+	}
+
+	public fun remove(navigation: ExtensionNavigation): ExtensionNavigation? =
+		remove(navigation.extension)
+
+	public fun remove(extension: String): ExtensionNavigation? =
+		extensions.remove(extension)
+
+	public fun removeAll() {
+		extensions.clear()
+	}
 }

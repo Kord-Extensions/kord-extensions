@@ -12,7 +12,7 @@ public class ExtensionNavigation(
 	public val extension: String,
 	public val icon: Identifier,
 
-	public val setup: () -> Unit
+	public val setup: ExtensionNavigation.() -> Unit
 ) {
 	public val navigation: MutableList<NavigationItem> = mutableListOf()
 

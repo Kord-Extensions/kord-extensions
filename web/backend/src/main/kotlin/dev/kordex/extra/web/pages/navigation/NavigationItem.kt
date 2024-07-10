@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 public data class NavigationItem(
 	public val name: String,
 	public val icon: Identifier,
-	public val page: String?,
+	public val page: String?,  // TODO: Page objects?
 	public val children: MutableList<NavigationItem> = mutableListOf(),
 ) {
 	public class Builder {

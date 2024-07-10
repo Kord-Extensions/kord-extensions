@@ -8,11 +8,10 @@ package dev.kordex.extra.web.server
 
 import com.kotlindiscord.kord.extensions.ExtensibleBot
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
+import dev.kordex.extra.web.WebRegistries
 import dev.kordex.extra.web.config.WebServerConfig
 import dev.kordex.extra.web.events.WebServerStartEvent
 import dev.kordex.extra.web.events.WebServerStopEvent
-import dev.kordex.extra.web.routes.RouteRegistry
-import dev.kordex.extra.web.websockets.WebsocketRegistry
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import kotlinx.coroutines.launch
@@ -21,8 +20,7 @@ import org.koin.core.component.inject
 public class WebServer(internal val config: WebServerConfig) : KordExKoinComponent {
 	private val bot: ExtensibleBot by inject()
 
-	public val routeRegistry: RouteRegistry = RouteRegistry()
-	public val wsRegistry: WebsocketRegistry = WebsocketRegistry()
+	public val registries: WebRegistries = WebRegistries()
 
 	public var running: Boolean = false
 		private set
@@ -51,8 +49,7 @@ public class WebServer(internal val config: WebServerConfig) : KordExKoinCompone
 	}
 
 	public suspend fun stop() {
-		routeRegistry.removeAll()
-		wsRegistry.removeAll()
+		registries.teardown()
 
 		server.stop(
 			gracePeriodMillis = 0,

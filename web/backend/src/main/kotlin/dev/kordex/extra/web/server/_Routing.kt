@@ -62,37 +62,37 @@ public fun WebServer.configureRouting(app: Application, config: WebServerConfig)
 
 		route("/api/e/{path...}") {
 			delete {
-				routeRegistry.handle(Verb.DELETE, this)
+				registries.routes.handle(Verb.DELETE, this)
 			}
 
 			get {
-				routeRegistry.handle(Verb.GET, this)
+				registries.routes.handle(Verb.GET, this)
 			}
 
 			head {
-				routeRegistry.handle(Verb.HEAD, this)
+				registries.routes.handle(Verb.HEAD, this)
 			}
 
 			options {
-				routeRegistry.handle(Verb.OPTIONS, this)
+				registries.routes.handle(Verb.OPTIONS, this)
 			}
 
 			patch {
-				routeRegistry.handle(Verb.PATCH, this)
+				registries.routes.handle(Verb.PATCH, this)
 			}
 
 			post {
-				routeRegistry.handle(Verb.POST, this)
+				registries.routes.handle(Verb.POST, this)
 			}
 
 			put {
-				routeRegistry.handle(Verb.PUT, this)
+				registries.routes.handle(Verb.PUT, this)
 			}
 		}
 
 		route("/ws/e/{path...}") {
 			webSocket {
-				wsRegistry.handle(this)
+				registries.websockets.handle(this)
 			}
 		}
 
