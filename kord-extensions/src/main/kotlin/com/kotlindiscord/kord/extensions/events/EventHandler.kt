@@ -154,11 +154,12 @@ public open class EventHandler<T : Event>(
 
 		if (sentry.enabled) {
 			context.sentry.context(
-				"event", eventName ?: "Unknown",
-			)
+				"event",
 
-			context.sentry.context(
-				"extension", extension.name
+				mapOf(
+					"name" to (eventName ?: "Unknown"),
+					"extension" to extension.name
+				),
 			)
 
 			context.sentry.breadcrumb(BreadcrumbType.Info) {
