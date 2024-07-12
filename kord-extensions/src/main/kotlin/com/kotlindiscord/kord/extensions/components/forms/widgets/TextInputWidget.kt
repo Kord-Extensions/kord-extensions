@@ -10,6 +10,7 @@ import com.kotlindiscord.kord.extensions.i18n.TranslationsProvider
 import com.kotlindiscord.kord.extensions.koin.KordExKoinComponent
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.rest.builder.component.ActionRowBuilder
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
 
@@ -27,6 +28,8 @@ public const val PLACEHOLDER_LENGTH: Int = 100
 
 /** An abstract type representing a widget that accepts text from the user. */
 public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(), KordExKoinComponent {
+	private val logger = KotlinLogging.logger { }
+
 	@Suppress("MagicNumber")
 	override var width: Int = 5
 	override var height: Int = 1
@@ -65,7 +68,11 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 		}
 
 		if (label.length > LABEL_LENGTH) {
-			error("Labels must be shorter than $LABEL_LENGTH characters, but ${label.length} characters were provided.")
+			logger.debug {
+				"Labels must be shorter than $LABEL_LENGTH characters, but ${label.length} characters were provided. " +
+					"This may not be a problem if '$label' refers to a translation key, but remember to check that " +
+					"none of its translations are too long!"
+			}
 		}
 
 		@Suppress("UnnecessaryParentheses")
@@ -97,7 +104,16 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 	}
 
 	override suspend fun apply(builder: ActionRowBuilder, locale: Locale, bundle: String?) {
-		builder.textInput(style, id, translations.translate(label, locale, bundle)) {
+		val translatedLabel = translations.translate(label, locale, bundle)
+
+		if (translatedLabel.length > LABEL_LENGTH) {
+			error(
+				"Labels must be shorter than $LABEL_LENGTH characters, but ${label.length} " +
+					"characters were provided. $label -> $translatedLabel"
+			)
+		}
+
+		builder.textInput(style, id, translatedLabel) {
 			this.allowedLength = this@TextInputWidget.minLength..this@TextInputWidget.maxLength
 			this.required = this@TextInputWidget.required
 
