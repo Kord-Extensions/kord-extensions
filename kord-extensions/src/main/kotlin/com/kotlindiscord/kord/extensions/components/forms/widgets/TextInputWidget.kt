@@ -47,6 +47,9 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 	/** The initial value to provide for this widget, if any. **/
 	public var initialValue: String? = null
 
+	/** Whether to attempt to translate the initial value. **/
+	public var translateInitialValue: Boolean = false
+
 	/** The maximum number of characters that may be provided. **/
 	public var maxLength: Int = MAX_LENGTH
 
@@ -122,7 +125,11 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 			}
 
 			this.value = this@TextInputWidget.initialValue?.let {
-				translations.translate(it, locale, bundle)
+				if (translateInitialValue) {
+					translations.translate(it, locale, bundle)
+				} else {
+					it
+				}
 			}
 		}
 	}
