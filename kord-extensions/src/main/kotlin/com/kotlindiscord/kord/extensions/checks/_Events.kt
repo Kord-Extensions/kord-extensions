@@ -230,13 +230,16 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
 			null
 		}
 
-		is InteractionCreateEvent -> {
-			val guildId = event.interaction.data.guildId.value
-				?: return null
+		is InteractionCreateEvent -> when {
+			event.interaction.data.member.value != null && event.interaction.data.user.value != null ->
+				Member(event.interaction.data.member.value!!, event.interaction.data.user.value!!, event.kord)
 
-			event.kord.unsafe
-				.guild(guildId)
-				.getMemberOrNull(event.interaction.user.id)
+			event.interaction.data.guildId.value != null ->
+				event.kord.unsafe
+					.guild(event.interaction.data.guildId.value!!)
+					.getMemberOrNull(event.interaction.user.id)
+
+			else -> null
 		}
 
 		is InviteCreateEvent -> event.inviterMember
