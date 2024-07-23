@@ -43,7 +43,7 @@ afterEvaluate {
 					name.set(project.ext.get("pubName").toString())
 					description.set(project.ext.get("pubDesc").toString())
 
-					url.set("https://kordex.kotlindiscord.com")
+					url.set("https://kordex.dev")
 
 					packaging = "jar"
 

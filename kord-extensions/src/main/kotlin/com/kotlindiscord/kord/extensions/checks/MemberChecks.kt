@@ -42,7 +42,12 @@ public suspend fun CheckContext<*>.hasPermission(perm: Permission) {
 		val memberObj = member.asMember()
 
 		val result = when {
+			// TODO: Remove this when Kord fixes their function
+			memberObj.permissions?.contains(Permission.Administrator) == true -> true
+			memberObj.permissions?.contains(perm) == true -> true
+
 			memberObj.hasPermission(Permission.Administrator) -> true
+
 			channel != null -> channel.permissionsForMember(member.id).contains(perm)
 
 			else -> memberObj.hasPermission(perm)
@@ -91,7 +96,12 @@ public suspend fun CheckContext<*>.notHasPermission(perm: Permission) {
 		val memberObj = member.asMember()
 
 		val result = when {
+			// TODO: Remove this when Kord fixes their function
+			memberObj.permissions?.contains(Permission.Administrator) == true -> true
+			memberObj.permissions?.contains(perm) == true -> true
+
 			memberObj.hasPermission(Permission.Administrator) -> true
+
 			channel != null -> channel.permissionsForMember(member.id).contains(perm)
 
 			else -> memberObj.hasPermission(perm)
@@ -139,7 +149,12 @@ public suspend fun CheckContext<*>.hasPermissions(perms: Permissions) {
 		val memberObj = member.asMember()
 
 		val result = when {
+			// TODO: Remove this when Kord fixes their function
+			memberObj.permissions?.contains(Permission.Administrator) == true -> true
+			memberObj.permissions?.contains(perms) == true -> true
+
 			memberObj.hasPermission(Permission.Administrator) -> true
+
 			channel != null -> channel.permissionsForMember(member.id).contains(perms)
 
 			else -> memberObj.hasPermissions(perms.values)
@@ -188,7 +203,12 @@ public suspend fun CheckContext<*>.notHasPermissions(perms: Permissions) {
 		val memberObj = member.asMember()
 
 		val result = when {
+			// TODO: Remove this when Kord fixes their function
+			memberObj.permissions?.contains(Permission.Administrator) == true -> true
+			memberObj.permissions?.contains(perms) == true -> true
+
 			memberObj.hasPermission(Permission.Administrator) -> true
+
 			channel != null -> channel.permissionsForMember(member.id).contains(perms)
 
 			else -> memberObj.hasPermissions(perms.values)
