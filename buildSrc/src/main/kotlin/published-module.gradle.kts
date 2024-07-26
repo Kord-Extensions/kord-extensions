@@ -29,6 +29,26 @@ afterEvaluate {
 
 				version = project.version
 			}
+
+			maven {
+				name = "KordEx"
+
+				url = if (project.version.toString().contains("SNAPSHOT")) {
+					uri("https://repo.kordex.dev/snapshots/")
+				} else {
+					uri("https://repo.kordex.dev/releases/")
+				}
+
+				credentials {
+					username = project.findProperty("ossrhUsername") as String?
+						?: System.getenv("KORDEX_MAVEN_USERNAME")
+
+					password = project.findProperty("ossrhPassword") as String?
+						?: System.getenv("KORDEX_MAVEN_PASSWORD")
+				}
+
+				version = project.version
+			}
 		}
 
 		publications {

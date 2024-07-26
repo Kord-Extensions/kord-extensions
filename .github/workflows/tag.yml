@@ -59,6 +59,9 @@ jobs:
           OSSRH_USERNAME: "${{ secrets.OSSRH_USERNAME }}"
           OSSRH_PASSWORD: "${{ secrets.OSSRH_PASSWORD }}"
 
+          KORDEX_MAVEN_USERNAME: "${{ secrets.KORDEX_MAVEN_USERNAME }}"
+          KORDEX_MAVEN_PASSWORD: "${{ secrets.KORDEX_MAVEN_PASSWORD }}"
+
           TOKEN: "${{ secrets.TOKEN }}"
 
         with:
