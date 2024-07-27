@@ -4,50 +4,50 @@ Kord Extensions is a command and plugin library for [Kord](https://kordlib.githu
 tools for writing Discord bots with Kord, including an extensions framework, filterable event handling, and an
 extensible commands system with advanced parsing features.
 
-# Package com.kotlindiscord.kord.extensions
+# Package dev.kordex.core
 
 Base package for Kord Extensions, containing exceptions, the `Paginator`, and the `ExtensibleBot` itself.
 
-# Package com.kotlindiscord.kord.extensions.checks
+# Package dev.kordex.core.checks
 
 Check functions, which can be used to easily filter commands and event handlers.
 
-# Package com.kotlindiscord.kord.extensions.commands
+# Package dev.kordex.core.commands
 
 All the command logic, including the different types of `Command`s and `CommandContext`.
 
-# Package com.kotlindiscord.kord.extensions.commands.converters
+# Package dev.kordex.core.commands.converters
 
 The base and convenience classes for command argument converters.
 
-# Package com.kotlindiscord.kord.extensions.commands.converters.impl
+# Package dev.kordex.core.commands.converters.impl
 
 Bundled type-specific implementations of converters.
 
-# Package com.kotlindiscord.kord.extensions.commands.parser
+# Package dev.kordex.core.commands.parser
 
 The `ArgumentParser` and other argument-related classes.
 
-# Package com.kotlindiscord.kord.extensions.events
+# Package dev.kordex.core.events
 
 Extra event types that you can listen for.
 
-# Package com.kotlindiscord.kord.extensions.extensions
+# Package dev.kordex.core.extensions
 
 Extension classes, including the base `Extension` class, and the bundled `HelpExtension`.
 
-# Package com.kotlindiscord.kord.extensions.parsers
+# Package dev.kordex.core.parsers
 
 Package containing bundled parsers for you to use, including the duration parsers.
 
-# com.kotlindiscord.kord.extensions.sentry
+# dev.kordex.core.sentry
 
 Package containing code related to the Sentry integration.
 
-# Package com.kotlindiscord.kord.extensions.utils
+# Package dev.kordex.core.utils
 
 Many useful utilities that you can use when writing bots.
 
-# Package com.kotlindiscord.kord.extensions.utils.deltas
+# Package dev.kordex.core.utils.deltas
 
 Utilities and delta objects for calculating the difference between different objects of the same type.

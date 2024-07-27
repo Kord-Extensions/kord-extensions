@@ -2,15 +2,68 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
+      <module name="extra-mappings.kord-extensions.extra-modules.extra-mappings.main" target="13" />
+      <module name="extra-mappings.kord-extensions.extra-modules.extra-mappings.test" target="13" />
+      <module name="kord-extensions.annotation-processor" target="13" />
+      <module name="kord-extensions.annotation-processor.main" target="13" />
+      <module name="kord-extensions.annotation-processor.test" target="13" />
+      <module name="kord-extensions.annotations.main" target="13" />
+      <module name="kord-extensions.annotations.test" target="13" />
+      <module name="kord-extensions.data-adapters.adapter-mongodb" target="17" />
+      <module name="kord-extensions.data-adapters.adapter-mongodb.main" target="13" />
+      <module name="kord-extensions.data-adapters.adapter-mongodb.test" target="13" />
       <module name="kord-extensions.docs.main" target="14" />
       <module name="kord-extensions.docs.orchid" target="14" />
       <module name="kord-extensions.docs.test" target="14" />
       <module name="kord-extensions.extra-modules.common" target="14" />
       <module name="kord-extensions.extra-modules.common.main" target="14" />
       <module name="kord-extensions.extra-modules.common.test" target="14" />
+      <module name="kord-extensions.extra-modules.extra-mappings" target="17" />
+      <module name="kord-extensions.extra-modules.extra-phishing" target="17" />
+      <module name="kord-extensions.extra-modules.extra-phishing.main" target="13" />
+      <module name="kord-extensions.extra-modules.extra-phishing.test" target="13" />
+      <module name="kord-extensions.extra-modules.extra-pluralkit" target="17" />
+      <module name="kord-extensions.extra-modules.extra-pluralkit.main" target="13" />
+      <module name="kord-extensions.extra-modules.extra-pluralkit.test" target="13" />
+      <module name="kord-extensions.extra-modules.extra-tags" target="17" />
+      <module name="kord-extensions.extra-modules.extra-tags.main" target="13" />
+      <module name="kord-extensions.extra-modules.extra-tags.test" target="13" />
+      <module name="kord-extensions.extra-modules.extra-welcome" target="17" />
+      <module name="kord-extensions.extra-modules.extra-welcome.main" target="13" />
+      <module name="kord-extensions.extra-modules.extra-welcome.test" target="13" />
       <module name="kord-extensions.extra-modules.mappings" target="14" />
       <module name="kord-extensions.extra-modules.mappings.main" target="14" />
       <module name="kord-extensions.extra-modules.mappings.test" target="14" />
+      <module name="kord-extensions.modules.java-time" target="17" />
+      <module name="kord-extensions.modules.java-time.main" target="13" />
+      <module name="kord-extensions.modules.java-time.test" target="13" />
+      <module name="kord-extensions.modules.time4j" target="17" />
+      <module name="kord-extensions.modules.time4j.main" target="13" />
+      <module name="kord-extensions.modules.time4j.test" target="13" />
+      <module name="kord-extensions.modules.unsafe" target="17" />
+      <module name="kord-extensions.modules.unsafe.main" target="13" />
+      <module name="kord-extensions.modules.unsafe.test" target="13" />
+      <module name="kord-extensions.plugins" target="17" />
+      <module name="kord-extensions.plugins.main" target="13" />
+      <module name="kord-extensions.plugins.plugin-load-test" target="17" />
+      <module name="kord-extensions.plugins.plugin-load-test.main" target="13" />
+      <module name="kord-extensions.plugins.plugin-load-test.test" target="13" />
+      <module name="kord-extensions.plugins.test" target="13" />
+      <module name="kord-extensions.plugins.test-plugin-1" target="17" />
+      <module name="kord-extensions.plugins.test-plugin-1.main" target="13" />
+      <module name="kord-extensions.plugins.test-plugin-1.test" target="13" />
+      <module name="kord-extensions.plugins.test-plugin-2" target="17" />
+      <module name="kord-extensions.plugins.test-plugin-2.main" target="13" />
+      <module name="kord-extensions.plugins.test-plugin-2.test" target="13" />
+      <module name="kord-extensions.plugins.test-plugin-core" target="17" />
+      <module name="kord-extensions.plugins.test-plugin-core.main" target="13" />
+      <module name="kord-extensions.plugins.test-plugin-core.test" target="13" />
+      <module name="kord-extensions.web.backend" target="17" />
+      <module name="kord-extensions.web.backend.main" target="13" />
+      <module name="kord-extensions.web.backend.test" target="13" />
+      <module name="kord-extensions.web.frontend" target="13" />
+      <module name="kord-extensions.web.frontend.main" target="13" />
+      <module name="kord-extensions.web.frontend.test" target="13" />
     </bytecodeTargetLevel>
   </component>
 </project>

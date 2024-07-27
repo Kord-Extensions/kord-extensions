@@ -1,8 +1,0 @@
-{
-	"class": "com.kotlindiscord.kord.extensions.plugins.test.two.TestPluginTwo",
-	"id": "test-two",
-	"description": "The second test plugin",
-	"license": "MPL-2.0",
-	"name": "Test plugin two",
-	"version": "1.0.0"
-}

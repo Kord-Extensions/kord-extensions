@@ -51,15 +51,14 @@ repositories {
 dependencies {
 	implementation(project(":kord-extensions"))
 
-	implementation(project(":extra-modules:extra-mappings"))
-	implementation(project(":extra-modules:extra-phishing"))
-	implementation(project(":extra-modules:extra-pluralkit"))
+	implementation(project(":modules:dev:dev-java-time"))
+	implementation(project(":modules:dev:dev-time4j"))
+	implementation(project(":modules:dev:dev-unsafe"))
+	implementation(project(":modules:functionality:func-mappings"))
+	implementation(project(":modules:functionality:func-phishing"))
+	implementation(project(":modules:integrations:pluralkit"))
 
-	implementation(project(":modules:java-time"))
-	implementation(project(":modules:time4j"))
-	implementation(project(":modules:unsafe"))
-
-	implementation(project(":web:backend"))
+	implementation(project(":modules:web:web-core:web-backend"))
 
 	detektPlugins(libs.detekt)
 	detektPlugins(libs.detekt.libraries)
@@ -72,12 +71,12 @@ dependencies {
 	implementation(libs.logback)
 	implementation(libs.logback.groovy)
 
-	ksp(project(":annotation-processor"))
-	kspTest(project(":annotation-processor"))
+	ksp(project(":annotations:annotation-processor"))
+	kspTest(project(":annotations:annotation-processor"))
 }
 
 application {
-	this.mainClass.set("com.kotlindiscord.kord.extensions.testbot.TestBotKt")
+	this.mainClass.set("dev.kordex.test.bot.TestBotKt")
 }
 
 detekt {

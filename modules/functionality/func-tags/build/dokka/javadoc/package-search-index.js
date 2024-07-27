@@ -1,0 +1,1 @@
+var packageSearchIndex = [{"l":"dev.kordex.modules.func.tags","url":"dev/kordex/modules/func/tags/package-summary.html"}, {"l":"dev.kordex.modules.func.tags.config","url":"dev/kordex/modules/func/tags/config/package-summary.html"}, {"l":"dev.kordex.modules.func.tags.data","url":"dev/kordex/modules/func/tags/data/package-summary.html"}, {"l":"All packages","url":"index.html"}]

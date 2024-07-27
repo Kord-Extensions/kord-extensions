@@ -35,7 +35,7 @@ dependencies {
 	api(libs.toml)
 	api(libs.pf4j)
 
-	api(project(":annotations"))
+	api(project(":annotations:annotations"))
 	api(project(":token-parser"))
 
 	detektPlugins(libs.detekt)
@@ -51,8 +51,8 @@ dependencies {
 	testImplementation(libs.logback)
 	testImplementation(libs.logback.groovy)
 
-	ksp(project(":annotation-processor"))
-	kspTest(project(":annotation-processor"))
+	ksp(project(":annotations:annotation-processor"))
+	kspTest(project(":annotations:annotation-processor"))
 }
 
 dokkaModule {

@@ -20,7 +20,7 @@ plugins {
 
 val projectVersion: String by project
 
-group = "com.kotlindiscord.kord.extensions"
+group = "dev.kordex"
 version = projectVersion
 
 val printVersion = task("printVersion") {
@@ -44,7 +44,7 @@ repositories {
 }
 
 subprojects {
-	group = "com.kotlindiscord.kord.extensions"
+	group = "dev.kordex"
 	version = projectVersion
 
 	tasks.withType<KotlinCompile> {

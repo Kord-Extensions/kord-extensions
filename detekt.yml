@@ -387,7 +387,7 @@ naming:
     ignoreOverridden: true
   InvalidPackageDeclaration:
     active: true
-    rootPackage: 'com.kotlindiscord'
+    rootPackage: 'dev.kordex'
   MatchingDeclarationName:
     active: true
     mustBeFirst: true

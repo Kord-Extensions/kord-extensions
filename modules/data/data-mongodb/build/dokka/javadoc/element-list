@@ -1,0 +1,5 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+
+dev.kordex.modules.data.mongodb
+

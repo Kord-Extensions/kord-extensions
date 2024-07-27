@@ -1,0 +1,52 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderMode.Forwarded///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderMode.Forwarded.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderMode.None///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderMode.None.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderMode.XForwarded///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderMode.XForwarded.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderStrategy.Custom///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderStrategy.Custom.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderStrategy.First///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderStrategy.First.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderStrategy.Last///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderStrategy.Last.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderStrategy.SkipKnown///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderStrategy.SkipKnown.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderStrategy.SkipLast///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderStrategy.SkipLast.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/ForwardedHeaderStrategy.XCustom///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/ForwardedHeaderStrategy.XCustom.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/WebServerConfig.OAuth///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/WebServerConfig.OAuth.html
+$dokka.location:dev.kordex.modules.web.core.backend.config/WebServerConfig.ReverseProxy///PointingToDeclaration/dev/kordex/modules/web/core/backend/config/WebServerConfig.ReverseProxy.html
+$dokka.location:dev.kordex.modules.web.core.backend.pages.navigation/NavigationItem.Builder///PointingToDeclaration/dev/kordex/modules/web/core/backend/pages/navigation/NavigationItem.Builder.html
+$dokka.location:dev.kordex.modules.web.core.backend.routes.utils/DenyBuilder.EntityInfo///PointingToDeclaration/dev/kordex/modules/web/core/backend/routes/utils/DenyBuilder.EntityInfo.html
+$dokka.location:dev.kordex.modules.web.core.backend.routes/Verb.DELETE///PointingToDeclaration/dev/kordex/modules/web/core/backend/routes/Verb.DELETE.html
+$dokka.location:dev.kordex.modules.web.core.backend.routes/Verb.GET///PointingToDeclaration/dev/kordex/modules/web/core/backend/routes/Verb.GET.html
+$dokka.location:dev.kordex.modules.web.core.backend.routes/Verb.HEAD///PointingToDeclaration/dev/kordex/modules/web/core/backend/routes/Verb.HEAD.html
+$dokka.location:dev.kordex.modules.web.core.backend.routes/Verb.OPTIONS///PointingToDeclaration/dev/kordex/modules/web/core/backend/routes/Verb.OPTIONS.html
+$dokka.location:dev.kordex.modules.web.core.backend.routes/Verb.PATCH///PointingToDeclaration/dev/kordex/modules/web/core/backend/routes/Verb.PATCH.html
+$dokka.location:dev.kordex.modules.web.core.backend.routes/Verb.POST///PointingToDeclaration/dev/kordex/modules/web/core/backend/routes/Verb.POST.html
+$dokka.location:dev.kordex.modules.web.core.backend.routes/Verb.PUT///PointingToDeclaration/dev/kordex/modules/web/core/backend/routes/Verb.PUT.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.Companion///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.Companion.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.Day///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.Day.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.HalfDay///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.HalfDay.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.HalfHour///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.HalfHour.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.HalfMinute///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.HalfMinute.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.Hour///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.Hour.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.Minute///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.Minute.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.QuarterDay///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.QuarterDay.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.QuarterHour///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.QuarterHour.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.QuarterMinute///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.QuarterMinute.html
+$dokka.location:dev.kordex.modules.web.core.backend.values/ValueInterval.Second///PointingToDeclaration/dev/kordex/modules/web/core/backend/values/ValueInterval.Second.html
+dev.kordex.modules.web.core.backend
+dev.kordex.modules.web.core.backend.config
+dev.kordex.modules.web.core.backend.errors
+dev.kordex.modules.web.core.backend.events
+dev.kordex.modules.web.core.backend.pages
+dev.kordex.modules.web.core.backend.pages.blocks.labels
+dev.kordex.modules.web.core.backend.pages.navigation
+dev.kordex.modules.web.core.backend.routes
+dev.kordex.modules.web.core.backend.routes.utils
+dev.kordex.modules.web.core.backend.server
+dev.kordex.modules.web.core.backend.server.routes
+dev.kordex.modules.web.core.backend.server.routes.api
+dev.kordex.modules.web.core.backend.types
+dev.kordex.modules.web.core.backend.utils
+dev.kordex.modules.web.core.backend.values
+dev.kordex.modules.web.core.backend.values.serializers
+dev.kordex.modules.web.core.backend.values.types
+dev.kordex.modules.web.core.backend.websockets
+

@@ -1,0 +1,9 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:dev.kordex.modules.func.welcome.config/SimpleWelcomeChannelConfig.Builder///PointingToDeclaration/dev/kordex/modules/func/welcome/config/SimpleWelcomeChannelConfig.Builder.html
+dev.kordex.modules.func.welcome
+dev.kordex.modules.func.welcome.blocks
+dev.kordex.modules.func.welcome.config
+dev.kordex.modules.func.welcome.data
+dev.kordex.modules.func.welcome.enums
+

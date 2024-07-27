@@ -1,0 +1,24 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialMessageCommandResponse.EphemeralAck///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialMessageCommandResponse.EphemeralAck.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialMessageCommandResponse.EphemeralResponse///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialMessageCommandResponse.EphemeralResponse.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialMessageCommandResponse.None///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialMessageCommandResponse.None.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialMessageCommandResponse.PublicAck///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialMessageCommandResponse.PublicAck.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialMessageCommandResponse.PublicResponse///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialMessageCommandResponse.PublicResponse.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialSlashCommandResponse.EphemeralAck///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialSlashCommandResponse.EphemeralAck.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialSlashCommandResponse.EphemeralResponse///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialSlashCommandResponse.EphemeralResponse.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialSlashCommandResponse.None///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialSlashCommandResponse.None.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialSlashCommandResponse.PublicAck///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialSlashCommandResponse.PublicAck.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialSlashCommandResponse.PublicResponse///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialSlashCommandResponse.PublicResponse.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialUserCommandResponse.EphemeralAck///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialUserCommandResponse.EphemeralAck.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialUserCommandResponse.EphemeralResponse///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialUserCommandResponse.EphemeralResponse.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialUserCommandResponse.None///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialUserCommandResponse.None.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialUserCommandResponse.PublicAck///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialUserCommandResponse.PublicAck.html
+$dokka.location:dev.kordex.modules.dev.unsafe.types/InitialUserCommandResponse.PublicResponse///PointingToDeclaration/dev/kordex/modules/dev/unsafe/types/InitialUserCommandResponse.PublicResponse.html
+dev.kordex.modules.dev.unsafe.annotations
+dev.kordex.modules.dev.unsafe.commands
+dev.kordex.modules.dev.unsafe.contexts
+dev.kordex.modules.dev.unsafe.converters
+dev.kordex.modules.dev.unsafe.extensions
+dev.kordex.modules.dev.unsafe.types
+
