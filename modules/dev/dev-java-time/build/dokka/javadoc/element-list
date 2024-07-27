@@ -1,5 +1,0 @@
-$dokka.format:javadoc-v1
-$dokka.linkExtension:html
-$dokka.location:dev.kordex.modules.dev.java.time/ChronoContainer.Companion///PointingToDeclaration/dev/kordex/modules/dev/java/time/ChronoContainer.Companion.html
-dev.kordex.modules.dev.java.time
-

@@ -1,9 +1,0 @@
-$dokka.format:javadoc-v1
-$dokka.linkExtension:html
-$dokka.location:dev.kordex.modules.func.phishing/DetectionAction.Ban///PointingToDeclaration/dev/kordex/modules/func/phishing/DetectionAction.Ban.html
-$dokka.location:dev.kordex.modules.func.phishing/DetectionAction.Delete///PointingToDeclaration/dev/kordex/modules/func/phishing/DetectionAction.Delete.html
-$dokka.location:dev.kordex.modules.func.phishing/DetectionAction.Kick///PointingToDeclaration/dev/kordex/modules/func/phishing/DetectionAction.Kick.html
-$dokka.location:dev.kordex.modules.func.phishing/DetectionAction.LogOnly///PointingToDeclaration/dev/kordex/modules/func/phishing/DetectionAction.LogOnly.html
-$dokka.location:dev.kordex.modules.func.phishing/PhishingExtension.DomainArgs///PointingToDeclaration/dev/kordex/modules/func/phishing/PhishingExtension.DomainArgs.html
-dev.kordex.modules.func.phishing
-

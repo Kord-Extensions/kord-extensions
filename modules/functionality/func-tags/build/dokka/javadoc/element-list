@@ -1,7 +1,0 @@
-$dokka.format:javadoc-v1
-$dokka.linkExtension:html
-$dokka.location:dev.kordex.modules.func.tags.config/SimpleTagsConfig.Builder///PointingToDeclaration/dev/kordex/modules/func/tags/config/SimpleTagsConfig.Builder.html
-dev.kordex.modules.func.tags
-dev.kordex.modules.func.tags.config
-dev.kordex.modules.func.tags.data
-
