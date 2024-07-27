@@ -10,7 +10,6 @@ import dev.kordex.core.annotations.plugins.WiredPlugin
 import dev.kordex.core.plugins.KordExPlugin
 import dev.kordex.modules.func.mappings.MappingsExtension
 import dev.kordex.modules.func.mappings.builders.ExtMappingsBuilder
-import org.pf4j.PluginWrapper
 
 /** Class representing a simplified mappings plugin. No configuration supported yet. **/
 @WiredPlugin(

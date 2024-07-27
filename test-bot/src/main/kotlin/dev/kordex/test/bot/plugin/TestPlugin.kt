@@ -10,7 +10,6 @@ import dev.kordex.core.annotations.plugins.WiredPlugin
 import dev.kordex.core.plugins.KordExPlugin
 import dev.kordex.core.storage.StorageType
 import dev.kordex.core.storage.StorageUnit
-import org.pf4j.PluginWrapper
 
 @WiredPlugin(
     TestPlugin.PLUGIN_ID,
