@@ -48,8 +48,7 @@ subprojects {
 	version = projectVersion
 
 	tasks.withType<KotlinCompile> {
-		kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-		kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.contracts.ExperimentalContracts"
+		// Removing this block breaks the build, and I don't know why!
 	}
 
 	repositories {

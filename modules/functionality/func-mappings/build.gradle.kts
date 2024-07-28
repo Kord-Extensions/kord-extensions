@@ -5,6 +5,8 @@ plugins {
 	`ksp-module`
 }
 
+getTranslations()
+
 metadata {
 	name = "KordEx Extra: Mappings"
 	description = "KordEx extra module that provides Minecraft mappings functionality for bots"

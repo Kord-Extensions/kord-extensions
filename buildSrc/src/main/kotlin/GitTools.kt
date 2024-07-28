@@ -6,8 +6,33 @@ fun Project.runCommand(command: String): String {
 
 	exec {
 		commandLine(command.split(" "))
+
 		standardOutput = output
 	}
+
+	val result = output.toString().trim()
+
+	println(command)
+	println(result.prependIndent("-> "))
+
+	return result
+}
+
+fun Project.runCommand(command: String, cwd: Any): String {
+	val output = ByteArrayOutputStream()
+
+	exec {
+		workingDir(cwd)
+		commandLine(command.split(" "))
+
+		standardOutput = output
+		errorOutput = output
+	}
+
+	val result = output.toString().trim()
+
+	println("$cwd -> $command")
+	println(result.prependIndent("-> "))
 
 	return output.toString().trim()
 }

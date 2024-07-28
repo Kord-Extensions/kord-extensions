@@ -16,6 +16,8 @@ plugins {
 	`ksp-module`
 }
 
+getTranslations("core")
+
 metadata {
 	name = "KordEx Core"
 	description = "Core Kord Extensions module, providing everything you need to write a bot with KordEx"

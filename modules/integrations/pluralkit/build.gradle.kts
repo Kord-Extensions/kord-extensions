@@ -6,6 +6,8 @@ plugins {
 	kotlin("plugin.serialization")
 }
 
+getTranslations()
+
 metadata {
 	name = "KordEx Extra: PluralKit"
 	description = "KordEx extra module that provides PluralKit event functionality for bots"

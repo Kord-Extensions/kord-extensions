@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -74,10 +75,10 @@ tasks {
 		withType<KotlinCompile>().configureEach {
 			compilerOptions {
 				freeCompilerArgs.add("-Xallow-kotlin-package")
-			}
+				freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+				freeCompilerArgs.add("-opt-in=kotlin.contracts.ExperimentalContracts")
 
-			kotlinOptions {
-				jvmTarget = "13"
+				jvmTarget = JvmTarget.JVM_13
 			}
 		}
 
