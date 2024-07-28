@@ -90,7 +90,7 @@ private const val PAGE_FOOTER_ICON =
 class MappingsExtension : Extension() {
 	private val logger = KotlinLogging.logger { }
 	override val name: String = MappingsPlugin.PLUGIN_ID
-	override val bundle: String = "kordex.mappings"
+	override val bundle: String = "kordex.func-mappings"
 
 	private val guildConfig = StorageUnit(
 		StorageType.Config,

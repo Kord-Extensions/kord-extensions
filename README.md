@@ -25,7 +25,7 @@ Thanks to those that have donated to [support the project via Ko-Fi](https://ko-
 If you'd like to be listed for your donation here, please mention Kord Extensions and provide your GitHub username in
 your donation message.
 
-- @ToxicMushroom
+- [@ToxicMushroom](https://github.com/ToxicMushroom)
 
 # Contributors
 
@@ -39,7 +39,7 @@ The below grid shows the avatars of this repository's top contributors.
   />
 </a>
 
-The above grid is supplied by [contrib.rocks](https://contrib.rocks).
+[contrib.rocks](https://contrib.rocks) provides the above grid.
 
 ---
 
@@ -66,9 +66,9 @@ Optionally, you can provide the following environment variables:
 Additionally, ensure that your test server contains a channel named `test-logs` that your test bot can send messages
 to.
 
-The test bot is intended for testing KordEx's complex systems, such as command handling, plugin loading and extension
-management. If you modify any of these systems (or add new ones), it's important that you update (or add) extensions
-that test them.
+We designed the test bot to test KordEx's complex systems, such as command handling, plugin loading, and extension
+management.
+If you modify any of these systems (or add new ones), it is important you update (or add) extensions that test them.
 
 This module also provides some convenience functions that you can use when writing tests in commands and event
 handlers.
