@@ -11,26 +11,6 @@ afterEvaluate {
 	publishing {
 		repositories {
 			maven {
-				name = "Sonatype"
-
-				url = if (project.version.toString().contains("SNAPSHOT")) {
-					uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-				} else {
-					uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-				}
-
-				credentials {
-					username = project.findProperty("ossrhUsername") as String?
-						?: System.getenv("OSSRH_USERNAME")
-
-					password = project.findProperty("ossrhPassword") as String?
-						?: System.getenv("OSSRH_PASSWORD")
-				}
-
-				version = project.version
-			}
-
-			maven {
 				name = "KordEx"
 
 				url = if (project.version.toString().contains("SNAPSHOT")) {

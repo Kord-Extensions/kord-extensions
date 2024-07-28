@@ -42,12 +42,14 @@ jobs:
           echo "githubToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.gradle/gradle.properties
           echo -e "\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
 
-      - name: Gradle (Build)
-        uses: gradle/gradle-build-action@v3
+      - name: Gradle (Setup)
+        uses: gradle/actions/setup-gradle@v3
 
         with:
-          arguments: checkLicenses build dokkaHtmlMultiModule
           dependency-graph: generate-and-submit
+
+      - name: Gradle (Build)
+        run: "./gradlew checkLicenses build dokkaHtmlMultiModule"
 
         env:
           TOKEN: ${{ secrets.TOKEN }}
@@ -57,13 +59,8 @@ jobs:
 
         run: zip -qq -r dokka.zip htmlMultiModule
 
-      - name: Disable parallel publish
-        if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
-
-        run: kotlin .github/disable-parallel.main.kts
-
       - name: Gradle (Publish)
-        uses: gradle/gradle-build-action@v3
+        run: "./gradlew publish"
 
         if: contains(steps.project-version.outputs.version, '-SNAPSHOT')
 
@@ -79,29 +76,33 @@ jobs:
 
           TOKEN: "${{ secrets.TOKEN }}"
 
-        with:
-          arguments: publish --no-parallel
-
-      - name: Upload artifact (Extra Module JARs)
+      - name: Upload artifact (Core JARs)
         uses: actions/upload-artifact@v4
 
         with:
-          name: JARs (Extra Modules)
-          path: extra-modules/*/build/libs/*.jar
-
-      - name: Upload artifact (Main JARs)
-        uses: actions/upload-artifact@v4
-
-        with:
-          name: JARs (Main)
+          name: JARs (Core)
           path: kord-extensions/build/libs/*.jar
+
+      - name: Upload artifact (Annotation JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Annotation)
+          path: annotations/**/build/libs/*.jar
 
       - name: Upload artifact (Module JARs)
         uses: actions/upload-artifact@v4
 
         with:
           name: JARs (Modules)
-          path: modules/*/build/libs/*.jar
+          path: modules/**/build/libs/*.jar
+
+      - name: Upload artifact (Parser JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Parser)
+          path: token-parser/build/libs/*.jar
 
       - name: Upload artifact (Dokka)
         uses: actions/upload-artifact@v4
