@@ -9,15 +9,14 @@ package dev.kordex.modules.dev.unsafe.components.menus.string
 
 import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import dev.kordex.core.components.forms.ModalForm
-import dev.kordex.core.components.menus.SelectMenu
 import dev.kordex.core.components.menus.SelectMenuContext
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 import dev.kordex.modules.dev.unsafe.components.menus.UnsafeSelectMenuInteractionContext
 
-public class UnsafeStringSelectMenuContext<M : ModalForm> (
-	component: SelectMenu<*, *>,
+public class UnsafeStringSelectMenuContext<M : UnsafeModalForm> (
+	component: UnsafeStringSelectMenu<M>,
 	event: SelectMenuInteractionCreateEvent,
 	override var interactionResponse: MessageInteractionResponseBehavior?,
 	cache: MutableStringKeyedMap<Any>,

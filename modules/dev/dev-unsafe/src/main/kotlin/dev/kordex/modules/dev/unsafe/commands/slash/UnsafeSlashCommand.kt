@@ -10,6 +10,7 @@
 package dev.kordex.modules.dev.unsafe.commands.slash
 
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
@@ -17,20 +18,23 @@ import dev.kord.core.behavior.interaction.response.PublicMessageInteractionRespo
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kordex.core.ArgumentParsingException
 import dev.kordex.core.DiscordRelayedException
+import dev.kordex.core.InvalidCommandException
+import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.application.slash.SlashCommand
 import dev.kordex.core.commands.application.slash.SlashGroup
-import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
+import dev.kordex.core.utils.getLocale
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.commands.*
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 import dev.kordex.modules.dev.unsafe.contexts.UnsafeCommandSlashCommandContext
 
 /** Like a standard slash command, but with less safety features. **/
 @UnsafeAPI
-public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
+public class UnsafeSlashCommand<A : Arguments, M : UnsafeModalForm>(
 	extension: Extension,
 
 	public override val arguments: (() -> A)? = null,
@@ -41,10 +45,23 @@ public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
 	/** Initial response type. Change this to decide what happens when this slash command is executed. **/
 	public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
 
+	override fun validate() {
+		super.validate()
+
+		if (modal != null && initialResponse != InitialSlashCommandResponse.None) {
+			throw InvalidCommandException(
+				name,
+
+				"You may not provide a modal builder and an initial response - pick one, not both."
+			)
+		}
+	}
+
 	override suspend fun call(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
 		findCommand(event).run(event, cache)
 	}
 
+	@OptIn(InternalAPI::class)
 	override suspend fun run(event: ChatInputCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
 		emitEventAsync(UnsafeSlashCommandInvocationEvent(this, event))
 
@@ -70,6 +87,8 @@ public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
 			return
 		}
 
+		val modalObj = modal?.invoke()
+
 		val response = when (val r = initialResponse) {
 			is InitialSlashCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
 			is InitialSlashCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
@@ -82,7 +101,26 @@ public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
 				r.builder!!(event)
 			}
 
-			is InitialSlashCommandResponse.None -> null
+			is InitialSlashCommandResponse.None -> if (modalObj != null) {
+				componentRegistry.register(modalObj)
+
+				val locale = event.getLocale()
+
+				event.interaction.modal(
+					modalObj.translateTitle(locale, bundle),
+					modalObj.id
+				) {
+					modalObj.applyToBuilder(this, event.getLocale(), bundle)
+				}
+
+				modalObj.awaitCompletion {
+					componentRegistry.unregisterModal(modalObj)
+
+					modalObj.respond(it)
+				} ?: return
+			} else {
+				null
+			}
 		}
 
 		val context = UnsafeCommandSlashCommandContext(event, this, response, cache)

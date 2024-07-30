@@ -10,14 +10,14 @@ import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBeh
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kordex.core.commands.application.user.UserCommand
 import dev.kordex.core.commands.application.user.UserCommandContext
-import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.commands.UnsafeCommandInteractionContext
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 
 /** Command context for an unsafe user command. **/
 @UnsafeAPI
-public class UnsafeCommandUserCommandContext<M : ModalForm>(
+public class UnsafeCommandUserCommandContext<M : UnsafeModalForm>(
     override val event: UserCommandInteractionCreateEvent,
     override val command: UserCommand<UnsafeCommandUserCommandContext<M>, M>,
     override var interactionResponse: MessageInteractionResponseBehavior?,

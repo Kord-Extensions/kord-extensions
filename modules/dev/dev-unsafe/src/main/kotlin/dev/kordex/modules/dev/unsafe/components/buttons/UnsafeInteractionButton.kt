@@ -16,18 +16,19 @@ import dev.kord.core.behavior.interaction.response.PublicMessageInteractionRespo
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kordex.core.DiscordRelayedException
+import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.components.buttons.InteractionButtonWithAction
-import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
 import dev.kordex.core.utils.scheduling.Task
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 import dev.kordex.modules.dev.unsafe.contexts.UnsafeInteractionComponentContext
 
 @OptIn(KordUnsafe::class)
 @UnsafeAPI
-public open class UnsafeInteractionButton<M : ModalForm>(
+public open class UnsafeInteractionButton<M : UnsafeModalForm>(
 	timeoutTask: Task?,
 	public override val modal: (() -> M)? = null,
 ) : InteractionButtonWithAction<UnsafeInteractionComponentContext<M>, M>(timeoutTask) {
@@ -46,6 +47,7 @@ public open class UnsafeInteractionButton<M : ModalForm>(
 		}
 	}
 
+	@OptIn(InternalAPI::class)
 	override suspend fun call(event: ButtonInteractionCreateEvent): Unit = withLock {
 		val cache: MutableStringKeyedMap<Any> = mutableMapOf()
 
@@ -92,11 +94,7 @@ public open class UnsafeInteractionButton<M : ModalForm>(
 				modalObj.awaitCompletion {
 					componentRegistry.unregisterModal(modalObj)
 
-					if (!deferredAck) {
-						it?.deferEphemeralResponseUnsafe()
-					} else {
-						it?.deferEphemeralMessageUpdate()
-					}
+					modalObj.respond(it)
 				} ?: return@withLock
 			} else {
 				null

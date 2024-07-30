@@ -13,15 +13,14 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
-import dev.kordex.core.components.forms.ModalForm
-import dev.kordex.core.components.menus.SelectMenu
 import dev.kordex.core.components.menus.SelectMenuContext
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 import dev.kordex.modules.dev.unsafe.components.menus.UnsafeSelectMenuInteractionContext
 
-public class UnsafeRoleSelectMenuContext<M : ModalForm> (
-	component: SelectMenu<*, *>,
+public class UnsafeRoleSelectMenuContext<M : UnsafeModalForm> (
+	component: UnsafeRoleSelectMenu<M>,
 	event: SelectMenuInteractionCreateEvent,
 	override var interactionResponse: MessageInteractionResponseBehavior?,
 	cache: MutableStringKeyedMap<Any>,

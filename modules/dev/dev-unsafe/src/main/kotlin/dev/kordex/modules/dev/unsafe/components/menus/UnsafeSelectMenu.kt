@@ -14,7 +14,7 @@ import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBeh
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kordex.core.DiscordRelayedException
-import dev.kordex.core.components.forms.ModalForm
+import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.components.menus.SelectMenu
 import dev.kordex.core.components.menus.SelectMenuContext
 import dev.kordex.core.types.FailureReason
@@ -22,9 +22,10 @@ import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
 import dev.kordex.core.utils.scheduling.Task
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 
 @OptIn(UnsafeAPI::class)
-public abstract class UnsafeSelectMenu<C, M : ModalForm>(
+public abstract class UnsafeSelectMenu<C, M : UnsafeModalForm>(
 	timeoutTask: Task?,
 	public override val modal: (() -> M)? = null,
 ) : SelectMenu<C, M>(timeoutTask) where C : SelectMenuContext, C : UnsafeSelectMenuInteractionContext {
@@ -39,7 +40,7 @@ public abstract class UnsafeSelectMenu<C, M : ModalForm>(
 		}
 	}
 
-	@OptIn(KordUnsafe::class)
+	@OptIn(KordUnsafe::class, InternalAPI::class)
 	@Suppress("TooGenericExceptionCaught")
 	override suspend fun call(event: SelectMenuInteractionCreateEvent): Unit = withLock {
 		val cache: MutableStringKeyedMap<Any> = mutableMapOf()
@@ -87,11 +88,7 @@ public abstract class UnsafeSelectMenu<C, M : ModalForm>(
 				modalObj.awaitCompletion {
 					componentRegistry.unregisterModal(modalObj)
 
-					if (!deferredAck) {
-						it?.deferEphemeralResponseUnsafe()
-					} else {
-						it?.deferEphemeralMessageUpdate()
-					}
+					modalObj.respond(it)
 				} ?: return@withLock
 			} else {
 				null

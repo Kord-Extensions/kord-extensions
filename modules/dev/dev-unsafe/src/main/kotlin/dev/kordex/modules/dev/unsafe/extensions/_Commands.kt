@@ -12,12 +12,12 @@ import dev.kordex.core.CommandRegistrationException
 import dev.kordex.core.InvalidCommandException
 import dev.kordex.core.annotations.ExtensionDSL
 import dev.kordex.core.commands.Arguments
-import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.commands.message.UnsafeMessageCommand
 import dev.kordex.modules.dev.unsafe.commands.slash.UnsafeSlashCommand
 import dev.kordex.modules.dev.unsafe.commands.user.UnsafeUserCommand
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -28,9 +28,9 @@ private val logger = KotlinLogging.logger {}
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeMessageCommand(
-    body: suspend UnsafeMessageCommand<ModalForm>.() -> Unit,
-): UnsafeMessageCommand<ModalForm> {
-	val commandObj = UnsafeMessageCommand<ModalForm>(this)
+	body: suspend UnsafeMessageCommand<UnsafeModalForm>.() -> Unit,
+): UnsafeMessageCommand<UnsafeModalForm> {
+	val commandObj = UnsafeMessageCommand<UnsafeModalForm>(this)
 	body(commandObj)
 
 	return unsafeMessageCommand(commandObj)
@@ -39,7 +39,7 @@ public suspend fun Extension.unsafeMessageCommand(
 /** Register a custom instance of an unsafe message command. **/
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun <M : ModalForm> Extension.unsafeMessageCommand(
+public suspend fun <M : UnsafeModalForm> Extension.unsafeMessageCommand(
     commandObj: UnsafeMessageCommand<M>,
 ): UnsafeMessageCommand<M> {
 	try {
@@ -74,9 +74,9 @@ public suspend fun <M : ModalForm> Extension.unsafeMessageCommand(
 @UnsafeAPI
 public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
 	arguments: () -> T,
-	body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit,
-): UnsafeSlashCommand<T, ModalForm> {
-	val commandObj = UnsafeSlashCommand<T, ModalForm>(this, arguments, null, null, null)
+	body: suspend UnsafeSlashCommand<T, UnsafeModalForm>.() -> Unit,
+): UnsafeSlashCommand<T, UnsafeModalForm> {
+	val commandObj = UnsafeSlashCommand<T, UnsafeModalForm>(this, arguments, null, null, null)
 	body(commandObj)
 
 	return unsafeSlashCommand(commandObj)
@@ -91,7 +91,7 @@ public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
  */
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun <T : Arguments, M : ModalForm> Extension.unsafeSlashCommand(
+public suspend fun <T : Arguments, M : UnsafeModalForm> Extension.unsafeSlashCommand(
 	commandObj: UnsafeSlashCommand<T, M>,
 ): UnsafeSlashCommand<T, M> {
 	try {
@@ -120,9 +120,9 @@ public suspend fun <T : Arguments, M : ModalForm> Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeSlashCommand(
-	body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit,
-): UnsafeSlashCommand<Arguments, ModalForm> {
-	val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(this, null, null, null)
+	body: suspend UnsafeSlashCommand<Arguments, UnsafeModalForm>.() -> Unit,
+): UnsafeSlashCommand<Arguments, UnsafeModalForm> {
+	val commandObj = UnsafeSlashCommand<Arguments, UnsafeModalForm>(this, null, null, null)
 	body(commandObj)
 
 	return unsafeSlashCommand(commandObj)
@@ -136,9 +136,9 @@ public suspend fun Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeUserCommand(
-	body: suspend UnsafeUserCommand<ModalForm>.() -> Unit,
-): UnsafeUserCommand<ModalForm> {
-	val commandObj = UnsafeUserCommand<ModalForm>(this)
+	body: suspend UnsafeUserCommand<UnsafeModalForm>.() -> Unit,
+): UnsafeUserCommand<UnsafeModalForm> {
+	val commandObj = UnsafeUserCommand<UnsafeModalForm>(this)
 	body(commandObj)
 
 	return unsafeUserCommand(commandObj)
@@ -147,7 +147,7 @@ public suspend fun Extension.unsafeUserCommand(
 /** Register a custom instance of an unsafe user command. **/
 @ExtensionDSL
 @UnsafeAPI
-public suspend fun <M : ModalForm> Extension.unsafeUserCommand(
+public suspend fun <M : UnsafeModalForm> Extension.unsafeUserCommand(
 	commandObj: UnsafeUserCommand<M>,
 ): UnsafeUserCommand<M> {
 	try {

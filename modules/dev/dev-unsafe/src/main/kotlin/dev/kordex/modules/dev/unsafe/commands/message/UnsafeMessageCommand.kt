@@ -10,33 +10,50 @@
 package dev.kordex.modules.dev.unsafe.commands.message
 
 import dev.kord.common.annotation.KordUnsafe
+import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kordex.core.DiscordRelayedException
+import dev.kordex.core.InvalidCommandException
+import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.commands.application.message.MessageCommand
-import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
+import dev.kordex.core.utils.getLocale
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommandFailedChecksEvent
 import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommandFailedWithExceptionEvent
 import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommandInvocationEvent
 import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommandSucceededEvent
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 import dev.kordex.modules.dev.unsafe.contexts.UnsafeCommandMessageCommandContext
 
 /** Like a standard message command, but with less safety features. **/
 @UnsafeAPI
-public class UnsafeMessageCommand<M : ModalForm>(
+public class UnsafeMessageCommand<M : UnsafeModalForm>(
 	extension: Extension,
 	public override val modal: (() -> M)? = null,
 ) : MessageCommand<UnsafeCommandMessageCommandContext<M>, M>(extension) {
 	/** Initial response type. Change this to decide what happens when this message command action is executed. **/
 	public var initialResponse: InitialMessageCommandResponse = InitialMessageCommandResponse.EphemeralAck
 
+	override fun validate() {
+		super.validate()
+
+		if (modal != null && initialResponse != InitialMessageCommandResponse.None) {
+			throw InvalidCommandException(
+				name,
+
+				"You may not provide a modal builder and an initial response - pick one, not both."
+			)
+		}
+	}
+
+	@OptIn(InternalAPI::class)
 	override suspend fun call(event: MessageCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
 		emitEventAsync(UnsafeMessageCommandInvocationEvent(this, event))
 
@@ -61,6 +78,8 @@ public class UnsafeMessageCommand<M : ModalForm>(
 			return
 		}
 
+		val modalObj = modal?.invoke()
+
 		val response = when (val r = initialResponse) {
 			is InitialMessageCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
 			is InitialMessageCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
@@ -73,7 +92,26 @@ public class UnsafeMessageCommand<M : ModalForm>(
 				r.builder!!(event)
 			}
 
-			is InitialMessageCommandResponse.None -> null
+			is InitialMessageCommandResponse.None -> if (modalObj != null) {
+				componentRegistry.register(modalObj)
+
+				val locale = event.getLocale()
+
+				event.interaction.modal(
+					modalObj.translateTitle(locale, bundle),
+					modalObj.id
+				) {
+					modalObj.applyToBuilder(this, event.getLocale(), bundle)
+				}
+
+				modalObj.awaitCompletion {
+					componentRegistry.unregisterModal(modalObj)
+
+					modalObj.respond(it)
+				} ?: return
+			} else {
+				null
+			}
 		}
 
 		val context = UnsafeCommandMessageCommandContext(event, this, response, cache)

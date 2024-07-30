@@ -14,18 +14,17 @@ import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBeh
 import dev.kord.core.entity.KordEntity
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kordex.core.annotations.InternalAPI
-import dev.kordex.core.components.forms.ModalForm
-import dev.kordex.core.components.menus.SelectMenu
 import dev.kordex.core.components.menus.SelectMenuContext
 import dev.kordex.core.components.menus.mentionable.DummyRoleSelectMenuContext
 import dev.kordex.core.components.menus.mentionable.DummyUserSelectMenuContext
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 import dev.kordex.modules.dev.unsafe.components.menus.UnsafeSelectMenuInteractionContext
 
 @OptIn(InternalAPI::class)
-public class UnsafeMentionableSelectMenuContext<M : ModalForm> (
-	component: SelectMenu<*, *>,
+public class UnsafeMentionableSelectMenuContext<M : UnsafeModalForm> (
+	component: UnsafeMentionableSelectMenu<M>,
 	event: SelectMenuInteractionCreateEvent,
 	override var interactionResponse: MessageInteractionResponseBehavior?,
 	cache: MutableStringKeyedMap<Any>,

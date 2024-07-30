@@ -7,9 +7,9 @@
 package dev.kordex.modules.dev.unsafe.extensions
 
 import dev.kordex.core.components.ComponentContainer
-import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.components.buttons.UnsafeInteractionButton
+import dev.kordex.modules.dev.unsafe.components.forms.UnsafeModalForm
 import dev.kordex.modules.dev.unsafe.components.menus.channel.UnsafeChannelSelectMenu
 import dev.kordex.modules.dev.unsafe.components.menus.mentionable.UnsafeMentionableSelectMenu
 import dev.kordex.modules.dev.unsafe.components.menus.role.UnsafeRoleSelectMenu
@@ -22,9 +22,9 @@ import dev.kordex.modules.dev.unsafe.components.menus.user.UnsafeUserSelectMenu
 @UnsafeAPI
 public suspend fun ComponentContainer.unsafeButton(
 	row: Int? = null,
-	builder: suspend UnsafeInteractionButton<ModalForm>.() -> Unit,
-): UnsafeInteractionButton<ModalForm> {
-	val component = UnsafeInteractionButton<ModalForm>(timeoutTask)
+	builder: suspend UnsafeInteractionButton<UnsafeModalForm>.() -> Unit,
+): UnsafeInteractionButton<UnsafeModalForm> {
+	val component = UnsafeInteractionButton<UnsafeModalForm>(timeoutTask)
 
 	builder(component)
 	add(component, row)
@@ -34,7 +34,7 @@ public suspend fun ComponentContainer.unsafeButton(
 
 /** DSL function for creating an unsafe button with modal, and adding it to the current [ComponentContainer]. **/
 @UnsafeAPI
-public suspend fun <M : ModalForm> ComponentContainer.unsafeButton(
+public suspend fun <M : UnsafeModalForm> ComponentContainer.unsafeButton(
 	modal: (() -> M)?,
 	row: Int? = null,
 	builder: suspend UnsafeInteractionButton<M>.() -> Unit,
@@ -54,9 +54,9 @@ public suspend fun <M : ModalForm> ComponentContainer.unsafeButton(
 @UnsafeAPI
 public suspend fun ComponentContainer.unsafeChannelSelectMenu(
 	row: Int? = null,
-	builder: suspend UnsafeChannelSelectMenu<ModalForm>.() -> Unit,
-): UnsafeChannelSelectMenu<ModalForm> {
-	val component = UnsafeChannelSelectMenu<ModalForm>(timeoutTask)
+	builder: suspend UnsafeChannelSelectMenu<UnsafeModalForm>.() -> Unit,
+): UnsafeChannelSelectMenu<UnsafeModalForm> {
+	val component = UnsafeChannelSelectMenu<UnsafeModalForm>(timeoutTask)
 
 	builder(component)
 	add(component, row)
@@ -65,7 +65,7 @@ public suspend fun ComponentContainer.unsafeChannelSelectMenu(
 }
 
 @UnsafeAPI
-public suspend fun <M : ModalForm>  ComponentContainer.unsafeChannelSelectMenu(
+public suspend fun <M : UnsafeModalForm>  ComponentContainer.unsafeChannelSelectMenu(
 	modal: (() -> M)?,
 	row: Int? = null,
 	builder: suspend UnsafeChannelSelectMenu<M>.() -> Unit,
@@ -85,9 +85,9 @@ public suspend fun <M : ModalForm>  ComponentContainer.unsafeChannelSelectMenu(
 @UnsafeAPI
 public suspend fun ComponentContainer.unsafeMentionableSelectMenu(
 	row: Int? = null,
-	builder: suspend UnsafeMentionableSelectMenu<ModalForm>.() -> Unit,
-): UnsafeMentionableSelectMenu<ModalForm> {
-	val component = UnsafeMentionableSelectMenu<ModalForm>(timeoutTask)
+	builder: suspend UnsafeMentionableSelectMenu<UnsafeModalForm>.() -> Unit,
+): UnsafeMentionableSelectMenu<UnsafeModalForm> {
+	val component = UnsafeMentionableSelectMenu<UnsafeModalForm>(timeoutTask)
 
 	builder(component)
 	add(component, row)
@@ -96,7 +96,7 @@ public suspend fun ComponentContainer.unsafeMentionableSelectMenu(
 }
 
 @UnsafeAPI
-public suspend fun <M : ModalForm>  ComponentContainer.unsafeMentionableSelectMenu(
+public suspend fun <M : UnsafeModalForm>  ComponentContainer.unsafeMentionableSelectMenu(
 	modal: (() -> M)?,
 	row: Int? = null,
 	builder: suspend UnsafeMentionableSelectMenu<M>.() -> Unit,
@@ -116,9 +116,9 @@ public suspend fun <M : ModalForm>  ComponentContainer.unsafeMentionableSelectMe
 @UnsafeAPI
 public suspend fun ComponentContainer.unsafeRoleSelectMenu(
 	row: Int? = null,
-	builder: suspend UnsafeRoleSelectMenu<ModalForm>.() -> Unit,
-): UnsafeRoleSelectMenu<ModalForm> {
-	val component = UnsafeRoleSelectMenu<ModalForm>(timeoutTask)
+	builder: suspend UnsafeRoleSelectMenu<UnsafeModalForm>.() -> Unit,
+): UnsafeRoleSelectMenu<UnsafeModalForm> {
+	val component = UnsafeRoleSelectMenu<UnsafeModalForm>(timeoutTask)
 
 	builder(component)
 	add(component, row)
@@ -127,7 +127,7 @@ public suspend fun ComponentContainer.unsafeRoleSelectMenu(
 }
 
 @UnsafeAPI
-public suspend fun <M : ModalForm>  ComponentContainer.unsafeRoleSelectMenu(
+public suspend fun <M : UnsafeModalForm>  ComponentContainer.unsafeRoleSelectMenu(
 	modal: (() -> M)?,
 	row: Int? = null,
 	builder: suspend UnsafeRoleSelectMenu<M>.() -> Unit,
@@ -147,9 +147,9 @@ public suspend fun <M : ModalForm>  ComponentContainer.unsafeRoleSelectMenu(
 @UnsafeAPI
 public suspend fun ComponentContainer.unsafeStringSelectMenu(
 	row: Int? = null,
-	builder: suspend UnsafeStringSelectMenu<ModalForm>.() -> Unit,
-): UnsafeStringSelectMenu<ModalForm> {
-	val component = UnsafeStringSelectMenu<ModalForm>(timeoutTask)
+	builder: suspend UnsafeStringSelectMenu<UnsafeModalForm>.() -> Unit,
+): UnsafeStringSelectMenu<UnsafeModalForm> {
+	val component = UnsafeStringSelectMenu<UnsafeModalForm>(timeoutTask)
 
 	builder(component)
 	add(component, row)
@@ -158,7 +158,7 @@ public suspend fun ComponentContainer.unsafeStringSelectMenu(
 }
 
 @UnsafeAPI
-public suspend fun <M : ModalForm>  ComponentContainer.unsafeStringSelectMenu(
+public suspend fun <M : UnsafeModalForm>  ComponentContainer.unsafeStringSelectMenu(
 	modal: (() -> M)?,
 	row: Int? = null,
 	builder: suspend UnsafeStringSelectMenu<M>.() -> Unit,
@@ -178,9 +178,9 @@ public suspend fun <M : ModalForm>  ComponentContainer.unsafeStringSelectMenu(
 @UnsafeAPI
 public suspend fun ComponentContainer.unsafeUserSelectMenu(
 	row: Int? = null,
-	builder: suspend UnsafeUserSelectMenu<ModalForm>.() -> Unit,
-): UnsafeUserSelectMenu<ModalForm> {
-	val component = UnsafeUserSelectMenu<ModalForm>(timeoutTask)
+	builder: suspend UnsafeUserSelectMenu<UnsafeModalForm>.() -> Unit,
+): UnsafeUserSelectMenu<UnsafeModalForm> {
+	val component = UnsafeUserSelectMenu<UnsafeModalForm>(timeoutTask)
 
 	builder(component)
 	add(component, row)
@@ -189,7 +189,7 @@ public suspend fun ComponentContainer.unsafeUserSelectMenu(
 }
 
 @UnsafeAPI
-public suspend fun <M : ModalForm>  ComponentContainer.unsafeUserSelectMenu(
+public suspend fun <M : UnsafeModalForm>  ComponentContainer.unsafeUserSelectMenu(
 	modal: (() -> M)?,
 	row: Int? = null,
 	builder: suspend UnsafeUserSelectMenu<M>.() -> Unit,
