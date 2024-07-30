@@ -86,6 +86,51 @@ public class SelectorTestExtension : Extension() {
 			}
 
 			ephemeralSubCommand {
+				name = "mentionable"
+				description = "Test mentionable selectors."
+
+				action {
+					respond {
+						components {
+							ephemeralMentionableSelectMenu {
+								maximumChoices = null
+
+								action {
+									respond {
+										content = buildString {
+											if (selected.isNotEmpty()) {
+												if (selectedRoles.isNotEmpty()) {
+													appendLine("# Roles")
+
+													selectedRoles.forEach {
+														appendLine("- `${it.id}` -> ${it.asRoleOrNull()?.name}")
+													}
+
+													appendLine()
+												}
+
+												if (selectedUsers.isNotEmpty()) {
+													appendLine("# Users")
+
+													selectedUsers.forEach {
+														appendLine("- `${it.id}` -> ${it.asUserOrNull()?.tag}")
+													}
+
+													appendLine()
+												}
+											} else {
+												append("Nothing selected.")
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			ephemeralSubCommand {
 				name = "ephemeral"
 				description = "Test ephemeral selectors."
 

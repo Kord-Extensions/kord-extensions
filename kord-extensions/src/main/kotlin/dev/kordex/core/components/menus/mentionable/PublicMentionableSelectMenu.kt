@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package dev.kordex.core.components.menus.user
+package dev.kordex.core.components.menus.mentionable
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
@@ -20,19 +20,20 @@ public typealias InitialPublicSelectMenuResponseBuilder =
 	(suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing a public-only user select (dropdown) menu. **/
-public open class PublicUserSelectMenu<M : ModalForm>(
+public open class PublicMentionableSelectMenu<M : ModalForm>(
 	timeoutTask: Task?,
 	public override val modal: (() -> M)? = null,
-) : PublicSelectMenu<PublicUserSelectMenuContext<M>, M>(timeoutTask), UserSelectMenu {
+) : PublicSelectMenu<PublicMentionableSelectMenuContext<M>, M>(timeoutTask), MentionableSelectMenu {
+	override var defaultRoles: MutableList<Snowflake> = mutableListOf()
 	override var defaultUsers: MutableList<Snowflake> = mutableListOf()
 
 	override fun createContext(
 		event: SelectMenuInteractionCreateEvent,
 		interactionResponse: PublicMessageInteractionResponseBehavior,
 		cache: MutableStringKeyedMap<Any>,
-	): PublicUserSelectMenuContext<M> = PublicUserSelectMenuContext(
+	): PublicMentionableSelectMenuContext<M> = PublicMentionableSelectMenuContext(
 		this, event, interactionResponse, cache
 	)
 
-	override fun apply(builder: ActionRowBuilder): Unit = applyUserSelectMenu(this, builder)
+	override fun apply(builder: ActionRowBuilder): Unit = applyMentionableSelectMenu(this, builder)
 }

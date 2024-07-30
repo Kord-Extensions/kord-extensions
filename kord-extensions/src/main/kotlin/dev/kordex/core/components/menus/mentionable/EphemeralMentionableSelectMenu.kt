@@ -4,9 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package dev.kordex.core.components.menus.channel
+package dev.kordex.core.components.menus.mentionable
 
-import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
@@ -20,21 +19,21 @@ import dev.kordex.core.utils.scheduling.Task
 public typealias InitialEphemeralSelectMenuResponseBuilder =
 	(suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
-/** Class representing an ephemeral-only channel select (dropdown) menu. **/
-public open class EphemeralChannelSelectMenu<M : ModalForm>(
+/** Class representing an ephemeral-only user select (dropdown) menu. **/
+public open class EphemeralMentionableSelectMenu<M : ModalForm>(
 	timeoutTask: Task?,
 	public override val modal: (() -> M)? = null,
-) : EphemeralSelectMenu<EphemeralChannelSelectMenuContext<M>, M>(timeoutTask), ChannelSelectMenu {
-	override var channelTypes: MutableList<ChannelType> = mutableListOf()
-	override var defaultChannels: MutableList<Snowflake> = mutableListOf()
+) : EphemeralSelectMenu<EphemeralMentionableSelectMenuContext<M>, M>(timeoutTask), MentionableSelectMenu {
+	override var defaultRoles: MutableList<Snowflake> = mutableListOf()
+	override var defaultUsers: MutableList<Snowflake> = mutableListOf()
 
 	override fun createContext(
 		event: SelectMenuInteractionCreateEvent,
 		interactionResponse: EphemeralMessageInteractionResponseBehavior,
 		cache: MutableStringKeyedMap<Any>,
-	): EphemeralChannelSelectMenuContext<M> = EphemeralChannelSelectMenuContext(
+	): EphemeralMentionableSelectMenuContext<M> = EphemeralMentionableSelectMenuContext(
 		this, event, interactionResponse, cache
 	)
 
-	public override fun apply(builder: ActionRowBuilder): Unit = applyChannelSelectMenu(this, builder)
+	override fun apply(builder: ActionRowBuilder): Unit = applyMentionableSelectMenu(this, builder)
 }

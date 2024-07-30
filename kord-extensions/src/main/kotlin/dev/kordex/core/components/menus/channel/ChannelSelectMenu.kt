@@ -7,6 +7,8 @@
 package dev.kordex.core.components.menus.channel
 
 import dev.kord.common.entity.ChannelType
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kordex.core.components.menus.OPTIONS_MAX
 import dev.kordex.core.components.menus.SelectMenu
@@ -16,9 +18,22 @@ public interface ChannelSelectMenu {
 	/** The types allowed in the select menu. **/
 	public var channelTypes: MutableList<ChannelType>
 
+	/** Default channels to preselect. **/
+	public var defaultChannels: MutableList<Snowflake>
+
 	/** Add an allowed channel type to the selector. **/
 	public fun channelType(vararg type: ChannelType) {
 		channelTypes.addAll(type)
+	}
+
+	/** Add a default pre-selected channel to the selector. **/
+	public fun defaultChannel(id: Snowflake) {
+		defaultChannels.add(id)
+	}
+
+	/** Add a default pre-selected channel to the selector. **/
+	public fun defaultChannel(channel: ChannelBehavior) {
+		defaultChannel(channel.id)
 	}
 
 	/** Apply the channel select menu to an action row builder. **/
@@ -31,9 +46,12 @@ public interface ChannelSelectMenu {
 			} else {
 				this@ChannelSelectMenu.channelTypes
 			}
+
+			this@ChannelSelectMenu.defaultChannels.forEach(this.defaultChannels::add)
+
 			this.allowedValues = selectMenu.minimumChoices..selectMenu.maximumChoices!!
-			this.placeholder = selectMenu.placeholder
 			this.disabled = selectMenu.disabled
+			this.placeholder = selectMenu.placeholder
 		}
 	}
 }

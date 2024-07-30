@@ -6,6 +6,7 @@
 
 package dev.kordex.core.components.menus.role
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
@@ -23,6 +24,8 @@ public open class PublicRoleSelectMenu<M : ModalForm>(
 	timeoutTask: Task?,
 	public override val modal: (() -> M)? = null,
 ) : PublicSelectMenu<PublicRoleSelectMenuContext<M>, M>(timeoutTask), RoleSelectMenu {
+	override var defaultRoles: MutableList<Snowflake> = mutableListOf()
+
 	override fun createContext(
 		event: SelectMenuInteractionCreateEvent,
 		interactionResponse: PublicMessageInteractionResponseBehavior,

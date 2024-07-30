@@ -6,6 +6,7 @@
 
 package dev.kordex.core.components.menus.user
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
@@ -23,6 +24,8 @@ public open class EphemeralUserSelectMenu<M : ModalForm>(
 	timeoutTask: Task?,
 	public override val modal: (() -> M)? = null,
 ) : EphemeralSelectMenu<EphemeralUserSelectMenuContext<M>, M>(timeoutTask), UserSelectMenu {
+	override var defaultUsers: MutableList<Snowflake> = mutableListOf()
+
 	override fun createContext(
 		event: SelectMenuInteractionCreateEvent,
 		interactionResponse: EphemeralMessageInteractionResponseBehavior,

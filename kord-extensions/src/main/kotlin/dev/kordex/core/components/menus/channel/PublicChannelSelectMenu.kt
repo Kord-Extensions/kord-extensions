@@ -7,6 +7,7 @@
 package dev.kordex.core.components.menus.channel
 
 import dev.kord.common.entity.ChannelType
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
@@ -25,6 +26,7 @@ public open class PublicChannelSelectMenu<M : ModalForm>(
 	public override val modal: (() -> M)? = null,
 ) : PublicSelectMenu<PublicChannelSelectMenuContext<M>, M>(timeoutTask), ChannelSelectMenu {
 	override var channelTypes: MutableList<ChannelType> = mutableListOf()
+	override var defaultChannels: MutableList<Snowflake> = mutableListOf()
 
 	override fun createContext(
 		event: SelectMenuInteractionCreateEvent,
