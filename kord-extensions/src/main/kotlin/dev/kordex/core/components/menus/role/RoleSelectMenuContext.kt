@@ -27,9 +27,10 @@ public abstract class RoleSelectMenuContext(
 		if (event.interaction.data.guildId.value == null) {
 			error("A role select menu cannot be used outside guilds.")
 		} else {
-			event.interaction.values.map {
-				event.kord.unsafe.role(event.interaction.data.guildId.value!!, Snowflake(it))
-			}
+			event.interaction.resolvedObjects?.roles?.map { r -> r.value }
+				?: event.interaction.values.map { r ->
+					event.kord.unsafe.role(event.interaction.data.guildId.value!!, Snowflake(r))
+				}
 		}
 	}
 }

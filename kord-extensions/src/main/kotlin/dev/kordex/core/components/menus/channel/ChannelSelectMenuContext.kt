@@ -24,6 +24,7 @@ public abstract class ChannelSelectMenuContext(
 	/** Menu options that were selected by the user before de-focusing the menu. **/
 	@OptIn(KordUnsafe::class, KordExperimental::class)
 	public val selected: List<ChannelBehavior> by lazy {
-		event.interaction.values.map { event.kord.unsafe.channel(Snowflake(it)) }
+		event.interaction.resolvedObjects?.channels?.map { it.value }
+			?: event.interaction.values.map { event.kord.unsafe.channel(Snowflake(it)) }
 	}
 }
