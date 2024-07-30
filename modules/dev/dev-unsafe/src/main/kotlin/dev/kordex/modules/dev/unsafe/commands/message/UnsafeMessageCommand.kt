@@ -7,46 +7,48 @@
 @file:Suppress("TooGenericExceptionCaught")
 @file:OptIn(KordUnsafe::class)
 
-package dev.kordex.modules.dev.unsafe.commands
+package dev.kordex.modules.dev.unsafe.commands.message
 
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
-import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kordex.core.DiscordRelayedException
-import dev.kordex.core.commands.application.user.UserCommand
+import dev.kordex.core.commands.application.message.MessageCommand
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.contexts.UnsafeCommandUserCommandContext
-import dev.kordex.modules.dev.unsafe.types.InitialUserCommandResponse
+import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommandFailedChecksEvent
+import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommandFailedWithExceptionEvent
+import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommandInvocationEvent
+import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommandSucceededEvent
+import dev.kordex.modules.dev.unsafe.contexts.UnsafeCommandMessageCommandContext
 
-/** Like a standard user command, but with less safety features. **/
+/** Like a standard message command, but with less safety features. **/
 @UnsafeAPI
-public class UnsafeUserCommand<M : ModalForm>(
+public class UnsafeMessageCommand<M : ModalForm>(
 	extension: Extension,
 	public override val modal: (() -> M)? = null,
-) : UserCommand<UnsafeCommandUserCommandContext<M>, M>(extension) {
-	/** Initial response type. Change this to decide what happens when this user command action is executed. **/
-	public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
+) : MessageCommand<UnsafeCommandMessageCommandContext<M>, M>(extension) {
+	/** Initial response type. Change this to decide what happens when this message command action is executed. **/
+	public var initialResponse: InitialMessageCommandResponse = InitialMessageCommandResponse.EphemeralAck
 
-	override suspend fun call(event: UserCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
-		emitEventAsync(UnsafeUserCommandInvocationEvent(this, event))
+	override suspend fun call(event: MessageCommandInteractionCreateEvent, cache: MutableStringKeyedMap<Any>) {
+		emitEventAsync(UnsafeMessageCommandInvocationEvent(this, event))
 
 		try {
 			if (!runChecks(event, cache)) {
 				emitEventAsync(
-					UnsafeUserCommandFailedChecksEvent(
+					UnsafeMessageCommandFailedChecksEvent(
 						this,
 						event,
 						"Checks failed without a message."
 					)
 				)
-
 				return
 			}
 		} catch (e: DiscordRelayedException) {
@@ -54,27 +56,27 @@ public class UnsafeUserCommand<M : ModalForm>(
 				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
 			}
 
-			emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, e.reason))
+			emitEventAsync(UnsafeMessageCommandFailedChecksEvent(this, event, e.reason))
 
 			return
 		}
 
 		val response = when (val r = initialResponse) {
-			is InitialUserCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
-			is InitialUserCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
+			is InitialMessageCommandResponse.EphemeralAck -> event.interaction.deferEphemeralResponseUnsafe()
+			is InitialMessageCommandResponse.PublicAck -> event.interaction.deferPublicResponseUnsafe()
 
-			is InitialUserCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
+			is InitialMessageCommandResponse.EphemeralResponse -> event.interaction.respondEphemeral {
 				r.builder!!(event)
 			}
 
-			is InitialUserCommandResponse.PublicResponse -> event.interaction.respondPublic {
+			is InitialMessageCommandResponse.PublicResponse -> event.interaction.respondPublic {
 				r.builder!!(event)
 			}
 
-			is InitialUserCommandResponse.None -> null
+			is InitialMessageCommandResponse.None -> null
 		}
 
-		val context = UnsafeCommandUserCommandContext(event, this, response, cache)
+		val context = UnsafeCommandMessageCommandContext(event, this, response, cache)
 
 		context.populate()
 
@@ -83,7 +85,7 @@ public class UnsafeUserCommand<M : ModalForm>(
 		try {
 			checkBotPerms(context)
 		} catch (t: DiscordRelayedException) {
-			emitEventAsync(UnsafeUserCommandFailedChecksEvent(this, event, t.reason))
+			emitEventAsync(UnsafeMessageCommandFailedChecksEvent(this, event, t.reason))
 			respondText(context, t.reason, FailureReason.OwnPermissionsCheckFailure(t))
 
 			return
@@ -96,17 +98,17 @@ public class UnsafeUserCommand<M : ModalForm>(
 				respondText(context, t.reason, FailureReason.RelayedFailure(t))
 			}
 
-			emitEventAsync(UnsafeUserCommandFailedWithExceptionEvent(this, event, t))
+			emitEventAsync(UnsafeMessageCommandFailedWithExceptionEvent(this, event, t))
 			handleError(context, t)
 
 			return
 		}
 
-		emitEventAsync(UnsafeUserCommandSucceededEvent(this, event))
+		emitEventAsync(UnsafeMessageCommandSucceededEvent(this, event))
 	}
 
 	override suspend fun respondText(
-        context: UnsafeCommandUserCommandContext<M>,
+        context: UnsafeCommandMessageCommandContext<M>,
         message: String,
         failureType: FailureReason<*>,
 	) {

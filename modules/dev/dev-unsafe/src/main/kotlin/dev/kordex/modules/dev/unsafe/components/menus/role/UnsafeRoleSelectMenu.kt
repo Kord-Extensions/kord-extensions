@@ -3,30 +3,31 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-package dev.kordex.core.components.menus.role
+package dev.kordex.modules.dev.unsafe.components.menus.role
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBehavior
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kordex.core.components.forms.ModalForm
-import dev.kordex.core.components.menus.PublicSelectMenu
+import dev.kordex.core.components.menus.role.RoleSelectMenu
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.scheduling.Task
+import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.components.menus.UnsafeSelectMenu
 
-/** Class representing a public-only role select (dropdown) menu. **/
-public open class PublicRoleSelectMenu<M : ModalForm>(
+@UnsafeAPI
+public class UnsafeRoleSelectMenu<M : ModalForm>(
 	timeoutTask: Task?,
 	public override val modal: (() -> M)? = null,
-) : PublicSelectMenu<PublicRoleSelectMenuContext<M>, M>(timeoutTask), RoleSelectMenu {
+) : UnsafeSelectMenu<UnsafeRoleSelectMenuContext<M>, M>(timeoutTask), RoleSelectMenu {
 	override var defaultRoles: MutableList<Snowflake> = mutableListOf()
 
 	override fun createContext(
 		event: SelectMenuInteractionCreateEvent,
-		interactionResponse: PublicMessageInteractionResponseBehavior,
+		interactionResponse: MessageInteractionResponseBehavior?,
 		cache: MutableStringKeyedMap<Any>,
-	): PublicRoleSelectMenuContext<M> = PublicRoleSelectMenuContext(
+	): UnsafeRoleSelectMenuContext<M> = UnsafeRoleSelectMenuContext(
 		this, event, interactionResponse, cache
 	)
 

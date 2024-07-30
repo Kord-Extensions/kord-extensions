@@ -15,9 +15,9 @@ import dev.kordex.core.commands.Arguments
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.commands.UnsafeMessageCommand
-import dev.kordex.modules.dev.unsafe.commands.UnsafeSlashCommand
-import dev.kordex.modules.dev.unsafe.commands.UnsafeUserCommand
+import dev.kordex.modules.dev.unsafe.commands.message.UnsafeMessageCommand
+import dev.kordex.modules.dev.unsafe.commands.slash.UnsafeSlashCommand
+import dev.kordex.modules.dev.unsafe.commands.user.UnsafeUserCommand
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -28,7 +28,7 @@ private val logger = KotlinLogging.logger {}
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun Extension.unsafeMessageCommand(
-	body: suspend UnsafeMessageCommand<ModalForm>.() -> Unit,
+    body: suspend UnsafeMessageCommand<ModalForm>.() -> Unit,
 ): UnsafeMessageCommand<ModalForm> {
 	val commandObj = UnsafeMessageCommand<ModalForm>(this)
 	body(commandObj)
@@ -92,7 +92,7 @@ public suspend fun <T : Arguments> Extension.unsafeSlashCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun <T : Arguments, M : ModalForm> Extension.unsafeSlashCommand(
-    commandObj: UnsafeSlashCommand<T, M>,
+	commandObj: UnsafeSlashCommand<T, M>,
 ): UnsafeSlashCommand<T, M> {
 	try {
 		commandObj.validate()
@@ -148,7 +148,7 @@ public suspend fun Extension.unsafeUserCommand(
 @ExtensionDSL
 @UnsafeAPI
 public suspend fun <M : ModalForm> Extension.unsafeUserCommand(
-    commandObj: UnsafeUserCommand<M>,
+	commandObj: UnsafeUserCommand<M>,
 ): UnsafeUserCommand<M> {
 	try {
 		commandObj.validate()

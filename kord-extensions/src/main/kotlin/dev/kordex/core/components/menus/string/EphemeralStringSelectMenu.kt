@@ -10,14 +10,10 @@ import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionRe
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
-import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.components.menus.EphemeralSelectMenu
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.scheduling.Task
-
-public typealias InitialEphemeralSelectMenuResponseBuilder =
-	(suspend InteractionResponseCreateBuilder.(SelectMenuInteractionCreateEvent) -> Unit)?
 
 /** Class representing an ephemeral-only string select (dropdown) menu. **/
 public open class EphemeralStringSelectMenu<M : ModalForm>(

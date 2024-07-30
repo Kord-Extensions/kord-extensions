@@ -14,7 +14,6 @@ import dev.kord.core.behavior.interaction.response.PublicMessageInteractionRespo
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.components.forms.ModalForm
-import dev.kordex.core.components.menus.channel.InitialEphemeralSelectMenuResponseBuilder
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.types.PublicInteractionContext
 import dev.kordex.core.utils.MutableStringKeyedMap

@@ -13,8 +13,8 @@ import dev.kordex.core.commands.application.slash.SlashCommandContext
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.commands.UnsafeSlashCommand
-import dev.kordex.modules.dev.unsafe.types.UnsafeCommandInteractionContext
+import dev.kordex.modules.dev.unsafe.commands.UnsafeCommandInteractionContext
+import dev.kordex.modules.dev.unsafe.commands.slash.UnsafeSlashCommand
 
 /** Command context for an unsafe slash command. **/
 @UnsafeAPI
@@ -24,4 +24,4 @@ public class UnsafeCommandSlashCommandContext<A : Arguments, M : ModalForm>(
 	override var interactionResponse: MessageInteractionResponseBehavior?,
 	cache: MutableStringKeyedMap<Any>,
 ) : SlashCommandContext<UnsafeCommandSlashCommandContext<A, M>, A, M>(event, command, cache),
-	UnsafeCommandInteractionContext
+    UnsafeCommandInteractionContext

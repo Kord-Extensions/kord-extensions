@@ -7,11 +7,12 @@
 @file:Suppress("StringLiteralDuplication")
 @file:OptIn(KordUnsafe::class)
 
-package dev.kordex.modules.dev.unsafe.types
+package dev.kordex.modules.dev.unsafe.components.buttons
 
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.components.UnsafeComponentInteractionContext
 
 /** Interface representing a generic, unsafe interaction action context. **/
 @UnsafeAPI

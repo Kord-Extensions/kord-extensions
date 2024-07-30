@@ -12,8 +12,8 @@ import dev.kordex.core.components.buttons.InteractionButtonContext
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.components.UnsafeInteractionButton
-import dev.kordex.modules.dev.unsafe.types.UnsafeButtonInteractionContext
+import dev.kordex.modules.dev.unsafe.components.buttons.UnsafeButtonInteractionContext
+import dev.kordex.modules.dev.unsafe.components.buttons.UnsafeInteractionButton
 
 @UnsafeAPI
 public class UnsafeInteractionComponentContext<M : ModalForm>(

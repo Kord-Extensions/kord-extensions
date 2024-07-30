@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package dev.kordex.modules.dev.unsafe.types
+package dev.kordex.modules.dev.unsafe.commands.slash
 
 import dev.kordex.core.commands.application.slash.InitialEphemeralSlashResponseBuilder
 import dev.kordex.core.commands.application.slash.InitialPublicSlashResponseBehavior

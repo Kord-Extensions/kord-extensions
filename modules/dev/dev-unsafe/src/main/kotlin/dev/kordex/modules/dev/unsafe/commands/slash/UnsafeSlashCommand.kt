@@ -7,7 +7,7 @@
 @file:Suppress("TooGenericExceptionCaught")
 @file:OptIn(KordUnsafe::class)
 
-package dev.kordex.modules.dev.unsafe.commands
+package dev.kordex.modules.dev.unsafe.commands.slash
 
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -25,8 +25,8 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.commands.*
 import dev.kordex.modules.dev.unsafe.contexts.UnsafeCommandSlashCommandContext
-import dev.kordex.modules.dev.unsafe.types.InitialSlashCommandResponse
 
 /** Like a standard slash command, but with less safety features. **/
 @UnsafeAPI

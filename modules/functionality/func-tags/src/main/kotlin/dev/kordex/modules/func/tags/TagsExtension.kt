@@ -25,7 +25,6 @@ import dev.kordex.core.utils.FilterStrategy
 import dev.kordex.core.utils.suggestStringMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.extensions.unsafeSubCommand
-import dev.kordex.modules.dev.unsafe.types.InitialSlashCommandResponse
 import dev.kordex.modules.func.tags.config.TagsConfig
 import dev.kordex.modules.func.tags.data.Tag
 import dev.kordex.modules.func.tags.data.TagsData
@@ -204,7 +203,7 @@ class TagsExtension : Extension() {
 				name = "set"
 				description = "Create or replace a tag"
 
-				initialResponse = InitialSlashCommandResponse.None
+				initialResponse = dev.kordex.modules.dev.unsafe.commands.slash.InitialSlashCommandResponse.None
 
 				action {
 					val modalObj = TagEditModal()
@@ -253,7 +252,7 @@ class TagsExtension : Extension() {
 				name = "edit"
 				description = "Edit an existing tag"
 
-				initialResponse = InitialSlashCommandResponse.None
+				initialResponse = dev.kordex.modules.dev.unsafe.commands.slash.InitialSlashCommandResponse.None
 
 				action {
 					var tag = tagsData.getTagByKey(arguments.key, arguments.guild?.id)

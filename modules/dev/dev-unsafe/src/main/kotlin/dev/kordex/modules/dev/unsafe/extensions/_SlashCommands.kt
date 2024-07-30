@@ -15,7 +15,7 @@ import dev.kordex.core.commands.application.slash.SlashCommand
 import dev.kordex.core.commands.application.slash.SlashGroup
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.commands.UnsafeSlashCommand
+import dev.kordex.modules.dev.unsafe.commands.slash.UnsafeSlashCommand
 
 private const val SUBCOMMAND_AND_GROUP_LIMIT: Int = 25
 
@@ -31,8 +31,8 @@ private const val SUBCOMMAND_AND_GROUP_LIMIT: Int = 25
  */
 @UnsafeAPI
 public suspend fun <T : Arguments> SlashCommand<*, *, *>.unsafeSubCommand(
-	arguments: () -> T,
-	body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit,
+    arguments: () -> T,
+    body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<T, ModalForm> {
 	val commandObj = UnsafeSlashCommand<T, ModalForm>(extension, arguments, null, this, parentGroup)
 	body(commandObj)
@@ -80,7 +80,7 @@ public fun <T : Arguments, M : ModalForm> SlashCommand<*, *, *>.unsafeSubCommand
  */
 @UnsafeAPI
 public suspend fun SlashCommand<*, *, *>.unsafeSubCommand(
-	body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit,
+    body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<Arguments, ModalForm> {
 	val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(extension, null, null, this, parentGroup)
 	body(commandObj)
@@ -102,8 +102,8 @@ public suspend fun SlashCommand<*, *, *>.unsafeSubCommand(
  */
 @UnsafeAPI
 public suspend fun <T : Arguments> SlashGroup.unsafeSubCommand(
-	arguments: () -> T,
-	body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit,
+    arguments: () -> T,
+    body: suspend UnsafeSlashCommand<T, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<T, ModalForm> {
 	val commandObj = UnsafeSlashCommand<T, ModalForm>(parent.extension, arguments, null, parent, this)
 	body(commandObj)
@@ -152,7 +152,7 @@ public fun <T : Arguments, M : ModalForm> SlashGroup.unsafeSubCommand(
  */
 @UnsafeAPI
 public suspend fun SlashGroup.unsafeSubCommand(
-	body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit,
+    body: suspend UnsafeSlashCommand<Arguments, ModalForm>.() -> Unit,
 ): UnsafeSlashCommand<Arguments, ModalForm> {
 	val commandObj = UnsafeSlashCommand<Arguments, ModalForm>(parent.extension, null, null, parent, this)
 	body(commandObj)

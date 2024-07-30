@@ -7,7 +7,7 @@
 @file:Suppress("StringLiteralDuplication")
 @file:OptIn(KordUnsafe::class)
 
-package dev.kordex.modules.dev.unsafe.types
+package dev.kordex.modules.dev.unsafe.components
 
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.interaction.respondEphemeral
@@ -16,7 +16,7 @@ import dev.kord.core.behavior.interaction.response.*
 import dev.kord.core.entity.interaction.followup.EphemeralFollowupMessage
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
 import dev.kord.core.entity.interaction.response.MessageInteractionResponse
-import dev.kord.core.event.interaction.ApplicationCommandInteractionCreateEvent
+import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
@@ -27,14 +27,15 @@ import dev.kordex.core.pagination.PublicFollowUpPaginator
 import dev.kordex.core.pagination.PublicResponsePaginator
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
+import dev.kordex.modules.dev.unsafe.types.UnsafeInteractionContext
 import java.util.*
 
-/** Interface representing a generic, unsafe interaction action context. **/
+/** Interface representing a generic, unsafe interaction interaction button context. **/
 @UnsafeAPI
-public interface UnsafeCommandInteractionContext :
-	UnsafeInteractionContext<MessageInteractionResponseBehavior, ApplicationCommandInteractionCreateEvent> {
+public interface UnsafeComponentInteractionContext<E : ComponentInteractionCreateEvent> :
+    UnsafeInteractionContext<MessageInteractionResponseBehavior, E> {
 
-	override val event: ApplicationCommandInteractionCreateEvent
+	override val event: E
 
 	@UnsafeAPI
 	override suspend fun ackEphemeral(
@@ -86,7 +87,9 @@ public interface UnsafeCommandInteractionContext :
 		builder: suspend FollowupMessageCreateBuilder.() -> Unit,
 	): PublicFollowupMessage =
 		when (val interaction = interactionResponse) {
-			is InteractionResponseBehavior -> interaction.createPublicFollowup { builder() }
+			is InteractionResponseBehavior -> interaction.createPublicFollowup {
+				builder()
+			}
 
 			null -> error("Acknowledge the interaction before trying to follow-up.")
 			else -> error("Unsupported initial interaction response type $interaction - please report this.")

@@ -13,7 +13,6 @@ import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionRe
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.components.forms.ModalForm
-import dev.kordex.core.components.menus.channel.InitialEphemeralSelectMenuResponseBuilder
 import dev.kordex.core.types.EphemeralInteractionContext
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap

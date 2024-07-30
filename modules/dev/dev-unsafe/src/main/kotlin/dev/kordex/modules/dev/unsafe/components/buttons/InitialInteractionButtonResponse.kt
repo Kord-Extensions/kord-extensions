@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package dev.kordex.modules.dev.unsafe.types
+package dev.kordex.modules.dev.unsafe.components.buttons
 
 import dev.kordex.core.components.buttons.InitialEphemeralButtonResponseBuilder
 import dev.kordex.core.components.buttons.InitialPublicButtonResponseBuilder

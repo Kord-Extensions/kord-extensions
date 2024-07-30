@@ -13,7 +13,7 @@ import dev.kordex.core.commands.application.message.MessageCommandContext
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.types.UnsafeCommandInteractionContext
+import dev.kordex.modules.dev.unsafe.commands.UnsafeCommandInteractionContext
 
 /** Command context for an unsafe message command. **/
 @UnsafeAPI
@@ -23,4 +23,4 @@ public class UnsafeCommandMessageCommandContext<M : ModalForm>(
 	override var interactionResponse: MessageInteractionResponseBehavior?,
 	cache: MutableStringKeyedMap<Any>,
 ) : MessageCommandContext<UnsafeCommandMessageCommandContext<M>, M>(event, command, cache),
-	UnsafeCommandInteractionContext
+    UnsafeCommandInteractionContext
