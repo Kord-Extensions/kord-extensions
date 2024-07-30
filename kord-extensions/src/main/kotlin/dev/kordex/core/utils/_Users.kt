@@ -20,27 +20,6 @@ import kotlin.contracts.contract
 private const val DISCORD_USERS_URI = "https://discord.com/users"
 
 /**
- * If the given user still has a discriminator, return `"username#discrim"`.
- * Otherwise, only return their new-style username.
- *
- * @return User's tag or username, depending on whether they've migrated or not.
- */
-@Deprecated(
-	"As it appears that bots will keep their discriminators, their use is no longer deprecated. Instead, " +
-		"use the [tag] property, which will return only the username if the user doesn't have a discriminator, or " +
-		"`user#discriminator` if they do.",
-
-	level = DeprecationLevel.ERROR,
-	replaceWith = ReplaceWith("tag")
-)
-public fun User.tagOrUsername(): String =
-	if (discriminator == "0") {
-		username
-	} else {
-		tag
-	}
-
-/**
  * The user's Discord profile URL.
  */
 public val User.profileLink: String

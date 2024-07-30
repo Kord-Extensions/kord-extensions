@@ -101,40 +101,4 @@ public open class SentryScopeCapture : SentryCapture() {
 
 		processMap(tags).forEach(scope::setTag)
 	}
-
-	/** Set the given [value] into the [tags] map under [key]. **/
-	@Deprecated(
-		"Direct access to the Scope object is no longer provided. Access the tags map directly instead.",
-		replaceWith = ReplaceWith("tags.set(key, value)"),
-		level = DeprecationLevel.ERROR
-	)
-	public open fun tag(key: String, value: String): Unit =
-		tags.set(key, value)
-
-	/** Set the given [value] into the [tags] map under [key]. **/
-	@Deprecated(
-		"Direct access to the Scope object is no longer provided. Access the tags map directly instead.",
-		replaceWith = ReplaceWith("tags.set(key, value)"),
-		level = DeprecationLevel.ERROR
-	)
-	public open fun setTag(key: String, value: String): Unit =
-		tags.set(key, value)
-
-	/** Get the current value from the [tags] map under [key], or `null` if it doesn't exist. **/
-	@Deprecated(
-		"Direct access to the Scope object is no longer provided. Access the tags map directly instead.",
-		replaceWith = ReplaceWith("tags.get(key)"),
-		level = DeprecationLevel.ERROR
-	)
-	public open fun getTag(key: String): Any? =
-		tags[key]
-
-	/** Remove the value from the [tags] map under [key], returning it or `null` if it doesn't exist. **/
-	@Deprecated(
-		"Direct access to the Scope object is no longer provided. Access the tags map directly instead.",
-		replaceWith = ReplaceWith("tags.remove(key)"),
-		level = DeprecationLevel.ERROR
-	)
-	public open fun removeTag(key: String): Any? =
-		tags.remove(key)
 }

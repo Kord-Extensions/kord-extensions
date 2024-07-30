@@ -24,6 +24,8 @@ import dev.kordex.core.components.menus.user.EphemeralUserSelectMenu
 import dev.kordex.core.components.menus.user.PublicUserSelectMenu
 import kotlin.time.Duration
 
+// region: Buttons
+
 /** DSL function for creating a disabled button and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.disabledButton(
 	row: Int? = null,
@@ -104,28 +106,9 @@ public suspend fun <M : ModalForm> ComponentContainer.publicButton(
 	return component
 }
 
-/** DSL function for creating an ephemeral string select menu and adding it to the current [ComponentContainer]. **/
-@Deprecated(
-	message = "Deprecated to allow for other menu types.",
-	replaceWith = ReplaceWith("this.ephemeralStringSelectMenu(row, builder)"),
-	level = DeprecationLevel.ERROR
-)
-public suspend fun ComponentContainer.ephemeralSelectMenu(
-	row: Int? = null,
-	builder: suspend EphemeralStringSelectMenu<ModalForm>.() -> Unit,
-): EphemeralStringSelectMenu<ModalForm> = ephemeralStringSelectMenu(row, builder)
+// endregion
 
-/** DSL function for creating an ephemeral string select menu and adding it to the current [ComponentContainer]. **/
-@Deprecated(
-	message = "Deprecated to allow for other menu types.",
-	replaceWith = ReplaceWith("this.ephemeralStringSelectMenu(modal, row, builder)"),
-	level = DeprecationLevel.ERROR
-)
-public suspend fun <M : ModalForm> ComponentContainer.ephemeralSelectMenu(
-	modal: (() -> M)?,
-	row: Int? = null,
-	builder: suspend EphemeralStringSelectMenu<M>.() -> Unit,
-): EphemeralStringSelectMenu<M> = ephemeralStringSelectMenu(modal, row, builder)
+// region: Select Menus
 
 /** DSL function for creating an ephemeral string select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.ephemeralStringSelectMenu(
@@ -153,29 +136,6 @@ public suspend fun <M : ModalForm> ComponentContainer.ephemeralStringSelectMenu(
 
 	return component
 }
-
-/** DSL function for creating a public string select menu and adding it to the current [ComponentContainer]. **/
-@Deprecated(
-	message = "Deprecated to allow for other menu types.",
-	replaceWith = ReplaceWith("this.publicStringSelectMenu(row, builder)"),
-	level = DeprecationLevel.ERROR
-)
-public suspend fun ComponentContainer.publicSelectMenu(
-	row: Int? = null,
-	builder: suspend PublicStringSelectMenu<ModalForm>.() -> Unit,
-): PublicStringSelectMenu<ModalForm> = publicStringSelectMenu(row, builder)
-
-/** DSL function for creating a public string select menu and adding it to the current [ComponentContainer]. **/
-@Deprecated(
-	message = "Deprecated to allow for other menu types.",
-	replaceWith = ReplaceWith("this.publicStringSelectMenu(modal, row, builder)"),
-	level = DeprecationLevel.ERROR
-)
-public suspend fun <M : ModalForm> ComponentContainer.publicSelectMenu(
-	modal: (() -> M)?,
-	row: Int? = null,
-	builder: suspend PublicStringSelectMenu<M>.() -> Unit,
-): PublicStringSelectMenu<M> = publicStringSelectMenu(modal, row, builder)
 
 /** DSL function for creating a public string select menu and adding it to the current [ComponentContainer]. **/
 public suspend fun ComponentContainer.publicStringSelectMenu(
@@ -366,6 +326,10 @@ public suspend fun <M : ModalForm> ComponentContainer.publicChannelSelectMenu(
 	return component
 }
 
+// endregion
+
+// region: Utility functions
+
 /** Convenience function for applying the components in a [ComponentContainer] to a message you're creating. **/
 public suspend fun MessageBuilder.applyComponents(components: ComponentContainer) {
 	with(components) {
@@ -404,3 +368,5 @@ public suspend fun MessageModifyBuilder.components(
 
 	return container
 }
+
+// endregion

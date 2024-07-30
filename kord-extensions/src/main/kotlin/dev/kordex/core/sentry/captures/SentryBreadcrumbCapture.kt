@@ -96,31 +96,4 @@ public class SentryBreadcrumbCapture(
 		processMap(data)
 			.forEach(breadcrumb::setData)
 	}
-
-	/** Get the current value from the [data] map under [key], or `null` if it doesn't exist. **/
-	@Deprecated(
-		"Direct access to the Breadcrumb object is no longer provided. Access the data map directly instead.",
-		replaceWith = ReplaceWith("data.get(key)"),
-		level = DeprecationLevel.ERROR
-	)
-	public fun getData(key: String): Any? =
-		data[key]
-
-	/** Set the given [value] into the [data] map under [key]. **/
-	@Deprecated(
-		"Direct access to the Breadcrumb object is no longer provided. Access the data map directly instead.",
-		replaceWith = ReplaceWith("data.set(key, value)"),
-		level = DeprecationLevel.ERROR
-	)
-	public fun setData(key: String, value: Any): Unit =
-		data.set(key, value)
-
-	/** Remove the value from the [data] map under [key], returning it or `null` if it doesn't exist. **/
-	@Deprecated(
-		"Direct access to the Breadcrumb object is no longer provided. Access the data map directly instead.",
-		replaceWith = ReplaceWith("data.remove(key)"),
-		level = DeprecationLevel.ERROR
-	)
-	public fun removeData(key: String): Any? =
-		data.remove(key)
 }
