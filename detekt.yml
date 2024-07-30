@@ -356,7 +356,6 @@ naming:
     parameterPattern: '[a-z][A-Za-z0-9]*'
     privateParameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
   EnumNaming:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt' ]
@@ -378,13 +377,11 @@ naming:
     excludes: [ '**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt' ]
     functionPattern: '^([a-z$][a-zA-Z$0-9]*)|(`.*`)$'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
   FunctionParameterNaming:
     active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/*.Test.kt', '**/*.Spec.kt', '**/*.Spek.kt' ]
     parameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
   InvalidPackageDeclaration:
     active: true
     rootPackage: 'dev.kordex'
@@ -426,7 +423,6 @@ naming:
     variablePattern: '[a-z][A-Za-z0-9]*'
     privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
 
 performance:
   active: true
@@ -494,13 +490,22 @@ potential-bugs:
 
 style:
   active: true
+  BracesOnIfStatements:
+    active: true
+
+    singleLine: consistent
+    multiLine: always
+  BracesOnWhenStatements:
+    active: true
+
+    singleLine: necessary
+    multiLine: necessary
   ClassOrdering:
     active: true
   CollapsibleIfStatements:
     active: true
   DataClassContainsFunctions:
-    active: true
-    conversionFunctionPrefix: [ 'to' ]
+    active: false
   DataClassShouldBeImmutable:
     active: true
   EqualsNullCall:
@@ -516,12 +521,8 @@ style:
     includeLineWrapping: false
   ForbiddenComment:
     active: false
-    values: [ 'TODO:', 'FIXME:', 'STOPSHIP:' ]
-    allowedPatterns: ''
   ForbiddenImport:
     active: false
-    imports: [ ]
-    forbiddenPatterns: ''
   ForbiddenMethodCall:
     active: false
     methods: [ ]
@@ -550,8 +551,6 @@ style:
     ignoreNamedArgument: true
     ignoreEnums: true
     ignoreRanges: false
-  MandatoryBracesIfStatements:
-    active: true
   MandatoryBracesLoops:
     active: true
   MaxLineLength:
@@ -574,8 +573,6 @@ style:
     active: true
   OptionalUnit:
     active: false
-  OptionalWhenBraces:
-    active: true
   PreferToOverPairSyntax:
     active: true
   ProtectedMemberInFinalClass:

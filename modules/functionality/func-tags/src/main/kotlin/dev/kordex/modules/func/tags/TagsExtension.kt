@@ -12,7 +12,6 @@ import dev.kord.common.annotation.KordUnsafe
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.suggestString
-import dev.kord.rest.builder.message.EmbedBuilder.Limits.title
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kordex.core.checks.anyGuild
 import dev.kordex.core.commands.Arguments
@@ -27,8 +26,6 @@ import dev.kordex.core.utils.suggestStringMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.extensions.unsafeSubCommand
 import dev.kordex.modules.dev.unsafe.types.InitialSlashCommandResponse
-import dev.kordex.modules.dev.unsafe.types.ackEphemeral
-import dev.kordex.modules.dev.unsafe.types.respondEphemeral
 import dev.kordex.modules.func.tags.config.TagsConfig
 import dev.kordex.modules.func.tags.data.Tag
 import dev.kordex.modules.func.tags.data.TagsData

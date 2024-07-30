@@ -22,18 +22,15 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.contexts.UnsafeUserCommandContext
+import dev.kordex.modules.dev.unsafe.contexts.UnsafeCommandUserCommandContext
 import dev.kordex.modules.dev.unsafe.types.InitialUserCommandResponse
-import dev.kordex.modules.dev.unsafe.types.ackEphemeral
-import dev.kordex.modules.dev.unsafe.types.respondEphemeral
-import dev.kordex.modules.dev.unsafe.types.respondPublic
 
 /** Like a standard user command, but with less safety features. **/
 @UnsafeAPI
 public class UnsafeUserCommand<M : ModalForm>(
 	extension: Extension,
 	public override val modal: (() -> M)? = null,
-) : UserCommand<UnsafeUserCommandContext<M>, M>(extension) {
+) : UserCommand<UnsafeCommandUserCommandContext<M>, M>(extension) {
 	/** Initial response type. Change this to decide what happens when this user command action is executed. **/
 	public var initialResponse: InitialUserCommandResponse = InitialUserCommandResponse.EphemeralAck
 
@@ -77,7 +74,7 @@ public class UnsafeUserCommand<M : ModalForm>(
 			is InitialUserCommandResponse.None -> null
 		}
 
-		val context = UnsafeUserCommandContext(event, this, response, cache)
+		val context = UnsafeCommandUserCommandContext(event, this, response, cache)
 
 		context.populate()
 
@@ -109,9 +106,9 @@ public class UnsafeUserCommand<M : ModalForm>(
 	}
 
 	override suspend fun respondText(
-		context: UnsafeUserCommandContext<M>,
-		message: String,
-		failureType: FailureReason<*>,
+        context: UnsafeCommandUserCommandContext<M>,
+        message: String,
+        failureType: FailureReason<*>,
 	) {
 		when (context.interactionResponse) {
 			is PublicMessageInteractionResponseBehavior -> context.respondPublic {

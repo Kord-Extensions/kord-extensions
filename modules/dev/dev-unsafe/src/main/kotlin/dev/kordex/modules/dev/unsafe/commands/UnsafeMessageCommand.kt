@@ -22,18 +22,15 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.contexts.UnsafeMessageCommandContext
+import dev.kordex.modules.dev.unsafe.contexts.UnsafeCommandMessageCommandContext
 import dev.kordex.modules.dev.unsafe.types.InitialMessageCommandResponse
-import dev.kordex.modules.dev.unsafe.types.ackEphemeral
-import dev.kordex.modules.dev.unsafe.types.respondEphemeral
-import dev.kordex.modules.dev.unsafe.types.respondPublic
 
 /** Like a standard message command, but with less safety features. **/
 @UnsafeAPI
 public class UnsafeMessageCommand<M : ModalForm>(
 	extension: Extension,
 	public override val modal: (() -> M)? = null,
-) : MessageCommand<UnsafeMessageCommandContext<M>, M>(extension) {
+) : MessageCommand<UnsafeCommandMessageCommandContext<M>, M>(extension) {
 	/** Initial response type. Change this to decide what happens when this message command action is executed. **/
 	public var initialResponse: InitialMessageCommandResponse = InitialMessageCommandResponse.EphemeralAck
 
@@ -76,7 +73,7 @@ public class UnsafeMessageCommand<M : ModalForm>(
 			is InitialMessageCommandResponse.None -> null
 		}
 
-		val context = UnsafeMessageCommandContext(event, this, response, cache)
+		val context = UnsafeCommandMessageCommandContext(event, this, response, cache)
 
 		context.populate()
 
@@ -108,9 +105,9 @@ public class UnsafeMessageCommand<M : ModalForm>(
 	}
 
 	override suspend fun respondText(
-		context: UnsafeMessageCommandContext<M>,
-		message: String,
-		failureType: FailureReason<*>,
+        context: UnsafeCommandMessageCommandContext<M>,
+        message: String,
+        failureType: FailureReason<*>,
 	) {
 		when (context.interactionResponse) {
 			is PublicMessageInteractionResponseBehavior -> context.respondPublic {

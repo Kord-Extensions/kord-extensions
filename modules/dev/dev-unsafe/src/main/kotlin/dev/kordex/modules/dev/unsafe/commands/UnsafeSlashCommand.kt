@@ -25,11 +25,8 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.contexts.UnsafeSlashCommandContext
+import dev.kordex.modules.dev.unsafe.contexts.UnsafeCommandSlashCommandContext
 import dev.kordex.modules.dev.unsafe.types.InitialSlashCommandResponse
-import dev.kordex.modules.dev.unsafe.types.ackEphemeral
-import dev.kordex.modules.dev.unsafe.types.respondEphemeral
-import dev.kordex.modules.dev.unsafe.types.respondPublic
 
 /** Like a standard slash command, but with less safety features. **/
 @UnsafeAPI
@@ -40,7 +37,7 @@ public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
 	public override val modal: (() -> M)? = null,
 	public override val parentCommand: SlashCommand<*, *, *>? = null,
 	public override val parentGroup: SlashGroup? = null,
-) : SlashCommand<UnsafeSlashCommandContext<A, M>, A, M>(extension) {
+) : SlashCommand<UnsafeCommandSlashCommandContext<A, M>, A, M>(extension) {
 	/** Initial response type. Change this to decide what happens when this slash command is executed. **/
 	public var initialResponse: InitialSlashCommandResponse = InitialSlashCommandResponse.EphemeralAck
 
@@ -88,7 +85,7 @@ public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
 			is InitialSlashCommandResponse.None -> null
 		}
 
-		val context = UnsafeSlashCommandContext(event, this, response, cache)
+		val context = UnsafeCommandSlashCommandContext(event, this, response, cache)
 
 		context.populate()
 
@@ -133,9 +130,9 @@ public class UnsafeSlashCommand<A : Arguments, M : ModalForm>(
 	}
 
 	override suspend fun respondText(
-		context: UnsafeSlashCommandContext<A, M>,
-		message: String,
-		failureType: FailureReason<*>,
+        context: UnsafeCommandSlashCommandContext<A, M>,
+        message: String,
+        failureType: FailureReason<*>,
 	) {
 		when (context.interactionResponse) {
 			is PublicMessageInteractionResponseBehavior -> context.respondPublic {

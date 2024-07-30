@@ -14,13 +14,14 @@ import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.modules.dev.unsafe.commands.UnsafeSlashCommand
-import dev.kordex.modules.dev.unsafe.types.UnsafeInteractionContext
+import dev.kordex.modules.dev.unsafe.types.UnsafeCommandInteractionContext
 
 /** Command context for an unsafe slash command. **/
 @UnsafeAPI
-public class UnsafeSlashCommandContext<A : Arguments, M : ModalForm>(
+public class UnsafeCommandSlashCommandContext<A : Arguments, M : ModalForm>(
 	override val event: ChatInputCommandInteractionCreateEvent,
 	override val command: UnsafeSlashCommand<A, M>,
 	override var interactionResponse: MessageInteractionResponseBehavior?,
 	cache: MutableStringKeyedMap<Any>,
-) : SlashCommandContext<UnsafeSlashCommandContext<A, M>, A, M>(event, command, cache), UnsafeInteractionContext
+) : SlashCommandContext<UnsafeCommandSlashCommandContext<A, M>, A, M>(event, command, cache),
+	UnsafeCommandInteractionContext

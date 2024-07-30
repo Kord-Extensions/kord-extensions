@@ -7,19 +7,18 @@
 package dev.kordex.modules.dev.unsafe.contexts
 
 import dev.kord.core.behavior.interaction.response.MessageInteractionResponseBehavior
-import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
-import dev.kordex.core.commands.application.user.UserCommand
-import dev.kordex.core.commands.application.user.UserCommandContext
+import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
+import dev.kordex.core.components.buttons.InteractionButtonContext
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
-import dev.kordex.modules.dev.unsafe.types.UnsafeInteractionContext
+import dev.kordex.modules.dev.unsafe.components.UnsafeInteractionButton
+import dev.kordex.modules.dev.unsafe.types.UnsafeButtonInteractionContext
 
-/** Command context for an unsafe user command. **/
 @UnsafeAPI
-public class UnsafeUserCommandContext<M : ModalForm>(
-	override val event: UserCommandInteractionCreateEvent,
-	override val command: UserCommand<UnsafeUserCommandContext<M>, M>,
+public class UnsafeInteractionComponentContext<M : ModalForm>(
+	override val component: UnsafeInteractionButton<M>,
+	override val event: ButtonInteractionCreateEvent,
 	override var interactionResponse: MessageInteractionResponseBehavior?,
 	cache: MutableStringKeyedMap<Any>,
-) : UserCommandContext<UnsafeUserCommandContext<M>, M>(event, command, cache), UnsafeInteractionContext
+) : InteractionButtonContext(component, event, cache), UnsafeButtonInteractionContext
