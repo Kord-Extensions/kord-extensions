@@ -6,19 +6,24 @@
 
 package dev.kordex.core.plugins
 
+import dev.kordex.core.KORDEX_VERSION
 import org.pf4j.*
 import java.nio.file.Path
 
 @Suppress("SpreadOperator")
 /** Module manager, in charge of loading and managing module "plugins". **/
-public open class PluginManager(roots: List<Path>) : JarPluginManager(*roots.toTypedArray()) {
+public open class PluginManager(roots: List<Path>) : DefaultPluginManager(*roots.toTypedArray()) {
+	init {
+		systemVersion = KORDEX_VERSION
+	}
+
 	override fun createPluginDescriptorFinder(): PluginDescriptorFinder =
 		PropertiesPluginDescriptorFinder()
 
 	override fun createPluginLoader(): PluginLoader? {
 		return CompoundPluginLoader()
-			.add(DevelopmentLoader(this)) { this.isDevelopment }
-			.add(JarLoader(this)) { this.isNotDevelopment }
-			.add(DefaultLoader(this)) { this.isNotDevelopment }
+			.add(DevelopmentPluginLoader(this)) { this.isDevelopment }
+			.add(JarPluginLoader(this)) { this.isNotDevelopment }
+			.add(DefaultPluginLoader(this)) { this.isNotDevelopment }
 	}
 }

@@ -454,14 +454,20 @@ public open class ExtensibleBotBuilder {
 		manager.loadPlugins()
 
 		manager.plugins.forEach { wrapper ->
-			val plugin = wrapper.plugin as? KordExPlugin
+			try {
+				val plugin = wrapper.plugin as? KordExPlugin
 
-			plugin?.settingsCallbacks?.forEach { callback ->
-				try {
-					callback(this)
-				} catch (t: Throwable) {
-					logger.error(t) { "Error thrown while running settings callbacks for plugin: ${wrapper.pluginId}" }
+				plugin?.settingsCallbacks?.forEach { callback ->
+					try {
+						callback(this)
+					} catch (e: Error) {
+						logger.error(e) { "Error thrown while running settings callbacks for plugin: ${wrapper.pluginId}" }
+					}
 				}
+
+				logger.info { "Loaded plugin: ${wrapper.pluginId} from ${wrapper.pluginPath}" }
+			} catch (e: Error) {
+				logger.error(e) { "Failed to load plugin: ${wrapper.pluginId} from ${wrapper.pluginPath}" }
 			}
 		}
 	}

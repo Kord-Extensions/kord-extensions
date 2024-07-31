@@ -115,7 +115,6 @@ fabric.properties
 
 ### Custom ignores
 
-/data
 /**/build/
 /**/build/**
 
@@ -129,3 +128,7 @@ detekt.md
 **/detekt.html
 **/detekt.md
 
+# Testing Paths
+/test-bot/plugins
+/config
+/data
