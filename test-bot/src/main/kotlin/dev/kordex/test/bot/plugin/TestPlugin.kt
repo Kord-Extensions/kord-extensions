@@ -6,18 +6,23 @@
 
 package dev.kordex.test.bot.plugin
 
-import dev.kordex.core.annotations.plugins.WiredPlugin
 import dev.kordex.core.plugins.KordExPlugin
 import dev.kordex.core.storage.StorageType
 import dev.kordex.core.storage.StorageUnit
 
-@WiredPlugin(
-    TestPlugin.PLUGIN_ID,
-	"0.0.1",
-	"kord-extensions",
-	"KordEx testing plugin",
-	"MPL 2.0"
-)
+// @WiredPlugin(
+//    TestPlugin.PLUGIN_ID,
+// 	"0.0.1",
+// 	"kord-extensions",
+// 	"KordEx testing plugin",
+// 	"MPL 2.0"
+// )
+
+/**
+ * Class representing a test plugin.
+ *
+ * TODO: Switch to the official Gradle plugin for development, or find some other way to package this.
+ **/
 public class TestPlugin : KordExPlugin() {
 	override suspend fun setup() {
 		extension(::TestPluginExtension)

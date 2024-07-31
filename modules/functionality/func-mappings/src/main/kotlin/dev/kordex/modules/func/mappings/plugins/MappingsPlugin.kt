@@ -6,19 +6,23 @@
 
 package dev.kordex.modules.func.mappings.plugins
 
-import dev.kordex.core.annotations.plugins.WiredPlugin
 import dev.kordex.core.plugins.KordExPlugin
 import dev.kordex.modules.func.mappings.MappingsExtension
 import dev.kordex.modules.func.mappings.builders.ExtMappingsBuilder
 
-/** Class representing a simplified mappings plugin. No configuration supported yet. **/
-@WiredPlugin(
-	MappingsPlugin.PLUGIN_ID,
-	"0.0.1",
-	"kord-extensions",
-	"KordEx Minecraft Mappings plugin",
-	"MPL 2.0"
-)
+// @WiredPlugin(
+// 	MappingsPlugin.PLUGIN_ID,
+// 	"0.0.1",
+// 	"kord-extensions",
+// 	"KordEx Minecraft Mappings plugin",
+// 	"MPL 2.0"
+// )
+
+/**
+ * Class representing a simplified mappings plugin. No configuration supported yet.
+ *
+ * TODO: Switch to the official Gradle plugin for development, or find some other way to package this.
+ **/
 class MappingsPlugin : KordExPlugin() {
 	override suspend fun setup() {
 		MappingsExtension.configure(ExtMappingsBuilder())

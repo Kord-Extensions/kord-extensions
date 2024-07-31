@@ -16,9 +16,9 @@ import org.koin.core.component.inject
 import org.pf4j.Plugin
 
 /**
- * Abstract class representing a plugin. This is intended to be used with the @WiredPlugin annotation.
+ * Abstract class representing a plugin.
  *
- * Registered plugins will always be loaded at the end of the setup process, so that everything else is available
+ * The bot will always load registered plugins at the end of the setup process so that everything else is available
  * and ready to be used.
  */
 public abstract class KordExPlugin : Plugin(), KordExKoinComponent {
