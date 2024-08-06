@@ -26,6 +26,7 @@ import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.application.ApplicationCommandRegistry
 import dev.kordex.core.commands.chat.ChatCommandRegistry
 import dev.kordex.core.components.ComponentRegistry
+import dev.kordex.core.datacollection.DataCollector
 import dev.kordex.core.events.EventHandler
 import dev.kordex.core.events.KordExEvent
 import dev.kordex.core.events.extra.GuildJoinRequestDeleteEvent
@@ -68,7 +69,6 @@ public open class ExtensibleBot(
 	public val settings: ExtensibleBotBuilder,
 	private val token: String,
 ) : KordExKoinComponent, Lockable {
-
 	override var mutex: Mutex? = Mutex()
 	override var locking: Boolean = settings.membersBuilder.lockMemberRequests
 
@@ -103,6 +103,8 @@ public open class ExtensibleBot(
 			close()
 		}
 	}
+
+	private val dataCollector = DataCollector(settings.dataCollectionMode)
 
 	/** @suppress Function that sets up the bot early on, called by the builder. **/
 	public open suspend fun setup() {
@@ -156,6 +158,8 @@ public open class ExtensibleBot(
 			logger.warn(e) { "Unable to add shutdown hook." }
 		}
 
+		dataCollector.start()
+
 		getKoin().get<Kord>().login {
 			this.presence(settings.presenceBuilder)
 			this.intents = Intents(settings.intentsBuilder!!)
@@ -170,6 +174,8 @@ public open class ExtensibleBot(
 	 * @see close
 	 **/
 	public open suspend fun stop() {
+		dataCollector.stop()
+
 		getKoin().get<Kord>().logout()
 	}
 
@@ -198,6 +204,7 @@ public open class ExtensibleBot(
 			unloadExtension(it)
 		}
 
+		dataCollector.stop()
 		getKoin().get<Kord>().shutdown()
 
 		KordExContext.stopKoin()

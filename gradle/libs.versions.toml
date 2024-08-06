@@ -4,6 +4,7 @@ dokka = "1.9.20"  # Note: Must update plugin versions in buildSrc/build.gradle.k
 kotlin = "2.0.20-Beta1"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
 
 commons-validator = "1.9.0"
+data-collector-api = "1.0.0-SNAPSHOT"
 groovy = "3.0.22"
 icu4j = "75.1"
 jansi = "2.4.1"
@@ -23,6 +24,7 @@ logback = "1.5.6"
 logback-groovy = "1.14.5"
 logging = "7.0.0"
 mongodb = "5.1.2"
+oshi = "6.6.2"
 pf4j = "3.12.0"
 semver = "2.0.0"
 sentry = "7.12.0"
@@ -33,6 +35,7 @@ toml = "0.2.0"
 
 [libraries]
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator" }
+data-collector-api = { module = "dev.kordex.data:api", version.ref = "data-collector-api" }
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 detekt-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
 groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
@@ -75,6 +78,7 @@ logback-groovy = { module = "io.github.virtualdogbert:logback-groovy-config", ve
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "logging" }
 mongodb = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
 mongodb-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongodb" }
+oshi = { module = "com.github.oshi:oshi-core" , version.ref = "oshi" }
 pf4j = { module = "org.pf4j:pf4j", version.ref = "pf4j" }
 semver = { module = "io.github.z4kn4fein:semver", version.ref = "semver" }
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }

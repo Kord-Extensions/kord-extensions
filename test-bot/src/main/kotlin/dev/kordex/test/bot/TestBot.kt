@@ -15,6 +15,7 @@ import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.checks.isNotBot
 import dev.kordex.core.utils.env
 import dev.kordex.core.utils.envOrNull
+import dev.kordex.data.api.DataCollection
 import dev.kordex.modules.func.mappings.extMappings
 import dev.kordex.modules.func.phishing.extPhishing
 import dev.kordex.modules.pluralkit.extPluralKit
@@ -30,6 +31,8 @@ public suspend fun main() {
 	LogLevel.enabledLevel = LogLevel.fromString(envOrNull("LOG_LEVEL") ?: "INFO") ?: LogLevel.INFO
 
 	val bot = ExtensibleBot(env("TOKEN")) {
+		dataCollectionMode = DataCollection.Extra
+		devMode = true
 		koinLogLevel = Level.DEBUG
 
 		chatCommands {

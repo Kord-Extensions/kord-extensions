@@ -107,7 +107,7 @@ class SchedulerTest {
 			count += 1
 		}
 
-		delay(10.seconds)
+		delay(3.seconds)
 
 		task.cancel()
 

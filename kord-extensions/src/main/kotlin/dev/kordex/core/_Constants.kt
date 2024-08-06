@@ -9,8 +9,6 @@
 package dev.kordex.core
 
 import dev.kord.common.Color
-import dev.kordex.core.builders.ExtensibleBotBuilder
-import java.util.*
 
 /** Colour representing Discord's new blurple colour. **/
 public val DISCORD_BLURPLE: Color = Color(0x5765F2)
@@ -35,16 +33,3 @@ public val DISCORD_WHITE: Color = Color(0xFEFEFE)
 
 /** Colour representing Discord's new black colour. **/
 public val DISCORD_BLACK: Color = Color(0x1E2227)
-
-/** Current Kord Extensions version. **/
-public val KORDEX_VERSION: String by lazy {
-	val props = Properties()
-
-	props.load(
-		ExtensibleBotBuilder::class.java.getResourceAsStream(
-			"/kordex.properties"
-		)
-	)
-
-	props.getProperty("version")
-}

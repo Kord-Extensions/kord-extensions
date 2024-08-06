@@ -11,6 +11,7 @@ import dev.kord.core.event.Event
 import dev.kord.gateway.Intents
 import dev.kordex.core.EventHandlerRegistrationException
 import dev.kordex.core.InvalidEventHandlerException
+import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.events.EventHandler
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -21,6 +22,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  *
  * @param body Builder lambda used for setting up the event handler object.
  */
+@OptIn(InternalAPI::class)
 public suspend inline fun <reified T : Event> Extension.event(
 	noinline constructor: (Extension) -> EventHandler<T> = ::EventHandler,
 	noinline body: suspend EventHandler<T>.() -> Unit,
@@ -32,6 +34,7 @@ public suspend inline fun <reified T : Event> Extension.event(
 
 	try {
 		eventHandler.validate()
+		eventHandler.type = T::class
 
 		eventHandler.listenerRegistrationCallable = {
 			eventHandler.job = bot.registerListenerForHandler(eventHandler)

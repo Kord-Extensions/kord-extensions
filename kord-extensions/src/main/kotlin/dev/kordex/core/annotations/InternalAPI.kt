@@ -8,7 +8,9 @@ package dev.kordex.core.annotations
 
 @RequiresOptIn(
 	level = RequiresOptIn.Level.ERROR,
-	message = "This API is internal and should not be used. It could be removed or changed without notice."
+	message = "This API is internal and should not be used, as it could be removed or changed without notice." +
+		"An alternative API may be available - read the KDoc comment for this element to check. " +
+		"In IntelliJ IDEA, you may jump to the definition by holding CTRL and clicking on the element."
 )
 @Target(
 	AnnotationTarget.CLASS,

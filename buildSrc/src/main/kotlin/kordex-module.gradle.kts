@@ -39,6 +39,26 @@ val javadocJar = tasks.register<Jar>("javadocJar") {
 //	archiveClassifier = "html-docs"
 //}
 
+repositories {
+	google()
+	mavenCentral()
+
+	maven {
+		name = "KordEx (Releases)"
+		url = uri("https://releases-repo.kordex.dev")
+	}
+
+	maven {
+		name = "KordEx (Snapshots)"
+		url = uri("https://snapshots-repo.kordex.dev")
+	}
+
+	maven {
+		name = "Sonatype Snapshots"
+		url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+	}
+}
+
 tasks {
 	val projectDir = project.projectDir.relativeTo(rootProject.rootDir).toString()
 
@@ -72,7 +92,7 @@ tasks {
 			targetCompatibility = "13"
 		}
 
-		withType<KotlinCompile>().configureEach {
+		tasks.withType<KotlinCompile>().configureEach {
 			compilerOptions {
 				freeCompilerArgs.add("-Xallow-kotlin-package")
 				freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")

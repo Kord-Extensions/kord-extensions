@@ -9,6 +9,7 @@ package dev.kordex.core.events
 import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import dev.kordex.core.InvalidEventHandlerException
+import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.checks.*
 import dev.kordex.core.checks.types.CheckContextWithCache
@@ -25,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import org.koin.core.component.inject
 import java.util.*
+import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
 
@@ -57,6 +59,10 @@ public open class EventHandler<T : Event>(
 	 * @suppress
 	 */
 	public lateinit var body: suspend EventContext<T>.() -> Unit
+
+	/** @suppress **/
+	@InternalAPI
+	public lateinit var type: KClass<T>
 
 	/**
 	 * @suppress

@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 buildscript {
 	repositories {
 		maven {
@@ -28,14 +26,16 @@ dependencies {
 	api(libs.koin.core)
 	api(libs.koin.logger)
 
+	api(libs.data.collector.api)
 	api(libs.kord)
 
 	api(libs.bundles.logging) // Basic logging setup
-	api(libs.jemoji) // Basic logging setup
+	api(libs.jemoji)
 	api(libs.kx.ser)
 	api(libs.sentry)  // Needs to be transitive or bots will start breaking
 	api(libs.toml)
 	api(libs.pf4j)
+	api(libs.oshi)
 
 	api(project(":annotations:annotations"))
 	api(project(":token-parser"))
