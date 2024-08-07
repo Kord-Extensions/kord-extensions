@@ -22,6 +22,7 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.builder.kord.KordBuilder
 import dev.kord.core.cache.KordCacheBuilder
 import dev.kord.core.cache.lruCache
+import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.interaction.Interaction
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.supplier.EntitySupplier
@@ -51,6 +52,7 @@ import dev.kordex.core.commands.application.DefaultApplicationCommandRegistry
 import dev.kordex.core.commands.chat.ChatCommandRegistry
 import dev.kordex.core.components.ComponentRegistry
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.impl.AboutExtension
 import dev.kordex.core.i18n.ResourceBundleTranslations
 import dev.kordex.core.i18n.SupportedLocales
 import dev.kordex.core.i18n.TranslationsProvider
@@ -64,6 +66,7 @@ import dev.kordex.core.storage.toml.TomlDataAdapter
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.getKoin
 import dev.kordex.core.utils.loadModule
+import dev.kordex.core.utils.toReaction
 import dev.kordex.data.api.DataCollection
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -111,12 +114,17 @@ public open class ExtensibleBotBuilder {
 	public var constructor: (ExtensibleBotBuilder, String) -> ExtensibleBot = ::ExtensibleBot
 
 	/** @suppress Builder that shouldn't be set directly by the user. **/
+	public val aboutBuilder: AboutBuilder = AboutBuilder()
+
+	/** @suppress Builder that shouldn't be set directly by the user. **/
 	public val cacheBuilder: CacheBuilder = CacheBuilder()
 
 	/** @suppress Builder that shouldn't be set directly by the user. **/
 	public val componentsBuilder: ComponentsBuilder = ComponentsBuilder()
 
-	/** Data storage adapter to use for all extensions, modules and plugins. **/
+	/**
+	 * @suppress Builder that shouldn't be set directly by the user.
+	 */
 	public var dataAdapterCallback: () -> DataAdapter<*> = ::TomlDataAdapter
 
 	/**
@@ -220,6 +228,16 @@ public open class ExtensibleBotBuilder {
 
 	/** Logging level Koin should use, defaulting to ERROR. **/
 	public var koinLogLevel: Level = Level.ERROR
+
+	/**
+	 * DSL function used to configure information about the bot.
+	 *
+	 * @see AboutBuilder
+	 */
+	@BotBuilderDSL
+	public suspend fun about(builder: suspend AboutBuilder.() -> Unit) {
+		builder(aboutBuilder)
+	}
 
 	/**
 	 * DSL function used to configure the bot's caching options.
@@ -543,6 +561,8 @@ public open class ExtensibleBotBuilder {
 		hooksBuilder.runSetup(bot)
 		hooksBuilder.runBeforeExtensionsAdded(bot)
 
+		bot.addExtension(::AboutExtension)
+
 		@Suppress("TooGenericExceptionCaught")
 		extensionsBuilder.extensions.forEach {
 			try {
@@ -561,6 +581,114 @@ public open class ExtensibleBotBuilder {
 		hooksBuilder.runAfterExtensionsAdded(bot)
 
 		return bot
+	}
+
+	/**
+	 * Builder used for configuring the information provided by the about chat/slash command.
+	 */
+	@BotBuilderDSL
+	public class AboutBuilder {
+		/** Translation bundle used when translating your button names, bot name, and bot description. **/
+		public var translationBundle: String? = null
+
+		/** Colour to use for the embed. **/
+		public var color: Color = DISCORD_BLURPLE
+
+		/** Translatable, a short description that explains what your bot is and does. **/
+		public var description: String? = null
+
+		/** Translatable, the name of your bot. **/
+		public var name: String? = null
+
+		/** A direct URL to your bot's logo, which should be at least 512 by 512, and either PNG or JPEG format. **/
+		public var logoUrl: String? = null
+
+		/** A URL pointing to a page that provides more information about your bot. **/
+		public var url: String? = null
+
+		/** Your bot's version number. **/
+		public var version: String? = null
+
+		internal val buttons: MutableList<Button> = mutableListOf()
+
+		/**
+		 * Add a custom button to be displayed under your bot's about information.
+		 *
+		 * You may only add up to five (5) buttons.
+		 */
+		@Suppress("MagicNumber")
+		public fun button(body: Button.() -> Unit) {
+			if (buttons.size >= 5) {
+				error("Failed to add button: Only a maximum of 5 buttons may be added")
+			}
+
+			val button = Button()
+
+			body(button)
+
+			buttons.add(button)
+		}
+
+		/** Convenience function for adding a button that links to your bot's documentation. **/
+		public fun docsButton(url: String) {
+			button {
+				name = "extensions.about.buttons.docs"
+				emoji = "📖".toReaction()
+
+				this.url = url
+			}
+		}
+
+		/** Convenience function for adding a button that links to your bot's donation page. **/
+		public fun donationButton(url: String) {
+			button {
+				name = "extensions.about.buttons.donate"
+				emoji = "💵".toReaction()
+
+				this.url = url
+			}
+		}
+
+		/** Convenience function for adding a button that links to your bot's invite page. **/
+		public fun inviteButton(url: String) {
+			button {
+				name = "extensions.about.buttons.invite"
+				emoji = "➕".toReaction()
+
+				this.url = url
+			}
+		}
+
+		/** Convenience function for adding a button that links to your bot's source code. **/
+		public fun sourceButton(url: String) {
+			button {
+				name = "extensions.about.buttons.source"
+				emoji = "🛠️".toReaction()
+
+				this.url = url
+			}
+		}
+
+		/** Convenience function for adding a button that links to your bot's website. **/
+		public fun websiteButton(url: String) {
+			button {
+				name = "extensions.about.buttons.website"
+				emoji = "🔗".toReaction()
+
+				this.url = url
+			}
+		}
+
+		public class Button {
+			/** Translatable, the text to show on this button. **/
+			public lateinit var name: String
+
+			/** The URL this button should link to. **/
+			public lateinit var url: String
+
+			/** An emoji to show as this button's icon. **/
+			public var emoji: ReactionEmoji? = null
+		}
 	}
 
 	/**

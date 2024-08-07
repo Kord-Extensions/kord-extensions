@@ -31,10 +31,9 @@ import dev.kordex.modules.func.welcome.config.WelcomeChannelConfig
 import dev.kordex.modules.func.welcome.data.WelcomeChannelData
 import kotlinx.coroutines.flow.toList
 import org.koin.core.component.inject
-import org.koin.java.KoinJavaComponent.inject
 
 class WelcomeExtension : Extension() {
-	override val name: String = "ext-welcome"
+	override val name: String = "kordex.func-welcome"
 
 	private val config: WelcomeChannelConfig by inject()
 	private val data: WelcomeChannelData by inject()

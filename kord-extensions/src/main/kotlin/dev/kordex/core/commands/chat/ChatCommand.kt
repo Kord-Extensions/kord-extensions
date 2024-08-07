@@ -18,6 +18,7 @@ import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.Command
 import dev.kordex.core.commands.events.*
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.impl.SENTRY_EXTENSION_NAME
 import dev.kordex.core.i18n.EMPTY_VALUE_STRING
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
@@ -460,7 +461,7 @@ public open class ChatCommand<T : Arguments>(
 
 				logger.error(t) { "Error during execution of $name command ($event)" }
 
-				if (extension.bot.extensions.containsKey("sentry")) {
+				if (extension.bot.extensions.containsKey(SENTRY_EXTENSION_NAME)) {
 					val prefix = registry.getPrefix(event)
 
 					event.message.respond {

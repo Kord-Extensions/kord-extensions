@@ -41,7 +41,7 @@ private const val ARGUMENTS_GROUP = "Arguments"
  */
 @Suppress("StringLiteralDuplication")
 public class HelpExtension : HelpProvider, Extension() {
-	override val name: String = "help"
+	override val name: String = "kordex.help"
 
 	/** Translations provider, for retrieving translations. **/
 	public val translationsProvider: TranslationsProvider by inject()

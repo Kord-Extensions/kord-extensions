@@ -86,7 +86,9 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 							?.let { Intents(it).values.map { i -> i.getName() }.toTypedArray() }
 							?: arrayOf(),
 
-						pluginCount = settings.pluginBuilder.managerObj.plugins.size
+						pluginCount = settings.pluginBuilder.managerObj.plugins.size,
+						jvmVersion = System.getProperty("java.version"),
+						kotlinVersion = KotlinVersion.CURRENT.toString(),
 					)
 
 				is DataCollection.Extra -> {

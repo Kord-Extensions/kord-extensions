@@ -9,6 +9,7 @@ package dev.kordex.core.components.menus
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kordex.core.components.ComponentWithAction
 import dev.kordex.core.components.forms.ModalForm
+import dev.kordex.core.extensions.impl.SENTRY_EXTENSION_NAME
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.scheduling.Task
@@ -100,7 +101,7 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 			val errorMessage = if (sentryId != null) {
 				logger.info { "Error submitted to Sentry: $sentryId" }
 
-				if (bot.extensions.containsKey("sentry")) {
+				if (bot.extensions.containsKey(SENTRY_EXTENSION_NAME)) {
 					context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
 				} else {
 					context.translate("commands.error.user", null)

@@ -12,6 +12,7 @@ import dev.kord.gateway.ALL
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import dev.kordex.core.ExtensibleBot
+import dev.kordex.core.KORDEX_VERSION
 import dev.kordex.core.checks.isNotBot
 import dev.kordex.core.utils.env
 import dev.kordex.core.utils.envOrNull
@@ -34,6 +35,18 @@ public suspend fun main() {
 		dataCollectionMode = DataCollection.Extra
 		devMode = true
 		koinLogLevel = Level.DEBUG
+
+		about {
+			name = "Test Bot"
+			description = "Kord Extensions' official testing bot."
+			logoUrl = "https://kordex.dev/logo.png"
+			url = "https://kordex.dev"
+			version = KORDEX_VERSION
+
+			docsButton("https://docs.kordex.dev")
+			donationButton("https://ko-fi.com/gsc")
+			sourceButton("https://github.com/Kord-Extensions/kord-extensions")
+		}
 
 		chatCommands {
 			enabled = true

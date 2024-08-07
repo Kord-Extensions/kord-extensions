@@ -45,7 +45,7 @@ const val MAX_REDIRECTS = 5
 
 /** Phishing extension, responsible for checking for phishing domains in messages. **/
 class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() {
-	override val name = "phishing"
+	override val name = "kordex.func-phishing"
 
 	private val domainCache: MutableSet<String> = settings.badDomains.toMutableSet()
 	private val logger = KotlinLogging.logger { }

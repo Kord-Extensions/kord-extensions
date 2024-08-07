@@ -36,7 +36,7 @@ internal const val NEGATIVE_EMOTE = "❌"
 @OptIn(UnsafeAPI::class)
 @Suppress("MagicNumber")
 class TagsExtension : Extension() {
-	override val name: String = "ext-tags"
+	override val name: String = "kordex.func-tags"
 
 	val tagsConfig: TagsConfig by inject()
 	val tagsData: TagsData by inject()

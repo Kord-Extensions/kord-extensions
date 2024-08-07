@@ -13,6 +13,7 @@ import dev.kordex.core.checks.types.CheckContextWithCache
 import dev.kordex.core.components.ComponentRegistry
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.impl.SENTRY_EXTENSION_NAME
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -135,7 +136,7 @@ public abstract class MessageCommand<C : MessageCommandContext<C, M>, M : ModalF
 			val errorMessage = if (sentryId != null) {
 				logger.info { "Error submitted to Sentry: $sentryId" }
 
-				if (extension.bot.extensions.containsKey("sentry")) {
+				if (extension.bot.extensions.containsKey(SENTRY_EXTENSION_NAME)) {
 					context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
 				} else {
 					context.translate("commands.error.user", null)

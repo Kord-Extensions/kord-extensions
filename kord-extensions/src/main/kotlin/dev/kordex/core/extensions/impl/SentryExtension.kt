@@ -20,13 +20,15 @@ import io.sentry.UserFeedback
 import io.sentry.protocol.SentryId
 import org.koin.core.component.inject
 
+public const val SENTRY_EXTENSION_NAME: String = "kordex.sentry"
+
 /**
  * Extension providing a feedback command for use with the Sentry integration.
  *
  * Even if you add this extension manually, it won't do anything unless you've set up the Sentry integration.
  */
 public class SentryExtension : Extension() {
-	override val name: String = "sentry"
+	override val name: String = SENTRY_EXTENSION_NAME
 
 	/** Sentry adapter, for easy access to Sentry functions. **/
 	public val sentryAdapter: SentryAdapter by inject()
