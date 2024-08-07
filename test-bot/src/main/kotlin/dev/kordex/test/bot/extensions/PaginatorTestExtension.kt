@@ -13,7 +13,7 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 
 public class PaginatorTestExtension : Extension() {
-	override val name: String = "test-paginator"
+	override val name: String = "kordex.test-paginator"
 
 	override suspend fun setup() {
 		publicSlashCommand {

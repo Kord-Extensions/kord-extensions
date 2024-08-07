@@ -16,7 +16,7 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 
 public class SelectorTestExtension : Extension() {
-	override val name: String = "Select Menus Test"
+	override val name: String = "kordex.test-selectors"
 
 	override suspend fun setup() {
 		publicSlashCommand {

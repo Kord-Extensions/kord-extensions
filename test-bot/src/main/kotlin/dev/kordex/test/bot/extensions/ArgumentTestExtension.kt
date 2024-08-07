@@ -24,7 +24,7 @@ import dev.kordex.core.utils.suggestStringCollection
 import dev.kordex.core.utils.suggestStringMap
 
 public class ArgumentTestExtension : Extension() {
-	override val name: String = "test-args"
+	override val name: String = "kordex.test-args"
 
 	override suspend fun setup() {
 		publicSlashCommand(::TagArgs) {

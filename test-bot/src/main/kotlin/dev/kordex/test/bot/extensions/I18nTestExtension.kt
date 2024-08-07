@@ -23,7 +23,7 @@ import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.publicSlashCommand
 
 public class I18nTestExtension : Extension() {
-	override val name: String = "test-i18n"
+	override val name: String = "kordex.test-i18n"
 	override val bundle: String = "test"
 
 	override suspend fun setup() {

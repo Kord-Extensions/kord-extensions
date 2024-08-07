@@ -12,7 +12,7 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 
 public class NestingTestExtension : Extension() {
-	override val name: String = "test-nesting"
+	override val name: String = "kordex.test-nesting"
 
 	override suspend fun setup() {
 		publicSlashCommand {

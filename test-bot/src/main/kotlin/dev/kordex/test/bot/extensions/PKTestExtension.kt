@@ -13,7 +13,7 @@ import dev.kordex.core.utils.respond
 import dev.kordex.modules.pluralkit.events.*
 
 public class PKTestExtension : Extension() {
-	override val name: String = "test-pluralkit"
+	override val name: String = "kordex.test-pluralkit"
 
 	override suspend fun setup() {
 		event<ProxiedMessageCreateEvent> {

@@ -20,8 +20,8 @@ import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.extensions.publicUserCommand
 
 public class ModalTestExtension : Extension() {
-	override val name: String = "modals"
-	override val bundle: String = "test.strings"
+	override val name: String = "kordex.modals"
+	override val bundle: String = "test-strings"
 
 	@Suppress("StringLiteralDuplication")
 	override suspend fun setup() {

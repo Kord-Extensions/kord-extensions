@@ -11,7 +11,7 @@ import dev.kordex.modules.web.core.backend.config.WebServerConfig
 import dev.kordex.modules.web.core.backend.server.WebServer
 
 public class WebExtension(private val config: WebServerConfig) : Extension() {
-	override val name: String = "kordex-web"
+	override val name: String = "kordex.web"
 
 	public lateinit var server: WebServer
 
