@@ -12,6 +12,7 @@ plugins {
 	id("org.jetbrains.dokka")
 }
 
+val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 val dokkaModuleExtensionName = "dokkaModule"
 
 abstract class DokkaModuleExtension {
@@ -62,17 +63,25 @@ repositories {
 tasks {
 	val projectDir = project.projectDir.relativeTo(rootProject.rootDir).toString()
 
+	val propsTask = register<WriteProperties>("kordExProps") {
+		group = "generation"
+		description = "Generate KordEx properties file"
+
+		comment = "Generated during KordEx compilation"
+		destinationFile = layout.buildDirectory.file("kordex.properties")
+		encoding = "UTF-8"
+
+		property("versions.kordEx", project.version)
+		property("versions.kord", libs.findVersion("kord").get())
+	}
+
 	build {
 		finalizedBy(sourceJar, javadocJar /*dokkaJar*/)
 	}
 
 	processResources {
-		val props = mapOf("version" to project.version)
-
-		inputs.properties(props)
-
-		filesMatching("kordex.properties") {
-			expand(props)
+		from(propsTask) {
+			duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		}
 	}
 

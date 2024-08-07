@@ -39,6 +39,8 @@ import dev.kordex.core.DATA_COLLECTION
 import dev.kordex.core.DEV_MODE
 import dev.kordex.core.DISCORD_BLURPLE
 import dev.kordex.core.ExtensibleBot
+import dev.kordex.core.KORDEX_VERSION
+import dev.kordex.core.KORD_VERSION
 import dev.kordex.core.annotations.BotBuilderDSL
 import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.annotations.tooling.Translatable
@@ -536,6 +538,8 @@ public open class ExtensibleBotBuilder {
 
 	/** @suppress Internal function used to build a bot instance. **/
 	public open suspend fun build(token: String): ExtensibleBot {
+		logger.info { "Starting bot with Kord Extensions v$KORDEX_VERSION and Kord v$KORD_VERSION" }
+
 		hooksBuilder.beforeKoinSetup {  // We have to do this super-duper early for safety
 			loadModule { single { dataAdapterCallback() } bind DataAdapter::class }
 		}
