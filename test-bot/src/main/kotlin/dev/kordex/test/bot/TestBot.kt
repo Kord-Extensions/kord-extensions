@@ -109,7 +109,6 @@ public suspend fun main() {
 			add(::PaginatorTestExtension)
 			add(::PKTestExtension)
 			add(::SelectorTestExtension)
-			add(::NestingTestExtension)
 		}
 
 		plugins {
