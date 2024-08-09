@@ -14,24 +14,59 @@ import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.embed
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.application.slash.ephemeralSubCommand
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.chatCommand
+import dev.kordex.core.extensions.chatGroupCommand
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import org.koin.core.component.inject
 
+@Suppress("StringLiteralDuplication")
 public class AboutExtension : Extension() {
 	override val name: String = "kordex.about"
 
 	private val settings: ExtensibleBotBuilder by inject()
 
 	override suspend fun setup() {
-		chatCommand {
-			name = "extensions.about.commandName"
-			description = "extensions.about.commandDescription"
+		if (settings.aboutBuilder.sections.isEmpty()) {
+			chatCommand {
+				name = "extensions.about.commandName"
+				description = "extensions.about.commandDescription"
 
-			action {
-				message.reply {
-					addAbout(this@action)
+				action {
+					message.reply {
+						addAbout(this@action)
+					}
+				}
+			}
+		} else {
+			chatGroupCommand {
+				name = "extensions.about.commandName"
+				description = "extensions.about.commandDescription"
+
+				this.chatCommand {
+					name = "extensions.about.generalCommandName"
+					description = "extensions.about.generalCommandDescription"
+
+					action {
+						message.reply {
+							addAbout(this@action)
+						}
+					}
+				}
+
+				settings.aboutBuilder.sections.forEach { section ->
+					this.chatCommand {
+						name = section.name
+						description = section.description
+						bundle = section.bundle
+
+						action {
+							message.reply {
+								section.messageBuilder(this)
+							}
+						}
+					}
 				}
 			}
 		}
@@ -40,9 +75,36 @@ public class AboutExtension : Extension() {
 			name = "extensions.about.commandName"
 			description = "extensions.about.commandDescription"
 
-			action {
-				respond {
-					addAbout(this@action)
+			if (settings.aboutBuilder.sections.isNotEmpty()) {
+				action {
+					respond {
+						addAbout(this@action)
+					}
+				}
+			} else {
+				ephemeralSubCommand {
+					name = "extensions.about.generalCommandName"
+					description = "extensions.about.generalCommandDescription"
+
+					action {
+						respond {
+							addAbout(this@action)
+						}
+					}
+				}
+
+				settings.aboutBuilder.sections.forEach { section ->
+					ephemeralSubCommand {
+						name = section.name
+						description = section.description
+						bundle = section.bundle
+
+						action {
+							respond {
+								section.messageBuilder(this)
+							}
+						}
+					}
 				}
 			}
 		}
@@ -89,33 +151,43 @@ public class AboutExtension : Extension() {
 				else -> context.translate("extensions.about.defaultTitle")
 			}
 
-		if (builder.logoUrl != null) {
-			thumbnail {
-				url = builder.logoUrl!!
-			}
-		}
-
-		footer {
-			icon = "https://kordex.dev/logo-transparent.png"
-			text = context.translate("extensions.about.madeWith") + " • https://kordex.dev"
-		}
-	}
-
-	if (builder.buttons.isNotEmpty()) {
-		actionRow {
-			builder.buttons.forEach { button ->
-				linkButton(button.url) {
-					label = context.translate(button.name, bundle)
-
-					when (val e = button.emoji) {
-						null -> {} // Nothing
-
-						is ReactionEmoji.Custom -> emoji(e)
-						is ReactionEmoji.Unicode -> emoji(e)
-					}
+			if (builder.logoUrl != null) {
+				thumbnail {
+					url = builder.logoUrl!!
 				}
 			}
+
+			footer {
+				icon = "https://kordex.dev/logo-transparent.png"
+				text = context.translate("extensions.about.madeWith") + " • EUPL v1.2 • https://kordex.dev"
+			}
+		}
+
+		if (builder.buttons.isNotEmpty()) {
+			val names = mutableMapOf<String, String>()
+
+			builder.buttons.forEach { button ->
+				names[button.name] = context.translate(button.name, bundle)
+			}
+
+			actionRow {
+				builder.buttons
+					.sortedWith { left, right ->
+						names[left.name]!!.compareTo(names[right.name]!!, true)
+					}
+					.forEach { button ->
+						linkButton(button.url) {
+							label = names[button.name]!!
+
+							when (val e = button.emoji) {
+								null -> {} // Nothing
+
+								is ReactionEmoji.Custom -> emoji(e)
+								is ReactionEmoji.Unicode -> emoji(e)
+							}
+						}
+					}
+			}
 		}
 	}
-}
 }

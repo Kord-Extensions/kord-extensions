@@ -43,9 +43,18 @@ public suspend fun main() {
 			url = "https://kordex.dev"
 			version = KORDEX_VERSION
 
-			docsButton("https://docs.kordex.dev")
-			donationButton("https://ko-fi.com/gsc")
 			sourceButton("https://github.com/Kord-Extensions/kord-extensions")
+			donationButton("https://ko-fi.com/gsc")
+			docsButton("https://docs.kordex.dev")
+
+			section {
+				name = "banana"
+				description = "banana"
+
+				message {
+					content = "Banana!"
+				}
+			}
 		}
 
 		chatCommands {

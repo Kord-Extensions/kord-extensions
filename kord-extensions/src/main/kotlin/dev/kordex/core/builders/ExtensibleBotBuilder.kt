@@ -613,7 +613,24 @@ public open class ExtensibleBotBuilder {
 		/** Your bot's version number. **/
 		public var version: String? = null
 
+		internal val sections: MutableList<Section> = mutableListOf()
 		internal val buttons: MutableList<Button> = mutableListOf()
+
+		/**
+		 * Add a custom about command subcommand, with your own custom content.
+		 *
+		 * If you decide to add sections, Kord Extensions will move the default about command defined in this
+		 * configuration to a subcommand named "general".
+		 */
+		public fun section(body: Section.() -> Unit) {
+			val section = Section()
+
+			body(section)
+
+			section.validate()
+
+			sections.add(section)
+		}
 
 		/**
 		 * Add a custom button to be displayed under your bot's about information.
@@ -692,6 +709,36 @@ public open class ExtensibleBotBuilder {
 
 			/** An emoji to show as this button's icon. **/
 			public var emoji: ReactionEmoji? = null
+		}
+
+		public class Section {
+			public lateinit var name: String
+			public lateinit var description: String
+			public lateinit var messageBuilder: suspend MessageCreateBuilder.() -> Unit
+
+			public var bundle: String? = null
+
+			public fun message(body: suspend MessageCreateBuilder.() -> Unit) {
+				messageBuilder = body
+			}
+
+			public fun validate() {
+				if (
+					!::name.isInitialized ||
+					!::description.isInitialized
+				) {
+					error("About command sections must contain a name and description.")
+				}
+
+				if (
+					!::messageBuilder.isInitialized
+				) {
+					error(
+						"About command sections must contain a message builder; use the `message` DSL function to " +
+							"provide one."
+					)
+				}
+			}
 		}
 	}
 
