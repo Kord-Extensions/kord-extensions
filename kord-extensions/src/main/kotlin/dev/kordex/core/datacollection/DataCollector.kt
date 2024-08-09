@@ -6,6 +6,7 @@
 
 package dev.kordex.core.datacollection
 
+import dev.kord.core.entity.Application
 import dev.kord.gateway.Intents
 import dev.kordex.core.*
 import dev.kordex.core.annotations.InternalAPI
@@ -44,9 +45,15 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 	private val state: Properties = loadState()
 	private val systemInfo by lazy { SystemInfo() }
 
+	private lateinit var applicationInfo: Application
+
 	@OptIn(InternalAPI::class)
 	@Suppress("TooGenericExceptionCaught")
 	internal suspend fun collect() {
+		if (!::applicationInfo.isInitialized) {
+			applicationInfo = bot.kordRef.getApplicationInfo()
+		}
+
 		try {
 			lateinit var entity: Entity
 			val lastUUID = getUUID()
@@ -78,7 +85,7 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 						},
 
 						botId = bot.kordRef.selfId.toString(),
-						botName = bot.kordRef.getApplicationInfo().name,
+						botName = applicationInfo.name,
 						extensionCount = bot.extensions.size,
 						guildCount = bot.kordRef.guilds.count(),
 
@@ -94,8 +101,6 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 				is DataCollection.Extra -> {
 					val hardware = systemInfo.hardware
 					val processor = hardware.processor
-
-					val applicationInfo = bot.kordRef.getApplicationInfo()
 
 					entity = ExtraDataEntity(
 						id = lastUUID,

@@ -623,7 +623,7 @@ public open class ExtensibleBotBuilder {
 		 * configuration to a subcommand named "general".
 		 */
 		public fun section(body: Section.() -> Unit) {
-			val section = Section()
+			val section = Section(this)
 
 			body(section)
 
@@ -711,12 +711,12 @@ public open class ExtensibleBotBuilder {
 			public var emoji: ReactionEmoji? = null
 		}
 
-		public class Section {
+		public class Section(parent: AboutBuilder) {
 			public lateinit var name: String
 			public lateinit var description: String
 			public lateinit var messageBuilder: suspend MessageCreateBuilder.() -> Unit
 
-			public var bundle: String? = null
+			public var bundle: String? = parent.translationBundle
 
 			public fun message(body: suspend MessageCreateBuilder.() -> Unit) {
 				messageBuilder = body
