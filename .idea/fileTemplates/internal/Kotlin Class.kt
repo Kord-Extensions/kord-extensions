@@ -1,7 +1,9 @@
 /*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ * Copyrighted (Kord Extensions, 2024). Licensed under the EUPL-1.2
+ * with the specific provision (EUPL articles 14 & 15) that the
+ * applicable law is the (Republic of) Irish law and the Jurisdiction
+ * Dublin.
+ * Any redistribution must include the specific provision above.
  */
 
 #if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME}

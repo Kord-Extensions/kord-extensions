@@ -55,8 +55,8 @@ afterEvaluate {
 
 					licenses {
 						license {
-							name.set("Mozilla Public License Version 2.0")
-							url.set("https://www.mozilla.org/en-US/MPL/2.0/")
+							name.set("European Union Public Licence Version 1.2")
+							url.set("https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12")
 						}
 					}
 
