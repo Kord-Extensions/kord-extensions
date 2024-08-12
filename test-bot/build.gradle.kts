@@ -54,7 +54,7 @@ dependencies {
 	implementation(project(":modules:dev:dev-java-time"))
 	implementation(project(":modules:dev:dev-time4j"))
 	implementation(project(":modules:dev:dev-unsafe"))
-	implementation(project(":modules:functionality:func-mappings"))
+//	implementation(project(":modules:functionality:func-mappings"))
 	implementation(project(":modules:functionality:func-phishing"))
 	implementation(project(":modules:integrations:pluralkit"))
 

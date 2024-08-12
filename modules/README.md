@@ -12,6 +12,11 @@ functionality.
     the interaction yourself if you need to.
 - `functionality/` - Modules providing user-facing bot functionality.
   - `func-mappings` - Minecraft mappings lookup extension, powered by Linkie Core.
+    - **This has been [temporarily relocated](https://github.com/Kord-Extensions/temp-mappings) while we
+      [wait for a contributor to respond](https://github.com/orgs/Kord-Extensions/discussions/3#discussioncomment-10318475)
+      to our licensing discussion.**
+
+      If you need this module immediately, stick with Kord Extensions version `1.9.0-SNAPSHOT`.
   - `func-phishing` - URL safety and anti-phishing extension, powered by the Sinking Yachts API.
   - `func-tags` - Basic tag/factoid management extension. For advanced tag management, see
     [kose kata](https://github.com/mazziechai/kose-kata).

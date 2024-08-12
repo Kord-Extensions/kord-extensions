@@ -12,7 +12,6 @@ import dev.kordex.core.commands.converters.impl.string
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.plugins.PluginManager
-import dev.kordex.modules.func.mappings.plugins.MappingsPlugin
 import org.koin.core.component.inject
 import org.pf4j.PluginState
 
@@ -105,9 +104,9 @@ public class TestPluginExtension : Extension() {
 					"Test plugin (`${TestPlugin.PLUGIN_ID}`) should be loaded."
 				}
 
-				assert(pluginIds.contains(MappingsPlugin.PLUGIN_ID)) {
-					"Test plugin (`${MappingsPlugin.PLUGIN_ID}`) should be loaded."
-				}
+// 				assert(pluginIds.contains(MappingsPlugin.PLUGIN_ID)) {
+// 					"Test plugin (`${MappingsPlugin.PLUGIN_ID}`) should be loaded."
+// 				}
 
 				respond {
 					content = buildString {

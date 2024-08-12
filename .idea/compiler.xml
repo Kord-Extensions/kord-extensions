@@ -34,6 +34,8 @@
       <module name="kord-extensions.extra-modules.mappings" target="14" />
       <module name="kord-extensions.extra-modules.mappings.main" target="14" />
       <module name="kord-extensions.extra-modules.mappings.test" target="14" />
+      <module name="kord-extensions.modules.functionality.func-mappings.main" target="13" />
+      <module name="kord-extensions.modules.functionality.func-mappings.test" target="13" />
       <module name="kord-extensions.modules.java-time" target="17" />
       <module name="kord-extensions.modules.java-time.main" target="13" />
       <module name="kord-extensions.modules.java-time.test" target="13" />
