@@ -37,7 +37,7 @@ jobs:
           token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Gradle (Setup)
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Gradle (Build)
         run: "./gradlew checkLicenses build"
