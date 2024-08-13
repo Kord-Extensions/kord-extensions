@@ -7,6 +7,8 @@ plugins {
 	id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+group = "dev.kordex.modules"
+
 //metadata {
 //	name = "KordEx Extra: Web"
 //	description = "KordEx extra module that provides a web interface and APIs for working with it"
@@ -39,8 +41,6 @@ dependencies {
 	implementation(project(":modules:web:web-core:web-frontend"))
 	shadow(project(":modules:web:web-core:web-frontend"))
 }
-
-group = "dev.kordex.modules"
 
 tasks.shadowJar {
 	this.configurations.clear()

@@ -4,6 +4,8 @@ plugins {
 	`ksp-module`
 }
 
+group = "dev.kordex.modules"
+
 metadata {
 	name = "KordEx: Time4J"
 	description = "KordEx module that provides converters that support Time4J"
@@ -29,8 +31,6 @@ dependencies {
 	testImplementation(libs.logback)
 	testImplementation(libs.logback.groovy)
 }
-
-group = "dev.kordex.modules"
 
 dokkaModule {
 	moduleName.set("Kord Extensions: Time4J")

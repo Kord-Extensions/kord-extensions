@@ -6,6 +6,8 @@ plugins {
 	kotlin("plugin.serialization")
 }
 
+group = "dev.kordex.modules"
+
 metadata {
 	name = "KordEx Extra: Tags"
 	description = "KordEx extra module that provides a set of commands for storing and retrieving tagged text snippets"
@@ -29,8 +31,6 @@ dependencies {
 	implementation(project(":kord-extensions"))
 	implementation(project(":modules:dev:dev-unsafe"))
 }
-
-group = "dev.kordex"
 
 dokkaModule {
 	moduleName = "Kord Extensions: Tags Module"

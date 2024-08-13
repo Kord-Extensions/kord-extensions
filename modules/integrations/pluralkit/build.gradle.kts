@@ -6,6 +6,8 @@ plugins {
 	kotlin("plugin.serialization")
 }
 
+group = "dev.kordex.modules"
+
 getTranslations()
 
 metadata {
@@ -30,8 +32,6 @@ dependencies {
 
 	implementation(project(":kord-extensions"))
 }
-
-group = "dev.kordex.modules"
 
 dokkaModule {
 	moduleName = "Kord Extensions: PluralKit Module"

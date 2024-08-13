@@ -4,6 +4,8 @@ plugins {
 	`ksp-module`
 }
 
+group = "dev.kordex.modules"
+
 metadata {
 	name = "KordEx: Unsafe"
 	description = "KordEx module that provides extra \"unsafe\" APIs that include lower-level functions and tools"
@@ -22,8 +24,6 @@ dependencies {
 
 	ksp(project(":annotations:annotation-processor"))
 }
-
-group = "dev.kordex.modules"
 
 dokkaModule {
 	moduleName.set("Kord Extensions: Unsafe Module")

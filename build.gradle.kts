@@ -30,6 +30,8 @@ val printVersion = task("printVersion") {
 }
 
 repositories {
+	// This is here because Dokka will fail to build in CI otherwise.
+
 	google()
 	mavenCentral()
 
@@ -48,6 +50,8 @@ subprojects {
 	version = projectVersion
 
 	repositories {
+		// This is here because Dokka will fail to build in CI otherwise.
+
 		rootProject.repositories.forEach {
 			if (it is MavenArtifactRepository) {
 				maven {

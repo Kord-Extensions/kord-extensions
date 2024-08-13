@@ -6,6 +6,8 @@ plugins {
 	kotlin("plugin.serialization")
 }
 
+group = "dev.kordex.modules"
+
 metadata {
 	name = "KordEx Extra: Welcome"
 	description = "KordEx extra module that provides welcome channel management driven by web-accessible YAML files"
@@ -30,8 +32,6 @@ dependencies {
 
 	implementation(project(":kord-extensions"))
 }
-
-group = "dev.kordex"
 
 dokkaModule {
 	moduleName = "Kord Extensions: Welcome Module"

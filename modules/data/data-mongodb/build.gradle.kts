@@ -3,6 +3,8 @@ plugins {
 	`published-module`
 }
 
+group = "dev.kordex.modules"
+
 metadata {
 	name = "KordEx Adapters: MongoDB"
 	description = "KordEx data adapter for MongoDB, including extra codecs"
@@ -27,8 +29,6 @@ dependencies {
 
 	implementation(project(":kord-extensions"))
 }
-
-group = "dev.kordex.modules"
 
 dokkaModule {
 	moduleName = "Kord Extensions: MongoDB Data Adapter"
