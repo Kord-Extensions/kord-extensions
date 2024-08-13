@@ -17,6 +17,10 @@ import java.nio.file.Path
 public open class PluginManager(roots: List<Path>) : DefaultPluginManager(*roots.toTypedArray()) {
 	init {
 		systemVersion = KORDEX_VERSION
+
+		if ("-" in systemVersion) {
+			systemVersion = systemVersion.split("-", limit = 2).first()
+		}
 	}
 
 	override fun createPluginDescriptorFinder(): PluginDescriptorFinder =

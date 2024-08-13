@@ -123,7 +123,6 @@ public suspend fun main() {
 
 		plugins {
 			pluginPath("test-bot/plugins/")
-			pluginPath("test-bot/build/generated/ksp/main/resources")
 // 			pluginPath("modules/functionality/func-mappings/build/generated/ksp/main/resources")
 		}
 	}
