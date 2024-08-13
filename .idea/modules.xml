@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/com.kotlindiscord.kord.extensions.kord-extensions.extra-modules.extra-mappings.test.iml" filepath="$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/com.kotlindiscord.kord.extensions.kord-extensions.extra-modules.extra-mappings.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/kord-extensions.extra-modules.extra-mappings.main.iml" filepath="$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/kord-extensions.extra-modules.extra-mappings.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/kord-extensions.extra-modules.extra-mappings.test.iml" filepath="$PROJECT_DIR$/.idea/modules/extra-modules/extra-mappings/kord-extensions.extra-modules.extra-mappings.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/modules/web/web-core/web-frontend/kord-extensions.modules.web.web-core.web-frontend.iml" filepath="$PROJECT_DIR$/.idea/modules/modules/web/web-core/web-frontend/kord-extensions.modules.web.web-core.web-frontend.iml" />
     </modules>
   </component>
 </project>
