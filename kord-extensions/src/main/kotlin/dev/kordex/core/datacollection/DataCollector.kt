@@ -26,7 +26,6 @@ import dev.kordex.data.api.types.impl.MinimalDataEntity
 import dev.kordex.data.api.types.impl.StandardDataEntity
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.plugins.*
-import io.ktor.utils.io.reader
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -69,8 +68,7 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 			current.lastLevel = props.getProperty("lastLevel")?.let { DataCollection.fromDB(it) }
 			current.uuid = props.getProperty("uuid")?.let { UUID.fromString(it) }
 
-			storageUnit.save()
-
+			saveState()
 			deleteOldState()
 
 			logger.info { "Migration complete!" }
@@ -309,19 +307,25 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 	}
 
 	private suspend fun getState(): State {
-		var current = storageUnit.get()
+		var current = storageUnit
+			.withUser(bot.kordRef.selfId)
+			.get()
 
 		if (current == null) {
 			current = State()
 
-			storageUnit.save(current)
+			storageUnit
+				.withUser(bot.kordRef.selfId)
+				.save(current)
 		}
 
 		return current
 	}
 
 	private suspend fun saveState() {
-		storageUnit.save()
+		storageUnit
+			.withUser(bot.kordRef.selfId)
+			.save()
 	}
 
 	/** Get the stored "last" data collection level. **/

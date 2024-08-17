@@ -160,8 +160,6 @@ public open class ExtensibleBot(
 			logger.warn(e) { "Unable to add shutdown hook." }
 		}
 
-		dataCollector.start()
-
 		getKoin().get<Kord>().login {
 			this.presence(settings.presenceBuilder)
 			this.intents = Intents(settings.intentsBuilder!!)
@@ -196,7 +194,7 @@ public open class ExtensibleBot(
 		@Suppress("TooGenericExceptionCaught")
 		try {
 			Runtime.getRuntime().removeShutdownHook(shutdownHook)
-		} catch (e: IllegalStateException) {
+		} catch (_: IllegalStateException) {
 			logger.debug { "Shutdown in progress, unable to remove shutdown hook." }
 		} catch (e: Exception) {
 			logger.warn(e) { "Failed to remove shutdown hook." }
@@ -222,6 +220,10 @@ public open class ExtensibleBot(
 	public open suspend fun registerListeners() {
 		val eventJson = Json {
 			ignoreUnknownKeys = true
+		}
+
+		on<ReadyEvent> {
+			dataCollector.start()
 		}
 
 		on<GuildCreateEvent> {
