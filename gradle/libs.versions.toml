@@ -31,7 +31,7 @@ sentry = "7.12.0"
 slf4j = "2.0.13"
 time4j-base = "5.9.4"
 time4j-tzdata = "5.0-2024a"
-toml = "0.2.0"
+toml = "0.4.0"
 
 [libraries]
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commons-validator" }
@@ -85,7 +85,7 @@ sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 time4j-base = { module = "net.time4j:time4j-base", version.ref = "time4j-base" }
 time4j-tzdata = { module = "net.time4j:time4j-tzdata", version.ref = "time4j-tzdata" }
-toml = { module = "net.peanuuutz:tomlkt", version.ref = "toml" }
+toml = { module = "net.peanuuutz.tomlkt:tomlkt", version.ref = "toml" }
 
 [bundles]
 commons = ["commons-validator"]

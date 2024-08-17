@@ -13,6 +13,9 @@ import dev.kord.gateway.Intents
 import dev.kordex.core.*
 import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.commands.application.ApplicationCommandRegistry
+import dev.kordex.core.commands.application.DefaultApplicationCommandRegistry
+import dev.kordex.core.commands.chat.ChatCommandRegistry
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.storage.StorageType
 import dev.kordex.core.storage.StorageUnit
@@ -36,7 +39,6 @@ import java.io.IOException
 import java.nio.file.Files
 import java.util.*
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(InternalAPI::class)
 @Suppress("StringLiteralDuplication", "MagicNumber")
@@ -45,6 +47,10 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 
 	private val bot: ExtensibleBot by inject()
 	private val settings: ExtensibleBotBuilder by inject()
+	private val chatCommands: ChatCommandRegistry by inject()
+	private val _applicationCommands: ApplicationCommandRegistry by inject()
+
+	private val applicationCommands get() = _applicationCommands as? DefaultApplicationCommandRegistry
 
 	private val logger = KotlinLogging.logger { }
 	private val scheduler = Scheduler()
@@ -60,18 +66,26 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 
 	internal suspend fun migrate() {
 		val props = loadOldState()
-		val current = getState()
 
 		if (props != null) {
-			logger.info { "Migrating from $COLLECTION_STATE_LOCATION to storage units..." }
+			if (DATA_COLLECTION_UUID == null) {
+				logger.info { "Migrating from '$COLLECTION_STATE_LOCATION' to storage units..." }
 
-			current.lastLevel = props.getProperty("lastLevel")?.let { DataCollection.fromDB(it) }
-			current.uuid = props.getProperty("uuid")?.let { UUID.fromString(it) }
+				setUUID(
+					props.getProperty("uuid")?.let { UUID.fromString(it) }
+				)
 
-			saveState()
-			deleteOldState()
+				deleteOldState()
 
-			logger.info { "Migration complete!" }
+				logger.info { "Migration complete!" }
+			} else {
+				logger.info {
+					"Removing '$COLLECTION_STATE_LOCATION' as UUID configured via system property or " +
+						"environmental variable."
+				}
+
+				deleteOldState()
+			}
 		}
 	}
 
@@ -85,12 +99,12 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 		try {
 			lateinit var entity: Entity
 
-			val state = getState()
+			val lastUUID = getUUID()
 
 			when (level) {
 				is DataCollection.Minimal ->
 					entity = MinimalDataEntity(
-						id = state.uuid,
+						id = lastUUID,
 
 						devMode = settings.devMode,
 						kordExVersion = KORDEX_VERSION ?: "Unknown",
@@ -103,7 +117,7 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 
 				is DataCollection.Standard ->
 					entity = StandardDataEntity(
-						id = state.uuid,
+						id = lastUUID,
 
 						devMode = settings.devMode,
 						kordExVersion = KORDEX_VERSION ?: "Unknown",
@@ -123,6 +137,34 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 							?: arrayOf(),
 
 						pluginCount = settings.pluginBuilder.managerObj.plugins.size,
+
+						chatCommandCount = if (settings.chatCommandsBuilder.enabled) {
+							chatCommands.commands.size
+						} else {
+							0
+						},
+
+						messageCommandCount = applicationCommands
+							?.let {
+								it.messageCommands
+									.filterValues { it.guildId == null }
+									.size
+							},
+
+						slashCommandCount = applicationCommands
+							?.let {
+								it.slashCommands
+									.filterValues { it.guildId == null }
+									.size
+							},
+
+						userCommandCount = applicationCommands
+							?.let {
+								it.userCommands
+									.filterValues { it.guildId == null }
+									.size
+							},
+
 						jvmVersion = System.getProperty("java.version"),
 						kotlinVersion = KotlinVersion.CURRENT.toString(),
 					)
@@ -132,7 +174,7 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 					val processor = hardware.processor
 
 					entity = ExtraDataEntity(
-						id = state.uuid,
+						id = lastUUID,
 
 						devMode = settings.devMode,
 						kordExVersion = KORDEX_VERSION ?: "Unknown",
@@ -152,6 +194,33 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 							?: arrayOf(),
 
 						pluginCount = settings.pluginBuilder.managerObj.plugins.size,
+
+						chatCommandCount = if (settings.chatCommandsBuilder.enabled) {
+							chatCommands.commands.size
+						} else {
+							0
+						},
+
+						messageCommandCount = applicationCommands
+							?.let {
+								it.messageCommands
+									.filterValues { it.guildId == null }
+									.size
+							},
+
+						slashCommandCount = applicationCommands
+							?.let {
+								it.slashCommands
+									.filterValues { it.guildId == null }
+									.size
+							},
+
+						userCommandCount = applicationCommands
+							?.let {
+								it.userCommands
+									.filterValues { it.guildId == null }
+									.size
+							},
 
 						cpuCount = processor.physicalProcessorCount,
 						cpuGhz = processor.maxFreq.toFloat().div(1_000_000_000F),  // GHz, not Hz
@@ -178,28 +247,31 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 				}
 
 				else -> {
-					if (state.uuid != null) {
-						DataAPIClient.delete(state.uuid!!)
+					if (lastUUID != null) {
+						logger.debug { "Deleting collected data - last UUID: $lastUUID" }
 
-						state.uuid = null
-						state.lastLevel = level
+						try {
+							DataAPIClient.delete(lastUUID)
 
-						saveState()
+							setUUID(null)
+						} catch (e: ResponseException) {
+							logger.error {
+								"Failed to remove collected data '$lastUUID' from the server: $e\n" +
+									"\tThis will be re-attempted next time the bot starts. Please report this error " +
+									"to Kord Extensions via the community links here: https://kordex.dev"
+							}
+						}
 					}
 
 					return stop()
 				}
 			}
 
-			logger.debug { "Submitting collected data - level: ${level.readable}, last UUID: ${state.uuid}" }
+			logger.debug { "Submitting collected data - level: ${level.readable}, last UUID: $lastUUID" }
 
 			val response = DataAPIClient.submit(entity)
-			val lastUUID = state.uuid
 
-			state.uuid = response
-			state.lastLevel = level
-
-			saveState()
+			setUUID(response)
 
 			if (lastUUID == response) {
 				logger.debug { "Updated collected data successfully - UUID: $response" }
@@ -218,17 +290,26 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 	internal suspend fun start() {
 		logger.info { "Staring data collector - level: ${level.readable}" }
 
+		if (applicationCommands == null) {
+			logger.info {
+				"Application command registry doesn't extend `DefaultApplicationCommandRegistry`, not collecting " +
+					"application command counts."
+			}
+		}
+
 		migrate()
 
-		val state = getState()
+		val lastUUID = getUUID()
 
-		if (state.lastLevel !is DataCollection.None && level is DataCollection.None) {
-			if (state.uuid != null) {
+		if (level is DataCollection.None) {
+			if (lastUUID != null) {
 				try {
-					DataAPIClient.delete(state.uuid!!)
+					logger.debug { "Deleting collected data - last UUID: $lastUUID" }
+
+					DataAPIClient.delete(lastUUID)
 				} catch (e: ResponseException) {
 					logger.error {
-						"Failed to remove collected data '${state.uuid}' from the server: $e\n" +
+						"Failed to remove collected data '$lastUUID' from the server: $e\n" +
 							"\tThis will be re-attempted next time the bot starts. Please report this error to Kord " +
 							"Extensions via the community links here: https://kordex.dev"
 					}
@@ -236,26 +317,17 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 					return stop()
 				}
 
-				logger.info { "Collected data '${state.uuid}' has been deleted from the server." }
+				setUUID(null)
 			}
-
-			state.uuid = null
-			state.lastLevel = level
-
-			saveState()
 
 			return stop()
 		}
-
-		state.lastLevel = level
-
-		saveState()
 
 		task = scheduler.schedule(
 			callback = ::collect,
 			delay = 30.minutes,
 			name = "DataCollector",
-			pollingSeconds = 600.seconds.inWholeSeconds,
+			pollingSeconds = 10.minutes.inWholeSeconds,
 			repeat = true,
 			startNow = true
 		)
@@ -307,6 +379,12 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 	}
 
 	private suspend fun getState(): State {
+		if (DATA_COLLECTION_UUID != null) {
+			// Don't save anything if pre-configured.
+
+			return State(DATA_COLLECTION_UUID)
+		}
+
 		var current = storageUnit
 			.withUser(bot.kordRef.selfId)
 			.get()
@@ -323,16 +401,28 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 	}
 
 	private suspend fun saveState() {
+		if (DATA_COLLECTION_UUID != null) {
+			// Don't save anything if pre-configured.
+
+			return
+		}
+
 		storageUnit
 			.withUser(bot.kordRef.selfId)
 			.save()
 	}
 
-	/** Get the stored "last" data collection level. **/
-	public suspend fun getLastLevel(): DataCollection? =
-		getState().lastLevel
-
 	/** Get the stored data collection UUID. **/
 	public suspend fun getUUID(): UUID? =
-		getState().uuid
+		DATA_COLLECTION_UUID
+			?: getState().uuid
+
+	/** Get the stored data collection UUID. **/
+	internal suspend fun setUUID(uuid: UUID?) {
+		val state = getState()
+
+		state.uuid = uuid
+
+		saveState()
+	}
 }

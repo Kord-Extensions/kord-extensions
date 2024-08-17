@@ -39,6 +39,18 @@ public val COLLECTION_STATE_LOCATION: String by lazy {
 }
 
 /**
+ * Data collection UUID, if you need to specify one instead of having the storage system take care of it.
+ *
+ * Must be a valid UUID.
+ */
+public val DATA_COLLECTION_UUID: UUID? by lazy {
+	(
+		System.getProperties()["dataCollectionUUID"] as? String
+			?: envOrNull("DATA_COLLECTION_UUID")
+		)?.let { UUID.fromString(it) }
+}
+
+/**
  * Data collection setting, defaulting to Standard if not set.
  *
  * Don't check this directly – use the `dataCollectionMode` property in `ExtensibleBotBuilder` instead!

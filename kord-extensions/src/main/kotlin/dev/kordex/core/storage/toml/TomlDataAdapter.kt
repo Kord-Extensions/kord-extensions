@@ -26,6 +26,10 @@ import kotlin.io.path.pathString
  * This is a pretty simple implementation, so it's a good example to use when writing your own data adapters.
  */
 public open class TomlDataAdapter : DataAdapter<String>() {
+	private val toml = Toml {
+		ignoreUnknownKeys = true
+	}
+
 	private val StorageUnit<*>.file: File
 		get() = getPath().toFile()
 
@@ -74,7 +78,7 @@ public open class TomlDataAdapter : DataAdapter<String>() {
 		val file = unit.file
 
 		if (file.exists()) {
-			val result: R = Toml.decodeFromString(unit.serializer, file.readText())
+			val result: R = toml.decodeFromString(unit.serializer, file.readText())
 
 			dataCache[dataId] = result
 			unitCache[unit] = dataId
@@ -96,7 +100,7 @@ public open class TomlDataAdapter : DataAdapter<String>() {
 			file.createNewFile()
 		}
 
-		file.writeText(Toml.encodeToString(unit.serializer, data))
+		file.writeText(toml.encodeToString(unit.serializer, data))
 
 		return data
 	}
@@ -110,7 +114,7 @@ public open class TomlDataAdapter : DataAdapter<String>() {
 			file.createNewFile()
 		}
 
-		file.writeText(Toml.encodeToString(unit.serializer, data))
+		file.writeText(toml.encodeToString(unit.serializer, data))
 
 		return data
 	}
