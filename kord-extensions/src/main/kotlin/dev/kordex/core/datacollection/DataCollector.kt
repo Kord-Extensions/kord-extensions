@@ -14,6 +14,8 @@ import dev.kordex.core.*
 import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.koin.KordExKoinComponent
+import dev.kordex.core.storage.StorageType
+import dev.kordex.core.storage.StorageUnit
 import dev.kordex.core.utils.getName
 import dev.kordex.core.utils.scheduling.Scheduler
 import dev.kordex.core.utils.scheduling.Task
@@ -24,12 +26,15 @@ import dev.kordex.data.api.types.impl.MinimalDataEntity
 import dev.kordex.data.api.types.impl.StandardDataEntity
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.plugins.*
+import io.ktor.utils.io.reader
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.ext.getFullName
 import oshi.SystemInfo
 import java.io.File
+import java.io.IOException
+import java.nio.file.Files
 import java.util.*
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -44,10 +49,33 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 
 	private val logger = KotlinLogging.logger { }
 	private val scheduler = Scheduler()
-	private val state: Properties = loadState()
 	private val systemInfo by lazy { SystemInfo() }
 
 	private lateinit var applicationInfo: Application
+
+	private val storageUnit = StorageUnit<State>(
+		StorageType.Data,
+		"kordex",
+		"data-collection"
+	)
+
+	internal suspend fun migrate() {
+		val props = loadOldState()
+		val current = getState()
+
+		if (props != null) {
+			logger.info { "Migrating from $COLLECTION_STATE_LOCATION to storage units..." }
+
+			current.lastLevel = props.getProperty("lastLevel")?.let { DataCollection.fromDB(it) }
+			current.uuid = props.getProperty("uuid")?.let { UUID.fromString(it) }
+
+			storageUnit.save()
+
+			deleteOldState()
+
+			logger.info { "Migration complete!" }
+		}
+	}
 
 	@OptIn(InternalAPI::class)
 	@Suppress("TooGenericExceptionCaught")
@@ -58,12 +86,13 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 
 		try {
 			lateinit var entity: Entity
-			val lastUUID = getUUID()
+
+			val state = getState()
 
 			when (level) {
 				is DataCollection.Minimal ->
 					entity = MinimalDataEntity(
-						id = lastUUID,
+						id = state.uuid,
 
 						devMode = settings.devMode,
 						kordExVersion = KORDEX_VERSION ?: "Unknown",
@@ -76,7 +105,7 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 
 				is DataCollection.Standard ->
 					entity = StandardDataEntity(
-						id = lastUUID,
+						id = state.uuid,
 
 						devMode = settings.devMode,
 						kordExVersion = KORDEX_VERSION ?: "Unknown",
@@ -105,7 +134,7 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 					val processor = hardware.processor
 
 					entity = ExtraDataEntity(
-						id = lastUUID,
+						id = state.uuid,
 
 						devMode = settings.devMode,
 						kordExVersion = KORDEX_VERSION ?: "Unknown",
@@ -151,22 +180,26 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 				}
 
 				else -> {
-					val uuid = getUUID()
+					if (state.uuid != null) {
+						DataAPIClient.delete(state.uuid!!)
 
-					if (uuid != null) {
-						DataAPIClient.delete(uuid)
+						state.uuid = null
+						state.lastLevel = level
+
+						saveState()
 					}
 
 					return stop()
 				}
 			}
 
-			logger.debug { "Submitting collected data - level: ${level.readable}, last UUID: $lastUUID" }
+			logger.debug { "Submitting collected data - level: ${level.readable}, last UUID: ${state.uuid}" }
 
 			val response = DataAPIClient.submit(entity)
+			val lastUUID = state.uuid
 
-			setUUID(response)
-			setLastLevel(level)
+			state.uuid = response
+			state.lastLevel = level
 
 			saveState()
 
@@ -187,16 +220,17 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 	internal suspend fun start() {
 		logger.info { "Staring data collector - level: ${level.readable}" }
 
-		val lastLevel = getLastLevel()
-		val lastUUID = getUUID()
+		migrate()
 
-		if (lastLevel !is DataCollection.None && level is DataCollection.None) {
-			if (lastUUID != null) {
+		val state = getState()
+
+		if (state.lastLevel !is DataCollection.None && level is DataCollection.None) {
+			if (state.uuid != null) {
 				try {
-					DataAPIClient.delete(lastUUID)
+					DataAPIClient.delete(state.uuid!!)
 				} catch (e: ResponseException) {
 					logger.error {
-						"Failed to remove collected data '$lastUUID' from the server: $e\n" +
+						"Failed to remove collected data '${state.uuid}' from the server: $e\n" +
 							"\tThis will be re-attempted next time the bot starts. Please report this error to Kord " +
 							"Extensions via the community links here: https://kordex.dev"
 					}
@@ -204,16 +238,19 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 					return stop()
 				}
 
-				logger.info { "Collected data '$lastUUID' has been deleted from the server." }
+				logger.info { "Collected data '${state.uuid}' has been deleted from the server." }
 			}
 
-			setUUID(null)
-			setLastLevel(level)
+			state.uuid = null
+			state.lastLevel = level
+
+			saveState()
 
 			return stop()
 		}
 
-		setLastLevel(level)
+		state.lastLevel = level
+
 		saveState()
 
 		task = scheduler.schedule(
@@ -226,12 +263,12 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 		)
 
 		task.coroutineScope.launch {
-			// So we don't have to wait for the first submission
+			// So we don't have to wait for the first submission.
 			task.callNow()
 		}
 	}
 
-	internal fun stop() {
+	internal suspend fun stop() {
 		logger.info { "Shutting down data collector." }
 
 		saveState()
@@ -241,74 +278,57 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 		}
 	}
 
-	private fun loadState(): Properties {
+	private fun deleteOldState() {
+		val file = File(COLLECTION_STATE_LOCATION)
+
+		try {
+			Files.delete(file.toPath())
+		} catch (e: IOException) {
+			logger.warn(e) { "Failed to delete $COLLECTION_STATE_LOCATION" }
+		}
+	}
+
+	private fun loadOldState(): Properties? {
 		val props = Properties()
 
 		val file = File(COLLECTION_STATE_LOCATION)
 
-		if (!file.parentFile.exists()) {
-			file.parentFile.mkdirs()
-		}
-
 		if (file.exists()) {
-			props.load(file.reader())
+			val reader = file.reader()
+
+			try {
+				props.load(reader)
+			} finally {
+				reader.close()
+			}
 		} else {
-			props.setProperty("lastLevel", level.readable)
-			props.store(file.writer(), "KordEx data collection state. Do not delete!")
+			return null
 		}
 
 		return props
 	}
 
-	private fun saveState() {
-		val file = File(COLLECTION_STATE_LOCATION)
+	private suspend fun getState(): State {
+		var current = storageUnit.get()
 
-		if (!file.parentFile.exists()) {
-			file.parentFile.mkdirs()
+		if (current == null) {
+			current = State()
+
+			storageUnit.save(current)
 		}
 
-		state.store(file.writer(), "KordEx data collection state. Do not delete!")
+		return current
+	}
+
+	private suspend fun saveState() {
+		storageUnit.save()
 	}
 
 	/** Get the stored "last" data collection level. **/
-	public fun getLastLevel(): DataCollection? {
-		val prop = state.getProperty("lastLevel")
-
-		return if (prop != null) {
-			DataCollection.fromDB(prop)
-		} else {
-			null
-		}
-	}
-
-	private fun setLastLevel(value: DataCollection?) {
-		if (value != null) {
-			state.setProperty("lastLevel", value.readable)
-		} else {
-			state.remove("lastLevel")
-		}
-
-		saveState()
-	}
+	public suspend fun getLastLevel(): DataCollection? =
+		getState().lastLevel
 
 	/** Get the stored data collection UUID. **/
-	public fun getUUID(): UUID? {
-		val prop = state.getProperty("uuid")
-
-		return if (prop != null) {
-			UUID.fromString(prop)
-		} else {
-			null
-		}
-	}
-
-	private fun setUUID(value: UUID?) {
-		if (value != null) {
-			state.setProperty("uuid", value.toString())
-		} else {
-			state.remove("uuid")
-		}
-
-		saveState()
-	}
+	public suspend fun getUUID(): UUID? =
+		getState().uuid
 }
