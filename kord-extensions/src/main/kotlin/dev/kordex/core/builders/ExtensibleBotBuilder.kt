@@ -598,6 +598,9 @@ public open class ExtensibleBotBuilder {
 		/** Translation bundle used when translating your button names, bot name, and bot description. **/
 		public var translationBundle: String? = null
 
+		/** Whether to use ephemeral responses instead of public ones. **/
+		public var ephemeral: Boolean = true
+
 		/** Colour to use for the embed. **/
 		public var color: Color = DISCORD_BLURPLE
 
@@ -726,6 +729,9 @@ public open class ExtensibleBotBuilder {
 			public lateinit var name: String
 			public lateinit var description: String
 			public lateinit var messageBuilder: suspend MessageCreateBuilder.() -> Unit
+
+			/** Whether to use ephemeral responses instead of public ones. **/
+			public var ephemeral: Boolean = true
 
 			public var bundle: String? = parent.translationBundle
 

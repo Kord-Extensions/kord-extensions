@@ -17,10 +17,12 @@ import dev.kord.rest.builder.message.embed
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.commands.application.slash.ephemeralSubCommand
+import dev.kordex.core.commands.application.slash.publicSubCommand
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.chatCommand
 import dev.kordex.core.extensions.chatGroupCommand
 import dev.kordex.core.extensions.ephemeralSlashCommand
+import dev.kordex.core.extensions.publicSlashCommand
 import org.koin.core.component.inject
 
 @Suppress("StringLiteralDuplication")
@@ -30,6 +32,8 @@ public class AboutExtension : Extension() {
 	private val settings: ExtensibleBotBuilder by inject()
 
 	override suspend fun setup() {
+		val ephemeral = settings.aboutBuilder.ephemeral
+
 		if (settings.aboutBuilder.sections.isEmpty()) {
 			chatCommand {
 				name = "extensions.about.commandName"
@@ -73,37 +77,105 @@ public class AboutExtension : Extension() {
 			}
 		}
 
-		ephemeralSlashCommand {
-			name = "extensions.about.commandName"
-			description = "extensions.about.commandDescription"
+		if (ephemeral) {
+			ephemeralSlashCommand {
+				name = "extensions.about.commandName"
+				description = "extensions.about.commandDescription"
 
-			if (settings.aboutBuilder.sections.isEmpty()) {
-				action {
-					respond {
-						addAbout(this@action)
-					}
-				}
-			} else {
-				ephemeralSubCommand {
-					name = "extensions.about.generalCommandName"
-					description = "extensions.about.generalCommandDescription"
-
+				if (settings.aboutBuilder.sections.isEmpty()) {
 					action {
 						respond {
 							addAbout(this@action)
 						}
 					}
-				}
-
-				settings.aboutBuilder.sections.forEach { section ->
+				} else {
 					ephemeralSubCommand {
-						name = section.name
-						description = section.description
-						bundle = section.bundle
+						name = "extensions.about.generalCommandName"
+						description = "extensions.about.generalCommandDescription"
 
 						action {
 							respond {
-								section.messageBuilder(this)
+								addAbout(this@action)
+							}
+						}
+					}
+
+					settings.aboutBuilder.sections.forEach { section ->
+						if (section.ephemeral) {
+							ephemeralSubCommand {
+								name = section.name
+								description = section.description
+								bundle = section.bundle
+
+								action {
+									respond {
+										section.messageBuilder(this)
+									}
+								}
+							}
+						} else {
+							publicSubCommand {
+								name = section.name
+								description = section.description
+								bundle = section.bundle
+
+								action {
+									respond {
+										section.messageBuilder(this)
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			publicSlashCommand {
+				name = "extensions.about.commandName"
+				description = "extensions.about.commandDescription"
+
+				if (settings.aboutBuilder.sections.isEmpty()) {
+					action {
+						respond {
+							addAbout(this@action)
+						}
+					}
+				} else {
+					publicSubCommand {
+						name = "extensions.about.generalCommandName"
+						description = "extensions.about.generalCommandDescription"
+
+						action {
+							respond {
+								addAbout(this@action)
+							}
+						}
+					}
+
+					settings.aboutBuilder.sections.forEach { section ->
+						if (section.ephemeral) {
+							ephemeralSubCommand {
+								name = section.name
+								description = section.description
+								bundle = section.bundle
+
+								action {
+									respond {
+										section.messageBuilder(this)
+									}
+								}
+							}
+						} else {
+							publicSubCommand {
+								name = section.name
+								description = section.description
+								bundle = section.bundle
+
+								action {
+									respond {
+										section.messageBuilder(this)
+									}
+								}
 							}
 						}
 					}
