@@ -120,6 +120,10 @@ public class AboutExtension : Extension() {
 			color = builder.color
 			url = builder.url
 
+			builder.fields.forEach {
+				field { it() }
+			}
+
 			description = buildString {
 				if (builder.description != null) {
 					append(context.translate(builder.description!!, bundle))
