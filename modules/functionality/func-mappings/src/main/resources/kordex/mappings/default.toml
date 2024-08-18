@@ -1,0 +1,27 @@
+[categories]
+# Category IDs to explicitly allow mappings commands within - leave empty for all.
+allowed = []
+
+# Category IDs to explicitly disallow mappings commands within - leave empty for none.
+banned = []
+
+[channels]
+# Channel IDs to explicitly allow mappings commands within - leave empty for all.
+allowed = []
+
+# Channel IDs to explicitly disallow mappings commands within - leave empty for none.
+banned = []
+
+[guilds]
+# Guild IDs to explicitly allow mappings commands within - leave empty for all.
+allowed = []
+
+# Guild IDs to explicitly disallow mappings commands within - leave empty for none.
+banned = []
+
+[settings]
+# Which namespaces to allow lookups for - "hashed-mojang", "legacy-yarn", "plasma", "quilt-mappings", "mcp", "mojang", "yarn" or "yarrn"
+namespaces = ["hashed-mojang", "legacy-yarn", "plasma", "quilt-mappings", "mcp", "mojang", "yarn", "yarrn"]
+
+# How long to wait before closing mappings paginators (in seconds), defaults to 5 minutes
+# timeout = 300

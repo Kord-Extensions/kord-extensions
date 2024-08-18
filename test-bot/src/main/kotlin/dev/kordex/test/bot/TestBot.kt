@@ -19,6 +19,7 @@ import dev.kordex.core.checks.isNotBot
 import dev.kordex.core.utils.env
 import dev.kordex.core.utils.envOrNull
 import dev.kordex.data.api.DataCollection
+import dev.kordex.modules.func.mappings.extMappings
 import dev.kordex.modules.func.phishing.extPhishing
 import dev.kordex.modules.pluralkit.extPluralKit
 import dev.kordex.modules.web.core.backend.utils.web
@@ -109,9 +110,9 @@ public suspend fun main() {
 				extPluralKit()
 			}
 
-// 			if (envOrNull("MAPPINGS_TESTING") != null) {
-// 				extMappings { }
-// 			}
+ 			if (envOrNull("MAPPINGS_TESTING") != null) {
+ 				extMappings { }
+ 			}
 
 			add(::ArgumentTestExtension)
 			add(::I18nTestExtension)
@@ -123,7 +124,7 @@ public suspend fun main() {
 
 		plugins {
 			pluginPath("test-bot/plugins/")
-// 			pluginPath("modules/functionality/func-mappings/build/generated/ksp/main/resources")
+ 			pluginPath("modules/functionality/func-mappings/build/generated/ksp/main/resources")
 		}
 	}
 
