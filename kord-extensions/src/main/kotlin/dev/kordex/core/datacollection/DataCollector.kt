@@ -288,7 +288,7 @@ public class DataCollector(public val level: DataCollection) : KordExKoinCompone
 	}
 
 	internal suspend fun start() {
-		logger.info { "Staring data collector - level: ${level.readable}" }
+		logger.info { "Starting data collector - level: ${level.readable}" }
 
 		if (applicationCommands == null) {
 			logger.info {
