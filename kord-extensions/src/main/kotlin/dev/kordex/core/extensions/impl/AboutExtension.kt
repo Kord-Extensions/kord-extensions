@@ -77,7 +77,7 @@ public class AboutExtension : Extension() {
 			name = "extensions.about.commandName"
 			description = "extensions.about.commandDescription"
 
-			if (settings.aboutBuilder.sections.isNotEmpty()) {
+			if (settings.aboutBuilder.sections.isEmpty()) {
 				action {
 					respond {
 						addAbout(this@action)
