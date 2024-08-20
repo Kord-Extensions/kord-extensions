@@ -12,6 +12,7 @@ package dev.kordex.core.annotations.converters
 
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import dev.kordex.core.annotations.orNull
 
 /**
@@ -33,8 +34,14 @@ public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
 
 	/** @suppress **/
 	public val types: List<ConverterType> =
-		(argMap["types"]!! as ArrayList<KSClassDeclaration>).mapNotNull {
-			ConverterType.fromName(it.simpleName.asString())
+		(argMap["types"]!! as ArrayList<Any>).mapNotNull {
+			if (it is KSClassDeclaration) {
+				ConverterType.fromName(it.simpleName.asString())
+			} else if (it is KSType) {
+				ConverterType.fromName(it.declaration.simpleName.asString())
+			} else {
+				null
+			}
 		}
 
 	/** @suppress **/
