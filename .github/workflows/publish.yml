@@ -43,7 +43,7 @@ jobs:
           echo -e "\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
 
       - name: Gradle (Setup)
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
         with:
           dependency-graph: generate-and-submit

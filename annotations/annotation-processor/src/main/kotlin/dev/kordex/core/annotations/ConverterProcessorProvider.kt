@@ -13,6 +13,7 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import dev.kordex.core.annotations.converters.ConverterProcessor
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
@@ -23,8 +24,10 @@ import org.koin.dsl.module
  */
 public class ConverterProcessorProvider : SymbolProcessorProvider {
 	override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
-		startKoin {
-			modules()
+		if (GlobalContext.getOrNull() == null) {
+			startKoin {
+				modules()
+			}
 		}
 
 		loadKoinModules(module { single { environment.logger } bind KSPLogger::class })
