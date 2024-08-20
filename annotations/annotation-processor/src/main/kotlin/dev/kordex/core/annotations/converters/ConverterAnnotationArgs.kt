@@ -10,10 +10,13 @@
 
 package dev.kordex.core.annotations.converters
 
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import dev.kordex.core.annotations.orNull
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 /**
  * Class representing the arguments that are defined within a converter annotation, extracted from its declaration.
@@ -21,7 +24,19 @@ import dev.kordex.core.annotations.orNull
  * @property annotation Annotation definition to extract data from.
  */
 @Suppress("UNCHECKED_CAST")
-public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
+public data class ConverterAnnotationArgs(
+	public val annotation: KSAnnotation,
+	private val logger: KSPLogger,
+) {
+	init {
+		logger.info("Building arguments class for annotation: $annotation")
+		logger.info("Arguments: ${annotation.arguments.size}")
+
+		annotation.arguments.forEach { arg ->
+			logger.info(" -> ${arg.name?.getShortName()} -> ${arg.value}")
+		}
+	}
+
 	/** @suppress **/
 	private val argMap: Map<String?, Any?> =
 		annotation.arguments
@@ -35,6 +50,8 @@ public data class ConverterAnnotationArgs(public val annotation: KSAnnotation) {
 	/** @suppress **/
 	public val types: List<ConverterType> =
 		(argMap["types"]!! as ArrayList<Any>).mapNotNull {
+			logger.info("ConverterType: $it")
+
 			if (it is KSClassDeclaration) {
 				ConverterType.fromName(it.simpleName.asString())
 			} else if (it is KSType) {

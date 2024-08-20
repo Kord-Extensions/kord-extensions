@@ -53,7 +53,7 @@ public class ConverterProcessor(
 
 			logger.info("Found annotation", annotation)
 
-			val arguments = ConverterAnnotationArgs(annotation)
+			val arguments = ConverterAnnotationArgs(annotation, logger)
 
 			logger.info(
 				"Arguments: \n" + annotation.arguments.joinToString("\n") {
