@@ -15,6 +15,9 @@ import java.nio.file.Path
 @Suppress("SpreadOperator")
 /** Module manager, in charge of loading and managing module "plugins". **/
 public open class PluginManager(roots: List<Path>) : DefaultPluginManager(*roots.toTypedArray()) {
+	public var enabled: Boolean = true
+		internal set
+
 	init {
 		systemVersion = KORDEX_VERSION
 

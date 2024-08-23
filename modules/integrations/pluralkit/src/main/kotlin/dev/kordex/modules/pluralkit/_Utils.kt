@@ -8,16 +8,16 @@
 
 package dev.kordex.modules.pluralkit
 
-import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.ExtensionsBuilder
 import dev.kordex.modules.pluralkit.config.PKConfigBuilder
 
 /** Set up and add the PluralKit extension to your bot, using the default configuration. **/
-fun ExtensibleBotBuilder.ExtensionsBuilder.extPluralKit() {
+fun ExtensionsBuilder.extPluralKit() {
 	add { PKExtension(PKConfigBuilder()) }
 }
 
 /** Set up and add the PluralKit extension to your bot. **/
-fun ExtensibleBotBuilder.ExtensionsBuilder.extPluralKit(body: PKConfigBuilder.() -> Unit) {
+fun ExtensionsBuilder.extPluralKit(body: PKConfigBuilder.() -> Unit) {
 	val builder = PKConfigBuilder()
 
 	body(builder)

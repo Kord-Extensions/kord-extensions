@@ -8,12 +8,16 @@
 
 package dev.kordex.modules.func.phishing
 
-import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.AboutBuilder
+import dev.kordex.core.builders.ExtensionsBuilder
+import dev.kordex.core.builders.about.CopyrightType
+
+private var copyrightAdded = false
 
 /**
  * Add the phishing extension to the bot with the default configuration.
  */
-fun ExtensibleBotBuilder.ExtensionsBuilder.extPhishing() {
+fun ExtensionsBuilder.extPhishing() {
 	val settings = ExtPhishingBuilder()
 
 	settings.validate()
@@ -24,7 +28,7 @@ fun ExtensibleBotBuilder.ExtensionsBuilder.extPhishing() {
 /**
  * Add the phishing extension to the bot with a customised configuration.
  */
-inline fun ExtensibleBotBuilder.ExtensionsBuilder.extPhishing(builder: ExtPhishingBuilder.() -> Unit) {
+inline fun ExtensionsBuilder.extPhishing(builder: ExtPhishingBuilder.() -> Unit) {
 	val settings = ExtPhishingBuilder()
 
 	builder(settings)
@@ -32,4 +36,17 @@ inline fun ExtensibleBotBuilder.ExtensionsBuilder.extPhishing(builder: ExtPhishi
 	settings.validate()
 
 	add { PhishingExtension(settings) }
+}
+
+internal fun AboutBuilder.addCopyright() {
+	if (!copyrightAdded) {
+		copyright(
+			"jsoup",
+			"MIT",
+			CopyrightType.Library,
+			"https://jsoup.org/"
+		)
+	}
+
+	copyrightAdded = true
 }

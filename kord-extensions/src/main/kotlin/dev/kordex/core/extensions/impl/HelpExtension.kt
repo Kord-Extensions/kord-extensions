@@ -10,6 +10,7 @@ package dev.kordex.core.extensions.impl
 
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.extensions.HelpExtensionBuilder
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.chat.*
 import dev.kordex.core.commands.converters.impl.stringList
@@ -55,7 +56,7 @@ public class HelpExtension : HelpProvider, Extension() {
 	public val botSettings: ExtensibleBotBuilder by inject()
 
 	/** Help extension settings, from the bot builder. **/
-	public val settings: ExtensibleBotBuilder.ExtensionsBuilder.HelpExtensionBuilder =
+	public val settings: HelpExtensionBuilder =
 		botSettings.extensionsBuilder.helpExtensionBuilder
 
 	override suspend fun setup() {

@@ -8,69 +8,57 @@
 
 package dev.kordex.core.extensions.impl
 
+import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.reply
-import dev.kord.core.builder.components.emoji
-import dev.kord.core.entity.ReactionEmoji
-import dev.kord.rest.builder.message.actionRow
-import dev.kord.rest.builder.message.create.MessageCreateBuilder
-import dev.kord.rest.builder.message.embed
+import dev.kordex.core.DISCORD_BLURPLE
 import dev.kordex.core.builders.ExtensibleBotBuilder
-import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.builders.about.Copyright
+import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.commands.application.slash.ephemeralSubCommand
 import dev.kordex.core.commands.application.slash.publicSubCommand
 import dev.kordex.core.extensions.Extension
-import dev.kordex.core.extensions.chatCommand
 import dev.kordex.core.extensions.chatGroupCommand
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.pagination.builders.PaginatorBuilder
 import org.koin.core.component.inject
+import java.util.Locale
 
-@Suppress("StringLiteralDuplication")
+@Suppress("StringLiteralDuplication", "MagicNumber")
 public class AboutExtension : Extension() {
 	override val name: String = "kordex.about"
 
+	private val translations: TranslationsProvider by inject()
 	private val settings: ExtensibleBotBuilder by inject()
 
 	override suspend fun setup() {
 		val ephemeral = settings.aboutBuilder.ephemeral
 
-		if (settings.aboutBuilder.sections.isEmpty()) {
+		chatGroupCommand {
+			name = "extensions.about.commandName"
+			description = "extensions.about.commandDescription"
+
 			chatCommand {
-				name = "extensions.about.commandName"
-				description = "extensions.about.commandDescription"
+				name = "extensions.about.copyright.commandName"
+				description = "extensions.about.copyright.commandDescription"
 
 				action {
-					message.reply {
-						addAbout(this@action)
-					}
+					paginator {
+						addCopyright(user, getLocale())
+					}.send()
 				}
 			}
-		} else {
-			chatGroupCommand {
-				name = "extensions.about.commandName"
-				description = "extensions.about.commandDescription"
 
+			settings.aboutBuilder.sections.values.forEach { section ->
 				this.chatCommand {
-					name = "extensions.about.generalCommandName"
-					description = "extensions.about.generalCommandDescription"
+					this.name = section.name
+					description = section.description
+					bundle = section.translationBundle
 
 					action {
 						message.reply {
-							addAbout(this@action)
-						}
-					}
-				}
-
-				settings.aboutBuilder.sections.forEach { section ->
-					this.chatCommand {
-						name = section.name
-						description = section.description
-						bundle = section.bundle
-
-						action {
-							message.reply {
-								section.messageBuilder(this)
-							}
+							section.builder(this, getLocale())
 						}
 					}
 				}
@@ -82,47 +70,41 @@ public class AboutExtension : Extension() {
 				name = "extensions.about.commandName"
 				description = "extensions.about.commandDescription"
 
-				if (settings.aboutBuilder.sections.isEmpty()) {
+				ephemeralSubCommand {
+					name = "extensions.about.copyright.commandName"
+					description = "extensions.about.copyright.commandDescription"
+
 					action {
-						respond {
-							addAbout(this@action)
-						}
+						val locale = getLocale()
+
+						editingPaginator {
+							addCopyright(user, locale)
+						}.send()
 					}
-				} else {
-					ephemeralSubCommand {
-						name = "extensions.about.generalCommandName"
-						description = "extensions.about.generalCommandDescription"
+				}
 
-						action {
-							respond {
-								addAbout(this@action)
-							}
-						}
-					}
+				settings.aboutBuilder.sections.values.forEach { section ->
+					if (section.ephemeral ?: settings.aboutBuilder.ephemeral) {
+						ephemeralSubCommand {
+							name = section.name
+							description = section.description
+							bundle = section.translationBundle
 
-					settings.aboutBuilder.sections.forEach { section ->
-						if (section.ephemeral) {
-							ephemeralSubCommand {
-								name = section.name
-								description = section.description
-								bundle = section.bundle
-
-								action {
-									respond {
-										section.messageBuilder(this)
-									}
+							action {
+								respond {
+									section.builder(this, getLocale())
 								}
 							}
-						} else {
-							publicSubCommand {
-								name = section.name
-								description = section.description
-								bundle = section.bundle
+						}
+					} else {
+						publicSubCommand {
+							name = section.name
+							description = section.description
+							bundle = section.translationBundle
 
-								action {
-									respond {
-										section.messageBuilder(this)
-									}
+							action {
+								respond {
+									section.builder(this, getLocale())
 								}
 							}
 						}
@@ -134,47 +116,41 @@ public class AboutExtension : Extension() {
 				name = "extensions.about.commandName"
 				description = "extensions.about.commandDescription"
 
-				if (settings.aboutBuilder.sections.isEmpty()) {
+				publicSubCommand {
+					name = "extensions.about.copyright.commandName"
+					description = "extensions.about.copyright.commandDescription"
+
 					action {
-						respond {
-							addAbout(this@action)
-						}
+						val locale = getLocale()
+
+						editingPaginator {
+							addCopyright(user, locale)
+						}.send()
 					}
-				} else {
-					publicSubCommand {
-						name = "extensions.about.generalCommandName"
-						description = "extensions.about.generalCommandDescription"
+				}
 
-						action {
-							respond {
-								addAbout(this@action)
-							}
-						}
-					}
+				settings.aboutBuilder.sections.values.forEach { section ->
+					if (section.ephemeral ?: settings.aboutBuilder.ephemeral) {
+						ephemeralSubCommand {
+							name = section.name
+							description = section.description
+							bundle = section.translationBundle
 
-					settings.aboutBuilder.sections.forEach { section ->
-						if (section.ephemeral) {
-							ephemeralSubCommand {
-								name = section.name
-								description = section.description
-								bundle = section.bundle
-
-								action {
-									respond {
-										section.messageBuilder(this)
-									}
+							action {
+								respond {
+									section.builder(this, getLocale())
 								}
 							}
-						} else {
-							publicSubCommand {
-								name = section.name
-								description = section.description
-								bundle = section.bundle
+						}
+					} else {
+						publicSubCommand {
+							name = section.name
+							description = section.description
+							bundle = section.translationBundle
 
-								action {
-									respond {
-										section.messageBuilder(this)
-									}
+							action {
+								respond {
+									section.builder(this, getLocale())
 								}
 							}
 						}
@@ -184,88 +160,65 @@ public class AboutExtension : Extension() {
 		}
 	}
 
-	public suspend fun MessageCreateBuilder.addAbout(context: CommandContext) {
-		val builder = settings.aboutBuilder
-		val bundle = builder.translationBundle
-
-		embed {
-			color = builder.color
-			url = builder.url
-
-			builder.fields.forEach {
-				field { it() }
+	public fun PaginatorBuilder.addCopyright(owner: UserBehavior?, locale: Locale) {
+		val copyright = settings.aboutBuilder.copyrightItems +
+			settings.pluginBuilder.managerObj.plugins.map {
+				Copyright(
+					"Plugin: `${it.descriptor.pluginId}`",
+					it.descriptor.license,
+					CopyrightType.PluginModule,
+					null
+				)
 			}
+
+		this.owner = owner
+
+		page {
+			color = DISCORD_BLURPLE
+			title = "Copyright Information"
 
 			description = buildString {
-				if (builder.description != null) {
-					append(context.translate(builder.description!!, bundle))
-				} else {
-					append(context.translate("extensions.about.defaultDescription"))
-				}
-
-				if (builder.url != null) {
-					append("\n\n")
-
-					append(
-						context.translate("extensions.about.descriptionUrl", arrayOf(builder.url))
-					)
-				}
-			}
-
-			title = when {
-				builder.name != null && builder.version != null -> context.translate(
-					"extensions.about.titleWithVersion",
-
-					arrayOf(
-						context.translate(builder.name!!, bundle),
-						builder.version!!
+				appendLine(
+					translations.translate(
+						"extensions.about.copyright.intro",
+						locale,
+						replacements = arrayOf(
+							"[Kord Extensions](https://kordex.dev)",
+							"EUPL",
+							"1.2"
+						)
 					)
 				)
-
-				builder.name != null && builder.version == null -> context.translate(
-					builder.name!!, bundle
-				)
-
-				else -> context.translate("extensions.about.defaultTitle")
-			}
-
-			if (builder.logoUrl != null) {
-				thumbnail {
-					url = builder.logoUrl!!
-				}
-			}
-
-			footer {
-				icon = "https://kordex.dev/logo-transparent.png"
-				text = context.translate("extensions.about.madeWith") + " • EUPL v1.2 • https://kordex.dev"
 			}
 		}
 
-		if (builder.buttons.isNotEmpty()) {
-			val names = mutableMapOf<String, String>()
+		copyright
+			.groupBy { translations.translate(it.type.key, locale) }
+			.toSortedMap { left, right -> left.compareTo(right) }
+			.forEach { (type, items) ->
+				items
+					.sortedBy { it.name }
+					.chunked(20)
+					.forEach { chunk ->
+						page {
+							color = DISCORD_BLURPLE
+							title = type
 
-			builder.buttons.forEach { button ->
-				names[button.name] = context.translate(button.name, bundle)
-			}
-
-			actionRow {
-				builder.buttons
-					.sortedWith { left, right ->
-						names[left.name]!!.compareTo(names[right.name]!!, true)
-					}
-					.forEach { button ->
-						linkButton(button.url) {
-							label = names[button.name]!!
-
-							when (val e = button.emoji) {
-								null -> {} // Nothing
-
-								is ReactionEmoji.Custom -> emoji(e)
-								is ReactionEmoji.Unicode -> emoji(e)
+							description = buildString {
+								chunk.forEach { item ->
+									if (item.url != null) {
+										appendLine(
+											"- [${item.name}](${item.url}) (${item.license})"
+										)
+									} else {
+										appendLine(
+											"- ${item.name} (${item.license})"
+										)
+									}
+								}
 							}
 						}
 					}
 			}
-		}
 	}
 }

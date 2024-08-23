@@ -58,6 +58,10 @@ public class T4JDurationCoalescingConverter(
 	override val signatureTypeString: String = "converters.duration.error.signatureType"
 	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
+	init {
+	    bot.settings.aboutBuilder.addCopyright()
+	}
+
 	private val logger: KLogger = KotlinLogging.logger {}
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {

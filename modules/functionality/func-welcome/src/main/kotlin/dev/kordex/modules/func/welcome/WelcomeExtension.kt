@@ -42,6 +42,10 @@ class WelcomeExtension : Extension() {
 
 	private val welcomeChannels: MutableMap<Snowflake, WelcomeChannel> = mutableMapOf()
 
+	init {
+		bot.settings.aboutBuilder.addCopyright()
+	}
+
 	override suspend fun setup() {
 		val initialMapping = data.getChannelURLs()
 

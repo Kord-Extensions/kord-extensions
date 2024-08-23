@@ -15,6 +15,8 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
+import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.storage.Data
 import dev.kordex.core.storage.DataAdapter
@@ -27,6 +29,9 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import org.bson.conversions.Bson
+import org.koin.core.component.inject
+
+private var copyrightAdded = false
 
 /**
  * This class represents a MongoDB data adapter for storing and retrieving data using MongoDB as the underlying
@@ -37,6 +42,27 @@ import org.bson.conversions.Bson
  */
 public class MongoDBDataAdapter : DataAdapter<String>(), KordExKoinComponent {
 	private val collectionCache: MutableStringKeyedMap<MongoCollection<AdaptedData>> = mutableMapOf()
+	private val settings: ExtensibleBotBuilder by inject()
+
+	init {
+		if (!copyrightAdded) {
+			settings.aboutBuilder.copyright(
+				"MongoDB: Kotlin Driver",
+				"Apache-2.0",
+				CopyrightType.Library,
+				"https://www.mongodb.com/docs/drivers/kotlin/coroutine/current/"
+			)
+
+			settings.aboutBuilder.copyright(
+				"MongDB: Kotlin BSONx",
+				"Apache-2.0",
+				CopyrightType.Library,
+				"https://www.mongodb.com/docs/drivers/kotlin/coroutine/current/fundamentals/data-formats/serialization/"
+			)
+
+			copyrightAdded = true
+		}
+	}
 
 	private fun StorageUnit<*>.getIdentifier(): String =
 		buildString {

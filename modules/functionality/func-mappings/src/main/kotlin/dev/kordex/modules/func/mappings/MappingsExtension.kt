@@ -103,6 +103,10 @@ class MappingsExtension : Extension() {
 
 	private val namespaceCache = mutableMapOf<Snowflake, Map<String, String>>()
 
+	init {
+		bot.settings.aboutBuilder.addCopyright()
+	}
+
 	override suspend fun setup() {
 		// Fix issue where Linkie doesn't create its cache directory
 		val cacheDirectory = Path("./.linkie-cache")

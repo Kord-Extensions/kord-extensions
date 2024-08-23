@@ -13,8 +13,12 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.gateway.ALL
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
+import dev.kord.rest.builder.message.actionRow
+import dev.kord.rest.builder.message.embed
+import dev.kordex.core.DISCORD_BLURPLE
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.KORDEX_VERSION
+import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.checks.isNotBot
 import dev.kordex.core.utils.env
 import dev.kordex.core.utils.envOrNull
@@ -39,24 +43,61 @@ public suspend fun main() {
 		koinLogLevel = Level.DEBUG
 
 		about {
-			name = "Test Bot"
-			description = "Kord Extensions' official testing bot."
-			logoUrl = "https://kordex.dev/logo.png"
-			url = "https://kordex.dev"
-			version = KORDEX_VERSION
+			ephemeral = false
 
-			sourceButton("https://github.com/Kord-Extensions/kord-extensions")
-			donationButton("https://ko-fi.com/gsc")
-			docsButton("https://docs.kordex.dev")
+			general {
+				message { locale ->
+					embed {
+						color = DISCORD_BLURPLE
+						title = "Test Bot"
+						url = "https://kordex.dev"
 
-			section {
-				name = "banana"
+						thumbnail {
+							url = "https://kordex.dev/logo.png"
+						}
+
+						description = "Kord Extensions' official testing bot.\n\n" +
+							"[Click here to learn more...](https://kordex.dev)"
+
+						field {
+							name = "Current Version"
+							value = "`${KORDEX_VERSION}`"
+						}
+					}
+
+					actionRow {
+						linkButton("https://docs.kordex.dev") {
+							label = "Docs"
+						}
+
+						linkButton("https://ko-fi.com/gsc") {
+							label = "Donate"
+						}
+
+						linkButton("https://github.com/Kord-Extensions/kord-extensions") {
+							label = "Source Code"
+						}
+					}
+				}
+			}
+
+			section("banana") {
 				description = "banana"
 
 				message {
 					content = "Banana!"
 				}
 			}
+
+			copyright("Jansi", "Apache-2.0", CopyrightType.Library, "https://fusesource.github.io/jansi/")
+			copyright("Logback", "EPL-1.0", CopyrightType.Library, "https://logback.qos.ch/")
+
+			copyright(
+				"Logback Groovy Config",
+				"EPL-1.0",
+				CopyrightType.Library,
+				"https://github.com/virtualdogbert/logback-groovy-config"
+			)
 		}
 
 		chatCommands {

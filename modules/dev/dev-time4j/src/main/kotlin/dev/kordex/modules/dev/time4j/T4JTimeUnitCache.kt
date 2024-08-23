@@ -8,6 +8,7 @@
 
 package dev.kordex.modules.dev.time4j
 
+import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.koin.KordExKoinComponent
 import net.time4j.CalendarUnit
@@ -34,6 +35,11 @@ private val keyMap: UnitMap = linkedMapOf(
 public object T4JTimeUnitCache : KordExKoinComponent {
 	private val translations: TranslationsProvider by inject()
 	private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
+	private val settings: ExtensibleBotBuilder by inject()
+
+	init {
+		settings.aboutBuilder.addCopyright()
+	}
 
 	/** Return a mapping of all translated unit names to ChronoUnit objects, based on the given locale. **/
 	public fun getUnits(locale: Locale): UnitMap {

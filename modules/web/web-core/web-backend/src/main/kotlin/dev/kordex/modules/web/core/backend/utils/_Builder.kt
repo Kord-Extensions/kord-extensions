@@ -8,11 +8,11 @@
 
 package dev.kordex.modules.web.core.backend.utils
 
-import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.ExtensionsBuilder
 import dev.kordex.modules.web.core.backend.WebExtension
 import dev.kordex.modules.web.core.backend.config.WebServerConfig
 
-public fun ExtensibleBotBuilder.ExtensionsBuilder.web(builder: WebServerConfig.() -> Unit) {
+public fun ExtensionsBuilder.web(builder: WebServerConfig.() -> Unit) {
 	val config = WebServerConfig()
 
 	builder(config)

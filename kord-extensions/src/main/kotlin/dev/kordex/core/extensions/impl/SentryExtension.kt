@@ -9,6 +9,7 @@
 package dev.kordex.core.extensions.impl
 
 import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.extensions.SentryExtensionBuilder
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.converters.impl.coalescingString
 import dev.kordex.core.commands.converters.impl.string
@@ -39,7 +40,7 @@ public class SentryExtension : Extension() {
 	public val botSettings: ExtensibleBotBuilder by inject()
 
 	/** Sentry extension settings, from the bot builder. **/
-	public val sentrySettings: ExtensibleBotBuilder.ExtensionsBuilder.SentryExtensionBuilder =
+	public val sentrySettings: SentryExtensionBuilder =
 		botSettings.extensionsBuilder.sentryExtensionBuilder
 
 	@Suppress("StringLiteralDuplication")  // It's the command name

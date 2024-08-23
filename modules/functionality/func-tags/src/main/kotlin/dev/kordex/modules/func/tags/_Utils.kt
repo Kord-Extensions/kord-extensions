@@ -8,21 +8,21 @@
 
 package dev.kordex.modules.func.tags
 
-import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.ExtensionsBuilder
 import dev.kordex.core.utils.loadModule
 import dev.kordex.modules.func.tags.config.SimpleTagsConfig
 import dev.kordex.modules.func.tags.config.TagsConfig
 import dev.kordex.modules.func.tags.data.TagsData
 import org.koin.dsl.bind
 
-fun ExtensibleBotBuilder.ExtensionsBuilder.tags(config: TagsConfig, data: TagsData) {
+fun ExtensionsBuilder.tags(config: TagsConfig, data: TagsData) {
 	loadModule { single { config } bind TagsConfig::class }
 	loadModule { single { data } bind TagsData::class }
 
 	add { TagsExtension() }
 }
 
-fun ExtensibleBotBuilder.ExtensionsBuilder.tags(data: TagsData, body: SimpleTagsConfig.Builder.() -> Unit) {
+fun ExtensionsBuilder.tags(data: TagsData, body: SimpleTagsConfig.Builder.() -> Unit) {
 	tags(SimpleTagsConfig(body), data)
 }
 

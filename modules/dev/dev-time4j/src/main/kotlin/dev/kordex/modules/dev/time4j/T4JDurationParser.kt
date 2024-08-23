@@ -8,6 +8,7 @@
 
 package dev.kordex.modules.dev.time4j
 
+import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.parsers.DurationParserException
@@ -23,6 +24,11 @@ import java.util.*
  */
 public object T4JDurationParser : KordExKoinComponent {
 	private val translations: TranslationsProvider by inject()
+	private val settings: ExtensibleBotBuilder by inject()
+
+	init {
+		settings.aboutBuilder.addCopyright()
+	}
 
 	/** Check whether the given character is a valid duration unit character. **/
 	public fun charValid(char: Char, locale: Locale): Boolean =

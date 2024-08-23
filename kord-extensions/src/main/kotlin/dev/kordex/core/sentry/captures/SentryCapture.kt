@@ -13,7 +13,7 @@ import dev.kord.core.entity.Role
 import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.Channel
 import dev.kordex.core.builders.ExtensibleBotBuilder
-import dev.kordex.core.builders.SentryDataTypeBuilder
+import dev.kordex.core.builders.extensions.SentryDataTypeBuilder
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryAdapter
 import dev.kordex.core.utils.MutableStringKeyedMap

@@ -8,17 +8,34 @@
 
 package dev.kordex.modules.func.mappings
 
-import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.AboutBuilder
+import dev.kordex.core.builders.ExtensionsBuilder
+import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.modules.func.mappings.builders.ExtMappingsBuilder
+
+private var copyrightAdded = false
 
 /**
  * Configure the mappings extension and add it to the bot.
  */
-fun ExtensibleBotBuilder.ExtensionsBuilder.extMappings(builder: ExtMappingsBuilder.() -> Unit) {
+fun ExtensionsBuilder.extMappings(builder: ExtMappingsBuilder.() -> Unit) {
 	val obj = ExtMappingsBuilder()
 
 	builder(obj)
 	MappingsExtension.configure(obj)
 
 	add(::MappingsExtension)
+}
+
+internal fun AboutBuilder.addCopyright() {
+	if (!copyrightAdded) {
+		copyright(
+			"Linkie: Core",
+			"Apache-2.0",
+			CopyrightType.Library,
+			"https://linkie.shedaniel.dev/"
+		)
+	}
+
+	copyrightAdded = true
 }

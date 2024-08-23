@@ -60,6 +60,10 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		expectSuccess = true
 	}
 
+	init {
+		bot.settings.aboutBuilder.addCopyright()
+	}
+
 	override suspend fun setup() {
 		api = PhishingApi(kord.kordExUserAgent())
 		websocket = api.websocket(::handleChange)

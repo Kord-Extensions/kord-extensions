@@ -15,7 +15,9 @@ import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.component.Component
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
-import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.builders.AboutBuilder
+import dev.kordex.core.builders.ExtensionsBuilder
+import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.utils.loadModule
 import dev.kordex.modules.func.welcome.config.SimpleWelcomeChannelConfig
 import dev.kordex.modules.func.welcome.config.WelcomeChannelConfig
@@ -23,8 +25,22 @@ import dev.kordex.modules.func.welcome.data.WelcomeChannelData
 import org.koin.dsl.bind
 
 private const val DISCORD_CHANNEL_URI = "https://discord.com/channels"
+private var copyrightAdded = false
 
-fun ExtensibleBotBuilder.ExtensionsBuilder.welcomeChannel(
+internal fun AboutBuilder.addCopyright() {
+	if (!copyrightAdded) {
+		copyright(
+			"kaml",
+			"Apache-2.0",
+			CopyrightType.Library,
+			"https://github.com/charleskorn/kaml"
+		)
+	}
+
+	copyrightAdded = true
+}
+
+fun ExtensionsBuilder.welcomeChannel(
 	config: WelcomeChannelConfig,
 	data: WelcomeChannelData,
 ) {
@@ -34,7 +50,7 @@ fun ExtensibleBotBuilder.ExtensionsBuilder.welcomeChannel(
 	add { WelcomeExtension() }
 }
 
-fun ExtensibleBotBuilder.ExtensionsBuilder.welcomeChannel(
+fun ExtensionsBuilder.welcomeChannel(
 	data: WelcomeChannelData,
 	body: SimpleWelcomeChannelConfig.Builder.() -> Unit,
 ) {

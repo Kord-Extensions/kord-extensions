@@ -53,6 +53,10 @@ public class T4JDurationConverter(
 	override val signatureTypeString: String = "converters.duration.error.signatureType"
 	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
+	init {
+		bot.settings.aboutBuilder.addCopyright()
+	}
+
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 

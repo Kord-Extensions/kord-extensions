@@ -11,6 +11,8 @@ package dev.kordex.modules.dev.time4j
 import com.ibm.icu.text.MeasureFormat
 import com.ibm.icu.util.Measure
 import com.ibm.icu.util.MeasureUnit
+import dev.kordex.core.builders.AboutBuilder
+import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.time.TimestampType
 import dev.kordex.core.utils.component6
@@ -20,6 +22,21 @@ import net.time4j.tz.ZonalOffset
 import java.util.*
 
 private const val DAYS_PER_WEEK = 7L
+
+private var copyrightAdded = false
+
+internal fun AboutBuilder.addCopyright() {
+	if (!copyrightAdded) {
+		copyright(
+			"Time4J",
+			"LGPL-2.1",
+			CopyrightType.Library,
+			"http://time4j.net/"
+		)
+	}
+
+	copyrightAdded = true
+}
 
 /**
  * Function in charge of formatting Time4J duration objects into human-readable form, taking locales and translations
