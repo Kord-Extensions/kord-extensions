@@ -17,14 +17,13 @@ import kotlin.getValue
 
 internal typealias SectionBuilder = suspend MessageBuilder.(locale: Locale) -> Unit
 
-public class Section(public val name: String) : KordExKoinComponent {
+public class Section(public val name: String, public val description: String) : KordExKoinComponent {
 	public val translations: TranslationsProvider by inject()
 
 	public var ephemeral: Boolean? = null
 	public var translationBundle: String? = null
 
 	public lateinit var builder: SectionBuilder
-	public lateinit var description: String
 
 	public fun message(builder: SectionBuilder) {
 		this.builder = builder
@@ -36,10 +35,6 @@ public class Section(public val name: String) : KordExKoinComponent {
 	public fun validate() {
 		if (!::builder.isInitialized) {
 			error("No builder provided - use the `message` DSL function to add one.")
-		}
-
-		if (!::description.isInitialized) {
-			error("No description provided.")
 		}
 	}
 }

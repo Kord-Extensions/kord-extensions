@@ -84,14 +84,12 @@ public class AboutBuilder : KordExKoinComponent {
 	}
 
 	public suspend fun general(builder: suspend Section.() -> Unit): Unit =
-		section("extensions.about.general.commandName") {
-			description = "extensions.about.general.commandDescription"
-
+		section("extensions.about.general.commandName", "extensions.about.general.commandDescription") {
 			builder()
 		}
 
-	public suspend fun section(name: String, builder: suspend Section.() -> Unit) {
-		val section = Section(name)
+	public suspend fun section(name: String, description: String, builder: suspend Section.() -> Unit) {
+		val section = Section(name, description)
 
 		builder(section)
 
