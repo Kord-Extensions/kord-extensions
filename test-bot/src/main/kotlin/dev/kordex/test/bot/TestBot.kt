@@ -81,9 +81,7 @@ public suspend fun main() {
 				}
 			}
 
-			section("banana") {
-				description = "banana"
-
+			section("banana", "banana") {
 				message {
 					content = "Banana!"
 				}
