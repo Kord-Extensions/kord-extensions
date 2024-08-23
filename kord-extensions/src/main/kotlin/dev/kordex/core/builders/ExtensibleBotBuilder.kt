@@ -510,7 +510,13 @@ public open class ExtensibleBotBuilder {
 
 		loadModule { single { manager } bind PluginManager::class }
 
+		manager.enabled = pluginBuilder.enabled
 		pluginBuilder.managerObj = manager
+
+		if (!manager.enabled) {
+			return
+		}
+
 		pluginBuilder.disabledPlugins.forEach(manager::disablePlugin)
 
 		manager.loadPlugins()
@@ -548,9 +554,7 @@ public open class ExtensibleBotBuilder {
 		}
 
 		hooksBuilder.beforeKoinSetup {
-			if (pluginBuilder.enabled) {
-				loadPlugins()
-			}
+			loadPlugins()
 
 			deferredExtensionsBuilders.forEach { it(extensionsBuilder) }
 		}
