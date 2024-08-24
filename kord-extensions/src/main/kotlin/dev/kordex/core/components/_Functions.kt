@@ -9,8 +9,6 @@
 package dev.kordex.core.components
 
 import dev.kord.rest.builder.message.MessageBuilder
-import dev.kord.rest.builder.message.create.MessageCreateBuilder
-import dev.kord.rest.builder.message.modify.MessageModifyBuilder
 import dev.kordex.core.components.buttons.DisabledInteractionButton
 import dev.kordex.core.components.buttons.EphemeralInteractionButton
 import dev.kordex.core.components.buttons.LinkInteractionButton
@@ -422,23 +420,7 @@ public suspend fun MessageBuilder.applyComponents(components: ComponentContainer
  * creating. Supply a [timeout] and the components you add will be removed from the registry after the given period
  * of inactivity.
  */
-public suspend fun MessageCreateBuilder.components(
-	timeout: Duration? = null,
-	builder: suspend ComponentContainer.() -> Unit,
-): ComponentContainer {
-	val container = ComponentContainer(timeout, true, builder)
-
-	applyComponents(container)
-
-	return container
-}
-
-/**
- * Convenience function for creating a [ComponentContainer] and components, and applying it to a message you're
- * editing. Supply a [timeout] and the components you add will be removed from the registry after the given period
- * of inactivity.
- */
-public suspend fun MessageModifyBuilder.components(
+public suspend fun MessageBuilder.components(
 	timeout: Duration? = null,
 	builder: suspend ComponentContainer.() -> Unit,
 ): ComponentContainer {
