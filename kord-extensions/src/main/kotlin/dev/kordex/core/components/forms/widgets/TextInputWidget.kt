@@ -109,7 +109,7 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 	}
 
 	override suspend fun apply(builder: ActionRowBuilder, locale: Locale, bundle: String?) {
-		val translatedLabel = translations.translate(label, locale, bundle)
+		val translatedLabel = translations.translate(key = label, bundleName = bundle, locale = locale)
 
 		if (translatedLabel.length > LABEL_LENGTH) {
 			error(
@@ -123,12 +123,12 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 			this.required = this@TextInputWidget.required
 
 			this.placeholder = this@TextInputWidget.placeholder?.let {
-				translations.translate(it, locale, bundle)
+				translations.translate(key = it, bundleName = bundle, locale = locale)
 			}
 
 			this.value = this@TextInputWidget.initialValue?.let {
 				if (translateInitialValue) {
-					translations.translate(it, locale, bundle)
+					translations.translate(key = it, bundleName = bundle, locale = locale)
 				} else {
 					it
 				}

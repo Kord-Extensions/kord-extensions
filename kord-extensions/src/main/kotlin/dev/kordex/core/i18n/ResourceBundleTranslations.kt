@@ -32,21 +32,18 @@ import java.util.*
 public open class ResourceBundleTranslations(
 	defaultLocaleBuilder: () -> Locale,
 ) : TranslationsProvider(defaultLocaleBuilder) {
-	private val logger: KLogger = KotlinLogging.logger(
-		"dev.kordex.core.i18n.ResourceBundleTranslations"
-	)
-
+	private val logger: KLogger = KotlinLogging.logger { }
 	private val bundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 	private val overrideBundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 
-	public override fun hasKey(key: String, locale: Locale, bundleName: String?): Boolean {
+	public override fun hasKey(key: String, bundleName: String?, locale: Locale): Boolean {
 		return try {
-			val (bundle, _) = getBundles(locale, bundleName)
+			val (bundle, _) = getBundles(bundleName, locale)
 
 			// Overrides aren't for adding keys, so we don't check them
 			bundle.keys.toList().contains(key)
 		} catch (e: MissingResourceException) {
-			logger.trace { "Failed to get bundle $bundleName for locale $locale" }
+			logger.trace(e) { "Failed to get bundle $bundleName for locale $locale" }
 
 			false
 		}
@@ -67,7 +64,10 @@ public open class ResourceBundleTranslations(
 	 * Retrieves a pair of the [ResourceBundle] and the override resource bundle for [bundleName] in locale.
 	 */
 	@Throws(MissingResourceException::class)
-	protected open fun getBundles(locale: Locale, bundleName: String?): Pair<ResourceBundle, ResourceBundle?> {
+	protected open fun getBundles(bundleName: String?, nullableLocale: Locale?): Pair<ResourceBundle, ResourceBundle?> {
+		val locale = nullableLocale
+			?: defaultLocale
+
 		val bundle = buildString {
 			append("translations." + (bundleName ?: KORDEX_KEY))
 
@@ -108,7 +108,7 @@ public open class ResourceBundleTranslations(
 
 				overrideBundles[bundleKey] = getResourceBundle(overrideBundle, locale, Control)
 			} catch (e: MissingResourceException) {
-				logger.trace { "No override bundle found." }
+				logger.trace(e) { "No override bundle found." }
 			}
 		}
 
@@ -116,8 +116,8 @@ public open class ResourceBundleTranslations(
 	}
 
 	@Throws(MissingResourceException::class)
-	public override fun get(key: String, locale: Locale, bundleName: String?): String {
-		val (bundle, overrideBundle) = getBundles(locale, bundleName)
+	public override fun get(key: String, bundleName: String?, locale: Locale?): String {
+		val (bundle, overrideBundle) = getBundles(bundleName, locale)
 		val result = overrideBundle?.getStringOrNull(key) ?: bundle.getString(key)
 
 		logger.trace { "Result: $key -> $result" }
@@ -130,10 +130,10 @@ public open class ResourceBundleTranslations(
 	 *
 	 * The string's parameters are not replaced.
 	 */
-	protected fun getTranslatedString(key: String, locale: Locale, bundleName: String?): String {
+	protected fun getTranslatedString(key: String, locale: Locale?, bundleName: String?): String {
 		var string = try {
-			get(key, locale, bundleName)
-		} catch (e: MissingResourceException) {
+			get(key, bundleName, locale)
+		} catch (_: MissingResourceException) {
 			key
 		}
 
@@ -142,12 +142,12 @@ public open class ResourceBundleTranslations(
 				// Fall through to the default bundle if the key isn't found
 				logger.trace { "'$key' not found in bundle '$bundleName' - falling through to '$KORDEX_KEY'" }
 
-				string = get(key, locale, KORDEX_KEY)
+				string = get(key, KORDEX_KEY, locale)
 			}
 
 			string
 		} catch (e: MissingResourceException) {
-			logger.trace {
+			logger.trace(e) {
 				if (bundleName == null) {
 					"Unable to find translation for key '$key' in bundle '$KORDEX_KEY'"
 				} else {
@@ -159,7 +159,7 @@ public open class ResourceBundleTranslations(
 		}
 	}
 
-	override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Array<Any?>): String {
+	override fun translate(key: String, bundleName: String?, locale: Locale?, replacements: Array<Any?>): String {
 		val string = getTranslatedString(key, locale, bundleName)
 
 		val formatter = MessageFormat(string, locale)
@@ -167,7 +167,7 @@ public open class ResourceBundleTranslations(
 		return formatter.format(replacements)
 	}
 
-	override fun translate(key: String, locale: Locale, bundleName: String?, replacements: Map<String, Any?>): String {
+	override fun translate(key: String, bundleName: String?, locale: Locale?, replacements: Map<String, Any?>): String {
 		val string = getTranslatedString(key, locale, bundleName)
 
 		val formatter = MessageFormat(string, locale)
@@ -178,7 +178,7 @@ public open class ResourceBundleTranslations(
 	private fun ResourceBundle.getStringOrNull(key: String): String? {
 		return try {
 			getString(key)
-		} catch (e: MissingResourceException) {
+		} catch (_: MissingResourceException) {
 			null
 		}
 	}

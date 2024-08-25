@@ -137,9 +137,9 @@ public open class ChatCommand<T : Arguments>(
 		if (!signatureCache.containsKey(locale)) {
 			if (signature != null) {
 				signatureCache[locale] = translationsProvider.translate(
-					signature!!,
-					resolvedBundle,
-					locale
+					key = signature!!,
+					bundleName = resolvedBundle,
+					locale = locale
 				)
 			} else {
 				signatureCache[locale] = registry.parser.signature(arguments!!, locale)
@@ -153,9 +153,9 @@ public open class ChatCommand<T : Arguments>(
 	public open fun getTranslatedName(locale: Locale): String {
 		if (!nameTranslationCache.containsKey(locale)) {
 			nameTranslationCache[locale] = translationsProvider.translate(
-				this.name,
-				this.resolvedBundle,
-				locale
+				key = this.name,
+				bundleName = this.resolvedBundle,
+				locale = locale
 			).lowercase()
 		}
 
@@ -166,7 +166,7 @@ public open class ChatCommand<T : Arguments>(
 	public open fun getTranslatedAliases(locale: Locale): Set<String> {
 		if (!aliasTranslationCache.containsKey(locale)) {
 			val translations = if (aliasKey != null) {
-				translationsProvider.translate(aliasKey!!, resolvedBundle, locale)
+				translationsProvider.translate(key = aliasKey!!, bundleName = resolvedBundle, locale = locale)
 					.lowercase()
 					.split(",")
 					.map { it.trim() }
@@ -174,7 +174,7 @@ public open class ChatCommand<T : Arguments>(
 					.toSortedSet()
 			} else {
 				this.aliases.map {
-					translationsProvider.translate(it, resolvedBundle, locale).lowercase()
+					translationsProvider.translate(key = it, bundleName = resolvedBundle, locale = locale).lowercase()
 				}.toSortedSet()
 			}
 

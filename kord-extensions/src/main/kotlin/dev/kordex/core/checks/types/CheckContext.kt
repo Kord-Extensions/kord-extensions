@@ -171,7 +171,7 @@ public open class CheckContext<out T : Event>(
 
 		replacements: Array<Any?> = arrayOf(),
 	): String =
-		translations.translate(key, locale, bundleName = bundle, replacements = replacements)
+		translations.translate(key = key, bundleName = bundle, locale = locale, replacements = replacements)
 
 	/** Quick access to translate strings using this check context's [locale]. **/
 	public fun translate(
@@ -180,7 +180,7 @@ public open class CheckContext<out T : Event>(
 
 		replacements: Array<Any?> = arrayOf(),
 	): String =
-		translations.translate(key, locale, bundleName = defaultBundle, replacements = replacements)
+		translations.translate(key = key, bundleName = defaultBundle, locale = locale, replacements = replacements)
 
 	/** Quick access to translate strings using this check context's [locale]. **/
 	public fun translate(
@@ -189,7 +189,7 @@ public open class CheckContext<out T : Event>(
 
 		replacements: Map<String, Any?>,
 	): String =
-		translations.translate(key, locale, bundleName = defaultBundle, replacements = replacements)
+		translations.translate(key = key, bundleName = defaultBundle, locale = locale, replacements = replacements)
 
 	/** Quick access to translate strings using this check context's [locale]. **/
 	public fun translate(
@@ -200,7 +200,7 @@ public open class CheckContext<out T : Event>(
 		bundle: String?,
 		replacements: Map<String, Any?>,
 	): String =
-		translations.translate(key, locale, bundleName = bundle, replacements = replacements)
+		translations.translate(key = key, bundleName = bundle, locale = locale, replacements = replacements)
 
 	/**
 	 * If this check has failed and a message is set, throw a [DiscordRelayedException] with the translated message.

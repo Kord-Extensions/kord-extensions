@@ -56,7 +56,12 @@ public open class EventContext<T : Event>(
 	): String {
 		val locale: Locale = getLocale()
 
-		return translationsProvider.translate(key, locale, bundleName, replacements)
+		return translationsProvider.translate(
+			key = key,
+			bundleName = bundleName,
+			locale = locale,
+			replacements = replacements
+		)
 	}
 
 	/**
@@ -70,7 +75,12 @@ public open class EventContext<T : Event>(
 	): String {
 		val locale: Locale = getLocale()
 
-		return translationsProvider.translate(key, locale, bundleName, replacements)
+		return translationsProvider.translate(
+			key = key,
+			bundleName = bundleName,
+			locale = locale,
+			replacements = replacements
+		)
 	}
 
 	override suspend fun getLocale(): Locale {

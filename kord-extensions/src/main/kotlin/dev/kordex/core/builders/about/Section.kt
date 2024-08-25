@@ -30,7 +30,7 @@ public class Section(public val name: String, public val description: String) : 
 	}
 
 	public fun translate(key: String, locale: Locale, replacements: Array<Any?> = arrayOf()): String =
-		translations.translate(key, translationBundle, locale, replacements = replacements)
+		translations.translate(key = key, bundleName = translationBundle, locale = locale, replacements = replacements)
 
 	public fun validate() {
 		if (!::builder.isInitialized) {

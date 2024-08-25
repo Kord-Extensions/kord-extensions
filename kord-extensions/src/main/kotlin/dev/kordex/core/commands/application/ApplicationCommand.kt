@@ -121,9 +121,9 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 		lowerCase: Boolean = false,
 	): Localized<String> {
 		var default = translationsProvider.translate(
-			key,
-			this.resolvedBundle,
-			translationsProvider.defaultLocale
+			key = key,
+			bundleName = this.resolvedBundle,
+			locale = translationsProvider.defaultLocale
 		)
 
 		if (lowerCase) {
@@ -133,9 +133,9 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 		val translations = bot.settings.i18nBuilder.applicationCommandLocales
 			.associateWith { locale ->
 				val result = translationsProvider.translate(
-					key,
-					this.resolvedBundle,
-					locale.asJavaLocale()
+					key = key,
+					bundleName = this.resolvedBundle,
+					locale = locale.asJavaLocale()
 				)
 
 				if (lowerCase) {

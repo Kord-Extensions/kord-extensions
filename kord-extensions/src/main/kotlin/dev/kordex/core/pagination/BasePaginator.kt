@@ -246,5 +246,5 @@ public abstract class BasePaginator(
 
 	/** Quick access to translations, using the paginator's locale and bundle. **/
 	public fun translate(key: String, replacements: Array<Any?> = arrayOf()): String =
-		translations.translate(key, localeObj, bundle, replacements = replacements)
+		translations.translate(key = key, bundleName = bundle, locale = localeObj, replacements = replacements)
 }

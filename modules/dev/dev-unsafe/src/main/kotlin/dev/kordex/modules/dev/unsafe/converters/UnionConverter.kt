@@ -50,7 +50,7 @@ public class UnionConverter(
 	private val translations: TranslationsProvider by inject()
 
 	override val signatureTypeString: String = typeName ?: converters.joinToString(" | ") {
-		translations.translate(it.signatureTypeString, it.bundle)
+		translations.translate(key = it.signatureTypeString, bundleName = it.bundle)
 	}
 
 	/** @suppress Internal validation function. **/
