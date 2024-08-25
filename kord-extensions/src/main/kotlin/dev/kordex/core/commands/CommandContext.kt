@@ -101,7 +101,12 @@ public abstract class CommandContext(
 	): String {
 		val locale = getLocale()
 
-		return translationsProvider.translate(key, locale, bundleName, replacements)
+		return translationsProvider.translate(
+			key = key,
+			bundleName = bundleName,
+			locale = locale,
+			replacements = replacements
+		)
 	}
 
 	public override suspend fun translate(
@@ -111,6 +116,11 @@ public abstract class CommandContext(
 	): String {
 		val locale = getLocale()
 
-		return translationsProvider.translate(key, locale, bundleName, replacements)
+		return translationsProvider.translate(
+			key = key,
+			bundleName = bundleName,
+			locale = locale,
+			replacements = replacements
+		)
 	}
 }

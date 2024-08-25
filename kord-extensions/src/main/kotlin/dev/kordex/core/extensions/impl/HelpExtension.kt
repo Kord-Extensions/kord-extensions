@@ -281,10 +281,20 @@ public class HelpExtension : HelpProvider, Extension() {
 
 		val description = buildString {
 			if (longDescription) {
-				append(translationsProvider.translate(command.description, command.extension.bundle, locale))
+				append(
+					translationsProvider.translate(
+						key = command.description,
+						bundleName = command.extension.bundle,
+						locale = locale
+					)
+				)
 			} else {
 				append(
-					translationsProvider.translate(command.description, command.extension.bundle, locale)
+					translationsProvider.translate(
+						key = command.description,
+						bundleName = command.extension.bundle,
+						locale = locale
+					)
 						.trim()
 						.takeWhile { it != '\n' }
 				)
@@ -383,9 +393,9 @@ public class HelpExtension : HelpProvider, Extension() {
 
 									append(
 										translationsProvider.translate(
-											it.converter.signatureTypeString,
-											it.converter.bundle,
-											locale
+											key = it.converter.signatureTypeString,
+											bundleName = it.converter.bundle,
+											locale = locale
 										)
 									)
 
@@ -393,7 +403,13 @@ public class HelpExtension : HelpProvider, Extension() {
 								}
 
 								append("`: ")
-								append(translationsProvider.translate(it.description, command.extension.bundle, locale))
+								append(
+									translationsProvider.translate(
+										key = it.description,
+										bundleName = command.extension.bundle,
+										locale = locale
+									)
+								)
 							}
 						}
 					)

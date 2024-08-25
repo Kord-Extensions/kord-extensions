@@ -875,9 +875,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 					append(
 						translationsProvider.translate(
-							it.converter.signatureTypeString,
-							it.converter.bundle,
-							locale
+							key = it.converter.signatureTypeString,
+							bundleName = it.converter.bundle,
+							locale = locale
 						)
 					)
 

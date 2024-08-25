@@ -98,7 +98,9 @@ public open class Page(
 						)
 					} else {
 						val groupName = translationsProvider.translate(
-							group, locale, bundle
+							key = group,
+							bundleName = bundle,
+							locale = locale
 						).capitalizeWords(locale)
 
 						append("$groupName (${groupIndex + 1}/$groups)")

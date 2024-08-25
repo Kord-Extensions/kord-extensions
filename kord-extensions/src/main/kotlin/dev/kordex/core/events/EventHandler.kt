@@ -251,7 +251,12 @@ public open class EventHandler<T : Event>(
 	): String {
 		val locale = getLocale()
 
-		return translationsProvider.translate(key, locale, bundleName, replacements)
+		return translationsProvider.translate(
+			key = key,
+			bundleName = bundleName,
+			locale = locale,
+			replacements = replacements
+		)
 	}
 
 	/**
@@ -265,7 +270,12 @@ public open class EventHandler<T : Event>(
 	): String {
 		val locale = getLocale()
 
-		return translationsProvider.translate(key, locale, bundleName, replacements)
+		return translationsProvider.translate(
+			key = key,
+			bundleName = bundleName,
+			locale = locale,
+			replacements = replacements
+		)
 	}
 
 	/**

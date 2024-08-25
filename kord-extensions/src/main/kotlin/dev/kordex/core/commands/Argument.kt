@@ -29,4 +29,8 @@ public data class Argument<T : Any?>(
 }
 
 internal fun Argument<*>.getDefaultTranslatedDisplayName(provider: TranslationsProvider, command: Command): String =
-	provider.translate(displayName, provider.defaultLocale, command.resolvedBundle ?: converter.bundle)
+	provider.translate(
+		key = displayName,
+		bundleName = command.resolvedBundle ?: converter.bundle,
+		locale = provider.defaultLocale
+	)

@@ -306,7 +306,7 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 						translate("arguments.reset"),
 
 						translationsProvider.translate(
-							"arguments.reset",
+							key = "arguments.reset",
 							bundleName = this@ephemeralSubCommand.bundle
 						)
 					)
@@ -448,9 +448,9 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 
 	private fun Boolean.emote() =
 		if (this) {
-			dev.kordex.modules.pluralkit.POSITIVE_EMOTE
+			POSITIVE_EMOTE
 		} else {
-			dev.kordex.modules.pluralkit.NEGATIVE_EMOTE
+			NEGATIVE_EMOTE
 		}
 
 	private fun GuildBehavior.configUnit() =

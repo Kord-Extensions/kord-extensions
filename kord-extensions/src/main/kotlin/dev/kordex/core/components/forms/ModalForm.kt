@@ -145,7 +145,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 
 	/** Return a translated modal title using the given locale, and the given bundle if the modal doesn't have one. **/
 	public fun translateTitle(locale: Locale, otherBundle: String?): String =
-		translations.translate(title, locale, bundle ?: otherBundle)
+		translations.translate(key = title, bundleName = bundle ?: otherBundle, locale = locale)
 
 	/**
 	 * Convenience function to send this modal to the given [interaction] and await its completion, running the provided

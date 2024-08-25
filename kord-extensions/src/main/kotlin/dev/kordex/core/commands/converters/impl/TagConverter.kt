@@ -159,14 +159,14 @@ public class TagConverter(
 			if (channel == null) {
 				throw DiscordRelayedException(
 					translationsProvider.translate(
-						if (getter == null) {
+						key = if (getter == null) {
 							"converters.tag.error.wrongChannelType"
 						} else {
 							"converters.tag.error.wrongChannelTypeWithGetter"
 						},
 
-						event.getLocale(),
-						DEFAULT_KORDEX_BUNDLE
+						bundleName = DEFAULT_KORDEX_BUNDLE,
+						locale = event.getLocale(),
 					)
 				)
 			}
