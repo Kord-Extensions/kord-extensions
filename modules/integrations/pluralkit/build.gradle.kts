@@ -8,7 +8,7 @@ plugins {
 
 group = "dev.kordex.modules"
 
-getTranslations()
+getTranslations("dev.kordex.modules.pluralkit")
 
 metadata {
 	name = "KordEx Extra: PluralKit"

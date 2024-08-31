@@ -8,11 +8,16 @@
 
 package dev.kordex.core.i18n
 
+import dev.kordex.core.i18n.types.Bundle
+
 /** KordEx translation key. **/
 public const val KORDEX_KEY: String = "kordex"
 
 /** Default bundle name suffix. **/
 public const val DEFAULT_BUNDLE_SUFFIX: String = "strings"
+
+/** Default KordEx translation bundle. **/
+public val KORDEX_BUNDLE: Bundle = Bundle("$KORDEX_KEY.$DEFAULT_BUNDLE_SUFFIX")
 
 /** String used to denote an empty translation value - `∅∅∅` (`\u2205\u2205\u2205`). **/
 public const val EMPTY_VALUE_STRING: String = "∅∅∅"
