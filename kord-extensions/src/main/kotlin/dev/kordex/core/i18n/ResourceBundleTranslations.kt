@@ -11,6 +11,7 @@ package dev.kordex.core.i18n
 import com.ibm.icu.text.MessageFormat
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.koin.KordExKoinComponent
+import dev.kordex.core.plugins.PluginManager
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
@@ -33,6 +34,9 @@ public open class ResourceBundleTranslations(
 	defaultLocaleBuilder: () -> Locale,
 ) : TranslationsProvider(defaultLocaleBuilder) {
 	private val logger: KLogger = KotlinLogging.logger { }
+
+	private val pluginManager: PluginManager by inject()
+
 	private val bundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 	private val overrideBundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 
@@ -58,7 +62,40 @@ public open class ResourceBundleTranslations(
 		bundle: String,
 		locale: Locale,
 		control: ResourceBundle.Control,
-	): ResourceBundle = ResourceBundle.getBundle(bundle, locale, control)
+	): ResourceBundle {
+		val defaultBundlePath = bundle.replace(".", "/") + ".properties"
+
+		val classLoaders: MutableList<Pair<String, ClassLoader>> = mutableListOf(
+			"default class-loader" to ResourceBundleTranslations::class.java.classLoader,
+			"system class-loader" to ClassLoader.getSystemClassLoader(),
+		)
+
+		if (pluginManager.enabled) {
+			pluginManager.plugins.forEach { plugin ->
+				classLoaders.add(plugin.pluginId to plugin.pluginClassLoader)
+			}
+		}
+
+		classLoaders.forEach { (plugin, loader) ->
+			logger.trace { "Trying to find $bundle with ${locale.toLanguageTag()} in $plugin" }
+
+			try {
+				if (loader.getResource(defaultBundlePath) != null) {
+					val result = ResourceBundle.getBundle(bundle, locale, loader, control)
+
+					logger.debug { "Found bundle $bundle with ${locale.toLanguageTag()} in $plugin" }
+
+					return result
+				}
+			} catch (_: MissingResourceException) {
+				null  // Do nothing, we expect this to happen.
+			}
+		}
+
+		logger.debug { "Couldn't find bundle $bundle with ${locale.toLanguageTag()}; falling back to default strategy" }
+
+		return ResourceBundle.getBundle(bundle, locale, control)
+	}
 
 	/**
 	 * Retrieves a pair of the [ResourceBundle] and the override resource bundle for [bundleName] in locale.
