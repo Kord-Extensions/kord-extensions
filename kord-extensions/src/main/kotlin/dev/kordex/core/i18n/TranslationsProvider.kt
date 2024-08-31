@@ -8,6 +8,7 @@
 
 package dev.kordex.core.i18n
 
+import dev.kordex.core.koin.KordExKoinComponent
 import java.util.*
 
 /**
@@ -18,7 +19,7 @@ import java.util.*
  */
 public abstract class TranslationsProvider(
 	public open val defaultLocaleBuilder: () -> Locale,
-) {
+) : KordExKoinComponent {
 	/**
 	 * Default locale, resolved via [defaultLocaleBuilder]. Avoid accessing this outside of your [get] functions, as
 	 * accessing it too early will prevent the user from configuring it properly.
