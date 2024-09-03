@@ -9,13 +9,13 @@
 package dev.kordex.core.datacollection
 
 import dev.kordex.core.storage.Data
-import dev.kordex.data.api.serializers.UUIDSerializer
+import dev.kordex.data.api.serializers.KXUUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Suppress("DataClassShouldBeImmutable")
 @Serializable
 public data class State(
-	@Serializable(with = UUIDSerializer::class)
+	@Serializable(with = KXUUIDSerializer::class)
 	var uuid: UUID? = null,
 ) : Data
