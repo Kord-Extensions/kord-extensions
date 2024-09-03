@@ -45,7 +45,9 @@ repositories {
 }
 
 dependencies {
-	api(libs.linkie)
+	api(libs.linkie) {
+		exclude("ch.qos.logback", "logback-classic")
+	}
 
 	detektPlugins(libs.detekt)
 	detektPlugins(libs.detekt.libraries)

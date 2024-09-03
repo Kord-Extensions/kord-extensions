@@ -4,7 +4,7 @@ dokkadokka = "1.9.20"  # Note: Must update plugin versions in buildSrc/build.gra
 kotlin = "2.0.20"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
 
 commons-validator = "1.9.0"
-data-collector-api = "1.0.0-SNAPSHOT"
+data-collector-api = "1.0.1-SNAPSHOT"
 groovy = "3.0.22"
 icu4j = "75.1"
 jansi = "2.4.1"

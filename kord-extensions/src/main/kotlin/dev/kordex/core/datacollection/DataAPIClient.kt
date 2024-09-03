@@ -12,7 +12,7 @@ import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.data.api.DataCollection
 import dev.kordex.data.api.DataEntity
 import dev.kordex.data.api.serializers.DataCollectionSerializer
-import dev.kordex.data.api.serializers.UUIDSerializer
+import dev.kordex.data.api.serializers.KXUUIDSerializer
 import dev.kordex.data.api.types.Entity
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -43,7 +43,7 @@ public object DataAPIClient {
 						include(Json.serializersModule)
 
 						contextual<DataCollection>(DataCollectionSerializer)
-						contextual<UUID>(UUIDSerializer)
+						contextual<UUID>(KXUUIDSerializer)
 					}
 				}
 			)
