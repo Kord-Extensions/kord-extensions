@@ -29,6 +29,8 @@ import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kordex.core.DATA_COLLECTION
 import dev.kordex.core.DEV_MODE
 import dev.kordex.core.ExtensibleBot
+import dev.kordex.core.KORDEX_GIT_BRANCH
+import dev.kordex.core.KORDEX_GIT_HASH
 import dev.kordex.core.KORDEX_VERSION
 import dev.kordex.core.KORD_VERSION
 import dev.kordex.core.annotations.BotBuilderDSL
@@ -522,7 +524,10 @@ public open class ExtensibleBotBuilder {
 
 	/** @suppress Internal function used to build a bot instance. **/
 	public open suspend fun build(token: String): ExtensibleBot {
-		logger.info { "Starting bot with Kord Extensions v$KORDEX_VERSION and Kord v$KORD_VERSION" }
+		logger.info {
+			"Starting bot with Kord Extensions v$KORDEX_VERSION ($KORDEX_GIT_BRANCH@$KORDEX_GIT_HASH) " +
+				"and Kord v$KORD_VERSION"
+		}
 
 		hooksBuilder.beforeKoinSetup {  // We have to do this super-duper early for safety
 			loadModule { single { dataAdapterCallback() } bind DataAdapter::class }

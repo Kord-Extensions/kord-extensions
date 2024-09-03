@@ -68,11 +68,14 @@ tasks {
 		description = "Generate KordEx properties file"
 
 		comment = "Generated during KordEx compilation"
-		destinationFile = layout.buildDirectory.file("kordex.properties")
+		destinationFile = layout.buildDirectory.file("kordex-build.properties")
 		encoding = "UTF-8"
 
-		property("versions.kordEx", project.version)
+		property("git.branch", getCurrentGitBranch())
+		property("git.hash", getCurrentGitHash())
+
 		property("versions.kord", libs.findVersion("kord").get())
+		property("versions.kordEx", project.version)
 	}
 
 	build {
