@@ -17,6 +17,7 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.builder.kord.KordBuilder
 import dev.kord.core.entity.interaction.Interaction
+import dev.kord.core.event.Event
 import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.NON_PRIVILEGED
@@ -140,6 +141,9 @@ public open class ExtensibleBotBuilder {
 	public var dataCollectionMode: DataCollection = DATA_COLLECTION
 
 	/** @suppress Builder that shouldn't be set directly by the user. **/
+	public var kordEventFilter: (suspend Event.() -> Boolean)? = null
+
+	/** @suppress Builder that shouldn't be set directly by the user. **/
 	public open val extensionsBuilder: ExtensionsBuilder = ExtensionsBuilder()
 
 	/** @suppress Used for late execution of extensions builder calls, so plugins can be loaded first. **/
@@ -196,6 +200,14 @@ public open class ExtensibleBotBuilder {
 
 	/** Logging level Koin should use, defaulting to ERROR. **/
 	public var koinLogLevel: Level = Level.ERROR
+
+	/**
+	 * Set an event-filtering predicate, which may selectively prevent Kord events from being processed by returning
+	 * `false`.
+	 */
+	public fun eventFilter(predicate: suspend Event.() -> Boolean) {
+		kordEventFilter = predicate
+	}
 
 	/**
 	 * DSL function used to configure information about the bot.

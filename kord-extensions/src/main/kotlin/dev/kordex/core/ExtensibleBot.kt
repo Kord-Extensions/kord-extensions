@@ -136,9 +136,19 @@ public open class ExtensibleBot(
 
 		settings.cacheBuilder.dataCacheBuilder.invoke(kord, kord.cache)
 
-		kord.on<Event> {
-			kord.launch {
+		if (settings.kordEventFilter == null) {
+			logger.debug { "Kord event filter predicate not set." }
+
+			kord.on<Event> {
 				send(this@on)
+			}
+		} else {
+			logger.debug { "Kord event filter predicate set, filtering Kord events." }
+
+			kord.on<Event> {
+				if (settings.kordEventFilter!!(this@on)) {
+					send(this@on)
+				}
 			}
 		}
 
