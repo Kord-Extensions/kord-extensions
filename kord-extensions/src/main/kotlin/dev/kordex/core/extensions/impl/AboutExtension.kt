@@ -20,7 +20,8 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.chatGroupCommand
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.publicSlashCommand
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.Translations
+import dev.kordex.core.i18n.key
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import org.koin.core.component.inject
 import java.util.Locale
@@ -29,7 +30,6 @@ import java.util.Locale
 public class AboutExtension : Extension() {
 	override val name: String = "kordex.about"
 
-	private val translations: TranslationsProvider by inject()
 	private val settings: ExtensibleBotBuilder by inject()
 
 	override suspend fun setup() {
@@ -177,23 +177,17 @@ public class AboutExtension : Extension() {
 			color = DISCORD_BLURPLE
 			title = "Copyright Information"
 
-			description = buildString {
-				appendLine(
-					translations.translate(
-						"extensions.about.copyright.intro",
-						locale,
-						replacements = arrayOf(
-							"[Kord Extensions](https://kordex.dev)",
-							"EUPL",
-							"1.2"
-						)
-					)
+			description = Translations.Extensions.About.Copyright.intro
+				.withLocale(locale)
+				.translate(
+					"[Kord Extensions](https://kordex.dev)",
+					"EUPL",
+					"1.2"
 				)
-			}
 		}
 
 		copyright
-			.groupBy { translations.translate(it.type.key, locale) }
+			.groupBy { it.type.key.withLocale(locale).translate() }
 			.toSortedMap { left, right -> left.compareTo(right) }
 			.forEach { (type, items) ->
 				items

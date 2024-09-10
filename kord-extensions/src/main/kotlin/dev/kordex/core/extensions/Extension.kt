@@ -12,8 +12,6 @@ import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import dev.kord.gateway.Intent
 import dev.kordex.core.ExtensibleBot
-import dev.kordex.core.annotations.tooling.Translatable
-import dev.kordex.core.annotations.tooling.TranslatableType
 import dev.kordex.core.checks.types.ChatCommandCheck
 import dev.kordex.core.checks.types.MessageCommandCheck
 import dev.kordex.core.checks.types.SlashCommandCheck
@@ -28,6 +26,7 @@ import dev.kordex.core.commands.chat.ChatCommand
 import dev.kordex.core.commands.chat.ChatCommandRegistry
 import dev.kordex.core.events.EventHandler
 import dev.kordex.core.events.ExtensionStateEvent
+import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
@@ -146,8 +145,7 @@ public abstract class Extension : KordExKoinComponent {
 	public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
 
 	/** String representing the bundle to get translations from for command names/descriptions. **/
-	@Translatable(TranslatableType.BUNDLE)
-	public open val bundle: String? = null
+	public open val bundle: Bundle? = null
 
 	/** Set of intents required by this extension's event handlers and commands. **/
 	public open val intents: MutableSet<Intent> = mutableSetOf()

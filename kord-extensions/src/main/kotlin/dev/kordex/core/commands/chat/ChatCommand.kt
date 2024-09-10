@@ -22,6 +22,8 @@ import dev.kordex.core.commands.events.*
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.impl.SENTRY_EXTENSION_NAME
 import dev.kordex.core.i18n.EMPTY_VALUE_STRING
+import dev.kordex.core.i18n.generated.Translations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -63,7 +65,7 @@ public open class ChatCommand<T : Arguments>(
 	 *
 	 * This is intended to be made use of by help commands.
 	 */
-	public open var description: String = "commands.defaultDescription"
+	public open var description: Key = Translations.Commands.defaultDescription
 
 	/**
 	 * Whether this command is enabled and can be invoked.
@@ -105,7 +107,7 @@ public open class ChatCommand<T : Arguments>(
 	 * If this is set, the [aliases] list is ignored. This is also slightly more efficient during the first
 	 * translation pass, as only one key will ever need to be translated.
 	 */
-	public open var aliasKey: String? = null
+	public open var aliasKey: Key? = null
 
 	/**
 	 * @suppress

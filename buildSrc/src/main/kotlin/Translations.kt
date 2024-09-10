@@ -4,6 +4,7 @@ import org.gradle.api.tasks.Sync
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import java.nio.file.Files
 import java.util.Properties
 import kotlin.collections.filterNotNull
 
@@ -45,7 +46,12 @@ fun Project.getTranslations(classesPackage: String, bundle: String = project.nam
 	getTranslations(project.name, classesPackage, bundle)
 }
 
-fun Project.getTranslations(name: String, classesPackage: String, bundle: String = name) {
+fun Project.getTranslations(
+	name: String,
+	classesPackage: String,
+	bundle: String = name,
+	translationsClass: String = "Translations",
+) {
 	val outputDir = project.layout.buildDirectory.dir("translations")
 	val gitDir = project.layout.buildDirectory.dir("translationsGit")
 
@@ -98,17 +104,27 @@ fun Project.getTranslations(name: String, classesPackage: String, bundle: String
 		doLast {
 			val props = Properties()
 
+			val bundleName = if (bundle == name || "." in bundle) {
+				bundle
+			} else {
+				"$name.$bundle"
+			}
+
 			props.load(
-				gitDir.get()
-					.file("$name/$bundle.properties")
-					.asFile
-					.inputStream()
+				Files.newBufferedReader(
+					gitDir.get()
+						.file("$name/${bundleName.split(".").last()}.properties")
+						.asFile.toPath(),
+
+					Charsets.UTF_8
+				)
 			)
 
 			val keys = props.toList()
 				.map { (left, _) -> left.toString() }
 
-			createTranslationsClass("$classesPackage.generated", keys).writeTo(classOutputDir.get().asFile)
+			createTranslationsClass("$classesPackage.generated", keys, props, bundleName, translationsClass)
+				.writeTo(classOutputDir.get().asFile)
 		}
 	}
 

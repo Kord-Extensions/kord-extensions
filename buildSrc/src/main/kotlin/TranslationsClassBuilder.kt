@@ -1,10 +1,10 @@
 import com.hanggrian.kotlinpoet.TypeSpecBuilder
 import com.hanggrian.kotlinpoet.addObject
 import com.hanggrian.kotlinpoet.buildFileSpec
-import com.hanggrian.kotlinpoet.buildObjectTypeSpec
 import com.hanggrian.kotlinpoet.buildPropertySpec
 import com.squareup.kotlinpoet.ClassName
 import org.gradle.configurationcache.extensions.capitalized
+import java.util.Properties
 
 /*
  * Copyrighted (Kord Extensions, 2024). Licensed under the EUPL-1.2
@@ -14,19 +14,46 @@ import org.gradle.configurationcache.extensions.capitalized
  * Any redistribution must include the specific provision above.
  */
 
-fun key(name: String, value: String) = buildPropertySpec(name, ClassName("dev.kordex.core.i18n.types", "Key")) {
-	setInitializer("Key(%S)", value)
-}
+fun bundle(bundleName: String) =
+	buildPropertySpec("bundle", ClassName("dev.kordex.core.i18n.types", "Bundle")) {
+		setInitializer("Bundle(%S)", bundleName)
+	}
 
+fun key(name: String, value: String, property: String, translationsClassName: String) =
+	buildPropertySpec(name.replace("-", "_"), ClassName("dev.kordex.core.i18n.types", "Key")) {
+		setInitializer("Key(%S)\n.withBundle(%L.bundle)", value, translationsClassName)
 
-fun createTranslationsClass(classPackage: String, keys: List<String>) =
-	buildFileSpec(classPackage, "Translations") {
-		types.addObject("Translations") {
-			addKeys(keys)
+		property.lines().forEach {
+			kdoc.addStatement(
+				"%L",
+				it.trim().replace("*/", "")
+			)
 		}
 	}
 
-fun TypeSpecBuilder.addKeys(keys: List<String>, parent: String? = null) {
+
+fun createTranslationsClass(
+	classPackage: String,
+	keys: List<String>,
+	props: Properties,
+	bundleName: String,
+	translationsClassName: String,
+) = buildFileSpec(classPackage, translationsClassName) {
+	types.addObject(translationsClassName) {
+		properties.add(
+			bundle(bundleName)
+		)
+
+		addKeys(keys, props, translationsClassName)
+	}
+}
+
+fun TypeSpecBuilder.addKeys(
+	keys: List<String>,
+	props: Properties,
+	translationsClassName: String,
+	parent: String? = null,
+) {
 	val paritioned = keys.partition()
 
 	paritioned.forEach { (k, v) ->
@@ -36,12 +63,22 @@ fun TypeSpecBuilder.addKeys(keys: List<String>, parent: String? = null) {
 			k
 		}
 
-		if (v.isEmpty()) {
-			properties.add(key(k.toVarName(), keyName))
-		} else {
+		if (v.isEmpty() || props[keyName] != null) {
+			properties.add(
+				key(k.toVarName(), keyName, props.getProperty(keyName), translationsClassName)
+			)
+		}
+
+		if (v.isNotEmpty()) {
 			// Object
-			types.addObject(k.capitalized()) {
-				addKeys(v, keyName)
+			val objName = k
+				.replace("-", " ")
+				.split(" ")
+				.map { it.capitalized() }
+				.joinToString("")
+
+			types.addObject(objName) {
+				addKeys(v, props, translationsClassName, keyName)
 			}
 		}
 	}

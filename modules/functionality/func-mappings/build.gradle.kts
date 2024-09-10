@@ -5,7 +5,12 @@ plugins {
 	`ksp-module`
 }
 
-getTranslations("dev.kordex.modules.func.mappings")
+getTranslations(
+	"func-mappings",
+	"dev.kordex.modules.func.mappings.i18n",
+	"kordex.func-mappings",
+	"MappingsTranslations"
+)
 
 metadata {
 	name = "KordEx Extra: Mappings"

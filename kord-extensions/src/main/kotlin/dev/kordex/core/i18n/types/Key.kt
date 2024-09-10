@@ -27,24 +27,51 @@ public data class Key(
 	}
 
 	public fun withBundle(bundle: Bundle?, overwrite: Boolean = true): Key =
-		if (this.bundle != null && !overwrite) {
+		if (bundle == this.bundle) {
+			this
+		} else if (this.bundle == null || overwrite) {
 			copy(bundle = bundle)
 		} else {
 			this
 		}
 
 	public fun withLocale(locale: Locale?, overwrite: Boolean = true): Key =
-		if (this.locale != null && !overwrite) {
+		if (locale == this.locale) {
+			this
+		} else if (this.locale == null || overwrite) {
 			copy(locale = locale)
 		} else {
 			this
 		}
+
+	public fun withBoth(bundle: Bundle?, locale: Locale?, overwrite: Boolean = true): Key {
+		val newBundle = if (this.bundle == null || overwrite) {
+			bundle
+		} else {
+			this.bundle
+		}
+
+		val newLocale = if (this.locale == null || overwrite) {
+			locale
+		} else {
+			this.locale
+		}
+
+		if (newBundle == this.bundle && newLocale == this.locale) {
+			this
+		}
+
+		return copy(bundle = newBundle, locale = newLocale)
+	}
 
 	public fun withoutBundle(): Key =
 		copy(bundle = null)
 
 	public fun withoutLocale(): Key =
 		copy(locale = null)
+
+	public fun withoutBoth(): Key =
+		copy(bundle = null, locale = null)
 
 	public fun translate(vararg replacements: Any?): String =
 		translations.translate(this, replacements.toList().toTypedArray())
@@ -54,6 +81,15 @@ public data class Key(
 
 	public fun translateNamed(vararg replacements: Pair<String, Any?>): String =
 		translateNamed(replacements.toMap())
+
+	public fun translateLocale(locale: Locale, vararg replacements: Any?): String =
+		withLocale(locale).translate(*replacements)
+
+	public fun translateNamedLocale(locale: Locale, replacements: Map<String, Any?>): String =
+		withLocale(locale).translateNamed(replacements)
+
+	public fun translateNamedLocale(locale: Locale, vararg replacements: Pair<String, Any?>): String =
+		translateNamedLocale(locale, replacements.toMap())
 
 	override fun toString(): String =
 		buildString {

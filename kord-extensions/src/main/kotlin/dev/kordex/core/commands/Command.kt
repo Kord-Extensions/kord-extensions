@@ -21,6 +21,8 @@ import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.events.CommandEvent
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryAdapter
 import dev.kordex.core.types.Lockable
@@ -44,19 +46,19 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 	/**
 	 * The name of this command, for invocation and help commands.
 	 */
-	public open lateinit var name: String
+	public open lateinit var name: Key
 
 	/** Set this to `true` to lock command execution with a Mutex. **/
 	public override var locking: Boolean = false
 
 	/** Translation bundle to use, if not the one provided by the extension. **/
-	public var bundle: String? = null
+	public var bundle: Bundle? = null
 
 	/**
 	 * @suppress Bundle getter that exists because the extension bundle may have changed by the time the command is
 	 * registered.
 	 */
-	public val resolvedBundle: String?
+	public val resolvedBundle: Bundle?
 		get() = bundle ?: extension.bundle
 
 	override var mutex: Mutex? = null
