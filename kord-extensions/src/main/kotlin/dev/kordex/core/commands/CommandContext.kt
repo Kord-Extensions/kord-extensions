@@ -19,6 +19,7 @@ import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.interactionFor
 import dev.kordex.core.checks.userFor
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.types.TranslatableContext
@@ -51,7 +52,7 @@ public abstract class CommandContext(
 
 	public override var resolvedLocale: Locale? = null
 
-	override val bundle: String?
+	override val bundle: Bundle?
 		get() = command.resolvedBundle
 
 	/** Called before processing, used to populate any extra variables from event data. **/

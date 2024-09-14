@@ -14,6 +14,9 @@ import dev.kordex.core.commands.chat.ChatCommand
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.events.EventHandler
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.toKey
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 import java.util.*
 import kotlin.reflect.KClass
@@ -124,9 +127,9 @@ public class CommandRegistrationException(public val name: String, public val re
  */
 public open class DiscordRelayedException(
 	public open val reason: String,
-	public open val translationKey: String? = null,
+	public open val translationKey: Key? = null,
 ) : KordExException() {
-	override val message: String by lazy { toString() }
+	override val message: String by lazy { reason }
 
 	public constructor(other: DiscordRelayedException) : this(other.reason)
 
@@ -144,9 +147,9 @@ public open class DiscordRelayedException(
  */
 public open class ArgumentParsingException(
 	public override val reason: String,
-	public override val translationKey: String?,
+	public override val translationKey: Key?,
 	public val locale: Locale,
-	public val bundle: String?,
+	public val bundle: Bundle?,
 	public val argument: Argument<*>?,
 	public val arguments: Arguments,
 	public val parser: StringParser?,

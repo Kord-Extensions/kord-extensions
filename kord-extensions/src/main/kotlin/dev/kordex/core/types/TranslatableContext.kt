@@ -9,6 +9,8 @@
 package dev.kordex.core.types
 
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExContext
 import java.util.*
 
@@ -23,7 +25,7 @@ public interface TranslatableContext {
 	public var resolvedLocale: Locale?
 
 	/** Default bundle to use for the [translate] functions. **/
-	public val bundle: String?
+	public val bundle: Bundle?
 
 	/** Retrieve the bot's translation provider from Koin. **/
 	public fun getTranslationProvider(): TranslationsProvider = KordExContext.get().get()
@@ -36,8 +38,8 @@ public interface TranslatableContext {
 	 * locale resolvers.
 	 */
 	public suspend fun translate(
-		key: String,
-		bundleName: String?,
+		key: Key,
+		bundleName: Bundle?,
 		replacements: Array<Any?> = arrayOf(),
 	): String
 
@@ -46,8 +48,8 @@ public interface TranslatableContext {
 	 * locale resolvers.
 	 */
 	public suspend fun translate(
-		key: String,
-		bundleName: String?,
+		key: Key,
+		bundleName: Bundle?,
 		replacements: Map<String, Any?>,
 	): String
 
@@ -56,7 +58,7 @@ public interface TranslatableContext {
 	 * resolvers, using the bundle provided for this context.
 	 */
 	public suspend fun translate(
-		key: String,
+		key: Key,
 		replacements: Array<Any?> = arrayOf(),
 	): String = translate(
 		key, bundle, replacements
@@ -67,7 +69,7 @@ public interface TranslatableContext {
 	 * resolvers, using the bundle provided for this context.
 	 */
 	public suspend fun translate(
-		key: String,
+		key: Key,
 		replacements: Map<String, Any?>,
 	): String = translate(
 		key, bundle, replacements

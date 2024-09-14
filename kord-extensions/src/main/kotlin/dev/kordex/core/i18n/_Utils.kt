@@ -8,14 +8,13 @@
 
 package dev.kordex.core.i18n
 
-import dev.kordex.core.i18n.generated.CoreTranslations.bundle
 import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import java.util.Locale
 
 private val translationKeyMap: MutableMap<String, Key> = mutableMapOf()
 
-public fun String.key(bundle: Bundle? = null, locale: Locale? = null): Key {
+public fun String.toKey(bundle: Bundle? = null, locale: Locale? = null): Key {
 	var key = translationKeyMap.getOrPut(this) { Key(this) }
 
 	if (bundle != null || locale != null) {
@@ -25,14 +24,14 @@ public fun String.key(bundle: Bundle? = null, locale: Locale? = null): Key {
 	return key
 }
 
-public fun String.key(bundle: String, locale: Locale? = null): Key =
-	key(Bundle(bundle), locale)
+public fun String.toKey(bundle: String, locale: Locale? = null): Key =
+	toKey(Bundle(bundle), locale)
 
-public fun String.key(locale: Locale): Key =
+public fun String.toKey(locale: Locale): Key =
 	translationKeyMap.getOrPut(this) { Key(this) }.withLocale(locale)
 
-public fun String.key(bundle: Bundle): Key =
+public fun String.toKey(bundle: Bundle): Key =
 	translationKeyMap.getOrPut(this) { Key(this) }.withBundle(bundle)
 
-public fun String.key(bundle: String): Key =
-	key(Bundle(bundle))
+public fun String.toKey(bundle: String): Key =
+	toKey(Bundle(bundle))

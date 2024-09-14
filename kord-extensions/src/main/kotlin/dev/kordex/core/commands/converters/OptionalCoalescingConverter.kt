@@ -9,6 +9,7 @@
 package dev.kordex.core.commands.converters
 
 import dev.kordex.core.commands.converters.builders.OptionalCoalescingConverterBuilder
+import dev.kordex.core.commands.converters.types.MultiNamedInputConverter
 
 /**
  * Abstract base class for an optional coalescing converter.
@@ -28,7 +29,7 @@ import dev.kordex.core.commands.converters.builders.OptionalCoalescingConverterB
 public abstract class OptionalCoalescingConverter<T : Any>(
 	public val outputError: Boolean = false,
 	override var validator: Validator<T?> = null,
-) : Converter<List<T>, T?, List<String>, Int>(false), SlashCommandConverter {
+) : MultiNamedInputConverter<List<T>, T?, Int>(false), SlashCommandConverter {
 	/**
 	 * The parsed value.
 	 *

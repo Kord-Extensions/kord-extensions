@@ -9,6 +9,7 @@
 package dev.kordex.core.commands.converters
 
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
+import dev.kordex.core.commands.converters.types.SingleNamedInputConverter
 
 /**
  * Abstract base class for a single converter.
@@ -25,7 +26,7 @@ import dev.kordex.core.commands.converters.builders.ConverterBuilder
  */
 public abstract class SingleConverter<T : Any>(
 	override var validator: Validator<T> = null,
-) : Converter<T, T, String, Boolean>(true), SlashCommandConverter {
+) : SingleNamedInputConverter<T, T, Boolean>(true), SlashCommandConverter {
 	/**
 	 * The parsed value.
 	 *

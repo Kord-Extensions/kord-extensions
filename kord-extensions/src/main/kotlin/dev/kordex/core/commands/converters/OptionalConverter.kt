@@ -9,6 +9,7 @@
 package dev.kordex.core.commands.converters
 
 import dev.kordex.core.commands.converters.builders.OptionalConverterBuilder
+import dev.kordex.core.commands.converters.types.SingleNamedInputConverter
 
 /**
  * Abstract base class for an optional single converter.
@@ -21,7 +22,7 @@ import dev.kordex.core.commands.converters.builders.OptionalConverterBuilder
 public abstract class OptionalConverter<T : Any>(
 	public val outputError: Boolean = false,
 	override var validator: Validator<T?> = null,
-) : Converter<T, T?, String, Boolean>(false), SlashCommandConverter {
+) : SingleNamedInputConverter<T, T?, Boolean>(false), SlashCommandConverter {
 	/**
 	 * The parsed value.
 	 *

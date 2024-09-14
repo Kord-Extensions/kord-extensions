@@ -41,7 +41,7 @@ public open class SlashCommandParser {
 		context: SlashCommandContext<*, *, *>,
 	): T {
 		val argumentsObj = builder.invoke()
-		argumentsObj.validate()
+		argumentsObj.validate(context.getLocale())
 
 		logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 

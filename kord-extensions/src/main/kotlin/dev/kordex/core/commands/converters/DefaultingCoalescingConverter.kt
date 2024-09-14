@@ -9,6 +9,7 @@
 package dev.kordex.core.commands.converters
 
 import dev.kordex.core.commands.converters.builders.DefaultingCoalescingConverterBuilder
+import dev.kordex.core.commands.converters.types.MultiNamedInputConverter
 
 /**
  * Abstract base class for a defaulting coalescing converter.
@@ -29,7 +30,7 @@ public abstract class DefaultingCoalescingConverter<T : Any>(
 	defaultValue: T,
 	public val outputError: Boolean = false,
 	override var validator: Validator<T> = null,
-) : Converter<List<T>, T, List<String>, Int>(false), SlashCommandConverter {
+) : MultiNamedInputConverter<List<T>, T, Int>(false), SlashCommandConverter {
 	/**
 	 * The parsed value.
 	 *

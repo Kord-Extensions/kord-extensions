@@ -44,14 +44,19 @@ public data class Key(
 			this
 		}
 
-	public fun withBoth(bundle: Bundle?, locale: Locale?, overwrite: Boolean = true): Key {
-		val newBundle = if (this.bundle == null || overwrite) {
+	public fun withBoth(
+		bundle: Bundle?,
+		locale: Locale?,
+		overwriteBundle: Boolean = true,
+		overwriteLocale: Boolean = true,
+	): Key {
+		val newBundle = if (this.bundle == null || overwriteBundle) {
 			bundle
 		} else {
 			this.bundle
 		}
 
-		val newLocale = if (this.locale == null || overwrite) {
+		val newLocale = if (this.locale == null || overwriteLocale) {
 			locale
 		} else {
 			this.locale

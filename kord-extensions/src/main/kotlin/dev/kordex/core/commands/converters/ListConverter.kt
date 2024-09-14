@@ -9,6 +9,7 @@
 package dev.kordex.core.commands.converters
 
 import dev.kordex.core.commands.converters.builders.ListConverterBuilder
+import dev.kordex.core.commands.converters.types.MultiNamedInputConverter
 
 /**
  * Abstract base class for a multi converter.
@@ -25,7 +26,7 @@ import dev.kordex.core.commands.converters.builders.ListConverterBuilder
 public abstract class ListConverter<T : Any>(
 	required: Boolean = true,
 	override var validator: Validator<List<T>> = null,
-) : Converter<List<T>, List<T>, List<String>, Int>(required), SlashCommandConverter {
+) : MultiNamedInputConverter<List<T>, List<T>, Int>(required), SlashCommandConverter {
 	/**
 	 * The parsed value.
 	 *

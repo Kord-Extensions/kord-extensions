@@ -10,6 +10,7 @@ package dev.kordex.core.commands.converters
 
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.converters.builders.CoalescingConverterBuilder
+import dev.kordex.core.commands.converters.types.MultiNamedInputConverter
 
 /**
  * Abstract base class for a coalescing converter.
@@ -33,7 +34,7 @@ import dev.kordex.core.commands.converters.builders.CoalescingConverterBuilder
 public abstract class CoalescingConverter<T : Any>(
 	public open val shouldThrow: Boolean = false,
 	override var validator: Validator<T> = null,
-) : Converter<List<T>, T, List<String>, Int>(true), SlashCommandConverter {
+) : MultiNamedInputConverter<List<T>, T, Int>(true), SlashCommandConverter {
 	/**
 	 * The parsed value.
 	 *
