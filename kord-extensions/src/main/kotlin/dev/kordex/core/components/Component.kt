@@ -14,6 +14,7 @@ import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.application.ApplicationCommandRegistry
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryAdapter
 import org.koin.core.component.inject
@@ -42,7 +43,7 @@ public abstract class Component : KordExKoinComponent {
 	public val sentry: SentryAdapter by inject()
 
 	/** Translation bundle, to retrieve translations from. **/
-	public open var bundle: String? = null
+	public open var bundle: Bundle? = null
 
 	/** Validation function, called to ensure the component is valid, throws exceptions if not. **/
 	public abstract fun validate()

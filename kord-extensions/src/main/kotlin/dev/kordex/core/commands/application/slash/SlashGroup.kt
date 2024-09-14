@@ -11,6 +11,7 @@ package dev.kordex.core.commands.application.slash
 import dev.kordex.core.InvalidCommandException
 import dev.kordex.core.commands.application.Localized
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -24,7 +25,7 @@ import java.util.*
  * @param parent Parent slash command that this group belongs to
  */
 public class SlashGroup(
-	public val name: String,
+	public val name: Key,
 	public val parent: SlashCommand<*, *, *>,
 ) : KordExKoinComponent {
 	/** Translations provider, for retrieving translations. **/
@@ -37,7 +38,7 @@ public class SlashGroup(
 	public val subCommands: MutableList<SlashCommand<*, *, *>> = mutableListOf()
 
 	/** Command group description, which is required and shown on Discord. **/
-	public lateinit var description: String
+	public lateinit var description: Key
 
 	/**
 	 * A [Localized] version of [name].
@@ -66,11 +67,11 @@ public class SlashGroup(
 		// Only slash commands need this to be lower-cased.
 
 		if (!descriptionTranslationCache.containsKey(locale)) {
-			descriptionTranslationCache[locale] = translationsProvider.translate(
-				key = this.description,
-				bundleName = this.parent.resolvedBundle,
-				locale = locale
-			).lowercase()
+			descriptionTranslationCache[locale] = description
+				.withBundle(this.parent.resolvedBundle)
+				.withLocale(locale)
+				.translate()
+				.lowercase(locale)
 		}
 
 		return descriptionTranslationCache[locale]!!

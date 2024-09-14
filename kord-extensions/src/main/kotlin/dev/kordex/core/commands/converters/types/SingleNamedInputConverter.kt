@@ -10,6 +10,6 @@ package dev.kordex.core.commands.converters.types
 
 import dev.kordex.core.commands.converters.Converter
 
-public abstract class SingleNamedInputConverter <InputType : Any?, OutputType : Any?, ResultType : Any>(
+public abstract class SingleNamedInputConverter<InputType : Any?, OutputType : Any?, ResultType : Any>(
 	public override val required: Boolean = true,
 ) : Converter<InputType, OutputType, String, ResultType>()

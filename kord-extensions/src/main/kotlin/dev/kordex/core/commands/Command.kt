@@ -21,6 +21,7 @@ import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.events.CommandEvent
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
@@ -88,7 +89,7 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 	 */
 	@Throws(InvalidCommandException::class)
 	public open fun validate() {
-		if (!::name.isInitialized || name.isEmpty()) {
+		if (!::name.isInitialized || name.key.isEmpty()) {
 			throw InvalidCommandException(null, "No command name given.")
 		}
 
@@ -120,16 +121,13 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 
 			if (missingPerms.isNotEmpty()) {
 				throw DiscordRelayedException(
-					context.translate(
-						"commands.error.missingBotPermissions",
-						null,
-
-						replacements = arrayOf(
+					CoreTranslations.Commands.Error.missingBotPermissions
+						.withLocale(context.getLocale())
+						.translate(
 							missingPerms
 								.map { it.translate(context.getLocale()) }
 								.joinToString()
 						)
-					)
 				)
 			}
 		}

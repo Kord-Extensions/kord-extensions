@@ -79,7 +79,10 @@ public data class Key(
 		copy(bundle = null, locale = null)
 
 	public fun translate(vararg replacements: Any?): String =
-		translations.translate(this, replacements.toList().toTypedArray())
+		translateArray(replacements.toList().toTypedArray())
+
+	public fun translateArray(replacements: Array<Any?>): String =
+		translations.translate(this, replacements)
 
 	public fun translateNamed(replacements: Map<String, Any?>): String =
 		translations.translateNamed(this, replacements)
@@ -89,6 +92,9 @@ public data class Key(
 
 	public fun translateLocale(locale: Locale, vararg replacements: Any?): String =
 		withLocale(locale).translate(*replacements)
+
+	public fun translateArrayLocale(locale: Locale, replacements: Array<Any?>): String =
+		withLocale(locale).translateArray(replacements)
 
 	public fun translateNamedLocale(locale: Locale, replacements: Map<String, Any?>): String =
 		withLocale(locale).translateNamed(replacements)

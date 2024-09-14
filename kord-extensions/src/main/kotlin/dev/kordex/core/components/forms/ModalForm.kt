@@ -29,6 +29,8 @@ import dev.kordex.core.components.forms.widgets.Widget
 import dev.kordex.core.events.EventContext
 import dev.kordex.core.events.ModalInteractionCompleteEvent
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.waitFor
 import org.koin.core.component.inject
@@ -43,10 +45,10 @@ import kotlin.time.Duration.Companion.minutes
  */
 public abstract class ModalForm : Form(), KordExKoinComponent {
 	/** The modal's title, shown on Discord. **/
-	public abstract var title: String
+	public abstract var title: Key
 
 	/** Translation bundle to use for this modal's title and widgets. **/
-	public open var bundle: String? = null
+	public open var bundle: Bundle? = null
 
 	/** @suppress Internal reference. **/
 	protected val bot: ExtensibleBot by inject()
@@ -116,7 +118,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 	}
 
 	/** Given a ModalBuilder, apply this modal's widgets for display on Discord. **/
-	public suspend fun applyToBuilder(builder: ModalBuilder, locale: Locale, resolvedBundle: String?) {
+	public suspend fun applyToBuilder(builder: ModalBuilder, locale: Locale, resolvedBundle: Bundle?) {
 		val appliedWidgets = mutableSetOf<Widget<*>>()
 
 		grid.forEach { row ->
@@ -144,8 +146,11 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 	}
 
 	/** Return a translated modal title using the given locale, and the given bundle if the modal doesn't have one. **/
-	public fun translateTitle(locale: Locale, otherBundle: String?): String =
-		translations.translate(key = title, bundleName = bundle ?: otherBundle, locale = locale)
+	public fun translateTitle(locale: Locale, otherBundle: Bundle?): String =
+		title
+			.withBundle(bundle ?: otherBundle)
+			.withLocale(locale)
+			.translate()
 
 	/**
 	 * Convenience function to send this modal to the given [interaction] and await its completion, running the provided
@@ -157,7 +162,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 	 */
 	public suspend fun <T : Any?> sendAndAwait(
 		locale: Locale,
-		bundle: String?,
+		bundle: Bundle?,
 		interaction: ModalParentInteractionBehavior,
 		callback: suspend (ModalSubmitInteraction?) -> T,
 	): T {

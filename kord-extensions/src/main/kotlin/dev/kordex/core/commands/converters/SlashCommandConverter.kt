@@ -21,6 +21,8 @@ public interface SlashCommandConverter {
 	 * Return a slash command option that corresponds to this converter.
 	 *
 	 * Only applicable to converter types that make sense for slash commands.
+	 *
+	 * TODO: Create wrapping option builder types to store Key objects with their contexts
 	 */
 	public suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder
 

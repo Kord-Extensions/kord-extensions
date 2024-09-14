@@ -16,11 +16,12 @@ import dev.kord.core.entity.interaction.GuildAutoCompleteInteraction
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kordex.core.commands.Command
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.i18n.types.Key
 
 public class DummyAutocompleteCommandContext(
 	command: Command,
 	private val event: AutoCompleteInteractionCreateEvent,
-	commandName: String,
+	commandName: Key,
 ) : CommandContext(command, event, commandName, mutableMapOf()) {
 	override suspend fun populate() {
 		error("This should never be called.")

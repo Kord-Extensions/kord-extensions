@@ -20,7 +20,11 @@ import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.commands.application.slash.converters.ChoiceConverter
 import dev.kordex.core.commands.application.slash.converters.ChoiceEnum
 import dev.kordex.core.commands.converters.Validator
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.getIgnoringCase
+import dev.kordex.core.utils.withContext
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -35,7 +39,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 	types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.CHOICE],
 	imports = [
 		"dev.kordex.core.commands.converters.impl.getEnum",
-		"dev.kordex.core.commands.application.slash.converters.ChoiceEnum"
+		"dev.kordex.core.commands.application.slash.converters.ChoiceEnum",
+		"dev.kordex.core.i18n.types.Bundle",
+		"dev.kordex.core.i18n.types.Key",
 	],
 
 	builderGeneric = "E",
@@ -45,12 +51,12 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 	],
 
 	builderFields = [
-		"public lateinit var typeName: String",
-		"public var bundle: String? = null"
+		"public lateinit var typeName: Key",
+		"public var bundle: Bundle? = null",
 	],
 
 	builderInitStatements = [
-		"choices(argMap)"
+		"choices(argMap)",
 	],
 
 	builderSuffixedWhere = "E : Enum<E>, E : ChoiceEnum",
@@ -61,16 +67,16 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 		"argMap = enumValues<E>().associateBy { it.readableName }",
 	],
 
-	functionSuffixedWhere = "E : Enum<E>, E : ChoiceEnum"
+	functionSuffixedWhere = "E : Enum<E>, E : ChoiceEnum",
 )
 public class EnumChoiceConverter<E>(
-	typeName: String,
+	typeName: Key,
 	private val getter: suspend (String) -> E?,
 	choices: Map<String, E>,
 	override var validator: Validator<E> = null,
-	override val bundle: String? = null,
+	override val bundle: Bundle? = null,
 ) : ChoiceConverter<E>(choices) where E : Enum<E>, E : ChoiceEnum {
-	override val signatureTypeString: String = typeName
+	override val signatureTypeString: Key = typeName
 
 	private val logger = KotlinLogging.logger { }
 
@@ -88,14 +94,12 @@ public class EnumChoiceConverter<E>(
 		try {
 			val result = getter.invoke(arg)
 				?: throw DiscordRelayedException(
-					context.translate(
-						"converters.choice.invalidChoice",
-
-						replacements = arrayOf(
+					CoreTranslations.Converters.Choice.invalidChoice
+						.withLocale(context.getLocale())
+						.translate(
 							arg,
 							choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
 						)
-					)
 				)
 
 			this.parsed = result
@@ -103,14 +107,12 @@ public class EnumChoiceConverter<E>(
 			logger.warn(e) { "Failed to get enum value for argument: $arg" }
 
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.choice.invalidChoice",
-
-					replacements = arrayOf(
+				CoreTranslations.Converters.Choice.invalidChoice
+					.withLocale(context.getLocale())
+					.translate(
 						arg,
 						choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
 					)
-				)
 			)
 		}
 

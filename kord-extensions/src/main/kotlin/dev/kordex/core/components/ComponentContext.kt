@@ -24,6 +24,7 @@ import dev.kordex.core.checks.channelFor
 import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.userFor
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.sentry.captures.SentryBreadcrumbCapture
@@ -48,7 +49,7 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 	/** Translations provider, for retrieving translations. **/
 	public val translationsProvider: TranslationsProvider by inject()
 
-	override val bundle: String?
+	override val bundle: Bundle?
 		get() = component.bundle
 
 	/** Configured bot settings object. **/

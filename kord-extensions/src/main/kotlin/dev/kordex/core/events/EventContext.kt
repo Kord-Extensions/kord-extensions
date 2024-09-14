@@ -14,6 +14,8 @@ import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.interactionFor
 import dev.kordex.core.checks.userFor
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.types.TranslatableContext
@@ -42,7 +44,7 @@ public open class EventContext<T : Event>(
 
 	override var resolvedLocale: Locale? = null
 
-	override val bundle: String?
+	override val bundle: Bundle?
 		get() = eventHandler.extension.bundle
 
 	/**
@@ -50,18 +52,15 @@ public open class EventContext<T : Event>(
 	 * configured locale resolvers.
 	 */
 	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
+		key: Key,
+		bundleName: Bundle?,
 		replacements: Array<Any?>,
 	): String {
 		val locale: Locale = getLocale()
 
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
+		return key.withBundle(bundleName)
+			.withLocale(locale)
+			.translateArray(replacements)
 	}
 
 	/**
@@ -69,18 +68,15 @@ public open class EventContext<T : Event>(
 	 * configured locale resolvers.
 	 */
 	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
+		key: Key,
+		bundleName: Bundle?,
 		replacements: Map<String, Any?>,
 	): String {
 		val locale: Locale = getLocale()
 
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
+		return key.withBundle(bundleName)
+			.withLocale(locale)
+			.translateNamed(replacements)
 	}
 
 	override suspend fun getLocale(): Locale {

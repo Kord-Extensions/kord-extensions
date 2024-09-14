@@ -14,7 +14,6 @@ import dev.kordex.core.commands.chat.ChatCommand
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.events.EventHandler
 import dev.kordex.core.extensions.Extension
-import dev.kordex.core.i18n.toKey
 import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
@@ -93,7 +92,7 @@ public class EventHandlerRegistrationException(public val reason: String) : Kord
  * @param name The command name
  * @param reason Why this command is considered invalid.
  */
-public class InvalidCommandException(public val name: String?, public val reason: String) : KordExException() {
+public class InvalidCommandException(public val name: Key?, public val reason: String) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String {

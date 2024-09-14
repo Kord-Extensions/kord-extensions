@@ -14,7 +14,6 @@
 
 package dev.kordex.core.commands.chat
 
-import com.ibm.icu.text.PluralRules.Operand.c
 import dev.kordex.core.ArgumentParsingException
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.ExtensibleBot
@@ -28,17 +27,14 @@ import dev.kordex.core.commands.getDefaultTranslatedDisplayName
 import dev.kordex.core.i18n.KORDEX_BUNDLE
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.generated.CoreTranslations.Extensions.Help.Paginator.Title.arguments
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.withContext
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
-import jdk.jpackage.internal.Arguments.CLIOptions.context
 import org.koin.core.component.inject
 import java.util.*
 import kotlin.collections.set
-import kotlin.contracts.contract
 
 private val logger = KotlinLogging.logger {}
 
@@ -137,8 +133,8 @@ public open class ChatCommandParser : KordExKoinComponent {
 		val doRelay = when (val c = argument.converter) {
 			is SingleConverter<*> -> c.required || hasKwargs
 
-			is DefaultingConverter<*> -> (c.required || c.outputError || hasKwargs)
-				&& throwable is DiscordRelayedException
+			is DefaultingConverter<*> -> (c.required || c.outputError || hasKwargs) &&
+				throwable is DiscordRelayedException
 
 			is OptionalConverter<*> -> if (throwable is DiscordRelayedException) {
 				c.required || c.outputError || hasKwargs
@@ -190,8 +186,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 		when (val t = throwable) {
 			is ArgumentParsingException -> throw t
 
-			is DiscordRelayedException -> {
-				throw ArgumentParsingException(
+			is DiscordRelayedException -> throw ArgumentParsingException(
 					CoreTranslations.ArgumentParser.Error.errorInArgument
 						.withLocale(context.getLocale())
 						.translate(
@@ -211,10 +206,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 					arguments,
 					parser
 				)
-			}
 
 			else -> {
-				logger.warn(t) { "Exception thrown by argument: ${argument.displayName.key}"}
+				logger.warn(t) { "Exception thrown by argument: ${argument.displayName.key}" }
 
 				throw t
 			}
@@ -226,7 +220,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 		argument: Argument<*>,
 		parser: StringParser,
 		context: ChatCommandContext<*>,
-	) : Nothing {
+	): Nothing {
 		val c = argument.converter
 
 		throw ArgumentParsingException(
@@ -259,7 +253,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 		context: ChatCommandContext<*>,
 		numArgs: Int,
 		numParsed: Int,
-	) : Nothing {
+	): Nothing {
 		val c = argument.converter
 
 		throw ArgumentParsingException(
@@ -597,7 +591,11 @@ public open class ChatCommandParser : KordExKoinComponent {
 					append("[")
 				}
 
-				append(it.displayName)
+				append(
+					it.displayName
+						.withLocale(locale)
+						.translate()
+				)
 
 				if (it.converter.showTypeInSignature) {
 					append(": ")

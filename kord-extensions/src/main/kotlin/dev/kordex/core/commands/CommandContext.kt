@@ -20,6 +20,7 @@ import dev.kordex.core.checks.interactionFor
 import dev.kordex.core.checks.userFor
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.types.TranslatableContext
@@ -41,7 +42,7 @@ import java.util.*
 public abstract class CommandContext(
 	public open val command: Command,
 	public open val eventObj: Event,
-	public open val commandName: String,
+	public open val commandName: Key,
 	public open val cache: MutableStringKeyedMap<Any>,
 ) : KordExKoinComponent, TranslatableContext {
 	/** Translations provider, for retrieving translations. **/
@@ -96,32 +97,26 @@ public abstract class CommandContext(
 	}
 
 	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
+		key: Key,
+		bundle: Bundle?,
 		replacements: Array<Any?>,
 	): String {
 		val locale = getLocale()
 
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
+		return key.withBundle(bundle)
+			.withLocale(locale)
+			.translateArray(replacements)
 	}
 
 	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
+		key: Key,
+		bundle: Bundle?,
 		replacements: Map<String, Any?>,
 	): String {
 		val locale = getLocale()
 
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
+		return key.withBundle(bundle)
+			.withLocale(locale)
+			.translateNamed(replacements)
 	}
 }
