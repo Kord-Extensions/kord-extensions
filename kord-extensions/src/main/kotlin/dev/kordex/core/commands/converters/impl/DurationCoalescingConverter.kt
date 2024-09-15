@@ -10,17 +10,21 @@ package dev.kordex.core.commands.converters.impl
 
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.CoalescingConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.EMPTY_VALUE_STRING
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.parsers.DurationParser
 import dev.kordex.core.parsers.DurationParserException
 import dev.kordex.core.parsers.InvalidTimeUnitException
@@ -52,8 +56,9 @@ public class DurationCoalescingConverter(
 	shouldThrow: Boolean = false,
 	override var validator: Validator<DateTimePeriod> = null,
 ) : CoalescingConverter<DateTimePeriod>(shouldThrow) {
-	override val signatureTypeString: String = "converters.duration.error.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	// TODO: The signature type is not an error!
+	override val signatureType: Key = CoreTranslations.Converters.Duration.Error.signatureType
+	override val bundle: Bundle = KORDEX_BUNDLE
 
 	private val logger = KotlinLogging.logger {}
 
@@ -74,7 +79,9 @@ public class DurationCoalescingConverter(
 
 		val durations = mutableListOf<String>()
 
-		val ignoredWords: List<String> = context.translate("utils.durations.ignoredWords")
+		val ignoredWords: List<String> = CoreTranslations.Utils.Durations.ignoredWords
+			.withLocale(context.getLocale())
+			.translate()
 			.split(",")
 			.toMutableList()
 			.apply { remove(EMPTY_VALUE_STRING) }
@@ -167,14 +174,25 @@ public class DurationCoalescingConverter(
 		override: Boolean = false,
 	): Unit = if (shouldThrow || override) {
 		when (e) {
-			is InvalidTimeUnitException -> {
-				val message: String = context.translate(
-					"converters.duration.error.invalidUnit",
-					replacements = arrayOf(e.unit)
-				) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			is InvalidTimeUnitException -> throw DiscordRelayedException(
+				buildString {
+					append(
+						CoreTranslations.Converters.Duration.Error.invalidUnit
+							.withLocale(context.getLocale())
+							.translate(e.unit)
+					)
 
-				throw DiscordRelayedException(message)
-			}
+					if (longHelp) {
+						append("\n\n")
+
+						append(
+							CoreTranslations.Converters.Duration.help
+								.withLocale(context.getLocale())
+								.translate()
+						)
+					}
+				}
+			)
 
 			is DurationParserException -> throw DiscordRelayedException(e.error)
 
@@ -190,13 +208,19 @@ public class DurationCoalescingConverter(
 			val applied: Instant = now.plus(result, TimeZone.UTC)
 
 			if (now > applied) {
-				throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+				throw DiscordRelayedException(
+					CoreTranslations.Converters.Duration.Error.positiveOnly
+						.withLocale(context.getLocale())
+						.translate()
+				)
 			}
 		}
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? StringOptionValue)?.value ?: return false
@@ -209,18 +233,35 @@ public class DurationCoalescingConverter(
 				val applied: Instant = now.plus(result, TimeZone.UTC)
 
 				if (now > applied) {
-					throw DiscordRelayedException(context.translate("converters.duration.error.positiveOnly"))
+					throw DiscordRelayedException(
+						CoreTranslations.Converters.Duration.Error.positiveOnly
+							.withLocale(context.getLocale())
+							.translate()
+					)
 				}
 			}
 
 			parsed = result
 		} catch (e: InvalidTimeUnitException) {
-			val message: String = context.translate(
-				"converters.duration.error.invalidUnit",
-				replacements = arrayOf(e.unit)
-			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			throw DiscordRelayedException(
+				buildString {
+					append(
+						CoreTranslations.Converters.Duration.Error.invalidUnit
+							.withLocale(context.getLocale())
+							.translate(e.unit)
+					)
 
-			throw DiscordRelayedException(message)
+					if (longHelp) {
+						append("\n\n")
+
+						append(
+							CoreTranslations.Converters.Duration.help
+								.withLocale(context.getLocale())
+								.translate()
+						)
+					}
+				}
+			)
 		} catch (e: DurationParserException) {
 			throw DiscordRelayedException(e.error)
 		}

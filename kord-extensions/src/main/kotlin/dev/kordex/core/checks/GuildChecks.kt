@@ -12,6 +12,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.event.Event
 import dev.kordex.core.checks.types.CheckContext
+import dev.kordex.core.i18n.generated.CoreTranslations
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
@@ -35,9 +36,7 @@ public suspend fun CheckContext<*>.anyGuild() {
 	} else {
 		logger.failed("Event did not happen within a guild.")
 
-		fail(
-			translate("checks.anyGuild.failed")
-		)
+		fail(CoreTranslations.Checks.AnyGuild.failed)
 	}
 }
 
@@ -62,9 +61,7 @@ public suspend fun CheckContext<*>.noGuild() {
 	} else {
 		logger.failed("Event happened within a guild.")
 
-		fail(
-			translate("checks.noGuild.failed")
-		)
+		fail(CoreTranslations.Checks.NoGuild.failed)
 	}
 }
 
@@ -101,10 +98,9 @@ public suspend fun <T : Event> CheckContext<T>.inGuild(builder: suspend (T) -> G
 			logger.failed("Guild $eventGuild does not match $guild")
 
 			fail(
-				translate(
-					"checks.inGuild.failed",
-					replacements = arrayOf(eventGuild.name),
-				)
+				CoreTranslations.Checks.InGuild.failed
+					.withLocale(locale)
+					.translate(eventGuild.name)
 			)
 		}
 	}
@@ -141,10 +137,9 @@ public suspend fun <T : Event> CheckContext<T>.notInGuild(builder: suspend (T) -
 			logger.failed("Guild $eventGuild matches $guild")
 
 			fail(
-				translate(
-					"checks.notInGuild.failed",
-					replacements = arrayOf(eventGuild.name),
-				)
+				CoreTranslations.Checks.NotInGuild.failed
+					.withLocale(locale)
+					.translate(eventGuild.name)
 			)
 		}
 	}

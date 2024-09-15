@@ -267,7 +267,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 					numArgs,
 					numParsed,
-					c.signatureTypeString
+					c.signatureType
 						.withBundle(c.bundle)
 						.withLocale(context.getLocale())
 						.translate()
@@ -601,7 +601,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 					append(": ")
 
 					append(
-						it.converter.signatureTypeString
+						it.converter.signatureType
 							.withBundle(it.converter.bundle)
 							.withLocale(locale)
 							.translate()

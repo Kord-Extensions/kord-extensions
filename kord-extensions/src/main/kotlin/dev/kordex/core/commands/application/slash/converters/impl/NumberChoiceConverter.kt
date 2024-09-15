@@ -11,14 +11,17 @@ package dev.kordex.core.commands.application.slash.converters.impl
 import dev.kord.core.entity.interaction.IntegerOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.IntegerOptionBuilder
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.application.slash.converters.ChoiceConverter
 import dev.kordex.core.commands.converters.Validator
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.getIgnoringCase
 import dev.kordex.parser.StringParser
 
@@ -40,7 +43,7 @@ public class NumberChoiceConverter(
 	choices: Map<String, Long>,
 	override var validator: Validator<Long> = null,
 ) : ChoiceConverter<Long>(choices) {
-	override val signatureTypeString: String = "converters.number.signatureType"
+	override val signatureType: Key = CoreTranslations.Converters.Number.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -57,23 +60,25 @@ public class NumberChoiceConverter(
 
 			if (result !in choices.values) {
 				throw DiscordRelayedException(
-					context.translate(
-						"converters.choice.invalidChoice",
-
-						replacements = arrayOf(
+					CoreTranslations.Converters.Choice.invalidChoice
+						.withLocale(context.getLocale())
+						.translate(
 							arg,
 							choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
 						)
-					)
 				)
 			}
 
 			this.parsed = result
-		} catch (e: NumberFormatException) {
+		} catch (_: NumberFormatException) {
 			val errorString = if (radix == DEFAULT_RADIX) {
-				context.translate("converters.number.error.invalid.defaultBase", replacements = arrayOf(arg))
+				CoreTranslations.Converters.Number.Error.Invalid.defaultBase
+					.withLocale(context.getLocale())
+					.translate(arg)
 			} else {
-				context.translate("converters.number.error.invalid.otherBase", replacements = arrayOf(arg, radix))
+				CoreTranslations.Converters.Number.Error.Invalid.otherBase
+					.withLocale(context.getLocale())
+					.translate(arg, radix)
 			}
 
 			throw DiscordRelayedException(errorString)
@@ -82,8 +87,8 @@ public class NumberChoiceConverter(
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		IntegerOptionBuilder(arg.displayName, arg.description).apply {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<IntegerOptionBuilder> =
+		wrapOption(arg.displayName, arg.description) {
 			required = true
 
 			this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }

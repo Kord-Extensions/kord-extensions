@@ -11,15 +11,19 @@ package dev.kordex.core.commands.converters.impl
 import dev.kord.core.entity.interaction.NumberOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.NumberOptionBuilder
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 
 /**
@@ -47,45 +51,45 @@ public class DecimalConverter(
 
 	override var validator: Validator<Double> = null,
 ) : SingleConverter<Double>() {
-	override val signatureTypeString: String = "converters.decimal.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Decimal.signatureType
+	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
 		try {
 			this.parsed = arg.toDouble()
-		} catch (e: NumberFormatException) {
+		} catch (_: NumberFormatException) {
 			throw DiscordRelayedException(
-				context.translate("converters.decimal.error.invalid", replacements = arrayOf(arg))
+				CoreTranslations.Converters.Decimal.Error.invalid
+					.withLocale(context.getLocale())
+					.translate()
 			)
 		}
 
 		if (minValue != null && this.parsed < minValue) {
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.number.error.invalid.tooSmall",
-					replacements = arrayOf(arg, minValue)
-				)
+				CoreTranslations.Converters.Number.Error.Invalid.tooSmall
+					.withLocale(context.getLocale())
+					.translate(arg, minValue)
 			)
 		}
 
 		if (maxValue != null && this.parsed > maxValue) {
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.number.error.invalid.tooLarge",
-					replacements = arrayOf(arg, maxValue)
-				)
+				CoreTranslations.Converters.Number.Error.Invalid.tooLarge
+					.withLocale(context.getLocale())
+					.translate(arg, maxValue)
 			)
 		}
 
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		NumberOptionBuilder(arg.displayName, arg.description).apply {
-			this@apply.maxValue = this@DecimalConverter.maxValue
-			this@apply.minValue = this@DecimalConverter.minValue
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<NumberOptionBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			this.maxValue = this@DecimalConverter.maxValue
+			this.minValue = this@DecimalConverter.minValue
 
 			required = true
 		}

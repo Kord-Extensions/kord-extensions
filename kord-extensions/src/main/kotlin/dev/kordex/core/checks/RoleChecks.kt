@@ -14,6 +14,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.event.Event
 import dev.kordex.core.checks.types.CheckContext
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.utils.getTopRole
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.toList
@@ -51,10 +52,9 @@ public suspend fun <T : Event> CheckContext<T>.hasRole(builder: suspend (T) -> R
 			logger.failed("Member $member does not have role $role")
 
 			fail(
-				translate(
-					"checks.hasRole.failed",
-					replacements = arrayOf(role.mention),
-				)
+				CoreTranslations.Checks.HasRole.failed
+					.withLocale(locale)
+					.translate(role.mention)
 			)
 		}
 	}
@@ -87,10 +87,9 @@ public suspend fun <T : Event> CheckContext<T>.notHasRole(builder: suspend (T) -
 			logger.failed("Member $member has role $role")
 
 			fail(
-				translate(
-					"checks.notHasRole.failed",
-					replacements = arrayOf(role.mention),
-				)
+				CoreTranslations.Checks.NotHasRole.failed
+					.withLocale(locale)
+					.translate(role.mention)
 			)
 		} else {
 			logger.passed()
@@ -129,10 +128,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleEqual(builder: suspend (T)
 				logger.failed("Member $member has no top role")
 
 				fail(
-					translate(
-						"checks.topRoleEqual.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleEqual.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 
@@ -140,10 +138,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleEqual(builder: suspend (T)
 				logger.failed("Member $member does not have top role $role")
 
 				fail(
-					translate(
-						"checks.topRoleEqual.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleEqual.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 
@@ -190,10 +187,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleNotEqual(builder: suspend 
 				logger.failed("Member $member has top role $role")
 
 				fail(
-					translate(
-						"checks.topRoleNotEqual.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleNotEqual.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 
@@ -235,10 +231,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleHigher(builder: suspend (T
 				logger.failed("Member $member has no top role")
 
 				fail(
-					translate(
-						"checks.topRoleHigher.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleHigher.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 
@@ -252,10 +247,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleHigher(builder: suspend (T
 				logger.failed("Member $member has a top role less than or equal to $role")
 
 				fail(
-					translate(
-						"checks.topRoleHigher.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleHigher.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 		}
@@ -305,10 +299,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleLower(builder: suspend (T)
 				logger.failed("Member $member has a top role greater than or equal to $role")
 
 				fail(
-					translate(
-						"checks.topRoleLower.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleLower.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 		}
@@ -345,10 +338,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleHigherOrEqual(builder: sus
 				logger.failed("Member $member has no top role")
 
 				fail(
-					translate(
-						"checks.topRoleHigherOrEqual.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleHigherOrEqual.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 
@@ -362,10 +354,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleHigherOrEqual(builder: sus
 				logger.failed("Member $member has a top role less than $role")
 
 				fail(
-					translate(
-						"checks.topRoleHigherOrEqual.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleHigherOrEqual.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 		}
@@ -416,10 +407,9 @@ public suspend fun <T : Event> CheckContext<T>.topRoleLowerOrEqual(builder: susp
 				logger.failed("Member $member has a top role greater than $role")
 
 				fail(
-					translate(
-						"checks.topRoleLowerOrEqual.failed",
-						replacements = arrayOf(role.mention),
-					)
+					CoreTranslations.Checks.TopRoleLowerOrEqual.failed
+						.withLocale(locale)
+						.translate(role.mention)
 				)
 			}
 		}

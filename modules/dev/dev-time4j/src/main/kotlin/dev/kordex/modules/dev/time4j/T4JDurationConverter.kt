@@ -50,7 +50,7 @@ public class T4JDurationConverter(
 	public val longHelp: Boolean = true,
 	override var validator: Validator<Duration<IsoUnit>> = null,
 ) : SingleConverter<Duration<IsoUnit>>() {
-	override val signatureTypeString: String = "converters.duration.error.signatureType"
+	override val signatureType: String = "converters.duration.error.signatureType"
 	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
 	init {

@@ -14,6 +14,7 @@ import dev.kord.core.behavior.interaction.response.FollowupPermittingInteraction
 import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
+import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.pagination.builders.PageTransitionCallback
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import dev.kordex.core.pagination.pages.Pages
@@ -33,7 +34,7 @@ public class PublicFollowUpPaginator(
 	keepEmbed: Boolean = true,
 	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	mutator: PageTransitionCallback? = null,
-	bundle: String? = null,
+	bundle: Bundle? = null,
 	locale: Locale? = null,
 
 	public val interaction: FollowupPermittingInteractionResponseBehavior,

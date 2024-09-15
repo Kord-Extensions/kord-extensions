@@ -30,6 +30,7 @@ import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.request.RestRequestException
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.i18n.generated.CoreTranslations
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.*
 import kotlinx.coroutines.Job
@@ -299,7 +300,9 @@ public suspend fun Message.requireChannel(
 	}
 
 	val response = respond(
-		context.translate("utils.message.useThisChannel", replacements = arrayOf(channel.mention))
+		CoreTranslations.Utils.Message.useThisChannel
+			.withLocale(context.getLocale())
+			.translate(channel.mention)
 	)
 
 	if (deleteResponse) response.delete(delay)
@@ -339,7 +342,12 @@ public suspend fun Message.requireGuildChannel(
 		return true
 	}
 
-	respond(context.translate("utils.message.commandNotAvailableInDm"))
+	respond(
+		CoreTranslations.Utils.Message.commandNotAvailableInDm
+			.withLocale(context.getLocale())
+			.translate()
+	)
+
 	return false
 }
 
@@ -377,7 +385,12 @@ public suspend fun Message.requireGuildChannel(
 		return true
 	}
 
-	respond(context.translate("utils.message.commandNotAvailableInDm"))
+	respond(
+		CoreTranslations.Utils.Message.commandNotAvailableInDm
+			.withLocale(context.getLocale())
+			.translate()
+	)
+
 	return false
 }
 

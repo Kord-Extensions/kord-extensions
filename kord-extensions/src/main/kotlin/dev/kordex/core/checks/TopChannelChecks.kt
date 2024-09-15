@@ -13,6 +13,7 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.event.Event
 import dev.kordex.core.checks.types.CheckContext
+import dev.kordex.core.i18n.generated.CoreTranslations
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 // region: Entity DSL versions
@@ -49,10 +50,9 @@ public suspend fun <T : Event> CheckContext<T>.inTopChannel(builder: suspend (T)
 			logger.failed("Channel $eventChannel is not the same as channel $channel")
 
 			fail(
-				translate(
-					"checks.inChannel.failed",
-					replacements = arrayOf(channel.mention),
-				)
+				CoreTranslations.Checks.InChannel.failed
+					.withLocale(locale)
+					.translate(channel.mention)
 			)
 		}
 	}
@@ -90,10 +90,9 @@ public suspend fun <T : Event> CheckContext<T>.notInTopChannel(builder: suspend 
 			logger.failed("Channel $eventChannel is the same as channel $channel")
 
 			fail(
-				translate(
-					"checks.notInChannel.failed",
-					replacements = arrayOf(channel.mention)
-				)
+				CoreTranslations.Checks.NotInChannel.failed
+					.withLocale(locale)
+					.translate(channel.mention)
 			)
 		}
 	}

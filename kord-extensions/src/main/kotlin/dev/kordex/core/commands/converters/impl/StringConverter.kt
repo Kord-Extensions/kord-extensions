@@ -10,16 +10,20 @@ package dev.kordex.core.commands.converters.impl
 
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 
 /**
@@ -45,9 +49,9 @@ public class StringConverter(
 	public val minLength: Int? = null,
 	override var validator: Validator<String> = null,
 ) : SingleConverter<String>() {
-	override val signatureTypeString: String = "converters.string.signatureType"
+	override val signatureType: Key = CoreTranslations.Converters.String.signatureType
 	override val showTypeInSignature: Boolean = false
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -56,29 +60,27 @@ public class StringConverter(
 
 		if (minLength != null && this.parsed.length < minLength) {
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.string.error.invalid.tooShort",
-					replacements = arrayOf(arg, minLength)
-				)
+				CoreTranslations.Converters.String.Error.Invalid.tooShort
+					.withLocale(context.getLocale())
+					.translate(arg, minLength)
 			)
 		}
 
 		if (maxLength != null && this.parsed.length > maxLength) {
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.string.error.invalid.tooLong",
-					replacements = arrayOf(arg, maxLength)
-				)
+				CoreTranslations.Converters.String.Error.Invalid.tooLong
+					.withLocale(context.getLocale())
+					.translate(arg, maxLength)
 			)
 		}
 
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply {
-			this@apply.maxLength = this@StringConverter.maxLength
-			this@apply.minLength = this@StringConverter.minLength
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			this.maxLength = this@StringConverter.maxLength
+			this.minLength = this@StringConverter.minLength
 
 			required = true
 		}

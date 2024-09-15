@@ -55,7 +55,7 @@ public class T4JDurationCoalescingConverter(
 	shouldThrow: Boolean = false,
 	override var validator: Validator<Duration<IsoUnit>> = null,
 ) : CoalescingConverter<Duration<IsoUnit>>(shouldThrow) {
-	override val signatureTypeString: String = "converters.duration.error.signatureType"
+	override val signatureType: String = "converters.duration.error.signatureType"
 	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
 	init {

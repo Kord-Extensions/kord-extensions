@@ -11,14 +11,18 @@ package dev.kordex.core.commands.converters.impl
 import dev.kord.core.entity.interaction.BooleanOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.BooleanBuilder
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.parseBoolean
 import dev.kordex.parser.StringParser
 
@@ -35,9 +39,9 @@ import dev.kordex.parser.StringParser
 public class BooleanConverter(
 	override var validator: Validator<Boolean> = null,
 ) : SingleConverter<Boolean>() {
-	public override val signatureTypeString: String = "converters.boolean.signatureType"
-	public override val errorTypeString: String = "converters.boolean.errorType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	public override val signatureType: Key = CoreTranslations.Converters.Boolean.signatureType
+	public override val errorType: Key = CoreTranslations.Converters.Boolean.errorType
+	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -48,8 +52,10 @@ public class BooleanConverter(
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		BooleanBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<BooleanBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? BooleanOptionValue)?.value ?: return false

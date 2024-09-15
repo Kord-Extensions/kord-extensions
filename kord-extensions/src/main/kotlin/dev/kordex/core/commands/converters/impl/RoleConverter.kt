@@ -14,16 +14,20 @@ import dev.kord.core.entity.Role
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.RoleOptionValue
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.RoleBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -49,15 +53,17 @@ public class RoleConverter(
 	private var requiredGuild: (suspend () -> Snowflake)? = null,
 	override var validator: Validator<Role> = null,
 ) : SingleConverter<Role>() {
-	override val signatureTypeString: String = "converters.role.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Role.signatureType
+	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
 		parsed = findRole(arg, context)
 			?: throw DiscordRelayedException(
-				context.translate("converters.role.error.missing", replacements = arrayOf(arg))
+				CoreTranslations.Converters.Role.Error.missing
+					.withLocale(context.getLocale())
+					.translate(arg)
 			)
 
 		return true
@@ -73,20 +79,22 @@ public class RoleConverter(
 		val guild: Guild = kord.getGuildOrNull(guildId) ?: return null
 
 		@Suppress("MagicNumber")
-		return if (arg.startsWith("<@&") && arg.endsWith(">")) { // It's a mention
+		return if (arg.startsWith("<@&") && arg.endsWith(">")) { // Mention
 			val id: String = arg.substring(3, arg.length - 1)
 
 			try {
 				guild.getRole(Snowflake(id))
-			} catch (e: NumberFormatException) {
+			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate("converters.role.error.invalid", replacements = arrayOf(id))
+					CoreTranslations.Converters.Role.Error.invalid
+						.withLocale(context.getLocale())
+						.translate(id)
 				)
 			}
 		} else {
 			try { // Try for a role ID first
 				guild.getRole(Snowflake(arg))
-			} catch (e: NumberFormatException) { // It's not an ID, let's try the name
+			} catch (_: NumberFormatException) { // Not an ID, let's try the name
 				guild.roles.firstOrNull { role ->
 					role.name.equals(arg, true)
 				}
@@ -94,8 +102,10 @@ public class RoleConverter(
 		}
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		RoleBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<RoleBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {

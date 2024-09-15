@@ -11,6 +11,7 @@ package dev.kordex.core.commands.converters
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.converters.builders.CoalescingConverterBuilder
 import dev.kordex.core.commands.converters.types.MultiNamedInputConverter
+import dev.kordex.core.i18n.types.Key
 
 /**
  * Abstract base class for a coalescing converter.
@@ -79,16 +80,16 @@ public abstract class CoalescingConverter<T : Any>(
 	 */
 	@ConverterToOptional
 	public open fun toOptional(
-		signatureTypeString: String? = null,
+		signatureType: Key? = null,
 		showTypeInSignature: Boolean? = null,
-		errorTypeString: String? = null,
+		errorType: Key? = null,
 		outputError: Boolean = false,
 		nestedValidator: Validator<T?> = null,
 	): OptionalCoalescingConverter<T> = CoalescingToOptionalConverter(
 		this,
-		signatureTypeString,
+		signatureType,
 		showTypeInSignature,
-		errorTypeString,
+		errorType,
 		outputError,
 		nestedValidator
 	)
@@ -117,17 +118,17 @@ public abstract class CoalescingConverter<T : Any>(
 	public open fun toDefaulting(
 		defaultValue: T,
 		outputError: Boolean = false,
-		signatureTypeString: String? = null,
+		signatureType: Key? = null,
 		showTypeInSignature: Boolean? = null,
-		errorTypeString: String? = null,
+		errorType: Key? = null,
 		nestedValidator: Validator<T> = null,
 	): DefaultingCoalescingConverter<T> = CoalescingToDefaultingConverter(
 		this,
 		defaultValue = defaultValue,
 		outputError = outputError,
-		newSignatureTypeString = signatureTypeString,
+		newSignatureType = signatureType,
 		newShowTypeInSignature = showTypeInSignature,
-		newErrorTypeString = errorTypeString,
+		newErrorType = errorType,
 		validator = nestedValidator,
 	)
 }

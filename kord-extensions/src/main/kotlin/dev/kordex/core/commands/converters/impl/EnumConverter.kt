@@ -10,15 +10,18 @@ package dev.kordex.core.commands.converters.impl
 
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 
 /**
@@ -35,7 +38,9 @@ import dev.kordex.parser.StringParser
 	"enum",
 
 	types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.LIST],
-	imports = ["dev.kordex.core.commands.converters.impl.getEnum"],
+	imports = [
+		"dev.kordex.core.commands.converters.impl.getEnum",
+	],
 
 	builderGeneric = "E: Enum<E>",
 	builderConstructorArguments = [
@@ -43,8 +48,8 @@ import dev.kordex.parser.StringParser
 	],
 
 	builderFields = [
-		"public lateinit var typeName: String",
-		"public var bundle: String? = null"
+		"public lateinit var typeName: Key",
+		"public var bundle: Bundle? = null"
 	],
 
 	functionGeneric = "E: Enum<E>",
@@ -53,34 +58,36 @@ import dev.kordex.parser.StringParser
 	]
 )
 public class EnumConverter<E : Enum<E>>(
-	typeName: String,
+	typeName: Key,
 	private val getter: suspend (String) -> E?,
-	override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
+	override val bundle: Bundle? = KORDEX_BUNDLE,
 	override var validator: Validator<E> = null,
 ) : SingleConverter<E>() {
-	override val signatureTypeString: String = typeName
+	override val signatureType: Key = typeName
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
 		try {
 			parsed = getter.invoke(arg) ?: return false
-		} catch (e: IllegalArgumentException) {
+		} catch (_: IllegalArgumentException) {
 			return false
 		}
 
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
 		try {
 			parsed = getter.invoke(optionValue) ?: return false
-		} catch (e: IllegalArgumentException) {
+		} catch (_: IllegalArgumentException) {
 			return false
 		}
 

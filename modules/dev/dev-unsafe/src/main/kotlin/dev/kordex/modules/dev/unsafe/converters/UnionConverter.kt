@@ -49,8 +49,8 @@ public class UnionConverter(
 ) : CoalescingConverter<Any>(shouldThrow) {
 	private val translations: TranslationsProvider by inject()
 
-	override val signatureTypeString: String = typeName ?: converters.joinToString(" | ") {
-		translations.translate(key = it.signatureTypeString, bundleName = it.bundle)
+	override val signatureType: String = typeName ?: converters.joinToString(" | ") {
+		translations.translate(key = it.signatureType, bundleName = it.bundle)
 	}
 
 	/** @suppress Internal validation function. **/

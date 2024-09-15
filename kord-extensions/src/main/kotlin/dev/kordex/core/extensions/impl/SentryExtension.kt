@@ -16,6 +16,8 @@ import dev.kordex.core.commands.converters.impl.string
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.chatCommand
 import dev.kordex.core.extensions.ephemeralSlashCommand
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.toKey
 import dev.kordex.core.sentry.SentryAdapter
 import dev.kordex.core.sentry.sentryId
 import dev.kordex.core.utils.respond
@@ -47,13 +49,14 @@ public class SentryExtension : Extension() {
 	override suspend fun setup() {
 		if (sentryAdapter.enabled) {
 			ephemeralSlashCommand(::FeedbackSlashArgs) {
-				name = "extensions.sentry.commandName"
-				description = "extensions.sentry.commandDescription.short"
+				name = CoreTranslations.Extensions.Sentry.commandName
+				description = CoreTranslations.Extensions.Sentry.CommandDescription.short
 
 				action {
 					if (!sentry.adapter.hasEventId(arguments.id)) {
 						respond {
-							content = translate("extensions.sentry.error.invalidId")
+							content = CoreTranslations.Extensions.Sentry.Error.invalidId
+								.translate()
 						}
 
 						return@action
@@ -70,21 +73,24 @@ public class SentryExtension : Extension() {
 					sentry.adapter.removeEventId(arguments.id)
 
 					respond {
-						content = translate("extensions.sentry.thanks")
+						content = CoreTranslations.Extensions.Sentry.thanks
+							.translate()
 					}
 				}
 			}
 
 			chatCommand(::FeedbackMessageArgs) {
-				name = "extensions.sentry.commandName"
-				description = "extensions.sentry.commandDescription.long"
+				name = CoreTranslations.Extensions.Sentry.commandName
+				description = CoreTranslations.Extensions.Sentry.CommandDescription.long
 
-				aliasKey = "extensions.sentry.commandAliases"
+				aliasKey = CoreTranslations.Extensions.Sentry.commandAliases
 
 				action {
 					if (!sentry.adapter.hasEventId(arguments.id)) {
 						message.respond(
-							translate("extensions.sentry.error.invalidId"),
+							CoreTranslations.Extensions.Sentry.Error.invalidId
+								.translate(),
+
 							pingInReply = sentrySettings.pingInReply
 						)
 
@@ -100,7 +106,8 @@ public class SentryExtension : Extension() {
 					)
 
 					message.respond(
-						translate("extensions.sentry.thanks")
+						CoreTranslations.Extensions.Sentry.thanks
+							.translate()
 					)
 				}
 			}
@@ -111,14 +118,14 @@ public class SentryExtension : Extension() {
 	public class FeedbackMessageArgs : Arguments() {
 		/** Sentry event ID. **/
 		public val id: SentryId by sentryId {
-			name = "id"
-			description = "extensions.sentry.arguments.id"
+			name = "id".toKey()  // TODO: This needs translating
+			description = CoreTranslations.Extensions.Sentry.Arguments.id
 		}
 
 		/** Feedback message to submit to Sentry. **/
 		public val feedback: String by coalescingString {
-			name = "feedback"
-			description = "extensions.sentry.arguments.feedback"
+			name = "feedback".toKey()  // TODO: This needs translating
+			description = CoreTranslations.Extensions.Sentry.Arguments.feedback
 		}
 	}
 
@@ -126,14 +133,14 @@ public class SentryExtension : Extension() {
 	public class FeedbackSlashArgs : Arguments() {
 		/** Sentry event ID. **/
 		public val id: SentryId by sentryId {
-			name = "id"
-			description = "extensions.sentry.arguments.id"
+			name = "id".toKey()  // TODO: This needs translating
+			description = CoreTranslations.Extensions.Sentry.Arguments.id
 		}
 
 		/** Feedback message to submit to Sentry. **/
 		public val feedback: String by string {
-			name = "feedback"
-			description = "extensions.sentry.arguments.feedback"
+			name = "feedback".toKey()  // TODO: This needs translating
+			description = CoreTranslations.Extensions.Sentry.Arguments.feedback
 		}
 	}
 }

@@ -16,6 +16,7 @@ import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.checks.types.CheckContextWithCache
 import dev.kordex.core.checks.types.CheckWithCache
 import dev.kordex.core.components.forms.ModalForm
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.types.Lockable
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -156,16 +157,13 @@ public abstract class ComponentWithAction<
 
 			if (missingPerms.isNotEmpty()) {
 				throw DiscordRelayedException(
-					context.translate(
-						"commands.error.missingBotPermissions",
-						null,
-
-						replacements = arrayOf(
+					CoreTranslations.Commands.Error.missingBotPermissions
+						.withLocale(context.getLocale())
+						.translate(
 							missingPerms
 								.map { it.translate(context.getLocale()) }
 								.joinToString()
 						)
-					)
 				)
 			}
 		}

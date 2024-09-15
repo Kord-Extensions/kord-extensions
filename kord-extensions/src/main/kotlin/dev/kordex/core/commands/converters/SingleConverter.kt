@@ -8,8 +8,10 @@
 
 package dev.kordex.core.commands.converters
 
+import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.commands.converters.types.SingleNamedInputConverter
+import dev.kordex.core.i18n.types.Key
 
 /**
  * Abstract base class for a single converter.
@@ -58,28 +60,28 @@ public abstract class SingleConverter<T : Any>(
 	 *
 	 * @param required Whether command parsing should fail if no arguments could be converted.
 	 *
-	 * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
+	 * @param signatureType Optionally, a signature type string to use instead of the one this converter
 	 * provides.
 	 *
 	 * @param showTypeInSignature Optionally, override this converter's setting for showing the type string in a
 	 * generated command signature.
 	 *
-	 * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
+	 * @param errorType Optionally, a longer type string to be shown in errors instead of the one this converter
 	 * provides.
 	 */
 	@ConverterToMulti
 	public open fun toList(
 		required: Boolean = true,
-		signatureTypeString: String? = null,
+		signatureType: Key? = null,
 		showTypeInSignature: Boolean? = null,
-		errorTypeString: String? = null,
+		errorType: Key? = null,
 		nestedValidator: Validator<List<T>> = null,
 	): ListConverter<T> = SingleToListConverter(
 		required,
 		this,
-		signatureTypeString,
+		signatureType,
 		showTypeInSignature,
-		errorTypeString,
+		errorType,
 		nestedValidator
 	)
 
@@ -92,13 +94,13 @@ public abstract class SingleConverter<T : Any>(
 	 *
 	 * For more information on the parameters, see [Converter].
 	 *
-	 * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
+	 * @param signatureType Optionally, a signature type string to use instead of the one this converter
 	 * provides.
 	 *
 	 * @param showTypeInSignature Optionally, override this converter's setting for showing the type string in a
 	 * generated command signature.
 	 *
-	 * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
+	 * @param errorType Optionally, a longer type string to be shown in errors instead of the one this converter
 	 * provides.
 	 *
 	 * @param outputError Optionally, provide `true` to fail parsing and return errors if the converter throws a
@@ -106,16 +108,16 @@ public abstract class SingleConverter<T : Any>(
 	 */
 	@ConverterToOptional
 	public open fun toOptional(
-		signatureTypeString: String? = null,
+		signatureType: Key? = null,
 		showTypeInSignature: Boolean? = null,
-		errorTypeString: String? = null,
+		errorType: Key? = null,
 		outputError: Boolean = false,
 		nestedValidator: Validator<T?> = null,
 	): OptionalConverter<T> = SingleToOptionalConverter(
 		this,
-		signatureTypeString,
+		signatureType,
 		showTypeInSignature,
-		errorTypeString,
+		errorType,
 		outputError,
 		nestedValidator
 	)
@@ -131,30 +133,30 @@ public abstract class SingleConverter<T : Any>(
 	 *
 	 * @param defaultValue The default value to use when an argument can't be converted.
 	 * @param outputError Whether the argument parser should output parsing errors on invalid arguments.
-	 * @param signatureTypeString Optionally, a signature type string to use instead of the one this converter
+	 * @param signatureType Optionally, a signature type string to use instead of the one this converter
 	 * provides.
 	 *
 	 * @param showTypeInSignature Optionally, override this converter's setting for showing the type string in a
 	 * generated command signature.
 	 *
-	 * @param errorTypeString Optionally, a longer type string to be shown in errors instead of the one this converter
+	 * @param errorType Optionally, a longer type string to be shown in errors instead of the one this converter
 	 * provides.
 	 */
 	@ConverterToDefaulting
 	public open fun toDefaulting(
 		defaultValue: T,
 		outputError: Boolean = false,
-		signatureTypeString: String? = null,
+		signatureType: Key? = null,
 		showTypeInSignature: Boolean? = null,
-		errorTypeString: String? = null,
+		errorType: Key? = null,
 		nestedValidator: Validator<T> = null,
 	): DefaultingConverter<T> = SingleToDefaultingConverter(
 		this,
 		defaultValue = defaultValue,
 		outputError = outputError,
-		newSignatureTypeString = signatureTypeString,
+		newSignatureType = signatureType,
 		newShowTypeInSignature = showTypeInSignature,
-		newErrorTypeString = errorTypeString,
+		newErrorType = errorType,
 		validator = nestedValidator
 	)
 }

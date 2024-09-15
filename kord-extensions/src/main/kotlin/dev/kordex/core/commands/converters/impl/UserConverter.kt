@@ -13,17 +13,21 @@ import dev.kord.core.entity.User
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.UserOptionValue
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.UserBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.chat.ChatCommandContext
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.users
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.flow.firstOrNull
@@ -50,8 +54,8 @@ public class UserConverter(
 	private var useReply: Boolean = true,
 	override var validator: Validator<User> = null,
 ) : SingleConverter<User>() {
-	override val signatureTypeString: String = "converters.user.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.User.signatureType
+	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		if (useReply && context is ChatCommandContext<*>) {
@@ -87,7 +91,9 @@ public class UserConverter(
 
 		this.parsed = findUser(arg, context)
 			?: throw DiscordRelayedException(
-				context.translate("converters.user.error.missing", replacements = arrayOf(arg))
+				CoreTranslations.Converters.User.Error.missing
+					.withLocale(context.getLocale())
+					.translate(arg)
 			)
 
 		return true
@@ -99,15 +105,17 @@ public class UserConverter(
 
 			try {
 				kord.getUser(Snowflake(id))
-			} catch (e: NumberFormatException) {
+			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate("converters.user.error.invalid", replacements = arrayOf(id))
+					CoreTranslations.Converters.User.Error.invalid
+						.withLocale(context.getLocale())
+						.translate(id)
 				)
 			}
 		} else {
 			try { // Try for a user ID first
 				kord.getUser(Snowflake(arg))
-			} catch (e: NumberFormatException) { // It's not an ID, let's try the tag
+			} catch (_: NumberFormatException) { // Not an ID, let's try the tag
 				if (!arg.contains("#")) {
 					null
 				} else {
@@ -118,8 +126,10 @@ public class UserConverter(
 			}
 		}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		UserBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<UserBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {

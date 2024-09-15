@@ -13,16 +13,20 @@ package dev.kordex.core.commands.converters.impl
 import dev.kord.common.Color
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.parsers.ColorParser
 import dev.kordex.parser.StringParser
 
@@ -39,8 +43,8 @@ import dev.kordex.parser.StringParser
 public class ColorConverter(
 	override var validator: Validator<Color> = null,
 ) : SingleConverter<Color>() {
-	override val signatureTypeString: String = "converters.color.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Color.signatureType
+	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -58,22 +62,28 @@ public class ColorConverter(
 
 				else -> this.parsed = ColorParser.parse(arg, context.getLocale())
 					?: throw DiscordRelayedException(
-						context.translate("converters.color.error.unknown", replacements = arrayOf(arg))
+						CoreTranslations.Converters.Color.Error.unknown
+							.withLocale(context.getLocale())
+							.translate(arg)
 					)
 			}
 		} catch (e: DiscordRelayedException) {
 			throw e
-		} catch (t: Throwable) {
+		} catch (_: Throwable) {
 			throw DiscordRelayedException(
-				context.translate("converters.color.error.unknownOrFailed", replacements = arrayOf(arg))
+				CoreTranslations.Converters.Color.Error.unknownOrFailed
+					.withLocale(context.getLocale())
+					.translate(arg)
 			)
 		}
 
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? StringOptionValue)?.value ?: return false
@@ -92,14 +102,18 @@ public class ColorConverter(
 				else ->
 					this.parsed = ColorParser.parse(optionValue, context.getLocale())
 						?: throw DiscordRelayedException(
-							context.translate("converters.color.error.unknown", replacements = arrayOf(optionValue))
+							CoreTranslations.Converters.Color.Error.unknown
+								.withLocale(context.getLocale())
+								.translate(optionValue)
 						)
 			}
 		} catch (e: DiscordRelayedException) {
 			throw e
-		} catch (t: Throwable) {
+		} catch (_: Throwable) {
 			throw DiscordRelayedException(
-				context.translate("converters.color.error.unknownOrFailed", replacements = arrayOf(optionValue))
+				CoreTranslations.Converters.Color.Error.unknownOrFailed
+					.withLocale(context.getLocale())
+					.translate(optionValue)
 			)
 		}
 

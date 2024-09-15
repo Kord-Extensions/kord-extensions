@@ -9,6 +9,9 @@
 package dev.kordex.core.i18n
 
 import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
+
+public val EMPTY_KEY: Key = "".toKey()
 
 /** KordEx translation key. **/
 public const val KORDEX_KEY: String = "kordex"

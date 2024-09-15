@@ -17,6 +17,7 @@ import dev.kord.core.entity.channel.Category
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.Event
 import dev.kordex.core.checks.types.CheckContext
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.utils.isAbove
 import dev.kordex.core.utils.isBelow
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -55,10 +56,9 @@ public suspend fun <T : Event> CheckContext<T>.inChannel(builder: suspend (T) ->
 			logger.failed("Channel $eventChannel is not the same as channel $channel")
 
 			fail(
-				translate(
-					"checks.inChannel.failed",
-					replacements = arrayOf(channel.mention),
-				)
+				CoreTranslations.Checks.InChannel.failed
+					.withLocale(locale)
+					.translate(channel.mention)
 			)
 		}
 	}
@@ -95,10 +95,9 @@ public suspend fun <T : Event> CheckContext<T>.notInChannel(builder: suspend (T)
 			logger.failed("Channel $eventChannel is the same as channel $channel")
 
 			fail(
-				translate(
-					"checks.notInChannel.failed",
-					replacements = arrayOf(channel.mention)
-				)
+				CoreTranslations.Checks.NotInChannel.failed
+					.withLocale(locale)
+					.translate(channel.mention)
 			)
 		}
 	}
@@ -136,10 +135,9 @@ public suspend fun <T : Event> CheckContext<T>.inCategory(builder: suspend (T) -
 			logger.failed("Channel $eventChannel is not in category $category")
 
 			fail(
-				translate(
-					"checks.inCategory.failed",
-					replacements = arrayOf(category.asChannel().name),
-				)
+				CoreTranslations.Checks.InCategory.failed
+					.withLocale(locale)
+					.translate(category.asChannel().name)
 			)
 		}
 	}
@@ -173,10 +171,9 @@ public suspend fun <T : Event> CheckContext<T>.notInCategory(builder: suspend (T
 			logger.failed("Channel $eventChannel is in category $category")
 
 			fail(
-				translate(
-					"checks.notInCategory.failed",
-					replacements = arrayOf(category.asChannel().name),
-				)
+				CoreTranslations.Checks.NotInCategory.failed
+					.withLocale(locale)
+					.translate(category.asChannel().name)
 			)
 		} else {
 			logger.passed()
@@ -225,10 +222,9 @@ public suspend fun <T : Event> CheckContext<T>.channelAbove(builder: suspend (T)
 			logger.failed("Channel $eventChannel is below or equal to $channel")
 
 			fail(
-				translate(
-					"checks.channelHigher.failed",
-					replacements = arrayOf(channel.mention),
-				)
+				CoreTranslations.Checks.ChannelHigher.failed
+					.withLocale(locale)
+					.translate(channel.mention)
 			)
 		}
 	}
@@ -273,10 +269,9 @@ public suspend fun <T : Event> CheckContext<T>.channelBelow(builder: suspend (T)
 			logger.failed("Channel $eventChannel is above or equal to $channel")
 
 			fail(
-				translate(
-					"checks.channelLower.failed",
-					replacements = arrayOf(channel.mention),
-				)
+				CoreTranslations.Checks.ChannelLower.failed
+					.withLocale(locale)
+					.translate(channel.mention)
 			)
 		}
 	}

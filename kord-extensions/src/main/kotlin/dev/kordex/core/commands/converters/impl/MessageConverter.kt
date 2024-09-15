@@ -18,17 +18,21 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.core.exception.EntityNotFoundException
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.chat.ChatCommandContext
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.KORDEX_BUNDLE
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -64,8 +68,8 @@ public class MessageConverter(
 	private var useReply: Boolean = true,
 	override var validator: Validator<Message> = null,
 ) : SingleConverter<Message>() {
-	override val signatureTypeString: String = "converters.message.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Message.signatureType
+	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		if (useReply && context is ChatCommandContext<*>) {
@@ -102,16 +106,20 @@ public class MessageConverter(
 			@Suppress("MagicNumber")
 			if (split.size < 3) {
 				throw DiscordRelayedException(
-					context.translate("converters.message.error.invalidUrl", replacements = arrayOf(arg))
+					CoreTranslations.Converters.Message.Error.invalidUrl
+						.withLocale(context.getLocale())
+						.translate(arg)
 				)
 			}
 
 			@Suppress("MagicNumber")
 			val gid: Snowflake = try {
 				Snowflake(split[0])
-			} catch (e: NumberFormatException) {
+			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate("converters.message.error.invalidGuildId", replacements = arrayOf(split[0]))
+					CoreTranslations.Converters.Message.Error.invalidGuildId
+						.withLocale(context.getLocale())
+						.translate(split[0])
 				)
 			}
 
@@ -124,12 +132,11 @@ public class MessageConverter(
 			@Suppress("MagicNumber")
 			val cid: Snowflake = try {
 				Snowflake(split[1])
-			} catch (e: NumberFormatException) {
+			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate(
-						"converters.message.error.invalidChannelId",
-						replacements = arrayOf(split[1])
-					)
+					CoreTranslations.Converters.Message.Error.invalidChannelId
+						.withLocale(context.getLocale())
+						.translate(split[1])
 				)
 			}
 
@@ -150,18 +157,17 @@ public class MessageConverter(
 			@Suppress("MagicNumber")
 			val mid: Snowflake = try {
 				Snowflake(split[2])
-			} catch (e: NumberFormatException) {
+			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate(
-						"converters.message.error.invalidMessageId",
-						replacements = arrayOf(split[2])
-					)
+					CoreTranslations.Converters.Message.Error.invalidMessageId
+						.withLocale(context.getLocale())
+						.translate(split[2])
 				)
 			}
 
 			try {
 				channel.getMessage(mid)
-			} catch (e: EntityNotFoundException) {
+			} catch (_: EntityNotFoundException) {
 				errorNoMessage(mid.toString(), context)
 			}
 		} else { // Try a message ID
@@ -173,6 +179,7 @@ public class MessageConverter(
 				errorNoMessage(arg, context)
 			}
 
+			@Suppress("USELESS_IS_CHECK")  // This may change as Discord updates their channel types.
 			if (channel !is MessageChannel) {
 				logger.trace { "Current channel is not a message channel, so it can't contain messages." }
 
@@ -181,14 +188,13 @@ public class MessageConverter(
 
 			try {
 				channel.getMessage(Snowflake(arg))
-			} catch (e: NumberFormatException) {
+			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate(
-						"converters.message.error.invalidMessageId",
-						replacements = arrayOf(arg)
-					)
+					CoreTranslations.Converters.Message.Error.invalidMessageId
+						.withLocale(context.getLocale())
+						.translate(arg)
 				)
-			} catch (e: EntityNotFoundException) {
+			} catch (_: EntityNotFoundException) {
 				errorNoMessage(arg, context)
 			}
 		}
@@ -196,12 +202,16 @@ public class MessageConverter(
 
 	private suspend fun errorNoMessage(arg: String, context: CommandContext): Nothing {
 		throw DiscordRelayedException(
-			context.translate("converters.message.error.missing", replacements = arrayOf(arg))
+			CoreTranslations.Converters.Message.Error.missing
+				.withLocale(context.getLocale())
+				.translate(arg)
 		)
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? StringOptionValue)?.value ?: return false

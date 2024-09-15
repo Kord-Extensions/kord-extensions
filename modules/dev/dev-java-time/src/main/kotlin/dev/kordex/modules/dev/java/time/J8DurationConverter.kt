@@ -50,7 +50,7 @@ public class J8DurationConverter(
 	public val positiveOnly: Boolean = true,
 	override var validator: Validator<ChronoContainer> = null,
 ) : SingleConverter<ChronoContainer>() {
-	override val signatureTypeString: String = "converters.duration.error.signatureType"
+	override val signatureType: String = "converters.duration.error.signatureType"
 	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {

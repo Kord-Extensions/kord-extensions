@@ -10,6 +10,10 @@ package dev.kordex.core.commands.converters.builders
 
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.generated.CoreTranslations.bundle
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import java.util.*
 
@@ -30,10 +34,10 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	 * **Note:** This *must* be a translation key. A bare string may not work, as the error response function uses
 	 * the replacement functionality of the translations system.
 	 */
-	public var errorResponseKey: String = "checks.responseTemplate"
+	public var errorResponseKey: Key = CoreTranslations.Checks.responseTemplate
 
 	/** Translation bundle used by [translate] by default and the error response translation, if not the default. **/
-	public var defaultBundle: String? = context.command.resolvedBundle
+	public var defaultBundle: Bundle? = context.command.resolvedBundle
 
 	/** Human-readable message for the user, if any. **/
 	public var message: String? = null
@@ -149,34 +153,36 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	}
 
 	/** Quick access to translate strings using this validator context's locale. **/
-	public suspend fun translate(
-		key: String,
-		bundle: String? = defaultBundle,
+	public fun translate(
+		key: Key,
+		bundle: Bundle? = defaultBundle,
 		replacements: Array<Any?> = arrayOf(),
 	): String =
-		context.translate(key, bundleName = bundle, replacements = replacements)
+		key.withBundle(bundle)
+			.translateArray(replacements)
 
 	/** Quick access to translate strings using this validator context's locale. **/
-	public suspend fun translate(
-		key: String,
+	public fun translate(
+		key: Key,
 		replacements: Array<Any?> = arrayOf(),
 	): String =
-		context.translate(key, bundleName = defaultBundle, replacements = replacements)
+		key.translateArray(replacements)
 
 	/** Quick access to translate strings using this validator context's locale. **/
-	public suspend fun translate(
-		key: String,
+	public fun translate(
+		key: Key,
 		replacements: Map<String, Any?>,
 	): String =
-		context.translate(key, bundleName = defaultBundle, replacements = replacements)
+		key.translateNamed(replacements)
 
 	/** Quick access to translate strings using this validator context's locale. **/
-	public suspend fun translate(
-		key: String,
-		bundle: String?,
+	public fun translate(
+		key: Key,
+		bundle: Bundle?,
 		replacements: Map<String, Any?>,
 	): String =
-		context.translate(key, bundleName = bundle, replacements = replacements)
+		key.withBundle(bundle)
+			.translateNamed(replacements)
 
 	/**
 	 * If this validator has failed, throw a [DiscordRelayedException] with the translated message, if any.
@@ -197,7 +203,9 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	/** Get the translated validator failure message, if the validator has failed and a message was set. **/
 	public suspend fun getTranslatedMessage(): String? =
 		if (passed.not() && message != null) {
-			translate(errorResponseKey, defaultBundle, replacements = arrayOf(message))
+			errorResponseKey.withLocale(context.getLocale())
+				.withBundle(defaultBundle)
+				.translate(message)
 		} else {
 			null
 		}

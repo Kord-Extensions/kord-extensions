@@ -10,7 +10,8 @@ package dev.kordex.core.utils
 
 import dev.kord.common.entity.NsfwLevel
 import dev.kordex.core.commands.CommandContext
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import java.util.*
 
 /**
@@ -34,11 +35,11 @@ public operator fun NsfwLevel.compareTo(other: NsfwLevel): Int =
 	ordinal.compareTo(other.ordinal)
 
 /** Given a [NsfwLevel], return a string representing its translation key. **/
-public fun NsfwLevel.toTranslationKey(): String? = when (this) {
-	NsfwLevel.AgeRestricted -> "nsfwLevel.ageRestricted"
-	NsfwLevel.Default -> "nsfwLevel.default"
-	NsfwLevel.Explicit -> "nsfwLevel.explicit"
-	NsfwLevel.Safe -> "nsfwLevel.safe"
+public fun NsfwLevel.toTranslationKey(): Key? = when (this) {
+	NsfwLevel.AgeRestricted -> CoreTranslations.NsfwLevel.ageRestricted
+	NsfwLevel.Default -> CoreTranslations.NsfwLevel.default
+	NsfwLevel.Explicit -> CoreTranslations.NsfwLevel.explicit
+	NsfwLevel.Safe -> CoreTranslations.NsfwLevel.safe
 
 	is NsfwLevel.Unknown -> null
 }
@@ -48,12 +49,13 @@ public suspend fun NsfwLevel.translate(context: CommandContext): String {
 	val key = toTranslationKey()
 
 	return if (key == null) {
-		context.translate(
-			"nsfwLevel.unknown",
-			replacements = arrayOf(value)
-		)
+		CoreTranslations.NsfwLevel.unknown
+			.withLocale(context.getLocale())
+			.translate(value)
 	} else {
-		context.translate(key)
+		key
+			.withLocale(context.getLocale())
+			.translate()
 	}
 }
 
@@ -62,12 +64,12 @@ public fun NsfwLevel.translate(locale: Locale): String {
 	val key = toTranslationKey()
 
 	return if (key == null) {
-		getKoin().get<TranslationsProvider>().translate(
-			"nsfwLevel.unknown",
-			locale,
-			replacements = arrayOf(value)
-		)
+		CoreTranslations.NsfwLevel.unknown
+			.withLocale(locale)
+			.translate(value)
 	} else {
-		getKoin().get<TranslationsProvider>().translate(key, locale)
+		key
+			.withLocale(locale)
+			.translate()
 	}
 }

@@ -11,6 +11,9 @@ package dev.kordex.core.pagination.pages
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.pagination.builders.PageMutator
 import dev.kordex.core.utils.capitalizeWords
@@ -27,7 +30,7 @@ import kotlin.math.roundToInt
  * @param builder Embed builder callable for building the page's embed
  */
 public open class Page(
-	public open val bundle: String? = null,
+	public open val bundle: Bundle? = null,
 	public open val builder: suspend EmbedBuilder.() -> Unit,
 ) : KordExKoinComponent {
 	/** Current instance of the bot. **/
@@ -42,7 +45,7 @@ public open class Page(
 		pageNum: Int,
 		chunkSize: Int,
 		pages: Int,
-		group: String?,
+		group: Key?,
 		groupIndex: Int,
 		groups: Int,
 		shouldMutateFooter: Boolean = true,
@@ -62,46 +65,46 @@ public open class Page(
 				if (pages > 1) {
 					if (chunkSize > 1) {
 						append(
-							translationsProvider.translate(
-								"paginator.footer.page.chunked",
-								locale,
-								replacements = arrayOf(
+							CoreTranslations.Paginator.Footer.Page.chunked
+								.withLocale(locale)
+								.translate(
 									ceil((pageNum + 1).div(chunkSize.toFloat())).roundToInt(), // Current page
 									ceil(pages.div(chunkSize.toFloat())).roundToInt(), // Total pages
 									pages, // Total chunks
 								)
-							)
 						)
 					} else {
 						append(
-							translationsProvider.translate(
-								"paginator.footer.page",
-								locale,
-								replacements = arrayOf(pageNum + 1, pages)
-							)
+							CoreTranslations.Paginator.Footer.page
+								.withLocale(locale)
+								.translate(
+									pageNum + 1,
+									pages
+								)
 						)
 					}
 				}
 
-				if (!group.isNullOrBlank() || groups > 2) {
+				if (group != null || groups > 2) {
 					if (isNotBlank()) {
 						append(" • ")
 					}
 
-					if (group.isNullOrBlank()) {
+					if (group == null || group.key.isBlank()) {
 						append(
-							translationsProvider.translate(
-								"paginator.footer.group",
-								locale,
-								replacements = arrayOf(groupIndex + 1, groups)
-							)
+							CoreTranslations.Paginator.Footer.group
+								.withLocale(locale)
+								.translate(
+									groupIndex + 1,
+									groups
+								)
 						)
 					} else {
-						val groupName = translationsProvider.translate(
-							key = group,
-							bundleName = bundle,
-							locale = locale
-						).capitalizeWords(locale)
+						val groupName = group
+							.withBundle(bundle)
+							.withLocale(locale)
+							.translate()
+							.capitalizeWords(locale)
 
 						append("$groupName (${groupIndex + 1}/$groups)")
 					}

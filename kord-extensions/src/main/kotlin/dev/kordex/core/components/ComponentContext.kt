@@ -25,11 +25,13 @@ import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.userFor
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.sentry.captures.SentryBreadcrumbCapture
 import dev.kordex.core.types.TranslatableContext
 import dev.kordex.core.utils.MutableStringKeyedMap
+import jdk.internal.net.http.common.Log.channel
 import org.koin.core.component.inject
 import java.util.*
 
@@ -142,38 +144,26 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 	 * locale resolvers.
 	 */
 	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
+		key: Key,
+		bundle: Bundle?,
 		replacements: Array<Any?>,
-	): String {
-		val locale = getLocale()
-
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
-	}
+	): String =
+		key.withBundle(bundle)
+			.withLocale(getLocale())
+			.translateArray(replacements)
 
 	/**
 	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
 	 * locale resolvers.
 	 */
 	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
+		key: Key,
+		bundleName: Bundle?,
 		replacements: Map<String, Any?>,
-	): String {
-		val locale = getLocale()
-
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
-	}
+	): String =
+		key.withBundle(bundle)
+			.withLocale(getLocale())
+			.translateNamed(replacements)
 
 	/**
 	 * @param capture breadcrumb data will be modified to add the component context information

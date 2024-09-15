@@ -110,7 +110,7 @@ public class InvalidCommandException(public val name: Key?, public val reason: S
  * @param name The [ChatCommand] name
  * @param reason Why this [ChatCommand] could not be registered.
  */
-public class CommandRegistrationException(public val name: String, public val reason: String) : KordExException() {
+public class CommandRegistrationException(public val name: Key, public val reason: String) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String = "Failed to register command $name: $reason"

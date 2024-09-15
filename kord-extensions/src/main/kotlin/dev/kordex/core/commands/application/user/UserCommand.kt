@@ -16,6 +16,7 @@ import dev.kordex.core.components.ComponentRegistry
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.impl.SENTRY_EXTENSION_NAME
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -142,19 +143,29 @@ public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
 				logger.info { "Error submitted to Sentry: $sentryId" }
 
 				if (extension.bot.extensions.containsKey(SENTRY_EXTENSION_NAME)) {
-					context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
+					CoreTranslations.Commands.Error.User.Sentry.slash
+						.withLocale(context.getLocale())
+						.translate(sentryId)
 				} else {
-					context.translate("commands.error.user", null)
+					CoreTranslations.Commands.Error.user
+						.withLocale(context.getLocale())
+						.translate()
 				}
 			} else {
-				context.translate("commands.error.user", null)
+				CoreTranslations.Commands.Error.user
+					.withLocale(context.getLocale())
+					.translate()
 			}
 
 			respondText(context, errorMessage, FailureReason.ExecutionError(t))
 		} else {
 			respondText(
 				context,
-				context.translate("commands.error.user", null),
+
+				CoreTranslations.Commands.Error.user
+					.withLocale(context.getLocale())
+					.translate(),
+
 				FailureReason.ExecutionError(t)
 			)
 		}

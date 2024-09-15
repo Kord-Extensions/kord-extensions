@@ -14,6 +14,7 @@ import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.NsfwLevel
 import dev.kord.core.event.Event
 import dev.kordex.core.checks.types.CheckContext
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.utils.compareTo
 import dev.kordex.core.utils.translate
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -36,9 +37,7 @@ public suspend fun CheckContext<*>.hasGuildNsfwLevel(level: NsfwLevel) {
 	if (guild == null) {
 		logger.failed("Event did not happen within a guild.")
 
-		fail(
-			translate("checks.anyGuild.failed")
-		)
+		fail(CoreTranslations.Checks.AnyGuild.failed)
 	} else {
 		if (guild.nsfw == level) {
 			logger.passed()
@@ -48,13 +47,9 @@ public suspend fun CheckContext<*>.hasGuildNsfwLevel(level: NsfwLevel) {
 			logger.failed("Guild did not have the correct NSFW level: $level")
 
 			fail(
-				translate(
-					"checks.guildNsfwLevelEqual.failed",
-
-					replacements = arrayOf(
-						level.translate(locale)
-					)
-				)
+				CoreTranslations.Checks.GuildNsfwLevelEqual.failed
+					.withLocale(locale)
+					.translate(level.translate(locale))
 			)
 		}
 	}
@@ -84,13 +79,9 @@ public suspend fun CheckContext<*>.notHasGuildNsfwLevel(level: NsfwLevel) {
 			logger.failed("Guild matched the given NSFW level: $level")
 
 			fail(
-				translate(
-					"checks.guildNsfwLevelNotEqual.failed",
-
-					replacements = arrayOf(
-						level.translate(locale)
-					)
-				)
+				CoreTranslations.Checks.GuildNsfwLevelNotEqual.failed
+					.withLocale(locale)
+					.translate(level.translate(locale))
 			)
 		} else {
 			logger.passed()
@@ -118,9 +109,7 @@ public suspend fun CheckContext<*>.guildNsfwLevelHigher(level: NsfwLevel) {
 	if (guild == null) {
 		logger.failed("Event did not happen within a guild.")
 
-		fail(
-			translate("checks.anyGuild.failed")
-		)
+		fail(CoreTranslations.Checks.AnyGuild.failed)
 	} else {
 		if (guild.nsfw > level) {
 			logger.passed()
@@ -130,13 +119,9 @@ public suspend fun CheckContext<*>.guildNsfwLevelHigher(level: NsfwLevel) {
 			logger.failed("Guild did not have a NSFW level higher than: $level")
 
 			fail(
-				translate(
-					"checks.guildNsfwLevelHigher.failed",
-
-					replacements = arrayOf(
-						level.translate(locale)
-					)
-				)
+				CoreTranslations.Checks.GuildNsfwLevelHigher.failed
+					.withLocale(locale)
+					.translate(level.translate(locale))
 			)
 		}
 	}
@@ -160,9 +145,7 @@ public suspend fun CheckContext<*>.guildNsfwLevelHigherOrEqual(level: NsfwLevel)
 	if (guild == null) {
 		logger.failed("Event did not happen within a guild.")
 
-		fail(
-			translate("checks.anyGuild.failed")
-		)
+		fail(CoreTranslations.Checks.AnyGuild.failed)
 	} else {
 		if (guild.nsfw >= level) {
 			logger.passed()
@@ -172,13 +155,9 @@ public suspend fun CheckContext<*>.guildNsfwLevelHigherOrEqual(level: NsfwLevel)
 			logger.failed("Guild did not have a NSFW level higher than or equal to: $level")
 
 			fail(
-				translate(
-					"checks.guildNsfwLevelHigherOrEqual.failed",
-
-					replacements = arrayOf(
-						level.translate(locale)
-					)
-				)
+				CoreTranslations.Checks.GuildNsfwLevelHigherOrEqual.failed
+					.withLocale(locale)
+					.translate(level.translate(locale))
 			)
 		}
 	}
@@ -202,9 +181,7 @@ public suspend fun CheckContext<*>.guildNsfwLevelLower(level: NsfwLevel) {
 	if (guild == null) {
 		logger.failed("Event did not happen within a guild.")
 
-		fail(
-			translate("checks.anyGuild.failed")
-		)
+		fail(CoreTranslations.Checks.AnyGuild.failed)
 	} else {
 		if (guild.nsfw < level) {
 			logger.passed()
@@ -214,13 +191,9 @@ public suspend fun CheckContext<*>.guildNsfwLevelLower(level: NsfwLevel) {
 			logger.failed("Guild did not have a NSFW level lower than: $level")
 
 			fail(
-				translate(
-					"checks.guildNsfwLevelLower.failed",
-
-					replacements = arrayOf(
-						level.translate(locale)
-					)
-				)
+				CoreTranslations.Checks.GuildNsfwLevelLower.failed
+					.withLocale(locale)
+					.translate(level.translate(locale))
 			)
 		}
 	}
@@ -244,9 +217,7 @@ public suspend fun CheckContext<*>.guildNsfwLevelLowerOrEqual(level: NsfwLevel) 
 	if (guild == null) {
 		logger.failed("Event did not happen within a guild.")
 
-		fail(
-			translate("checks.anyGuild.failed")
-		)
+		fail(CoreTranslations.Checks.AnyGuild.failed)
 	} else {
 		if (guild.nsfw <= level) {
 			logger.passed()
@@ -256,13 +227,9 @@ public suspend fun CheckContext<*>.guildNsfwLevelLowerOrEqual(level: NsfwLevel) 
 			logger.failed("Guild did not have a NSFW level lower than or equal to: $level")
 
 			fail(
-				translate(
-					"checks.guildNsfwLevelLowerOrEqual.failed",
-
-					replacements = arrayOf(
-						level.translate(locale)
-					)
-				)
+				CoreTranslations.Checks.GuildNsfwLevelLowerOrEqual.failed
+					.withLocale(locale)
+					.translate(level.translate(locale))
 			)
 		}
 	}
@@ -294,11 +261,7 @@ public suspend fun CheckContext<*>.channelIsNsfw() {
 		} else {
 			logger.failed("Channel is not marked as NSFW")
 
-			fail(
-				translate(
-					"checks.channelIsNsfw.failed"
-				)
-			)
+			fail(CoreTranslations.Checks.ChannelIsNsfw.failed)
 		}
 	}
 }
@@ -332,11 +295,7 @@ public suspend fun CheckContext<*>.notChannelIsNsfw() {
 		} else {
 			logger.failed("Channel is marked as NSFW")
 
-			fail(
-				translate(
-					"checks.notChannelIsNsfw.failed"
-				)
-			)
+			fail(CoreTranslations.Checks.NotChannelIsNsfw.failed)
 		}
 	}
 }

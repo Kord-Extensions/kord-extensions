@@ -10,58 +10,59 @@ package dev.kordex.core.utils
 
 import dev.kord.common.entity.Permission
 import dev.kordex.core.commands.CommandContext
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import java.util.*
 
 @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-public fun Permission.toTranslationKey(): String? = when (this) {
-	Permission.CreateEvents -> "permission.createEvents"
-	Permission.CreateGuildExpressions -> "permission.createGuildExpressions"
-	Permission.AddReactions -> "permission.addReactions"
-	Permission.Administrator -> "permission.administrator"
-	Permission.AttachFiles -> "permission.attachFiles"
-	Permission.BanMembers -> "permission.banMembers"
-	Permission.ChangeNickname -> "permission.changeNickname"
-	Permission.Connect -> "permission.connect"
-	Permission.CreateInstantInvite -> "permission.createInstantInvite"
-	Permission.CreatePrivateThreads -> "permission.createPrivateThreads"
-	Permission.CreatePublicThreads -> "permission.createPublicThreads"
-	Permission.DeafenMembers -> "permission.deafenMembers"
-	Permission.EmbedLinks -> "permission.embedLinks"
-	Permission.KickMembers -> "permission.kickMembers"
-	Permission.ManageChannels -> "permission.manageChannels"
-	Permission.ManageEvents -> "permission.manageEvents"
-	Permission.ManageGuild -> "permission.manageGuild"
-	Permission.ManageGuildExpressions -> "permission.manageExpressions"
-	Permission.ManageMessages -> "permission.manageMessages"
-	Permission.ManageNicknames -> "permission.manageNicknames"
-	Permission.ManageRoles -> "permission.manageRoles"
-	Permission.ManageThreads -> "permission.manageThreads"
-	Permission.ManageWebhooks -> "permission.manageWebhooks"
-	Permission.MentionEveryone -> "permission.mentionEveryone"
-	Permission.ModerateMembers -> "permission.timeoutMembers"
-	Permission.MoveMembers -> "permission.moveMembers"
-	Permission.MuteMembers -> "permission.muteMembers"
-	Permission.PrioritySpeaker -> "permission.prioritySpeaker"
-	Permission.ReadMessageHistory -> "permission.readMessageHistory"
-	Permission.RequestToSpeak -> "permission.requestToSpeak"
-	Permission.SendMessages -> "permission.sendMessages"
-	Permission.SendMessagesInThreads -> "permission.sendMessagesInThreads"
-	Permission.SendTTSMessages -> "permission.sendTTSMessages"
-	Permission.SendVoiceMessages -> "permission.sendVoiceMessages"
-	Permission.Speak -> "permission.speak"
-	Permission.Stream -> "permission.stream"
-	Permission.UseApplicationCommands -> "permission.useApplicationCommands"
-	Permission.UseEmbeddedActivities -> "permission.useEmbeddedActivities"
-	Permission.UseExternalEmojis -> "permission.useExternalEmojis"
-	Permission.UseExternalSounds -> "permission.useExternalSounds"
-	Permission.UseExternalStickers -> "permission.useExternalStickers"
-	Permission.UseSoundboard -> "permission.useSoundboard"
-	Permission.UseVAD -> "permission.useVAD"
-	Permission.ViewAuditLog -> "permission.viewAuditLog"
-	Permission.ViewChannel -> "permission.viewChannel"
-	Permission.ViewCreatorMonetizationAnalytics -> "permission.viewCreatorMonetizationAnalytics"
-	Permission.ViewGuildInsights -> "permission.viewGuildInsights"
+public fun Permission.toTranslationKey(): Key? = when (this) {
+	Permission.CreateEvents -> CoreTranslations.Permission.createEvents
+	Permission.CreateGuildExpressions -> CoreTranslations.Permission.createGuildExpressions
+	Permission.AddReactions -> CoreTranslations.Permission.addReactions
+	Permission.Administrator -> CoreTranslations.Permission.administrator
+	Permission.AttachFiles -> CoreTranslations.Permission.attachFiles
+	Permission.BanMembers -> CoreTranslations.Permission.banMembers
+	Permission.ChangeNickname -> CoreTranslations.Permission.changeNickname
+	Permission.Connect -> CoreTranslations.Permission.connect
+	Permission.CreateInstantInvite -> CoreTranslations.Permission.createInstantInvite
+	Permission.CreatePrivateThreads -> CoreTranslations.Permission.createPrivateThreads
+	Permission.CreatePublicThreads -> CoreTranslations.Permission.createPublicThreads
+	Permission.DeafenMembers -> CoreTranslations.Permission.deafenMembers
+	Permission.EmbedLinks -> CoreTranslations.Permission.embedLinks
+	Permission.KickMembers -> CoreTranslations.Permission.kickMembers
+	Permission.ManageChannels -> CoreTranslations.Permission.manageChannels
+	Permission.ManageEvents -> CoreTranslations.Permission.manageEvents
+	Permission.ManageGuild -> CoreTranslations.Permission.manageGuild
+	Permission.ManageGuildExpressions -> CoreTranslations.Permission.manageExpressions
+	Permission.ManageMessages -> CoreTranslations.Permission.manageMessages
+	Permission.ManageNicknames -> CoreTranslations.Permission.manageNicknames
+	Permission.ManageRoles -> CoreTranslations.Permission.manageRoles
+	Permission.ManageThreads -> CoreTranslations.Permission.manageThreads
+	Permission.ManageWebhooks -> CoreTranslations.Permission.manageWebhooks
+	Permission.MentionEveryone -> CoreTranslations.Permission.mentionEveryone
+	Permission.ModerateMembers -> CoreTranslations.Permission.timeoutMembers
+	Permission.MoveMembers -> CoreTranslations.Permission.moveMembers
+	Permission.MuteMembers -> CoreTranslations.Permission.muteMembers
+	Permission.PrioritySpeaker -> CoreTranslations.Permission.prioritySpeaker
+	Permission.ReadMessageHistory -> CoreTranslations.Permission.readMessageHistory
+	Permission.RequestToSpeak -> CoreTranslations.Permission.requestToSpeak
+	Permission.SendMessages -> CoreTranslations.Permission.sendMessages
+	Permission.SendMessagesInThreads -> CoreTranslations.Permission.sendMessagesInThreads
+	Permission.SendTTSMessages -> CoreTranslations.Permission.sendTTSMessages
+	Permission.SendVoiceMessages -> CoreTranslations.Permission.sendVoiceMessages
+	Permission.Speak -> CoreTranslations.Permission.speak
+	Permission.Stream -> CoreTranslations.Permission.stream
+	Permission.UseApplicationCommands -> CoreTranslations.Permission.useApplicationCommands
+	Permission.UseEmbeddedActivities -> CoreTranslations.Permission.useEmbeddedActivities
+	Permission.UseExternalEmojis -> CoreTranslations.Permission.useExternalEmojis
+	Permission.UseExternalSounds -> CoreTranslations.Permission.useExternalSounds
+	Permission.UseExternalStickers -> CoreTranslations.Permission.useExternalStickers
+	Permission.UseSoundboard -> CoreTranslations.Permission.useSoundboard
+	Permission.UseVAD -> CoreTranslations.Permission.useVAD
+	Permission.ViewAuditLog -> CoreTranslations.Permission.viewAuditLog
+	Permission.ViewChannel -> CoreTranslations.Permission.viewChannel
+	Permission.ViewCreatorMonetizationAnalytics -> CoreTranslations.Permission.viewCreatorMonetizationAnalytics
+	Permission.ViewGuildInsights -> CoreTranslations.Permission.viewGuildInsights
 
 	is Permission.Unknown -> null
 }
@@ -79,9 +80,13 @@ public suspend fun Permission.translate(context: CommandContext): String {
 	val key = toTranslationKey()
 
 	return if (key == null) {
-		context.translate("permission.unknown", replacements = arrayOf(code.value))
+		CoreTranslations.Permission.unknown
+			.withLocale(context.getLocale())
+			.translate(code.value)
 	} else {
-		context.translate(key)
+		key
+			.withLocale(context.getLocale())
+			.translate()
 	}
 }
 
@@ -90,12 +95,12 @@ public fun Permission.translate(locale: Locale): String {
 	val key = toTranslationKey()
 
 	return if (key == null) {
-		getKoin().get<TranslationsProvider>().translate(
-			"permission.unknown",
-			locale,
-			replacements = arrayOf(code.value)
-		)
+		CoreTranslations.Permission.unknown
+			.withLocale(locale)
+			.translate(code.value)
 	} else {
-		getKoin().get<TranslationsProvider>().translate(key, locale)
+		key
+			.withLocale(locale)
+			.translate()
 	}
 }

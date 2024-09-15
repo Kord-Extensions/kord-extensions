@@ -37,6 +37,7 @@ import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.request.KtorRequestException
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.commands.Argument
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.application.message.MessageCommand
 import dev.kordex.core.commands.application.slash.SlashCommand
 import dev.kordex.core.commands.application.slash.SlashCommandParser
@@ -44,6 +45,7 @@ import dev.kordex.core.commands.application.user.UserCommand
 import dev.kordex.core.commands.converters.SlashCommandConverter
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.toKey
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -201,7 +203,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
 	/** Register multiple slash commands. **/
 	public open suspend fun <T : ApplicationCommand<*>> registerAll(vararg commands: T): List<T> =
-		commands.sortedByDescending { it.name }.mapNotNull {
+		commands.mapNotNull {
 			try {
 				when (it) {
 					is SlashCommand<*, *, *> -> register(it) as T
@@ -383,20 +385,21 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 					if (this.options == null) this.options = mutableListOf()
 
 					val option = converter.toSlashOption(arg)
+					val kordOption = option.toKord()
 
-					option.translate(command, arg)
+					kordOption.translate(option, command, arg)
 
-					if (option is BaseChoiceBuilder<*, *> && arg.converter.genericBuilder.autoCompleteCallback != null) {
-						option.choices?.clear()
+					if (kordOption is BaseChoiceBuilder<*, *> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+						kordOption.choices?.clear()
 					}
 
-					option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+					kordOption.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
 
-					this.options!! += option
+					this.options!! += kordOption
 				}
 			}
 		} else {
-			command.subCommands.sortedByDescending { it.name }.forEach {
+			command.subCommands.forEach {
 				val args = it.arguments?.invoke()?.args?.map { arg ->
 					val converter = arg.converter
 
@@ -405,16 +408,17 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 					}
 
 					val option = converter.toSlashOption(arg)
+					val kordOption = option.toKord()
 
-					option.translate(command, arg)
+					kordOption.translate(option, command, arg)
 
-					if (option is BaseChoiceBuilder<*, *> && arg.converter.genericBuilder.autoCompleteCallback != null) {
-						option.choices?.clear()
+					if (kordOption is BaseChoiceBuilder<*, *> && arg.converter.genericBuilder.autoCompleteCallback != null) {
+						kordOption.choices?.clear()
 					}
 
-					option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+					kordOption.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
 
-					option
+					kordOption
 				}
 
 				val (name, nameLocalizations) = it.localizedName
@@ -435,7 +439,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 				}
 			}
 
-			command.groups.values.sortedByDescending { it.name }.forEach { group ->
+			command.groups.values.forEach { group ->
 				val (name, nameLocalizations) = group.localizedName
 				val (description, descriptionLocalizations) = group.localizedDescription
 
@@ -443,7 +447,7 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 					this.nameLocalizations = nameLocalizations
 					this.descriptionLocalizations = descriptionLocalizations
 
-					group.subCommands.sortedByDescending { it.name }.forEach {
+					group.subCommands.forEach {
 						val args = it.arguments?.invoke()?.args?.map { arg ->
 							val converter = arg.converter
 
@@ -452,19 +456,20 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 							}
 
 							val option = converter.toSlashOption(arg)
+							val kordOption = option.toKord()
 
-							option.translate(command, arg)
+							kordOption.translate(option, command, arg)
 
 							if (
-								option is BaseChoiceBuilder<*, *> &&
+								kordOption is BaseChoiceBuilder<*, *> &&
 								arg.converter.genericBuilder.autoCompleteCallback != null
 							) {
-								option.choices?.clear()
+								kordOption.choices?.clear()
 							}
 
-							option.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
+							kordOption.autocomplete = arg.converter.genericBuilder.autoCompleteCallback != null
 
-							option
+							kordOption
 						}
 
 						val (name, nameLocalizations) = it.localizedName
@@ -544,7 +549,57 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
 	// endregion
 
+	private suspend fun OptionWrapper<*>.toKord() = when (type) {
+		AttachmentBuilder::class -> {
+			this as OptionWrapper<AttachmentBuilder>
+			apply(AttachmentBuilder(displayName.key, description.key))
+		}
+
+		BooleanBuilder::class -> {
+			this as OptionWrapper<BooleanBuilder>
+			apply(BooleanBuilder(displayName.key, description.key))
+		}
+
+		ChannelBuilder::class -> {
+			this as OptionWrapper<ChannelBuilder>
+			apply(ChannelBuilder(displayName.key, description.key))
+		}
+
+		IntegerOptionBuilder::class -> {
+			this as OptionWrapper<IntegerOptionBuilder>
+			apply(IntegerOptionBuilder(displayName.key, description.key))
+		}
+
+		MentionableBuilder::class -> {
+			this as OptionWrapper<MentionableBuilder>
+			apply(MentionableBuilder(displayName.key, description.key))
+		}
+
+		NumberOptionBuilder::class -> {
+			this as OptionWrapper<NumberOptionBuilder>
+			apply(NumberOptionBuilder(displayName.key, description.key))
+		}
+
+		RoleBuilder::class -> {
+			this as OptionWrapper<RoleBuilder>
+			apply(RoleBuilder(displayName.key, description.key))
+		}
+
+		StringChoiceBuilder::class -> {
+			this as OptionWrapper<StringChoiceBuilder>
+			apply(StringChoiceBuilder(displayName.key, description.key))
+		}
+
+		UserBuilder::class -> {
+			this as OptionWrapper<UserBuilder>
+			apply(UserBuilder(displayName.key, description.key))
+		}
+
+		else -> error("Unknown option builder type: ${type.qualifiedName} ($type)")
+	}
+
 	private fun OptionsBuilder.translate(
+		option: OptionWrapper<*>,
 		command: ApplicationCommand<*>,
 		argObj: Argument<*>,
 	) {
@@ -558,7 +613,8 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 			)
 		}
 
-		val (name, nameLocalizations) = command.localize(name, true)
+		val (description, descriptionLocalizations) = command.localize(option.description)
+		val (name, nameLocalizations) = command.localize(option.displayName, true)
 
 		nameLocalizations.forEach { (locale, string) ->
 			if (string != string.lowercase(locale.asJavaLocale())) {
@@ -569,13 +625,10 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 			}
 		}
 
-		this.name = name
-		this.nameLocalizations = nameLocalizations
-
-		val (description, descriptionLocalizations) = command.localize(description)
-
 		this.description = description
 		this.descriptionLocalizations = descriptionLocalizations
+		this.name = name
+		this.nameLocalizations = nameLocalizations
 
 		if (this is BaseChoiceBuilder<*, *> && !choices.isNullOrEmpty()) {
 			translate(command)
@@ -585,7 +638,10 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 	@Suppress("DEPRECATION_ERROR")
 	private fun <C : Choice> BaseChoiceBuilder<*, C>.translate(command: ApplicationCommand<*>) {
 		choices = choices!!.map {
-			val (name, nameLocalizations) = command.localize(it.name)
+			// TODO: Choices? It'd be a lot of work to fix this probably!
+			val (name, nameLocalizations) = command.localize(
+				it.name.toKey()
+			)
 
 			when (val c = it as Choice) {
 				is Choice.NumberChoice -> Choice.NumberChoice(name, Optional(nameLocalizations), c.value)

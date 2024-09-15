@@ -22,9 +22,12 @@ import dev.kordex.core.annotations.ExtensionDSL
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.extensions.base.HelpProvider
+import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.MessageButtonPaginator
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import dev.kordex.core.utils.MutableStringKeyedMap
+import dev.kordex.core.utils.getLocale
 import dev.kordex.core.utils.respond
 import dev.kordex.parser.StringParser
 
@@ -39,7 +42,7 @@ import dev.kordex.parser.StringParser
 public open class ChatCommandContext<T : Arguments>(
 	public val chatCommand: ChatCommand<out T>,
 	eventObj: MessageCreateEvent,
-	commandName: String,
+	commandName: Key,
 	public open val parser: StringParser,
 	public val argString: String,
 	cache: MutableStringKeyedMap<Any>,
@@ -94,7 +97,7 @@ public open class ChatCommandContext<T : Arguments>(
 	 * you.
 	 */
 	public suspend fun paginator(
-		defaultGroup: String = "",
+		defaultGroup: Key = EMPTY_KEY,
 
 		pingInReply: Boolean = true,
 		targetChannel: MessageChannelBehavior? = null,
@@ -128,17 +131,29 @@ public open class ChatCommandContext<T : Arguments>(
 	 * Convenience function allowing for message responses with translated content.
 	 */
 	public suspend fun Message.respondTranslated(
-		key: String,
+		key: Key,
 		replacements: Array<Any?> = arrayOf(),
 		useReply: Boolean = true,
-	): Message = respond(translate(key, command.resolvedBundle, replacements), useReply)
+	): Message = respond(
+		key.withBundle(command.resolvedBundle)
+			.withLocale(getLocale())
+			.translateArray(replacements),
+
+		useReply
+	)
 
 	/**
 	 * Convenience function allowing for message responses with translated content.
 	 */
 	public suspend fun Message.respondTranslated(
-		key: String,
+		key: Key,
 		replacements: Map<String, Any?>,
 		useReply: Boolean = true,
-	): Message = respond(translate(key, command.resolvedBundle, replacements), useReply)
+	): Message = respond(
+		key.withBundle(command.resolvedBundle)
+			.withLocale(getLocale())
+			.translateNamed(replacements),
+
+		useReply
+	)
 }

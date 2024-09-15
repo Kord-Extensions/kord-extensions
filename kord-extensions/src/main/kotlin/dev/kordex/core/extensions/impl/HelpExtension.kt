@@ -17,8 +17,10 @@ import dev.kordex.core.commands.converters.impl.stringList
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.base.HelpProvider
 import dev.kordex.core.extensions.chatCommand
+import dev.kordex.core.i18n.EMPTY_KEY
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.toKey
 import dev.kordex.core.pagination.BasePaginator
 import dev.kordex.core.pagination.MessageButtonPaginator
 import dev.kordex.core.pagination.pages.Page
@@ -34,8 +36,8 @@ private val logger = KotlinLogging.logger {}
 /** Number of commands to show per page. */
 public const val HELP_PER_PAGE: Int = 4
 
-private const val COMMANDS_GROUP = ""
-private const val ARGUMENTS_GROUP = "Arguments"
+private val COMMANDS_GROUP = EMPTY_KEY
+private val ARGUMENTS_GROUP = "Arguments".toKey()  // TODO: This needs translating
 
 /**
  * Help command extension.
@@ -375,7 +377,7 @@ public class HelpExtension : HelpProvider, Extension() {
 									append(" (")
 
 									append(
-										it.converter.signatureTypeString
+										it.converter.signatureType
 											.withBundle(it.converter.bundle)
 											.translateLocale(locale)
 									)
@@ -434,8 +436,8 @@ public class HelpExtension : HelpProvider, Extension() {
 	public class HelpArguments : Arguments() {
 		/** Command to get help for. **/
 		public val command: List<String> by stringList {
-			name = "command"
-			description = "extensions.help.commandArguments.command"
+			name = "command".toKey()  // TODO: This needs translating
+			description = CoreTranslations.Extensions.Help.CommandArguments.command
 		}
 	}
 }

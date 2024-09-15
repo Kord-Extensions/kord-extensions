@@ -15,6 +15,7 @@ import dev.kordex.core.annotations.ExtensionDSL
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
 import dev.kordex.parser.StringParser
@@ -47,7 +48,7 @@ public open class ChatGroupCommand<T : Arguments>(
 	/** @suppress **/
 	public open val commands: MutableList<ChatCommand<out Arguments>> = mutableListOf()
 
-	override lateinit var name: String
+	override lateinit var name: Key
 
 	/** @suppress **/
 	override var body: suspend ChatCommandContext<out T>.() -> Unit = {

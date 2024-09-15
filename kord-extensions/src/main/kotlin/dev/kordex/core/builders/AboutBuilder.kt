@@ -12,6 +12,7 @@ import dev.kordex.core.annotations.BotBuilderDSL
 import dev.kordex.core.builders.about.Copyright
 import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.builders.about.Section
+import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.koin.KordExKoinComponent
 
 /**
@@ -24,7 +25,7 @@ public class AboutBuilder : KordExKoinComponent {
 
 	public var ephemeral: Boolean = true
 
-	public val translationBundle: String? = null
+	public val translationBundle: Bundle? = null
 	public val sections: MutableMap<String, Section> = mutableMapOf()
 
 	init {

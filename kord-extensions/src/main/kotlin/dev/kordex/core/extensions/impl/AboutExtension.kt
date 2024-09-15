@@ -20,8 +20,7 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.chatGroupCommand
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.publicSlashCommand
-import dev.kordex.core.i18n.generated.Translations
-import dev.kordex.core.i18n.key
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import org.koin.core.component.inject
 import java.util.Locale
@@ -36,12 +35,12 @@ public class AboutExtension : Extension() {
 		val ephemeral = settings.aboutBuilder.ephemeral
 
 		chatGroupCommand {
-			name = "extensions.about.commandName"
-			description = "extensions.about.commandDescription"
+			name = CoreTranslations.Extensions.About.commandName
+			description = CoreTranslations.Extensions.About.commandDescription
 
 			chatCommand {
-				name = "extensions.about.copyright.commandName"
-				description = "extensions.about.copyright.commandDescription"
+				name = CoreTranslations.Extensions.About.Copyright.commandName
+				description = CoreTranslations.Extensions.About.Copyright.commandDescription
 
 				action {
 					paginator {
@@ -67,12 +66,12 @@ public class AboutExtension : Extension() {
 
 		if (ephemeral) {
 			ephemeralSlashCommand {
-				name = "extensions.about.commandName"
-				description = "extensions.about.commandDescription"
+				name = CoreTranslations.Extensions.About.commandName
+				description = CoreTranslations.Extensions.About.commandDescription
 
 				ephemeralSubCommand {
-					name = "extensions.about.copyright.commandName"
-					description = "extensions.about.copyright.commandDescription"
+					name = CoreTranslations.Extensions.About.Copyright.commandName
+					description = CoreTranslations.Extensions.About.Copyright.commandDescription
 
 					action {
 						val locale = getLocale()
@@ -113,12 +112,12 @@ public class AboutExtension : Extension() {
 			}
 		} else {
 			publicSlashCommand {
-				name = "extensions.about.commandName"
-				description = "extensions.about.commandDescription"
+				name = CoreTranslations.Extensions.About.commandName
+				description = CoreTranslations.Extensions.About.commandDescription
 
 				publicSubCommand {
-					name = "extensions.about.copyright.commandName"
-					description = "extensions.about.copyright.commandDescription"
+					name = CoreTranslations.Extensions.About.Copyright.commandName
+					description = CoreTranslations.Extensions.About.Copyright.commandDescription
 
 					action {
 						val locale = getLocale()
@@ -177,7 +176,7 @@ public class AboutExtension : Extension() {
 			color = DISCORD_BLURPLE
 			title = "Copyright Information"
 
-			description = Translations.Extensions.About.Copyright.intro
+			description = CoreTranslations.Extensions.About.Copyright.intro
 				.withLocale(locale)
 				.translate(
 					"[Kord Extensions](https://kordex.dev)",

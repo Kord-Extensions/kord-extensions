@@ -10,21 +10,21 @@ package dev.kordex.core.commands.application.slash.converters.impl
 
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.application.slash.converters.ChoiceConverter
 import dev.kordex.core.commands.application.slash.converters.ChoiceEnum
 import dev.kordex.core.commands.converters.Validator
+import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.getIgnoringCase
-import dev.kordex.core.utils.withContext
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -76,7 +76,7 @@ public class EnumChoiceConverter<E>(
 	override var validator: Validator<E> = null,
 	override val bundle: Bundle? = null,
 ) : ChoiceConverter<E>(choices) where E : Enum<E>, E : ChoiceEnum {
-	override val signatureTypeString: Key = typeName
+	override val signatureType: Key = typeName
 
 	private val logger = KotlinLogging.logger { }
 
@@ -119,8 +119,8 @@ public class EnumChoiceConverter<E>(
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
 			required = true
 
 			this@EnumChoiceConverter.choices.forEach { choice(it.key, it.value.name) }
@@ -131,7 +131,7 @@ public class EnumChoiceConverter<E>(
 
 		try {
 			parsed = getter.invoke(stringOption.value) ?: return false
-		} catch (e: IllegalArgumentException) {
+		} catch (_: IllegalArgumentException) {
 			return false
 		}
 

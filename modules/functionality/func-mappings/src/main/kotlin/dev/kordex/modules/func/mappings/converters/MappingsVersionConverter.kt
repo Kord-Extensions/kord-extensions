@@ -49,7 +49,7 @@ class MappingsVersionConverter(
 	private val namespaceGetter: suspend () -> Namespace,
 	override var validator: Validator<MappingsContainer> = null,
 ) : SingleConverter<MappingsContainer>() {
-	override val signatureTypeString: String = "version"
+	override val signatureType: String = "version"
 	override val showTypeInSignature: Boolean = false
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {

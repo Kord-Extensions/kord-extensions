@@ -19,6 +19,7 @@ import dev.kordex.core.commands.converters.builders.ValidationContext
 import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
+import dev.kordex.core.utils.withContext
 import dev.kordex.parser.StringParser
 import org.koin.core.component.inject
 import kotlin.reflect.KProperty
@@ -72,7 +73,7 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 	 * Translation key pointing to a short string describing the type of data this converter handles. Should be very
 	 * short.
 	 */
-	public abstract val signatureTypeString: Key
+	public abstract val signatureType: Key
 
 	/**
 	 * String referring to the translation bundle name required to resolve translations for this converter.
@@ -82,10 +83,10 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 	public open val bundle: Bundle? = null
 
 	/**
-	 * If the [signatureTypeString] isn't sufficient, you can optionally provide a translation key pointing to a
+	 * If the [signatureType] isn't sufficient, you can optionally provide a translation key pointing to a
 	 * longer type string to use for error messages.
 	 */
-	public open val errorTypeString: String? = null
+	public open val errorType: Key? = null
 
 	/** Argument object containing this converter and its metadata. **/
 	public open lateinit var argumentObj: Argument<*>
@@ -163,8 +164,10 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 	/**
 	 * Return a translated, formatted error string.
 	 *
-	 * This will attempt to use the [errorTypeString], falling back to [signatureTypeString].
+	 * This will attempt to use the [errorType], falling back to [signatureType].
 	 */
 	public open suspend fun getErrorString(context: CommandContext): String =
-		context.translate(errorTypeString ?: signatureTypeString)
+		(errorType ?: signatureType)
+			.withContext(context)
+			.translate()
 }
