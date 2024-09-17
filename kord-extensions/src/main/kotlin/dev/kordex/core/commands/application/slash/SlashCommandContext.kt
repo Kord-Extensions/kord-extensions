@@ -10,6 +10,7 @@ package dev.kordex.core.commands.application.slash
 
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.application.ApplicationCommandContext
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.utils.MutableStringKeyedMap
 
@@ -22,7 +23,7 @@ public open class SlashCommandContext<C : SlashCommandContext<C, A, M>, A : Argu
 	public open val event: ChatInputCommandInteractionCreateEvent,
 	public override val command: SlashCommand<C, A, M>,
 	cache: MutableStringKeyedMap<Any>,
-) : dev.kordex.core.commands.application.ApplicationCommandContext(event, command, cache) {
+) : ApplicationCommandContext(event, command, cache) {
 	/** Object representing this slash command's arguments, if any. **/
 	public open lateinit var arguments: A
 

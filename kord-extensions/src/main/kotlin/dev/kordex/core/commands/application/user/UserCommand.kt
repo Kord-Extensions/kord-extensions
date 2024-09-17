@@ -12,6 +12,7 @@ import dev.kord.common.entity.ApplicationCommandType
 import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kordex.core.InvalidCommandException
 import dev.kordex.core.checks.types.CheckContextWithCache
+import dev.kordex.core.commands.application.ApplicationCommand
 import dev.kordex.core.components.ComponentRegistry
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
@@ -31,7 +32,7 @@ import org.koin.core.component.inject
 public abstract class UserCommand<C : UserCommandContext<C, M>, M : ModalForm>(
 	extension: Extension,
 	public open val modal: (() -> M)? = null,
-) : dev.kordex.core.commands.application.ApplicationCommand<UserCommandInteractionCreateEvent>(extension) {
+) : ApplicationCommand<UserCommandInteractionCreateEvent>(extension) {
 	private val logger: KLogger = KotlinLogging.logger {}
 
 	/** @suppress This is only meant for use by code that extends the command system. **/

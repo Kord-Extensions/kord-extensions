@@ -18,6 +18,7 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kordex.core.InvalidCommandException
 import dev.kordex.core.checks.types.CheckContextWithCache
 import dev.kordex.core.commands.Arguments
+import dev.kordex.core.commands.application.ApplicationCommand
 import dev.kordex.core.commands.application.DefaultApplicationCommandRegistry
 import dev.kordex.core.commands.application.Localized
 import dev.kordex.core.components.ComponentRegistry
@@ -47,7 +48,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 	public open val modal: (() -> M)? = null,
 	public open val parentCommand: SlashCommand<*, *, *>? = null,
 	public open val parentGroup: SlashGroup? = null,
-) : dev.kordex.core.commands.application.ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
+) : ApplicationCommand<ChatInputCommandInteractionCreateEvent>(extension) {
 	/** @suppress This is only meant for use by code that extends the command system. **/
 	public val kxLogger: KLogger = KotlinLogging.logger {}
 

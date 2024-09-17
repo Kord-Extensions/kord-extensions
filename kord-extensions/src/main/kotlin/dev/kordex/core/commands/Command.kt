@@ -12,7 +12,7 @@ package dev.kordex.core.commands
 
 import dev.kord.common.entity.Permission
 import dev.kord.core.Kord
-import dev.kord.core.behavior.channel.asChannelOf
+import dev.kord.core.behavior.channel.asChannelOfOrNull
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.InvalidCommandException
@@ -111,8 +111,9 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 		if (context.getGuild() != null) {
 			val perms = context
 				.getChannel()
-				.asChannelOf<GuildChannel>()
-				.permissionsForMember(kord.selfId)
+				.asChannelOfOrNull<GuildChannel>()
+				?.permissionsForMember(kord.selfId)
+				?: return // Nothing to check if we can't get the channel.
 
 			val missingPerms = requiredPerms.filter { !perms.contains(it) }
 
