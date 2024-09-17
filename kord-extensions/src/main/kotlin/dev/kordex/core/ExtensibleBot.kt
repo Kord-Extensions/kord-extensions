@@ -363,6 +363,7 @@ public open class ExtensibleBot(
 	 * @param scope Coroutine scope to run the body of your callback under.
 	 * @param consumer The callback to run when the event is fired.
 	 */
+	@Suppress("TooGenericExceptionCaught", "StringLiteralDuplication")
 	public inline fun <reified T : Event> on(
 		launch: Boolean = true,
 		scope: CoroutineScope = kordRef,
@@ -372,9 +373,19 @@ public open class ExtensibleBot(
 			.filterIsInstance<T>()
 			.onEach {
 				runCatching {
-					if (launch) scope.launch { consumer(it) } else consumer(it)
-				}.onFailure { logger.catching(it) }
-			}.catch { logger.catching(it) }
+					if (launch) {
+						scope.launch {
+							try {
+								consumer(it)
+							} catch (t: Throwable) {
+								logger.error(t) { "Error thrown from low-level event handler: $consumer" }
+							}
+						}
+					} else {
+						consumer(it)
+					}
+				}.onFailure { logger.error(it) { "Error thrown from low-level event handler: $consumer" } }
+			}.catch { logger.error(it) { "Error thrown from low-level event handler: $consumer" } }
 			.launchIn(kordRef)
 
 	/**
