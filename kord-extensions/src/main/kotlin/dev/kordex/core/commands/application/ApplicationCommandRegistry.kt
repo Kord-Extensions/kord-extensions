@@ -37,6 +37,7 @@ import dev.kord.rest.builder.interaction.*
 import dev.kord.rest.request.KtorRequestException
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.commands.Argument
+import dev.kordex.core.commands.ChoiceOptionWrapper
 import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.application.message.MessageCommand
 import dev.kordex.core.commands.application.slash.SlashCommand
@@ -45,7 +46,6 @@ import dev.kordex.core.commands.application.user.UserCommand
 import dev.kordex.core.commands.converters.SlashCommandConverter
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
 import dev.kordex.core.i18n.TranslationsProvider
-import dev.kordex.core.i18n.toKey
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -549,61 +549,12 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
 	// endregion
 
-	private suspend fun OptionWrapper<*>.toKord() = when (type) {
-		AttachmentBuilder::class -> {
-			this as OptionWrapper<AttachmentBuilder>
-			apply(AttachmentBuilder(displayName.key, description.key))
-		}
-
-		BooleanBuilder::class -> {
-			this as OptionWrapper<BooleanBuilder>
-			apply(BooleanBuilder(displayName.key, description.key))
-		}
-
-		ChannelBuilder::class -> {
-			this as OptionWrapper<ChannelBuilder>
-			apply(ChannelBuilder(displayName.key, description.key))
-		}
-
-		IntegerOptionBuilder::class -> {
-			this as OptionWrapper<IntegerOptionBuilder>
-			apply(IntegerOptionBuilder(displayName.key, description.key))
-		}
-
-		MentionableBuilder::class -> {
-			this as OptionWrapper<MentionableBuilder>
-			apply(MentionableBuilder(displayName.key, description.key))
-		}
-
-		NumberOptionBuilder::class -> {
-			this as OptionWrapper<NumberOptionBuilder>
-			apply(NumberOptionBuilder(displayName.key, description.key))
-		}
-
-		RoleBuilder::class -> {
-			this as OptionWrapper<RoleBuilder>
-			apply(RoleBuilder(displayName.key, description.key))
-		}
-
-		StringChoiceBuilder::class -> {
-			this as OptionWrapper<StringChoiceBuilder>
-			apply(StringChoiceBuilder(displayName.key, description.key))
-		}
-
-		UserBuilder::class -> {
-			this as OptionWrapper<UserBuilder>
-			apply(UserBuilder(displayName.key, description.key))
-		}
-
-		else -> error("Unknown option builder type: ${type.qualifiedName} ($type)")
-	}
-
 	private fun OptionsBuilder.translate(
 		option: OptionWrapper<*>,
 		command: ApplicationCommand<*>,
 		argObj: Argument<*>,
 	) {
-		val defaultName = argObj.getDefaultTranslatedDisplayName(command.translationsProvider, command)
+		val defaultName = argObj.getDefaultTranslatedDisplayName()
 
 		if (defaultName != defaultName.lowercase(command.translationsProvider.defaultLocale)) {
 			throw InvalidNameException(
@@ -631,22 +582,28 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 		this.nameLocalizations = nameLocalizations
 
 		if (this is BaseChoiceBuilder<*, *> && !choices.isNullOrEmpty()) {
-			translate(command)
+			translate(command, option as ChoiceOptionWrapper<*, *>)
 		}
 	}
 
-	@Suppress("DEPRECATION_ERROR")
-	private fun <C : Choice> BaseChoiceBuilder<*, C>.translate(command: ApplicationCommand<*>) {
-		choices = choices!!.map {
-			// TODO: Choices? It'd be a lot of work to fix this probably!
+	private fun <C : Choice> BaseChoiceBuilder<*, C>.translate(
+		command: ApplicationCommand<*>,
+		option: ChoiceOptionWrapper<*, *>,
+	) {
+		choices = option.choices.map {
 			val (name, nameLocalizations) = command.localize(
-				it.name.toKey()
+				it.name
 			)
 
-			when (val c = it as Choice) {
-				is Choice.NumberChoice -> Choice.NumberChoice(name, Optional(nameLocalizations), c.value)
-				is Choice.StringChoice -> Choice.StringChoice(name, Optional(nameLocalizations), c.value)
-				is Choice.IntegerChoice -> Choice.IntegerChoice(name, Optional(nameLocalizations), c.value)
+			when (option) {
+				is ChoiceOptionWrapper.Number ->
+					Choice.NumberChoice(name, Optional(nameLocalizations), it.value as Double)
+
+				is ChoiceOptionWrapper.String ->
+					Choice.StringChoice(name, Optional(nameLocalizations), it.value as String)
+
+				is ChoiceOptionWrapper.Integer ->
+					Choice.IntegerChoice(name, Optional(nameLocalizations), it.value as Long)
 			} as C
 		}.toMutableList()
 	}

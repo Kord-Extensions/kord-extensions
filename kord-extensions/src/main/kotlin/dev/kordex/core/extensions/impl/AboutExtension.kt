@@ -53,7 +53,6 @@ public class AboutExtension : Extension() {
 				this.chatCommand {
 					this.name = section.name
 					description = section.description
-					bundle = section.translationBundle
 
 					action {
 						message.reply {
@@ -87,7 +86,6 @@ public class AboutExtension : Extension() {
 						ephemeralSubCommand {
 							name = section.name
 							description = section.description
-							bundle = section.translationBundle
 
 							action {
 								respond {
@@ -99,7 +97,6 @@ public class AboutExtension : Extension() {
 						publicSubCommand {
 							name = section.name
 							description = section.description
-							bundle = section.translationBundle
 
 							action {
 								respond {
@@ -133,7 +130,6 @@ public class AboutExtension : Extension() {
 						ephemeralSubCommand {
 							name = section.name
 							description = section.description
-							bundle = section.translationBundle
 
 							action {
 								respond {
@@ -145,7 +141,6 @@ public class AboutExtension : Extension() {
 						publicSubCommand {
 							name = section.name
 							description = section.description
-							bundle = section.translationBundle
 
 							action {
 								respond {

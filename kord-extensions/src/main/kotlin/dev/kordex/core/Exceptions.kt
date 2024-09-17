@@ -14,7 +14,6 @@ import dev.kordex.core.commands.chat.ChatCommand
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.events.EventHandler
 import dev.kordex.core.extensions.Extension
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 import java.util.*
@@ -148,7 +147,6 @@ public open class ArgumentParsingException(
 	public override val reason: String,
 	public override val translationKey: Key?,
 	public val locale: Locale,
-	public val bundle: Bundle?,
 	public val argument: Argument<*>?,
 	public val arguments: Arguments,
 	public val parser: StringParser?,
@@ -158,7 +156,7 @@ public open class ArgumentParsingException(
 	public constructor(other: ArgumentParsingException) :
 		this(
 			other.reason,
-			other.translationKey, other.locale, other.bundle,
+			other.translationKey, other.locale,
 			other.argument, other.arguments,
 			other.parser
 		)

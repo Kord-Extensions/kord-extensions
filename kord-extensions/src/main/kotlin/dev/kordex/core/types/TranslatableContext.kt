@@ -9,7 +9,6 @@
 package dev.kordex.core.types
 
 import dev.kordex.core.i18n.TranslationsProvider
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExContext
 import java.util.*
@@ -24,9 +23,6 @@ public interface TranslatableContext {
 	/** Cached locale variable, stored and retrieved by [getLocale]. **/
 	public var resolvedLocale: Locale?
 
-	/** Default bundle to use for the [translate] functions. **/
-	public val bundle: Bundle?
-
 	/** Retrieve the bot's translation provider from Koin. **/
 	public fun getTranslationProvider(): TranslationsProvider = KordExContext.get().get()
 
@@ -34,44 +30,20 @@ public interface TranslatableContext {
 	public suspend fun getLocale(): Locale
 
 	/**
-	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+	 * Given a translation key, return the translation for the locale provided by the bot's configured
 	 * locale resolvers.
 	 */
 	public suspend fun translate(
 		key: Key,
-		bundleName: Bundle?,
 		replacements: Array<Any?> = arrayOf(),
 	): String
 
 	/**
-	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+	 * Given a translation key, return the translation for the locale provided by the bot's configured
 	 * locale resolvers.
 	 */
 	public suspend fun translate(
 		key: Key,
-		bundleName: Bundle?,
 		replacements: Map<String, Any?>,
 	): String
-
-	/**
-	 * Given a translation key, return the translation for the locale provided by the bot's configured locale
-	 * resolvers, using the bundle provided for this context.
-	 */
-	public suspend fun translate(
-		key: Key,
-		replacements: Array<Any?> = arrayOf(),
-	): String = translate(
-		key, bundle, replacements
-	)
-
-	/**
-	 * Given a translation key, return the translation for the locale provided by the bot's configured locale
-	 * resolvers, using the bundle provided for this context.
-	 */
-	public suspend fun translate(
-		key: Key,
-		replacements: Map<String, Any?>,
-	): String = translate(
-		key, bundle, replacements
-	)
 }

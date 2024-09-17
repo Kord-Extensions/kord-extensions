@@ -135,7 +135,7 @@ public open class ChatCommandContext<T : Arguments>(
 		replacements: Array<Any?> = arrayOf(),
 		useReply: Boolean = true,
 	): Message = respond(
-		key.withBundle(command.resolvedBundle)
+		key
 			.withLocale(getLocale())
 			.translateArray(replacements),
 
@@ -150,7 +150,7 @@ public open class ChatCommandContext<T : Arguments>(
 		replacements: Map<String, Any?>,
 		useReply: Boolean = true,
 	): Message = respond(
-		key.withBundle(command.resolvedBundle)
+		key
 			.withLocale(getLocale())
 			.translateNamed(replacements),
 

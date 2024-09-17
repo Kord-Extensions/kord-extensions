@@ -17,7 +17,6 @@ import dev.kord.rest.builder.message.embed
 import dev.kordex.core.DISCORD_BLURPLE
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.i18n.TranslationsProvider
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.pagination.builders.PageTransitionCallback
@@ -64,7 +63,6 @@ public val EXPAND_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u2139\u
  * @param keepEmbed Set this to `false` to remove the paginator's message when it's destroyed
  * @param switchEmoji The `ReactionEmoji` to use for group switching
  * @param locale A Locale object for this pagination context, which defaults to the bot's default locale
- * @param bundle Translation bundle to use for this paginator
  */
 public abstract class BasePaginator(
 	public open val pages: Pages,
@@ -74,7 +72,6 @@ public abstract class BasePaginator(
 	public open val keepEmbed: Boolean = true,
 	public open val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	public open val mutator: PageTransitionCallback? = null,
-	public open val bundle: Bundle? = null,
 
 	locale: Locale? = null,
 ) : KordExKoinComponent {
@@ -166,7 +163,7 @@ public abstract class BasePaginator(
 
 			logger.debug { "Building footer page" }
 
-			Page(bundle) {
+			Page {
 				color = DISCORD_BLURPLE
 			}.build(
 				localeObj,
@@ -246,10 +243,9 @@ public abstract class BasePaginator(
 		}
 	}
 
-	/** Quick access to translations, using the paginator's locale and bundle. **/
+	/** Quick access to translations, using the paginator's locale. **/
 	public fun translate(key: Key, replacements: Array<Any?> = arrayOf()): String =
 		key
-			.withBundle(bundle)
 			.withLocale(localeObj)
 			.translateArray(replacements)
 }

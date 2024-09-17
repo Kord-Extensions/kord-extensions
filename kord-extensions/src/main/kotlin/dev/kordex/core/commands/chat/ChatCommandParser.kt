@@ -24,7 +24,6 @@ import dev.kordex.core.commands.converters.*
 import dev.kordex.core.commands.converters.types.MultiNamedInputConverter
 import dev.kordex.core.commands.converters.types.SingleNamedInputConverter
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
-import dev.kordex.core.i18n.KORDEX_BUNDLE
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.koin.KordExKoinComponent
@@ -74,7 +73,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 				translationKey = CoreTranslations.ArgumentParser.Error.requiresOneValue,
 
 				locale = context.getLocale(),
-				bundle = KORDEX_BUNDLE,
 
 				argument = argument,
 				arguments = arguments,
@@ -107,7 +105,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 						CoreTranslations.ArgumentParser.Error.errorInArgument,
 
 						context.getLocale(),
-						KORDEX_BUNDLE,
 
 						argument,
 						arguments,
@@ -170,7 +167,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 					CoreTranslations.ArgumentParser.Error.errorInArgument,
 
 					context.getLocale(),
-					KORDEX_BUNDLE,
 
 					argument,
 					arguments,
@@ -200,7 +196,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 					CoreTranslations.ArgumentParser.Error.errorInArgument,
 
 					context.getLocale(),
-					KORDEX_BUNDLE,
 
 					argument,
 					arguments,
@@ -228,7 +223,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 				.withLocale(context.getLocale())
 				.translate(
 					argument.displayName
-						.withBundle(context.command.resolvedBundle ?: c.bundle, false)
 						.withLocale(context.getLocale())
 						.translate(),
 
@@ -238,7 +232,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 			CoreTranslations.ArgumentParser.Error.invalidValue,
 
 			context.getLocale(),
-			argument.displayName.bundle ?: context.command.resolvedBundle ?: c.bundle,
 
 			argument,
 			arguments,
@@ -261,14 +254,12 @@ public open class ChatCommandParser : KordExKoinComponent {
 				.withLocale(context.getLocale())
 				.translate(
 					argument.displayName
-						.withBundle(context.command.resolvedBundle ?: c.bundle, false)
 						.withLocale(context.getLocale())
 						.translate(),
 
 					numArgs,
 					numParsed,
 					c.signatureType
-						.withBundle(c.bundle)
 						.withLocale(context.getLocale())
 						.translate()
 				),
@@ -276,7 +267,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 			CoreTranslations.ArgumentParser.Error.notAllValid,
 
 			context.getLocale(),
-			argument.displayName.bundle ?: context.command.resolvedBundle ?: c.bundle,
 
 			argument,
 			arguments,
@@ -441,7 +431,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 					CoreTranslations.ArgumentParser.Error.errorInArgument,
 
 					context.getLocale(),
-					KORDEX_BUNDLE,
 
 					argument,
 					arguments,
@@ -509,7 +498,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 			val kwValue = keywordArgs[
 				currentArg
-					.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)
+					.getDefaultTranslatedDisplayName()
 					.lowercase(context.getLocale())
 			]
 
@@ -546,7 +535,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 					CoreTranslations.ArgumentParser.Error.noFilledArguments,
 
 					context.getLocale(),
-					KORDEX_BUNDLE,
 
 					null,
 					argumentsObj,
@@ -561,7 +549,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 					CoreTranslations.ArgumentParser.Error.someFilledArguments,
 
 					context.getLocale(),
-					context.command.resolvedBundle,
 
 					null,
 					argumentsObj,
@@ -602,7 +589,6 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 					append(
 						it.converter.signatureType
-							.withBundle(it.converter.bundle)
 							.withLocale(locale)
 							.translate()
 					)

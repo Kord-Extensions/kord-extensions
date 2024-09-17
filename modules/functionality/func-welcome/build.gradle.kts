@@ -13,6 +13,13 @@ metadata {
 	description = "KordEx extra module that provides welcome channel management driven by web-accessible YAML files"
 }
 
+getTranslations(
+	"func-welcome",
+	"dev.kordex.modules.func.welcome.i18n",
+	"kordex.func-welcome",
+	"WelcomeTranslations"
+)
+
 repositories {
 	maven {
 		name = "Sonatype Snapshots"

@@ -21,6 +21,8 @@ import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import dev.kordex.core.annotations.AlwaysPublicResponse
+import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.BaseButtonPaginator
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
@@ -70,7 +72,7 @@ public interface UnsafeInteractionContext<R : MessageInteractionResponseBehavior
 	/** Create a paginator that edits the original interaction. **/
 	@UnsafeAPI
 	public suspend fun editingPaginator(
-		defaultGroup: String = "",
+		defaultGroup: Key = EMPTY_KEY,
 		locale: Locale? = null,
 		builder: suspend (PaginatorBuilder).() -> Unit,
 	): BaseButtonPaginator
@@ -79,7 +81,7 @@ public interface UnsafeInteractionContext<R : MessageInteractionResponseBehavior
 	@AlwaysPublicResponse
 	@UnsafeAPI
 	public suspend fun respondingPaginator(
-		defaultGroup: String = "",
+		defaultGroup: Key = EMPTY_KEY,
 		locale: Locale? = null,
 		builder: suspend (PaginatorBuilder).() -> Unit,
 	): BaseButtonPaginator

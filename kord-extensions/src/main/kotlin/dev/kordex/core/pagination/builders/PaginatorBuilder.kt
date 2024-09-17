@@ -12,7 +12,6 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kordex.core.i18n.EMPTY_KEY
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.pages.Page
 import dev.kordex.core.pagination.pages.Pages
@@ -46,9 +45,6 @@ public class PaginatorBuilder(
 	/** Alternative switch button emoji, if needed. **/
 	public var switchEmoji: ReactionEmoji? = null
 
-	/** Translations bundle to use for page groups, if any. **/
-	public var bundle: Bundle? = null
-
 	/** Object containing paginator mutation functions. **/
 	public var mutator: PageTransitionCallback? = null
 
@@ -60,18 +56,16 @@ public class PaginatorBuilder(
 
 	/** Add a page to [pages], using the default group. **/
 	public fun page(
-		bundle: Bundle? = null,
 		builder: suspend EmbedBuilder.() -> Unit,
 	): Unit =
-		page(Page(builder = builder, bundle = bundle))
+		page(Page(builder = builder))
 
 	/** Add a page to [pages], using the given group. **/
 	public fun page(
 		group: Key,
-		bundle: Bundle? = null,
 		builder: suspend EmbedBuilder.() -> Unit,
 	): Unit =
-		page(group, Page(builder = builder, bundle = bundle))
+		page(group, Page(builder = builder))
 
 	/**
 	 * Mutate the paginator and pages, as pages are generated and sent.

@@ -7,12 +7,14 @@
  */
 
 @file:Suppress("StringLiteralDuplication")
+@file:OptIn(NotTranslated::class)
 
 package dev.kordex.core.checks
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.event.Event
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.checks.types.CheckContext
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.utils.getTopRole

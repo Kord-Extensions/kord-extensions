@@ -10,18 +10,21 @@ package dev.kordex.modules.dev.time4j
 
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.parsers.DurationParserException
 import dev.kordex.core.parsers.InvalidTimeUnitException
+import dev.kordex.core.utils.withContext
 import dev.kordex.parser.StringParser
 import net.time4j.Duration
 import net.time4j.IsoUnit
@@ -50,8 +53,7 @@ public class T4JDurationConverter(
 	public val longHelp: Boolean = true,
 	override var validator: Validator<Duration<IsoUnit>> = null,
 ) : SingleConverter<Duration<IsoUnit>>() {
-	override val signatureType: String = "converters.duration.error.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Duration.Error.signatureType
 
 	init {
 		bot.settings.aboutBuilder.addCopyright()
@@ -63,10 +65,22 @@ public class T4JDurationConverter(
 		try {
 			this.parsed = T4JDurationParser.parse(arg, context.getLocale())
 		} catch (e: InvalidTimeUnitException) {
-			val message: String = context.translate(
-				"converters.duration.error.invalidUnit",
-				replacements = arrayOf(e.unit)
-			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			val message: String = buildString {
+				append(
+					CoreTranslations.Converters.Duration.Error.invalidUnit
+						.withContext(context)
+						.translate(e.unit)
+				)
+
+				if (longHelp) {
+					append("\n\n")
+					append(
+						CoreTranslations.Converters.Duration.help
+							.withContext(context)
+							.translate()
+					)
+				}
+			}
 
 			throw DiscordRelayedException(message)
 		} catch (e: DurationParserException) {
@@ -76,8 +90,10 @@ public class T4JDurationConverter(
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val arg: String = (option as? StringOptionValue)?.value ?: return false
@@ -85,10 +101,22 @@ public class T4JDurationConverter(
 		try {
 			this.parsed = T4JDurationParser.parse(arg, context.getLocale())
 		} catch (e: InvalidTimeUnitException) {
-			val message: String = context.translate(
-				"converters.duration.error.invalidUnit",
-				replacements = arrayOf(e.unit)
-			) + if (longHelp) "\n\n" + context.translate("converters.duration.help") else ""
+			val message: String = buildString {
+				append(
+					CoreTranslations.Converters.Duration.Error.invalidUnit
+						.withContext(context)
+						.translate(e.unit)
+				)
+
+				if (longHelp) {
+					append("\n\n")
+					append(
+						CoreTranslations.Converters.Duration.help
+							.withContext(context)
+							.translate()
+					)
+				}
+			}
 
 			throw DiscordRelayedException(message)
 		} catch (e: DurationParserException) {

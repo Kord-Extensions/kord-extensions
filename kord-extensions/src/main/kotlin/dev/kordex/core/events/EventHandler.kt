@@ -18,8 +18,6 @@ import dev.kordex.core.checks.types.CheckContextWithCache
 import dev.kordex.core.checks.types.CheckWithCache
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.i18n.TranslationsProvider
-import dev.kordex.core.i18n.generated.CoreTranslations.bundle
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.BreadcrumbType
@@ -244,48 +242,26 @@ public open class EventHandler<T : Event>(
 	}
 
 	/**
-	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+	 * Given a translation key, return the translation for the locale provided by the bot's configured
 	 * locale resolvers.
 	 */
 	public suspend fun Event.translate(
 		key: Key,
-		bundle: Bundle?,
 		replacements: Array<Any?> = arrayOf(),
 	): String =
-		key.withBundle(bundle)
+		key
 			.withLocale(getLocale())
 			.translateArray(replacements)
 
 	/**
-	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+	 * Given a translation key, return the translation for the locale provided by the bot's configured
 	 * locale resolvers.
 	 */
 	public suspend fun Event.translate(
 		key: Key,
-		bundle: Bundle?,
 		replacements: Map<String, Any?>,
 	): String =
-		key.withBundle(bundle)
+		key
 			.withLocale(getLocale())
 			.translateNamed(replacements)
-
-	/**
-	 * Given a translation key and possible replacements, return the translation for the given locale in the
-	 * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
-	 */
-	public suspend fun Event.translate(key: Key, replacements: Array<Any?> = arrayOf()): String = translate(
-		key,
-		extension.bundle,
-		replacements
-	)
-
-	/**
-	 * Given a translation key and possible replacements, return the translation for the given locale in the
-	 * extension's configured bundle, for the locale provided by the bot's configured locale resolvers.
-	 */
-	public suspend fun Event.translate(key: Key, replacements: Map<String, Any?>): String = translate(
-		key,
-		extension.bundle,
-		replacements
-	)
 }

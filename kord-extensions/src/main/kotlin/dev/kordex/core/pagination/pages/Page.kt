@@ -12,7 +12,6 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.pagination.builders.PageMutator
@@ -24,13 +23,11 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
- * Representation of a single paginator page. You can extend this to customize it if you wish!
+ * Representation of a single paginator page. You can extend this to customise it if you wish!
  *
- * @param bundle Optional: Translations bundle for group names
  * @param builder Embed builder callable for building the page's embed
  */
 public open class Page(
-	public open val bundle: Bundle? = null,
 	public open val builder: suspend EmbedBuilder.() -> Unit,
 ) : KordExKoinComponent {
 	/** Current instance of the bot. **/
@@ -101,7 +98,6 @@ public open class Page(
 						)
 					} else {
 						val groupName = group
-							.withBundle(bundle)
 							.withLocale(locale)
 							.translate()
 							.capitalizeWords(locale)

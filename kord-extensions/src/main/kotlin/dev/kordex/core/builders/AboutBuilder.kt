@@ -12,7 +12,6 @@ import dev.kordex.core.annotations.BotBuilderDSL
 import dev.kordex.core.builders.about.Copyright
 import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.builders.about.Section
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.koin.KordExKoinComponent
 
 /**
@@ -25,7 +24,6 @@ public class AboutBuilder : KordExKoinComponent {
 
 	public var ephemeral: Boolean = true
 
-	public val translationBundle: Bundle? = null
 	public val sections: MutableMap<String, Section> = mutableMapOf()
 
 	init {
@@ -93,9 +91,6 @@ public class AboutBuilder : KordExKoinComponent {
 		val section = Section(name, description)
 
 		builder(section)
-
-		section.translationBundle = section.translationBundle
-			?: translationBundle
 
 		if (name == "extensions.about.copyright.commandName" || name == "copyright") {
 			error("You may not replace the copyright section.")

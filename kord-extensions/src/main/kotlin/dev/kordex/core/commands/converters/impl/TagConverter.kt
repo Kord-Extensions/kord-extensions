@@ -26,11 +26,8 @@ import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
-import dev.kordex.core.i18n.KORDEX_BUNDLE
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.getLocale
@@ -73,7 +70,6 @@ public class TagConverter(
 	override var validator: Validator<ForumTag> = null,
 ) : SingleConverter<ForumTag>() {
 	public override val signatureType: Key = CoreTranslations.Converters.Tag.signatureType
-	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val input: String = named ?: parser?.parseNext()?.data ?: return false
@@ -165,16 +161,13 @@ public class TagConverter(
 
 			if (channel == null) {
 				throw DiscordRelayedException(
-					translationsProvider.translate(
-						key = if (getter == null) {
-							"converters.tag.error.wrongChannelType"
-						} else {
-							"converters.tag.error.wrongChannelTypeWithGetter"
-						},
-
-						bundleName = DEFAULT_KORDEX_BUNDLE,
-						locale = event.getLocale(),
-					)
+					if (getter == null) {
+						CoreTranslations.Converters.Tag.Error.wrongChannelType
+					} else {
+						CoreTranslations.Converters.Tag.Error.wrongChannelTypeWithGetter
+					}
+						.withLocale(event.getLocale())
+						.translate()
 				)
 			}
 

@@ -15,19 +15,21 @@
 package dev.kordex.modules.dev.unsafe.converters
 
 import dev.kord.core.entity.interaction.OptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.UnexpectedFunctionBehaviour
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.*
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.toKey
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.utils.withContext
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.parser.StringParser
-import org.koin.core.component.inject
 
 @UnsafeAPI
 private typealias GenericConverter = Converter<*, *, *, *>
@@ -41,17 +43,14 @@ private typealias GenericConverter = Converter<*, *, *, *>
 public class UnionConverter(
 	private val converters: Collection<GenericConverter>,
 
-	typeName: String? = null,
+	typeName: Key? = null,
 	shouldThrow: Boolean = false,
 
-	override val bundle: String? = DEFAULT_KORDEX_BUNDLE,
 	override var validator: Validator<Any> = null,
 ) : CoalescingConverter<Any>(shouldThrow) {
-	private val translations: TranslationsProvider by inject()
-
-	override val signatureType: String = typeName ?: converters.joinToString(" | ") {
-		translations.translate(key = it.signatureType, bundleName = it.bundle)
-	}
+	override val signatureType: Key = typeName ?: converters.joinToString(" | ") {
+		signatureType.translate()
+	}.toKey()
 
 	/** @suppress Internal validation function. **/
 	public fun validateUnion() {
@@ -172,10 +171,9 @@ public class UnionConverter(
 				}
 
 				else -> throw DiscordRelayedException(
-					context.translate(
-						"converters.union.error.unknownConverterType",
-						replacements = arrayOf(converter)
-					)
+					CoreTranslations.Converters.Union.Error.unknownConverterType
+						.withContext(context)
+						.translate(converter)
 				)
 			}
 		}
@@ -183,8 +181,10 @@ public class UnionConverter(
 		return 0
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		for (converter in converters) {
@@ -230,10 +230,9 @@ public class UnionConverter(
 				}
 
 				is ListConverter<*> -> throw DiscordRelayedException(
-					context.translate(
-						"converters.union.error.unknownConverterType",
-						replacements = arrayOf(converter)
-					)
+					CoreTranslations.Converters.Union.Error.unknownConverterType
+						.withContext(context)
+						.translate(converter)
 				)
 
 				is CoalescingConverter<*> -> try {
@@ -276,10 +275,9 @@ public class UnionConverter(
 				}
 
 				else -> throw DiscordRelayedException(
-					context.translate(
-						"converters.union.error.unknownConverterType",
-						replacements = arrayOf(converter)
-					)
+					CoreTranslations.Converters.Union.Error.unknownConverterType
+						.withContext(context)
+						.translate(converter)
 				)
 			}
 		}
@@ -298,15 +296,14 @@ public class UnionConverter(
  */
 @UnsafeAPI
 public fun Arguments.union(
-	displayName: String,
-	description: String,
-	typeName: String? = null,
+	displayName: Key,
+	description: Key,
+	typeName: Key? = null,
 	shouldThrow: Boolean = false,
 	vararg converters: GenericConverter,
-	bundle: String? = null,
 	validator: Validator<Any> = null,
 ): UnionConverter {
-	val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle, validator)
+	val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, validator)
 
 	converter.validateUnion()
 
@@ -332,15 +329,14 @@ public fun Arguments.union(
  */
 @UnsafeAPI
 public fun Arguments.optionalUnion(
-	displayName: String,
-	description: String,
-	typeName: String? = null,
+	displayName: Key,
+	description: Key,
+	typeName: Key? = null,
 	shouldThrow: Boolean = false,
 	vararg converters: GenericConverter,
-	bundle: String? = null,
 	validator: Validator<Any?> = null,
 ): OptionalCoalescingConverter<Any> {
-	val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow, bundle)
+	val converter: UnionConverter = UnionConverter(converters.toList(), typeName, shouldThrow)
 
 	converter.validateUnion()
 

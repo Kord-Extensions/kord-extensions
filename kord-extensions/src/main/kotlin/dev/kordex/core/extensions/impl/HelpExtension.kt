@@ -280,13 +280,11 @@ public class HelpExtension : HelpProvider, Extension() {
 			if (longDescription) {
 				append(
 					command.description
-						.withBundle(command.extension.bundle)
 						.translateLocale(locale)
 				)
 			} else {
 				append(
 					command.description
-						.withBundle(command.extension.bundle)
 						.translateLocale(locale)
 						.trim()
 						.takeWhile { it != '\n' }
@@ -378,7 +376,6 @@ public class HelpExtension : HelpProvider, Extension() {
 
 									append(
 										it.converter.signatureType
-											.withBundle(it.converter.bundle)
 											.translateLocale(locale)
 									)
 
@@ -388,7 +385,6 @@ public class HelpExtension : HelpProvider, Extension() {
 								append("`: ")
 								append(
 									it.description
-										.withBundle(command.extension.bundle)
 										.translateLocale(locale)
 								)
 							}

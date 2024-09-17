@@ -11,7 +11,6 @@ package dev.kordex.core.builders.about
 import dev.kord.rest.builder.message.MessageBuilder
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.toKey
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import org.koin.core.component.inject
@@ -27,7 +26,6 @@ public class Section(public val name: Key, public val description: Key) : KordEx
 	public val translations: TranslationsProvider by inject()
 
 	public var ephemeral: Boolean? = null
-	public var translationBundle: Bundle? = null
 
 	public lateinit var builder: SectionBuilder
 
@@ -36,7 +34,7 @@ public class Section(public val name: Key, public val description: Key) : KordEx
 	}
 
 	public fun translate(key: Key, locale: Locale, replacements: Array<Any?> = arrayOf()): String =
-		key.withBundle(translationBundle)
+		key
 			.withLocale(locale)
 			.translateArray(replacements)
 

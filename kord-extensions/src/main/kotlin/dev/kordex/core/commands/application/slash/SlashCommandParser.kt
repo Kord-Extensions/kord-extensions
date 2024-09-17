@@ -19,6 +19,8 @@ import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.converters.*
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.utils.withContext
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -54,7 +56,7 @@ public open class SlashCommandParser {
 			} else {
 				it.value
 			}
-		} as Map<String, OptionValue<*>>
+		}
 
 		var currentValue: OptionValue<*>?
 
@@ -66,7 +68,7 @@ public open class SlashCommandParser {
 			logger.trace { "Current argument: ${currentArg.displayName}" }
 
 			currentValue =
-				values[currentArg.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)]
+				values[currentArg.getDefaultTranslatedDisplayName()]
 
 			logger.trace { "Current value: $currentValue" }
 
@@ -84,24 +86,20 @@ public open class SlashCommandParser {
 
 					if (converter.required && !parsed) {
 						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
+							CoreTranslations.ArgumentParser.Error.invalidValue
+								.withContext(context)
+								.translate(
+									currentArg.displayName
+										.withContext(context)
+										.translate(),
 
 									converter.getErrorString(context),
 									currentValue
-								)
-							),
+								),
 
-							"argumentParser.error.invalidValue",
+							CoreTranslations.ArgumentParser.Error.invalidValue,
 
 							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -124,7 +122,6 @@ public open class SlashCommandParser {
 							null,
 
 							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -148,23 +145,20 @@ public open class SlashCommandParser {
 
 					if (converter.required && !parsed) {
 						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
+							CoreTranslations.ArgumentParser.Error.invalidValue
+								.withContext(context)
+								.translate(
+									currentArg.displayName
+										.withContext(context)
+										.translate(),
 
 									converter.getErrorString(context),
 									currentValue
-								)
-							),
+								),
 
-							"argumentParser.error.invalidValue",
+							CoreTranslations.ArgumentParser.Error.invalidValue,
 
 							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -187,7 +181,6 @@ public open class SlashCommandParser {
 							null,
 
 							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -224,7 +217,6 @@ public open class SlashCommandParser {
 							null,
 
 							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -261,7 +253,6 @@ public open class SlashCommandParser {
 							null,
 
 							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -298,7 +289,6 @@ public open class SlashCommandParser {
 							null,
 
 							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -335,7 +325,6 @@ public open class SlashCommandParser {
 							null,
 
 							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,

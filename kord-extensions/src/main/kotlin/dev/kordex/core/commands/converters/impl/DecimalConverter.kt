@@ -20,9 +20,7 @@ import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
-import dev.kordex.core.i18n.KORDEX_BUNDLE
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 
@@ -52,7 +50,6 @@ public class DecimalConverter(
 	override var validator: Validator<Double> = null,
 ) : SingleConverter<Double>() {
 	override val signatureType: Key = CoreTranslations.Converters.Decimal.signatureType
-	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false

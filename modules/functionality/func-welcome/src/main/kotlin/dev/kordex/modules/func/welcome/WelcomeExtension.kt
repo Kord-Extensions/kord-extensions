@@ -31,6 +31,7 @@ import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.event
 import dev.kordex.modules.func.welcome.config.WelcomeChannelConfig
 import dev.kordex.modules.func.welcome.data.WelcomeChannelData
+import dev.kordex.modules.func.welcome.i18n.generated.WelcomeTranslations
 import kotlinx.coroutines.flow.toList
 import org.koin.core.component.inject
 
@@ -74,23 +75,24 @@ class WelcomeExtension : Extension() {
 		}
 
 		ephemeralSlashCommand {
-			name = "welcome-channels"
-			description = "Manage welcome channels"
+			name = WelcomeTranslations.Command.Base.name
+			description = WelcomeTranslations.Command.Base.description
 
 			allowInDms = false
 
 			config.getStaffCommandChecks().forEach(::check)
 
 			ephemeralSlashCommand(::ChannelArgs) {
-				name = "blocks"
-				description = "Get a list of the configured blocks"
+				name = WelcomeTranslations.Command.Blocks.name
+				description = WelcomeTranslations.Command.Blocks.description
 
 				action {
 					val welcomeChannel = welcomeChannels[arguments.channel.id]
 
 					if (welcomeChannel == null) {
 						respond {
-							content = "No configuration for ${arguments.channel.mention} exists"
+							content = WelcomeTranslations.Responses.Config.missing
+								.translateLocale(getLocale(), arguments.channel.mention)
 						}
 
 						return@action
@@ -101,10 +103,13 @@ class WelcomeExtension : Extension() {
 					respond {
 						content = buildString {
 							if (blocks.isEmpty()) {
-								append("A configuration was found, but it doesn't contain any blocks.")
+								append(
+									WelcomeTranslations.Responses.Config.noBlocks
+										.translateLocale(getLocale())
+								)
 							} else {
 								blocks.forEach {
-									appendLine("**»** ${it.javaClass.simpleName}")
+									appendLine("* ${it.javaClass.simpleName}")
 								}
 							}
 						}
@@ -113,10 +118,11 @@ class WelcomeExtension : Extension() {
 			}
 
 			ephemeralSubCommand(::ChannelArgs) {
-				name = "delete"
-				description = "Delete a welcome channel configuration"
+				name = WelcomeTranslations.Command.Delete.name
+				description = WelcomeTranslations.Command.Delete.description
 
 				action {
+					val locale = getLocale()
 					val welcomeChannel = welcomeChannels[arguments.channel.id]
 
 					if (welcomeChannel != null) {
@@ -126,18 +132,19 @@ class WelcomeExtension : Extension() {
 						val deletedUrl = data.removeChannel(arguments.channel.id)
 
 						respond {
-							content = "Configuration removed - old URL was `$deletedUrl`"
+							content = WelcomeTranslations.Responses.Config.removed
+								.translateLocale(locale, deletedUrl)
 						}
 
 						welcomeChannel.log {
 							embed {
-								title = "Welcome channel removed"
+								title = WelcomeTranslations.Embed.ChannelRemoved.title.translateLocale(locale)
 								color = DISCORD_YELLOW
 
-								description = "Welcome channel configuration removed."
+								description = WelcomeTranslations.Embed.ChannelRemoved.description.translateLocale(locale)
 
 								field {
-									name = "Channel"
+									name = WelcomeTranslations.Fields.channel.translateLocale(locale)
 									value = "${welcomeChannel.channel.mention} (" +
 										"`${welcomeChannel.channel.id}` / " +
 										"`${welcomeChannel.channel.name}`" +
@@ -145,7 +152,7 @@ class WelcomeExtension : Extension() {
 								}
 
 								field {
-									name = "Staff Member"
+									name = WelcomeTranslations.Fields.staffMember.translateLocale(locale)
 									value = "${user.mention} (" +
 										"`${user.id}` / " +
 										"`${user.asUser().tag}`" +
@@ -155,64 +162,63 @@ class WelcomeExtension : Extension() {
 						}
 					} else {
 						respond {
-							content = "No configuration for ${arguments.channel.mention} exists"
+							content = WelcomeTranslations.Responses.Config.missing.translateLocale(locale)
 						}
 					}
 				}
 			}
 
 			ephemeralSubCommand(WelcomeExtension::ChannelArgs) {
-				name = "get"
-				description = "Get the url for a welcome channel, if it's configured"
+				name = WelcomeTranslations.Command.Get.name
+				description = WelcomeTranslations.Command.Get.description
 
 				action {
+					val locale = getLocale()
 					val url = data.getUrlForChannel(arguments.channel.id)
 
 					respond {
 						content = if (url != null) {
-							"The configuration URL for ${arguments.channel.mention} is `$url`"
+							WelcomeTranslations.Responses.Config.get.translateLocale(locale, url)
 						} else {
-							"No configuration for ${arguments.channel.mention} exists"
+							WelcomeTranslations.Responses.Config.missing.translateLocale(locale)
 						}
 					}
 				}
 			}
 
 			ephemeralSubCommand(WelcomeExtension::ChannelRefreshArgs) {
-				name = "refresh"
-				description = "Manually repopulate the given welcome channel"
+				name = WelcomeTranslations.Command.Refresh.name
+				description = WelcomeTranslations.Command.Refresh.description
 
 				action {
+					val locale = getLocale()
 					val welcomeChannel = welcomeChannels[arguments.channel.id]
 
 					if (welcomeChannel == null) {
 						respond {
-							content = "No configuration for ${arguments.channel.mention} exists"
+							content = WelcomeTranslations.Responses.Config.missing.translateLocale(locale)
 						}
 
 						return@action
 					}
 
 					respond {
-						content = "Manually refreshing ${arguments.channel.mention} now..."
+						content = WelcomeTranslations.Responses.refreshingNow
+							.translateLocale(locale, arguments.channel.mention)
 					}
 					welcomeChannel.log {
 						embed {
-							title = "Welcome channel refreshed"
+							title = WelcomeTranslations.Embed.ChannelRefreshed.title.translateLocale(locale)
 							color = DISCORD_YELLOW
 
-							description = buildString {
-								append("Manually ")
-
-								if (arguments.clear) {
-									append("**clearing** and ")
-								}
-
-								append("refreshing welcome channel...")
-							}
+							description = if (arguments.clear) {
+								WelcomeTranslations.Embed.ChannelRefreshed.Description.clearing
+							} else {
+								WelcomeTranslations.Embed.ChannelRefreshed.Description.notClearing
+							}.translateLocale(locale)
 
 							field {
-								name = "Channel"
+								name = WelcomeTranslations.Fields.channel.translateLocale(locale)
 								value = "${welcomeChannel.channel.mention} (" +
 									"`${welcomeChannel.channel.id}` / " +
 									"`${welcomeChannel.channel.name}`" +
@@ -220,7 +226,7 @@ class WelcomeExtension : Extension() {
 							}
 
 							field {
-								name = "Staff Member"
+								name = WelcomeTranslations.Fields.staffMember.translateLocale(locale)
 								value = "${user.mention} (" +
 									"`${user.id}` / " +
 									"`${user.asUser().tag}`" +
@@ -238,10 +244,11 @@ class WelcomeExtension : Extension() {
 			}
 
 			ephemeralSubCommand(WelcomeExtension::ChannelCreateArgs) {
-				name = "set"
-				description = "Set the URL for a welcome channel, and populate it"
+				name = WelcomeTranslations.Command.Set.name
+				description = WelcomeTranslations.Command.Set.description
 
 				action {
+					val locale = getLocale()
 					var welcomeChannel = welcomeChannels[arguments.channel.id]
 
 					if (welcomeChannel != null) {
@@ -255,33 +262,26 @@ class WelcomeExtension : Extension() {
 					welcomeChannels[arguments.channel.id] = welcomeChannel
 
 					respond {
-						content = buildString {
-							append("Set the configuration URL for ${arguments.channel.mention} to `${arguments.url}`, ")
-
-							if (arguments.clear) {
-								append("clearing and ")
-							}
-
-							append("refreshing...")
-						}
+						content = if (arguments.clear) {
+							WelcomeTranslations.Responses.Config.Set.clearing
+						} else {
+							WelcomeTranslations.Responses.Config.Set.notClearing
+						}.translateLocale(locale, arguments.channel.mention, arguments.url)
 					}
 
 					welcomeChannel.log {
 						embed {
-							title = "Welcome channel created/edited"
+							title = WelcomeTranslations.Embed.ChannelUpdated.title.translateLocale(locale)
 							color = DISCORD_YELLOW
 
-							description = buildString {
-								append("Welcome channel URL set: `${arguments.url}`")
-
-								if (arguments.clear) {
-									appendLine()
-									appendLine("**Clearing channel...**")
-								}
-							}
+							description = if (arguments.clear) {
+								WelcomeTranslations.Embed.ChannelUpdated.Description.clearing
+							} else {
+								WelcomeTranslations.Embed.ChannelUpdated.Description.notClearing
+							}.translateLocale(locale, arguments.url)
 
 							field {
-								name = "Channel"
+								name = WelcomeTranslations.Fields.channel.translateLocale(locale)
 								value = "${welcomeChannel.channel.mention} (" +
 									"`${welcomeChannel.channel.id}` / " +
 									"`${welcomeChannel.channel.name}`" +
@@ -289,7 +289,7 @@ class WelcomeExtension : Extension() {
 							}
 
 							field {
-								name = "Staff Member"
+								name = WelcomeTranslations.Fields.staffMember.translateLocale(locale)
 								value = "${user.mention} (" +
 									"`${user.id}` / " +
 									"`${user.asUser().tag}`" +
@@ -318,16 +318,24 @@ class WelcomeExtension : Extension() {
 
 	internal class ChannelCreateArgs : Arguments() {
 		val channel by channel {
-			name = "channel"
-			description = "Channel representing a welcome channel"
+			name = WelcomeTranslations.Args.Channel.name
+			description = WelcomeTranslations.Args.Channel.description
+
+			validate {
+				failIf(WelcomeTranslations.Args.Channel.validationError) {
+					val guildChannel = value.asChannelOfOrNull<GuildMessageChannel>()
+
+					guildChannel == null || guildChannel.guildId != context.getGuild()?.id
+				}
+			}
 		}
 
 		val url by string {
-			name = "url"
-			description = "Public link to a YAML file used to configure a welcome channel"
+			name = WelcomeTranslations.Args.Url.name
+			description = WelcomeTranslations.Args.Url.description
 
 			validate {
-				failIf("URLs must contain a protocol (eg `https://`)") {
+				failIf(WelcomeTranslations.Args.Url.validationError) {
 					value.contains("://").not() ||
 						value.startsWith("://")
 				}
@@ -335,19 +343,19 @@ class WelcomeExtension : Extension() {
 		}
 
 		val clear by defaultingBoolean {
-			name = "clear"
-			description = "Whether to clear the channel before repopulating it"
+			name = WelcomeTranslations.Args.Clear.name
+			description = WelcomeTranslations.Args.Clear.description
 			defaultValue = false
 		}
 	}
 
 	internal class ChannelRefreshArgs : Arguments() {
 		val channel by channel {
-			name = "channel"
-			description = "Channel representing a welcome channel"
+			name = WelcomeTranslations.Args.Channel.name
+			description = WelcomeTranslations.Args.Channel.description
 
 			validate {
-				failIf("Given channel must be a message channel on the current server") {
+				failIf(WelcomeTranslations.Args.Channel.validationError) {
 					val guildChannel = value.asChannelOfOrNull<GuildMessageChannel>()
 
 					guildChannel == null || guildChannel.guildId != context.getGuild()?.id
@@ -356,19 +364,19 @@ class WelcomeExtension : Extension() {
 		}
 
 		val clear by defaultingBoolean {
-			name = "clear"
-			description = "Whether to clear the channel before repopulating it"
+			name = WelcomeTranslations.Args.Clear.name
+			description = WelcomeTranslations.Args.Clear.description
 			defaultValue = false
 		}
 	}
 
 	internal class ChannelArgs : Arguments() {
 		val channel by channel {
-			name = "channel"
-			description = "Channel representing a welcome channel"
+			name = WelcomeTranslations.Args.Channel.name
+			description = WelcomeTranslations.Args.Channel.description
 
 			validate {
-				failIf("Given channel must be a message channel on the current server") {
+				failIf(WelcomeTranslations.Args.Channel.validationError) {
 					val guildChannel = value.asChannelOfOrNull<GuildMessageChannel>()
 
 					guildChannel == null || guildChannel.guildId != context.getGuild()?.id

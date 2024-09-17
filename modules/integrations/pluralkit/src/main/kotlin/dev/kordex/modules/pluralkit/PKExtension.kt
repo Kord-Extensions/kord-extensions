@@ -35,6 +35,7 @@ import dev.kordex.core.commands.converters.impl.optionalUser
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.event
+import dev.kordex.core.i18n.EMPTY_VALUE_STRING
 import dev.kordex.core.storage.StorageType
 import dev.kordex.core.storage.StorageUnit
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -45,6 +46,7 @@ import dev.kordex.modules.pluralkit.api.PluralKit
 import dev.kordex.modules.pluralkit.config.PKConfigBuilder
 import dev.kordex.modules.pluralkit.events.proxied
 import dev.kordex.modules.pluralkit.events.unproxied
+import dev.kordex.modules.pluralkit.i18n.generated.PluralKitTranslations
 import dev.kordex.modules.pluralkit.storage.PKGuildConfig
 import dev.kordex.modules.pluralkit.utils.LRUHashMap
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -53,6 +55,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Clock
+import kotlin.text.split
 import kotlin.time.Duration.Companion.seconds
 
 const val NEGATIVE_EMOTE = "❌"
@@ -61,7 +64,6 @@ const val POSITIVE_EMOTE = "✅"
 @Suppress("StringLiteralDuplication")
 class PKExtension(val config: PKConfigBuilder) : Extension() {
 	override val name: String = "ext-pluralkit"
-	override val bundle: String = "kordex.pluralkit"
 
 	private val logger = KotlinLogging.logger(
 		"dev.kordex.modules.pluralkit.PKExtension"
@@ -273,14 +275,14 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 		}
 
 		ephemeralSlashCommand {
-			name = "command.pluralkit.name"
-			description = "command.pluralkit.description"
+			name = PluralKitTranslations.Command.Pluralkit.name
+			description = PluralKitTranslations.Command.Pluralkit.description
 
 			check { anyGuild() }
 
 			ephemeralSubCommand(::ApiUrlArgs) {
-				name = "command.pluralkit.api-url.name"
-				description = "command.pluralkit.api-url.description"
+				name = PluralKitTranslations.Command.Pluralkit.ApiUrl.name
+				description = PluralKitTranslations.Command.Pluralkit.ApiUrl.description
 
 				check { hasPermission(Permission.ManageGuild) }
 
@@ -291,35 +293,30 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 
 					if (arguments.url == null) {
 						respond {
-							content = translate(
-								"command.pluralkit.api-url.response.current",
-								arrayOf(config.apiUrl)
-							)
+							content = PluralKitTranslations.Command.Pluralkit.ApiUrl.Response.current
+								.translateLocale(getLocale(), config.apiUrl)
 						}
 
 						return@action
 					}
 
+					val translatedResetWords = PluralKitTranslations.Arguments.reset.translateLocale(getLocale())
+
 					val resetWords = arrayOf(
 						"reset",
-
-						translate("arguments.reset"),
-
-						translationsProvider.translate(
-							key = "arguments.reset",
-							bundleName = this@ephemeralSubCommand.bundle
-						)
-					)
+					) + if (translatedResetWords != EMPTY_VALUE_STRING) {
+						translatedResetWords.split(",")
+					} else {
+						listOf<String>()
+					}
 
 					if (arguments.url in resetWords) {
 						config.apiUrl = PKGuildConfig().apiUrl
 						configUnit.save(config)
 
 						respond {
-							content = translate(
-								"command.pluralkit.api-url.response.reset",
-								arrayOf(config.apiUrl)
-							)
+							content = PluralKitTranslations.Command.Pluralkit.ApiUrl.Response.reset
+								.translateLocale(getLocale(), config.apiUrl)
 						}
 
 						return@action
@@ -329,17 +326,15 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 					configUnit.save(config)
 
 					respond {
-						content = translate(
-							"command.pluralkit.api-url.response.updated",
-							arrayOf(config.apiUrl)
-						)
+						content = PluralKitTranslations.Command.Pluralkit.ApiUrl.Response.updated
+							.translateLocale(getLocale(), config.apiUrl)
 					}
 				}
 			}
 
 			ephemeralSubCommand(::BotArgs) {
-				name = "command.pluralkit.bot.name"
-				description = "command.pluralkit.bot.description"
+				name = PluralKitTranslations.Command.Pluralkit.Bot.name
+				description = PluralKitTranslations.Command.Pluralkit.Bot.description
 
 				check { hasPermission(Permission.ManageGuild) }
 
@@ -350,10 +345,8 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 
 					if (arguments.bot == null) {
 						respond {
-							content = translate(
-								"command.pluralkit.bot.response.current",
-								arrayOf("<@${config.botId}>")
-							)
+							content = PluralKitTranslations.Command.Pluralkit.Bot.Response.current
+								.translateLocale(getLocale(), "<@${config.botId}>")
 						}
 
 						return@action
@@ -363,42 +356,40 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 					configUnit.save(config)
 
 					respond {
-						content = translate(
-							"command.pluralkit.bot.response.updated",
-							arrayOf("<@${config.botId}>")
-						)
+						content = PluralKitTranslations.Command.Pluralkit.Bot.Response.updated
+							.translateLocale(getLocale(), "<@${config.botId}>")
 					}
 				}
 			}
 
 			ephemeralSubCommand {
-				name = "command.pluralkit.status.name"
-				description = "command.pluralkit.status.description"
+				name = PluralKitTranslations.Command.Pluralkit.Status.name
+				description = PluralKitTranslations.Command.Pluralkit.Status.description
 
 				action {
 					val config = guild!!.asGuild().config()
 
 					respond {
 						embed {
-							title = translate("command.pluralkit.status.response.title")
+							title = PluralKitTranslations.Command.Pluralkit.Status.Response.title
+								.translateLocale(getLocale())
 
-							description = translate(
-								"command.pluralkit.status.response.description",
+							description = PluralKitTranslations.Command.Pluralkit.Status.Response.description
+								.translateLocale(
+									getLocale(),
 
-								arrayOf(
 									config.apiUrl,
 									"<@${config.botId}>",
 									config.enabled.emote(),
 								)
-							)
 						}
 					}
 				}
 			}
 
 			ephemeralSubCommand(::ToggleSupportArgs) {
-				name = "command.pluralkit.toggle-support.name"
-				description = "command.pluralkit.toggle-support.description"
+				name = PluralKitTranslations.Command.Pluralkit.ToggleSupport.name
+				description = PluralKitTranslations.Command.Pluralkit.ToggleSupport.description
 
 				check { hasPermission(Permission.ManageGuild) }
 
@@ -409,10 +400,8 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 
 					if (arguments.toggle == null) {
 						respond {
-							content = translate(
-								"command.pluralkit.toggle-support.response.current",
-								arrayOf(config.enabled.emote())
-							)
+							content = PluralKitTranslations.Command.Pluralkit.ToggleSupport.Response.current
+								.translateLocale(getLocale(), config.enabled.emote())
 						}
 
 						return@action
@@ -422,10 +411,8 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 					configUnit.save(config)
 
 					respond {
-						content = translate(
-							"command.pluralkit.toggle-support.response.updated",
-							arrayOf(config.enabled.emote())
-						)
+						content = PluralKitTranslations.Command.Pluralkit.ToggleSupport.Response.updated
+							.translateLocale(getLocale(), config.enabled.emote())
 					}
 				}
 			}
@@ -465,22 +452,22 @@ class PKExtension(val config: PKConfigBuilder) : Extension() {
 
 	inner class ApiUrlArgs : Arguments() {
 		val url by optionalString {
-			name = "argument.api-url.name"
-			description = "argument.api-url.description"
+			name = PluralKitTranslations.Argument.ApiUrl.name
+			description = PluralKitTranslations.Argument.ApiUrl.description
 		}
 	}
 
 	inner class BotArgs : Arguments() {
 		val bot by optionalUser {
-			name = "argument.bot.name"
-			description = "argument.bot.description"
+			name = PluralKitTranslations.Argument.Bot.name
+			description = PluralKitTranslations.Argument.Bot.description
 		}
 	}
 
 	inner class ToggleSupportArgs : Arguments() {
 		val toggle by optionalBoolean {
-			name = "argument.toggle.name"
-			description = "argument.toggle.description"
+			name = PluralKitTranslations.Argument.Toggle.name
+			description = PluralKitTranslations.Argument.Toggle.description
 		}
 	}
 }

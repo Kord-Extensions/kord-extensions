@@ -6,12 +6,15 @@
  * Any redistribution must include the specific provision above.
  */
 
+@file:OptIn(NotTranslated::class)
+
 package dev.kordex.core.checks
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.event.Event
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.checks.types.CheckContext
 import dev.kordex.core.i18n.generated.CoreTranslations
 import io.github.oshai.kotlinlogging.KotlinLogging

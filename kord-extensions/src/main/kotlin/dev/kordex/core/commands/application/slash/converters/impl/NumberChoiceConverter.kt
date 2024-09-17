@@ -19,7 +19,7 @@ import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.application.slash.converters.ChoiceConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.commands.wrapIntegerOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.getIgnoringCase
@@ -40,7 +40,7 @@ private const val DEFAULT_RADIX = 10
 )
 public class NumberChoiceConverter(
 	private val radix: Int = DEFAULT_RADIX,
-	choices: Map<String, Long>,
+	choices: Map<Key, Long>,
 	override var validator: Validator<Long> = null,
 ) : ChoiceConverter<Long>(choices) {
 	override val signatureType: Key = CoreTranslations.Converters.Number.signatureType
@@ -87,12 +87,15 @@ public class NumberChoiceConverter(
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<IntegerOptionBuilder> =
-		wrapOption(arg.displayName, arg.description) {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<IntegerOptionBuilder> {
+		val option = wrapIntegerOption(arg.displayName, arg.description) {
 			required = true
-
-			this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
 		}
+
+		this.choices.forEach { option.choice(it.key, it.value) }
+
+		return option
+	}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? IntegerOptionValue)?.value ?: return false

@@ -27,10 +27,7 @@ import dev.kordex.core.commands.chat.ChatCommandContext
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
-import dev.kordex.core.i18n.KORDEX_BUNDLE
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.generated.CoreTranslations.Extensions.Sentry.Arguments.id
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.users
 import dev.kordex.parser.StringParser
@@ -68,7 +65,6 @@ public class MemberConverter(
 	override var validator: Validator<Member> = null,
 ) : SingleConverter<Member>() {
 	override val signatureType: Key = CoreTranslations.Converters.Member.signatureType
-	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val guild = context.getGuild()

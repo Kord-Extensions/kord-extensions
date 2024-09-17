@@ -19,7 +19,6 @@ import dev.kordex.core.components.publicButton
 import dev.kordex.core.components.types.emoji
 import dev.kordex.core.i18n.EMPTY_KEY
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.builders.PageTransitionCallback
 import dev.kordex.core.pagination.pages.Pages
@@ -42,9 +41,8 @@ public abstract class BaseButtonPaginator(
 	keepEmbed: Boolean = true,
 	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	mutator: PageTransitionCallback? = null,
-	bundle: Bundle? = null,
 	locale: Locale? = null,
-) : BasePaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BasePaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, locale) {
 	/** [ComponentContainer] instance managing the buttons for this paginator. **/
 	public open var components: ComponentContainer = ComponentContainer()
 

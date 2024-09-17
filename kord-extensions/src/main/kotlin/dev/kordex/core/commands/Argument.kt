@@ -11,6 +11,7 @@ package dev.kordex.core.commands
 import dev.kordex.core.commands.converters.Converter
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.utils.getKoin
 
 /**
  * Data class representing a single argument.
@@ -29,6 +30,5 @@ public data class Argument<T : Any?>(
 	}
 }
 
-internal fun Argument<*>.getDefaultTranslatedDisplayName(provider: TranslationsProvider, command: Command): String =
-	displayName.withBundle(command.resolvedBundle ?: converter.bundle)
-		.translateLocale(provider.defaultLocale)
+internal fun Argument<*>.getDefaultTranslatedDisplayName(): String =
+	displayName.translateLocale(getKoin().get<TranslationsProvider>().defaultLocale)

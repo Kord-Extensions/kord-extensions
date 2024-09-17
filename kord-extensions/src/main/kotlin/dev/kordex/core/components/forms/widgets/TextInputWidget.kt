@@ -11,7 +11,6 @@ package dev.kordex.core.components.forms.widgets
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kordex.core.i18n.TranslationsProvider
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -88,17 +87,17 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 		}
 	}
 
-	override suspend fun apply(builder: ActionRowBuilder, locale: Locale, bundle: Bundle?) {
-		val translatedLabel = label.withBundle(bundle)
+	override suspend fun apply(builder: ActionRowBuilder, locale: Locale) {
+		val translatedLabel = label
 			.withLocale(locale)
 			.translate()
 
-		val translatedPlaceholder = placeholder?.withBundle(bundle)
+		val translatedPlaceholder = placeholder
 			?.withLocale(locale)
 			?.translate()
 
 		val translatedInitialValue = if (translateInitialValue) {
-			initialValue?.withBundle(bundle)
+			initialValue
 				?.withLocale(locale)
 				?.translate()
 		} else {

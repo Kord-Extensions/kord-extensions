@@ -23,6 +23,7 @@ import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import dev.kordex.core.annotations.AlwaysPublicResponse
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.BaseButtonPaginator
 import dev.kordex.core.pagination.EphemeralResponsePaginator
 import dev.kordex.core.pagination.PublicFollowUpPaginator
@@ -108,7 +109,7 @@ public interface UnsafeCommandInteractionContext :
 
 	@UnsafeAPI
 	override suspend fun editingPaginator(
-		defaultGroup: String,
+		defaultGroup: Key,
 		locale: Locale?,
 		builder: suspend PaginatorBuilder.() -> Unit,
 	): BaseButtonPaginator {
@@ -129,7 +130,7 @@ public interface UnsafeCommandInteractionContext :
 	@AlwaysPublicResponse
 	@UnsafeAPI
 	override suspend fun respondingPaginator(
-		defaultGroup: String,
+		defaultGroup: Key,
 		locale: Locale?,
 		builder: suspend PaginatorBuilder.() -> Unit,
 	): BaseButtonPaginator {

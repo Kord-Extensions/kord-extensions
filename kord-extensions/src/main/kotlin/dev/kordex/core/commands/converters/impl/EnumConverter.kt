@@ -16,13 +16,13 @@ import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.commands.OptionWrapper
+import dev.kordex.core.commands.application.slash.converters.ChoiceEnum
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
-import dev.kordex.core.i18n.KORDEX_BUNDLE
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
+import java.util.Locale
 
 /**
  * Argument converter for arbitrary enum arguments.
@@ -40,27 +40,31 @@ import dev.kordex.parser.StringParser
 	types = [ConverterType.SINGLE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.LIST],
 	imports = [
 		"dev.kordex.core.commands.converters.impl.getEnum",
+		"dev.kordex.core.commands.application.slash.converters.ChoiceEnum",
+		"java.util.Locale",
 	],
 
-	builderGeneric = "E: Enum<E>",
+	builderGeneric = "E",
 	builderConstructorArguments = [
-		"public var getter: suspend (String) -> E?"
+		"public var getter: suspend (String, Locale) -> E?",
 	],
 
 	builderFields = [
 		"public lateinit var typeName: Key",
-		"public var bundle: Bundle? = null"
 	],
 
-	functionGeneric = "E: Enum<E>",
+	builderSuffixedWhere = "E : Enum<E>, E : ChoiceEnum",
+
+	functionGeneric = "E",
 	functionBuilderArguments = [
-		"getter = { getEnum(it) }",
-	]
+		"getter = ::getEnum",
+	],
+
+	functionSuffixedWhere = "E : Enum<E>, E : ChoiceEnum",
 )
 public class EnumConverter<E : Enum<E>>(
 	typeName: Key,
-	private val getter: suspend (String) -> E?,
-	override val bundle: Bundle? = KORDEX_BUNDLE,
+	private val getter: suspend (String, Locale) -> E?,
 	override var validator: Validator<E> = null,
 ) : SingleConverter<E>() {
 	override val signatureType: Key = typeName
@@ -69,7 +73,7 @@ public class EnumConverter<E : Enum<E>>(
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
 		try {
-			parsed = getter.invoke(arg) ?: return false
+			parsed = getter.invoke(arg, context.getLocale()) ?: return false
 		} catch (_: IllegalArgumentException) {
 			return false
 		}
@@ -86,7 +90,7 @@ public class EnumConverter<E : Enum<E>>(
 		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
 		try {
-			parsed = getter.invoke(optionValue) ?: return false
+			parsed = getter.invoke(optionValue, context.getLocale()) ?: return false
 		} catch (_: IllegalArgumentException) {
 			return false
 		}
@@ -96,9 +100,11 @@ public class EnumConverter<E : Enum<E>>(
 }
 
 /**
- * The default enum value getter - matches enums based on a case-insensitive string comparison with the name.
+ * The default choice enum value getter — matches choice enums via a case-insensitive string comparison with the names.
  */
-public inline fun <reified E : Enum<E>> getEnum(arg: String): E? =
+public inline fun <reified E> getEnum(arg: String, locale: Locale): E? where E : Enum<E>, E : ChoiceEnum =
 	enumValues<E>().firstOrNull {
-		it.name.equals(arg, true)
+		it.readableName.translateLocale(locale).equals(arg, true) ||
+			it.readableName.key.equals(arg, true) ||
+			it.name.equals(arg, true)
 	}

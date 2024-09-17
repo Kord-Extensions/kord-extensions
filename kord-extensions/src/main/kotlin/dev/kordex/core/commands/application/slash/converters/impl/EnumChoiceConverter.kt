@@ -20,13 +20,13 @@ import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.application.slash.converters.ChoiceConverter
 import dev.kordex.core.commands.application.slash.converters.ChoiceEnum
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.commands.wrapStringOption
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.getIgnoringCase
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.util.Locale
 
 /**
  * Choice converter for enum arguments. Supports mapping up to 25 choices to an enum type.
@@ -40,19 +40,17 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 	imports = [
 		"dev.kordex.core.commands.converters.impl.getEnum",
 		"dev.kordex.core.commands.application.slash.converters.ChoiceEnum",
-		"dev.kordex.core.i18n.types.Bundle",
-		"dev.kordex.core.i18n.types.Key",
+		"java.util.Locale",
 	],
 
 	builderGeneric = "E",
 	builderConstructorArguments = [
-		"public var getter: suspend (String) -> E?",
-		"!! argMap: Map<String, E>",
+		"public var getter: suspend (String, Locale) -> E?",
+		"!! argMap: Map<Key, E>",
 	],
 
 	builderFields = [
 		"public lateinit var typeName: Key",
-		"public var bundle: Bundle? = null",
 	],
 
 	builderInitStatements = [
@@ -63,7 +61,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 
 	functionGeneric = "E",
 	functionBuilderArguments = [
-		"getter = { getEnum(it) }",
+		"getter = ::getEnum",
 		"argMap = enumValues<E>().associateBy { it.readableName }",
 	],
 
@@ -71,10 +69,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 )
 public class EnumChoiceConverter<E>(
 	typeName: Key,
-	private val getter: suspend (String) -> E?,
-	choices: Map<String, E>,
+	private val getter: suspend (String, Locale) -> E?,
+	choices: Map<Key, E>,
 	override var validator: Validator<E> = null,
-	override val bundle: Bundle? = null,
 ) : ChoiceConverter<E>(choices) where E : Enum<E>, E : ChoiceEnum {
 	override val signatureType: Key = typeName
 
@@ -92,7 +89,7 @@ public class EnumChoiceConverter<E>(
 		}
 
 		try {
-			val result = getter.invoke(arg)
+			val result = getter.invoke(arg, context.getLocale())
 				?: throw DiscordRelayedException(
 					CoreTranslations.Converters.Choice.invalidChoice
 						.withLocale(context.getLocale())
@@ -119,18 +116,21 @@ public class EnumChoiceConverter<E>(
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
-		wrapOption(arg.displayName, arg.description) {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> {
+		val option = wrapStringOption(arg.displayName, arg.description) {
 			required = true
-
-			this@EnumChoiceConverter.choices.forEach { choice(it.key, it.value.name) }
 		}
+
+		this.choices.forEach { option.choice(it.key, it.value.name) }
+
+		return option
+	}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val stringOption = option as? StringOptionValue ?: return false
 
 		try {
-			parsed = getter.invoke(stringOption.value) ?: return false
+			parsed = getter.invoke(stringOption.value, context.getLocale()) ?: return false
 		} catch (_: IllegalArgumentException) {
 			return false
 		}
@@ -140,10 +140,11 @@ public class EnumChoiceConverter<E>(
 }
 
 /**
- * The default choice enum value getter - matches choice enums via a case-insensitive string comparison with the names.
+ * The default choice enum value getter — matches choice enums via a case-insensitive string comparison with the names.
  */
-public inline fun <reified E> getEnum(arg: String): E? where E : Enum<E>, E : ChoiceEnum =
+public inline fun <reified E> getEnum(arg: String, locale: Locale): E? where E : Enum<E>, E : ChoiceEnum =
 	enumValues<E>().firstOrNull {
-		it.readableName.equals(arg, true) ||
+		it.readableName.translateLocale(locale).equals(arg, true) ||
+			it.readableName.key.equals(arg, true) ||
 			it.name.equals(arg, true)
 	}

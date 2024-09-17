@@ -121,9 +121,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 		key: Key,
 		lowerCase: Boolean = false,
 	): Localized<String> {
-		val bundledKey = key.withBundle(resolvedBundle)
-
-		var default = bundledKey
+		var default = key
 			.withLocale(translationsProvider.defaultLocale)
 			.translate()
 
@@ -133,7 +131,7 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
 		val translations = bot.settings.i18nBuilder.applicationCommandLocales
 			.associateWith { locale ->
-				val result = bundledKey
+				val result = key
 					.withLocale(locale.asJavaLocale())
 					.translate()
 

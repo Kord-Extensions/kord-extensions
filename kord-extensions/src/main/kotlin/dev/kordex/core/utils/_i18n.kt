@@ -12,4 +12,4 @@ import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.TranslatableContext
 
 public suspend fun Key.withContext(context: TranslatableContext) =
-	withBoth(context.bundle, context.getLocale(), overwriteBundle = false)
+	withLocale(context.getLocale())

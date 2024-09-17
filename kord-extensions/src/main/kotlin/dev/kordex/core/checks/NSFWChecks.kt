@@ -7,12 +7,14 @@
  */
 
 @file:Suppress("StringLiteralDuplication")
+@file:OptIn(NotTranslated::class)
 
 package dev.kordex.core.checks
 
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.NsfwLevel
 import dev.kord.core.event.Event
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.checks.types.CheckContext
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.utils.compareTo

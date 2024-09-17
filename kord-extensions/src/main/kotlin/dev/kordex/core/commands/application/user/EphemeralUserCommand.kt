@@ -91,10 +91,10 @@ public class EphemeralUserCommand<M : ModalForm>(
 			val locale = event.getLocale()
 
 			event.interaction.modal(
-				modalObj.translateTitle(locale, resolvedBundle),
+				modalObj.translateTitle(locale),
 				modalObj.id
 			) {
-				modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+				modalObj.applyToBuilder(this, event.getLocale())
 			}
 
 			modalObj.awaitCompletion {

@@ -24,7 +24,6 @@ import dev.kordex.core.checks.channelFor
 import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.userFor
 import dev.kordex.core.i18n.TranslationsProvider
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
@@ -50,9 +49,6 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 ) : KordExKoinComponent, TranslatableContext {
 	/** Translations provider, for retrieving translations. **/
 	public val translationsProvider: TranslationsProvider by inject()
-
-	override val bundle: Bundle?
-		get() = component.bundle
 
 	/** Configured bot settings object. **/
 	public val settings: ExtensibleBotBuilder by inject()
@@ -140,28 +136,26 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 	}
 
 	/**
-	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+	 * Given a translation key, return the translation for the locale provided by the bot's configured
 	 * locale resolvers.
 	 */
 	public override suspend fun translate(
 		key: Key,
-		bundle: Bundle?,
 		replacements: Array<Any?>,
 	): String =
-		key.withBundle(bundle)
+		key
 			.withLocale(getLocale())
 			.translateArray(replacements)
 
 	/**
-	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
+	 * Given a translation key, return the translation for the locale provided by the bot's configured
 	 * locale resolvers.
 	 */
 	public override suspend fun translate(
 		key: Key,
-		bundleName: Bundle?,
 		replacements: Map<String, Any?>,
 	): String =
-		key.withBundle(bundle)
+		key
 			.withLocale(getLocale())
 			.translateNamed(replacements)
 

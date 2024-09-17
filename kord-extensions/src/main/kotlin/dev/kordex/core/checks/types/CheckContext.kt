@@ -10,11 +10,9 @@ package dev.kordex.core.checks.types
 
 import dev.kord.core.event.Event
 import dev.kordex.core.DiscordRelayedException
-import dev.kordex.core.annotations.tooling.Translatable
-import dev.kordex.core.annotations.tooling.TranslatableType
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import org.koin.core.component.inject
@@ -29,8 +27,6 @@ import java.util.*
  */
 public open class CheckContext<out T : Event>(
 	public val event: T,
-
-	@Translatable(TranslatableType.LOCALE)
 	public val locale: Locale,
 ) : KordExKoinComponent {
 	/** Translations provider. **/
@@ -44,12 +40,7 @@ public open class CheckContext<out T : Event>(
 	 * **Note:** This *must* be a translation key. A bare string may not work, as the error response function uses
 	 * the replacement functionality of the translations system.
 	 */
-	@Translatable(TranslatableType.STRING)
 	public var errorResponseKey: Key = CoreTranslations.Checks.responseTemplate
-
-	/** Translation bundle used by [translate] by default and the error response translation, if not the default. **/
-	@Translatable(TranslatableType.BUNDLE)
-	public var defaultBundle: Bundle? = null
 
 	/** Human-readable message for the user, if any. **/
 	public var message: String? = null
@@ -63,16 +54,17 @@ public open class CheckContext<out T : Event>(
 	}
 
 	/** Mark this check as having failed, optionally providing a message for the user. **/
-	public fun fail(message: String? = null) {
+	@NotTranslated
+	public fun fail(message: String) {
 		this.message = message
 		this.passed = false
 	}
 
 	/** Mark this check as having failed, optionally providing a message for the user. **/
-	public fun fail(message: Key) {
-		this.message = message.withBundle(defaultBundle)
-			.withLocale(locale)
-			.translate()
+	public fun fail(message: Key? = null) {
+		this.message = message
+			?.withLocale(locale)
+			?.translate()
 
 		this.passed = false
 	}
@@ -82,7 +74,8 @@ public open class CheckContext<out T : Event>(
 	 *
 	 * Returns `true` if the check was marked as having failed, `false` otherwise.
 	 */
-	public fun failIf(value: Boolean, message: String? = null): Boolean {
+	@NotTranslated
+	public fun failIf(value: Boolean, message: String): Boolean {
 		if (value) {
 			fail(message)
 
@@ -97,7 +90,7 @@ public open class CheckContext<out T : Event>(
 	 *
 	 * Returns `true` if the check was marked as having failed, `false` otherwise.
 	 */
-	public fun failIf(value: Boolean, message: Key): Boolean {
+	public fun failIf(value: Boolean, message: Key? = null): Boolean {
 		if (value) {
 			fail(message)
 
@@ -112,7 +105,8 @@ public open class CheckContext<out T : Event>(
 	 *
 	 * Returns `true` if the check was marked as having failed, `false` otherwise.
 	 */
-	public suspend fun failIf(message: String? = null, callback: suspend () -> Boolean): Boolean =
+	@NotTranslated
+	public suspend fun failIf(message: String, callback: suspend () -> Boolean): Boolean =
 		failIf(callback(), message)
 
 	/**
@@ -120,7 +114,7 @@ public open class CheckContext<out T : Event>(
 	 *
 	 * Returns `true` if the check was marked as having failed, `false` otherwise.
 	 */
-	public suspend fun failIf(message: Key, callback: suspend () -> Boolean): Boolean =
+	public suspend fun failIf(message: Key? = null, callback: suspend () -> Boolean): Boolean =
 		failIf(callback(), message)
 
 	/**
@@ -128,7 +122,8 @@ public open class CheckContext<out T : Event>(
 	 *
 	 * Returns `true` if the check was marked as having failed, `false` otherwise.
 	 */
-	public fun failIfNot(value: Boolean, message: String? = null): Boolean =
+	@NotTranslated
+	public fun failIfNot(value: Boolean, message: String): Boolean =
 		failIf(!value, message)
 
 	/**
@@ -136,7 +131,7 @@ public open class CheckContext<out T : Event>(
 	 *
 	 * Returns `true` if the check was marked as having failed, `false` otherwise.
 	 */
-	public fun failIfNot(value: Boolean, message: Key): Boolean =
+	public fun failIfNot(value: Boolean, message: Key? = null): Boolean =
 		failIf(!value, message)
 
 	/**
@@ -144,7 +139,8 @@ public open class CheckContext<out T : Event>(
 	 *
 	 * Returns `true` if the check was marked as having failed, `false` otherwise.
 	 */
-	public suspend fun failIfNot(message: String? = null, callback: suspend () -> Boolean): Boolean =
+	@NotTranslated
+	public suspend fun failIfNot(message: String, callback: suspend () -> Boolean): Boolean =
 		failIfNot(callback(), message)
 
 	/**
@@ -152,7 +148,7 @@ public open class CheckContext<out T : Event>(
 	 *
 	 * Returns `true` if the check was marked as having failed, `false` otherwise.
 	 */
-	public suspend fun failIfNot(message: Key, callback: suspend () -> Boolean): Boolean =
+	public suspend fun failIfNot(message: Key? = null, callback: suspend () -> Boolean): Boolean =
 		failIfNot(callback(), message)
 
 	/**
@@ -214,50 +210,21 @@ public open class CheckContext<out T : Event>(
 
 	/** Quick access to translate strings using this check context's [locale]. **/
 	public fun translate(
-		@Translatable(TranslatableType.STRING)
 		key: Key,
-
-		@Translatable(TranslatableType.BUNDLE)
-		bundle: Bundle? = defaultBundle,
 
 		replacements: Array<Any?> = arrayOf(),
 	): String =
-		key.withBundle(bundle)
+		key
 			.withLocale(locale)
 			.translateArray(replacements)
 
 	/** Quick access to translate strings using this check context's [locale]. **/
 	public fun translate(
-		@Translatable(TranslatableType.STRING)
-		key: Key,
-
-		replacements: Array<Any?> = arrayOf(),
-	): String =
-		key.withBundle(defaultBundle)
-			.withLocale(locale)
-			.translateArray(replacements)
-
-	/** Quick access to translate strings using this check context's [locale]. **/
-	public fun translate(
-		@Translatable(TranslatableType.STRING)
 		key: Key,
 
 		replacements: Map<String, Any?>,
 	): String =
-		key.withBundle(defaultBundle)
-			.withLocale(locale)
-			.translateNamed(replacements)
-
-	/** Quick access to translate strings using this check context's [locale]. **/
-	public fun translate(
-		@Translatable(TranslatableType.STRING)
-		key: Key,
-
-		@Translatable(TranslatableType.BUNDLE)
-		bundle: Bundle?,
-		replacements: Map<String, Any?>,
-	): String =
-		key.withBundle(bundle)
+		key
 			.withLocale(locale)
 			.translateNamed(replacements)
 
@@ -276,7 +243,7 @@ public open class CheckContext<out T : Event>(
 	/** Get the translated check failure message, if the check has failed and a message was set. **/
 	public fun getTranslatedMessage(): String? =
 		if (passed.not() && message != null) {
-			errorResponseKey.withBundle(defaultBundle)
+			errorResponseKey
 				.withLocale(locale)
 				.translate(message)
 		} else {

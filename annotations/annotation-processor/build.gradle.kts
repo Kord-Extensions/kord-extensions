@@ -10,6 +10,7 @@ metadata {
 
 dependencies {
 	implementation(libs.kotlin.stdlib)
+	implementation(libs.kotlin.reflect)
 
 	implementation(libs.koin.core)
 	implementation(libs.ksp)

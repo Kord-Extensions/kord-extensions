@@ -8,6 +8,9 @@
 
 package dev.kordex.modules.func.phishing
 
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.modules.func.phishing.i18n.generated.PhishingTranslations
+
 /**
  * Sealed class representing what should happen when a phishing link is detected.
  *
@@ -15,16 +18,16 @@ package dev.kordex.modules.func.phishing
  *
  * @property message Message to return to the user.
  */
-sealed class DetectionAction(val message: String) {
+sealed class DetectionAction(val message: Key) {
 	/** Ban 'em and delete the message. **/
-	object Ban : DetectionAction("you have been banned from the server")
+	object Ban : DetectionAction(PhishingTranslations.Actions.Ban.text)
 
 	/** Delete the message. **/
-	object Delete : DetectionAction("it has been deleted")
+	object Delete : DetectionAction(PhishingTranslations.Actions.Delete.text)
 
 	/** Kick 'em and delete the message. **/
-	object Kick : DetectionAction("you have been kicked from the server")
+	object Kick : DetectionAction(PhishingTranslations.Actions.Kick.text)
 
 	/** Don't do anything, just log it in the logs channel. **/
-	object LogOnly : DetectionAction("it has been logged for the server staff to review")
+	object LogOnly : DetectionAction(PhishingTranslations.Actions.LogOnly.text)
 }

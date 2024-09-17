@@ -95,22 +95,7 @@ public open class ChatCommand<T : Arguments>(
 	public open var localeFallback: Boolean = false
 
 	/**
-	 * Alternative names that can be used to invoke your command.
-	 *
-	 * There's no limit on the number of aliases a command may have, but in the event of an alias matching
-	 * the [name] of a registered command, the command with the [name] takes priority.
-	 */
-	@Deprecated(
-		"Manual translation API access is unsupported. Set [aliasKey] to a [Key] object instead.",
-		level = DeprecationLevel.WARNING,
-	)
-	public open var aliases: Array<String> = arrayOf()
-
-	/**
 	 * Translation key referencing a comma-separated list of command aliases.
-	 *
-	 * If this is set, the [aliases] list is ignored. This is also slightly more efficient during the first
-	 * translation pass, as only one key will ever need to be translated.
 	 */
 	public open var aliasKey: Key? = null
 
@@ -144,7 +129,6 @@ public open class ChatCommand<T : Arguments>(
 		if (!signatureCache.containsKey(locale)) {
 			if (signature != null) {
 				signatureCache[locale] = signature!!
-					.withBundle(resolvedBundle)
 					.withLocale(locale)
 					.translate()
 			} else {
@@ -158,7 +142,7 @@ public open class ChatCommand<T : Arguments>(
 	/** Return this command's name translated for the given locale, cached as required. **/
 	public open fun getTranslatedName(locale: Locale): String {
 		if (!nameTranslationCache.containsKey(locale)) {
-			nameTranslationCache[locale] = name.withBundle(resolvedBundle)
+			nameTranslationCache[locale] = name
 				.withLocale(locale)
 				.translate()
 		}
@@ -169,8 +153,8 @@ public open class ChatCommand<T : Arguments>(
 	/** Return this command's aliases translated for the given locale, cached as required. **/
 	public open fun getTranslatedAliases(locale: Locale): Set<String> {
 		if (!aliasTranslationCache.containsKey(locale)) {
-			val translations = if (aliasKey != null) {
-				aliasKey!!.withBundle(resolvedBundle)
+			if (aliasKey != null) {
+				val translations = aliasKey!!
 					.withLocale(locale)
 					.translate()
 					.lowercase()
@@ -178,18 +162,11 @@ public open class ChatCommand<T : Arguments>(
 					.map { it.trim() }
 					.filter { it != EMPTY_VALUE_STRING }
 					.toSortedSet()
-			} else {
-				// TODO: Remove this when deprecations happen
-				this.aliases.map {
-					translationsProvider.translate(
-						key = it,
-						bundleName = resolvedBundle?.name,
-						locale = locale
-					).lowercase()
-				}.toSortedSet()
-			}
 
-			aliasTranslationCache[locale] = translations
+				aliasTranslationCache[locale] = translations
+			} else {
+				aliasTranslationCache[locale] = setOf()
+			}
 		}
 
 		return aliasTranslationCache[locale]!!

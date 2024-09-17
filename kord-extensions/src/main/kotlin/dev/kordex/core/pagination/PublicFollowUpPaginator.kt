@@ -14,7 +14,6 @@ import dev.kord.core.behavior.interaction.response.FollowupPermittingInteraction
 import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.core.entity.interaction.followup.PublicFollowupMessage
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.pagination.builders.PageTransitionCallback
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import dev.kordex.core.pagination.pages.Pages
@@ -34,11 +33,10 @@ public class PublicFollowUpPaginator(
 	keepEmbed: Boolean = true,
 	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	mutator: PageTransitionCallback? = null,
-	bundle: Bundle? = null,
 	locale: Locale? = null,
 
 	public val interaction: FollowupPermittingInteractionResponseBehavior,
-) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, locale) {
 	/** Follow-up interaction to use for this paginator's embeds. Will be created by [send]. **/
 	public var embedInteraction: PublicFollowupMessage? = null
 
@@ -99,7 +97,6 @@ public fun PublicFollowUpPaginator(
 	timeoutSeconds = builder.timeoutSeconds,
 	keepEmbed = builder.keepEmbed,
 	mutator = builder.mutator,
-	bundle = builder.bundle,
 	locale = builder.locale,
 	interaction = interaction,
 

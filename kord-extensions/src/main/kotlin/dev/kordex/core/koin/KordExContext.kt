@@ -6,6 +6,8 @@
  * Any redistribution must include the specific provision above.
  */
 
+@file:Suppress("TYPEALIAS_EXPANSION_DEPRECATION")
+
 package dev.kordex.core.koin
 
 import org.koin.core.Koin
@@ -49,7 +51,7 @@ public object KordExContext : KoinContext {
 	 *
 	 * @param koinApplication The application to registers.
 	 *
-	 * @throws KoinAppAlreadyStartedException The [KoinApplication] has already been instantiated.
+	 * @throws ApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
 	 */
 	private fun register(koinApplication: KoinApplication) {
 		if (koin != null) {
@@ -71,7 +73,7 @@ public object KordExContext : KoinContext {
 	 *
 	 * @param koinApplication The application to start with.
 	 *
-	 * @throws KoinAppAlreadyStartedException The [KoinApplication] has already been instantiated.
+	 * @throws ApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
 	 */
 	override fun startKoin(koinApplication: KoinApplication): KoinApplication = synchronized(this) {
 		register(koinApplication)
@@ -85,7 +87,7 @@ public object KordExContext : KoinContext {
 	 *
 	 * @param appDeclaration The application declaration to start with.
 	 *
-	 * @throws KoinAppAlreadyStartedException The [KoinApplication] has already been instantiated.
+	 * @throws ApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
 	 */
 	override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = synchronized(this) {
 		val koinApplication = KoinApplication.init()

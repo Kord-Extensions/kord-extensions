@@ -29,7 +29,6 @@ import dev.kordex.core.components.forms.widgets.Widget
 import dev.kordex.core.events.EventContext
 import dev.kordex.core.events.ModalInteractionCompleteEvent
 import dev.kordex.core.i18n.TranslationsProvider
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.waitFor
@@ -46,9 +45,6 @@ import kotlin.time.Duration.Companion.minutes
 public abstract class ModalForm : Form(), KordExKoinComponent {
 	/** The modal's title, shown on Discord. **/
 	public abstract var title: Key
-
-	/** Translation bundle to use for this modal's title and widgets. **/
-	public open var bundle: Bundle? = null
 
 	/** @suppress Internal reference. **/
 	protected val bot: ExtensibleBot by inject()
@@ -118,7 +114,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 	}
 
 	/** Given a ModalBuilder, apply this modal's widgets for display on Discord. **/
-	public suspend fun applyToBuilder(builder: ModalBuilder, locale: Locale, resolvedBundle: Bundle?) {
+	public suspend fun applyToBuilder(builder: ModalBuilder, locale: Locale) {
 		val appliedWidgets = mutableSetOf<Widget<*>>()
 
 		grid.forEach { row ->
@@ -129,7 +125,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 				builder.actionRow {
 					filteredRow.forEach { widget ->
 						if (widget !in appliedWidgets) {
-							widget.apply(this, locale, bundle ?: resolvedBundle)
+							widget.apply(this, locale)
 							appliedWidgets.add(widget)
 						}
 					}
@@ -145,10 +141,9 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 		return callback(completionEvent?.interaction)
 	}
 
-	/** Return a translated modal title using the given locale, and the given bundle if the modal doesn't have one. **/
-	public fun translateTitle(locale: Locale, otherBundle: Bundle?): String =
+	/** Return a translated modal title using the given locale. **/
+	public fun translateTitle(locale: Locale): String =
 		title
-			.withBundle(bundle ?: otherBundle)
 			.withLocale(locale)
 			.translate()
 
@@ -162,14 +157,13 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 	 */
 	public suspend fun <T : Any?> sendAndAwait(
 		locale: Locale,
-		bundle: Bundle?,
 		interaction: ModalParentInteractionBehavior,
 		callback: suspend (ModalSubmitInteraction?) -> T,
 	): T {
 		componentRegistry.register(this)
 
-		interaction.modal(translateTitle(locale, bundle), id) {
-			applyToBuilder(this, locale, bundle)
+		interaction.modal(translateTitle(locale), id) {
+			applyToBuilder(this, locale)
 		}
 
 		return awaitCompletion(callback)
@@ -188,7 +182,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 		val interaction = context.event.interaction as? ModalParentInteractionBehavior
 			?: error("Interaction ${context.event.interaction} does not support responding with a modal.")
 
-		return sendAndAwait(context.getLocale(), context.bundle, interaction, callback)
+		return sendAndAwait(context.getLocale(), interaction, callback)
 	}
 
 	/**
@@ -204,7 +198,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 		val interaction = context.genericEvent.interaction as? ModalParentInteractionBehavior
 			?: error("Interaction ${context.genericEvent.interaction} does not support responding with a modal.")
 
-		return sendAndAwait(context.getLocale(), context.bundle, interaction, callback)
+		return sendAndAwait(context.getLocale(), interaction, callback)
 	}
 
 	/**
@@ -220,7 +214,7 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 		val interaction = context.event.interaction as? ModalParentInteractionBehavior
 			?: error("Interaction ${context.event.interaction} does not support responding with a modal.")
 
-		return sendAndAwait(context.getLocale(), context.bundle, interaction, callback)
+		return sendAndAwait(context.getLocale(), interaction, callback)
 	}
 
 	/**

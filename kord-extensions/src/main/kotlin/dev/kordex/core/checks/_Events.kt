@@ -201,7 +201,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
 		is VoiceStateUpdateEvent -> event.state.getGuildOrNull()
 		is WebhookUpdateEvent -> event.guild
 
-		// TODO: Kord doesn't have the guild yet?
+		// TODO: Kord doesn't have the guild yet!
 // 		is GuildAuditLogEntryCreateEvent -> event.auditLogEntry.userId
 
 		else -> null

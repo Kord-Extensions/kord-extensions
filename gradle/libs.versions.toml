@@ -51,6 +51,7 @@ koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 kord = { module = "dev.kord:kord-core-voice", version.ref = "kord" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }

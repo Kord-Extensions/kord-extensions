@@ -24,9 +24,7 @@ import dev.kordex.core.commands.chat.ChatCommandContext
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
-import dev.kordex.core.i18n.KORDEX_BUNDLE
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.utils.users
 import dev.kordex.parser.StringParser
@@ -55,7 +53,6 @@ public class UserConverter(
 	override var validator: Validator<User> = null,
 ) : SingleConverter<User>() {
 	override val signatureType: Key = CoreTranslations.Converters.User.signatureType
-	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		if (useReply && context is ChatCommandContext<*>) {

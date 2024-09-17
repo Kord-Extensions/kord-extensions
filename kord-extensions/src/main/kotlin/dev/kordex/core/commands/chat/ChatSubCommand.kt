@@ -45,7 +45,6 @@ public open class ChatSubCommand<T : Arguments>(
 	override fun getTranslatedName(locale: Locale): String {
 		if (!nameTranslationCache.containsKey(locale)) {
 			nameTranslationCache[locale] = name
-				.withBundle(resolvedBundle)
 				.withLocale(locale)
 				.translate()
 				.lowercase(locale)

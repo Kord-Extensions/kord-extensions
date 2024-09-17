@@ -102,9 +102,10 @@ public data class Key(
 	public fun translateNamedLocale(locale: Locale, vararg replacements: Pair<String, Any?>): String =
 		translateNamedLocale(locale, replacements.toMap())
 
+	// Key "translation.key" (Bundle "name" / Locale "en_GB")
 	override fun toString(): String =
 		buildString {
-			append("Key $key")
+			append("Key \"$key\"")
 
 			if (bundle != null || locale != null) {
 				append("(")
@@ -118,7 +119,7 @@ public data class Key(
 				}
 
 				if (locale != null) {
-					append("${locale.toLanguageTag()}")
+					append("Locale \"${locale.toLanguageTag()}\"")
 				}
 
 				append(")")

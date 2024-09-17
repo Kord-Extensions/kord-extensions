@@ -93,6 +93,8 @@ public class ConverterBuilderFunctionBuilder : KoinComponent {
 
 		builder.append(".() -> Unit\n")
 
+		// TODO: Arbitrary function arguments
+
 		builder.append("): $converterType<$argumentType>")
 
 		if (whereSuffix != null) {

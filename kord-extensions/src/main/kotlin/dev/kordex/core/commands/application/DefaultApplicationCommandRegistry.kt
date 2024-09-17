@@ -386,7 +386,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 		val arguments = command.arguments!!()
 
 		val arg = arguments.args.firstOrNull {
-			it.getDefaultTranslatedDisplayName(translationsProvider, command) == option.first
+			it.getDefaultTranslatedDisplayName() == option.first
 		}
 
 		arg ?: return logger.warn {
@@ -407,7 +407,7 @@ public open class DefaultApplicationCommandRegistry : ApplicationCommandRegistry
 					break
 				}
 
-				val argName = priorArg.getDefaultTranslatedDisplayName(translationsProvider, command)
+				val argName = priorArg.getDefaultTranslatedDisplayName()
 				val currentOption = event.interaction.command.options[argName]
 
 				if (currentOption == null) {

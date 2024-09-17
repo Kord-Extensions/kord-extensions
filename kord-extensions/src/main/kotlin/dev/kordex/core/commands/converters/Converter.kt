@@ -16,7 +16,6 @@ import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.commands.converters.builders.ValidationContext
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.withContext
@@ -74,13 +73,6 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 	 * short.
 	 */
 	public abstract val signatureType: Key
-
-	/**
-	 * String referring to the translation bundle name required to resolve translations for this converter.
-	 *
-	 * For more information, see the i18n page of the documentation.
-	 */
-	public open val bundle: Bundle? = null
 
 	/**
 	 * If the [signatureType] isn't sufficient, you can optionally provide a translation key pointing to a

@@ -80,10 +80,10 @@ public open class EphemeralInteractionButton<M : ModalForm>(
 			val locale = event.getLocale()
 
 			event.interaction.modal(
-				modalObj.translateTitle(locale, bundle),
+				modalObj.translateTitle(locale),
 				modalObj.id
 			) {
-				modalObj.applyToBuilder(this, event.getLocale(), bundle)
+				modalObj.applyToBuilder(this, event.getLocale())
 			}
 
 			modalObj.awaitCompletion {

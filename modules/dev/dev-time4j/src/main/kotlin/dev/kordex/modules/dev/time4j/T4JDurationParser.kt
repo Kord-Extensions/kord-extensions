@@ -9,7 +9,7 @@
 package dev.kordex.modules.dev.time4j
 
 import dev.kordex.core.builders.ExtensibleBotBuilder
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.parsers.DurationParserException
 import dev.kordex.core.parsers.InvalidTimeUnitException
@@ -23,7 +23,6 @@ import java.util.*
  * Object in charge of parsing strings into [Duration]s, using translated locale-aware units.
  */
 public object T4JDurationParser : KordExKoinComponent {
-	private val translations: TranslationsProvider by inject()
 	private val settings: ExtensibleBotBuilder by inject()
 
 	init {
@@ -42,7 +41,7 @@ public object T4JDurationParser : KordExKoinComponent {
 	public fun parse(input: String, locale: Locale): Duration<IsoUnit> {
 		if ("-" in input) {
 			throw DurationParserException(
-				translations.translate("converters.duration.error.negativeUnsupported", locale)
+				CoreTranslations.Converters.Duration.Error.negativeUnsupported.translateLocale(locale)
 			)
 		}
 
@@ -72,7 +71,9 @@ public object T4JDurationParser : KordExKoinComponent {
 		}
 
 		if (values.size != units.size) {
-			throw DurationParserException(translations.translate("converters.duration.error.badUnitPairs", locale))
+			throw DurationParserException(
+				CoreTranslations.Converters.Duration.Error.badUnitPairs.translateLocale(locale)
+			)
 		}
 
 		while (units.isNotEmpty()) {

@@ -30,6 +30,7 @@ import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.EXPAND_EMOJI
 import dev.kordex.core.pagination.PublicResponsePaginator
 import dev.kordex.core.pagination.pages.Page
@@ -92,7 +93,6 @@ private const val PAGE_FOOTER_ICON =
 class MappingsExtension : Extension() {
 	private val logger = KotlinLogging.logger { }
 	override val name: String = MappingsPlugin.PLUGIN_ID
-	override val bundle: String = "kordex.func-mappings"
 
 	private val guildConfig = StorageUnit(
 		StorageType.Config,
@@ -117,7 +117,7 @@ class MappingsExtension : Extension() {
 		val yarnChannels = Channels.entries.joinToString(", ") { "`${it.readableName}`" }
 
 		suspend fun <T : MappingArguments> slashCommand(
-			parentName: String,
+			parentName: Key,
 			friendlyName: String,
 			namespace: Namespace,
 			arguments: () -> T,

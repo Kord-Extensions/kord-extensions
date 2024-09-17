@@ -26,7 +26,6 @@ import dev.kordex.core.commands.chat.ChatCommand
 import dev.kordex.core.commands.chat.ChatCommandRegistry
 import dev.kordex.core.events.EventHandler
 import dev.kordex.core.events.ExtensionStateEvent
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
@@ -143,9 +142,6 @@ public abstract class Extension : KordExKoinComponent {
 	 * These checks will be checked against all user commands in this extension.
 	 */
 	public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
-
-	/** String representing the bundle to get translations from for command names/descriptions. **/
-	public open val bundle: Bundle? = null
 
 	/** Set of intents required by this extension's event handlers and commands. **/
 	public open val intents: MutableSet<Intent> = mutableSetOf()

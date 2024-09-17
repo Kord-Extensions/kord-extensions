@@ -29,9 +29,7 @@ import dev.kordex.core.commands.chat.ChatCommandContext
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
-import dev.kordex.core.i18n.KORDEX_BUNDLE
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -69,7 +67,6 @@ public class MessageConverter(
 	override var validator: Validator<Message> = null,
 ) : SingleConverter<Message>() {
 	override val signatureType: Key = CoreTranslations.Converters.Message.signatureType
-	override val bundle: Bundle = KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		if (useReply && context is ChatCommandContext<*>) {

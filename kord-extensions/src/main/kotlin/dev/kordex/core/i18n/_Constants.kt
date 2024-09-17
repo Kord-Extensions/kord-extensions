@@ -24,6 +24,3 @@ public val KORDEX_BUNDLE: Bundle = Bundle("$KORDEX_KEY.$DEFAULT_BUNDLE_SUFFIX")
 
 /** String used to denote an empty translation value - `∅∅∅` (`\u2205\u2205\u2205`). **/
 public const val EMPTY_VALUE_STRING: String = "∅∅∅"
-
-/** String representing the default KordEx bundle. **/
-public const val DEFAULT_KORDEX_BUNDLE: String = "$KORDEX_KEY.$DEFAULT_BUNDLE_SUFFIX"

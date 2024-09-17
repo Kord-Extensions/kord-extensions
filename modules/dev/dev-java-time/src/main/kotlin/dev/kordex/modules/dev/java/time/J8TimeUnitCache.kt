@@ -8,38 +8,38 @@
 
 package dev.kordex.modules.dev.java.time
 
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
-import org.koin.core.component.inject
 import java.time.temporal.ChronoUnit
 import java.util.*
 
-private typealias UnitMap = LinkedHashMap<String, ChronoUnit>
+private typealias UnitMap = LinkedHashMap<Key, ChronoUnit>
+private typealias StringUnitMap = LinkedHashMap<String, ChronoUnit>
 
 private val keyMap: UnitMap = linkedMapOf(
-	"utils.units.second" to ChronoUnit.SECONDS,
-	"utils.units.minute" to ChronoUnit.MINUTES,
-	"utils.units.hour" to ChronoUnit.HOURS,
-	"utils.units.day" to ChronoUnit.DAYS,
-	"utils.units.week" to ChronoUnit.WEEKS,
-	"utils.units.month" to ChronoUnit.MONTHS,
-	"utils.units.year" to ChronoUnit.YEARS,
+	CoreTranslations.Utils.Units.second to ChronoUnit.SECONDS,
+	CoreTranslations.Utils.Units.minute to ChronoUnit.MINUTES,
+	CoreTranslations.Utils.Units.hour to ChronoUnit.HOURS,
+	CoreTranslations.Utils.Units.day to ChronoUnit.DAYS,
+	CoreTranslations.Utils.Units.week to ChronoUnit.WEEKS,
+	CoreTranslations.Utils.Units.month to ChronoUnit.MONTHS,
+	CoreTranslations.Utils.Units.year to ChronoUnit.YEARS,
 )
 
 /**
  * Simple object that caches translated time units per locale.
  */
 public object J8TimeUnitCache : KordExKoinComponent {
-	private val translations: TranslationsProvider by inject()
-	private val valueCache: MutableMap<Locale, UnitMap> = mutableMapOf()
+	private val valueCache: MutableMap<Locale, StringUnitMap> = mutableMapOf()
 
 	/** Return a mapping of all translated unit names to ChronoUnit objects, based on the given locale. **/
-	public fun getUnits(locale: Locale): UnitMap {
+	public fun getUnits(locale: Locale): StringUnitMap {
 		if (valueCache[locale] == null) {
-			val unitMap: UnitMap = linkedMapOf()
+			val unitMap: StringUnitMap = linkedMapOf()
 
 			keyMap.forEach { key, value ->
-				val result = translations.translate(key, locale)
+				val result = key.translateLocale(locale)
 
 				result.split(",").map { it.trim() }.forEach {
 					unitMap[it] = value

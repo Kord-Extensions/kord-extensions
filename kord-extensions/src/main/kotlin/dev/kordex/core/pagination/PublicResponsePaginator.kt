@@ -12,7 +12,6 @@ import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.edit
 import dev.kord.core.entity.ReactionEmoji
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.pagination.builders.PageTransitionCallback
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import dev.kordex.core.pagination.pages.Pages
@@ -31,11 +30,10 @@ public class PublicResponsePaginator(
 	keepEmbed: Boolean = true,
 	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	mutator: PageTransitionCallback? = null,
-	bundle: Bundle? = null,
 	locale: Locale? = null,
 
 	public val interaction: PublicMessageInteractionResponseBehavior,
-) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, locale) {
 	/** Whether this paginator has been set up for the first time. **/
 	public var isSetup: Boolean = false
 
@@ -86,7 +84,6 @@ public fun PublicResponsePaginator(
 	timeoutSeconds = builder.timeoutSeconds,
 	keepEmbed = builder.keepEmbed,
 	mutator = builder.mutator,
-	bundle = builder.bundle,
 	locale = builder.locale,
 	interaction = interaction,
 

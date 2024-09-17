@@ -15,7 +15,6 @@ import dev.kord.core.behavior.edit
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.message.allowedMentions
-import dev.kordex.core.i18n.types.Bundle
 import dev.kordex.core.pagination.builders.PageTransitionCallback
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import dev.kordex.core.pagination.pages.Pages
@@ -36,13 +35,12 @@ public class MessageButtonPaginator(
 	keepEmbed: Boolean = true,
 	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	mutator: PageTransitionCallback? = null,
-	bundle: Bundle? = null,
 	locale: Locale? = null,
 
 	public val pingInReply: Boolean = true,
 	public val targetChannel: MessageChannelBehavior? = null,
 	public val targetMessage: Message? = null,
-) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, locale) {
 	init {
 		if (targetChannel == null && targetMessage == null) {
 			throw IllegalArgumentException("Must provide either a target channel or target message")
@@ -120,7 +118,6 @@ public fun MessageButtonPaginator(
 		timeoutSeconds = builder.timeoutSeconds,
 		keepEmbed = builder.keepEmbed,
 		mutator = builder.mutator,
-		bundle = builder.bundle,
 		locale = builder.locale,
 
 		pingInReply = pingInReply,

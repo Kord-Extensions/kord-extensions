@@ -137,7 +137,7 @@ public open class ExtensibleBotBuilder {
 	 * If all the above values are missing, this setting defaults to "standard".
 	 *
 	 * For more information on what data KordEx collects, how to get at it, and how it's stored, please see here:
-	 * TODO: LINK HERE
+	 * https://docs.kordex.dev/data-collection.html
 	 */
 	@OptIn(InternalAPI::class)
 	public var dataCollectionMode: DataCollection = DATA_COLLECTION
