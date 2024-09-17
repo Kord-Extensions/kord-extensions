@@ -54,7 +54,7 @@ public suspend fun InteractionCreateEvent.getLocale(): Locale {
 	var result = bot.settings.i18nBuilder.defaultLocale
 
 	for (resolver in bot.settings.i18nBuilder.localeResolvers) {
-		val channel = interaction.channel.asChannel()
+		val channel = interaction.channel.asChannelOrNull()
 
 		val guild = if (channel is GuildChannel) {
 			channel.guild
