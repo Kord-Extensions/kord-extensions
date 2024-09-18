@@ -18,7 +18,7 @@ import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.checks.types.CheckContext
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.utils.compareTo
-import dev.kordex.core.utils.translate
+import dev.kordex.core.utils.toTranslationKey
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
@@ -51,7 +51,7 @@ public suspend fun CheckContext<*>.hasGuildNsfwLevel(level: NsfwLevel) {
 			fail(
 				CoreTranslations.Checks.GuildNsfwLevelEqual.failed
 					.withLocale(locale)
-					.translate(level.translate(locale))
+					.withOrdinalPlaceholders(level.toTranslationKey())
 			)
 		}
 	}
@@ -83,7 +83,7 @@ public suspend fun CheckContext<*>.notHasGuildNsfwLevel(level: NsfwLevel) {
 			fail(
 				CoreTranslations.Checks.GuildNsfwLevelNotEqual.failed
 					.withLocale(locale)
-					.translate(level.translate(locale))
+					.withOrdinalPlaceholders(level.toTranslationKey())
 			)
 		} else {
 			logger.passed()
@@ -123,7 +123,7 @@ public suspend fun CheckContext<*>.guildNsfwLevelHigher(level: NsfwLevel) {
 			fail(
 				CoreTranslations.Checks.GuildNsfwLevelHigher.failed
 					.withLocale(locale)
-					.translate(level.translate(locale))
+					.withOrdinalPlaceholders(level.toTranslationKey())
 			)
 		}
 	}
@@ -159,7 +159,7 @@ public suspend fun CheckContext<*>.guildNsfwLevelHigherOrEqual(level: NsfwLevel)
 			fail(
 				CoreTranslations.Checks.GuildNsfwLevelHigherOrEqual.failed
 					.withLocale(locale)
-					.translate(level.translate(locale))
+					.withOrdinalPlaceholders(level.toTranslationKey())
 			)
 		}
 	}
@@ -195,7 +195,7 @@ public suspend fun CheckContext<*>.guildNsfwLevelLower(level: NsfwLevel) {
 			fail(
 				CoreTranslations.Checks.GuildNsfwLevelLower.failed
 					.withLocale(locale)
-					.translate(level.translate(locale))
+					.withOrdinalPlaceholders(level.toTranslationKey())
 			)
 		}
 	}
@@ -231,7 +231,7 @@ public suspend fun CheckContext<*>.guildNsfwLevelLowerOrEqual(level: NsfwLevel) 
 			fail(
 				CoreTranslations.Checks.GuildNsfwLevelLowerOrEqual.failed
 					.withLocale(locale)
-					.translate(level.translate(locale))
+					.withOrdinalPlaceholders(level.toTranslationKey())
 			)
 		}
 	}

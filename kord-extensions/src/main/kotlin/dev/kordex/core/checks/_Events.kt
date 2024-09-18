@@ -17,6 +17,7 @@ import dev.kord.core.behavior.channel.ChannelBehavior
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.cache.data.toData
 import dev.kord.core.entity.Member
+import dev.kord.core.entity.interaction.GuildInteraction
 import dev.kord.core.entity.interaction.Interaction
 import dev.kord.core.event.Event
 import dev.kord.core.event.automoderation.AutoModerationActionExecutionEvent
@@ -146,14 +147,7 @@ public suspend fun guildFor(event: Event): GuildBehavior? {
 		is IntegrationDeleteEvent -> event.guild
 		is IntegrationUpdateEvent -> event.guild
 		is IntegrationsUpdateEvent -> event.guild
-
-		is InteractionCreateEvent -> {
-			val guildId = event.interaction.data.guildId.value
-				?: return null
-
-			event.kord.unsafe.guild(guildId)
-		}
-
+		is InteractionCreateEvent -> (event.interaction as? GuildInteraction)?.guild
 		is InviteCreateEvent -> event.guild
 		is InviteDeleteEvent -> event.guild
 		is MembersChunkEvent -> event.guild
@@ -232,18 +226,7 @@ public suspend fun memberFor(event: Event): MemberBehavior? {
 			null
 		}
 
-		is InteractionCreateEvent -> when {
-			event.interaction.data.member.value != null && event.interaction.data.user.value != null ->
-				Member(event.interaction.data.member.value!!, event.interaction.data.user.value!!, event.kord)
-
-			event.interaction.data.guildId.value != null ->
-				event.kord.unsafe
-					.guild(event.interaction.data.guildId.value!!)
-					.getMemberOrNull(event.interaction.user.id)
-
-			else -> null
-		}
-
+		is InteractionCreateEvent -> (event.interaction as? GuildInteraction)?.user
 		is InviteCreateEvent -> event.inviterMember
 
 		is MemberJoinEvent -> event.member

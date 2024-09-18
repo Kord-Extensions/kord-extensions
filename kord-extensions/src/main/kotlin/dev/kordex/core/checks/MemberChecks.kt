@@ -20,6 +20,7 @@ import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.utils.hasPermission
 import dev.kordex.core.utils.hasPermissions
 import dev.kordex.core.utils.permissionsForMember
+import dev.kordex.core.utils.toTranslationKey
 import dev.kordex.core.utils.translate
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -69,7 +70,7 @@ public suspend fun CheckContext<*>.hasPermission(perm: Permission) {
 			fail(
 				CoreTranslations.Checks.HasPermission.failed
 					.withLocale(locale)
-					.translate(perm.translate(locale))
+					.withOrdinalPlaceholders(perm.toTranslationKey())
 			)
 		}
 	}
@@ -118,7 +119,7 @@ public suspend fun CheckContext<*>.notHasPermission(perm: Permission) {
 			fail(
 				CoreTranslations.Checks.NotHasPermission.failed
 					.withLocale(locale)
-					.translate(perm.translate(locale))
+					.withOrdinalPlaceholders(perm.toTranslationKey())
 			)
 		} else {
 			logger.passed()
@@ -174,7 +175,7 @@ public suspend fun CheckContext<*>.hasPermissions(perms: Permissions) {
 			fail(
 				CoreTranslations.Checks.HasPermissions.failed
 					.withLocale(locale)
-					.translate(
+					.withOrdinalPlaceholders(
 						perms.values.joinToString(", ") { it.translate(locale) }
 					)
 			)
@@ -225,7 +226,7 @@ public suspend fun CheckContext<*>.notHasPermissions(perms: Permissions) {
 			fail(
 				CoreTranslations.Checks.NotHasPermissions.failed
 					.withLocale(locale)
-					.translate(
+					.withOrdinalPlaceholders(
 						perms.values.joinToString(", ") { it.translate(locale) }
 					)
 			)

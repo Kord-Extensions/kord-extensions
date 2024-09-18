@@ -55,7 +55,7 @@ public suspend fun <T : Event> CheckContext<T>.inTopChannel(builder: suspend (T)
 			fail(
 				CoreTranslations.Checks.InChannel.failed
 					.withLocale(locale)
-					.translate(channel.mention)
+					.withOrdinalPlaceholders(channel.mention)
 			)
 		}
 	}
@@ -95,7 +95,7 @@ public suspend fun <T : Event> CheckContext<T>.notInTopChannel(builder: suspend 
 			fail(
 				CoreTranslations.Checks.NotInChannel.failed
 					.withLocale(locale)
-					.translate(channel.mention)
+					.withOrdinalPlaceholders(channel.mention)
 			)
 		}
 	}

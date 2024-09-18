@@ -103,7 +103,7 @@ public suspend fun <T : Event> CheckContext<T>.inGuild(builder: suspend (T) -> G
 			fail(
 				CoreTranslations.Checks.InGuild.failed
 					.withLocale(locale)
-					.translate(eventGuild.name)
+					.withOrdinalPlaceholders(eventGuild.name)
 			)
 		}
 	}
@@ -142,7 +142,7 @@ public suspend fun <T : Event> CheckContext<T>.notInGuild(builder: suspend (T) -
 			fail(
 				CoreTranslations.Checks.NotInGuild.failed
 					.withLocale(locale)
-					.translate(eventGuild.name)
+					.withOrdinalPlaceholders(eventGuild.name)
 			)
 		}
 	}

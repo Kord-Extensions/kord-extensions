@@ -61,7 +61,7 @@ public suspend fun <T : Event> CheckContext<T>.inChannel(builder: suspend (T) ->
 			fail(
 				CoreTranslations.Checks.InChannel.failed
 					.withLocale(locale)
-					.translate(channel.mention)
+					.withOrdinalPlaceholders(channel.mention)
 			)
 		}
 	}
@@ -100,7 +100,7 @@ public suspend fun <T : Event> CheckContext<T>.notInChannel(builder: suspend (T)
 			fail(
 				CoreTranslations.Checks.NotInChannel.failed
 					.withLocale(locale)
-					.translate(channel.mention)
+					.withOrdinalPlaceholders(channel.mention)
 			)
 		}
 	}
@@ -140,7 +140,7 @@ public suspend fun <T : Event> CheckContext<T>.inCategory(builder: suspend (T) -
 			fail(
 				CoreTranslations.Checks.InCategory.failed
 					.withLocale(locale)
-					.translate(category.asChannel().name)
+					.withOrdinalPlaceholders(category.asChannel().name)
 			)
 		}
 	}
@@ -176,7 +176,7 @@ public suspend fun <T : Event> CheckContext<T>.notInCategory(builder: suspend (T
 			fail(
 				CoreTranslations.Checks.NotInCategory.failed
 					.withLocale(locale)
-					.translate(category.asChannel().name)
+					.withOrdinalPlaceholders(category.asChannel().name)
 			)
 		} else {
 			logger.passed()
@@ -227,7 +227,7 @@ public suspend fun <T : Event> CheckContext<T>.channelAbove(builder: suspend (T)
 			fail(
 				CoreTranslations.Checks.ChannelHigher.failed
 					.withLocale(locale)
-					.translate(channel.mention)
+					.withOrdinalPlaceholders(channel.mention)
 			)
 		}
 	}
@@ -274,7 +274,7 @@ public suspend fun <T : Event> CheckContext<T>.channelBelow(builder: suspend (T)
 			fail(
 				CoreTranslations.Checks.ChannelLower.failed
 					.withLocale(locale)
-					.translate(channel.mention)
+					.withOrdinalPlaceholders(channel.mention)
 			)
 		}
 	}

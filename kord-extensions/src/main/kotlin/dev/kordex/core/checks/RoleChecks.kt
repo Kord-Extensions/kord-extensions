@@ -56,7 +56,7 @@ public suspend fun <T : Event> CheckContext<T>.hasRole(builder: suspend (T) -> R
 			fail(
 				CoreTranslations.Checks.HasRole.failed
 					.withLocale(locale)
-					.translate(role.mention)
+					.withOrdinalPlaceholders(role.mention)
 			)
 		}
 	}
@@ -91,7 +91,7 @@ public suspend fun <T : Event> CheckContext<T>.notHasRole(builder: suspend (T) -
 			fail(
 				CoreTranslations.Checks.NotHasRole.failed
 					.withLocale(locale)
-					.translate(role.mention)
+					.withOrdinalPlaceholders(role.mention)
 			)
 		} else {
 			logger.passed()
@@ -132,7 +132,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleEqual(builder: suspend (T)
 				fail(
 					CoreTranslations.Checks.TopRoleEqual.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 
@@ -142,7 +142,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleEqual(builder: suspend (T)
 				fail(
 					CoreTranslations.Checks.TopRoleEqual.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 
@@ -191,7 +191,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleNotEqual(builder: suspend 
 				fail(
 					CoreTranslations.Checks.TopRoleNotEqual.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 
@@ -235,7 +235,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleHigher(builder: suspend (T
 				fail(
 					CoreTranslations.Checks.TopRoleHigher.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 
@@ -251,7 +251,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleHigher(builder: suspend (T
 				fail(
 					CoreTranslations.Checks.TopRoleHigher.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 		}
@@ -303,7 +303,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleLower(builder: suspend (T)
 				fail(
 					CoreTranslations.Checks.TopRoleLower.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 		}
@@ -342,7 +342,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleHigherOrEqual(builder: sus
 				fail(
 					CoreTranslations.Checks.TopRoleHigherOrEqual.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 
@@ -358,7 +358,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleHigherOrEqual(builder: sus
 				fail(
 					CoreTranslations.Checks.TopRoleHigherOrEqual.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 		}
@@ -411,7 +411,7 @@ public suspend fun <T : Event> CheckContext<T>.topRoleLowerOrEqual(builder: susp
 				fail(
 					CoreTranslations.Checks.TopRoleLowerOrEqual.failed
 						.withLocale(locale)
-						.translate(role.mention)
+						.withOrdinalPlaceholders(role.mention)
 				)
 			}
 		}

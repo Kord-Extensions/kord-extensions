@@ -9,10 +9,15 @@
 package dev.kordex.core.i18n.types
 
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations.bundle
 import dev.kordex.core.i18n.serializers.LocaleSerializer
 import dev.kordex.core.utils.getKoin
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.util.Locale
+import java.util.Map.entry
+import kotlin.collections.asList
+import kotlin.collections.plus
 
 @Serializable
 public data class Key(
@@ -21,10 +26,45 @@ public data class Key(
 
 	@Serializable(with = LocaleSerializer::class)
 	public val locale: Locale? = null,
+
+	public val presetPlaceholderPosition: PlaceholderPosition = PlaceholderPosition.START,
+	public val translateNestedKeys: Boolean = true,
+
+	@Transient
+	public val ordinalPlaceholders: List<Any?> = listOf(),
+
+	@Transient
+	public val namedPlaceholders: Map<String, Any?> = mapOf(),
 ) {
 	private val translations: TranslationsProvider by lazy {
 		getKoin().get()
 	}
+
+	public fun filterOrdinalPlaceholders(body: (Any?) -> Boolean): Key =
+		copy(ordinalPlaceholders = ordinalPlaceholders.filter(body))
+
+	public fun filterNamedPlaceholders(body: (Map.Entry<String, Any?>) -> Boolean): Key =
+		copy(namedPlaceholders = namedPlaceholders.filter(body))
+
+	public fun withOrdinalPlaceholders(vararg placeholders: Any?): Key {
+		if (namedPlaceholders.isNotEmpty()) {
+			error(
+				"This Key object already contains named placeholders. " +
+					"You may only use one type of placeholder at once."
+			)
+		}
+
+		return copy(ordinalPlaceholders = ordinalPlaceholders + placeholders.toList().toTypedArray())
+	}
+
+	public fun withNamedPlaceholders(vararg placeholders: Pair<String, Any?>): Key =
+		copy(namedPlaceholders = namedPlaceholders + placeholders)
+
+	public fun withPresetPlaceholderPosition(position: PlaceholderPosition): Key =
+		copy(presetPlaceholderPosition = position)
+
+	public fun withTranslateNestedKeys(option: Boolean): Key =
+		copy(translateNestedKeys = option)
 
 	public fun withBundle(bundle: Bundle?, overwrite: Boolean = true): Key =
 		if (bundle == this.bundle) {
@@ -69,6 +109,12 @@ public data class Key(
 		return copy(bundle = newBundle, locale = newLocale)
 	}
 
+	public fun withoutOrdinalPlaceholders(): Key =
+		copy(ordinalPlaceholders = listOf())
+
+	public fun withoutNamedPlaceholders(): Key =
+		copy(namedPlaceholders = mapOf())
+
 	public fun withoutBundle(): Key =
 		copy(bundle = null)
 
@@ -81,11 +127,41 @@ public data class Key(
 	public fun translate(vararg replacements: Any?): String =
 		translateArray(replacements.toList().toTypedArray())
 
-	public fun translateArray(replacements: Array<Any?>): String =
-		translations.translate(this, replacements)
+	public fun translateArray(replacements: Array<Any?>): String {
+		val allReplacements = when (presetPlaceholderPosition) {
+			PlaceholderPosition.START -> ordinalPlaceholders + replacements
+			PlaceholderPosition.END -> replacements.asList() + ordinalPlaceholders
+		}.map {
+			if (translateNestedKeys && it is Key) {
+				it
+					.withBundle(bundle, false)
+					.withLocale(locale, false)
+					.translate()
+			} else {
+				it
+			}
+		}
 
-	public fun translateNamed(replacements: Map<String, Any?>): String =
-		translations.translateNamed(this, replacements)
+		return translations.translate(this, allReplacements.toTypedArray())
+	}
+
+	public fun translateNamed(replacements: Map<String, Any?>): String {
+		val allReplacements = when (presetPlaceholderPosition) {
+			PlaceholderPosition.START -> namedPlaceholders + replacements
+			PlaceholderPosition.END -> replacements + namedPlaceholders
+		}.mapValues {
+			if (translateNestedKeys && it.value is Key) {
+				(it.value as Key)
+					.withBundle(bundle, false)
+					.withLocale(locale, false)
+					.translate()
+			} else {
+				it.value
+			}
+		}
+
+		return translations.translateNamed(this, allReplacements)
+	}
 
 	public fun translateNamed(vararg replacements: Pair<String, Any?>): String =
 		translateNamed(replacements.toMap())

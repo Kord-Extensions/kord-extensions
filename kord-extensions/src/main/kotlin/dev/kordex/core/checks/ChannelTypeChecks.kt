@@ -15,7 +15,7 @@ import dev.kord.core.event.Event
 import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.checks.types.CheckContext
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.utils.translate
+import dev.kordex.core.utils.toTranslationKey
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
@@ -51,7 +51,7 @@ public suspend fun CheckContext<*>.channelType(vararg channelTypes: ChannelType)
 			fail(
 				CoreTranslations.Checks.ChannelType.failed
 					.withLocale(locale)
-					.translate(type.translate(locale))
+					.withOrdinalPlaceholders(type.toTranslationKey())
 			)
 		}
 	}
@@ -86,7 +86,7 @@ public suspend fun CheckContext<*>.notChannelType(vararg channelTypes: ChannelTy
 			fail(
 				CoreTranslations.Checks.NotChannelType.failed
 					.withLocale(locale)
-					.translate(type.translate(locale))
+					.withOrdinalPlaceholders(type.toTranslationKey())
 			)
 		} else {
 			logger.passed()
