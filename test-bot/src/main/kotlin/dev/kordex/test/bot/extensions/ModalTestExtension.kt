@@ -20,15 +20,17 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicMessageCommand
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.extensions.publicUserCommand
+import dev.kordex.core.i18n.toKey
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.test.bot.Translations
 
 public class ModalTestExtension : Extension() {
 	override val name: String = "kordex.modals"
-	override val bundle: String = "test.strings"
 
 	@Suppress("StringLiteralDuplication")
 	override suspend fun setup() {
 		publicUserCommand(::Modal) {
-			name = "Modal"
+			name = "Modal".toKey()
 
 			action { modal ->
 				respond {
@@ -54,7 +56,7 @@ public class ModalTestExtension : Extension() {
 		}
 
 		publicMessageCommand(::Modal) {
-			name = "Modal"
+			name = "Modal".toKey()
 
 			action { modal ->
 				respond {
@@ -80,18 +82,17 @@ public class ModalTestExtension : Extension() {
 		}
 
 		publicSlashCommand {
-			name = "modals"
-			description = "Modal testing commands"
+			name = "modals".toKey()
+			description = "Modal testing commands".toKey()
 
 			publicSubCommand {
-				name = "button"
-				description = "Test a modal response to a button"
+				name = "button".toKey()
+				description = "Test a modal response to a button".toKey()
 
 				action {
 					respond {
 						components {
 							publicButton(::Modal) {
-								bundle = "test.strings"
 								label = "Modal!"
 
 								action { modal ->
@@ -122,8 +123,8 @@ public class ModalTestExtension : Extension() {
 			}
 
 			publicSubCommand(::Args, ::Modal) {
-				name = "command"
-				description = "Test a modal response to a command"
+				name = "command".toKey()
+				description = "Test a modal response to a command".toKey()
 
 				action { modal ->
 					respond {
@@ -157,22 +158,22 @@ public class ModalTestExtension : Extension() {
 
 	public inner class Args : Arguments() {
 		public val str: String by string {
-			name = "string"
-			description = "A string argument"
+			name = "string".toKey()
+			description = "A string argument".toKey()
 		}
 	}
 
 	public inner class Modal : ModalForm() {
-		override var title: String = "modal.title"
+		override var title: Key = Translations.Modal.title
 
 		public val line: LineTextWidget = lineText {
-			label = "modal.line"
-			placeholder = "modal.line.placeholder"
+			label = Translations.Modal.line
+			placeholder = Translations.Modal.Line.placeholder
 		}
 
 		public val paragraph: ParagraphTextWidget = paragraphText {
-			label = "modal.paragraph"
-			placeholder = "modal.paragraph.placeholder"
+			label = Translations.Modal.paragraph
+			placeholder = Translations.Modal.Paragraph.placeholder
 		}
 	}
 }

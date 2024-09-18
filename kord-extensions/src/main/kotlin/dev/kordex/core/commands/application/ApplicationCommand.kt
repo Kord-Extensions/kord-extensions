@@ -22,6 +22,7 @@ import dev.kordex.core.checks.types.CheckWithCache
 import dev.kordex.core.commands.Command
 import dev.kordex.core.commands.application.slash.SlashCommand
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations.NsfwLevel.default
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.MutableStringKeyedMap

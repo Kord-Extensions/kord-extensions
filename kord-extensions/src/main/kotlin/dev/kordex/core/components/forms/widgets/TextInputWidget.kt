@@ -14,6 +14,7 @@ import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.apache.commons.validator.GenericValidator.maxLength
 import org.koin.core.component.inject
 import java.util.*
 

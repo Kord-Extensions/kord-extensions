@@ -124,7 +124,11 @@ public data class Key(
 		copy(bundle = null, locale = null)
 
 	public fun translate(vararg replacements: Any?): String =
-		translateArray(replacements.toList().toTypedArray())
+		if (replacements.isNotEmpty() || ordinalPlaceholders.isNotEmpty()) {
+			translateArray(replacements.toList().toTypedArray())
+		} else {
+			translateNamed()
+		}
 
 	public fun translateArray(replacements: Array<Any?>): String {
 		val allReplacements = when (presetPlaceholderPosition) {

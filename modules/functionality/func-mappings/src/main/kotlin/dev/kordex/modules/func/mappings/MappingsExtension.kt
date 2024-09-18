@@ -421,7 +421,7 @@ class MappingsExtension : Extension() {
 			val pagesObj = Pages()
 			val pageTitle = MappingsTranslations.Response.Info.title
 				.withLocale(locale)
-				.translateNamed("mappings" to "Mojang")
+				.translateNamed("mappings" to "Hashed Mojang")
 
 			pages.forEach {
 				pagesObj.addPage(
@@ -535,7 +535,7 @@ class MappingsExtension : Extension() {
 			val pagesObj = Pages()
 			val pageTitle = MappingsTranslations.Response.Info.title
 				.withLocale(locale)
-				.translateNamed("mappings" to "Mojang")
+				.translateNamed("mappings" to "Yarn")
 
 			pages.forEach {
 				pagesObj.addPage(

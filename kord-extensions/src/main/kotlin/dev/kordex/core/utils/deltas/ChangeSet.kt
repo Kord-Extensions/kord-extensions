@@ -14,7 +14,6 @@ import dev.kord.core.entity.VoiceState
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
-@Suppress("ERROR_SUPPRESSION")
 public class ChangeSet(public val clazz: KClass<*>) {
 	private val changes: MutableMap<KProperty<*>, Change<*>> = mutableMapOf()
 
