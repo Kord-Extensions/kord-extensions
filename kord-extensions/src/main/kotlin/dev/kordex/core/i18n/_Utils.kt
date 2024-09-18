@@ -31,7 +31,7 @@ public fun String.toKey(
 		key = key.withPresetPlaceholderPosition(presetPlaceholderPosition)
 	}
 
-	if(translateNestedKeys != null) {
+	if (translateNestedKeys != null) {
 		key = key.withTranslateNestedKeys(translateNestedKeys)
 	}
 

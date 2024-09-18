@@ -22,6 +22,7 @@ import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.i18n.types.Key
 import kotlin.reflect.KClass
 
+@Suppress("UNCHECKED_CAST")
 public open class OptionWrapper<T : OptionsBuilder> @InternalAPI constructor(
 	public var displayName: Key,
 	public var description: Key,

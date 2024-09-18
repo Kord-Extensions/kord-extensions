@@ -12,15 +12,18 @@ package dev.kordex.modules.func.mappings.converters
 
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.modules.func.mappings.i18n.generated.MappingsTranslations
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,7 +52,7 @@ class MappingsVersionConverter(
 	private val namespaceGetter: suspend () -> Namespace,
 	override var validator: Validator<MappingsContainer> = null,
 ) : SingleConverter<MappingsContainer>() {
-	override val signatureType: String = "version"
+	override val signatureType: Key = MappingsTranslations.Converter.Version.type
 	override val showTypeInSignature: Boolean = false
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
@@ -57,8 +60,10 @@ class MappingsVersionConverter(
 		return parse(arg)
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue: String = (option as? StringOptionValue)?.value ?: return false

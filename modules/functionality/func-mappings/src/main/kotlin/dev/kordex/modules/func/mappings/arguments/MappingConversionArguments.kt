@@ -15,6 +15,7 @@ import dev.kordex.core.commands.converters.impl.optionalString
 import dev.kordex.core.commands.converters.impl.string
 import dev.kordex.core.utils.suggestStringMap
 import dev.kordex.modules.func.mappings.enums.Channels
+import dev.kordex.modules.func.mappings.i18n.generated.MappingsTranslations
 import dev.kordex.modules.func.mappings.utils.autocompleteVersions
 import dev.kordex.modules.func.mappings.utils.toNamespace
 import me.shedaniel.linkie.utils.tryToVersion
@@ -25,13 +26,13 @@ import me.shedaniel.linkie.utils.tryToVersion
 @Suppress("UndocumentedPublicProperty")
 class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<String, String>) : Arguments() {
 	val query by string {
-		name = "query"
-		description = "Name to query mappings for"
+		name = MappingsTranslations.Argument.Query.name
+		description = MappingsTranslations.Argument.Query.description
 	}
 
 	val inputNamespace by string {
-		name = "input"
-		description = "The namespace to convert from"
+		name = MappingsTranslations.Argument.Input.name
+		description = MappingsTranslations.Argument.Input.description
 
 		autoComplete {
 			val guildId = command.data.guildId.value
@@ -42,15 +43,15 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 
 		@Suppress("UnnecessaryParentheses")
 		validate {
-			failIf("Must be a valid namespace") {
+			failIf(MappingsTranslations.Argument.namespaceValidationError) {
 				context.getGuild() != null && value !in enabledNamespaces(context.getGuild()!!.id)
 			}
 		}
 	}
 
 	val outputNamespace by string {
-		name = "output"
-		description = "The namespace to convert to"
+		name = MappingsTranslations.Argument.Output.name
+		description = MappingsTranslations.Argument.Output.description
 
 		autoComplete {
 			val guildId = command.data.guildId.value
@@ -60,15 +61,15 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 
 		@Suppress("UnnecessaryParentheses")
 		validate {
-			failIf("Must be a valid namespace") {
+			failIf(MappingsTranslations.Argument.namespaceValidationError) {
 				context.getGuild() != null && value !in enabledNamespaces(context.getGuild()!!.id)
 			}
 		}
 	}
 
 	val version by optionalString {
-		name = "version"
-		description = "Minecraft version to use for this query"
+		name = MappingsTranslations.Argument.Version.name
+		description = MappingsTranslations.Argument.Version.description
 
 		autocompleteVersions {
 			val inputNamespace = command.options["input"]?.value?.toString()?.toNamespace()
@@ -84,16 +85,14 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 	}
 
 	val inputChannel by optionalEnumChoice<Channels> {
-		name = "input-channel"
-		description = "The mappings channel to use for input"
-
-		typeName = "official/snapshot"
+		name = MappingsTranslations.Argument.InputChannel.name
+		description = MappingsTranslations.Argument.InputChannel.description
+		typeName = MappingsTranslations.Argument.MappingsChannel.typeName
 	}
 
 	val outputChannel by optionalEnumChoice<Channels> {
-		name = "output-channel"
-		description = "The mappings channel to use for output"
-
-		typeName = "official/snapshot"
+		name = MappingsTranslations.Argument.OutputChannel.name
+		description = MappingsTranslations.Argument.OutputChannel.description
+		typeName = MappingsTranslations.Argument.MappingsChannel.typeName
 	}
 }

@@ -15,7 +15,6 @@ import dev.kordex.core.utils.getKoin
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.util.Locale
-import java.util.Map.entry
 import kotlin.collections.asList
 import kotlin.collections.plus
 

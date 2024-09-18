@@ -11,6 +11,7 @@ package dev.kordex.modules.func.mappings.arguments
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.converters.impl.string
 import dev.kordex.modules.func.mappings.converters.optionalMappingsVersion
+import dev.kordex.modules.func.mappings.i18n.generated.MappingsTranslations
 import dev.kordex.modules.func.mappings.utils.autocompleteVersions
 import me.shedaniel.linkie.Namespace
 
@@ -22,13 +23,13 @@ open class MappingArguments(val namespace: Namespace) : Arguments() {
 	private val versions by lazy { namespace.getAllSortedVersions() }
 
 	val query by string {
-		name = "query"
-		description = "Name to query mappings for"
+		name = MappingsTranslations.Argument.Query.name
+		description = MappingsTranslations.Argument.Query.description
 	}
 
 	val version by optionalMappingsVersion {
-		name = "version"
-		description = "Minecraft version to use for this query"
+		name = MappingsTranslations.Argument.Version.name
+		description = MappingsTranslations.Argument.Version.description
 
 		namespace(namespace)
 
