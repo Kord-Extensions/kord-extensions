@@ -60,7 +60,7 @@ fun Project.getTranslations(
 
 	project.extensions.getByType<KotlinJvmProjectExtension>().sourceSets.getByName("main") {
 		kotlin {
-			srcDir(project.layout.buildDirectory.dir("generated/kordex/main/kotlin"))
+			srcDir(classOutputDir)
 		}
 	}
 

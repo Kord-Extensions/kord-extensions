@@ -26,13 +26,11 @@ import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.getLocale
 import dev.kordex.parser.StringParser
-import org.koin.core.component.inject
 
 /**
  * Argument converter for [ForumTag] arguments.
@@ -116,9 +114,6 @@ public class TagConverter(
 	}
 
 	public companion object : KordExKoinComponent {
-		/** Translations provider, for retrieving translations. **/
-		private val translationsProvider: TranslationsProvider by inject()
-
 		public suspend fun getTags(
 			context: CommandContext,
 			getter: (suspend () -> ForumChannel?)? = null,

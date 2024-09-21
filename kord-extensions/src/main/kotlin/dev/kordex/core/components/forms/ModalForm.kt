@@ -28,7 +28,6 @@ import dev.kordex.core.components.forms.widgets.TextInputWidget
 import dev.kordex.core.components.forms.widgets.Widget
 import dev.kordex.core.events.EventContext
 import dev.kordex.core.events.ModalInteractionCompleteEvent
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.waitFor
@@ -51,9 +50,6 @@ public abstract class ModalForm : Form(), KordExKoinComponent {
 
 	/** @suppress Internal reference. **/
 	protected val componentRegistry: ComponentRegistry by inject()
-
-	/** @suppress Internal reference. **/
-	protected val translations: TranslationsProvider by inject()
 
 	override val timeout: Duration = 15.minutes
 

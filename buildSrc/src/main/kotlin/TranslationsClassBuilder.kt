@@ -26,11 +26,10 @@ fun key(name: String, value: String, property: String, translationsClassName: St
 		property.lines().forEach {
 			kdoc.addStatement(
 				"%L",
-				it.trim().replace("*/", "")
+				it.trim().replace("*/", "* /")
 			)
 		}
 	}
-
 
 fun createTranslationsClass(
 	classPackage: String,

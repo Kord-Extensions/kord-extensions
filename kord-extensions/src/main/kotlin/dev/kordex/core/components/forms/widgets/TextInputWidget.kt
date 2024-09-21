@@ -10,12 +10,10 @@ package dev.kordex.core.components.forms.widgets
 
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.rest.builder.component.ActionRowBuilder
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.commons.validator.GenericValidator.maxLength
-import org.koin.core.component.inject
 import java.util.*
 
 /** The max number of characters that can be present in the widget's input. **/
@@ -65,9 +63,6 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 
 	/** Whether to translate the [initialValue]. **/
 	public var translateInitialValue: Boolean = false
-
-	/** @suppress Translations provider reference, used internally **/
-	public val translations: TranslationsProvider by inject()
 
 	public override fun validate() {
 		if (this::label.isInitialized.not() || label.key.isEmpty()) {

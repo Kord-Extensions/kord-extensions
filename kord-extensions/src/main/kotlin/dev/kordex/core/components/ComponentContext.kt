@@ -23,7 +23,6 @@ import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.checks.channelFor
 import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.userFor
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
@@ -47,9 +46,6 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 	public open val event: E,
 	public open val cache: MutableStringKeyedMap<Any>,
 ) : KordExKoinComponent, TranslatableContext {
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
-
 	/** Configured bot settings object. **/
 	public val settings: ExtensibleBotBuilder by inject()
 

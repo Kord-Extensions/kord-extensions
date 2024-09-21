@@ -18,7 +18,6 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.base.HelpProvider
 import dev.kordex.core.extensions.chatCommand
 import dev.kordex.core.i18n.EMPTY_KEY
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.pagination.BasePaginator
@@ -48,9 +47,6 @@ private val ARGUMENTS_GROUP = "Arguments".toKey()  // TODO: This needs translati
 @Suppress("StringLiteralDuplication")
 public class HelpExtension : HelpProvider, Extension() {
 	override val name: String = "kordex.help"
-
-	/** Translations provider, for retrieving CoreTranslations. **/
-	public val translationsProvider: TranslationsProvider by inject()
 
 	/** Message command registry. **/
 	public val messageCommandsRegistry: ChatCommandRegistry by inject()

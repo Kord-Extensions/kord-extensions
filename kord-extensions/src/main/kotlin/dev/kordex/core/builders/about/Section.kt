@@ -9,11 +9,9 @@
 package dev.kordex.core.builders.about
 
 import dev.kord.rest.builder.message.MessageBuilder
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
-import org.koin.core.component.inject
 import java.util.Locale
 import kotlin.getValue
 
@@ -22,8 +20,6 @@ internal typealias SectionBuilder = suspend MessageBuilder.(locale: Locale) -> U
 public class Section(public val name: Key, public val description: Key) : KordExKoinComponent {
 	@Suppress("ClassOrdering")  // THIS IS RIGHT!
 	public constructor(name: String, description: String) : this(name.toKey(), description.toKey())
-
-	public val translations: TranslationsProvider by inject()
 
 	public var ephemeral: Boolean? = null
 

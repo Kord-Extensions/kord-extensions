@@ -10,7 +10,6 @@ package dev.kordex.core.pagination.pages
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kordex.core.ExtensibleBot
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
@@ -32,9 +31,6 @@ public open class Page(
 ) : KordExKoinComponent {
 	/** Current instance of the bot. **/
 	public open val bot: ExtensibleBot by inject()
-
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
 
 	/** Create an embed builder for this page. **/
 	public open suspend fun build(

@@ -8,9 +8,7 @@
 
 package dev.kordex.core.types
 
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
-import dev.kordex.core.koin.KordExContext
 import java.util.*
 
 /**
@@ -22,9 +20,6 @@ import java.util.*
 public interface TranslatableContext {
 	/** Cached locale variable, stored and retrieved by [getLocale]. **/
 	public var resolvedLocale: Locale?
-
-	/** Retrieve the bot's translation provider from Koin. **/
-	public fun getTranslationProvider(): TranslationsProvider = KordExContext.get().get()
 
 	/** Resolve the locale for this context, storing it in [resolvedLocale]. **/
 	public suspend fun getLocale(): Locale

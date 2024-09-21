@@ -17,7 +17,6 @@ import dev.kordex.core.checks.*
 import dev.kordex.core.checks.types.CheckContextWithCache
 import dev.kordex.core.checks.types.CheckWithCache
 import dev.kordex.core.extensions.Extension
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.BreadcrumbType
@@ -54,9 +53,6 @@ public open class EventHandler<T : Event>(
 
 	/** Current Kord instance powering the bot. **/
 	public open val kord: Kord by inject()
-
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
 
 	/**
 	 * @suppress

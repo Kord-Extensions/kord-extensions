@@ -10,12 +10,10 @@ package dev.kordex.core.commands.application.slash
 
 import dev.kordex.core.InvalidCommandException
 import dev.kordex.core.commands.application.Localized
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -28,9 +26,6 @@ public class SlashGroup(
 	public val name: Key,
 	public val parent: SlashCommand<*, *, *>,
 ) : KordExKoinComponent {
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
-
 	/** @suppress **/
 	public val logger: KLogger = KotlinLogging.logger {}
 

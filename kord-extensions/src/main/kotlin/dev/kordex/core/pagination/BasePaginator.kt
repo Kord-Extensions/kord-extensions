@@ -16,7 +16,6 @@ import dev.kord.rest.builder.message.MessageBuilder
 import dev.kord.rest.builder.message.embed
 import dev.kordex.core.DISCORD_BLURPLE
 import dev.kordex.core.ExtensibleBot
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.pagination.builders.PageTransitionCallback
@@ -82,9 +81,6 @@ public abstract class BasePaginator(
 
 	/** Kord instance, backing the ExtensibleBot. **/
 	public val kord: Kord by inject()
-
-	/** Current translations provider. **/
-	public val translations: TranslationsProvider by inject()
 
 	/** Locale to use for translations. **/
 	public open val localeObj: Locale = locale ?: bot.settings.i18nBuilder.defaultLocale

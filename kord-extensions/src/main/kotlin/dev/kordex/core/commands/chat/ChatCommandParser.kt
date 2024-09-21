@@ -24,7 +24,6 @@ import dev.kordex.core.commands.converters.*
 import dev.kordex.core.commands.converters.types.MultiNamedInputConverter
 import dev.kordex.core.commands.converters.types.SingleNamedInputConverter
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -53,9 +52,6 @@ private val logger = KotlinLogging.logger {}
 public open class ChatCommandParser : KordExKoinComponent {
 	/** Current instance of the bot. **/
 	public open val bot: ExtensibleBot by inject()
-
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
 
 	public open suspend fun doParse(
 		arguments: Arguments,

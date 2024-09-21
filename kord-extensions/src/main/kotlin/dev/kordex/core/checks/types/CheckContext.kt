@@ -11,11 +11,9 @@ package dev.kordex.core.checks.types
 import dev.kord.core.event.Event
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.NotTranslated
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
 /**
@@ -29,9 +27,6 @@ public open class CheckContext<out T : Event>(
 	public val event: T,
 	public val locale: Locale,
 ) : KordExKoinComponent {
-	/** Translations provider. **/
-	public val translations: TranslationsProvider by inject()
-
 	/**
 	 * Translation key to use for the error response message, if not the default.
 	 *

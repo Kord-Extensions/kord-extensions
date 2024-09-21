@@ -45,7 +45,6 @@ import dev.kordex.core.commands.application.slash.SlashCommandParser
 import dev.kordex.core.commands.application.user.UserCommand
 import dev.kordex.core.commands.converters.SlashCommandConverter
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -70,9 +69,6 @@ public abstract class ApplicationCommandRegistry : KordExKoinComponent {
 
 	/** Kord instance, backing the ExtensibleBot. **/
 	public open val kord: Kord by inject()
-
-	/** Translations provider, for retrieving translations. **/
-	public open val translationsProvider: TranslationsProvider by inject()
 
 	/** Command parser to use for slash commands. **/
 	public val argumentParser: SlashCommandParser = SlashCommandParser()

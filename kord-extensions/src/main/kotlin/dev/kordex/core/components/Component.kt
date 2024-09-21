@@ -13,7 +13,6 @@ import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.application.ApplicationCommandRegistry
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryAdapter
 import org.koin.core.component.inject
@@ -22,9 +21,6 @@ import org.koin.core.component.inject
 public abstract class Component : KordExKoinComponent {
 	/** Component width, how many "slots" in one row it needs to be added to the row. **/
 	public open val unitWidth: Int = 1
-
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
 
 	/** Quick access to the command registry. **/
 	public val registry: ApplicationCommandRegistry by inject()

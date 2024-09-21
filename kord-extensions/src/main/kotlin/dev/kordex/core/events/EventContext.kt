@@ -13,7 +13,6 @@ import dev.kordex.core.checks.channelFor
 import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.interactionFor
 import dev.kordex.core.checks.userFor
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
@@ -35,9 +34,6 @@ public open class EventContext<T : Event>(
 	public open val event: T,
 	public open val cache: MutableStringKeyedMap<Any>,
 ) : KordExKoinComponent, TranslatableContext {
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by lazy { getTranslationProvider() }
-
 	/** Current Sentry context, containing breadcrumbs and other goodies. **/
 	public val sentry: SentryContext = SentryContext()
 

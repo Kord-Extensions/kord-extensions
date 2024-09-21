@@ -9,7 +9,6 @@
 package dev.kordex.core.i18n.types
 
 import dev.kordex.core.i18n.TranslationsProvider
-import dev.kordex.core.i18n.generated.CoreTranslations.bundle
 import dev.kordex.core.i18n.serializers.LocaleSerializer
 import dev.kordex.core.utils.getKoin
 import kotlinx.serialization.Serializable
