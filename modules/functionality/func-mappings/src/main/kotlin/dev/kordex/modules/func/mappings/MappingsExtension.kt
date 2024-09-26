@@ -34,6 +34,7 @@ import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.EMPTY_KEY
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.pagination.EXPAND_EMOJI
 import dev.kordex.core.pagination.PublicResponsePaginator
 import dev.kordex.core.pagination.pages.Page
@@ -41,7 +42,6 @@ import dev.kordex.core.pagination.pages.Pages
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.storage.StorageType
 import dev.kordex.core.storage.StorageUnit
-import dev.kordex.core.utils.withContext
 import dev.kordex.modules.func.mappings.arguments.*
 import dev.kordex.modules.func.mappings.builders.ExtMappingsBuilder
 import dev.kordex.modules.func.mappings.enums.Channels

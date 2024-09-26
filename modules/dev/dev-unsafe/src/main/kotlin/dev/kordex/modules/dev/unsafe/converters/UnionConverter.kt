@@ -27,7 +27,7 @@ import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.i18n.types.Key
-import dev.kordex.core.utils.withContext
+import dev.kordex.core.i18n.withContext
 import dev.kordex.modules.dev.unsafe.annotations.UnsafeAPI
 import dev.kordex.parser.StringParser
 

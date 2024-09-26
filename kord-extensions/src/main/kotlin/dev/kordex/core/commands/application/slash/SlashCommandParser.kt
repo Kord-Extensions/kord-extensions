@@ -20,7 +20,7 @@ import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.converters.*
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
 import dev.kordex.core.i18n.generated.CoreTranslations
-import dev.kordex.core.utils.withContext
+import dev.kordex.core.i18n.withContext
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}

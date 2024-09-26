@@ -25,7 +25,7 @@ public data class Key(
 	@Serializable(with = LocaleSerializer::class)
 	public val locale: Locale? = null,
 
-	public val presetPlaceholderPosition: PlaceholderPosition = PlaceholderPosition.START,
+	public val presetPlaceholderPosition: PlaceholderPosition = PlaceholderPosition.FIRST,
 	public val translateNestedKeys: Boolean = true,
 
 	@Transient
@@ -57,6 +57,9 @@ public data class Key(
 
 	public fun withNamedPlaceholders(vararg placeholders: Pair<String, Any?>): Key =
 		copy(namedPlaceholders = namedPlaceholders + placeholders)
+
+	public fun withNamedPlaceholders(placeholders: Map<String, Any?>): Key =
+		copy(namedPlaceholders = placeholders + placeholders)
 
 	public fun withPresetPlaceholderPosition(position: PlaceholderPosition): Key =
 		copy(presetPlaceholderPosition = position)
@@ -131,8 +134,8 @@ public data class Key(
 
 	public fun translateArray(replacements: Array<Any?>): String {
 		val allReplacements = when (presetPlaceholderPosition) {
-			PlaceholderPosition.START -> ordinalPlaceholders + replacements
-			PlaceholderPosition.END -> replacements.asList() + ordinalPlaceholders
+			PlaceholderPosition.FIRST -> ordinalPlaceholders + replacements
+			PlaceholderPosition.LAST -> replacements.asList() + ordinalPlaceholders
 		}.map {
 			if (translateNestedKeys && it is Key) {
 				it
@@ -149,8 +152,8 @@ public data class Key(
 
 	public fun translateNamed(replacements: Map<String, Any?>): String {
 		val allReplacements = when (presetPlaceholderPosition) {
-			PlaceholderPosition.START -> namedPlaceholders + replacements
-			PlaceholderPosition.END -> replacements + namedPlaceholders
+			PlaceholderPosition.FIRST -> namedPlaceholders + replacements
+			PlaceholderPosition.LAST -> replacements + namedPlaceholders
 		}.mapValues {
 			if (translateNestedKeys && it.value is Key) {
 				(it.value as Key)

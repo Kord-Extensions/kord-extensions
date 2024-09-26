@@ -23,9 +23,9 @@ import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.EMPTY_VALUE_STRING
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.parsers.DurationParserException
 import dev.kordex.core.parsers.InvalidTimeUnitException
-import dev.kordex.core.utils.withContext
 import dev.kordex.parser.StringParser
 import dev.kordex.parser.tokens.PositionalArgumentToken
 import io.github.oshai.kotlinlogging.KLogger

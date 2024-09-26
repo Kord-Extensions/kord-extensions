@@ -17,8 +17,8 @@ import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.commands.converters.builders.ValidationContext
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.koin.KordExKoinComponent
-import dev.kordex.core.utils.withContext
 import dev.kordex.parser.StringParser
 import org.koin.core.component.inject
 import kotlin.reflect.KProperty

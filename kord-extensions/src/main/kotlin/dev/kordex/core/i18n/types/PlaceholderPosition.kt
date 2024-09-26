@@ -12,6 +12,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public enum class PlaceholderPosition {
-	START,
-	END
+	FIRST,
+	LAST
 }
