@@ -13,7 +13,7 @@ package dev.kordex.core.koin
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.context.KoinContext
-import org.koin.core.error.ApplicationAlreadyStartedException
+import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -51,11 +51,11 @@ public object KordExContext : KoinContext {
 	 *
 	 * @param koinApplication The application to registers.
 	 *
-	 * @throws ApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
+	 * @throws KoinApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
 	 */
 	private fun register(koinApplication: KoinApplication) {
 		if (koin != null) {
-			throw ApplicationAlreadyStartedException("KordEx Koin Application has already been started")
+			throw KoinApplicationAlreadyStartedException("KordEx Koin Application has already been started")
 		}
 
 		koinApp = koinApplication
@@ -73,7 +73,7 @@ public object KordExContext : KoinContext {
 	 *
 	 * @param koinApplication The application to start with.
 	 *
-	 * @throws ApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
+	 * @throws KoinApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
 	 */
 	override fun startKoin(koinApplication: KoinApplication): KoinApplication = synchronized(this) {
 		register(koinApplication)
@@ -87,7 +87,7 @@ public object KordExContext : KoinContext {
 	 *
 	 * @param appDeclaration The application declaration to start with.
 	 *
-	 * @throws ApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
+	 * @throws KoinApplicationAlreadyStartedException The [KoinApplication] has already been instantiated.
 	 */
 	override fun startKoin(appDeclaration: KoinAppDeclaration): KoinApplication = synchronized(this) {
 		val koinApplication = KoinApplication.init()
