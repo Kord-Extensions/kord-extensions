@@ -159,7 +159,7 @@ public abstract class ComponentWithAction<
 				throw DiscordRelayedException(
 					CoreTranslations.Commands.Error.missingBotPermissions
 						.withLocale(context.getLocale())
-						.translate(
+						.withOrdinalPlaceholders(
 							missingPerms
 								.map { it.translate(context.getLocale()) }
 								.joinToString()

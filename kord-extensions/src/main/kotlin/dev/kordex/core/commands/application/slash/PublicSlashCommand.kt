@@ -24,6 +24,7 @@ import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.events.*
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -81,7 +82,11 @@ public class PublicSlashCommand<A : Arguments, M : ModalForm>(
 			}
 		} catch (e: DiscordRelayedException) {
 			event.interaction.respondEphemeral {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(event.getLocale()),
+					FailureReason.ProvidedCheckFailure(e)
+				)
 			}
 
 			emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
@@ -123,7 +128,12 @@ public class PublicSlashCommand<A : Arguments, M : ModalForm>(
 		try {
 			checkBotPerms(context)
 		} catch (e: DiscordRelayedException) {
-			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			respondText(
+				context,
+				e.reason.withLocale(context.getLocale()),
+				FailureReason.OwnPermissionsCheckFailure(e)
+			)
+
 			emitEventAsync(PublicSlashCommandFailedChecksEvent(this, event, e.reason))
 
 			return
@@ -135,7 +145,12 @@ public class PublicSlashCommand<A : Arguments, M : ModalForm>(
 
 				context.populateArgs(args)
 			} catch (e: ArgumentParsingException) {
-				respondText(context, e.reason, FailureReason.ArgumentParsingFailure(e))
+				respondText(
+					context,
+					e.reason.withLocale(context.getLocale()),
+					FailureReason.ArgumentParsingFailure(e)
+				)
+
 				emitEventAsync(PublicSlashCommandFailedParsingEvent(this, event, e))
 
 				return
@@ -148,7 +163,11 @@ public class PublicSlashCommand<A : Arguments, M : ModalForm>(
 			emitEventAsync(PublicSlashCommandFailedWithExceptionEvent(this, event, t))
 
 			if (t is DiscordRelayedException) {
-				respondText(context, t.reason, FailureReason.RelayedFailure(t))
+				respondText(
+					context,
+					t.reason.withLocale(context.getLocale()),
+					FailureReason.RelayedFailure(t)
+				)
 
 				return
 			}
@@ -163,7 +182,7 @@ public class PublicSlashCommand<A : Arguments, M : ModalForm>(
 
 	override suspend fun respondText(
 		context: PublicSlashCommandContext<A, M>,
-		message: String,
+		message: Key,
 		failureType: FailureReason<*>,
 	) {
 		context.respond { settings.failureResponseBuilder(this, message, failureType) }

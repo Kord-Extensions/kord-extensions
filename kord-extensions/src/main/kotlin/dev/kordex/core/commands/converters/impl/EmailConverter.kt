@@ -22,6 +22,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 import org.apache.commons.validator.routines.EmailValidator
 
@@ -44,8 +45,8 @@ public class EmailConverter(
 		if (!EmailValidator.getInstance().isValid(arg)) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Email.Error.invalid
-					.withLocale(context.getLocale())
-					.translate(arg)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			)
 		}
 
@@ -65,8 +66,8 @@ public class EmailConverter(
 		if (!EmailValidator.getInstance().isValid(optionValue)) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Email.Error.invalid
-					.withLocale(context.getLocale())
-					.translate(optionValue)
+					.withContext(context)
+					.withOrdinalPlaceholders(optionValue)
 			)
 		}
 

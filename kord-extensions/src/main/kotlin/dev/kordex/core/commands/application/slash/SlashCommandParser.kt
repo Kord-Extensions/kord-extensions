@@ -88,7 +88,7 @@ public open class SlashCommandParser {
 						throw ArgumentParsingException(
 							CoreTranslations.ArgumentParser.Error.invalidValue
 								.withContext(context)
-								.translate(
+								.withOrdinalPlaceholders(
 									currentArg.displayName
 										.withContext(context)
 										.translate(),
@@ -96,10 +96,6 @@ public open class SlashCommandParser {
 									converter.getErrorString(context),
 									currentValue
 								),
-
-							CoreTranslations.ArgumentParser.Error.invalidValue,
-
-							context.getLocale(),
 
 							currentArg,
 							argumentsObj,
@@ -119,9 +115,6 @@ public open class SlashCommandParser {
 					if (converter.required) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
 
 							currentArg,
 							argumentsObj,
@@ -147,7 +140,7 @@ public open class SlashCommandParser {
 						throw ArgumentParsingException(
 							CoreTranslations.ArgumentParser.Error.invalidValue
 								.withContext(context)
-								.translate(
+								.withOrdinalPlaceholders(
 									currentArg.displayName
 										.withContext(context)
 										.translate(),
@@ -155,10 +148,6 @@ public open class SlashCommandParser {
 									converter.getErrorString(context),
 									currentValue
 								),
-
-							CoreTranslations.ArgumentParser.Error.invalidValue,
-
-							context.getLocale(),
 
 							currentArg,
 							argumentsObj,
@@ -178,9 +167,6 @@ public open class SlashCommandParser {
 					if (converter.required) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
 
 							currentArg,
 							argumentsObj,
@@ -214,9 +200,6 @@ public open class SlashCommandParser {
 					if (converter.required || converter.outputError) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
 
 							currentArg,
 							argumentsObj,
@@ -250,9 +233,6 @@ public open class SlashCommandParser {
 					if (converter.required || converter.outputError) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
 
 							currentArg,
 							argumentsObj,
@@ -286,9 +266,6 @@ public open class SlashCommandParser {
 					if (converter.required || converter.outputError) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
 
 							currentArg,
 							argumentsObj,
@@ -322,9 +299,6 @@ public open class SlashCommandParser {
 					if (converter.required || converter.outputError) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
 
 							currentArg,
 							argumentsObj,

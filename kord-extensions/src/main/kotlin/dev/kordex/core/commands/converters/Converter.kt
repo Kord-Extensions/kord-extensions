@@ -117,7 +117,7 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 	public open suspend fun handleError(
 		t: Throwable,
 		context: CommandContext,
-	): String = if (t is DiscordRelayedException) t.reason else throw t
+	): Key = if (t is DiscordRelayedException) t.reason.withContext(context) else throw t
 
 	/** Call the validator lambda, if one was provided. **/
 	public open suspend fun validate(context: CommandContext) {
@@ -159,7 +159,13 @@ public abstract class Converter<InputType : Any?, OutputType : Any?, NamedInputT
 	 * This will attempt to use the [errorType], falling back to [signatureType].
 	 */
 	public open suspend fun getErrorString(context: CommandContext): String =
-		(errorType ?: signatureType)
-			.withContext(context)
-			.translate()
+		getErrorKey().withContext(context).translate()
+
+	/**
+	 * Return a [Key] representing a pre-translated error string.
+	 *
+	 * This will attempt to use the [errorType], falling back to [signatureType].
+	 */
+	public open suspend fun getErrorKey(): Key =
+		errorType ?: signatureType
 }

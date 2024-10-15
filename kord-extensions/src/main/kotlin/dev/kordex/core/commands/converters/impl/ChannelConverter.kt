@@ -31,6 +31,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.utils.translate
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -94,8 +95,8 @@ public class ChannelConverter(
 
 		val channel: Channel = findChannel(arg, context) ?: throw DiscordRelayedException(
 			CoreTranslations.Converters.Channel.Error.missing
-				.withLocale(context.getLocale())
-				.translate(arg)
+				.withContext(context)
+				.withOrdinalPlaceholders(arg)
 		)
 
 		parsed = channel
@@ -111,8 +112,8 @@ public class ChannelConverter(
 			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
 					CoreTranslations.Converters.Channel.Error.invalid
-						.withLocale(context.getLocale())
-						.translate(id)
+						.withContext(context)
+						.withOrdinalPlaceholders(id)
 				)
 			}
 		} else {
@@ -157,8 +158,8 @@ public class ChannelConverter(
 
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Channel.Error.wrongType
-					.withLocale(context.getLocale())
-					.translate(
+					.withContext(context)
+					.withOrdinalPlaceholders(
 						channel.type,
 						requiredChannelTypes.joinToString { "**${it.translate(locale)}**" }
 					)

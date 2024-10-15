@@ -23,6 +23,7 @@ import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.EMPTY_VALUE_STRING
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.parsers.DurationParser
 import dev.kordex.core.parsers.DurationParserException
 import dev.kordex.core.parsers.InvalidTimeUnitException
@@ -207,8 +208,7 @@ public class DurationCoalescingConverter(
 			if (now > applied) {
 				throw DiscordRelayedException(
 					CoreTranslations.Converters.Duration.Error.positiveOnly
-						.withLocale(context.getLocale())
-						.translate()
+						.withContext(context)
 				)
 			}
 		}
@@ -232,8 +232,7 @@ public class DurationCoalescingConverter(
 				if (now > applied) {
 					throw DiscordRelayedException(
 						CoreTranslations.Converters.Duration.Error.positiveOnly
-							.withLocale(context.getLocale())
-							.translate()
+							.withContext(context)
 					)
 				}
 			}

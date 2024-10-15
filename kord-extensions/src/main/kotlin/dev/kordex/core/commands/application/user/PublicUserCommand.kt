@@ -25,6 +25,7 @@ import dev.kordex.core.commands.events.PublicUserCommandInvocationEvent
 import dev.kordex.core.commands.events.PublicUserCommandSucceededEvent
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -74,7 +75,11 @@ public class PublicUserCommand<M : ModalForm>(
 			}
 		} catch (e: DiscordRelayedException) {
 			event.interaction.respondEphemeral {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(event.getLocale()),
+					FailureReason.ProvidedCheckFailure(e)
+				)
 			}
 
 			emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
@@ -116,7 +121,12 @@ public class PublicUserCommand<M : ModalForm>(
 		try {
 			checkBotPerms(context)
 		} catch (e: DiscordRelayedException) {
-			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			respondText(
+				context,
+				e.reason.withLocale(event.getLocale()),
+				FailureReason.OwnPermissionsCheckFailure(e)
+			)
+
 			emitEventAsync(PublicUserCommandFailedChecksEvent(this, event, e.reason))
 
 			return
@@ -128,7 +138,11 @@ public class PublicUserCommand<M : ModalForm>(
 			emitEventAsync(PublicUserCommandFailedWithExceptionEvent(this, event, t))
 
 			if (t is DiscordRelayedException) {
-				respondText(context, t.reason, FailureReason.RelayedFailure(t))
+				respondText(
+					context,
+					t.reason.withLocale(event.getLocale()),
+					FailureReason.RelayedFailure(t)
+				)
 
 				return
 			}
@@ -141,7 +155,7 @@ public class PublicUserCommand<M : ModalForm>(
 
 	override suspend fun respondText(
 		context: PublicUserCommandContext<M>,
-		message: String,
+		message: Key,
 		failureType: FailureReason<*>,
 	) {
 		context.respond { settings.failureResponseBuilder(this, message, failureType) }

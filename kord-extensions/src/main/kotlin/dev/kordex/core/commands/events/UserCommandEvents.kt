@@ -12,6 +12,7 @@ import dev.kord.core.event.interaction.UserCommandInteractionCreateEvent
 import dev.kordex.core.commands.application.user.EphemeralUserCommand
 import dev.kordex.core.commands.application.user.PublicUserCommand
 import dev.kordex.core.commands.application.user.UserCommand
+import dev.kordex.core.i18n.types.Key
 
 // region Invocation events
 
@@ -67,14 +68,14 @@ public interface UserCommandFailedChecksEvent<C : UserCommand<*, *>> :
 public data class EphemeralUserCommandFailedChecksEvent(
 	override val command: EphemeralUserCommand<*>,
 	override val event: UserCommandInteractionCreateEvent,
-	override val reason: String,
+	override val reason: Key,
 ) : UserCommandFailedChecksEvent<EphemeralUserCommand<*>>
 
 /** Event emitted when a public user command's checks fail. **/
 public data class PublicUserCommandFailedChecksEvent(
 	override val command: PublicUserCommand<*>,
 	override val event: UserCommandInteractionCreateEvent,
-	override val reason: String,
+	override val reason: Key,
 ) : UserCommandFailedChecksEvent<PublicUserCommand<*>>
 
 /** Basic event emitted when a user command invocation fails with an exception. **/

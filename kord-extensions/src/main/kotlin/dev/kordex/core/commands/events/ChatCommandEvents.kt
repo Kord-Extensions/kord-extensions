@@ -11,6 +11,7 @@ package dev.kordex.core.commands.events
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kordex.core.ArgumentParsingException
 import dev.kordex.core.commands.chat.ChatCommand
+import dev.kordex.core.i18n.types.Key
 
 /** Event emitted when a chat command is invoked. **/
 public data class ChatCommandInvocationEvent(
@@ -28,7 +29,7 @@ public data class ChatCommandSucceededEvent(
 public data class ChatCommandFailedChecksEvent(
 	override val command: ChatCommand<*>,
 	override val event: MessageCreateEvent,
-	override val reason: String,
+	override val reason: Key,
 ) : CommandFailedChecksEvent<ChatCommand<*>, MessageCreateEvent>
 
 /** Event emitted when a chat command's argument parsing fails. **/

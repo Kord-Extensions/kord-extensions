@@ -13,6 +13,7 @@ import dev.kordex.core.ArgumentParsingException
 import dev.kordex.core.commands.application.slash.EphemeralSlashCommand
 import dev.kordex.core.commands.application.slash.PublicSlashCommand
 import dev.kordex.core.commands.application.slash.SlashCommand
+import dev.kordex.core.i18n.types.Key
 
 // region Invocation events
 
@@ -68,14 +69,14 @@ public interface SlashCommandFailedChecksEvent<C : SlashCommand<*, *, *>> :
 public data class EphemeralSlashCommandFailedChecksEvent(
 	override val command: EphemeralSlashCommand<*, *>,
 	override val event: ChatInputCommandInteractionCreateEvent,
-	override val reason: String,
+	override val reason: Key,
 ) : SlashCommandFailedChecksEvent<EphemeralSlashCommand<*, *>>
 
 /** Event emitted when a public slash command's checks fail. **/
 public data class PublicSlashCommandFailedChecksEvent(
 	override val command: PublicSlashCommand<*, *>,
 	override val event: ChatInputCommandInteractionCreateEvent,
-	override val reason: String,
+	override val reason: Key,
 ) : SlashCommandFailedChecksEvent<PublicSlashCommand<*, *>>
 
 /** Basic event emitted when a slash command's argument parsing fails'. **/

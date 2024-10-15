@@ -124,14 +124,13 @@ public class CommandRegistrationException(public val name: Key, public val reaso
  * @param translationKey Translation key used to create the [reason] string, if any.
  */
 public open class DiscordRelayedException(
-	public open val reason: String,
-	public open val translationKey: Key? = null,
+	public open val reason: Key,
 ) : KordExException() {
-	override val message: String by lazy { reason }
+	override val message: String by lazy { toString() }
 
 	public constructor(other: DiscordRelayedException) : this(other.reason)
 
-	override fun toString(): String = reason
+	override fun toString(): String = reason.toString()
 }
 
 /**
@@ -144,22 +143,19 @@ public open class DiscordRelayedException(
  * @param parser Tokenizing string parser used for this parse attempt, if this was a chat command.
  */
 public open class ArgumentParsingException(
-	public override val reason: String,
-	public override val translationKey: Key?,
-	public val locale: Locale,
+	public override val reason: Key,
 	public val argument: Argument<*>?,
 	public val arguments: Arguments,
 	public val parser: StringParser?,
-) : DiscordRelayedException(reason, translationKey) {
+) : DiscordRelayedException(reason) {
 	override val message: String by lazy { toString() }
 
 	public constructor(other: ArgumentParsingException) :
 		this(
 			other.reason,
-			other.translationKey, other.locale,
 			other.argument, other.arguments,
 			other.parser
 		)
 
-	override fun toString(): String = reason
+	override fun toString(): String = reason.toString()
 }

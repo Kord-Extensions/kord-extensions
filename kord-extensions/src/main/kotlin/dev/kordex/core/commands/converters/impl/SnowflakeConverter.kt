@@ -23,6 +23,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 
 /**
@@ -51,8 +52,8 @@ public class SnowflakeConverter(
 		} catch (_: NumberFormatException) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Snowflake.Error.invalid
-					.withLocale(context.getLocale())
-					.translate(arg)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			)
 		}
 
@@ -72,8 +73,8 @@ public class SnowflakeConverter(
 		} catch (_: NumberFormatException) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Snowflake.Error.invalid
-					.withLocale(context.getLocale())
-					.translate(optionValue)
+					.withContext(context)
+					.withOrdinalPlaceholders(optionValue)
 			)
 		}
 

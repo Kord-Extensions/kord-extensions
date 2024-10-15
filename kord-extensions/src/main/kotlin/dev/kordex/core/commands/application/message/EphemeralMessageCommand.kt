@@ -24,6 +24,7 @@ import dev.kordex.core.commands.events.EphemeralMessageCommandInvocationEvent
 import dev.kordex.core.commands.events.EphemeralMessageCommandSucceededEvent
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -73,7 +74,11 @@ public class EphemeralMessageCommand<M : ModalForm>(
 			}
 		} catch (e: DiscordRelayedException) {
 			event.interaction.respondEphemeral {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(event.getLocale()),
+					FailureReason.ProvidedCheckFailure(e)
+				)
 			}
 
 			emitEventAsync(EphemeralMessageCommandFailedChecksEvent(this, event, e.reason))
@@ -115,7 +120,12 @@ public class EphemeralMessageCommand<M : ModalForm>(
 		try {
 			checkBotPerms(context)
 		} catch (e: DiscordRelayedException) {
-			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			respondText(
+				context,
+				e.reason.withLocale(context.getLocale()),
+				FailureReason.OwnPermissionsCheckFailure(e)
+			)
+
 			emitEventAsync(EphemeralMessageCommandFailedChecksEvent(this, event, e.reason))
 
 			return
@@ -127,7 +137,11 @@ public class EphemeralMessageCommand<M : ModalForm>(
 			emitEventAsync(EphemeralMessageCommandFailedWithExceptionEvent(this, event, t))
 
 			if (t is DiscordRelayedException) {
-				respondText(context, t.reason, FailureReason.RelayedFailure(t))
+				respondText(
+					context,
+					t.reason.withLocale(context.getLocale()),
+					FailureReason.RelayedFailure(t)
+				)
 
 				return
 			}
@@ -142,7 +156,7 @@ public class EphemeralMessageCommand<M : ModalForm>(
 
 	override suspend fun respondText(
 		context: EphemeralMessageCommandContext<M>,
-		message: String,
+		message: Key,
 		failureType: FailureReason<*>,
 	) {
 		context.respond { settings.failureResponseBuilder(this, message, failureType) }

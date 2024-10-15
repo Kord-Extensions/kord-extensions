@@ -22,7 +22,9 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
+import kotlinx.coroutines.withContext
 
 /**
  * Argument converter for decimal arguments, converting them into [Double].
@@ -59,24 +61,23 @@ public class DecimalConverter(
 		} catch (_: NumberFormatException) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Decimal.Error.invalid
-					.withLocale(context.getLocale())
-					.translate()
+					.withContext(context)
 			)
 		}
 
 		if (minValue != null && this.parsed < minValue) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Number.Error.Invalid.tooSmall
-					.withLocale(context.getLocale())
-					.translate(arg, minValue)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, minValue)
 			)
 		}
 
 		if (maxValue != null && this.parsed > maxValue) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Number.Error.Invalid.tooLarge
-					.withLocale(context.getLocale())
-					.translate(arg, maxValue)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, maxValue)
 			)
 		}
 

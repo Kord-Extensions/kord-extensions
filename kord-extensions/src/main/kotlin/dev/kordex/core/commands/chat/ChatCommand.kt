@@ -25,6 +25,7 @@ import dev.kordex.core.i18n.EMPTY_VALUE_STRING
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -32,6 +33,7 @@ import dev.kordex.core.utils.getLocale
 import dev.kordex.core.utils.respond
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.util.*
 
@@ -238,7 +240,7 @@ public open class ChatCommand<T : Arguments>(
 			check(context)
 
 			if (!context.passed) {
-				val message = context.getTranslatedMessage()
+				val message = context.getMessageKey()
 
 				if (message != null && sendMessage) {
 					event.message.respond {
@@ -249,7 +251,6 @@ public open class ChatCommand<T : Arguments>(
 							FailureReason.ProvidedCheckFailure(
 								DiscordRelayedException(
 									message,
-									context.errorResponseKey
 								)
 							)
 						)
@@ -267,7 +268,7 @@ public open class ChatCommand<T : Arguments>(
 			check(context)
 
 			if (!context.passed) {
-				val message = context.message
+				val message = context.getMessageKey()
 
 				if (message != null && sendMessage) {
 					event.message.respond {
@@ -276,7 +277,7 @@ public open class ChatCommand<T : Arguments>(
 							message,
 
 							FailureReason.ProvidedCheckFailure(
-								DiscordRelayedException(message, context.errorResponseKey)
+								DiscordRelayedException(message)
 							)
 						)
 					}
@@ -292,7 +293,7 @@ public open class ChatCommand<T : Arguments>(
 			check(context)
 
 			if (!context.passed) {
-				val message = context.message
+				val message = context.getMessageKey()
 
 				if (message != null && sendMessage) {
 					event.message.respond {
@@ -301,7 +302,7 @@ public open class ChatCommand<T : Arguments>(
 							message,
 
 							FailureReason.ProvidedCheckFailure(
-								DiscordRelayedException(message, context.errorResponseKey)
+								DiscordRelayedException(message)
 							)
 						)
 					}
@@ -356,7 +357,11 @@ public open class ChatCommand<T : Arguments>(
 			emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
 
 			event.message.respond {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(event.getLocale()),
+					FailureReason.ProvidedCheckFailure(e)
+				)
 			}
 
 			return@withLock
@@ -402,7 +407,11 @@ public open class ChatCommand<T : Arguments>(
 			checkBotPerms(context)
 		} catch (e: DiscordRelayedException) {
 			event.message.respond {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(context.getLocale()),
+					FailureReason.OwnPermissionsCheckFailure(e)
+				)
 			}
 
 			emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
@@ -416,7 +425,11 @@ public open class ChatCommand<T : Arguments>(
 				context.populateArgs(parsedArgs)
 			} catch (e: ArgumentParsingException) {
 				event.message.respond {
-					settings.failureResponseBuilder(this, e.reason, FailureReason.ArgumentParsingFailure(e))
+					settings.failureResponseBuilder(
+						this,
+						e.reason.withLocale(context.getLocale()),
+						FailureReason.ArgumentParsingFailure(e)
+					)
 				}
 
 				emitEventAsync(ChatCommandFailedParsingEvent(this, event, e))
@@ -432,7 +445,11 @@ public open class ChatCommand<T : Arguments>(
 
 			if (t is DiscordRelayedException) {
 				event.message.respond {
-					settings.failureResponseBuilder(this, t.reason, FailureReason.RelayedFailure(t))
+					settings.failureResponseBuilder(
+						this,
+						t.reason.withLocale(context.getLocale()),
+						FailureReason.RelayedFailure(t)
+					)
 				}
 
 				return@withLock
@@ -462,8 +479,8 @@ public open class ChatCommand<T : Arguments>(
 							this,
 
 							CoreTranslations.Commands.Error.User.Sentry.message
-								.withLocale(context.getLocale())
-								.translate(
+								.withContext(context)
+								.withOrdinalPlaceholders(
 									prefix, sentryId
 								),
 
@@ -476,8 +493,7 @@ public open class ChatCommand<T : Arguments>(
 							this,
 
 							CoreTranslations.Commands.Error.user
-								.withLocale(context.getLocale())
-								.translate(),
+								.withContext(context),
 
 							FailureReason.ExecutionError(t)
 						)
@@ -491,8 +507,7 @@ public open class ChatCommand<T : Arguments>(
 						this,
 
 						CoreTranslations.Commands.Error.user
-							.withLocale(context.getLocale())
-							.translate(),
+							.withLocale(context.getLocale()),
 
 						FailureReason.ExecutionError(t)
 					)

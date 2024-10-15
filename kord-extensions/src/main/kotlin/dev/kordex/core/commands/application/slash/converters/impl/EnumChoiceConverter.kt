@@ -23,6 +23,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapStringOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.utils.getIgnoringCase
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -92,8 +93,8 @@ public class EnumChoiceConverter<E>(
 			val result = getter.invoke(arg, context.getLocale())
 				?: throw DiscordRelayedException(
 					CoreTranslations.Converters.Choice.invalidChoice
-						.withLocale(context.getLocale())
-						.translate(
+						.withContext(context)
+						.withOrdinalPlaceholders(
 							arg,
 							choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
 						)
@@ -105,8 +106,8 @@ public class EnumChoiceConverter<E>(
 
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Choice.invalidChoice
-					.withLocale(context.getLocale())
-					.translate(
+					.withContext(context)
+					.withOrdinalPlaceholders(
 						arg,
 						choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
 					)

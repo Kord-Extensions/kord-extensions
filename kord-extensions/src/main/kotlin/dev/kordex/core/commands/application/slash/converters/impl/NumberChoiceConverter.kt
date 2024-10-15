@@ -22,6 +22,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapIntegerOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.utils.getIgnoringCase
 import dev.kordex.parser.StringParser
 
@@ -61,8 +62,8 @@ public class NumberChoiceConverter(
 			if (result !in choices.values) {
 				throw DiscordRelayedException(
 					CoreTranslations.Converters.Choice.invalidChoice
-						.withLocale(context.getLocale())
-						.translate(
+						.withContext(context)
+						.withOrdinalPlaceholders(
 							arg,
 							choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
 						)
@@ -71,17 +72,17 @@ public class NumberChoiceConverter(
 
 			this.parsed = result
 		} catch (_: NumberFormatException) {
-			val errorString = if (radix == DEFAULT_RADIX) {
+			val errorKey = if (radix == DEFAULT_RADIX) {
 				CoreTranslations.Converters.Number.Error.Invalid.defaultBase
-					.withLocale(context.getLocale())
-					.translate(arg)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			} else {
 				CoreTranslations.Converters.Number.Error.Invalid.otherBase
-					.withLocale(context.getLocale())
-					.translate(arg, radix)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, radix)
 			}
 
-			throw DiscordRelayedException(errorString)
+			throw DiscordRelayedException(errorKey)
 		}
 
 		return true

@@ -23,6 +23,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 
 /**
@@ -43,8 +44,7 @@ public class AttachmentConverter(
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean =
 		throw DiscordRelayedException(
 			CoreTranslations.Converters.Attachment.Error.slashCommandsOnly
-				.withLocale(context.getLocale())
-				.translate()
+				.withContext(context)
 		)
 
 	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<AttachmentBuilder> =

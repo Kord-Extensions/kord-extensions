@@ -25,6 +25,7 @@ import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.SupportedLocales
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 import java.util.*
 
@@ -52,8 +53,8 @@ public class SupportedLocaleConverter(
 
 		this.parsed = SupportedLocales.ALL_LOCALES[arg.lowercase().trim()] ?: throw DiscordRelayedException(
 			CoreTranslations.Converters.SupportedLocale.Error.unknown
-				.withLocale(context.getLocale())
-				.translate(arg)
+				.withContext(context)
+				.withOrdinalPlaceholders(arg)
 		)
 
 		return true
@@ -69,8 +70,8 @@ public class SupportedLocaleConverter(
 
 		this.parsed = SupportedLocales.ALL_LOCALES[optionValue.lowercase().trim()] ?: throw DiscordRelayedException(
 			CoreTranslations.Converters.SupportedLocale.Error.unknown
-				.withLocale(context.getLocale())
-				.translate(optionValue)
+				.withContext(context)
+				.withOrdinalPlaceholders(optionValue)
 		)
 
 		return true

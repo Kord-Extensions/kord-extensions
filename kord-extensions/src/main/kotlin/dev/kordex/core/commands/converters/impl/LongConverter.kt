@@ -22,6 +22,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 
 private const val DEFAULT_RADIX = 10
@@ -59,32 +60,32 @@ public class LongConverter(
 		try {
 			this.parsed = arg.toLong(radix)
 		} catch (_: NumberFormatException) {
-			val errorString = if (radix == DEFAULT_RADIX) {
+			val errorKey = if (radix == DEFAULT_RADIX) {
 				CoreTranslations.Converters.Number.Error.Invalid.defaultBase
-					.withLocale(context.getLocale())
-					.translate(arg)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			} else {
 				CoreTranslations.Converters.Number.Error.Invalid.otherBase
-					.withLocale(context.getLocale())
-					.translate(arg, radix)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, radix)
 			}
 
-			throw DiscordRelayedException(errorString)
+			throw DiscordRelayedException(errorKey)
 		}
 
 		if (minValue != null && this.parsed < minValue) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Number.Error.Invalid.tooSmall
-					.withLocale(context.getLocale())
-					.translate(arg, minValue)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, minValue)
 			)
 		}
 
 		if (maxValue != null && this.parsed > maxValue) {
 			throw DiscordRelayedException(
 				CoreTranslations.Converters.Number.Error.Invalid.tooLarge
-					.withLocale(context.getLocale())
-					.translate(arg, maxValue)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, maxValue)
 			)
 		}
 

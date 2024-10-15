@@ -22,6 +22,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.time.TimestampType
 import dev.kordex.core.time.toDiscord
 import dev.kordex.parser.StringParser
@@ -48,8 +49,8 @@ public class TimestampConverter(
 
 		this.parsed = parseFromString(arg) ?: throw DiscordRelayedException(
 			CoreTranslations.Converters.Timestamp.Error.invalid
-				.withLocale(context.getLocale())
-				.translate(arg)
+				.withContext(context)
+				.withOrdinalPlaceholders(arg)
 		)
 
 		return true
@@ -64,8 +65,8 @@ public class TimestampConverter(
 		val optionValue = (option as? StringOptionValue)?.value ?: return false
 		this.parsed = parseFromString(optionValue) ?: throw DiscordRelayedException(
 			CoreTranslations.Converters.Timestamp.Error.invalid
-				.withLocale(context.getLocale())
-				.translate(optionValue)
+				.withContext(context)
+				.withOrdinalPlaceholders(optionValue)
 		)
 
 		return true

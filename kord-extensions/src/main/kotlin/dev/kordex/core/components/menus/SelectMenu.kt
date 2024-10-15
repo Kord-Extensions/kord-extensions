@@ -13,6 +13,8 @@ import dev.kordex.core.components.ComponentWithAction
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.impl.SENTRY_EXTENSION_NAME
 import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.scheduling.Task
@@ -101,32 +103,30 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 				user = context.user.asUserOrNull()
 			}
 
-			val errorMessage = if (sentryId != null) {
+			val errorKey = if (sentryId != null) {
 				logger.info { "Error submitted to Sentry: $sentryId" }
 
 				if (bot.extensions.containsKey(SENTRY_EXTENSION_NAME)) {
 					CoreTranslations.Commands.Error.User.Sentry.slash
-						.withLocale(context.getLocale())
-						.translate(sentryId)
+						.withContext(context)
+						.withOrdinalPlaceholders(sentryId)
 				} else {
 					CoreTranslations.Commands.Error.user
-						.withLocale(context.getLocale())
-						.translate()
+						.withContext(context)
 				}
 			} else {
 				CoreTranslations.Commands.Error.user
-					.withLocale(context.getLocale())
-					.translate()
+					.withContext(context)
 			}
 
-			respondText(context, errorMessage, FailureReason.ExecutionError(t))
+			respondText(context, errorKey, FailureReason.ExecutionError(t))
 		} else {
 			respondText(
 				context,
 
 				CoreTranslations.Commands.Error.user
-					.withLocale(context.getLocale())
-					.translate(),
+					.withContext(context)
+					.withOrdinalPlaceholders(),
 
 				FailureReason.ExecutionError(t)
 			)
@@ -143,5 +143,5 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 	}
 
 	/** Override this to implement a way to respond to the user, regardless of whatever happens. **/
-	public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
+	public abstract suspend fun respondText(context: C, message: Key, failureType: FailureReason<*>)
 }

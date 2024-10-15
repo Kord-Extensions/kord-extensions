@@ -12,6 +12,7 @@ import dev.kord.core.event.Event
 import dev.kordex.core.ArgumentParsingException
 import dev.kordex.core.commands.Command
 import dev.kordex.core.events.KordExEvent
+import dev.kordex.core.i18n.types.Key
 
 /**
  * Sealed interface representing a basic command event.
@@ -39,7 +40,7 @@ public sealed interface CommandFailedEvent<C : Command, E : Event> : CommandEven
 /** Basic event emitted when a command's checks fail, including for required bot permissions. **/
 public sealed interface CommandFailedChecksEvent<C : Command, E : Event> : CommandFailedEvent<C, E> {
 	/** Human-readable failure reason. **/
-	public val reason: String
+	public val reason: Key
 }
 
 /** Basic event emitted when a command's argument parsing fails. **/

@@ -63,12 +63,8 @@ public open class ChatCommandParser : KordExKoinComponent {
 		if (kwArgs != null && kwArgs.size != 1) {
 			throw ArgumentParsingException(
 				reason = CoreTranslations.ArgumentParser.Error.requiresOneValue
-					.withLocale(context.getLocale())
-					.translate(argument.displayName, kwArgs.size),
-
-				translationKey = CoreTranslations.ArgumentParser.Error.requiresOneValue,
-
-				locale = context.getLocale(),
+					.withContext(context)
+					.withOrdinalPlaceholders(argument.displayName, kwArgs.size),
 
 				argument = argument,
 				arguments = arguments,
@@ -88,19 +84,13 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 					throw ArgumentParsingException(
 						CoreTranslations.ArgumentParser.Error.errorInArgument
-							.withLocale(context.getLocale())
-							.translate(
-								argument.displayName
-									.withContext(context)
-									.translate(),
+							.withContext(context)
+							.withOrdinalPlaceholders(
+								argument.displayName,
 
 								CoreTranslations.ArgumentParser.Error.unknownConverterType
-									.translate(c)
+									.withOrdinalPlaceholders(c)
 							),
-
-						CoreTranslations.ArgumentParser.Error.errorInArgument,
-
-						context.getLocale(),
 
 						argument,
 						arguments,
@@ -150,19 +140,13 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 				throw ArgumentParsingException(
 					CoreTranslations.ArgumentParser.Error.errorInArgument
-						.withLocale(context.getLocale())
-						.translate(
-							argument.displayName
-								.withContext(context)
-								.translate(),
+						.withContext(context)
+						.withOrdinalPlaceholders(
+							argument.displayName,
 
 							CoreTranslations.ArgumentParser.Error.unknownConverterType
-								.translate(c)
+								.withOrdinalPlaceholders(c)
 						),
-
-					CoreTranslations.ArgumentParser.Error.errorInArgument,
-
-					context.getLocale(),
 
 					argument,
 					arguments,
@@ -180,18 +164,11 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 			is DiscordRelayedException -> throw ArgumentParsingException(
 					CoreTranslations.ArgumentParser.Error.errorInArgument
-						.withLocale(context.getLocale())
-						.translate(
-							argument.displayName
-								.withContext(context)
-								.translate(),
-
+						.withContext(context)
+						.withOrdinalPlaceholders(
+							argument.displayName,
 							argument.converter.handleError(t, context)
 						),
-
-					CoreTranslations.ArgumentParser.Error.errorInArgument,
-
-					context.getLocale(),
 
 					argument,
 					arguments,
@@ -216,18 +193,12 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 		throw ArgumentParsingException(
 			CoreTranslations.ArgumentParser.Error.invalidValue
-				.withLocale(context.getLocale())
-				.translate(
-					argument.displayName
-						.withLocale(context.getLocale())
-						.translate(),
+				.withContext(context)
+				.withOrdinalPlaceholders(
+					argument.displayName,
 
-					c.getErrorString(context)
+					c.getErrorKey()
 				),
-
-			CoreTranslations.ArgumentParser.Error.invalidValue,
-
-			context.getLocale(),
 
 			argument,
 			arguments,
@@ -247,22 +218,14 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 		throw ArgumentParsingException(
 			CoreTranslations.ArgumentParser.Error.notAllValid
-				.withLocale(context.getLocale())
-				.translate(
-					argument.displayName
-						.withLocale(context.getLocale())
-						.translate(),
+				.withContext(context)
+				.withOrdinalPlaceholders(
+					argument.displayName,
 
 					numArgs,
 					numParsed,
 					c.signatureType
-						.withLocale(context.getLocale())
-						.translate()
 				),
-
-			CoreTranslations.ArgumentParser.Error.notAllValid,
-
-			context.getLocale(),
 
 			argument,
 			arguments,
@@ -414,19 +377,12 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 				throw ArgumentParsingException(
 					CoreTranslations.ArgumentParser.Error.errorInArgument
-						.withLocale(context.getLocale())
-						.translate(
-							argument.displayName
-								.withContext(context)
-								.translate(),
+						.withContext(context)
+						.withOrdinalPlaceholders(
+							argument.displayName,
 
 							CoreTranslations.ArgumentParser.Error.unknownConverterType
-								.translate(c)
 						),
-
-					CoreTranslations.ArgumentParser.Error.errorInArgument,
-
-					context.getLocale(),
 
 					argument,
 					arguments,
@@ -525,12 +481,8 @@ public open class ChatCommandParser : KordExKoinComponent {
 			if (filledRequiredArgs < 1) {
 				throw ArgumentParsingException(
 					CoreTranslations.ArgumentParser.Error.noFilledArguments
-						.withLocale(context.getLocale())
-						.translate(allRequiredArgs),
-
-					CoreTranslations.ArgumentParser.Error.noFilledArguments,
-
-					context.getLocale(),
+						.withContext(context)
+						.withOrdinalPlaceholders(allRequiredArgs),
 
 					null,
 					argumentsObj,
@@ -539,12 +491,8 @@ public open class ChatCommandParser : KordExKoinComponent {
 			} else {
 				throw ArgumentParsingException(
 					CoreTranslations.ArgumentParser.Error.someFilledArguments
-						.withLocale(context.getLocale())
-						.translate(allRequiredArgs, filledRequiredArgs),
-
-					CoreTranslations.ArgumentParser.Error.someFilledArguments,
-
-					context.getLocale(),
+						.withContext(context)
+						.withOrdinalPlaceholders(allRequiredArgs, filledRequiredArgs),
 
 					null,
 					argumentsObj,

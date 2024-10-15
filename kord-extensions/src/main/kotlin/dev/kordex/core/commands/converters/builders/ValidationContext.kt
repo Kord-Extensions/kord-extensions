@@ -222,7 +222,7 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 		if (passed.not()) {
 			if (message != null) {
 				throw DiscordRelayedException(
-					getTranslatedMessage()!!
+					getMessageKey()!!
 				)
 			} else {
 				error("Validation failed.")
@@ -232,10 +232,14 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 
 	/** Get the translated validator failure message, if the validator has failed and a message was set. **/
 	public suspend fun getTranslatedMessage(): String? =
+		getMessageKey()?.translate()
+
+	/** Get a [Key] representing the validator failure message, if the validator has failed and a message was set. **/
+	public suspend fun getMessageKey(): Key? =
 		if (passed.not() && message != null) {
 			errorResponseKey
 				.withLocale(context.getLocale())
-				.translate(message)
+				.withOrdinalPlaceholders(message)
 		} else {
 			null
 		}

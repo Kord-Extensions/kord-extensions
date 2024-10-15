@@ -28,6 +28,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.getLocale
 import dev.kordex.parser.StringParser
@@ -93,8 +94,8 @@ public class TagConverter(
 			it.name.contains(input, true)
 		} ?: throw DiscordRelayedException(
 			CoreTranslations.Converters.Tag.Error.unknownTag
-				.withLocale(context.getLocale())
-				.translate(input)
+				.withContext(context)
+				.withOrdinalPlaceholders(input)
 		)
 
 		return tag
@@ -134,8 +135,7 @@ public class TagConverter(
 				}
 
 				throw DiscordRelayedException(
-					key.withLocale(context.getLocale())
-						.translate()
+					key.withContext(context)
 				)
 			}
 
@@ -162,7 +162,6 @@ public class TagConverter(
 						CoreTranslations.Converters.Tag.Error.wrongChannelTypeWithGetter
 					}
 						.withLocale(event.getLocale())
-						.translate()
 				)
 			}
 

@@ -113,7 +113,7 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 				throw DiscordRelayedException(
 					CoreTranslations.Commands.Error.missingBotPermissions
 						.withLocale(context.getLocale())
-						.translate(
+						.withOrdinalPlaceholders(
 							missingPerms
 								.map { it.translate(context.getLocale()) }
 								.joinToString()

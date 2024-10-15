@@ -230,17 +230,26 @@ public open class CheckContext<out T : Event>(
 	public fun throwIfFailedWithMessage() {
 		if (passed.not() && message != null) {
 			throw DiscordRelayedException(
-				getTranslatedMessage()!!
+				errorResponseKey
+					.withLocale(locale)
+					.withOrdinalPlaceholders(message)
 			)
 		}
 	}
 
 	/** Get the translated check failure message, if the check has failed and a message was set. **/
 	public fun getTranslatedMessage(): String? =
+		getMessageKey()?.translate()
+
+	/**
+	 * Get a pre-translation [Key] representing the current check failure message,
+	 * if the check has failed, and a message was set.
+	 */
+	public fun getMessageKey(): Key? =
 		if (passed.not() && message != null) {
 			errorResponseKey
 				.withLocale(locale)
-				.translate(message)
+				.withOrdinalPlaceholders(message)
 		} else {
 			null
 		}

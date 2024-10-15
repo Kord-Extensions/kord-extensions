@@ -16,6 +16,7 @@ import dev.kord.core.behavior.interaction.response.PublicMessageInteractionRespo
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.components.forms.ModalForm
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.types.PublicInteractionContext
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -63,7 +64,11 @@ public abstract class PublicSelectMenu<C, M : ModalForm>(
 			}
 		} catch (e: DiscordRelayedException) {
 			event.interaction.respondEphemeral {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(event.getLocale()),
+					FailureReason.ProvidedCheckFailure(e)
+				)
 			}
 
 			return@withLock
@@ -111,7 +116,11 @@ public abstract class PublicSelectMenu<C, M : ModalForm>(
 		try {
 			checkBotPerms(context)
 		} catch (e: DiscordRelayedException) {
-			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			respondText(
+				context,
+				e.reason.withLocale(context.getLocale()),
+				FailureReason.OwnPermissionsCheckFailure(e)
+			)
 
 			return@withLock
 		}
@@ -119,7 +128,11 @@ public abstract class PublicSelectMenu<C, M : ModalForm>(
 		try {
 			body(context, modalObj)
 		} catch (e: DiscordRelayedException) {
-			respondText(context, e.reason, FailureReason.RelayedFailure(e))
+			respondText(
+				context,
+				e.reason.withLocale(context.getLocale()),
+				FailureReason.RelayedFailure(e)
+			)
 		} catch (t: Throwable) {
 			handleError(context, t, this)
 		}
@@ -127,7 +140,7 @@ public abstract class PublicSelectMenu<C, M : ModalForm>(
 
 	override suspend fun respondText(
 		context: C,
-		message: String,
+		message: Key,
 		failureType: FailureReason<*>,
 	) {
 		context.respond { settings.failureResponseBuilder(this, message, failureType) }

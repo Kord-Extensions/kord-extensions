@@ -26,6 +26,7 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -59,8 +60,8 @@ public class RoleConverter(
 		parsed = findRole(arg, context)
 			?: throw DiscordRelayedException(
 				CoreTranslations.Converters.Role.Error.missing
-					.withLocale(context.getLocale())
-					.translate(arg)
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			)
 
 		return true
@@ -84,8 +85,8 @@ public class RoleConverter(
 			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
 					CoreTranslations.Converters.Role.Error.invalid
-						.withLocale(context.getLocale())
-						.translate(id)
+						.withContext(context)
+						.withOrdinalPlaceholders(id)
 				)
 			}
 		} else {
