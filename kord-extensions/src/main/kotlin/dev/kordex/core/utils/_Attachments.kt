@@ -14,6 +14,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.jvm.javaio.*
+import io.ktor.utils.io.readRemaining
+import kotlinx.io.readByteArray
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.*
@@ -32,7 +34,7 @@ public suspend fun Attachment.download(): ByteArray {
 	val channel = client.get(this.url)
 	val packet = channel.bodyAsChannel()
 
-	return packet.readRemaining().readBytes()
+	return packet.readRemaining().readByteArray()
 }
 
 /** Given a [String] representing a file path, download the attachment to the file it points to. **/
