@@ -32,6 +32,7 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.publicSlashCommand
 import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.capitalizeWords
 import dev.kordex.core.i18n.toKey
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.i18n.withContext
@@ -42,6 +43,7 @@ import dev.kordex.core.pagination.pages.Pages
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.storage.StorageType
 import dev.kordex.core.storage.StorageUnit
+import dev.kordex.core.utils.capitalizeWords
 import dev.kordex.modules.func.mappings.arguments.*
 import dev.kordex.modules.func.mappings.builders.ExtMappingsBuilder
 import dev.kordex.modules.func.mappings.enums.Channels
@@ -807,7 +809,11 @@ class MappingsExtension : Extension() {
 
 								availableNamespaces.forEach {
 									option(
-										label = it,
+										label = it
+											.replace("-", " ")
+											.capitalizeWords()
+											.toKey(),
+
 										value = it
 									) {
 										default = it in config.namespaces

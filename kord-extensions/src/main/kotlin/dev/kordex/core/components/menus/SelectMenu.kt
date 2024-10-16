@@ -49,9 +49,9 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 	public var maximumChoices: Int? = 1
 
 	/** Placeholder text to show before the user has selected any options. **/
-	public var placeholder: String? = null
+	public var placeholder: Key? = null
 
-	@Suppress("MagicNumber")  // WHY DO YOU THINK I ASSIGN IT HERE
+	@Suppress("MagicNumber")  // WHY DO YOU THINK I ASSIGN IT HERE?
 	override val unitWidth: Int = 5
 
 	/** Whether this select menu is disabled. **/
@@ -137,7 +137,7 @@ public abstract class SelectMenu<C : SelectMenuContext, M : ModalForm>(
 	override fun validate() {
 		super.validate()
 
-		if ((this.placeholder?.length ?: 0) > PLACEHOLDER_MAX) {
+		if ((this.placeholder?.translate()?.length ?: 0) > PLACEHOLDER_MAX) {
 			error("Menu components must not have a placeholder longer than $PLACEHOLDER_MAX characters.")
 		}
 	}

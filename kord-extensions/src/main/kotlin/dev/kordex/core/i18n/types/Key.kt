@@ -17,6 +17,8 @@ import java.util.Locale
 import kotlin.collections.asList
 import kotlin.collections.plus
 
+public typealias PostProcessor = Key.(translation: String) -> String
+
 @Serializable
 public data class Key(
 	public val key: String,
@@ -33,6 +35,9 @@ public data class Key(
 
 	@Transient
 	public val namedPlaceholders: Map<String, Any?> = mapOf(),
+
+	@Transient
+	public val postProcessors: List<PostProcessor> = listOf()
 ) {
 	private val translations: TranslationsProvider by lazy {
 		getKoin().get()
@@ -43,6 +48,15 @@ public data class Key(
 
 	public fun filterNamedPlaceholders(body: (Map.Entry<String, Any?>) -> Boolean): Key =
 		copy(namedPlaceholders = namedPlaceholders.filter(body))
+
+	public fun withPostProcessor(processor: PostProcessor): Key =
+		copy(postProcessors = postProcessors + processor)
+
+	public fun withPostProcessors(processors: Collection<PostProcessor>): Key =
+		copy(postProcessors = postProcessors + processors)
+
+	public fun filterPostProcessors(body: (PostProcessor) -> Boolean): Key =
+		copy(postProcessors = postProcessors.filter(body))
 
 	public fun withOrdinalPlaceholders(vararg placeholders: Any?): Key {
 		if (namedPlaceholders.isNotEmpty()) {
@@ -147,7 +161,7 @@ public data class Key(
 			}
 		}
 
-		return translations.translate(this, allReplacements.toTypedArray())
+		return postProcess(translations.translate(this, allReplacements.toTypedArray()))
 	}
 
 	public fun translateNamed(replacements: Map<String, Any?>): String {
@@ -165,7 +179,7 @@ public data class Key(
 			}
 		}
 
-		return translations.translateNamed(this, allReplacements)
+		return postProcess(translations.translateNamed(this, allReplacements))
 	}
 
 	public fun translateNamed(vararg replacements: Pair<String, Any?>): String =
@@ -182,6 +196,16 @@ public data class Key(
 
 	public fun translateNamedLocale(locale: Locale, vararg replacements: Pair<String, Any?>): String =
 		translateNamedLocale(locale, replacements.toMap())
+
+	public fun postProcess(string: String): String {
+		var result = string
+
+		postProcessors.forEach {
+			result = it.invoke(this, result)
+		}
+
+		return result
+	}
 
 	// Key "translation.key" (Bundle "name" / Locale "en_GB")
 	override fun toString(): String =

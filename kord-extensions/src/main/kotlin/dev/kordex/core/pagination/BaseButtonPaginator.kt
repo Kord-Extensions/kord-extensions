@@ -18,6 +18,7 @@ import dev.kordex.core.components.buttons.PublicInteractionButton
 import dev.kordex.core.components.publicButton
 import dev.kordex.core.components.types.emoji
 import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.capitalizeWords
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.builders.PageTransitionCallback
@@ -201,12 +202,14 @@ public abstract class BaseButtonPaginator(
 					style = ButtonStyle.Primary
 					emoji(FINISH_EMOJI)
 
-					translate(CoreTranslations.Paginator.Button.done)
+					CoreTranslations.Paginator.Button.done
+						.withLocale(localeObj)
 				} else {
 					style = ButtonStyle.Danger
 					emoji(DELETE_EMOJI)
 
-					translate(CoreTranslations.Paginator.Button.delete)
+					CoreTranslations.Paginator.Button.delete
+						.withLocale(localeObj)
 				}
 
 				action {
@@ -222,7 +225,11 @@ public abstract class BaseButtonPaginator(
 				allGroups.forEach { group ->
 					groupButtons[group] = components.publicButton(secondRowNumber) {
 						deferredAck = true
-						label = translate(group).capitalizeWords(localeObj)
+
+						label = group
+							.withLocale(localeObj)
+							.capitalizeWords()
+
 						style = ButtonStyle.Secondary
 
 						check(defaultCheck)
@@ -244,9 +251,11 @@ public abstract class BaseButtonPaginator(
 					emoji(switchEmoji)
 
 					label = if (allGroups.size == 2) {
-						translate(CoreTranslations.Paginator.Button.more)
+						CoreTranslations.Paginator.Button.more
+							.withLocale(localeObj)
 					} else {
-						translate(CoreTranslations.Paginator.Button.Group.switch)
+						CoreTranslations.Paginator.Button.Group.switch
+							.withLocale(localeObj)
 					}
 
 					action {
@@ -333,9 +342,11 @@ public abstract class BaseButtonPaginator(
 
 		if (allGroups.size == 2) {
 			if (currentGroup == pages.defaultGroup) {
-				switchButton?.label = translate(CoreTranslations.Paginator.Button.more)
+				switchButton?.label = CoreTranslations.Paginator.Button.more
+					.withLocale(localeObj)
 			} else {
-				switchButton?.label = translate(CoreTranslations.Paginator.Button.less)
+				switchButton?.label = CoreTranslations.Paginator.Button.less
+					.withLocale(localeObj)
 			}
 		}
 

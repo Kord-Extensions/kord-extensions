@@ -29,7 +29,7 @@ public abstract class InteractionButtonWithAction<C : InteractionButtonContext, 
 	internal val logger: KLogger = KotlinLogging.logger {}
 
 	/** Button label, for display on Discord. **/
-	public var label: String? = null
+	public var label: Key? = null
 
 	/** Whether this button is disabled. **/
 	public open var disabled: Boolean = false

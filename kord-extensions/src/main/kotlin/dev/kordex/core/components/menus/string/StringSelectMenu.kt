@@ -10,8 +10,8 @@ package dev.kordex.core.components.menus.string
 
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.component.SelectOptionBuilder
-import dev.kord.rest.builder.component.StringSelectBuilder
 import dev.kordex.core.components.menus.*
+import dev.kordex.core.i18n.types.Key
 
 /** Interface for string select menus. **/
 public interface StringSelectMenu {
@@ -21,14 +21,16 @@ public interface StringSelectMenu {
 	/** Add an option to this select menu. **/
 	@Suppress("UnnecessaryParentheses")
 	public suspend fun option(
-		label: String,
+		label: Key,
 		value: String,
 
-		body: (suspend SelectOptionBuilder.() -> Unit) = {},
+		body: (suspend StringSelectOption.() -> Unit) = {},
 	) {
-		val builder = SelectOptionBuilder(label, value)
+		val kordExBuilder = StringSelectOption(label, value)
 
-		body(builder)
+		body(kordExBuilder)
+
+		val builder = kordExBuilder.build()
 
 		if ((builder.description?.length ?: 0) > DESCRIPTION_MAX) {
 			error("Option descriptions must not be longer than $DESCRIPTION_MAX characters.")
@@ -53,8 +55,8 @@ public interface StringSelectMenu {
 
 		builder.stringSelect(selectMenu.id) {
 			this.allowedValues = selectMenu.minimumChoices..selectMenu.maximumChoices!!
-			((this as? StringSelectBuilder)?.options ?: mutableListOf()).addAll(this@StringSelectMenu.options)
-			this.placeholder = selectMenu.placeholder
+			this.options.addAll(this@StringSelectMenu.options)
+			this.placeholder = selectMenu.placeholder?.translate()
 			this.disabled = selectMenu.disabled
 		}
 	}

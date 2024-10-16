@@ -34,8 +34,8 @@ public class SelectorTestExtension : Extension() {
 					respond {
 						components {
 							publicStringSelectMenu {
-								option("hi", "1")
-								option("hi hi", "2")
+								option("hi".toKey(), "1")
+								option("hi hi".toKey(), "2")
 								maximumChoices = null
 
 								action {
@@ -141,8 +141,8 @@ public class SelectorTestExtension : Extension() {
 					respond {
 						components {
 							ephemeralStringSelectMenu {
-								option("hi", "1")
-								option("hi hi", "2")
+								option("hi".toKey(), "1")
+								option("hi hi".toKey(), "2")
 								maximumChoices = null
 
 								action {

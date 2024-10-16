@@ -93,7 +93,7 @@ public class ModalTestExtension : Extension() {
 					respond {
 						components {
 							publicButton(::Modal) {
-								label = "Modal!"
+								label = "Modal!".toKey()
 
 								action { modal ->
 									respond {

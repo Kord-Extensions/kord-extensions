@@ -48,7 +48,7 @@ public open class EphemeralInteractionButton<M : ModalForm>(
 	override fun apply(builder: ActionRowBuilder) {
 		builder.interactionButton(style, id) {
 			emoji = partialEmoji
-			label = this@EphemeralInteractionButton.label
+			label = this@EphemeralInteractionButton.label?.translate()
 
 			disabled = this@EphemeralInteractionButton.disabled
 		}

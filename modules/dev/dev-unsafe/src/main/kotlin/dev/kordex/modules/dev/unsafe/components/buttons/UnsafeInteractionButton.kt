@@ -44,7 +44,7 @@ public open class UnsafeInteractionButton<M : UnsafeModalForm>(
 	override fun apply(builder: ActionRowBuilder) {
 		builder.interactionButton(style, id) {
 			emoji = partialEmoji
-			label = this@UnsafeInteractionButton.label
+			label = this@UnsafeInteractionButton.label?.translate()
 
 			disabled = this@UnsafeInteractionButton.disabled
 		}

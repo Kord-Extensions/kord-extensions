@@ -238,10 +238,4 @@ public abstract class BasePaginator(
 			}
 		}
 	}
-
-	/** Quick access to translations, using the paginator's locale. **/
-	public fun translate(key: Key, replacements: Array<Any?> = arrayOf()): String =
-		key
-			.withLocale(localeObj)
-			.translateArray(replacements)
 }

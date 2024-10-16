@@ -49,7 +49,7 @@ public open class PublicInteractionButton<M : ModalForm>(
 	override fun apply(builder: ActionRowBuilder) {
 		builder.interactionButton(style, id) {
 			emoji = partialEmoji
-			label = this@PublicInteractionButton.label
+			label = this@PublicInteractionButton.label?.translate()
 
 			disabled = this@PublicInteractionButton.disabled
 		}

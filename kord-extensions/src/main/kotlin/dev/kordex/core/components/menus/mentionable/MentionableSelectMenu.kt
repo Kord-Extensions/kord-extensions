@@ -52,7 +52,7 @@ public interface MentionableSelectMenu {
 			this@MentionableSelectMenu.defaultUsers.forEach(this.defaultUsers::add)
 
 			this.allowedValues = selectMenu.minimumChoices..selectMenu.maximumChoices!!
-			this.placeholder = selectMenu.placeholder
+			this.placeholder = selectMenu.placeholder?.translate()
 			this.disabled = selectMenu.disabled
 		}
 	}

@@ -19,7 +19,7 @@ public open class DisabledInteractionButton : InteractionButtonWithID() {
 	override fun apply(builder: ActionRowBuilder) {
 		builder.interactionButton(style, id) {
 			emoji = partialEmoji
-			label = this@DisabledInteractionButton.label
+			label = this@DisabledInteractionButton.label?.translate()
 
 			disabled = true
 		}
