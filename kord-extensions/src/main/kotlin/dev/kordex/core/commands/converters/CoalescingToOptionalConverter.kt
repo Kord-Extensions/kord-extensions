@@ -58,7 +58,7 @@ public class CoalescingToOptionalConverter<T : Any>(
 	override suspend fun handleError(
 		t: Throwable,
 		context: CommandContext,
-	): String = coalescingConverter.handleError(t, context)
+	): Key = coalescingConverter.handleError(t, context)
 
 	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<*> {
 		val option = coalescingConverter.toSlashOption(arg)

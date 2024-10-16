@@ -347,7 +347,9 @@ public open class ChatCommand<T : Arguments>(
 					ChatCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 

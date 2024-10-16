@@ -24,6 +24,7 @@ import dev.kordex.core.commands.events.EphemeralMessageCommandInvocationEvent
 import dev.kordex.core.commands.events.EphemeralMessageCommandSucceededEvent
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -66,7 +67,9 @@ public class EphemeralMessageCommand<M : ModalForm>(
 					EphemeralMessageCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 

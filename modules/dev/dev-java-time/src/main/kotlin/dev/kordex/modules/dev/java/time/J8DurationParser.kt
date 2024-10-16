@@ -56,7 +56,8 @@ public object J8DurationParser : KordExKoinComponent {
 
 		if (values.size != units.size) {
 			throw DurationParserException(
-				CoreTranslations.Converters.Duration.Error.badUnitPairs.translateLocale(locale)
+				CoreTranslations.Converters.Duration.Error.badUnitPairs
+					.withLocale(locale)
 			)
 		}
 

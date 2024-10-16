@@ -17,6 +17,7 @@ import dev.kordex.modules.func.mappings.utils.linkie.stringPairs
 import me.shedaniel.linkie.*
 import me.shedaniel.linkie.namespaces.MojangHashedNamespace
 import me.shedaniel.linkie.utils.*
+import java.util.Locale
 
 private const val PAGE_SIZE = 3
 
@@ -466,6 +467,7 @@ fun methodsToPages(
 fun classMatchesToPages(
 	outputContainer: MappingsContainer,
 	matches: List<Pair<Class, Class>>,
+	locale: Locale,
 ): List<String> {
 	val pages = mutableListOf<String>()
 
@@ -474,7 +476,7 @@ fun classMatchesToPages(
 
 			val inputName = input.mappedName ?: input.optimumName
 
-			val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+			val outputName = if (outputContainer.namespace.toNamespace(locale) == MojangHashedNamespace) {
 				// Because of requests and how hashed is often used for its hashes rather than the names,
 				// we call from "intermediary" instead of mapped.
 				output.intermediaryName
@@ -491,14 +493,15 @@ fun classMatchesToPages(
 }
 
 /** Convienence function for making code more generalized. */
-val classMatchesToPages = { outputContainer: MappingsContainer, classMatches: Matches<Class> ->
-	classMatchesToPages(outputContainer, classMatches.toList())
+val classMatchesToPages = { outputContainer: MappingsContainer, classMatches: Matches<Class>, locale: Locale ->
+	classMatchesToPages(outputContainer, classMatches.toList(), locale)
 }
 
 /** Given a set of field mapping matches, format them into a list of pages for the paginator. **/
 fun fieldMatchesToPages(
 	outputContainer: MappingsContainer,
 	matches: List<Pair<MemberEntry<Field>, MemberEntry<Field>>>,
+	locale: Locale,
 ): List<String> {
 	val pages = mutableListOf<String>()
 
@@ -510,7 +513,7 @@ fun fieldMatchesToPages(
 
 			val inputName = inputField.mappedName ?: inputField.optimumName
 
-			val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+			val outputName = if (outputContainer.namespace.toNamespace(locale) == MojangHashedNamespace) {
 				outputField.intermediaryName
 			} else {
 				outputField.mappedName ?: outputField.optimumName
@@ -518,7 +521,7 @@ fun fieldMatchesToPages(
 
 			val inputClassName = inputClass.mappedName ?: inputClass.optimumName
 
-			val outputClassName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+			val outputClassName = if (outputContainer.namespace.toNamespace(locale) == MojangHashedNamespace) {
 				outputClass.intermediaryName
 			} else {
 				outputClass.mappedName ?: outputClass.optimumName
@@ -547,14 +550,19 @@ fun fieldMatchesToPages(
 }
 
 /** Convenience function for making code more generalized. */
-val fieldMatchesToPages = { outputContainer: MappingsContainer, fieldMatches: Matches<MemberEntry<Field>> ->
-	fieldMatchesToPages(outputContainer, fieldMatches.toList())
+val fieldMatchesToPages = {
+		outputContainer: MappingsContainer,
+		fieldMatches: Matches<MemberEntry<Field>>,
+		locale: Locale,
+	->
+	fieldMatchesToPages(outputContainer, fieldMatches.toList(), locale)
 }
 
 /** Given a set of method mapping matches, format them into a list of pages for the paginator. **/
 fun methodMatchesToPages(
 	outputContainer: MappingsContainer,
 	matches: List<Pair<MemberEntry<Method>, MemberEntry<Method>>>,
+	locale: Locale,
 ): List<String> {
 	val pages = mutableListOf<String>()
 
@@ -566,7 +574,7 @@ fun methodMatchesToPages(
 
 			val inputName = inputMethod.mappedName ?: inputMethod.optimumName
 
-			val outputName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+			val outputName = if (outputContainer.namespace.toNamespace(locale) == MojangHashedNamespace) {
 				outputMethod.intermediaryName
 			} else {
 				outputMethod.mappedName ?: outputMethod.optimumName
@@ -574,7 +582,7 @@ fun methodMatchesToPages(
 
 			val inputClassName = inputClass.mappedName ?: inputClass.optimumName
 
-			val outputClassName = if (outputContainer.namespace.toNamespace() == MojangHashedNamespace) {
+			val outputClassName = if (outputContainer.namespace.toNamespace(locale) == MojangHashedNamespace) {
 				outputClass.intermediaryName
 			} else {
 				outputClass.mappedName ?: outputClass.optimumName
@@ -590,8 +598,12 @@ fun methodMatchesToPages(
 }
 
 /** Convienence function for making code more generalized. */
-val methodMatchesToPages = { outputContainer: MappingsContainer, methodMatches: Matches<MemberEntry<Method>> ->
-	methodMatchesToPages(outputContainer, methodMatches.toList())
+val methodMatchesToPages = {
+		outputContainer: MappingsContainer,
+		methodMatches: Matches<MemberEntry<Method>>,
+		locale: Locale,
+	->
+	methodMatchesToPages(outputContainer, methodMatches.toList(), locale)
 }
 
 /** Attempt to get an obfuscated name from three possible states. */

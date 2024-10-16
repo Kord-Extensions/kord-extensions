@@ -1025,7 +1025,7 @@ class MappingsExtension : Extension() {
 	private suspend fun <A, B, T> ConversionSlashCommand.convertMapping(
 		type: QueryType,
 		queryProvider: suspend (QueryContext) -> QueryResult<A, T>,
-		pageGenerationMethod: (MappingsContainer, Map<B, B>) -> List<String>,
+		pageGenerationMethod: (MappingsContainer, Map<B, B>, Locale) -> List<String>,
 		enabledNamespaces: List<String>,
 		obfNameProvider: B.() -> String?,
 		classNameProvider: B.() -> String,
@@ -1047,14 +1047,14 @@ class MappingsExtension : Extension() {
 		newSingleThreadContext("/convert ${type.readableName}: ${arguments.query}").use { context ->
 			withContext(context) {
 				val inputNamespace = if (arguments.inputNamespace in enabledNamespaces) {
-					arguments.inputNamespace.toNamespace()
+					arguments.inputNamespace.toNamespace(this@convertMapping.getLocale())
 				} else {
 					returnError(MappingsTranslations.Response.Error.inputNamespace)
 					return@withContext
 				}
 
 				val outputNamespace = if (arguments.outputNamespace in enabledNamespaces) {
-					arguments.outputNamespace.toNamespace()
+					arguments.outputNamespace.toNamespace(this@convertMapping.getLocale())
 				} else {
 					returnError(MappingsTranslations.Response.Error.outputNamespace)
 					return@withContext
@@ -1196,7 +1196,7 @@ class MappingsExtension : Extension() {
 					data["results.count"] = outputResults.size
 				}
 
-				pages = pageGenerationMethod(outputContainer, outputResults)
+				pages = pageGenerationMethod(outputContainer, outputResults, this@convertMapping.getLocale())
 				if (pages.isEmpty()) {
 					returnError(MappingsTranslations.Response.Query.noResults)
 					return@withContext

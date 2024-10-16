@@ -108,5 +108,5 @@ public class SingleToListConverter<T : Any>(
 	override suspend fun handleError(
 		t: Throwable,
 		context: CommandContext,
-	): String = singleConverter.handleError(t, context)
+	): Key = singleConverter.handleError(t, context)
 }

@@ -25,6 +25,7 @@ import dev.kordex.core.commands.events.PublicUserCommandInvocationEvent
 import dev.kordex.core.commands.events.PublicUserCommandSucceededEvent
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -67,7 +68,9 @@ public class PublicUserCommand<M : ModalForm>(
 					PublicUserCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 

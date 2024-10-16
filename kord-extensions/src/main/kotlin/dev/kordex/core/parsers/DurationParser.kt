@@ -60,7 +60,6 @@ public object DurationParser : KordExKoinComponent {
 			throw DurationParserException(
 				CoreTranslations.Converters.Duration.Error.badUnitPairs
 					.withLocale(locale)
-					.translate()
 			)
 		}
 

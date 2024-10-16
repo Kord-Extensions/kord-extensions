@@ -23,6 +23,7 @@ import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.modules.func.mappings.i18n.generated.MappingsTranslations
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -57,7 +58,8 @@ class MappingsVersionConverter(
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
-		return parse(arg)
+
+		return parse(arg, context)
 	}
 
 	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
@@ -67,10 +69,11 @@ class MappingsVersionConverter(
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue: String = (option as? StringOptionValue)?.value ?: return false
-		return parse(optionValue)
+
+		return parse(optionValue, context)
 	}
 
-	private suspend fun parse(string: String): Boolean {
+	private suspend fun parse(string: String, commandContext: CommandContext): Boolean {
 		newSingleThreadContext("version-parser").use { context ->
 			return withContext(context) {
 				val namespace: Namespace = namespaceGetter.invoke()
@@ -85,7 +88,14 @@ class MappingsVersionConverter(
 					}
 				}
 
-				throw DiscordRelayedException("Invalid ${namespace.id} version: `$string`")
+				throw DiscordRelayedException(
+					MappingsTranslations.Response.Error.invalidNamespaceVersion
+						.withContext(commandContext)
+						.withNamedPlaceholders(
+							"namespace" to namespace.id,
+							"version" to string
+						)
+				)
 			}
 		}
 	}

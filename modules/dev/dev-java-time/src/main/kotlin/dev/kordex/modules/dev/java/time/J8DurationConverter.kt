@@ -70,32 +70,30 @@ public class J8DurationConverter(
 					throw DiscordRelayedException(
 						CoreTranslations.Converters.Duration.Error.positiveOnly
 							.withContext(context)
-							.translate()
 					)
 				}
 			}
 
 			parsed = result
 		} catch (e: InvalidTimeUnitException) {
-			val message: String = buildString {
-				append(
+			throw DiscordRelayedException(
+				if (longHelp) {
+					CoreTranslations.Common.paragraphJoiner
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(
+							CoreTranslations.Converters.Duration.Error.invalidUnit
+								.withLocale(context.getLocale())
+								.withOrdinalPlaceholders(e.unit),
+
+							CoreTranslations.Converters.Duration.help
+								.withLocale(context.getLocale())
+						)
+				} else {
 					CoreTranslations.Converters.Duration.Error.invalidUnit
 						.withLocale(context.getLocale())
-						.translate(e.unit)
-				)
-
-				if (longHelp) {
-					append("\n\n")
-
-					append(
-						CoreTranslations.Converters.Duration.help
-							.withLocale(context.getLocale())
-							.translate()
-					)
+						.withOrdinalPlaceholders(e.unit)
 				}
-			}
-
-			throw DiscordRelayedException(message)
+			)
 		} catch (e: DurationParserException) {
 			throw DiscordRelayedException(e.error)
 		}
@@ -123,32 +121,30 @@ public class J8DurationConverter(
 					throw DiscordRelayedException(
 						CoreTranslations.Converters.Duration.Error.positiveOnly
 							.withContext(context)
-							.translate()
 					)
 				}
 			}
 
 			parsed = result
 		} catch (e: InvalidTimeUnitException) {
-			val message: String = buildString {
-				append(
+			throw DiscordRelayedException(
+				if (longHelp) {
+					CoreTranslations.Common.paragraphJoiner
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(
+							CoreTranslations.Converters.Duration.Error.invalidUnit
+								.withLocale(context.getLocale())
+								.withOrdinalPlaceholders(e.unit),
+
+							CoreTranslations.Converters.Duration.help
+								.withLocale(context.getLocale())
+						)
+				} else {
 					CoreTranslations.Converters.Duration.Error.invalidUnit
 						.withLocale(context.getLocale())
-						.translate(e.unit)
-				)
-
-				if (longHelp) {
-					append("\n\n")
-
-					append(
-						CoreTranslations.Converters.Duration.help
-							.withLocale(context.getLocale())
-							.translate()
-					)
+						.withOrdinalPlaceholders(e.unit)
 				}
-			}
-
-			throw DiscordRelayedException(message)
+			)
 		} catch (e: DurationParserException) {
 			throw DiscordRelayedException(e.error)
 		}

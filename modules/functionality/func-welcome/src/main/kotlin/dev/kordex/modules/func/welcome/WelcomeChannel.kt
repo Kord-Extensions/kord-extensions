@@ -14,10 +14,12 @@ import com.charleskorn.kaml.PolymorphismStyle
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.YamlException
+import dev.kord.common.asJavaLocale
 import dev.kord.common.entity.MessageType
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
+import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.event.interaction.InteractionCreateEvent
@@ -36,6 +38,7 @@ import dev.kordex.core.utils.scheduling.Task
 import dev.kordex.modules.func.welcome.blocks.Block
 import dev.kordex.modules.func.welcome.blocks.InteractionBlock
 import dev.kordex.modules.func.welcome.config.WelcomeChannelConfig
+import dev.kordex.modules.func.welcome.i18n.generated.WelcomeTranslations
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -100,15 +103,23 @@ class WelcomeChannel(
 		scheduler.shutdown()
 	}
 
-	private suspend fun fetchBlocks(): List<Block> {
+	private suspend fun fetchBlocks(guild: Guild): List<Block> {
 		try {
 			val response = client.get(url).body<String>()
 
 			return yaml.decodeFromString(response)
 		} catch (e: ClientRequestException) {
-			throw DiscordRelayedException("Failed to download the YAML file\n\n>>> $e")
+				throw DiscordRelayedException(
+					WelcomeTranslations.Error.downloadFailed
+						.withLocale(guild.preferredLocale.asJavaLocale())
+						.withNamedPlaceholders("error" to e.toString())
+				)
 		} catch (e: YamlException) {
-			throw DiscordRelayedException("Failed to parse the given YAML\n\n>>> $e")
+			throw DiscordRelayedException(
+				WelcomeTranslations.Error.downloadFailed
+					.withLocale(guild.preferredLocale.asJavaLocale())
+					.withNamedPlaceholders("error" to e.toString())
+			)
 		}
 	}
 
@@ -122,7 +133,7 @@ class WelcomeChannel(
 
 		@Suppress("TooGenericExceptionCaught")
 		try {
-			blocks = fetchBlocks().toMutableList()
+			blocks = fetchBlocks(guild).toMutableList()
 		} catch (e: Exception) {
 			log {
 				embed {

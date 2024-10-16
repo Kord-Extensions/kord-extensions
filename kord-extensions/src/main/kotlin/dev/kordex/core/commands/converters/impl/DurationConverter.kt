@@ -82,22 +82,21 @@ public class DurationConverter(
 			parsed = result
 		} catch (e: InvalidTimeUnitException) {
 			throw DiscordRelayedException(
-				buildString {
-					append(
-						CoreTranslations.Converters.Duration.Error.invalidUnit
-							.withLocale(context.getLocale())
-							.translate(e.unit)
-					)
+				if (longHelp) {
+					CoreTranslations.Common.paragraphJoiner
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(
+							CoreTranslations.Converters.Duration.Error.invalidUnit
+								.withLocale(context.getLocale())
+								.withOrdinalPlaceholders(e.unit),
 
-					if (longHelp) {
-						append("\n\n")
-
-						append(
 							CoreTranslations.Converters.Duration.help
 								.withLocale(context.getLocale())
-								.translate()
 						)
-					}
+				} else {
+					CoreTranslations.Converters.Duration.Error.invalidUnit
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(e.unit)
 				}
 			)
 		} catch (e: DurationParserException) {
@@ -133,22 +132,21 @@ public class DurationConverter(
 			parsed = result
 		} catch (e: InvalidTimeUnitException) {
 			throw DiscordRelayedException(
-				buildString {
-					append(
-						CoreTranslations.Converters.Duration.Error.invalidUnit
-							.withLocale(context.getLocale())
-							.translate(e.unit)
-					)
+				if (longHelp) {
+					CoreTranslations.Common.paragraphJoiner
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(
+							CoreTranslations.Converters.Duration.Error.invalidUnit
+								.withLocale(context.getLocale())
+								.withOrdinalPlaceholders(e.unit),
 
-					if (longHelp) {
-						append("\n\n")
-
-						append(
 							CoreTranslations.Converters.Duration.help
 								.withLocale(context.getLocale())
-								.translate()
 						)
-					}
+				} else {
+					CoreTranslations.Converters.Duration.Error.invalidUnit
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(e.unit)
 				}
 			)
 		} catch (e: DurationParserException) {

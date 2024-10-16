@@ -22,7 +22,6 @@ import dev.kordex.core.commands.converters.Validator
 import dev.kordex.core.commands.wrapOption
 import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.i18n.types.Key
-import dev.kordex.core.i18n.withContext
 import dev.kordex.core.parsers.DurationParserException
 import dev.kordex.core.parsers.InvalidTimeUnitException
 import dev.kordex.parser.StringParser
@@ -65,24 +64,24 @@ public class T4JDurationConverter(
 		try {
 			this.parsed = T4JDurationParser.parse(arg, context.getLocale())
 		} catch (e: InvalidTimeUnitException) {
-			val message: String = buildString {
-				append(
-					CoreTranslations.Converters.Duration.Error.invalidUnit
-						.withContext(context)
-						.translate(e.unit)
-				)
-
+			throw DiscordRelayedException(
 				if (longHelp) {
-					append("\n\n")
-					append(
-						CoreTranslations.Converters.Duration.help
-							.withContext(context)
-							.translate()
-					)
-				}
-			}
+					CoreTranslations.Common.paragraphJoiner
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(
+							CoreTranslations.Converters.Duration.Error.invalidUnit
+								.withLocale(context.getLocale())
+								.withOrdinalPlaceholders(e.unit),
 
-			throw DiscordRelayedException(message)
+							CoreTranslations.Converters.Duration.help
+								.withLocale(context.getLocale())
+						)
+				} else {
+					CoreTranslations.Converters.Duration.Error.invalidUnit
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(e.unit)
+				}
+			)
 		} catch (e: DurationParserException) {
 			throw DiscordRelayedException(e.error)
 		}
@@ -101,24 +100,24 @@ public class T4JDurationConverter(
 		try {
 			this.parsed = T4JDurationParser.parse(arg, context.getLocale())
 		} catch (e: InvalidTimeUnitException) {
-			val message: String = buildString {
-				append(
-					CoreTranslations.Converters.Duration.Error.invalidUnit
-						.withContext(context)
-						.translate(e.unit)
-				)
-
+			throw DiscordRelayedException(
 				if (longHelp) {
-					append("\n\n")
-					append(
-						CoreTranslations.Converters.Duration.help
-							.withContext(context)
-							.translate()
-					)
-				}
-			}
+					CoreTranslations.Common.paragraphJoiner
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(
+							CoreTranslations.Converters.Duration.Error.invalidUnit
+								.withLocale(context.getLocale())
+								.withOrdinalPlaceholders(e.unit),
 
-			throw DiscordRelayedException(message)
+							CoreTranslations.Converters.Duration.help
+								.withLocale(context.getLocale())
+						)
+				} else {
+					CoreTranslations.Converters.Duration.Error.invalidUnit
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(e.unit)
+				}
+			)
 		} catch (e: DurationParserException) {
 			throw DiscordRelayedException(e.error)
 		}

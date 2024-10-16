@@ -41,7 +41,8 @@ public object T4JDurationParser : KordExKoinComponent {
 	public fun parse(input: String, locale: Locale): Duration<IsoUnit> {
 		if ("-" in input) {
 			throw DurationParserException(
-				CoreTranslations.Converters.Duration.Error.negativeUnsupported.translateLocale(locale)
+				CoreTranslations.Converters.Duration.Error.negativeUnsupported
+					.withLocale(locale)
 			)
 		}
 
@@ -72,7 +73,8 @@ public object T4JDurationParser : KordExKoinComponent {
 
 		if (values.size != units.size) {
 			throw DurationParserException(
-				CoreTranslations.Converters.Duration.Error.badUnitPairs.translateLocale(locale)
+				CoreTranslations.Converters.Duration.Error.negativeUnsupported
+					.withLocale(locale)
 			)
 		}
 

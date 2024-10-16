@@ -13,6 +13,7 @@ import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.application.slash.converters.impl.optionalEnumChoice
 import dev.kordex.core.commands.converters.impl.optionalString
 import dev.kordex.core.commands.converters.impl.string
+import dev.kordex.core.utils.getLocale
 import dev.kordex.core.utils.suggestStringMap
 import dev.kordex.modules.func.mappings.enums.Channels
 import dev.kordex.modules.func.mappings.i18n.generated.MappingsTranslations
@@ -71,9 +72,9 @@ class MappingConversionArguments(enabledNamespaces: suspend (Snowflake?) -> Map<
 		name = MappingsTranslations.Argument.Version.name
 		description = MappingsTranslations.Argument.Version.description
 
-		autocompleteVersions {
-			val inputNamespace = command.options["input"]?.value?.toString()?.toNamespace()
-			val outputNamespace = command.options["output"]?.value?.toString()?.toNamespace()
+		autocompleteVersions { event ->
+			val inputNamespace = command.options["input"]?.value?.toString()?.toNamespace(event.getLocale())
+			val outputNamespace = command.options["output"]?.value?.toString()?.toNamespace(event.getLocale())
 
 			if (inputNamespace == null || outputNamespace == null) {
 				emptyList()
