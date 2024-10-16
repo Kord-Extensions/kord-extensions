@@ -12,6 +12,8 @@ package dev.kordex.test.bot.utils
 
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.withContext
 
 public typealias AssertBody = (suspend () -> Any)?
 
@@ -24,7 +26,11 @@ public suspend fun CommandContext.assert(
 
 		logError { "**Assertion failed:** $message" }
 
-		throw DiscordRelayedException("**Assertion failed:** $message")
+		throw DiscordRelayedException(
+			CoreTranslations.Common.assertionFailed
+				.withContext(this)
+				.withNamedPlaceholders("message" to message)
+		)
 	}
 }
 
@@ -37,7 +43,11 @@ public suspend fun CommandContext.assertFalse(
 
 		logError { "**Assertion failed:** $message" }
 
-		throw DiscordRelayedException("**Assertion failed:** $message")
+		throw DiscordRelayedException(
+			CoreTranslations.Common.assertionFailed
+				.withContext(this)
+				.withNamedPlaceholders("message" to message)
+		)
 	}
 }
 
@@ -51,7 +61,11 @@ public suspend fun CommandContext.assertEqual(
 
 		logError { "**Assertion failed:** $message" }
 
-		throw DiscordRelayedException("**Assertion failed:** $message")
+		throw DiscordRelayedException(
+			CoreTranslations.Common.assertionFailed
+				.withContext(this)
+				.withNamedPlaceholders("message" to message)
+		)
 	}
 }
 
@@ -65,6 +79,10 @@ public suspend fun CommandContext.assertNotEqual(
 
 		logError { "**Assertion failed:** $message" }
 
-		throw DiscordRelayedException("**Assertion failed:** $message")
+		throw DiscordRelayedException(
+			CoreTranslations.Common.assertionFailed
+				.withContext(this)
+				.withNamedPlaceholders("message" to message)
+		)
 	}
 }

@@ -26,6 +26,8 @@ import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.application.slash.SlashCommand
 import dev.kordex.core.commands.application.slash.SlashGroup
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -73,7 +75,9 @@ public class UnsafeSlashCommand<A : Arguments, M : UnsafeModalForm>(
 					UnsafeSlashCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 
@@ -171,7 +175,7 @@ public class UnsafeSlashCommand<A : Arguments, M : UnsafeModalForm>(
 
 	override suspend fun respondText(
         context: UnsafeCommandSlashCommandContext<A, M>,
-        message: String,
+        message: Key,
         failureType: FailureReason<*>,
 	) {
 		when (context.interactionResponse) {

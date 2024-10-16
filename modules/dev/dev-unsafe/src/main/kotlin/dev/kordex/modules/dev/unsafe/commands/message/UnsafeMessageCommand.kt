@@ -23,6 +23,8 @@ import dev.kordex.core.InvalidCommandException
 import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.commands.application.message.MessageCommand
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -65,7 +67,9 @@ public class UnsafeMessageCommand<M : UnsafeModalForm>(
 					UnsafeMessageCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 				return
@@ -149,7 +153,7 @@ public class UnsafeMessageCommand<M : UnsafeModalForm>(
 
 	override suspend fun respondText(
         context: UnsafeCommandMessageCommandContext<M>,
-        message: String,
+        message: Key,
         failureType: FailureReason<*>,
 	) {
 		when (context.interactionResponse) {

@@ -173,7 +173,7 @@ public class UnionConverter(
 				else -> throw DiscordRelayedException(
 					CoreTranslations.Converters.Union.Error.unknownConverterType
 						.withContext(context)
-						.translate(converter)
+						.withOrdinalPlaceholders(converter)
 				)
 			}
 		}
@@ -232,7 +232,7 @@ public class UnionConverter(
 				is ListConverter<*> -> throw DiscordRelayedException(
 					CoreTranslations.Converters.Union.Error.unknownConverterType
 						.withContext(context)
-						.translate(converter)
+						.withOrdinalPlaceholders(converter)
 				)
 
 				is CoalescingConverter<*> -> try {
@@ -277,7 +277,7 @@ public class UnionConverter(
 				else -> throw DiscordRelayedException(
 					CoreTranslations.Converters.Union.Error.unknownConverterType
 						.withContext(context)
-						.translate(converter)
+						.withOrdinalPlaceholders(converter)
 				)
 			}
 		}

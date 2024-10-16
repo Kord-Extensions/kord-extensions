@@ -20,6 +20,7 @@ import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.components.buttons.InteractionButtonWithAction
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -141,7 +142,7 @@ public open class UnsafeInteractionButton<M : UnsafeModalForm>(
 
 	override suspend fun respondText(
 		context: UnsafeInteractionComponentContext<M>,
-		message: String,
+		message: Key,
 		failureType: FailureReason<*>,
 	) {
 		when (context.interactionResponse) {
